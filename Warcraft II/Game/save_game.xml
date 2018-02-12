@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<game_state>
+	<input />
+	<window />
+	<textures />
+	<audio>
+		<volume default="100" />
+	</audio>
+	<map />
+	<pathfinding />
+	<entities>
+		<player>
+			<position position.x="604.607422" position.y="220.815002" />
+			<state state="3" />
+			<speed speed.x="0" speed.y="0" />
+		</player>
+	</entities>
+	<particles />
+	<collision />
+	<fonts />
+	<gui />
+	<scene>
+		<index index="0" />
+		<gate opened="false" fx="false" />
+		<cats_obtained1 cats1="0" />
+		<cats_obtained2 cats2="0" />
+		<lifebar lifebar="206" />
+	</scene>
+	<menu />
+	<fade />
+	<trans />
+	<renderer>
+		<camera x="-1512" y="-210" />
+	</renderer>
+</game_state>
