@@ -71,7 +71,7 @@ bool j1Gui::PreUpdate()
 
 	UI_elements_list.clear();
 
-	UI_elements_tree->recursivePreOrderList(UI_elements_tree->getRoot(), &UI_elements_list);
+	///UI_elements_tree->recursivePreOrderList(UI_elements_tree->getRoot(), &UI_elements_list);
 
 	return ret;
 }
@@ -85,20 +85,20 @@ bool j1Gui::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
 		debug_draw = !debug_draw;
 
-	p2List_item<UIElement*>* UI_elem_it = UI_elements_list.start;
+	list<UIElement*>::const_iterator UI_elem_it = UI_elements_list.begin();
 
-	while (UI_elem_it != nullptr) {
-		UI_elem_it->data->Update(dt);
+	while (UI_elem_it != UI_elements_list.end()) {
+		(*UI_elem_it)->Update(dt);
 
 		/*
 		if (UI_elem_it->data->drag && update_drag)
 			UI_elem_it->data->UpdateDragging(dt);
 		*/
 
-		UI_elem_it = UI_elem_it->next;
+		UI_elem_it++;
 	}
 
-	UI_elem_it = UI_elements_list.start;
+	UI_elem_it = UI_elements_list.begin();
 
 	return ret;
 }
@@ -109,11 +109,11 @@ bool j1Gui::Blit(float dt) const
 
 	bool ret = true;
 
-	p2List_item<UIElement*>* UI_elem_it = UI_elements_list.start;
+	list<UIElement*>::const_iterator UI_elem_it = UI_elements_list.begin();
 
-	while (UI_elem_it != nullptr) {
-		UI_elem_it->data->Draw();
-		UI_elem_it = UI_elem_it->next;
+	while (UI_elem_it != UI_elements_list.end()) {
+		(*UI_elem_it)->Draw();
+		UI_elem_it++;
 	}
 
 	return ret;
@@ -124,15 +124,16 @@ bool j1Gui::PostUpdate()
 {
 	bool ret = true;
 
-	p2List_item<UIElement*>* UI_elem_it = UI_elements_list.start;
+	list<UIElement*>::const_iterator UI_elem_it = UI_elements_list.begin();
 
-	while (UI_elem_it != nullptr) {
+	while (UI_elem_it != UI_elements_list.end()) {
 
-		if (UI_elem_it->data->HasToBeRemoved()) {
-			RELEASE(UI_elem_it->data);
+		if ((*UI_elem_it)->HasToBeRemoved()) {
+			delete *UI_elem_it;
+			UI_elements_list.remove(*UI_elem_it);
 		}
 
-		UI_elem_it = UI_elem_it->next;
+		UI_elem_it++;
 	}
 
 	return ret;
@@ -149,14 +150,12 @@ bool j1Gui::CleanUp()
 		UI_elements_tree->clear();
 
 		// Clear UI_elements list (active elements)
-		p2List_item<UIElement*>* UI_elem_it = UI_elements_list.start;
+		list<UIElement*>::const_iterator UI_elem_it = UI_elements_list.begin();
 
-		while (UI_elem_it != nullptr) {
-			ret = true;
-			RELEASE(UI_elem_it->data);
-			UI_elem_it = UI_elem_it->next;
+		while (UI_elem_it != UI_elements_list.end()) {
+			delete *UI_elem_it;
+			UI_elem_it++;
 		}
-
 		UI_elements_list.clear();
 	}
 
@@ -238,9 +237,9 @@ bool j1Gui::ClearAllUI()
 	App->trans->CreateCursor();
 	*/
 
-	p2List_item<UIElement*>* UI_elem_it = UI_elements_list.start;
+	list<UIElement*>::const_iterator UI_elem_it = UI_elements_list.begin();
 
-	while (UI_elem_it != nullptr) {
+	while (UI_elem_it != UI_elements_list.end()) {
 
 		/*
 		if (UI_elem_it->data != (UIElement*)App->trans->l_level_name && UI_elem_it->data != (UIElement*)App->trans->l_cats_picked
@@ -250,7 +249,7 @@ bool j1Gui::ClearAllUI()
 			UI_elem_it->data->to_remove = true;
 		*/
 
-		UI_elem_it = UI_elem_it->next;
+		UI_elem_it++;
 	}
 
 	return ret;
@@ -322,16 +321,15 @@ float j1Gui::IncreaseDecreaseAlpha(float from, float to, float seconds)
 void j1Gui::SetUpDraggingChildren(UIElement* elem, bool drag)
 {
 	// List including to_drag element and all of its children
-	p2List<UIElement*> to_drag;
-	UI_elements_tree->recursivePreOrderList(UI_elements_tree->search(elem), &to_drag);
+	list<UIElement*> to_drag;
+	///UI_elements_tree->recursivePreOrderList(UI_elements_tree->search(elem), &to_drag);
 
 	// Don't drag elements which are not in the previous list
-	p2List_item<UIElement*>* UI_elem_it = to_drag.start;
-	UI_elem_it = UI_elements_list.start;
+	list<UIElement*>::const_iterator UI_elem_it = UI_elements_list.begin();
 
-	while (UI_elem_it != nullptr && UI_elem_it->data != to_drag.start->data) {
-		UI_elem_it->data->drag = false;
-		UI_elem_it = UI_elem_it->next;
+	while (UI_elem_it != UI_elements_list.end() && UI_elem_it != to_drag.begin()) {
+		(*UI_elem_it)->drag = false;
+		UI_elem_it++;
 	}
 
 	/*
@@ -345,19 +343,19 @@ void j1Gui::SetUpDraggingNode(bool drag)
 	int lowest_level = UI_elements_tree->getNumLevels(UI_elements_tree->getRoot()) + 1;
 
 	// If several elements are clicked at once, select the element in the lowest level in the tree
-	p2List_item<UIElement*>* UI_elem_it = UI_elements_list.start;
+	list<UIElement*>::const_iterator UI_elem_it = UI_elements_list.begin();
 
-	while (UI_elem_it != nullptr) {
+	while (UI_elem_it != UI_elements_list.end()) {
 
-		if (UI_elem_it->data->drag == drag) {
-			int level = UI_elements_tree->getNumLevels(UI_elements_tree->search(UI_elem_it->data));
+		if ((*UI_elem_it)->drag == drag) {
+			int level = UI_elements_tree->getNumLevels(UI_elements_tree->search(*UI_elem_it));
 
 			if (level <= lowest_level) {
-				dragging_node = UI_elem_it->data;
+				dragging_node = *UI_elem_it;
 			}
 		}
 
-		UI_elem_it = UI_elem_it->next;
+		UI_elem_it++;
 	}
 
 	SetUpDraggingChildren(dragging_node, drag);

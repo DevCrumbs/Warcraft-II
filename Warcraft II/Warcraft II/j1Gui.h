@@ -6,6 +6,8 @@
 #include "NTree.h"
 
 #include <map>
+#include <list>
+using namespace std;
 
 #define CURSOR_WIDTH 2
 
@@ -112,7 +114,7 @@ private:
 	p2SString atlas_file_name;
 	const SDL_Texture* atlas;
 
-	p2List<UIElement*> UI_elements_list;
+	list<UIElement*> UI_elements_list;
 
 	map<UIElement_Rect, SDL_Rect> UI_elements_rects;
 	map<Font_Names, _TTF_Font*> map_fonts;

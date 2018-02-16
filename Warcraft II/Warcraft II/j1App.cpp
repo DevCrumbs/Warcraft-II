@@ -67,21 +67,21 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 j1App::~j1App()
 {
 	// release modules
-	p2List_item<j1Module*>* item = modules.end;
+	list<j1Module*>::reverse_iterator item;
+	item = modules.rbegin();
 
-	while (item != NULL)
+	while (item != modules.rend())
 	{
-		RELEASE(item->data);
-		item = item->prev;
+		delete *item;
+		item++;
 	}
-
 	modules.clear();
 }
 
 void j1App::AddModule(j1Module* module)
 {
 	module->Init();
-	modules.add(module);
+	modules.push_back(module);
 }
 
 // Called before render is available
@@ -110,13 +110,13 @@ bool j1App::Awake()
 
 	if (ret == true)
 	{
-		p2List_item<j1Module*>* item;
-		item = modules.start;
+		list<j1Module*>::const_iterator item;
+		item = modules.begin();
 
-		while (item != NULL && ret == true)
+		while (item != modules.end() && ret == true)
 		{
-			ret = item->data->Awake(config.child(item->data->name.GetString()));
-			item = item->next;
+			ret = (*item)->Awake(config.child((*item)->name.GetString()));
+			item++;
 		}
 	}
 
@@ -127,15 +127,15 @@ bool j1App::Awake()
 bool j1App::Start()
 {
 	bool ret = true;
-	p2List_item<j1Module*>* item;
-	item = modules.start;
+	list<j1Module*>::const_iterator item;
+	item = modules.begin();
 
-	while (item != NULL && ret == true)
+	while (item != modules.end() && ret == true)
 	{
-		if (item->data->active)
-			ret = item->data->Start();
+		if ((*item)->active)
+			ret = (*item)->Start();
 
-		item = item->next;
+		item++;
 	}
 
 	return ret;
@@ -274,19 +274,19 @@ bool j1App::PreUpdate()
 	BROFILER_CATEGORY("PreUpdate", Profiler::Color::Orchid);
 
 	bool ret = true;
-	p2List_item<j1Module*>* item;
-	item = modules.start;
+	list<j1Module*>::const_iterator item;
+	item = modules.begin();
 	j1Module* pModule = NULL;
 
-	for (item = modules.start; item != NULL && ret == true; item = item->next)
+	for (item = modules.begin(); item != modules.end() && ret == true; ++item)
 	{
-		pModule = item->data;
+		pModule = *item;
 
 		if (pModule->active == false) {
 			continue;
 		}
 
-		ret = item->data->PreUpdate();
+		ret = (*item)->PreUpdate();
 	}
 
 	return ret;
@@ -298,19 +298,20 @@ bool j1App::DoUpdate()
 	BROFILER_CATEGORY("DoUpdate", Profiler::Color::Azure);
 
 	bool ret = true;
-	p2List_item<j1Module*>* item;
-	item = modules.start;
+	list<j1Module*>::const_iterator item;
+	item = modules.begin();
+
 	j1Module* pModule = NULL;
 
-	for (item = modules.start; item != NULL && ret == true; item = item->next)
+	for (item = modules.begin(); item != modules.end() && ret == true; ++item)
 	{
-		pModule = item->data;
+		pModule = *item;
 
 		if (pModule->active == false) {
 			continue;
 		}
 
-		ret = item->data->Update(dt);
+		ret = (*item)->Update(dt);
 	}
 
 	return ret;
@@ -322,18 +323,18 @@ bool j1App::PostUpdate()
 	BROFILER_CATEGORY("PostUpdate", Profiler::Color::LightSeaGreen);
 
 	bool ret = true;
-	p2List_item<j1Module*>* item;
+	list<j1Module*>::const_iterator item;
 	j1Module* pModule = NULL;
 
-	for (item = modules.start; item != NULL && ret == true; item = item->next)
+	for (item = modules.begin(); item != modules.end() && ret == true; ++item)
 	{
-		pModule = item->data;
+		pModule = *item;
 
 		if (pModule->active == false) {
 			continue;
 		}
 
-		ret = item->data->PostUpdate();
+		ret = (*item)->PostUpdate();
 	}
 
 	return ret;
@@ -343,13 +344,13 @@ bool j1App::PostUpdate()
 bool j1App::CleanUp()
 {
 	bool ret = true;
-	p2List_item<j1Module*>* item;
-	item = modules.end;
+	list<j1Module*>::reverse_iterator item;
+	item = modules.rbegin();
 
-	while (item != NULL && ret == true)
+	while (item != modules.rend() && ret == true)
 	{
-		ret = item->data->CleanUp();
-		item = item->prev;
+		ret = (*item)->CleanUp();
+		item++;
 	}
 
 	return ret;
@@ -401,7 +402,7 @@ void j1App::SaveGame() const
 }
 
 // ---------------------------------------
-void j1App::GetSaveGames(p2List<p2SString>& list_to_fill) const
+void j1App::GetSaveGames(list<p2SString>& list_to_fill) const
 {
 	// need to add functionality to file_system module for this to work
 }
@@ -421,20 +422,20 @@ bool j1App::LoadGameNow()
 
 		root = data.child("game_state");
 
-		p2List_item<j1Module*>* item = modules.start;
+		list<j1Module*>::const_iterator item = modules.begin();
 		ret = true;
 
-		while (item != NULL && ret == true)
+		while (item != modules.end() && ret == true)
 		{
-			ret = item->data->Load(root.child(item->data->name.GetString()));
-			item = item->next;
+			ret = (*item)->Load(root.child((*item)->name.GetString()));
+			item++;
 		}
 
 		data.reset();
 		if (ret == true)
 			LOG("...finished loading");
 		else
-			LOG("...loading process interrupted with error on module %s", (item != NULL) ? item->data->name.GetString() : "unknown");
+			LOG("...loading process interrupted with error on module %s", (*item) ? (*item)->name.GetString() : "unknown");
 	}
 	else
 		LOG("Could not parse game state xml file %s. pugi error: %s", load_game.GetString(), result.description());
@@ -455,12 +456,12 @@ bool j1App::SavegameNow() const
 
 	root = data.append_child("game_state");
 
-	p2List_item<j1Module*>* item = modules.start;
+	list<j1Module*>::const_iterator item = modules.begin();
 
-	while (item != NULL && ret == true)
+	while (item != modules.end() && ret == true)
 	{
-		ret = item->data->Save(root.append_child(item->data->name.GetString()));
-		item = item->next;
+		ret = (*item)->Save(root.append_child((*item)->name.GetString()));
+		item++;
 	}
 
 	if (ret == true)
@@ -469,7 +470,7 @@ bool j1App::SavegameNow() const
 		LOG("... finished saving", );
 	}
 	else
-		LOG("Save process halted from an error in module %s", (item != NULL) ? item->data->name.GetString() : "unknown");
+		LOG("Save process halted from an error in module %s", (*item) ? (*item)->name.GetString() : "unknown");
 
 	data.reset();
 	want_to_save = false;

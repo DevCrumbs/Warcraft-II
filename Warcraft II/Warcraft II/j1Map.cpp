@@ -48,140 +48,61 @@ void j1Map::Draw()
 		return;
 
 	// TODO 5: Prepare the loop to draw all tilesets + Blit
-	p2List_item<TileSet*>* draw_tilesets = data.tilesets.start;
-	while (draw_tilesets != NULL)
+	list<TileSet*>::const_iterator draw_tilesets = data.tilesets.begin();
+	while (draw_tilesets != data.tilesets.end())
 	{
-		p2List_item<MapLayer*>* draw_layers = data.layers.start;
-		while (draw_layers != NULL) {
+		list<MapLayer*>::const_iterator draw_layers = data.layers.begin();
+		while (draw_layers != data.layers.end()) {
 
-			// Initial xy camera && final xy camera
-			uint width, height;
-			App->win->GetWindowSize(width, height);
+			if ((*draw_layers)->index != ABOVE && (*draw_layers)->index != PARALLAX) {
+				
+				for (int i = 0; i < (*draw_layers)->width; i++) {
+					for (int j = 0; j < (*draw_layers)->height; j++) {
 
-			iPoint initialPoint = WorldToMap((App->render->camera.x * (-1) / App->win->GetScale() - blit_offset), (App->render->camera.y * (-1) / App->win->GetScale()) - blit_offset);
-			iPoint finalPoint = WorldToMap((App->render->camera.x * (-1) / App->win->GetScale()) + blit_offset + ((int)width / App->win->GetScale()), (App->render->camera.y * (-1) / App->win->GetScale()) + blit_offset + ((int)height / App->win->GetScale()));
-			//
+						if ((*draw_layers)->Get(i, j) != 0) {
 
-			if (initialPoint.x <= 0)
-				initialPoint.x = 0;
-
-			else if (initialPoint.x >= draw_layers->data->width)
-				initialPoint.x = draw_layers->data->width;
-
-			if (initialPoint.y <= 0)
-				initialPoint.y = 0;
-
-			else if (initialPoint.y >= draw_layers->data->height)
-				initialPoint.y = draw_layers->data->height;
-
-			if (finalPoint.x >= draw_layers->data->width)
-				finalPoint.x = draw_layers->data->width;
-
-			else if (finalPoint.x <= 0)
-				finalPoint.x = 0;
-
-			if (finalPoint.y >= draw_layers->data->height)
-				finalPoint.y = draw_layers->data->height;
-
-			else if (finalPoint.y <= 0)
-				finalPoint.y = 0;
-
-			if (draw_layers->data->index != ABOVE && draw_layers->data->index != PARALLAX) {
-
-				// To blit all the map
-				if (!camera_blit) {
-					initialPoint.x = 0;
-					initialPoint.y = 0;
-					finalPoint.x = draw_layers->data->width;
-					finalPoint.y = draw_layers->data->height;
-				}
-				//
-
-				for (int i = initialPoint.x; i < finalPoint.x; i++) {
-					for (int j = initialPoint.y; j < finalPoint.y; j++) {
-
-						if (draw_layers->data->Get(i, j) != 0) {
-
-							SDL_Rect rect = draw_tilesets->data->GetTileRect(draw_layers->data->Get(i, j));
+							SDL_Rect rect = (*draw_tilesets)->GetTileRect((*draw_layers)->Get(i, j));
 
 							SDL_Rect* section = &rect;
 							iPoint world = MapToWorld(i, j);
 
-							if (draw_layers->data->index == PARALLAX) {
-								App->render->Blit(draw_tilesets->data->texture, world.x, world.y, section, draw_layers->data->speed);
+							if ((*draw_layers)->index == PARALLAX) {
+								App->render->Blit((*draw_tilesets)->texture, world.x, world.y, section, (*draw_layers)->speed);
 							}
-							else if (draw_layers->data->index == COLLISION) {
+							else if ((*draw_layers)->index == COLLISION) {
 								if (App->collision->GetDebug())
-									App->render->Blit(draw_tilesets->data->texture, world.x, world.y, section, draw_layers->data->speed);
+									App->render->Blit((*draw_tilesets)->texture, world.x, world.y, section, (*draw_layers)->speed);
 							}
 							else {
-								App->render->Blit(draw_tilesets->data->texture, world.x, world.y, section, draw_layers->data->speed);
+								App->render->Blit((*draw_tilesets)->texture, world.x, world.y, section, (*draw_layers)->speed);
 							}
 						}
 					}
 				}//for
 			}
 
-			if (draw_layers->data->index == PARALLAX) {
+			if ((*draw_layers)->index == PARALLAX) {
 
-				// Initial xy camera && final xy camera
-				initialPoint = WorldToMap((App->render->camera.x * draw_layers->data->speed * (-1) / App->win->GetScale()) - blit_offset, (App->render->camera.y * draw_layers->data->speed * (-1) / App->win->GetScale()) - blit_offset);
-				finalPoint = WorldToMap((App->render->camera.x * draw_layers->data->speed * (-1) / App->win->GetScale()) + ((int)width / App->win->GetScale() + blit_offset), (App->render->camera.y * draw_layers->data->speed * (-1) / App->win->GetScale()) + ((int)height / App->win->GetScale() + blit_offset));
-				//		
+				for (int i = 0; i < (*draw_layers)->width; i++) {
+					for (int j = 0; j < (*draw_layers)->height; j++) {
 
-				if (initialPoint.x <= 0)
-					initialPoint.x = 0;
+						if ((*draw_layers)->Get(i, j) != 0) {
 
-				else if (initialPoint.x >= draw_layers->data->width)
-					initialPoint.x = draw_layers->data->width;
-
-				if (initialPoint.y <= 0)
-					initialPoint.y = 0;
-
-				else if (initialPoint.y >= draw_layers->data->height)
-					initialPoint.y = draw_layers->data->height;
-
-				if (finalPoint.x >= draw_layers->data->width)
-					finalPoint.x = draw_layers->data->width;
-
-				else if (finalPoint.x <= 0)
-					finalPoint.x = 0;
-
-				if (finalPoint.y >= draw_layers->data->height)
-					finalPoint.y = draw_layers->data->height;
-
-				else if (finalPoint.y <= 0)
-					finalPoint.y = 0;
-
-				// To blit all the map
-				if (!camera_blit) {
-					initialPoint.x = 0;
-					initialPoint.y = 0;
-					finalPoint.x = draw_layers->data->width;
-					finalPoint.y = draw_layers->data->height;
-				}
-				//
-
-				for (int i = initialPoint.x; i < finalPoint.x; i++) {
-					for (int j = initialPoint.y; j < finalPoint.y; j++) {
-
-						if (draw_layers->data->Get(i, j) != 0) {
-
-							SDL_Rect rect = draw_tilesets->data->GetTileRect(draw_layers->data->Get(i, j));
+							SDL_Rect rect = (*draw_tilesets)->GetTileRect((*draw_layers)->Get(i, j));
 
 							SDL_Rect* section = &rect;
 							iPoint world = MapToWorld(i, j);
 
-							if (draw_layers->data->index == PARALLAX) {
-								App->render->Blit(draw_tilesets->data->texture, world.x, world.y, section, draw_layers->data->speed);
+							if ((*draw_layers)->index == PARALLAX) {
+								App->render->Blit((*draw_tilesets)->texture, world.x, world.y, section, (*draw_layers)->speed);
 							}
 						}
 					}
 				}
 			}
-			draw_layers = draw_layers->next;
+			draw_layers++;
 		}
-		draw_tilesets = draw_tilesets->next;
+		draw_tilesets++;
 	}
 }
 
@@ -193,84 +114,43 @@ void j1Map::DrawAboveLayer()
 		return;
 
 	if (aboveLayer != nullptr) {
-		// Initial xy camera && final xy camera
-		uint widht, height;
-		App->win->GetWindowSize(widht, height);
-
-		iPoint initialPoint = WorldToMap((App->render->camera.x * (-1) / App->win->GetScale()) - blit_offset, (App->render->camera.y * (-1) / App->win->GetScale()) - blit_offset);
-		iPoint finalPoint = WorldToMap((App->render->camera.x * (-1) / App->win->GetScale()) + ((int)widht / App->win->GetScale() + blit_offset), (App->render->camera.y * (-1) / App->win->GetScale()) + ((int)height / App->win->GetScale() + blit_offset));
-		//
-
-		if (initialPoint.x <= 0)
-			initialPoint.x = 0;
-
-		else if (initialPoint.x >= aboveLayer->width)
-			initialPoint.x = aboveLayer->width;
-
-		if (initialPoint.y <= 0)
-			initialPoint.y = 0;
-
-		else if (initialPoint.y >= aboveLayer->height)
-			initialPoint.y = aboveLayer->height;
-
-		if (finalPoint.x >= aboveLayer->width)
-			finalPoint.x = aboveLayer->width;
-
-		else if (finalPoint.x <= 0)
-			finalPoint.x = 0;
-
-		if (finalPoint.y >= aboveLayer->height)
-			finalPoint.y = aboveLayer->height;
-
-		else if (finalPoint.y <= 0)
-			finalPoint.y = 0;
-
-		// To blit all the map
-		if (!camera_blit) {
-			initialPoint.x = 0;
-			initialPoint.y = 0;
-			finalPoint.x = aboveLayer->width;
-			finalPoint.y = aboveLayer->height;
-		}
-		//
-
-		p2List_item<TileSet*>* draw_tilesets = data.tilesets.start;
-		while (draw_tilesets != NULL)
+		
+		list<TileSet*>::const_iterator draw_tilesets = data.tilesets.begin();
+		while (draw_tilesets != data.tilesets.end())
 		{
-
-			for (int i = initialPoint.x; i < finalPoint.x; i++) {
-				for (int j = initialPoint.y; j < finalPoint.y; j++) {
+			for (int i = 0; i < aboveLayer->width; i++) {
+				for (int j = 0; j < aboveLayer->height; j++) {
 
 					if (aboveLayer->Get(i, j) != 0) {
 
-						SDL_Rect rect = draw_tilesets->data->GetTileRect(aboveLayer->Get(i, j));
+						SDL_Rect rect = (*draw_tilesets)->GetTileRect(aboveLayer->Get(i, j));
 						SDL_Rect* section = &rect;
 
 						iPoint world = MapToWorld(i, j);
 
-						App->render->Blit(draw_tilesets->data->texture, world.x, world.y, section, aboveLayer->speed);
+						App->render->Blit((*draw_tilesets)->texture, world.x, world.y, section, aboveLayer->speed);
 					}
 				}
 			}
-			draw_tilesets = draw_tilesets->next;
+			draw_tilesets++;
 		}
 	}
 }
 
 TileSet* j1Map::GetTilesetFromTileId(int id) const
 {
-	p2List_item<TileSet*>* item = data.tilesets.start;
-	TileSet* set = item->data;
+	list<TileSet*>::const_iterator item = data.tilesets.begin();
+	TileSet* set = *item;
 
-	while (item)
+	while (item != data.tilesets.end())
 	{
-		if (id < item->data->firstgid)
+		if (id < (*item)->firstgid)
 		{
-			set = item->prev->data;
+			set = *(item--);
 			break;
 		}
-		set = item->data;
-		item = item->next;
+		set = *item;
+		item++;
 	}
 
 	return set;
@@ -345,50 +225,52 @@ bool j1Map::CleanUp()
 	LOG("Unloading map");
 
 	// Remove all objectGroups
-	p2List_item<ObjectGroup*>* objectGroup;
-	objectGroup = data.objectGroups.start;
+	list<ObjectGroup*>::const_iterator objectGroup;
+	objectGroup = data.objectGroups.begin();
 
-	while (objectGroup != NULL)
+	while (objectGroup != data.objectGroups.end())
 	{
-		// Remove all objects
-		p2List_item<Object*>* object;
-		object = objectGroup->data->objects.start;
+		// Remove all objects inside the objectGroup
+		list<Object*>::const_iterator object;
+		object = (*objectGroup)->objects.begin();
 
-		while (object != NULL)
+		while (object != (*objectGroup)->objects.end())
 		{
-			RELEASE(object->data);
-			object = object->next;
+			delete (*object);
+			object++;
 		}
+		(*objectGroup)->objects.clear();
 
-		objectGroup->data->objects.clear();
-
-		RELEASE(objectGroup->data);
-		objectGroup = objectGroup->next;
+		// Remove the objectGroup
+		delete (*objectGroup);
+		objectGroup++;
 	}
 	data.objectGroups.clear();
 
 	// Remove all tilesets
-	p2List_item<TileSet*>* item;
-	item = data.tilesets.start;
+	list<TileSet*>::const_iterator item;
+	item = data.tilesets.begin();
 
-	while (item != NULL)
+	while (item != data.tilesets.end())
 	{
-		RELEASE(item->data);
-		item = item->next;
+		delete *item;
+		item++;
 	}
 	data.tilesets.clear();
 
-	// TODO 2: clean up all layer data
 	// Remove all layers
-	p2List_item<MapLayer*>* item1;
-	item1 = data.layers.start;
+	list<MapLayer*>::const_iterator item1;
+	item1 = data.layers.begin();
 
-	while (item1 != NULL)
+	while (item1 != data.layers.end())
 	{
-		RELEASE(item1->data);
-		item1 = item1->next;
+		delete *item1;
+		item1++;
 	}
 	data.layers.clear();
+
+	delete collisionLayer;
+	delete aboveLayer;
 
 	collisionLayer = nullptr;
 	aboveLayer = nullptr;
@@ -399,204 +281,65 @@ bool j1Map::CleanUp()
 	return ret;
 }
 
-// Load new map
-bool j1Map::Load(const char* file_name)
+// Unload map
+bool j1Map::UnLoad()
 {
 	bool ret = true;
-	p2SString tmp("%s%s", folder.GetString(), file_name);
 
-	pugi::xml_parse_result result = map_file.load_file(tmp.GetString());
-
-	if (result == NULL)
-	{
-		LOG("Could not load map xml file %s. pugi error: %s", file_name, result.description());
-		ret = false;
-	}
-
-	// Load general info ----------------------------------------------
-	if (ret == true)
-	{
-		ret = LoadMap();
-	}
-
-	// Load all tilesets info ----------------------------------------------
-	pugi::xml_node tileset;
-	for (tileset = map_file.child("map").child("tileset"); tileset && ret; tileset = tileset.next_sibling("tileset"))
-	{
-		TileSet* set = new TileSet();
-
-		if (ret == true)
-		{
-			ret = LoadTilesetDetails(tileset, set);
-		}
-
-		if (ret == true)
-		{
-			ret = LoadTilesetImage(tileset, set);
-		}
-
-		data.tilesets.add(set);
-	}
-
-	// TODO 4: Iterate all layers and load each of them
-	// Load layer info ----------------------------------------------
-	pugi::xml_node layer;
-	for (layer = map_file.child("map").child("layer"); layer && ret; layer = layer.next_sibling("layer"))
-	{
-		MapLayer* set = new MapLayer();
-
-		if (ret == true)
-		{
-			ret = LoadLayer(layer, set);
-		}
-
-		data.layers.add(set);
-	}
-
-	// Load ObjectGroups and GameObjects
-	pugi::xml_node objectGroup;
-	pugi::xml_node object;
-
-	for (objectGroup = map_file.child("map").child("objectgroup"); objectGroup && ret; objectGroup = objectGroup.next_sibling("objectgroup"))
-	{
-		ObjectGroup* set = new ObjectGroup();
-
-		if (ret == true)
-		{
-			ret = LoadObjectGroupDetails(objectGroup, set);
-		}
-
-		for (object = objectGroup.child("object"); object && ret; object = object.next_sibling("object"))
-		{
-			Object* set1 = new Object();
-
-			if (ret == true)
-			{
-				ret = LoadObject(object, set1);
-			}
-
-			set->objects.add(set1);
-		}
-
-		data.objectGroups.add(set);
-	}
-
-
-	if (ret == true)
-	{
-		LOG("Successfully parsed map XML file: %s", file_name);
-		LOG("width: %d height: %d", data.width, data.height);
-		LOG("tile_width: %d tile_height: %d", data.tile_width, data.tile_height);
-
-		p2List_item<TileSet*>* item = data.tilesets.start;
-		while (item != NULL)
-		{
-			TileSet* s = item->data;
-			LOG("Tileset ----");
-			LOG("name: %s firstgid: %d", s->name.GetString(), s->firstgid);
-			LOG("tile width: %d tile height: %d", s->tile_width, s->tile_height);
-			LOG("spacing: %d margin: %d", s->spacing, s->margin);
-			item = item->next;
-		}
-
-		// TODO 4: Add info here about your loaded layers
-		// Adapt this vcode with your own variables
-		p2List_item<MapLayer*>* item_layer = data.layers.start;
-		while (item_layer != NULL)
-		{
-			MapLayer* l = item_layer->data;
-			LOG("Layer ----");
-			LOG("name: %s", l->name.GetString());
-			LOG("tile width: %d tile height: %d", l->width, l->height);
-			item_layer = item_layer->next;
-		}
-
-		// Info about ObjectGroups and GameObjects!!!!!
-
-		p2List_item<ObjectGroup*>* item_group = data.objectGroups.start;
-		while (item_group != NULL)
-		{
-			ObjectGroup* s = item_group->data;
-			LOG("Object Group ----");
-			LOG("name: %s", s->name.GetString());
-
-			p2List_item<Object*>* item_object = item_group->data->objects.start;
-			while (item_object != NULL)
-			{
-				Object* s = item_object->data;
-				LOG("Object ----");
-				LOG("name: %s", s->name.GetString());
-				LOG("id: %d", s->id);
-				LOG("x: %d y: %d", s->x, s->y);
-				LOG("width: %d height: %d", s->width, s->height);
-
-				item_object = item_object->next;
-			}
-
-			item_group = item_group->next;
-		}
-	}
-
-	map_loaded = ret;
-
-	return ret;
-}
-
-// Unload map
-bool j1Map::UnLoad() 
-{
 	LOG("Unloading map");
 
 	// Remove all objectGroups
-	p2List_item<ObjectGroup*>* objectGroup;
-	objectGroup = data.objectGroups.start;
+	list<ObjectGroup*>::const_iterator objectGroup;
+	objectGroup = data.objectGroups.begin();
 
-	while (objectGroup != NULL)
+	while (objectGroup != data.objectGroups.end())
 	{
-		// Remove all objects
-		p2List_item<Object*>* object;
-		object = objectGroup->data->objects.start;
+		// Remove all objects inside the objectGroup
+		list<Object*>::const_iterator object;
+		object = (*objectGroup)->objects.begin();
 
-		while (object != NULL)
+		while (object != (*objectGroup)->objects.end())
 		{
-			RELEASE(object->data);
-			object = object->next;
+			delete (*object);
+			object++;
 		}
+		(*objectGroup)->objects.clear();
 
-		objectGroup->data->objects.clear();
-
-		RELEASE(objectGroup->data);
-		objectGroup = objectGroup->next;
+		// Remove the objectGroup
+		delete (*objectGroup);
+		objectGroup++;
 	}
 	data.objectGroups.clear();
 
 	// Remove all tilesets
-	p2List_item<TileSet*>* item;
-	item = data.tilesets.start;
+	list<TileSet*>::const_iterator item;
+	item = data.tilesets.begin();
 
-	while (item != NULL)
+	while (item != data.tilesets.end())
 	{
-		RELEASE(item->data);
-		item = item->next;
+		delete *item;
+		item++;
 	}
 	data.tilesets.clear();
 
 	// Remove all layers
-	p2List_item<MapLayer*>* item1;
-	item1 = data.layers.start;
+	list<MapLayer*>::const_iterator item1;
+	item1 = data.layers.begin();
 
-	while (item1 != NULL)
+	while (item1 != data.layers.end())
 	{
-		RELEASE(item1->data);
-		item1 = item1->next;
+		delete *item1;
+		item1++;
 	}
 	data.layers.clear();
 
+	delete collisionLayer;
+	delete aboveLayer;
 
 	collisionLayer = nullptr;
 	aboveLayer = nullptr;
 
-	return true;
+	return ret;
 }
 
 // Load map general properties
@@ -686,6 +429,147 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set)
 		set->offset_x = 0;
 		set->offset_y = 0;
 	}
+
+	return ret;
+}
+
+// Load new map
+bool j1Map::Load(const char* file_name)
+{
+	bool ret = true;
+	p2SString tmp("%s%s", folder.GetString(), file_name);
+
+	pugi::xml_parse_result result = map_file.load_file(tmp.GetString());
+
+	if (result == NULL)
+	{
+		LOG("Could not load map xml file %s. pugi error: %s", file_name, result.description());
+		ret = false;
+	}
+
+	// Load general info ----------------------------------------------
+	if (ret == true)
+	{
+		ret = LoadMap();
+	}
+
+	// Load all tilesets info ----------------------------------------------
+	pugi::xml_node tileset;
+	for (tileset = map_file.child("map").child("tileset"); tileset && ret; tileset = tileset.next_sibling("tileset"))
+	{
+		TileSet* set = new TileSet();
+
+		if (ret == true)
+		{
+			ret = LoadTilesetDetails(tileset, set);
+		}
+
+		if (ret == true)
+		{
+			ret = LoadTilesetImage(tileset, set);
+		}
+
+		data.tilesets.push_back(set);
+	}
+
+	// TODO 4: Iterate all layers and load each of them
+	// Load layer info ----------------------------------------------
+	pugi::xml_node layer;
+	for (layer = map_file.child("map").child("layer"); layer && ret; layer = layer.next_sibling("layer"))
+	{
+		MapLayer* set = new MapLayer();
+
+		if (ret == true)
+		{
+			ret = LoadLayer(layer, set);
+		}
+
+		data.layers.push_back(set);
+	}
+
+	// Load ObjectGroups and GameObjects
+	pugi::xml_node objectGroup;
+	pugi::xml_node object;
+
+	for (objectGroup = map_file.child("map").child("objectgroup"); objectGroup && ret; objectGroup = objectGroup.next_sibling("objectgroup"))
+	{
+		ObjectGroup* set = new ObjectGroup();
+
+		if (ret == true)
+		{
+			ret = LoadObjectGroupDetails(objectGroup, set);
+		}
+
+		for (object = objectGroup.child("object"); object && ret; object = object.next_sibling("object"))
+		{
+			Object* set1 = new Object();
+
+			if (ret == true)
+			{
+				ret = LoadObject(object, set1);
+			}
+
+			set->objects.push_back(set1);
+		}
+
+		data.objectGroups.push_back(set);
+	}
+
+
+	if (ret == true)
+	{
+		LOG("Successfully parsed map XML file: %s", file_name);
+		LOG("width: %d height: %d", data.width, data.height);
+		LOG("tile_width: %d tile_height: %d", data.tile_width, data.tile_height);
+
+		list<TileSet*>::const_iterator item = data.tilesets.begin();
+		while (item != data.tilesets.end())
+		{
+			TileSet* s = *item;
+			LOG("Tileset ----");
+			LOG("name: %s firstgid: %d", s->name.GetString(), s->firstgid);
+			LOG("tile width: %d tile height: %d", s->tile_width, s->tile_height);
+			LOG("spacing: %d margin: %d", s->spacing, s->margin);
+			item++;
+		}
+
+		// TODO 4: Add info here about your loaded layers
+		// Adapt this vcode with your own variables
+		list<MapLayer*>::const_iterator item_layer = data.layers.begin();
+		while (item_layer != data.layers.end())
+		{
+			MapLayer* l = *item_layer;
+			LOG("Layer ----");
+			LOG("name: %s", l->name.GetString());
+			LOG("tile width: %d tile height: %d", l->width, l->height);
+			item_layer++;
+		}
+
+		// Info about ObjectGroups and GameObjects
+		list<ObjectGroup*>::const_iterator item_group = data.objectGroups.begin();
+		while (item_group != data.objectGroups.end())
+		{
+			ObjectGroup* s = *item_group;
+			LOG("Object Group ----");
+			LOG("name: %s", s->name.GetString());
+
+			list<Object*>::const_iterator item_object = (*item_group)->objects.begin();
+			while (item_object != (*item_group)->objects.end())
+			{
+				Object* s = *item_object;
+				LOG("Object ----");
+				LOG("name: %s", s->name.GetString());
+				LOG("id: %d", s->id);
+				LOG("x: %d y: %d", s->x, s->y);
+				LOG("width: %d height: %d", s->width, s->height);
+
+				item_object++;
+			}
+			item_group++;
+		}
+	}
+
+	map_loaded = ret;
 
 	return ret;
 }
@@ -793,7 +677,7 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 			p->name = prop.attribute("name").as_string();
 			p->value = prop.attribute("value").as_int();
 
-			properties.list.add(p);
+			properties.properties.push_back(p);
 		}
 	}
 
@@ -804,12 +688,12 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 {
 	bool ret = true;
 
-	p2List_item<MapLayer*>* item;
-	item = data.layers.start;
+	list<MapLayer*>::const_iterator item;
+	item = data.layers.begin();
 
-	for (item = data.layers.start; item != NULL; item = item->next)
+	for (item; item != data.layers.end(); item++)
 	{
-		MapLayer* layer = item->data;
+		MapLayer* layer = *item;
 
 		//if (layer->properties.Get("Navigation", 0) == 0)
 			//continue;
@@ -874,35 +758,32 @@ bool j1Map::LoadObject(pugi::xml_node& object_node, Object* object)
 
 fPoint MapData::GetObjectPosition(p2SString groupObject, p2SString object) 
 {
-
 	fPoint pos = { 0,0 };
 
-	p2List_item<ObjectGroup*>* item;
-	item = objectGroups.start;
+	list<ObjectGroup*>::const_iterator item;
+	item = objectGroups.begin();
 
 	int ret = true;
 
-	while (item != NULL && ret)
+	while (item != objectGroups.end() && ret)
 	{
-		if (item->data->name == groupObject) {
+		if ((*item)->name == groupObject) {
 
-			p2List_item<Object*>* item1;
-			item1 = item->data->objects.start;
+			list<Object*>::const_iterator item1;
+			item1 = (*item)->objects.begin();
 
-			while (item1 != NULL && ret)
+			while (item1 != (*item)->objects.end() && ret)
 			{
-				if (item1->data->name == object) {
-					pos.x = item1->data->x;
-					pos.y = item1->data->y;
+				if ((*item1)->name == object) {
+					pos.x = (*item1)->x;
+					pos.y = (*item1)->y;
 
 					ret = false;
 				}
-
-				item1 = item1->next;
+				item1++;
 			}
 		}
-
-		item = item->next;
+		item++;
 	}
 
 	return pos;
@@ -910,35 +791,32 @@ fPoint MapData::GetObjectPosition(p2SString groupObject, p2SString object)
 
 fPoint MapData::GetObjectSize(p2SString groupObject, p2SString object) 
 {
-
 	fPoint size = { 0,0 };
 
-	p2List_item<ObjectGroup*>* item;
-	item = objectGroups.start;
+	list<ObjectGroup*>::const_iterator item;
+	item = objectGroups.begin();
 
 	int ret = true;
 
-	while (item != NULL && ret)
+	while (item != objectGroups.end() && ret)
 	{
-		if (item->data->name == groupObject) {
+		if ((*item)->name == groupObject) {
 
-			p2List_item<Object*>* item1;
-			item1 = item->data->objects.start;
+			list<Object*>::const_iterator item1;
+			item1 = (*item)->objects.begin();
 
-			while (item1 != NULL && ret)
+			while (item1 != (*item)->objects.end() && ret)
 			{
-				if (item1->data->name == object) {
-					size.x = item1->data->width;
-					size.y = item1->data->height;
+				if ((*item1)->name == object) {
+					size.x = (*item1)->width;
+					size.y = (*item1)->height;
 
 					ret = false;
 				}
-
-				item1 = item1->next;
+				item1++;
 			}
 		}
-
-		item = item->next;
+		item++;
 	}
 
 	return size;
@@ -949,31 +827,29 @@ Object* MapData::GetObjectByName(p2SString groupObject, p2SString object)
 
 	Object* obj = nullptr;
 
-	p2List_item<ObjectGroup*>* item;
-	item = objectGroups.start;
+	list<ObjectGroup*>::const_iterator item;
+	item = objectGroups.begin();
 
 	int ret = true;
 
-	while (item != NULL && ret)
+	while (item != objectGroups.end() && ret)
 	{
-		if (item->data->name == groupObject) {
+		if ((*item)->name == groupObject) {
 
-			p2List_item<Object*>* item1;
-			item1 = item->data->objects.start;
+			list<Object*>::const_iterator item1;
+			item1 = (*item)->objects.begin();
 
-			while (item1 != NULL && ret)
+			while (item1 != (*item)->objects.end() && ret)
 			{
-				if (item1->data->name == object) {
-					obj = item1->data;
+				if ((*item1)->name == object) {
+					obj = *item1;
 
 					ret = false;
 				}
-
-				item1 = item1->next;
+				item1++;
 			}
 		}
-
-		item = item->next;
+		item++;
 	}
 
 	return obj;

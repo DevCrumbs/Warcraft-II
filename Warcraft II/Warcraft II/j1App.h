@@ -9,6 +9,9 @@
 #include "j1Timer.h"
 #include "PugiXml\src\pugixml.hpp"
 
+#include <list>
+using namespace std;
+
 // Modules
 class j1Window;
 class j1Input;
@@ -58,7 +61,7 @@ public:
 
 	void LoadGame();
 	void SaveGame() const;
-	void GetSaveGames(p2List<p2SString>& list_to_fill) const;
+	void GetSaveGames(list<p2SString>& list_to_fill) const;
 
 private:
 
@@ -107,7 +110,7 @@ public:
 
 private:
 
-	p2List<j1Module*>	modules;
+	list<j1Module*>	modules;
 	uint				frames = 0;
 	double				dt = 0;
 	int					argc;
