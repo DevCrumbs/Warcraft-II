@@ -6104,7 +6104,7 @@ namespace pugi
 		return load_string(contents, options);
 	}
 
-	PUGI__FN xml_parse_result xml_document::load_file(const char* path_, unsigned int options, xml_encoding encoding)
+	PUGI__FN xml_parse_result xml_document::loadFile(const char* path_, unsigned int options, xml_encoding encoding)
 	{
 		reset();
 
@@ -6113,7 +6113,7 @@ namespace pugi
 		return impl::load_file_impl(*this, file, options, encoding);
 	}
 
-	PUGI__FN xml_parse_result xml_document::load_file(const wchar_t* path_, unsigned int options, xml_encoding encoding)
+	PUGI__FN xml_parse_result xml_document::loadFile(const wchar_t* path_, unsigned int options, xml_encoding encoding)
 	{
 		reset();
 

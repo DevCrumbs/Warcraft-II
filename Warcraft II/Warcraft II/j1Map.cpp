@@ -440,7 +440,7 @@ bool j1Map::Load(const char* file_name)
 	string tmp = folder.data();
 	tmp += file_name;
 
-	pugi::xml_parse_result result = map_file.load_file(tmp.data());
+	pugi::xml_parse_result result = map_file.loadFile(tmp.data());
 
 	if (result == NULL)
 	{

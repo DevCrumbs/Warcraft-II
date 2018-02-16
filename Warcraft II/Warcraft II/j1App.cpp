@@ -25,7 +25,7 @@
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {
-	want_to_save = want_to_load = false;
+	wantToSave = wantToLoad = false;
 
 	input = new j1Input();
 	win = new j1Window();
@@ -87,24 +87,24 @@ void j1App::AddModule(j1Module* module)
 // Called before render is available
 bool j1App::Awake()
 {
-	pugi::xml_document	config_file;
+	pugi::xml_document	configFile;
 	pugi::xml_node		config;
-	pugi::xml_node		app_config;
+	pugi::xml_node		appConfig;
 
 	bool ret = false;
 
-	load_game = "save_game.xml";
-	save_game = "save_game.xml";
+	loadGame = "save_game.xml";
+	saveGame = "save_game.xml";
 
-	config = LoadConfig(config_file); //root node
+	config = LoadConfig(configFile); //root node
 
-	if (config.empty() == false)
+	if (!config.empty())
 	{
 		// self-config
 		ret = true;
-		app_config = config.child("app");
-		title.assign(app_config.child("title").child_value());
-		organization.assign(app_config.child("organization").child_value());
+		appConfig = config.child("app");
+		title.assign(appConfig.child("title").child_value());
+		organization.assign(appConfig.child("organization").child_value());
 		capFrames = config.child("renderer").child("CapFrames").attribute("value").as_uint();
 	}
 
@@ -113,7 +113,7 @@ bool j1App::Awake()
 		list<j1Module*>::const_iterator item;
 		item = modules.begin();
 
-		while (item != modules.end() && ret == true)
+		while (item != modules.end() && ret)
 		{
 			ret = (*item)->Awake(config.child((*item)->name.data()));
 			item++;
@@ -130,7 +130,7 @@ bool j1App::Start()
 	list<j1Module*>::const_iterator item;
 	item = modules.begin();
 
-	while (item != modules.end() && ret == true)
+	while (item != modules.end() && ret)
 	{
 		if ((*item)->active)
 			ret = (*item)->Start();
@@ -147,16 +147,16 @@ bool j1App::Update()
 	bool ret = true;
 	PrepareUpdate();
 
-	if (input->GetWindowEvent(WE_QUIT) == true || quit_game)
+	if (input->GetWindowEvent(WE_QUIT) || quitGame)
 		ret = false;
 
-	if (ret == true)
+	if (ret)
 		ret = PreUpdate();
 
-	if (ret == true)
+	if (ret)
 		ret = DoUpdate();
 
-	if (ret == true)
+	if (ret)
 		ret = PostUpdate();
 
 	FinishUpdate();
@@ -164,16 +164,16 @@ bool j1App::Update()
 }
 
 // ---------------------------------------------
-pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
+pugi::xml_node j1App::LoadConfig(pugi::xml_document& configFile) const
 {
 	pugi::xml_node ret;
 
-	pugi::xml_parse_result result = config_file.load_file("config.xml");
+	pugi::xml_parse_result result = configFile.loadFile("config.xml");
 
 	if (result == NULL)
 		LOG("Could not load map xml file config.xml. pugi error: %s", result.description());
 	else
-		ret = config_file.child("config");
+		ret = configFile.child("config");
 
 	return ret;
 }
@@ -187,22 +187,22 @@ void j1App::PrepareUpdate()
 // ---------------------------------------------
 void j1App::FinishUpdate()
 {
-	BROFILER_CATEGORY("FinishUpdate", Profiler::Color::Magenta);
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Magenta);
 
-	if (want_to_save == true)
+	if (wantToSave)
 		SavegameNow();
 
-	if (want_to_load == true)
+	if (wantToLoad)
 		LoadGameNow();
 
-	float mseconds_since_startup = clock.Read();
+	float msSinceStartup = clock.Read();
 
-	uint32 actual_frame_ms = perfClock.ReadMs();
+	uint32 actualFrameMs = perfClock.ReadMs();
 
-	last_frame_ms = actual_frame_ms;
+	lastFrameMs = actualFrameMs;
 
-	uint32 frames_on_last_update = 0;
-	frame_count++;
+	uint32 framesOnLastUpdate = 0;
+	frameCount++;
 
 	/*
 	if (App->entities->playerData != nullptr) {
@@ -220,13 +220,13 @@ void j1App::FinishUpdate()
 	if (!App->render->vsync && toCap) {
 		float toVsync = 1000 / capFrames;
 
-		if (actual_frame_ms < toVsync)
-			SDL_Delay(toVsync - actual_frame_ms);
+		if (actualFrameMs < toVsync)
+			SDL_Delay(toVsync - actualFrameMs);
 	}
 
 	double fps = 1000.0f / perfClock.ReadMs();
 
-	double avgFPS = (float)frame_count / clock.ReadSec();
+	double avgFPS = (float)frameCount / clock.ReadSec();
 
 	dt = 1.0f / fps;
 
@@ -237,31 +237,31 @@ void j1App::FinishUpdate()
 		capOnOff = "off";
 
 
-	string vsyncOnOff;
+	string vSyncOnOff;
 	if (App->render->vsync)
-		vsyncOnOff = "on";
+		vSyncOnOff = "on";
 	else
-		vsyncOnOff = "off";
+		vSyncOnOff = "off";
 
-	string CB;
+	string cameraBlit;
 	if (App->map->camera_blit)
-		CB = "enable";
+		cameraBlit = "enable";
 	else
-		CB = "disable";
+		cameraBlit = "disable";
 
-	string GM;
+	string godMode;
 	if (App->scene->god)
-		GM = "on";
+		godMode = "on";
 	else
-		GM = "off";
+		godMode = "off";
 
 	static char title[256];
 
 	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u | capFrames: %s | Vsync: %s | CameraBlit: %s | GOD: %s",
-		fps, avgFPS, actual_frame_ms, capOnOff.data(), vsyncOnOff.data(), CB.data(), GM.data());
+		fps, avgFPS, actualFrameMs, capOnOff.data(), vSyncOnOff.data(), cameraBlit.data(), godMode.data());
 
 	if (App->scene->pause) {
-		auxiliar_dt = dt;
+		auxiliarDt = dt;
 		dt = 0.0f;
 	}
 
@@ -271,7 +271,7 @@ void j1App::FinishUpdate()
 // Call modules before each loop iteration
 bool j1App::PreUpdate()
 {
-	BROFILER_CATEGORY("PreUpdate", Profiler::Color::Orchid);
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
 	bool ret = true;
 	list<j1Module*>::const_iterator item;
@@ -282,7 +282,7 @@ bool j1App::PreUpdate()
 	{
 		pModule = *item;
 
-		if (pModule->active == false) {
+		if (!pModule->active) {
 			continue;
 		}
 
@@ -295,7 +295,7 @@ bool j1App::PreUpdate()
 // Call modules on each loop iteration
 bool j1App::DoUpdate()
 {
-	BROFILER_CATEGORY("DoUpdate", Profiler::Color::Azure);
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Azure);
 
 	bool ret = true;
 	list<j1Module*>::const_iterator item;
@@ -303,11 +303,11 @@ bool j1App::DoUpdate()
 
 	j1Module* pModule = NULL;
 
-	for (item = modules.begin(); item != modules.end() && ret == true; ++item)
+	for (item = modules.begin(); item != modules.end() && ret; ++item)
 	{
 		pModule = *item;
 
-		if (pModule->active == false) {
+		if (!pModule->active) {
 			continue;
 		}
 
@@ -320,17 +320,17 @@ bool j1App::DoUpdate()
 // Call modules after each loop iteration
 bool j1App::PostUpdate()
 {
-	BROFILER_CATEGORY("PostUpdate", Profiler::Color::LightSeaGreen);
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::LightSeaGreen);
 
 	bool ret = true;
 	list<j1Module*>::const_iterator item;
 	j1Module* pModule = NULL;
 
-	for (item = modules.begin(); item != modules.end() && ret == true; ++item)
+	for (item = modules.begin(); item != modules.end() && ret; ++item)
 	{
 		pModule = *item;
 
-		if (pModule->active == false) {
+		if (!pModule->active) {
 			continue;
 		}
 
@@ -347,7 +347,7 @@ bool j1App::CleanUp()
 	list<j1Module*>::reverse_iterator item;
 	item = modules.rbegin();
 
-	while (item != modules.rend() && ret == true)
+	while (item != modules.rend() && ret)
 	{
 		ret = (*item)->CleanUp();
 		item++;
@@ -389,7 +389,7 @@ void j1App::LoadGame()
 	// we should be checking if that file actually exist
 	// from the "GetSaveGames" list
 
-	want_to_load = true;
+	wantToLoad = true;
 }
 
 // ---------------------------------------
@@ -398,7 +398,7 @@ void j1App::SaveGame() const
 	// we should be checking if that file actually exist
 	// from the "GetSaveGames" list ... should we overwrite ?
 
-	want_to_save = true;
+	wantToSave = true;
 }
 
 // ---------------------------------------
@@ -414,33 +414,33 @@ bool j1App::LoadGameNow()
 	pugi::xml_document data;
 	pugi::xml_node root;
 
-	pugi::xml_parse_result result = data.load_file(load_game.data());
+	pugi::xml_parse_result result = data.loadFile(loadGame.data());
 
 	if (result != NULL)
 	{
-		LOG("Loading new Game State from %s...", load_game.data());
+		LOG("Loading new Game State from %s...", loadGame.data());
 
 		root = data.child("game_state");
 
 		list<j1Module*>::const_iterator item = modules.begin();
 		ret = true;
 
-		while (item != modules.end() && ret == true)
+		while (item != modules.end() && ret)
 		{
 			ret = (*item)->Load(root.child((*item)->name.data()));
 			item++;
 		}
 
 		data.reset();
-		if (ret == true)
+		if (ret)
 			LOG("...finished loading");
 		else
 			LOG("...loading process interrupted with error on module %s", (*item) ? (*item)->name.data() : "unknown");
 	}
 	else
-		LOG("Could not parse game state xml file %s. pugi error: %s", load_game.data(), result.description());
+		LOG("Could not parse game state xml file %s. pugi error: %s", loadGame.data(), result.description());
 
-	want_to_load = false;
+	wantToLoad = false;
 	return ret;
 }
 
@@ -448,7 +448,7 @@ bool j1App::SavegameNow() const
 {
 	bool ret = true;
 
-	LOG("Saving Game State to %s...", save_game.data());
+	LOG("Saving Game State to %s...", saveGame.data());
 
 	// xml object were we will store all data
 	pugi::xml_document data;
@@ -458,21 +458,21 @@ bool j1App::SavegameNow() const
 
 	list<j1Module*>::const_iterator item = modules.begin();
 
-	while (item != modules.end() && ret == true)
+	while (item != modules.end() && ret)
 	{
 		ret = (*item)->Save(root.append_child((*item)->name.data()));
 		item++;
 	}
 
-	if (ret == true)
+	if (ret)
 	{
-		data.save_file(save_game.data());
+		data.save_file(saveGame.data());
 		LOG("... finished saving", );
 	}
 	else
 		LOG("Save process halted from an error in module %s", (*item) ? (*item)->name.data() : "unknown");
 
 	data.reset();
-	want_to_save = false;
+	wantToSave = false;
 	return ret;
 }
