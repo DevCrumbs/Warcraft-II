@@ -58,7 +58,7 @@ private:
 
 	string				musicFolder;
 	string				fxFolder;
-	_Mix_Music*			music;
+	_Mix_Music*			music = nullptr;
 	list<Mix_Chunk*>	fx;
 
 public:

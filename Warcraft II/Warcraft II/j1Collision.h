@@ -22,7 +22,7 @@ enum COLLIDER_TYPE
 struct Collider
 {
 	SDL_Rect rect;
-	bool to_delete = false;
+	bool toDelete = false;
 	COLLIDER_TYPE type;
 	j1Module* callback /*= nullptr*/;
 
