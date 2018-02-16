@@ -202,14 +202,14 @@ void j1Scene::DebugKeys()
 		else
 			index = 0;
 
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, fades::slider_fade);
+		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
 	}
 
 	// F2: start from the beginning of the current level
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
 		/*
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, fades::slider_fade);
+		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
 	}
 
@@ -221,7 +221,7 @@ void j1Scene::DebugKeys()
 		else
 			index = 0;
 
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, fades::slider_fade);
+		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
 	}
 

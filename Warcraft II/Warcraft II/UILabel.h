@@ -66,8 +66,8 @@ private:
 	bool next_event = false;
 
 	// Fade parameters
-	float total_time = 0.0f;
-	float start_time = 0.0f;
+	float totalTime = 0.0f;
+	float startTime = 0.0f;
 	bool is_invisible = true;
 	bool reset = true;
 

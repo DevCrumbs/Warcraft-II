@@ -204,7 +204,7 @@ namespace pugi
 	const unsigned int format_save_file_text = 0x20;
 
 	// The default set of formatting flags.
-	// Nodes are indented depending on their depth in DOM tree, a default declaration is output if document has none.
+	// Nodes are indented depending on their depth in DOM tree, a default declaration is output if document has FADE_STEP_NONE.
 	const unsigned int format_default = format_indent;
 		
 	// Forward declarations

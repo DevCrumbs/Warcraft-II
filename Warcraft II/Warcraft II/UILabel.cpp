@@ -212,16 +212,16 @@ bool UILabel::IntermitentFade(float seconds, bool loop, bool half_loop)
 	bool ret = false;
 
 	if (reset) {
-		start_time = SDL_GetTicks();
+		startTime = SDL_GetTicks();
 		reset = false;
 	}
 
 	// Math operations
-	total_time = (Uint32)(seconds * 0.5f * 1000.0f);
+	totalTime = (Uint32)(seconds * 0.5f * 1000.0f);
 
-	Uint32 now = (SDL_GetTicks() - start_time);
-	float normalized = MIN(1.0f, (float)now / (float)total_time);
-	float normalized2 = MIN(1.0f, (float)now / (float)total_time);
+	Uint32 now = (SDL_GetTicks() - startTime);
+	float normalized = MIN(1.0f, (float)now / (float)totalTime);
+	float normalized2 = MIN(1.0f, (float)now / (float)totalTime);
 	normalized2 = 1 - normalized2;
 
 	float alpha = 255.0f * normalized;
@@ -262,16 +262,16 @@ bool UILabel::FromAlphaToAlphaFade(float from, float to, float seconds)
 	bool ret = false;
 
 	if (reset) {
-		start_time = SDL_GetTicks();
+		startTime = SDL_GetTicks();
 		reset = false;
 	}
 
 	// Math operations
-	total_time = (Uint32)(seconds * 0.5f * 1000.0f);
+	totalTime = (Uint32)(seconds * 0.5f * 1000.0f);
 
-	Uint32 now = (SDL_GetTicks() - start_time);
-	float normalized = MIN(1.0f, (float)now / (float)total_time);
-	float normalized2 = MIN(1.0f, (float)now / (float)total_time);
+	Uint32 now = (SDL_GetTicks() - startTime);
+	float normalized = MIN(1.0f, (float)now / (float)totalTime);
+	float normalized2 = MIN(1.0f, (float)now / (float)totalTime);
 	normalized2 = 1 - normalized2;
 
 	float alpha = (to - from) * normalized;

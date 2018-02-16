@@ -43,8 +43,8 @@ private:
 	UIImage_Info image;
 
 	// Fade parameters
-	float total_time = 0.0f;
-	float start_time = 0.0f;
+	float totalTime = 0.0f;
+	float startTime = 0.0f;
 	bool reset = true;
 
 	Animation anim_to_play;

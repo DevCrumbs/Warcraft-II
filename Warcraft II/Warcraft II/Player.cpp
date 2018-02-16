@@ -56,7 +56,7 @@ void Player::Move(float dt)
 
 	player.gravity = GRAVITY * dt;
 
-	if (App->fade->GetStep() == fade_step::fade_to_black || App->fade->GetStep() == fade_step::fade_from_black)
+	if (App->fade->GetStep() == FADE_STEP::FADE_STEP_TO_BLACK || App->fade->GetStep() == FADE_STEP::FADE_STEP_FROM_BLACK)
 		player.gravity = 0;
 
 	// Check for collisions
