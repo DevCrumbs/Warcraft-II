@@ -111,7 +111,7 @@ public:
 	void ResetAlpha();
 
 private:
-	p2SString atlas_file_name;
+	string atlas_file_name;
 	const SDL_Texture* atlas;
 
 	list<UIElement*> UI_elements_list;

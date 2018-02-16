@@ -13,7 +13,7 @@ using namespace std;
 j1Audio::j1Audio() : j1Module()
 {
 	music = NULL;
-	name.create("audio");
+	name.assign("audio");
 }
 
 // Destructor
@@ -26,8 +26,8 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	LOG("Loading Audio Mixer");
 	bool ret = true;
 
-	music_folder.create(config.child("music_folder").child_value());
-	fx_folder.create(config.child("fx_folder").child_value());
+	music_folder.assign(config.child("music_folder").child_value());
+	fx_folder.assign(config.child("fx_folder").child_value());
 
 	SDL_Init(0);
 
@@ -111,9 +111,10 @@ bool j1Audio::PlayMusic(const char* path, float fade_time)
 		Mix_FreeMusic(music);
 	}
 
-	p2SString tmp("%s%s", music_folder.GetString(), path);
+	string tmp = music_folder.data();
+	tmp += path;
 
-	music = Mix_LoadMUS(tmp.GetString());
+	music = Mix_LoadMUS(tmp.data());
 
 	if (music == NULL)
 	{
@@ -152,9 +153,10 @@ unsigned int j1Audio::LoadFx(const char* path)
 	if (!active)
 		return 0;
 
-	p2SString tmp("%s%s", fx_folder.GetString(), path);
+	string tmp = fx_folder.data();
+	tmp += path;
 
-	Mix_Chunk* chunk = Mix_LoadWAV(tmp.GetString());
+	Mix_Chunk* chunk = Mix_LoadWAV(tmp.data());
 
 	if (chunk == NULL)
 	{

@@ -1,6 +1,5 @@
 #include "Defs.h"
 #include "p2Log.h"
-#include "p2List.h"
 
 #include "j1App.h"
 
@@ -10,7 +9,7 @@
 
 j1Collision::j1Collision()
 {
-	name.create("collision");
+	name.assign("collision");
 
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 		colliders[i] = nullptr;

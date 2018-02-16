@@ -12,7 +12,7 @@ j1Window::j1Window() : j1Module()
 {
 	window = NULL;
 	screen_surface = NULL;
-	name.create("window");
+	name.assign("window");
 }
 
 // Destructor
@@ -27,7 +27,7 @@ bool j1Window::Awake(pugi::xml_node& config)
 	bool ret = true;
 
 	icon = config.child("icon").attribute("name").as_string();
-	icon_surface = SDL_LoadBMP(icon.GetString());
+	icon_surface = SDL_LoadBMP(icon.data());
 
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)

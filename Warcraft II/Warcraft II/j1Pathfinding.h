@@ -3,9 +3,9 @@
 
 #include "j1Module.h"
 #include "p2Point.h"
-#include "p2DynArray.h"
 
 #include <list>
+#include <vector>
 using namespace std;
 
 #define DEFAULT_PATH_LENGTH 50
@@ -45,7 +45,7 @@ public:
 	int CreatePath(const iPoint& origin, const iPoint& destination, Distance distance_type);
 
 	// To request all tiles involved in the last generated path
-	const p2DynArray<iPoint>* GetLastPath() const;
+	const vector<iPoint>* GetLastPath() const;
 
 	// Utility: return true if pos is inside the map boundaries
 	bool CheckBoundaries(const iPoint& pos) const;
@@ -64,7 +64,7 @@ private:
 	// all map walkability values [0..255]
 	uchar* map = nullptr;
 	// we store the created path here
-	p2DynArray<iPoint> last_path;
+	vector<iPoint> last_path;
 };
 
 // forward declaration
@@ -101,17 +101,19 @@ struct PathNode
 struct PathList
 {
 	// Looks for a node in this list and returns it's list node or NULL
-	list<PathNode>::iterator Find(const iPoint& point) const;
+	const PathNode* Find(const iPoint& point) const;
 
 	// Returns the Pathnode with lowest score in this list or NULL if empty
-	list<PathNode>::iterator GetNodeLowestScore() const;
+	const PathNode* GetNodeLowestScore() const;
 
 	// -----------
-	// The list itself, note they are not pointers!
-	list<PathNode> pathList;
+	// The list itself
+	list<PathNode*> pathList;
 };
 
 // Utility: calculate a specific distance
 int CalculateDistance(iPoint origin, iPoint destination, Distance distance_type);
+
+
 
 #endif //__j1PATHFINDING_H__

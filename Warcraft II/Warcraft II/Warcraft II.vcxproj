@@ -139,11 +139,9 @@
     <ClInclude Include="j1Timer.h" />
     <ClInclude Include="j1Window.h" />
     <ClInclude Include="NTree.h" />
-    <ClInclude Include="p2DynArray.h" />
     <ClInclude Include="p2List.h" />
     <ClInclude Include="p2Log.h" />
     <ClInclude Include="p2Point.h" />
-    <ClInclude Include="p2SString.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PugiXml\src\pugiconfig.hpp" />
     <ClInclude Include="PugiXml\src\pugixml.hpp" />

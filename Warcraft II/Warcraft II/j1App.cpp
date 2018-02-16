@@ -103,8 +103,8 @@ bool j1App::Awake()
 		// self-config
 		ret = true;
 		app_config = config.child("app");
-		title.create(app_config.child("title").child_value());
-		organization.create(app_config.child("organization").child_value());
+		title.assign(app_config.child("title").child_value());
+		organization.assign(app_config.child("organization").child_value());
 		capFrames = config.child("renderer").child("CapFrames").attribute("value").as_uint();
 	}
 
@@ -115,7 +115,7 @@ bool j1App::Awake()
 
 		while (item != modules.end() && ret == true)
 		{
-			ret = (*item)->Awake(config.child((*item)->name.GetString()));
+			ret = (*item)->Awake(config.child((*item)->name.data()));
 			item++;
 		}
 	}
@@ -230,26 +230,26 @@ void j1App::FinishUpdate()
 
 	dt = 1.0f / fps;
 
-	p2SString capOnOff;
+	string capOnOff;
 	if (toCap)
 		capOnOff = "on";
 	else
 		capOnOff = "off";
 
 
-	p2SString vsyncOnOff;
+	string vsyncOnOff;
 	if (App->render->vsync)
 		vsyncOnOff = "on";
 	else
 		vsyncOnOff = "off";
 
-	p2SString CB;
+	string CB;
 	if (App->map->camera_blit)
 		CB = "enable";
 	else
 		CB = "disable";
 
-	p2SString GM;
+	string GM;
 	if (App->scene->god)
 		GM = "on";
 	else
@@ -258,7 +258,7 @@ void j1App::FinishUpdate()
 	static char title[256];
 
 	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u | capFrames: %s | Vsync: %s | CameraBlit: %s | GOD: %s",
-		fps, avgFPS, actual_frame_ms, capOnOff.GetString(), vsyncOnOff.GetString(), CB.GetString(), GM.GetString());
+		fps, avgFPS, actual_frame_ms, capOnOff.data(), vsyncOnOff.data(), CB.data(), GM.data());
 
 	if (App->scene->pause) {
 		auxiliar_dt = dt;
@@ -374,13 +374,13 @@ const char* j1App::GetArgv(int index) const
 // ---------------------------------------
 const char* j1App::GetTitle() const
 {
-	return title.GetString();
+	return title.data();
 }
 
 // ---------------------------------------
 const char* j1App::GetOrganization() const
 {
-	return organization.GetString();
+	return organization.data();
 }
 
 // Load / Save
@@ -402,7 +402,7 @@ void j1App::SaveGame() const
 }
 
 // ---------------------------------------
-void j1App::GetSaveGames(list<p2SString>& list_to_fill) const
+void j1App::GetSaveGames(list<string>& list_to_fill) const
 {
 	// need to add functionality to file_system module for this to work
 }
@@ -414,11 +414,11 @@ bool j1App::LoadGameNow()
 	pugi::xml_document data;
 	pugi::xml_node root;
 
-	pugi::xml_parse_result result = data.load_file(load_game.GetString());
+	pugi::xml_parse_result result = data.load_file(load_game.data());
 
 	if (result != NULL)
 	{
-		LOG("Loading new Game State from %s...", load_game.GetString());
+		LOG("Loading new Game State from %s...", load_game.data());
 
 		root = data.child("game_state");
 
@@ -427,7 +427,7 @@ bool j1App::LoadGameNow()
 
 		while (item != modules.end() && ret == true)
 		{
-			ret = (*item)->Load(root.child((*item)->name.GetString()));
+			ret = (*item)->Load(root.child((*item)->name.data()));
 			item++;
 		}
 
@@ -435,10 +435,10 @@ bool j1App::LoadGameNow()
 		if (ret == true)
 			LOG("...finished loading");
 		else
-			LOG("...loading process interrupted with error on module %s", (*item) ? (*item)->name.GetString() : "unknown");
+			LOG("...loading process interrupted with error on module %s", (*item) ? (*item)->name.data() : "unknown");
 	}
 	else
-		LOG("Could not parse game state xml file %s. pugi error: %s", load_game.GetString(), result.description());
+		LOG("Could not parse game state xml file %s. pugi error: %s", load_game.data(), result.description());
 
 	want_to_load = false;
 	return ret;
@@ -448,7 +448,7 @@ bool j1App::SavegameNow() const
 {
 	bool ret = true;
 
-	LOG("Saving Game State to %s...", save_game.GetString());
+	LOG("Saving Game State to %s...", save_game.data());
 
 	// xml object were we will store all data
 	pugi::xml_document data;
@@ -460,17 +460,17 @@ bool j1App::SavegameNow() const
 
 	while (item != modules.end() && ret == true)
 	{
-		ret = (*item)->Save(root.append_child((*item)->name.GetString()));
+		ret = (*item)->Save(root.append_child((*item)->name.data()));
 		item++;
 	}
 
 	if (ret == true)
 	{
-		data.save_file(save_game.GetString());
+		data.save_file(save_game.data());
 		LOG("... finished saving", );
 	}
 	else
-		LOG("Save process halted from an error in module %s", (*item) ? (*item)->name.GetString() : "unknown");
+		LOG("Save process halted from an error in module %s", (*item) ? (*item)->name.data() : "unknown");
 
 	data.reset();
 	want_to_save = false;

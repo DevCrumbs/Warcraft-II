@@ -1,15 +1,13 @@
 #ifndef __j1APP_H__
 #define __j1APP_H__
 
-#include "p2List.h"
-#include "p2DynArray.h"
-#include "p2SString.h"
 #include "j1Module.h"
 #include "j1PerfTimer.h"
 #include "j1Timer.h"
 #include "PugiXml\src\pugixml.hpp"
 
 #include <list>
+#include <string>
 using namespace std;
 
 // Modules
@@ -61,7 +59,7 @@ public:
 
 	void LoadGame();
 	void SaveGame() const;
-	void GetSaveGames(list<p2SString>& list_to_fill) const;
+	void GetSaveGames(list<string>& list_to_fill) const;
 
 private:
 
@@ -110,19 +108,19 @@ public:
 
 private:
 
-	list<j1Module*>	modules;
+	list<j1Module*>		modules;
 	uint				frames = 0;
 	double				dt = 0;
 	int					argc;
 	char**				args;
 
-	p2SString			title;
-	p2SString			organization;
+	string				title;
+	string				organization;
 
 	mutable bool		want_to_save;
 	bool				want_to_load;
-	p2SString			load_game;
-	mutable p2SString	save_game;
+	string				load_game;
+	mutable string		save_game;
 
 	uint64 last_frame_ms = 0;
 	uint64 frame_count = 0;

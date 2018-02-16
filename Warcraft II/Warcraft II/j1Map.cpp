@@ -18,7 +18,7 @@
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
-	name.create("map");
+	name.assign("map");
 }
 
 // Destructor
@@ -31,7 +31,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 	LOG("Loading Map Parser");
 	bool ret = true;
 
-	folder.create(config.child("folder").child_value());
+	folder.assign(config.child("folder").child_value());
 
 	blit_offset = config.child("general").child("blit").attribute("offset").as_int();
 	camera_blit = config.child("general").child("camera_blit").attribute("value").as_bool();
@@ -359,33 +359,33 @@ bool j1Map::LoadMap()
 		data.height = map.attribute("height").as_int();
 		data.tile_width = map.attribute("tilewidth").as_int();
 		data.tile_height = map.attribute("tileheight").as_int();
-		p2SString bg_color(map.attribute("backgroundcolor").as_string());
+		string bg_color(map.attribute("backgroundcolor").as_string());
 
 		data.background_color.r = 0;
 		data.background_color.g = 0;
 		data.background_color.b = 0;
 		data.background_color.a = 0;
 
-		if (bg_color.Length() > 0)
+		if (bg_color.size() > 0)
 		{
-			p2SString red, green, blue;
-			bg_color.SubString(1, 2, red);
-			bg_color.SubString(3, 4, green);
-			bg_color.SubString(5, 6, blue);
+			string red, green, blue;
+			red = bg_color.substr(1, 2);
+			green = bg_color.substr(3, 4);
+			blue = bg_color.substr(5, 6);
 
 			int v = 0;
 
-			sscanf_s(red.GetString(), "%x", &v);
+			sscanf_s(red.data(), "%x", &v);
 			if (v >= 0 && v <= 255) data.background_color.r = v;
 
-			sscanf_s(green.GetString(), "%x", &v);
+			sscanf_s(green.data(), "%x", &v);
 			if (v >= 0 && v <= 255) data.background_color.g = v;
 
-			sscanf_s(blue.GetString(), "%x", &v);
+			sscanf_s(blue.data(), "%x", &v);
 			if (v >= 0 && v <= 255) data.background_color.b = v;
 		}
 
-		p2SString orientation(map.attribute("orientation").as_string());
+		string orientation(map.attribute("orientation").as_string());
 
 		if (orientation == "orthogonal")
 		{
@@ -411,7 +411,7 @@ bool j1Map::LoadMap()
 bool j1Map::LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set)
 {
 	bool ret = true;
-	set->name.create(tileset_node.attribute("name").as_string());
+	set->name.assign(tileset_node.attribute("name").as_string());
 	set->firstgid = tileset_node.attribute("firstgid").as_int();
 	set->tile_width = tileset_node.attribute("tilewidth").as_int();
 	set->tile_height = tileset_node.attribute("tileheight").as_int();
@@ -437,9 +437,10 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set)
 bool j1Map::Load(const char* file_name)
 {
 	bool ret = true;
-	p2SString tmp("%s%s", folder.GetString(), file_name);
+	string tmp = folder.data();
+	tmp += file_name;
 
-	pugi::xml_parse_result result = map_file.load_file(tmp.GetString());
+	pugi::xml_parse_result result = map_file.load_file(tmp.data());
 
 	if (result == NULL)
 	{
@@ -527,7 +528,7 @@ bool j1Map::Load(const char* file_name)
 		{
 			TileSet* s = *item;
 			LOG("Tileset ----");
-			LOG("name: %s firstgid: %d", s->name.GetString(), s->firstgid);
+			LOG("name: %s firstgid: %d", s->name.data(), s->firstgid);
 			LOG("tile width: %d tile height: %d", s->tile_width, s->tile_height);
 			LOG("spacing: %d margin: %d", s->spacing, s->margin);
 			item++;
@@ -540,7 +541,7 @@ bool j1Map::Load(const char* file_name)
 		{
 			MapLayer* l = *item_layer;
 			LOG("Layer ----");
-			LOG("name: %s", l->name.GetString());
+			LOG("name: %s", l->name.data());
 			LOG("tile width: %d tile height: %d", l->width, l->height);
 			item_layer++;
 		}
@@ -551,14 +552,14 @@ bool j1Map::Load(const char* file_name)
 		{
 			ObjectGroup* s = *item_group;
 			LOG("Object Group ----");
-			LOG("name: %s", s->name.GetString());
+			LOG("name: %s", s->name.data());
 
 			list<Object*>::const_iterator item_object = (*item_group)->objects.begin();
 			while (item_object != (*item_group)->objects.end())
 			{
 				Object* s = *item_object;
 				LOG("Object ----");
-				LOG("name: %s", s->name.GetString());
+				LOG("name: %s", s->name.data());
 				LOG("id: %d", s->id);
 				LOG("x: %d y: %d", s->x, s->y);
 				LOG("width: %d height: %d", s->width, s->height);
@@ -586,7 +587,7 @@ bool j1Map::LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set)
 	}
 	else
 	{
-		set->texture = App->tex->Load(PATH(folder.GetString(), image.attribute("source").as_string()));
+		set->texture = App->tex->Load(PATH(folder.data(), image.attribute("source").as_string()));
 		int w, h;
 		SDL_QueryTexture(set->texture, NULL, NULL, &w, &h);
 		set->tex_width = image.attribute("width").as_int();
@@ -646,7 +647,7 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	// Read layer properties
 	pugi::xml_node speed = node.child("properties").child("property");
 	if (speed != nullptr) {
-		p2SString name = speed.attribute("name").as_string();
+		string name = speed.attribute("name").as_string();
 		if (name == "Speed")
 			layer->speed = speed.attribute("value").as_float();
 	}
@@ -736,7 +737,7 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 bool j1Map::LoadObjectGroupDetails(pugi::xml_node& objectGroup_node, ObjectGroup* objectGroup)
 {
 	bool ret = true;
-	objectGroup->name.create(objectGroup_node.attribute("name").as_string());
+	objectGroup->name.assign(objectGroup_node.attribute("name").as_string());
 
 	return ret;
 }
@@ -756,7 +757,7 @@ bool j1Map::LoadObject(pugi::xml_node& object_node, Object* object)
 	return ret;
 }
 
-fPoint MapData::GetObjectPosition(p2SString groupObject, p2SString object) 
+fPoint MapData::GetObjectPosition(string groupObject, string object)
 {
 	fPoint pos = { 0,0 };
 
@@ -789,7 +790,7 @@ fPoint MapData::GetObjectPosition(p2SString groupObject, p2SString object)
 	return pos;
 }
 
-fPoint MapData::GetObjectSize(p2SString groupObject, p2SString object) 
+fPoint MapData::GetObjectSize(string groupObject, string object)
 {
 	fPoint size = { 0,0 };
 
@@ -822,7 +823,7 @@ fPoint MapData::GetObjectSize(p2SString groupObject, p2SString object)
 	return size;
 }
 
-Object* MapData::GetObjectByName(p2SString groupObject, p2SString object) 
+Object* MapData::GetObjectByName(string groupObject, string object)
 {
 
 	Object* obj = nullptr;
@@ -855,7 +856,7 @@ Object* MapData::GetObjectByName(p2SString groupObject, p2SString object)
 	return obj;
 }
 
-bool MapData::CheckIfEnter(p2SString groupObject, p2SString object, fPoint position) 
+bool MapData::CheckIfEnter(string groupObject, string object, fPoint position)
 {
 
 	fPoint objectPos = GetObjectPosition(groupObject, object);

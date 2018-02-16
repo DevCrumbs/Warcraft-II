@@ -57,9 +57,6 @@
     <ClInclude Include="j1App.h">
       <Filter>Modules</Filter>
     </ClInclude>
-    <ClInclude Include="p2DynArray.h">
-      <Filter>Modules\p2Containers</Filter>
-    </ClInclude>
     <ClInclude Include="p2List.h">
       <Filter>Modules\p2Containers</Filter>
     </ClInclude>
@@ -67,9 +64,6 @@
       <Filter>Modules\p2Containers</Filter>
     </ClInclude>
     <ClInclude Include="p2Point.h">
-      <Filter>Modules\p2Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="p2SString.h">
       <Filter>Modules\p2Containers</Filter>
     </ClInclude>
     <ClInclude Include="NTree.h">

@@ -20,7 +20,7 @@
 
 j1EntityFactory::j1EntityFactory()
 {
-	name.create("entities");
+	name.assign("entities");
 
 	for (uint i = 0; i < MAX_ENTITIES; ++i)
 		entities[i] = nullptr;

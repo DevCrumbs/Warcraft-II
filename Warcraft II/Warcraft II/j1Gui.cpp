@@ -19,7 +19,7 @@
 
 j1Gui::j1Gui() : j1Module()
 {
-	name.create("gui");
+	name.assign("gui");
 }
 
 // Destructor
@@ -53,7 +53,7 @@ bool j1Gui::Start()
 	bool ret = true;
 
 	// Load textures
-	atlas = App->tex->Load(atlas_file_name.GetString());
+	atlas = App->tex->Load(atlas_file_name.data());
 
 	// Load fonts
 	map_fonts[Font_Names::MSMINCHO_] = App->font->Load("Assets/Fonts/MSMINCHO.TTF");

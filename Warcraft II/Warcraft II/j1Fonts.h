@@ -3,6 +3,7 @@
 
 #include "j1Module.h"
 #include "SDL\include\SDL_pixels.h"
+
 #include <list>
 using namespace std;
 

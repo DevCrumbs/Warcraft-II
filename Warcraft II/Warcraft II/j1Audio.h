@@ -4,6 +4,7 @@
 #include "j1Module.h"
 
 #include <list>
+#include <string>
 using namespace std;
 
 #define DEFAULT_MUSIC_FADE_TIME 2.0f
@@ -55,9 +56,9 @@ public:
 
 private:
 
-	p2SString			music_folder = nullptr;
-	p2SString			fx_folder = nullptr;
-	_Mix_Music*			music = nullptr;
+	string				music_folder;
+	string				fx_folder;
+	_Mix_Music*			music;
 	list<Mix_Chunk*>	fx;
 
 public:

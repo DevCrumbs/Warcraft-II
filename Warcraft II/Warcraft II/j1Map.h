@@ -3,7 +3,6 @@
 
 #include "j1Module.h"
 
-#include "p2List.h"
 #include "p2Point.h"
 
 #include "j1App.h"
@@ -16,7 +15,7 @@
 using namespace std;
 
 struct Object {
-	p2SString name = nullptr;
+	string name;
 	uint id = 0;
 	uint x = 0;
 	uint y = 0;
@@ -25,9 +24,8 @@ struct Object {
 	uint type = 0;
 };
 
-struct ObjectGroup
-{
-	p2SString name = nullptr;
+struct ObjectGroup {
+	string name;
 
 	list<Object*> objects;
 
@@ -45,12 +43,12 @@ struct ObjectGroup
 
 // ----------------------------------------------------
 
-struct Properties
+struct Properties 
 {
 	struct Property
 	{
-		p2SString name;
-		int value;
+		string name;
+		int value = 0;
 	};
 
 	~Properties()
@@ -84,7 +82,7 @@ enum layerType {
 
 struct MapLayer {
 
-	p2SString name = nullptr;
+	string name;
 	layerType index = NONE;
 
 	uint width = 0; //number of tiles in the x axis
@@ -111,7 +109,7 @@ struct TileSet
 	// TODO 7: Create a method that receives a tile id and returns it's Rectfind the Rect associated with a specific tile id
 	SDL_Rect GetTileRect(int id) const;
 
-	p2SString			name = nullptr;
+	string				name;
 	int					firstgid = 0;
 	int					margin = 0;
 	int					spacing = 0;
@@ -156,11 +154,11 @@ struct MapData
 
 	list<ObjectGroup*> objectGroups;
 
-	fPoint GetObjectPosition(p2SString groupObject, p2SString object);
-	fPoint GetObjectSize(p2SString groupObject, p2SString object);
-	Object* GetObjectByName(p2SString groupObject, p2SString object);
+	fPoint GetObjectPosition(string groupObject, string object);
+	fPoint GetObjectSize(string groupObject, string object);
+	Object* GetObjectByName(string groupObject, string object);
 
-	bool CheckIfEnter(p2SString groupObject, p2SString object, fPoint position);
+	bool CheckIfEnter(string groupObject, string object, fPoint position);
 };
 
 // ----------------------------------------------------
@@ -218,7 +216,7 @@ public:
 private:
 
 	pugi::xml_document	map_file;
-	p2SString			folder = nullptr;
+	string				folder;
 	bool				map_loaded = false;
 
 	MapLayer*			aboveLayer = nullptr;

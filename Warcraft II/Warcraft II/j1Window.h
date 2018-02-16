@@ -41,8 +41,8 @@ public:
 	bool fullscreen;
 
 private:
-	p2SString	title = nullptr;
-	p2SString	icon = nullptr;
+	string		title;
+	string		icon;
 
 	// Screen parameters
 	uint		width = 0;
