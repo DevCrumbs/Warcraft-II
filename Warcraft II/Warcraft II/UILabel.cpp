@@ -51,7 +51,7 @@ void UILabel::Draw() const
 	else
 		App->render->Blit(tex, blit_pos.x, blit_pos.y);
 
-	if (App->gui->debug_draw)
+	if (App->gui->isDebug)
 		DebugDraw(blit_pos);
 
 	App->render->ResetViewPort();

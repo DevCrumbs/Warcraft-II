@@ -13,7 +13,7 @@ struct SDL_Color;
 
 struct UILabel_Info {
 	string text;
-	Font_Names font_name = Font_Names::DEFAULT_;
+	FONT_NAME font_name = FONT_NAME::FONT_NAME_DEFAULT;
 	SDL_Color normal_color = White_;
 	SDL_Color hover_color = White_;
 	SDL_Color pressed_color = White_;

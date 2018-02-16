@@ -50,7 +50,7 @@ void UIImage::Draw() const
 			App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y);
 	}
 
-	if (App->gui->debug_draw)
+	if (App->gui->isDebug)
 		DebugDraw(blit_pos);
 }
 

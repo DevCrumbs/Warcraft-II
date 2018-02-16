@@ -59,7 +59,7 @@ void UIElement::Draw() const
 	if (tex_area.w != 0)
 		App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &tex_area);
 
-	if (App->gui->debug_draw)
+	if (App->gui->isDebug)
 		DebugDraw(blit_pos);
 
 	App->render->ResetViewPort();
