@@ -1,11 +1,12 @@
+#include "SDL\include\SDL.h"
+#include "SDL_TTF\include\SDL_ttf.h"
+
 #include "Defs.h"
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1Textures.h"
 #include "j1Fonts.h"
 
-#include "SDL\include\SDL.h"
-#include "SDL_TTF\include\SDL_ttf.h"
 #pragma comment( lib, "SDL_ttf/libx86/SDL2_ttf.lib" )
 
 j1Fonts::j1Fonts() : j1Module()
@@ -18,7 +19,7 @@ j1Fonts::~j1Fonts()
 {}
 
 // Called before render is available
-bool j1Fonts::Awake(pugi::xml_node& conf)
+bool j1Fonts::Awake(pugi::xml_node& config)
 {
 	LOG("Init True Type Font library");
 	bool ret = true;
@@ -30,8 +31,8 @@ bool j1Fonts::Awake(pugi::xml_node& conf)
 	}
 	else
 	{
-		const char* path = conf.child("default_font").attribute("file").as_string(DEFAULT_FONT);
-		int size = conf.child("default_font").attribute("size").as_int(DEFAULT_FONT_SIZE);
+		const char* path = config.child("default_font").attribute("file").as_string(DEFAULT_FONT);
+		int size = config.child("default_font").attribute("size").as_int(DEFAULT_FONT_SIZE);
 		default = Load(path, size);
 	}
 
@@ -73,11 +74,11 @@ TTF_Font* const j1Fonts::Load(const char* path, int size)
 }
 
 // Print text using font
-SDL_Texture* j1Fonts::Print(const char* text, SDL_Color color, TTF_Font* font, Uint32 wrap_length)
+SDL_Texture* j1Fonts::Print(const char* text, SDL_Color color, TTF_Font* font, Uint32 wrapLength)
 {
 	SDL_Texture* ret = NULL;
 
-	SDL_Surface* surface = TTF_RenderText_Blended_Wrapped((font) ? font : default, text, color, wrap_length);
+	SDL_Surface* surface = TTF_RenderText_Blended_Wrapped((font) ? font : default, text, color, wrapLength);
 	SDL_SetSurfaceAlphaMod(surface, color.a);
 
 	if (surface == NULL)
