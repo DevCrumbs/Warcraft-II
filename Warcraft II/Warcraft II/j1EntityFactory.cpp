@@ -39,7 +39,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	// Load texture paths
 	/*
-	CatPeasant_spritesheet = node.attribute("name").as_string();
+	CatPeasantSpritesheet = node.attribute("name").as_string();
 	node = node.next_sibling("spritesheet");
 	Monkey_spritesheet = node.attribute("name").as_string();
 	*/
@@ -83,7 +83,7 @@ bool j1EntityFactory::Start()
 	LOG("Loading entities textures");
 
 	/*
-	CatPeasantTex = App->tex->Load(CatPeasant_spritesheet.GetString());
+	CatPeasantTex = App->tex->Load(CatPeasantSpritesheet.GetString());
 	*/
 
 	return ret;
@@ -95,10 +95,10 @@ bool j1EntityFactory::PreUpdate()
 
 	for (uint i = 0; i < MAX_ENTITIES; ++i)
 	{
-		if (queue[i].type != ENTITY_TYPES::NO_TYPE)
+		if (queue[i].type != ENTITY_TYPE_NO_TYPE)
 		{
 			SpawnEntity(queue[i]);
-			queue[i].type = ENTITY_TYPES::NO_TYPE;
+			queue[i].type = ENTITY_TYPE_NO_TYPE;
 			LOG("Spawning entity at %d", queue[i].position.y * App->scene->scale);
 		}
 	}
@@ -125,15 +125,15 @@ bool j1EntityFactory::Update(float dt)
 	for (uint i = 0; i < MAX_ENTITIES; ++i)
 		if (entities[i] != nullptr) {
 			/*
-			if (entities[i]->type == ENTITY_TYPES::CAT_PEASANT_)
+			if (entities[i]->type == ENTITY_TYPES::ENTITY_TYPE_CAT_PEASANT)
 				entities[i]->Draw(CatPeasantTex);
-			else if (entities[i]->type == ENTITY_TYPES::IMP_)
+			else if (entities[i]->type == ENTITY_TYPES::ENTITY_TYPE_IMP)
 				entities[i]->Draw(ImpTex);
-			else if (entities[i]->type == ENTITY_TYPES::MONKEY_)
+			else if (entities[i]->type == ENTITY_TYPES::ENTITY_TYPE_MONKEY)
 				entities[i]->Draw(MonkeyTex);
-			else if (entities[i]->type == ENTITY_TYPES::PLAYER_)
+			else if (entities[i]->type == ENTITY_TYPES::ENTITY_TYPE_PLAYER)
 				entities[i]->Draw(PlayerTex);
-			else if (entities[i]->type == ENTITY_TYPES::CAT_)
+			else if (entities[i]->type == ENTITY_TYPES::ENTITY_TYPE_CAT)
 				entities[i]->Draw(CatTex);
 			*/
 		}
@@ -174,9 +174,9 @@ bool j1EntityFactory::CleanUp()
 
 	for (uint i = 0; i < MAX_ENTITIES; ++i)
 	{
-		if (queue[i].type != ENTITY_TYPES::NO_TYPE)
+		if (queue[i].type != ENTITY_TYPE_NO_TYPE)
 		{
-			queue[i].type = ENTITY_TYPES::NO_TYPE;
+			queue[i].type = ENTITY_TYPE_NO_TYPE;
 			queue[i].position = { 0,0 };
 		}
 
@@ -211,7 +211,7 @@ bool j1EntityFactory::AddEntity(EntityInfo& info)
 
 	for (uint i = 0; i < MAX_ENTITIES; ++i)
 	{
-		if (queue[i].type == ENTITY_TYPES::NO_TYPE)
+		if (queue[i].type == ENTITY_TYPE_NO_TYPE)
 		{
 			queue[i].type = info.type;
 			queue[i].position.x = info.position.x;
@@ -236,16 +236,16 @@ Entity* j1EntityFactory::SpawnEntity(const EntityInfo& info)
 		switch (info.type)
 		{
 		/*
-		case ENTITY_TYPES::CAT_PEASANT_:
+		case ENTITY_TYPES::ENTITY_TYPE_CAT_PEASANT:
 			entities[i] = new CatPeasant(info.position.x, info.position.y, info.path);
-			entities[i]->type = ENTITY_TYPES::CAT_PEASANT_;
+			entities[i]->type = ENTITY_TYPES::ENTITY_TYPE_CAT_PEASANT;
 			return (Entity*)entities[i];
 			break;
 
-		case ENTITY_TYPES::PLAYER_:
+		case ENTITY_TYPES::ENTITY_TYPE_PLAYER:
 			playerData = new Player(info.position.x, info.position.y);
 			entities[i] = playerData;
-			entities[i]->type = ENTITY_TYPES::PLAYER_;
+			entities[i]->type = ENTITY_TYPES::ENTITY_TYPE_PLAYER;
 			return (Entity*)entities[i];
 			break;
 		*/
