@@ -103,8 +103,8 @@ bool j1App::Awake()
 		// self-config
 		ret = true;
 		appConfig = config.child("app");
-		title.assign(appConfig.child("title").child_value());
-		organization.assign(appConfig.child("organization").child_value());
+		title.assign(appConfig.child("title").childValue());
+		organization.assign(appConfig.child("organization").childValue());
 		capFrames = config.child("renderer").child("CapFrames").attribute("value").as_uint();
 	}
 

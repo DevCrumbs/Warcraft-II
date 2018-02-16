@@ -464,10 +464,10 @@ namespace pugi
 		xml_node previous_sibling(const char_t* name) const;
 
 		// Get child value of current node; that is, value of the first child node of type PCDATA/CDATA
-		const char_t* child_value() const;
+		const char_t* childValue() const;
 
 		// Get child value of child with specified name. Equivalent to child(name).child_value().
-		const char_t* child_value(const char_t* name) const;
+		const char_t* childValue(const char_t* name) const;
 
 		// Set node name/value (returns false if node is empty, there is not enough memory, or node can not have name/value)
 		bool set_name(const char_t* rhs);

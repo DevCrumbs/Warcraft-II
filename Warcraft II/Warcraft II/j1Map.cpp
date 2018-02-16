@@ -31,7 +31,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 	LOG("Loading Map Parser");
 	bool ret = true;
 
-	folder.assign(config.child("folder").child_value());
+	folder.assign(config.child("folder").childValue());
 
 	blit_offset = config.child("general").child("blit").attribute("offset").as_int();
 	camera_blit = config.child("general").child("camera_blit").attribute("value").as_bool();

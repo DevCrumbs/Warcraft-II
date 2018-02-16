@@ -4858,7 +4858,7 @@ namespace pugi
 		return xml_text(_root);
 	}
 
-	PUGI__FN const char_t* xml_node::child_value() const
+	PUGI__FN const char_t* xml_node::childValue() const
 	{
 		if (!_root) return PUGIXML_TEXT("");
 		
@@ -4869,9 +4869,9 @@ namespace pugi
 		return PUGIXML_TEXT("");
 	}
 
-	PUGI__FN const char_t* xml_node::child_value(const char_t* name_) const
+	PUGI__FN const char_t* xml_node::childValue(const char_t* name_) const
 	{
-		return child(name_).child_value();
+		return child(name_).childValue();
 	}
 
 	PUGI__FN xml_attribute xml_node::first_attribute() const

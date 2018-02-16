@@ -56,14 +56,14 @@ public:
 
 private:
 
-	string				music_folder;
-	string				fx_folder;
+	string				musicFolder;
+	string				fxFolder;
 	_Mix_Music*			music;
 	list<Mix_Chunk*>	fx;
 
 public:
-	int music_volume = 0;
-	int fx_volume = 40;
+	int musicVolume = 0;
+	int fxVolume = 40;
 };
 
 #endif //__j1AUDIO_H__
