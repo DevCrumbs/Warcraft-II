@@ -3,7 +3,6 @@
 
 #include "SDL\include\SDL.h"
 #include "Defs.h"
-#include "p2SString.h"
 
 #include "j1App.h"
 #include "UIElement.h"
@@ -13,7 +12,7 @@ struct _TTF_Font;
 struct SDL_Color;
 
 struct UILabel_Info {
-	p2SString text;
+	string text;
 	Font_Names font_name = Font_Names::DEFAULT_;
 	SDL_Color normal_color = White_;
 	SDL_Color hover_color = White_;
@@ -43,7 +42,7 @@ public:
 	void Draw() const;
 	void DebugDraw(iPoint blit_pos) const;
 
-	void SetText(p2SString text);
+	void SetText(string text);
 	void SetColor(SDL_Color color, bool normal = false, bool hover = false, bool pressed = false);
 	SDL_Color GetColor(bool normal = true, bool hover = false, bool pressed = false);
 

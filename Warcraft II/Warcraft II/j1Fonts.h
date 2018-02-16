@@ -4,6 +4,9 @@
 #include "j1Module.h"
 #include "SDL\include\SDL_pixels.h"
 
+#include <list>
+using namespace std;
+
 #define DEFAULT_FONT "fonts/open_sans/OpenSans-Regular.ttf"
 #define DEFAULT_FONT_SIZE 12
 
@@ -35,7 +38,7 @@ public:
 
 public:
 
-	p2List<_TTF_Font*>	fonts;
+	list<_TTF_Font*>	fonts;
 	_TTF_Font*			default;
 };
 

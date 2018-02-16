@@ -6,8 +6,10 @@
 #ifndef __j1MODULE_H__
 #define __j1MODULE_H__
 
-#include "p2SString.h"
 #include "PugiXml\src\pugixml.hpp"
+
+#include <string>
+using namespace std;
 
 class j1App;
 struct Collider;
@@ -80,7 +82,7 @@ public:
 
 public:
 
-	p2SString	name;
+	string		name;
 	bool		active;
 
 };

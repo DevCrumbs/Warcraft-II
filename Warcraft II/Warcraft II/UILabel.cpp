@@ -17,8 +17,8 @@ UILabel::UILabel(iPoint local_pos, UIElement* parent, UILabel_Info& info, j1Modu
 	font = App->gui->GetFont(label.font_name);
 	color = label.normal_color;
 
-	tex = App->font->Print(label.text.GetString(), color, font, (Uint32)label.text_wrap_length);
-	App->font->CalcSize(label.text.GetString(), width, height, font);
+	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.text_wrap_length);
+	App->font->CalcSize(label.text.data(), width, height, font);
 
 	SetOrientation();
 }
@@ -175,17 +175,17 @@ void UILabel::HandleInput()
 
 //---------------------------------------------------------------
 
-void UILabel::SetText(p2SString text)
+void UILabel::SetText(string text)
 {
 	App->tex->UnLoad((SDL_Texture*)tex);
-	tex = App->font->Print(text.GetString(), color, font);
+	tex = App->font->Print(text.data(), color, font);
 }
 
 void UILabel::SetColor(SDL_Color color, bool normal, bool hover, bool pressed)
 {
 	this->color = color;
 	App->tex->UnLoad((SDL_Texture*)tex);
-	tex = App->font->Print(label.text.GetString(), color, font);
+	tex = App->font->Print(label.text.data(), color, font);
 
 	if (normal)
 		label.normal_color = color;

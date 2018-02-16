@@ -3,7 +3,6 @@
 
 #include "j1Module.h"
 
-#include "p2List.h"
 #include "p2Point.h"
 
 #include "j1App.h"
@@ -12,8 +11,11 @@
 #include "PugiXml/src/pugixml.hpp"
 #include "SDL\include\SDL.h"
 
+#include <list>
+using namespace std;
+
 struct Object {
-	p2SString name = nullptr;
+	string name;
 	uint id = 0;
 	uint x = 0;
 	uint y = 0;
@@ -22,51 +24,50 @@ struct Object {
 	uint type = 0;
 };
 
-struct ObjectGroup
-{
-	p2SString name = nullptr;
+struct ObjectGroup {
+	string name;
 
-	p2List<Object*> objects;
+	list<Object*> objects;
 
 	~ObjectGroup() {
-		p2List_item<Object*>* item;
-		item = objects.start;
+		list<Object*>::const_iterator item;
+		item = objects.begin();
 
-		while (item != NULL)
+		while (item != objects.end())
 		{
-			RELEASE(item->data);
-			item = item->next;
+			objects.erase(item);
+			item++;
 		}
 	}
 };
 
 // ----------------------------------------------------
 
-struct Properties
+struct Properties 
 {
 	struct Property
 	{
-		p2SString name;
-		int value;
+		string name;
+		int value = 0;
 	};
 
 	~Properties()
 	{
-		p2List_item<Property*>* item;
-		item = list.start;
+		list<Property*>::const_iterator item;
+		item = properties.begin();
 
-		while (item != NULL)
+		while (item != properties.end())
 		{
-			RELEASE(item->data);
-			item = item->next;
+			properties.erase(item);
+			item++;
 		}
 
-		list.clear();
+		properties.clear();
 	}
 
 	//int Get(const char* name, int default_value = 0) const;
 
-	p2List<Property*>	list;
+	list<Property*>	properties;
 };
 
 // TODO 1: Create a struct for the map layer
@@ -81,7 +82,7 @@ enum layerType {
 
 struct MapLayer {
 
-	p2SString name = nullptr;
+	string name;
 	layerType index = NONE;
 
 	uint width = 0; //number of tiles in the x axis
@@ -108,7 +109,7 @@ struct TileSet
 	// TODO 7: Create a method that receives a tile id and returns it's Rectfind the Rect associated with a specific tile id
 	SDL_Rect GetTileRect(int id) const;
 
-	p2SString			name = nullptr;
+	string				name;
 	int					firstgid = 0;
 	int					margin = 0;
 	int					spacing = 0;
@@ -146,18 +147,18 @@ struct MapData
 	int					tile_height = 0;
 	SDL_Color			background_color;
 	MapTypes			type = MAPTYPE_UNKNOWN;
-	p2List<TileSet*>	tilesets;
+	list<TileSet*>	tilesets;
 
 	// TODO 2: Add a list/array of layers to the map!
-	p2List<MapLayer*> layers;
+	list<MapLayer*> layers;
 
-	p2List<ObjectGroup*> objectGroups;
+	list<ObjectGroup*> objectGroups;
 
-	fPoint GetObjectPosition(p2SString groupObject, p2SString object);
-	fPoint GetObjectSize(p2SString groupObject, p2SString object);
-	Object* GetObjectByName(p2SString groupObject, p2SString object);
+	fPoint GetObjectPosition(string groupObject, string object);
+	fPoint GetObjectSize(string groupObject, string object);
+	Object* GetObjectByName(string groupObject, string object);
 
-	bool CheckIfEnter(p2SString groupObject, p2SString object, fPoint position);
+	bool CheckIfEnter(string groupObject, string object, fPoint position);
 };
 
 // ----------------------------------------------------
@@ -215,7 +216,7 @@ public:
 private:
 
 	pugi::xml_document	map_file;
-	p2SString			folder = nullptr;
+	string				folder;
 	bool				map_loaded = false;
 
 	MapLayer*			aboveLayer = nullptr;

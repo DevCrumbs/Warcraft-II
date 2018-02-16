@@ -2,12 +2,10 @@
 #define __Entity_H__
 
 #include "p2Point.h"
-#include "p2DynArray.h"
 #include "Animation.h"
 
 struct SDL_Texture;
 struct Collider;
-struct PathInfo;
 
 class Entity
 {

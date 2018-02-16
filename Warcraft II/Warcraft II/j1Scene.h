@@ -4,6 +4,10 @@
 #include "j1Module.h"
 #include "Animation.h"
 
+#include <vector>
+#include <string>
+using namespace std;
+
 struct SDL_Texture;
 struct UILifeBar;
 struct UIWindow;
@@ -67,7 +71,7 @@ public:
 	bool pause = false;
 
 private:
-	p2SString map = nullptr;
+	string map;
 	SDL_Texture* debug_tex = nullptr;
 
 	iPoint mouse = { 0,0 };

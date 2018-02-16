@@ -9,7 +9,6 @@
 #include "UIElement.h"
 #include "j1Gui.h"
 
-
 struct UIImage_Info {
 	UIElement_Rect tex_area = UIElement_Rect::NO_ELEMENT_RECT_;
 	UIElement_HORIZONTAL_POS horizontal_orientation = UIElement_HORIZONTAL_POS::LEFT_;

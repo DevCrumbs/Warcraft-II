@@ -5,7 +5,6 @@
 #include "Animation.h"
 
 #include "p2Point.h"
-#include "p2List.h"
 
 #define MAX_ENTITIES 100
 
@@ -62,7 +61,7 @@ private:
 	EntityInfo queue[MAX_ENTITIES];
 	Entity* entities[MAX_ENTITIES];
 
-	p2SString CatPeasant_spritesheet = nullptr;
+	string CatPeasant_spritesheet;
 
 	// Entities textures
 	/*
