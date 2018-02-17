@@ -244,7 +244,7 @@ void j1App::FinishUpdate()
 		vSyncOnOff = "off";
 
 	string cameraBlit;
-	if (App->map->camera_blit)
+	if (App->map->cameraBlit)
 		cameraBlit = "enable";
 	else
 		cameraBlit = "disable";

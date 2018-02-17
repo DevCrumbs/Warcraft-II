@@ -252,14 +252,14 @@ void j1Scene::DebugKeys()
 		god = !god;
 
 	// 1, 2, 3: camera blit
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN && App->map->blit_offset < 15 && App->map->camera_blit)
-		App->map->blit_offset += 7;
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN && App->map->blitOffset < 15 && App->map->cameraBlit)
+		App->map->blitOffset += 7;
 
-	else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN && App->map->blit_offset > -135 && App->map->camera_blit)
-		App->map->blit_offset -= 7;
+	else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN && App->map->blitOffset > -135 && App->map->cameraBlit)
+		App->map->blitOffset -= 7;
 
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-		App->map->camera_blit = !App->map->camera_blit;
+		App->map->cameraBlit = !App->map->cameraBlit;
 }
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UIEvents UIevent)

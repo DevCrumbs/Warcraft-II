@@ -123,10 +123,10 @@ void Player::CheckCollision(iPoint position, iPoint size, int offset, bool &up, 
 
 	BROFILER_CATEGORY("CheckForCollision", Profiler::Color::Azure);
 
-	App->map->culing_offset = CULING_OFFSET;
+	App->map->culingOffset = CULING_OFFSET;
 
-	for (int i = position.x - App->map->culing_offset; i < position.x + App->map->culing_offset; i++) {
-		for (int j = position.y - App->map->culing_offset; j < position.y + App->map->culing_offset; j++) {
+	for (int i = position.x - App->map->culingOffset; i < position.x + App->map->culingOffset; i++) {
+		for (int j = position.y - App->map->culingOffset; j < position.y + App->map->culingOffset; j++) {
 
 			iPoint ij = App->map->WorldToMap(i, j);
 
