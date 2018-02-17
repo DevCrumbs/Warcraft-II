@@ -10,12 +10,12 @@
 #include "j1Gui.h"
 
 struct UIImage_Info {
-	UIE_RECT texArea = UIE_RECT::NO_ELEMENT_RECT;
-	UIE_HORIZONTAL_POS horizontalOrientation = UIE_HORIZONTAL_POS::HORIZONTAL_POS_LEFT;
-	UIE_VERTICAL_POS verticalOrientation = UIE_VERTICAL_POS::VERTICAL_POS_TOP;
+	UIE_RECT texArea = NO_ELEMENT_RECT;
+	UIE_HORIZONTAL_POS horizontalOrientation = HORIZONTAL_POS_LEFT;
+	UIE_VERTICAL_POS verticalOrientation = VERTICAL_POS_TOP;
 
 	bool quad = false;
-	SDL_Rect quad_area = { 0,0,0,0 };
+	SDL_Rect quadArea = { 0,0,0,0 };
 
 	SDL_Color color = { 0,0,0,255 };
 	bool draggable = false;
@@ -33,7 +33,7 @@ public:
 	void StartAnimation(Animation anim);
 	void Update(float dt);
 	SDL_Color GetColor();
-	void SetNewRect(SDL_Rect& new_rect);
+	void SetNewRect(SDL_Rect& newRect);
 	SDL_Rect GetRect();
 
 	void ResetFade();
@@ -47,10 +47,10 @@ private:
 	float startTime = 0.0f;
 	bool reset = true;
 
-	Animation anim_to_play;
-	Animation* anim;
+	Animation animToPlay;
+	Animation* anim = nullptr;
 	float speed = 0.0f;
-	bool start_aimation = false;
+	bool startAimation = false;
 };
 
 #endif //__UIImage_H__

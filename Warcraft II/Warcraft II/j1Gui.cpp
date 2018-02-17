@@ -221,7 +221,7 @@ bool j1Gui::DestroyElement(UIElement* elem)
 	bool ret = false;
 
 	UIElementsTree->remove(elem);
-	elem->to_remove = true;
+	elem->toRemove = true;
 
 	return ret;
 }
@@ -247,7 +247,7 @@ bool j1Gui::ClearAllUI()
 			&& iterator->data != (UIElement*)App->trans->l_level_cats_picked && iterator->data != (UIElement*)App->trans->l_level_cats_picked2
 			&& iterator->data != (UIElement*)App->trans->l_score_text && iterator->data != (UIElement*)App->trans->l_you
 			&& iterator->data != (UIElement*)App->trans->l_died && iterator->data != (UIElement*)App->trans->black_screen_image)
-			iterator->data->to_remove = true;
+			iterator->data->toRemove = true;
 		*/
 
 		UI_elem_it++;

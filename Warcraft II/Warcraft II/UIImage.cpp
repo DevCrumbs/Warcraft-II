@@ -4,7 +4,7 @@
 
 UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), image(info)
 {
-	type = UIElement_TYPE::IMAGE_;
+	type = UIE_TYPE_IMAGE;
 
 	texArea = App->gui->GetRectFromAtlas(image.texArea);
 
@@ -19,13 +19,13 @@ UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Modul
 
 void UIImage::Update(float dt)
 {
-	if (start_aimation && anim_to_play.Finished()) {
-		anim_to_play.Reset();
-		start_aimation = false;
+	if (startAimation && animToPlay.Finished()) {
+		animToPlay.Reset();
+		startAimation = false;
 	}
-	else if (start_aimation) {
-		anim_to_play.speed = speed * dt;
-		anim = &anim_to_play;
+	else if (startAimation) {
+		animToPlay.speed = speed * dt;
+		anim = &animToPlay;
 	}
 }
 
@@ -38,12 +38,12 @@ void UIImage::Draw() const
 
 	if (image.quad) {
 		SDL_SetRenderDrawColor(App->render->renderer, image.color.r, image.color.g, image.color.b, image.color.a);
-		SDL_RenderFillRect(App->render->renderer, &image.quad_area);
+		SDL_RenderFillRect(App->render->renderer, &image.quadArea);
 	}
 	else {
-		if (texArea.w != 0 && start_aimation)
+		if (texArea.w != 0 && startAimation)
 			App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &anim->GetCurrentFrame());
-		else if (texArea.w != 0 && !start_aimation) {
+		else if (texArea.w != 0 && !startAimation) {
 			App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);
 		}
 		else
@@ -118,9 +118,9 @@ void UIImage::ResetFade()
 	reset = true;
 }
 
-void UIImage::SetNewRect(SDL_Rect& new_rect)
+void UIImage::SetNewRect(SDL_Rect& newRect)
 {
-	texArea = new_rect;
+	texArea = newRect;
 }
 
 SDL_Rect UIImage::GetRect()
@@ -129,9 +129,9 @@ SDL_Rect UIImage::GetRect()
 }
 void UIImage::StartAnimation(Animation anim)
 {
-	start_aimation = true;
-	anim_to_play = anim;
-	speed = anim_to_play.speed;
-	this->anim = &anim_to_play;
+	startAimation = true;
+	animToPlay = anim;
+	speed = animToPlay.speed;
+	this->anim = &animToPlay;
 }
 

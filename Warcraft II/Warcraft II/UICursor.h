@@ -9,8 +9,8 @@
 #include "j1Gui.h"
 
 struct UICursor_Info {
-	UIE_RECT default = UIE_RECT::NO_ELEMENT_RECT;
-	UIE_RECT on_click = UIE_RECT::NO_ELEMENT_RECT;
+	UIE_RECT default = NO_ELEMENT_RECT;
+	UIE_RECT onClick = NO_ELEMENT_RECT;
 };
 
 // ---------------------------------------------------
@@ -30,7 +30,7 @@ private:
 	UICursor_Info cursor;
 
 	SDL_Rect default = { 0,0,0,0 };
-	SDL_Rect on_click = { 0,0,0,0 };
+	SDL_Rect onClick = { 0,0,0,0 };
 };
 
 #endif //__UICursor_H__

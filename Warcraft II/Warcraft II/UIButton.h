@@ -43,14 +43,6 @@ public:
 	bool Bounce(float dt, float bounceInterval = 1.0f, float bounceSpeed = 2.0f, bool down = true);
 	void InitializeBounce(float bounceInterval = 1.0f, bool down = true);
 
-private:
-	UIButton_Info button;
-	UI_EVENT UIevent = UI_EVENT_NONE;
-
-	SDL_Rect normalTexArea = { 0,0,0,0 };
-	SDL_Rect hoverTexArea = { 0,0,0,0 };
-	SDL_Rect pressedTexArea = { 0,0,0,0 };
-
 public:
 	bool tab = false;
 	bool nextEvent = false;
@@ -61,6 +53,15 @@ public:
 	bool firstBounce = true;
 	bool reset = true;
 	bool startBouncing = false;
+
+private:
+	UIButton_Info button;
+	UI_EVENT UIevent = UI_EVENT_NONE;
+
+	SDL_Rect normalTexArea = { 0,0,0,0 };
+	SDL_Rect hoverTexArea = { 0,0,0,0 };
+	SDL_Rect pressedTexArea = { 0,0,0,0 };
+
 };
 
 #endif //__UIButton_H__

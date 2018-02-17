@@ -5,10 +5,10 @@
 
 UICursor::UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), cursor(info)
 {
-	type = UIElement_TYPE::CURSOR_;
+	type = UIE_TYPE::UIE_TYPE_CURSOR;
 
 	default = App->gui->GetRectFromAtlas(cursor.default);
-	on_click = App->gui->GetRectFromAtlas(cursor.on_click);
+	onClick = App->gui->GetRectFromAtlas(cursor.onClick);
 
 	texArea = default;
 	width = texArea.w;
@@ -47,31 +47,31 @@ void UICursor::HandleInput()
 {
 	switch (UIevent)
 	{
-	case UI_EVENT::UI_EVENT_NONE:
+	case UI_EVENT_NONE:
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
-			UIevent = UI_EVENT::UI_EVENT_MOUSE_LEFT_CLICK;
-			texArea = on_click;
+			UIevent = UI_EVENT_MOUSE_LEFT_CLICK;
+			texArea = onClick;
 			listener->OnUIEvent(this, UIevent);
 			break;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
-			UIevent = UI_EVENT::UI_EVENT_MOUSE_RIGHT_CLICK;
-			texArea = on_click;
+			UIevent = UI_EVENT_MOUSE_RIGHT_CLICK;
+			texArea = onClick;
 			listener->OnUIEvent(this, UIevent);
 			break;
 		}
 		break;
-	case UI_EVENT::UI_EVENT_MOUSE_LEFT_CLICK:
+	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED) {
-			UIevent = UI_EVENT::UI_EVENT_NONE;
+			UIevent = UI_EVENT_NONE;
 			texArea = default;
 			listener->OnUIEvent(this, UIevent);
 			break;
 		}
 		break;
-	case UI_EVENT::UI_EVENT_MOUSE_RIGHT_CLICK:
+	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED) {
-			UIevent = UI_EVENT::UI_EVENT_NONE;
+			UIevent = UI_EVENT_NONE;
 			texArea = default;
 			listener->OnUIEvent(this, UIevent);
 			break;

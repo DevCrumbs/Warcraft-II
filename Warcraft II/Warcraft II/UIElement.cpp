@@ -30,17 +30,17 @@ void UIElement::UpdateDragging(float dt)
 
 	if (parent != nullptr) {
 		if (parent->drag) {
-			localPos.x = parent->GetLocalPos().x - (mouse_pos.x * scale - mouse_click_pos.x);
-			localPos.y = parent->GetLocalPos().y - (mouse_pos.y * scale - mouse_click_pos.y);
+			localPos.x = parent->GetLocalPos().x - (mouse_pos.x * scale - mouseClickPos.x);
+			localPos.y = parent->GetLocalPos().y - (mouse_pos.y * scale - mouseClickPos.y);
 		}
 		else {
-			localPos.x = mouse_pos.x * scale - mouse_click_pos.x;
-			localPos.y = mouse_pos.y * scale - mouse_click_pos.y;
+			localPos.x = mouse_pos.x * scale - mouseClickPos.x;
+			localPos.y = mouse_pos.y * scale - mouseClickPos.y;
 		}
 	}
 	else {
-		localPos.x = mouse_pos.x * scale - mouse_click_pos.x;
-		localPos.y = mouse_pos.y * scale - mouse_click_pos.y;
+		localPos.x = mouse_pos.x * scale - mouseClickPos.x;
+		localPos.y = mouse_pos.y * scale - mouseClickPos.y;
 	}
 }
 
@@ -77,10 +77,10 @@ void UIElement::HandleInput() {}
 
 bool UIElement::HasToBeRemoved() const
 {
-	return to_remove;
+	return toRemove;
 }
 
-UIElement_TYPE UIElement::GetType() const
+UIE_TYPE UIElement::GetType() const
 {
 	return type;
 }

@@ -8,16 +8,16 @@
 
 UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), label(info)
 {
-	type = UIElement_TYPE::LABEL_;
+	type = UIE_TYPE::UIE_TYPE_LABEL;
 
 	draggable = label.draggable;
 	interactive = label.interactive;
 	horizontal = label.horizontalOrientation;
 	vertical = label.verticalOrientation;
-	font = App->gui->GetFont(label.font_name);
-	color = label.normal_color;
+	font = App->gui->GetFont(label.fontName);
+	color = label.normalColor;
 
-	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.text_wrap_length);
+	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.textWrapLength);
 	App->font->CalcSize(label.text.data(), width, height, font);
 
 	SetOrientation();
@@ -46,7 +46,7 @@ void UILabel::Draw() const
 		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
 	}
 
-	if (texArea.w != 0)
+	if (texArea.w > 0)
 		App->render->Blit(tex, blitPos.x, blitPos.y, &texArea);
 	else
 		App->render->Blit(tex, blitPos.x, blitPos.y);
@@ -71,58 +71,60 @@ bool UILabel::MouseHover() const
 	App->input->GetMousePosition(x, y);
 	uint scale = App->win->GetScale();
 
-	if (!label.interaction_from_father)
-		return x > GetScreenPos().x / scale && x < GetScreenPos().x / scale + GetLocalRect().w && y > GetScreenPos().y / scale && y < GetScreenPos().y / scale + GetLocalRect().h;
+	if (!label.interactionFromFather)
+		return x > GetScreenPos().x / scale && x < GetScreenPos().x / scale + GetLocalRect().w && 
+		       y > GetScreenPos().y / scale && y < GetScreenPos().y / scale + GetLocalRect().h;
 	else
-		return x > GetParent()->GetScreenPos().x / scale && x < GetParent()->GetScreenPos().x / scale + GetParent()->GetLocalRect().w && y > GetParent()->GetScreenPos().y / scale && y < GetParent()->GetScreenPos().y / scale + GetParent()->GetLocalRect().h;
+		return x > GetParent()->GetScreenPos().x / scale && x < GetParent()->GetScreenPos().x / scale + GetParent()->GetLocalRect().w &&
+		       y > GetParent()->GetScreenPos().y / scale && y < GetParent()->GetScreenPos().y / scale + GetParent()->GetLocalRect().h;
 }
 
 void UILabel::HandleInput()
 {
-	iPoint mouse_pos;
-	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
+	iPoint mousePos;
+	App->input->GetMousePosition(mousePos.x, mousePos.y);
 
 	switch (UIevent) {
 
-	case UI_EVENT::UI_EVENT_NONE:
+	case UI_EVENT_NONE:
 		if (MouseHover()) {
 			nextEvent = false;
-			UIevent = UI_EVENT::UI_EVENT_MOUSE_ENTER;
-			SetColor(label.hover_color);
+			UIevent = UI_EVENT_MOUSE_ENTER;
+			SetColor(label.hoverColor);
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
 		break;
-	case UI_EVENT::UI_EVENT_MOUSE_ENTER:
+	case UI_EVENT_MOUSE_ENTER:
 
 		if (!MouseHover()) {
 			LOG("MOUSE LEAVE");
 			nextEvent = false;
-			UIevent = UI_EVENT::UI_EVENT_MOUSE_LEAVE;
+			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
 			nextEvent = false;
 			LOG("MOUSE L CLICK START");
-			SetColor(label.pressed_color);
-			UIevent = UI_EVENT::UI_EVENT_MOUSE_LEFT_CLICK;
+			SetColor(label.pressedColor);
+			UIevent = UI_EVENT_MOUSE_LEFT_CLICK;
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
 			nextEvent = false;
 			LOG("MOUSE R CLICK START");
-			SetColor(label.pressed_color);
+			SetColor(label.pressedColor);
 
-			mouse_click_pos.x = mouse_pos.x * App->win->GetScale() - GetLocalPos().x;
-			mouse_click_pos.y = mouse_pos.y * App->win->GetScale() - GetLocalPos().y;
+			mouseClickPos.x = mousePos.x * App->win->GetScale() - GetLocalPos().x;
+			mouseClickPos.y = mousePos.y * App->win->GetScale() - GetLocalPos().y;
 
 			if (draggable) {
 				drag = true;
 				//App->gui->drag_to_true = true;
 			}
 
-			UIevent = UI_EVENT::UI_EVENT_MOUSE_RIGHT_CLICK;
+			UIevent = UI_EVENT_MOUSE_RIGHT_CLICK;
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
@@ -133,7 +135,7 @@ void UILabel::HandleInput()
 		}
 
 		break;
-	case UI_EVENT::UI_EVENT_MOUSE_RIGHT_CLICK:
+	case UI_EVENT_MOUSE_RIGHT_CLICK:
 
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED) {
 			LOG("MOUSE R CLICK FINISH");
@@ -144,16 +146,16 @@ void UILabel::HandleInput()
 			}
 
 			listener->OnUIEvent((UIElement*)this, UIevent);
-			UIevent = UI_EVENT::UI_EVENT_MOUSE_ENTER;
+			UIevent = UI_EVENT_MOUSE_ENTER;
 			break;
 		}
 
 		break;
-	case UI_EVENT::UI_EVENT_MOUSE_LEFT_CLICK:
+	case UI_EVENT_MOUSE_LEFT_CLICK:
 
 		if (!MouseHover()) {
 			LOG("MOUSE LEAVE");
-			UIevent = UI_EVENT::UI_EVENT_MOUSE_LEAVE;
+			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED) {
@@ -165,10 +167,10 @@ void UILabel::HandleInput()
 		}
 
 		break;
-	case UI_EVENT::UI_EVENT_MOUSE_LEAVE:
-		SetColor(label.normal_color);
+	case UI_EVENT_MOUSE_LEAVE:
+		SetColor(label.normalColor);
 		listener->OnUIEvent((UIElement*)this, UIevent);
-		UIevent = UI_EVENT::UI_EVENT_NONE;
+		UIevent = UI_EVENT_NONE;
 		break;
 	}
 }
@@ -188,26 +190,26 @@ void UILabel::SetColor(SDL_Color color, bool normal, bool hover, bool pressed)
 	tex = App->font->Print(label.text.data(), color, font);
 
 	if (normal)
-		label.normal_color = color;
+		label.normalColor = color;
 	else if (hover)
-		label.hover_color = color;
+		label.hoverColor = color;
 	else if (pressed)
-		label.pressed_color = color;
+		label.pressedColor = color;
 }
 
 SDL_Color UILabel::GetColor(bool normal, bool hover, bool pressed)
 {
 	if (normal)
-		return label.normal_color;
+		return label.normalColor;
 	else if (hover)
-		return label.hover_color;
+		return label.hoverColor;
 	else if (pressed)
-		return label.pressed_color;
+		return label.pressedColor;
 	else
 		return color;
 }
 
-bool UILabel::IntermitentFade(float seconds, bool loop, bool half_loop)
+bool UILabel::IntermitentFade(float seconds, bool loop, bool halfLoop)
 {
 	bool ret = false;
 
@@ -228,13 +230,13 @@ bool UILabel::IntermitentFade(float seconds, bool loop, bool half_loop)
 	float alpha2 = 255.0f * normalized2;
 
 	// Color change
-	if (!is_invisible) {
+	if (!isInvisible) {
 		SetColor({ GetColor().r,GetColor().g,GetColor().b,(Uint8)alpha2 });
 
 		if (alpha2 == 0.0f) {
 			if (loop) {
 				alpha = 255.0f;
-				is_invisible = true;
+				isInvisible = true;
 				ResetFade();
 			}
 			ret = true;
@@ -244,9 +246,9 @@ bool UILabel::IntermitentFade(float seconds, bool loop, bool half_loop)
 		SetColor({ GetColor().r,GetColor().g,GetColor().b,(Uint8)alpha });
 
 		if (alpha == 255.0f) {
-			if (!half_loop) {
+			if (!halfLoop) {
 				alpha2 = 0.0f;
-				is_invisible = false;
+				isInvisible = false;
 				ResetFade();
 			}
 			else
@@ -301,13 +303,13 @@ void UILabel::ResetFade()
 	reset = true;
 }
 
-void UILabel::RandomAlphaPainting(float dt, SDL_Color color, int base_alpha, int min_alpha, int max_alpha, float speed)
+void UILabel::RandomAlphaPainting(float dt, SDL_Color color, int baseAlpha, int minAlpha, int maxAlpha, float speed)
 {
 	if (timer >= speed) {
 		int random = rand() % 2;
 
-		int min = min_alpha + rand() % (base_alpha - min_alpha + 1);
-		int max = min_alpha + rand() % (max_alpha - min_alpha + 1);
+		int min = minAlpha + rand() % (baseAlpha - minAlpha + 1);
+		int max = minAlpha + rand() % (maxAlpha - minAlpha + 1);
 
 		if (min >= 0 && min <= 255 && max >= 0 && max <= 255) {
 			switch (random) {

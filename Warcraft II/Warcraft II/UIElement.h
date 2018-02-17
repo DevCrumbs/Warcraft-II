@@ -2,21 +2,22 @@
 #define __UIElement_H__
 
 #include "SDL\include\SDL.h"
+
 #include "Defs.h"
 
 #include "p2Point.h"
 
 class j1Module;
 
-enum UIElement_TYPE
+enum UIE_TYPE
 {
-	NO_TYPE_,
-	IMAGE_,
-	LABEL_,
-	BUTTON_,
-	WINDOW_,
-	CURSOR_,
-	MAX_TYPES_
+	UIE_TYPE_NO_TYPE,
+	UIE_TYPE_IMAGE,
+	UIE_TYPE_LABEL,
+	UIE_TYPE_BUTTON,
+	UIE_TYPE_WINDOW,
+	UIE_TYPE_CURSOR,
+	UIE_TYPE_MAX_TYPES
 };
 
 enum UIE_HORIZONTAL_POS {
@@ -46,24 +47,6 @@ enum UI_EVENT {
 
 class UIElement
 {
-protected:
-	UIElement_TYPE type = UIElement_TYPE::NO_TYPE_;
-	UIE_HORIZONTAL_POS horizontal = UIE_HORIZONTAL_POS::HORIZONTAL_POS_LEFT;
-	UIE_VERTICAL_POS vertical = UIE_VERTICAL_POS::VERTICAL_POS_TOP;
-	j1Module* listener = nullptr;
-
-	bool draggable = false;
-	bool interactive = true;
-	iPoint mouse_click_pos = { 0,0 };
-
-	// Texture parameters
-	SDL_Rect texArea = { 0,0,0,0 };
-	int width = 0, height = 0;
-
-private:
-	iPoint localPos = { 0,0 };
-	UIElement* parent = nullptr;
-
 public:
 	UIElement(iPoint localPos, UIElement* parent, j1Module* listener);
 
@@ -77,7 +60,7 @@ public:
 
 	virtual bool HasToBeRemoved() const;
 
-	virtual UIElement_TYPE GetType() const;
+	virtual UIE_TYPE GetType() const;
 
 	virtual void DebugDraw(iPoint blitPos) const;
 
@@ -101,7 +84,27 @@ public:
 
 public:
 	bool drag = false;
-	bool to_remove = false;
+	bool toRemove = false;
+
+protected:
+	UIE_TYPE type = UIE_TYPE_NO_TYPE;
+	UIE_HORIZONTAL_POS horizontal = HORIZONTAL_POS_LEFT;
+	UIE_VERTICAL_POS vertical = VERTICAL_POS_TOP;
+
+	j1Module* listener = nullptr;
+
+	bool draggable = false;
+	bool interactive = true;
+	iPoint mouseClickPos = { 0,0 };
+
+	// Texture parameters
+	SDL_Rect texArea = { 0,0,0,0 };
+	int width = 0, height = 0;
+
+private:
+	iPoint localPos = { 0,0 };
+	UIElement* parent = nullptr;
+
 };
 
 #endif //__UIElement_H__
