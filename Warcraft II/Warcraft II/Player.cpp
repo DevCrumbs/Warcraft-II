@@ -33,7 +33,7 @@ Player::Player(float x, float y) : Entity(x, y)
 	position = { 600, 100 };
 
 	collider_pos = { (int)position.x + player.coll_offset.x, (int)position.y + player.coll_offset.y };
-	collider = App->collision->AddCollider({ collider_pos.x, collider_pos.y, player.coll_size.x + player.coll_offset.w, player.coll_size.y + player.coll_offset.h }, COLLIDER_PLAYER, App->entities);
+	collider = App->collision->AddCollider({ collider_pos.x, collider_pos.y, player.collSize.x + player.coll_offset.w, player.collSize.y + player.coll_offset.h }, COLLIDER_PLAYER, App->entities);
 	*/
 }
 
@@ -64,7 +64,7 @@ void Player::Move(float dt)
 	down = true;
 	left = true;
 	right = true;
-	CheckCollision(collider_pos, { player.coll_size.x + player.coll_offset.w, player.coll_size.y + player.coll_offset.h }, player.check_collision_offset, up, down, left, right, player.GetState());
+	CheckCollision(collider_pos, { player.collSize.x + player.coll_offset.w, player.collSize.y + player.coll_offset.h }, player.check_collision_offset, up, down, left, right, player.GetState());
 
 	// Update state
 	if (!App->scene->pause)
@@ -198,7 +198,7 @@ PlayerInfo::PlayerInfo() {}
 
 PlayerInfo::PlayerInfo(const PlayerInfo& i) :
 	idle(i.idle),
-	coll_size(i.coll_size), coll_offset(i.coll_offset),
+	collSize(i.collSize), coll_offset(i.coll_offset),
 	gravity(i.gravity), speed(i.speed), state(i.state),
 	check_collision_offset(i.check_collision_offset)
 {}

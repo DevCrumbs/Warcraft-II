@@ -29,7 +29,7 @@ struct PlayerInfo
 {
 	Animation idle;
 
-	iPoint coll_size = { 0,0 };
+	iPoint collSize = { 0,0 };
 	SDL_Rect coll_offset = { 0,0,0,0 };
 	uint check_collision_offset = 0;
 

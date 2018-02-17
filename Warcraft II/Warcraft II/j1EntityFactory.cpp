@@ -64,7 +64,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	node = animations_node.child("idle");
 	player.idle.speed = node.attribute("speed").as_float();
 	player.idle.loop = node.attribute("loop").as_bool();
-	player.coll_size = { node.child("frame").attribute("w").as_int(), node.child("frame").attribute("h").as_int() };
+	player.collSize = { node.child("frame").attribute("w").as_int(), node.child("frame").attribute("h").as_int() };
 	for (node = node.child("frame"); node; node = node.next_sibling("frame")) {
 		player.idle.PushBack({ node.attribute("x").as_int(), node.attribute("y").as_int(), node.attribute("w").as_int(), node.attribute("h").as_int() });
 	}
