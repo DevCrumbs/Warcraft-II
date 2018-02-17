@@ -127,8 +127,8 @@ bool j1Scene::PreUpdate()
 
 	// Player start position
 	/*
-	App->entities->playerData->start_pos = App->map->data.GetObjectPosition("Player", "StartPos");
-	App->entities->playerData->position = App->entities->playerData->start_pos;
+	App->entities->playerData->startPos = App->map->data.GetObjectPosition("Player", "StartPos");
+	App->entities->playerData->position = App->entities->playerData->startPos;
 	*/
 
 	return ret;
@@ -198,7 +198,7 @@ void j1Scene::DebugKeys()
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
 		/*
 		if (index == 0)
-			App->entities->playerData->position = App->entities->playerData->start_pos;
+			App->entities->playerData->position = App->entities->playerData->startPos;
 		else
 			index = 0;
 

@@ -232,7 +232,7 @@ bool UIButton::Bounce(float dt, float bounce_interval, float bounce_speed, bool 
 		ret = true;
 
 	if (first_bounce) {
-		if (pos.y >= start_pos.y + bounce_value) {
+		if (pos.y >= startPos.y + bounce_value) {
 			bounce_value -= bounce_speed;
 			first_bounce = false;
 		}
@@ -244,7 +244,7 @@ bool UIButton::Bounce(float dt, float bounce_interval, float bounce_speed, bool 
 		}
 	}
 	else {
-		if (pos.y <= start_pos.y - bounce_value) {
+		if (pos.y <= startPos.y - bounce_value) {
 			bounce_value -= bounce_speed;
 			first_bounce = true;
 		}
@@ -262,7 +262,7 @@ bool UIButton::Bounce(float dt, float bounce_interval, float bounce_speed, bool 
 void UIButton::InitializeBounce(float bounce_interval, bool down)
 {
 	bounce_value = bounce_interval;
-	start_pos = GetLocalPos();
+	startPos = GetLocalPos();
 
 	if (!down)
 		first_bounce = false;

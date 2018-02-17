@@ -386,7 +386,7 @@ bool UILabel::Bounce(float dt, float bounce_interval, float bounce_speed, bool d
 		ret = true;
 
 	if (first_bounce) {
-		if (pos.y >= start_pos.y + bounce_value) {
+		if (pos.y >= startPos.y + bounce_value) {
 			bounce_value -= bounce_speed;
 			first_bounce = false;
 		}
@@ -398,7 +398,7 @@ bool UILabel::Bounce(float dt, float bounce_interval, float bounce_speed, bool d
 		}
 	}
 	else {
-		if (pos.y <= start_pos.y - bounce_value) {
+		if (pos.y <= startPos.y - bounce_value) {
 			bounce_value -= bounce_speed;
 			first_bounce = true;
 		}
@@ -416,7 +416,7 @@ bool UILabel::Bounce(float dt, float bounce_interval, float bounce_speed, bool d
 void UILabel::InitializeBounce(float bounce_interval, bool down)
 {
 	bounce_value = bounce_interval;
-	start_pos = GetLocalPos();
+	startPos = GetLocalPos();
 
 	if (!down)
 		first_bounce = false;

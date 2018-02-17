@@ -56,7 +56,7 @@ public:
 
 	// Bounce parameters
 	float bounce_value = 0.0f;
-	iPoint start_pos = { 0,0 };
+	iPoint startPos = { 0,0 };
 	bool first_bounce = true;
 	bool reset = true;
 	bool start_bouncing = false;
