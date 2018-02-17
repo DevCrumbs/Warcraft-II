@@ -47,8 +47,8 @@ bool j1Render::Awake(pugi::xml_node& config)
 	}
 	else
 	{
-		camera.w = App->win->screen_surface->w / App->win->GetScale();
-		camera.h = App->win->screen_surface->h / App->win->GetScale();
+		camera.w = App->win->screenSurface->w / App->win->GetScale();
+		camera.h = App->win->screenSurface->h / App->win->GetScale();
 		camera.x = 0;
 		camera.y = 0;
 	}

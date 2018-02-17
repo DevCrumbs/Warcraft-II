@@ -22,7 +22,7 @@ public:
 	bool CleanUp();
 
 	// Changae title
-	void SetTitle(const char* new_title);
+	void SetTitle(const char* newTitle);
 
 	// Retrive window size
 	void GetWindowSize(uint& width, uint& height) const;
@@ -32,11 +32,11 @@ public:
 
 public:
 	//The window we'll be rendering to
-	SDL_Window* window;
+	SDL_Window* window = nullptr;
 
 	//The surface contained by the window
-	SDL_Surface* screen_surface;
-	SDL_Surface* icon_surface;
+	SDL_Surface* screenSurface = nullptr;
+	SDL_Surface* iconSurface = nullptr;
 
 	bool fullscreen;
 

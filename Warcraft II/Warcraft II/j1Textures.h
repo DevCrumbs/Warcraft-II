@@ -1,9 +1,10 @@
 #ifndef __j1TEXTURES_H__
 #define __j1TEXTURES_H__
 
+#include <list>
+
 #include "j1Module.h"
 
-#include <list>
 using namespace std;
 
 struct SDL_Texture;

@@ -1,3 +1,6 @@
+#include "SDL_image/include/SDL_image.h"
+#pragma comment( lib, "SDL_image/libx86/SDL2_image.lib" )
+
 #include "Defs.h"
 #include "p2Log.h"
 
@@ -5,9 +8,6 @@
 
 #include "j1Render.h"
 #include "j1Textures.h"
-
-#include "SDL_image/include/SDL_image.h"
-#pragma comment( lib, "SDL_image/libx86/SDL2_image.lib" )
 
 j1Textures::j1Textures() : j1Module()
 {
