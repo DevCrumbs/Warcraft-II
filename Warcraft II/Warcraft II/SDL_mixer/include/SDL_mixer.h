@@ -417,7 +417,7 @@ extern DECLSPEC int SDLCALL Mix_SetPosition(int channel, Sint16 angle, Uint8 dis
 
 /* Set the "distance" of a channel. (distance) is an integer from 0 to 255
  *  that specifies the location of the sound in relation to the listener.
- *  Distance 0 is overlapping the listener, and 255 is as far away as possible
+ *  DISTANCE 0 is overlapping the listener, and 255 is as far away as possible
  *  A distance of 255 does not guarantee silence; in such a case, you might
  *  want to try changing the chunk's volume, or just cull the sample from the
  *  mixing process with Mix_HaltChannel().
