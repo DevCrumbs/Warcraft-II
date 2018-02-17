@@ -159,11 +159,11 @@ public:
 	tdata& operator  [](const unsigned int index)
 	{
 		long                  pos;
-		p2List_item<tdata>*   p_item;
+		p2List_item<tdata>*   pItem;
 		pos = 0;
-		p_item = start;
+		pItem = start;
 
-		while(p_item != NULL)
+		while(pItem != NULL)
 		{
 			if(pos == index)
 			{
@@ -171,10 +171,10 @@ public:
 			}
 
 			++pos;
-			p_item = p_item->next;
+			pItem = pItem->next;
 		}
 
-		return(p_item->data);
+		return(pItem->data);
 	}
 
 	/**
@@ -183,11 +183,11 @@ public:
 	const tdata& operator  [](const unsigned int index) const
 	{
 		long                  pos;
-		p2List_item<tdata>*   p_item;
+		p2List_item<tdata>*   pItem;
 		pos = 0;
-		p_item = start;
+		pItem = start;
 
-		while(p_item != NULL)
+		while(pItem != NULL)
 		{
 			if(pos == index)
 			{
@@ -195,12 +195,12 @@ public:
 			}
 
 			++pos;
-			p_item = p_item->next;
+			pItem = pItem->next;
 		}
 
-		assert(p_item);
+		assert(pItem);
 
-		return (p_item->data);
+		return (pItem->data);
 	}
 
 	/**
@@ -208,12 +208,12 @@ public:
 	*/
 	const p2List<tdata>& operator +=(const p2List<tdata>& other_list)
 	{
-		p2List_item<tdata>*   p_item = other_list.start;
+		p2List_item<tdata>*   pItem = other_list.start;
 
-		while(p_item != NULL)
+		while(pItem != NULL)
 		{
-			add(p_item->data);
-			p_item = p_item->next;
+			add(pItem->data);
+			pItem = pItem->next;
 		}
 
 		return(*this);
@@ -225,17 +225,17 @@ public:
 	const p2List_item<tdata>* At(unsigned int index) const
 	{
 		long                  pos = 0;
-		p2List_item<tdata>*   p_item = start;
+		p2List_item<tdata>*   pItem = start;
 
-		while(p_item != NULL)
+		while(pItem != NULL)
 		{
 			if(pos++ == index)
 				break;
 
-			p_item = p_item->next;
+			pItem = pItem->next;
 		}
 
-		return p_item;
+		return pItem;
 	}
 
 	/**
@@ -244,17 +244,17 @@ public:
 	p2List_item<tdata>* At(unsigned int index)
 	{
 		long                  pos = 0;
-		p2List_item<tdata>*   p_item = start;
+		p2List_item<tdata>*   pItem = start;
 
-		while(p_item != NULL)
+		while(pItem != NULL)
 		{
 			if(pos++ == index)
 				break;
 
-			p_item = p_item->next;
+			pItem = pItem->next;
 		}
 
-		return p_item;
+		return pItem;
 	}
 
 	// Sort
