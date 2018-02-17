@@ -19,27 +19,27 @@ enum UIElement_TYPE
 	MAX_TYPES_
 };
 
-enum UIElement_HORIZONTAL_POS {
-	LEFT_,
-	RIGHT_,
-	CENTER_
+enum UIE_HORIZONTAL_POS {
+	HORIZONTAL_POS_LEFT,
+	HORIZONTAL_POS_RIGHT,
+	HORIZONTAL_POS_CENTER
 };
 
-enum UIElement_VERTICAL_POS {
-	TOP_,
-	BOTTOM_,
-	MIDDLE_
+enum UIE_VERTICAL_POS {
+	VERTICAL_POS_TOP,
+	VERTICAL_POS_BOTTOM,
+	VERTICAL_POS_CENTER
 };
 
-enum UIEvents {
-	NO_EVENT_,
-	MOUSE_ENTER_,
-	MOUSE_LEAVE_,
-	MOUSE_RIGHT_CLICK_,
-	MOUSE_LEFT_CLICK_,
-	MOUSE_RIGHT_UP_,
-	MOUSE_LEFT_UP_,
-	MAX_EVENTS_
+enum UI_EVENT {
+	UI_EVENT_NONE,
+	UI_EVENT_MOUSE_ENTER,
+	UI_EVENT_MOUSE_LEAVE,
+	UI_EVENT_MOUSE_RIGHT_CLICK,
+	UI_EVENT_MOUSE_LEFT_CLICK,
+	UI_EVENT_MOUSE_RIGHT_UP,
+	UI_EVENT_MOUSE_LEFT_UP,
+	UI_EVENT_MAX_EVENTS
 };
 
 // ---------------------------------------------------
@@ -48,8 +48,8 @@ class UIElement
 {
 protected:
 	UIElement_TYPE type = UIElement_TYPE::NO_TYPE_;
-	UIElement_HORIZONTAL_POS horizontal = UIElement_HORIZONTAL_POS::LEFT_;
-	UIElement_VERTICAL_POS vertical = UIElement_VERTICAL_POS::TOP_;
+	UIE_HORIZONTAL_POS horizontal = UIE_HORIZONTAL_POS::HORIZONTAL_POS_LEFT;
+	UIE_VERTICAL_POS vertical = UIE_VERTICAL_POS::VERTICAL_POS_TOP;
 	j1Module* listener = nullptr;
 
 	bool draggable = false;
@@ -57,15 +57,15 @@ protected:
 	iPoint mouse_click_pos = { 0,0 };
 
 	// Texture parameters
-	SDL_Rect tex_area = { 0,0,0,0 };
+	SDL_Rect texArea = { 0,0,0,0 };
 	int width = 0, height = 0;
 
 private:
-	iPoint local_pos = { 0,0 };
+	iPoint localPos = { 0,0 };
 	UIElement* parent = nullptr;
 
 public:
-	UIElement(iPoint local_pos, UIElement* parent, j1Module* listener);
+	UIElement(iPoint localPos, UIElement* parent, j1Module* listener);
 
 	virtual ~UIElement();
 
@@ -79,7 +79,7 @@ public:
 
 	virtual UIElement_TYPE GetType() const;
 
-	virtual void DebugDraw(iPoint blit_pos) const;
+	virtual void DebugDraw(iPoint blitPos) const;
 
 	bool MouseHover() const;
 
@@ -93,9 +93,9 @@ public:
 	SDL_Rect GetLocalRect() const;
 	iPoint GetScreenPos() const;
 	iPoint GetLocalPos() const;
-	void SetLocalPos(iPoint local_pos);
-	void IncreasePos(iPoint add_local_pos);
-	void DecreasePos(iPoint add_local_pos);
+	void SetLocalPos(iPoint localPos);
+	void IncreasePos(iPoint add_localPos);
+	void DecreasePos(iPoint add_localPos);
 
 	UIElement* GetParent() const;
 

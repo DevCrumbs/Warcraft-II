@@ -10,9 +10,9 @@
 #include "j1Gui.h"
 
 struct UIImage_Info {
-	UIElement_Rect tex_area = UIElement_Rect::NO_ELEMENT_RECT_;
-	UIElement_HORIZONTAL_POS horizontal_orientation = UIElement_HORIZONTAL_POS::LEFT_;
-	UIElement_VERTICAL_POS vertical_orientation = UIElement_VERTICAL_POS::TOP_;
+	UIE_RECT texArea = UIE_RECT::NO_ELEMENT_RECT;
+	UIE_HORIZONTAL_POS horizontalOrientation = UIE_HORIZONTAL_POS::HORIZONTAL_POS_LEFT;
+	UIE_VERTICAL_POS verticalOrientation = UIE_VERTICAL_POS::VERTICAL_POS_TOP;
 
 	bool quad = false;
 	SDL_Rect quad_area = { 0,0,0,0 };
@@ -26,9 +26,9 @@ struct UIImage_Info {
 class UIImage : public UIElement
 {
 public:
-	UIImage(iPoint local_pos, UIElement* parent, UIImage_Info& info, j1Module* listener = nullptr);
+	UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener = nullptr);
 	void Draw() const;
-	void DebugDraw(iPoint blit_pos) const;
+	void DebugDraw(iPoint blitPos) const;
 	void SetColor(const SDL_Color color);
 	void StartAnimation(Animation anim);
 	void Update(float dt);

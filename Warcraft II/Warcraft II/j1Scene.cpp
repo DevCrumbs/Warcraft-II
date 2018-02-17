@@ -263,23 +263,23 @@ void j1Scene::DebugKeys()
 		App->map->cameraBlit = !App->map->cameraBlit;
 }
 
-void j1Scene::OnUIEvent(UIElement* UIelem, UIEvents UIevent)
+void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 {
 	switch (UIevent)
 	{
-	case MOUSE_ENTER_:
+	case UI_EVENT_MOUSE_ENTER:
 
 		break;
 
-	case MOUSE_LEAVE_:
+	case UI_EVENT_MOUSE_LEAVE:
 
 		break;
 
-	case MOUSE_LEFT_CLICK_:
+	case UI_EVENT_MOUSE_LEFT_CLICK:
 
 		break;
 
-	case MOUSE_LEFT_UP_:
+	case UI_EVENT_MOUSE_LEFT_UP:
 
 		break;
 	}

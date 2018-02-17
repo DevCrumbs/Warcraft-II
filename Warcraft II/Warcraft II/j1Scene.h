@@ -43,7 +43,7 @@ public:
 	bool CleanUp();
 
 	// On triggered
-	void OnUIEvent(UIElement* UIelem, UIEvents UIevent);
+	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 	// Save
 	bool Save(pugi::xml_node&) const;

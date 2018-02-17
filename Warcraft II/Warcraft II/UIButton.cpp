@@ -4,26 +4,26 @@
 #include "j1Render.h"
 #include "j1Window.h"
 
-UIButton::UIButton(iPoint local_pos, UIElement* parent, UIButton_Info& info, j1Module* listener) : UIElement(local_pos, parent, listener), button(info)
+UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), button(info)
 {
 	type = UIElement_TYPE::BUTTON_;
 
-	normal_tex_area = App->gui->GetRectFromAtlas(button.normal_tex_area);
-	hover_tex_area = App->gui->GetRectFromAtlas(button.hover_tex_area);
-	pressed_tex_area = App->gui->GetRectFromAtlas(button.pressed_tex_area);
+	normalTexArea = App->gui->GetRectFromAtlas(button.normalTexArea);
+	hoverTexArea = App->gui->GetRectFromAtlas(button.hoverTexArea);
+	pressedTexArea = App->gui->GetRectFromAtlas(button.pressedTexArea);
 
 	draggable = button.draggable;
 	interactive = button.interactive;
-	horizontal = button.horizontal_orientation;
-	vertical = button.vertical_orientation;
+	horizontal = button.horizontalOrientation;
+	vertical = button.verticalOrientation;
 
-	if (button.checkbox_checked)
-		tex_area = pressed_tex_area;
+	if (button.isChecked)
+		texArea = pressedTexArea;
 	else
-		tex_area = normal_tex_area;
+		texArea = normalTexArea;
 
-	width = tex_area.w;
-	height = tex_area.h;
+	width = texArea.w;
+	height = texArea.h;
 
 	SetOrientation();
 }
@@ -34,11 +34,11 @@ void UIButton::Update(float dt)
 		HandleInput();
 }
 
-void UIButton::DebugDraw(iPoint blit_pos) const
+void UIButton::DebugDraw(iPoint blitPos) const
 {
 	Uint8 alpha = 80;
 
-	SDL_Rect quad = { blit_pos.x, blit_pos.y, width, height };
+	SDL_Rect quad = { blitPos.x, blitPos.y, width, height };
 	App->render->DrawQuad(quad, 5, 12, 255, alpha, false);
 }
 
@@ -49,37 +49,37 @@ void UIButton::HandleInput()
 
 	switch (UIevent) {
 
-	case UIEvents::NO_EVENT_:
+	case UI_EVENT::UI_EVENT_NONE:
 		if (MouseHover() || tab) {
-			next_event = false;
-			UIevent = UIEvents::MOUSE_ENTER_;
+			nextEvent = false;
+			UIevent = UI_EVENT::UI_EVENT_MOUSE_ENTER;
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
 		break;
-	case UIEvents::MOUSE_ENTER_:
+	case UI_EVENT::UI_EVENT_MOUSE_ENTER:
 
 		if (!MouseHover() && !tab) {
 			LOG("MOUSE LEAVE");
-			next_event = false;
-			UIevent = UIEvents::MOUSE_LEAVE_;
+			nextEvent = false;
+			UIevent = UI_EVENT::UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
 		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)) {
-			next_event = false;
+			nextEvent = false;
 			LOG("MOUSE L CLICK START");
-			ChangeSprite(pressed_tex_area);
-			UIevent = UIEvents::MOUSE_LEFT_CLICK_;
+			ChangeSprite(pressedTexArea);
+			UIevent = UI_EVENT::UI_EVENT_MOUSE_LEFT_CLICK;
 
 			if (button.checkbox)
-				button.checkbox_checked = !button.checkbox_checked;
+				button.isChecked = !button.isChecked;
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
 		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)) {
-			next_event = false;
+			nextEvent = false;
 			LOG("MOUSE R CLICK START");
-			ChangeSprite(pressed_tex_area);
+			ChangeSprite(pressedTexArea);
 
 			mouse_click_pos.x = mouse_pos.x * App->win->GetScale() - GetLocalPos().x;
 			mouse_click_pos.y = mouse_pos.y * App->win->GetScale() - GetLocalPos().y;
@@ -89,23 +89,23 @@ void UIButton::HandleInput()
 				//App->gui->drag_to_true = true;
 			}
 
-			UIevent = UIEvents::MOUSE_RIGHT_CLICK_;
+			UIevent = UI_EVENT::UI_EVENT_MOUSE_RIGHT_CLICK;
 
 			if (button.checkbox)
-				button.checkbox_checked = !button.checkbox_checked;
+				button.isChecked = !button.isChecked;
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
 
-		if (!next_event) {
+		if (!nextEvent) {
 			LOG("MOUSE ENTER");
-			if (!button.checkbox_checked)
-				ChangeSprite(hover_tex_area);
-			next_event = true;
+			if (!button.isChecked)
+				ChangeSprite(hoverTexArea);
+			nextEvent = true;
 		}
 
 		break;
-	case UIEvents::MOUSE_RIGHT_CLICK_:
+	case UI_EVENT::UI_EVENT_MOUSE_RIGHT_CLICK:
 
 		if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_UP)) {
 			LOG("MOUSE R CLICK FINISH");
@@ -114,79 +114,79 @@ void UIButton::HandleInput()
 				drag = false;
 				//App->gui->drag_to_false = true;
 			}
-			UIevent = UIEvents::MOUSE_RIGHT_UP_;
+			UIevent = UI_EVENT::UI_EVENT_MOUSE_RIGHT_UP;
 			listener->OnUIEvent((UIElement*)this, UIevent);
-			UIevent = UIEvents::MOUSE_ENTER_;
+			UIevent = UI_EVENT::UI_EVENT_MOUSE_ENTER;
 			break;
 		}
 
 		break;
-	case UIEvents::MOUSE_LEFT_CLICK_:
+	case UI_EVENT::UI_EVENT_MOUSE_LEFT_CLICK:
 
 		if (!MouseHover() && !tab) {
 			LOG("MOUSE LEAVE");
-			UIevent = UIEvents::MOUSE_LEAVE_;
+			UIevent = UI_EVENT::UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
 		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_UP)) {
 			LOG("MOUSE L CLICK FINISH");
-			UIevent = UIEvents::MOUSE_LEFT_UP_;
+			UIevent = UI_EVENT::UI_EVENT_MOUSE_LEFT_UP;
 			listener->OnUIEvent((UIElement*)this, UIevent);
-			UIevent = UIEvents::MOUSE_ENTER_;
+			UIevent = UI_EVENT::UI_EVENT_MOUSE_ENTER;
 			break;
 		}
 
 		break;
-	case UIEvents::MOUSE_LEAVE_:
-		if (!button.checkbox_checked)
-			ChangeSprite(normal_tex_area);
+	case UI_EVENT::UI_EVENT_MOUSE_LEAVE:
+		if (!button.isChecked)
+			ChangeSprite(normalTexArea);
 		listener->OnUIEvent((UIElement*)this, UIevent);
-		UIevent = NO_EVENT_;
+		UIevent = UI_EVENT_NONE;
 		break;
 	}
 }
 
 //---------------------------------------------------------------
 
-void UIButton::ChangeSprite(SDL_Rect tex_area)
+void UIButton::ChangeSprite(SDL_Rect texArea)
 {
-	this->tex_area = tex_area;
+	this->texArea = texArea;
 }
 
 SDL_Rect UIButton::GetHoverSprite() const
 {
-	return hover_tex_area;
+	return hoverTexArea;
 }
 
 SDL_Rect UIButton::GetPressedSprite() const
 {
-	return pressed_tex_area;
+	return pressedTexArea;
 }
 
 SDL_Rect UIButton::GetNormalSprite() const
 {
-	return normal_tex_area;
+	return normalTexArea;
 }
 
-UIEvents UIButton::GetActualEvent() const
+UI_EVENT UIButton::GetActualEvent() const
 {
 	return UIevent;
 }
 
-bool UIButton::SlideTransition(float dt, int end_pos_y, float speed, bool bounce, float bounce_interval, float bounce_speed, bool down)
+bool UIButton::SlideTransition(float dt, int endPosY, float speed, bool bounce, float bounceInterval, float bounceSpeed, bool down)
 {
 	bool ret = false;
 
 	iPoint pos = GetLocalPos();
 
 	if (down) {
-		if (pos.y + height >= (int)end_pos_y - height / 2) {
-			if (bounce && !start_bouncing)
-				start_bouncing = true;
+		if (pos.y + height >= (int)endPosY - height / 2) {
+			if (bounce && !startBouncing)
+				startBouncing = true;
 			else if (!bounce)
 				ret = true;
 		}
-		else if (!start_bouncing) {
+		else if (!startBouncing) {
 			if ((int)(speed * dt) >= 1)
 				IncreasePos({ 0,(int)(speed * dt) });
 			else
@@ -194,13 +194,13 @@ bool UIButton::SlideTransition(float dt, int end_pos_y, float speed, bool bounce
 		}
 	}
 	else {
-		if (pos.y + height <= (int)end_pos_y - height / 2) {
-			if (bounce && !start_bouncing)
-				start_bouncing = true;
+		if (pos.y + height <= (int)endPosY - height / 2) {
+			if (bounce && !startBouncing)
+				startBouncing = true;
 			else if (!bounce)
 				ret = true;
 		}
-		else if (!start_bouncing) {
+		else if (!startBouncing) {
 			if ((int)(speed * dt) >= 1)
 				DecreasePos({ 0,(int)(speed * dt) });
 			else
@@ -208,8 +208,8 @@ bool UIButton::SlideTransition(float dt, int end_pos_y, float speed, bool bounce
 		}
 	}
 
-	if (start_bouncing) {
-		if (Bounce(dt, bounce_interval, bounce_speed, down)) {
+	if (startBouncing) {
+		if (Bounce(dt, bounceInterval, bounceSpeed, down)) {
 			ret = true;
 		}
 	}
@@ -217,40 +217,40 @@ bool UIButton::SlideTransition(float dt, int end_pos_y, float speed, bool bounce
 	return ret;
 }
 
-bool UIButton::Bounce(float dt, float bounce_interval, float bounce_speed, bool down)
+bool UIButton::Bounce(float dt, float bounceInterval, float bounceSpeed, bool down)
 {
 	bool ret = false;
 
 	iPoint pos = GetLocalPos();
 
 	if (reset) {
-		InitializeBounce(bounce_interval, down);
+		InitializeBounce(bounceInterval, down);
 		reset = false;
 	}
 
-	if (bounce_value <= bounce_speed)
+	if (bounceValue <= bounceSpeed)
 		ret = true;
 
-	if (first_bounce) {
-		if (pos.y >= startPos.y + bounce_value) {
-			bounce_value -= bounce_speed;
-			first_bounce = false;
+	if (firstBounce) {
+		if (pos.y >= startPos.y + bounceValue) {
+			bounceValue -= bounceSpeed;
+			firstBounce = false;
 		}
 		else {
-			if ((int)(bounce_value * 10.0f * dt) >= 1)
-				IncreasePos({ 0, (int)(bounce_value * 10.0f * dt) });
+			if ((int)(bounceValue * 10.0f * dt) >= 1)
+				IncreasePos({ 0, (int)(bounceValue * 10.0f * dt) });
 			else
 				IncreasePos({ 0, 1 });
 		}
 	}
 	else {
-		if (pos.y <= startPos.y - bounce_value) {
-			bounce_value -= bounce_speed;
-			first_bounce = true;
+		if (pos.y <= startPos.y - bounceValue) {
+			bounceValue -= bounceSpeed;
+			firstBounce = true;
 		}
 		else {
-			if ((int)(bounce_value * 10.0f * dt) >= 1)
-				DecreasePos({ 0, (int)(bounce_value * 10.0f * dt) });
+			if ((int)(bounceValue * 10.0f * dt) >= 1)
+				DecreasePos({ 0, (int)(bounceValue * 10.0f * dt) });
 			else
 				DecreasePos({ 0, 1 });
 		}
@@ -259,11 +259,11 @@ bool UIButton::Bounce(float dt, float bounce_interval, float bounce_speed, bool 
 	return ret;
 }
 
-void UIButton::InitializeBounce(float bounce_interval, bool down)
+void UIButton::InitializeBounce(float bounceInterval, bool down)
 {
-	bounce_value = bounce_interval;
+	bounceValue = bounceInterval;
 	startPos = GetLocalPos();
 
 	if (!down)
-		first_bounce = false;
+		firstBounce = false;
 }

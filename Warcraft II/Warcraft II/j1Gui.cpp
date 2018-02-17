@@ -38,10 +38,10 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 	pugi::xml_node rects = conf.child("UI_elements_rects");
 	pugi::xml_node node;
 	uint i = 0;
-	UIElementsRects[(UIElement_Rect)i] = { 0,0,0,0 };
+	UIElementsRects[(UIE_RECT)i] = { 0,0,0,0 };
 
 	for (node = rects.child("rect"); node; node = node.next_sibling("rect")) {
-		UIElementsRects[(UIElement_Rect)++i] = { node.attribute("x").as_int(), node.attribute("y").as_int(), node.attribute("w").as_int(), node.attribute("h").as_int() };
+		UIElementsRects[(UIE_RECT)++i] = { node.attribute("x").as_int(), node.attribute("y").as_int(), node.attribute("w").as_int(), node.attribute("h").as_int() };
 	}
 	//UIElementsRects
 
@@ -204,9 +204,9 @@ UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* 
 
 UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIElement* parent)
 {
-	iPoint local_pos = { 0,0 };
+	iPoint localPos = { 0,0 };
 
-	UICursor* cursor = new UICursor(local_pos, parent, info, listener);
+	UICursor* cursor = new UICursor(localPos, parent, info, listener);
 
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
@@ -275,7 +275,7 @@ const SDL_Texture* j1Gui::GetAtlas() const
 	return atlas;
 }
 
-SDL_Rect j1Gui::GetRectFromAtlas(UIElement_Rect rect)
+SDL_Rect j1Gui::GetRectFromAtlas(UIE_RECT rect)
 {
 	return UIElementsRects[rect];
 }

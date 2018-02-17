@@ -32,21 +32,22 @@ enum FONT_NAME {
 	FONT_NAME_MAX_FONTS
 };
 
-enum UIElement_Rect {
-	NO_ELEMENT_RECT_,
-	MM_OPT_1_NORMAL_,
-	MM_OPT_2_NORMAL_,
-	MM_OPT_3_NORMAL_,
-	MM_OPT_4_NORMAL_,
-	MM_OPT_5_NORMAL_,
+enum UIE_RECT {
 
-	MM_OPT_1_HOVER_,
-	MM_OPT_2_HOVER_,
-	MM_OPT_3_HOVER_,
-	MM_OPT_4_HOVER_,
-	MM_OPT_5_HOVER_,
+	NO_ELEMENT_RECT,
+	MM_OPT_1_NORMAL,
+	MM_OPT_2_NORMAL,
+	MM_OPT_3_NORMAL,
+	MM_OPT_4_NORMAL,
+	MM_OPT_5_NORMAL,
 
-	MAX_RECTS_
+	MM_OPT_1_HOVER,
+	MM_OPT_2_HOVER,
+	MM_OPT_3_HOVER,
+	MM_OPT_4_HOVER,
+	MM_OPT_5_HOVER,
+
+	MAX_RECTS
 };
 
 struct UIImage_Info;
@@ -105,7 +106,7 @@ public:
 	_TTF_Font* GetFont(FONT_NAME fontName);
 
 	const SDL_Texture* GetAtlas() const;
-	SDL_Rect GetRectFromAtlas(UIElement_Rect rect);
+	SDL_Rect GetRectFromAtlas(UIE_RECT rect);
 
 	void SetTextureAlphaMod(float alpha);
 	float IncreaseDecreaseAlpha(float from, float to, float seconds);
@@ -118,7 +119,7 @@ private:
 
 	list<UIElement*> UIElementsList;
 
-	map<UIElement_Rect, SDL_Rect> UIElementsRects;
+	map<UIE_RECT, SDL_Rect> UIElementsRects;
 	map<FONT_NAME, _TTF_Font*> mapFonts;
 
 	// Alpha parameters

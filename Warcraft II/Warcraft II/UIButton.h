@@ -2,6 +2,7 @@
 #define __UIButton_H__
 
 #include "SDL\include\SDL.h"
+
 #include "Defs.h"
 
 #include "j1App.h"
@@ -9,14 +10,14 @@
 #include "j1Gui.h"
 
 struct UIButton_Info {
-	UIElement_Rect normal_tex_area = UIElement_Rect::NO_ELEMENT_RECT_;
-	UIElement_Rect hover_tex_area = UIElement_Rect::NO_ELEMENT_RECT_;
-	UIElement_Rect pressed_tex_area = UIElement_Rect::NO_ELEMENT_RECT_;
+	UIE_RECT normalTexArea = NO_ELEMENT_RECT;
+	UIE_RECT hoverTexArea = NO_ELEMENT_RECT;
+	UIE_RECT pressedTexArea = NO_ELEMENT_RECT;
 
 	bool checkbox = false;
-	bool checkbox_checked = false;
-	UIElement_HORIZONTAL_POS horizontal_orientation = UIElement_HORIZONTAL_POS::LEFT_;
-	UIElement_VERTICAL_POS vertical_orientation = UIElement_VERTICAL_POS::TOP_;
+	bool isChecked = false;
+	UIE_HORIZONTAL_POS horizontalOrientation = HORIZONTAL_POS_LEFT;
+	UIE_VERTICAL_POS verticalOrientation = VERTICAL_POS_TOP;
 
 	bool draggable = false;
 	bool interactive = true;
@@ -27,39 +28,39 @@ struct UIButton_Info {
 class UIButton : public UIElement
 {
 public:
-	UIButton(iPoint local_pos, UIElement* parent, UIButton_Info& info, j1Module* listener = nullptr);
+	UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener = nullptr);
 	void Update(float dt);
 	void HandleInput();
-	void DebugDraw(iPoint blit_pos) const;
+	void DebugDraw(iPoint blitPos) const;
 
-	void ChangeSprite(SDL_Rect tex_area);
+	void ChangeSprite(SDL_Rect texArea);
 	SDL_Rect GetHoverSprite() const;
 	SDL_Rect GetPressedSprite() const;
 	SDL_Rect GetNormalSprite() const;
-	UIEvents GetActualEvent() const;
+	UI_EVENT GetActualEvent() const;
 
-	bool SlideTransition(float dt, int end_pos_y, float speed = 10.0f, bool bounce = true, float bounce_interval = 1.0f, float bounce_speed = 2.0f, bool down = true);
-	bool Bounce(float dt, float bounce_interval = 1.0f, float bounce_speed = 2.0f, bool down = true);
-	void InitializeBounce(float bounce_interval = 1.0f, bool down = true);
+	bool SlideTransition(float dt, int endPosY, float speed = 10.0f, bool bounce = true, float bounceInterval = 1.0f, float bounceSpeed = 2.0f, bool down = true);
+	bool Bounce(float dt, float bounceInterval = 1.0f, float bounceSpeed = 2.0f, bool down = true);
+	void InitializeBounce(float bounceInterval = 1.0f, bool down = true);
 
 private:
 	UIButton_Info button;
-	UIEvents UIevent = NO_EVENT_;
+	UI_EVENT UIevent = UI_EVENT_NONE;
 
-	SDL_Rect normal_tex_area = { 0,0,0,0 };
-	SDL_Rect hover_tex_area = { 0,0,0,0 };
-	SDL_Rect pressed_tex_area = { 0,0,0,0 };
+	SDL_Rect normalTexArea = { 0,0,0,0 };
+	SDL_Rect hoverTexArea = { 0,0,0,0 };
+	SDL_Rect pressedTexArea = { 0,0,0,0 };
 
 public:
 	bool tab = false;
-	bool next_event = false;
+	bool nextEvent = false;
 
 	// Bounce parameters
-	float bounce_value = 0.0f;
+	float bounceValue = 0.0f;
 	iPoint startPos = { 0,0 };
-	bool first_bounce = true;
+	bool firstBounce = true;
 	bool reset = true;
-	bool start_bouncing = false;
+	bool startBouncing = false;
 };
 
 #endif //__UIButton_H__
