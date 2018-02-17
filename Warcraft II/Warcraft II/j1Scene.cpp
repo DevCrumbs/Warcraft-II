@@ -1,3 +1,5 @@
+#include"Brofiler\Brofiler.h"
+
 #include "Defs.h"
 #include "p2Log.h"
 
@@ -22,7 +24,6 @@
 #include "UIImage.h"
 #include "UICursor.h"
 
-#include"Brofiler\Brofiler.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -72,7 +73,7 @@ bool j1Scene::Start()
 	}
 	*/
 
-	debug_tex = App->tex->Load("maps/path2.png");
+	debugTex = App->tex->Load("maps/path2.png");
 
 	// Change between maps
 	/*
@@ -104,7 +105,7 @@ bool j1Scene::PreUpdate()
 
 	// debug pathfing ------------------
 	static iPoint origin;
-	static bool origin_selected = false;
+	static bool isSelected = false;
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
@@ -113,15 +114,15 @@ bool j1Scene::PreUpdate()
 
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
-		if (origin_selected == true)
+		if (isSelected)
 		{
 			App->pathfinding->CreatePath(origin, p, DISTANCE_TO);
-			origin_selected = false;
+			isSelected = false;
 		}
 		else
 		{
 			origin = p;
-			origin_selected = true;
+			isSelected = true;
 		}
 	}
 
@@ -140,20 +141,20 @@ bool j1Scene::Update(float dt)
 	bool ret = true;
 
 	// Debug pathfinding ------------------------------
-	int x, y;
+	int x = 0, y = 0;
 	App->input->GetMousePosition(x, y);
 	iPoint p = App->render->ScreenToWorld(x, y);
 	p = App->map->WorldToMap(p.x, p.y);
 	p = App->map->MapToWorld(p.x, p.y);
 
-	App->render->Blit(debug_tex, p.x, p.y);
+	App->render->Blit(debugTex, p.x, p.y);
 
 	const vector<iPoint>* path = App->pathfinding->GetLastPath();
 
 	for (uint i = 0; i < path->size(); ++i)
 	{
 		iPoint pos = App->map->MapToWorld(path->at(i).x, path->at(i).y);
-		App->render->Blit(debug_tex, pos.x, pos.y);
+		App->render->Blit(debugTex, pos.x, pos.y);
 	}
 
 	// F1, F2, F3, F4, F5, F6, +, -
@@ -266,19 +267,19 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UIEvents UIevent)
 {
 	switch (UIevent)
 	{
-	case UIEvents::MOUSE_ENTER_:
+	case MOUSE_ENTER_:
 
 		break;
 
-	case UIEvents::MOUSE_LEAVE_:
+	case MOUSE_LEAVE_:
 
 		break;
 
-	case UIEvents::MOUSE_LEFT_CLICK_:
+	case MOUSE_LEFT_CLICK_:
 
 		break;
 
-	case UIEvents::MOUSE_LEFT_UP_:
+	case MOUSE_LEFT_UP_:
 
 		break;
 	}

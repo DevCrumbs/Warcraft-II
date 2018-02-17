@@ -63,7 +63,7 @@ public:
 
 	// Map
 	uint index = 0;
-	uint last_index = 0;
+	uint lastIndex = 0;
 
 	// Player
 	bool god = false;
@@ -72,7 +72,7 @@ public:
 
 private:
 	string map;
-	SDL_Texture* debug_tex = nullptr;
+	SDL_Texture* debugTex = nullptr;
 
 	iPoint mouse = { 0,0 };
 };
