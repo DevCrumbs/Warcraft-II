@@ -50,12 +50,12 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	pugi::xml_node general_node = config.child("types").child("player").child("general");
 	pugi::xml_node actual_node;
 
-	actual_node = general_node.child("coll_offset");
-	player.coll_offset = { actual_node.attribute("x").as_int(), actual_node.attribute("y").as_int(), actual_node.attribute("w").as_int(), actual_node.attribute("h").as_int() };
+	actual_node = general_node.child("collisionOffset");
+	player.collisionOffset = { actual_node.attribute("x").as_int(), actual_node.attribute("y").as_int(), actual_node.attribute("w").as_int(), actual_node.attribute("h").as_int() };
 	player.gravity = general_node.child("gravity").attribute("value").as_float();
 	actual_node = general_node.child("speed");
 	player.speed = { actual_node.attribute("x").as_float(), actual_node.attribute("y").as_float() };
-	player.check_collision_offset = general_node.child("check_collision").attribute("offset").as_uint();
+	player.checkCollisionOffset = general_node.child("check_collision").attribute("offset").as_uint();
 
 	// Load animations
 	pugi::xml_node animations_node = config.child("types").child("player").child("animations");
@@ -64,7 +64,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	node = animations_node.child("idle");
 	player.idle.speed = node.attribute("speed").as_float();
 	player.idle.loop = node.attribute("loop").as_bool();
-	player.collSize = { node.child("frame").attribute("w").as_int(), node.child("frame").attribute("h").as_int() };
+	player.collisionSize = { node.child("frame").attribute("w").as_int(), node.child("frame").attribute("h").as_int() };
 	for (node = node.child("frame"); node; node = node.next_sibling("frame")) {
 		player.idle.PushBack({ node.attribute("x").as_int(), node.attribute("y").as_int(), node.attribute("w").as_int(), node.attribute("h").as_int() });
 	}

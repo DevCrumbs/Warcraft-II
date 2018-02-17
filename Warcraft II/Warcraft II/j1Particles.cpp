@@ -42,7 +42,7 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	sparkle.anim.speed = node.attribute("speed").as_float();
 	sparkle.anim.loop = node.attribute("loop").as_bool();
 	node = node.child("frame");
-	sparkle.collSize = { node.attribute("w").as_int(), node.attribute("h").as_int() };
+	sparkle.collisionSize = { node.attribute("w").as_int(), node.attribute("h").as_int() };
 
 	LoadAnimationsSpeed();
 	*/
@@ -151,10 +151,10 @@ void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_T
 					p->destination.y = (App->entities->playerData->position.y - p->position.y) / m;
 				}
 
-				p->collider = App->collision->AddCollider({ 0, 0, p->collSize.x - 40, p->collSize.y - 40 }, colliderType, this);
+				p->collider = App->collision->AddCollider({ 0, 0, p->collisionSize.x - 40, p->collisionSize.y - 40 }, colliderType, this);
 			}
 			else if (colliderType == COLLIDER_MONKEY_HIT)
-				p->collider = App->collision->AddCollider({ 0, 0, p->collSize.x, p->collSize.y }, colliderType, this);
+				p->collider = App->collision->AddCollider({ 0, 0, p->collisionSize.x, p->collisionSize.y }, colliderType, this);
 			*/
 
 			active[i] = p;
@@ -197,7 +197,7 @@ Particle::Particle()
 
 Particle::Particle(const Particle& p) :
 	anim(p.anim), position(p.position), speed(p.speed),
-	fx(p.fx), born(p.born), life(p.life), collSize(p.collSize)
+	fx(p.fx), born(p.born), life(p.life), collisionSize(p.collisionSize)
 {}
 
 Particle::~Particle()

@@ -23,7 +23,7 @@ struct Particle
 	Uint32 born = 0;
 	Uint32 life = 0;
 
-	iPoint collSize = { 0,0 };
+	iPoint collisionSize = { 0,0 };
 	fPoint destination = { 0,0 };
 
 	bool left = true, right = true, up = true, down = true;

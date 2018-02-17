@@ -27,20 +27,20 @@ Player::Player(float x, float y) : Entity(x, y)
 	LoadAnimationsSpeed();
 
 	// Set player animation (state)
-	player.SetState(idle_);
+	player.SetState(PLAYERSTATE_IDLE);
 
 	// Create player collider
 	position = { 600, 100 };
 
-	colliderPos = { (int)position.x + player.coll_offset.x, (int)position.y + player.coll_offset.y };
-	collider = App->collision->AddCollider({ colliderPos.x, colliderPos.y, player.collSize.x + player.coll_offset.w, player.collSize.y + player.coll_offset.h }, COLLIDER_PLAYER, App->entities);
+	colliderPos = { (int)position.x + player.collisionOffset.x, (int)position.y + player.collisionOffset.y };
+	collider = App->collision->AddCollider({ colliderPos.x, colliderPos.y, player.collisionSize.x + player.collisionOffset.w, player.collisionSize.y + player.collisionOffset.h }, COLLIDER_PLAYER, App->entities);
 	*/
 }
 
 void Player::LoadAnimationsSpeed()
 {
 	/*
-	idle_speed = player.idle.speed;
+	idleSpeed = player.idle.speed;
 	*/
 }
 
@@ -64,7 +64,7 @@ void Player::Move(float dt)
 	down = true;
 	left = true;
 	right = true;
-	CheckCollision(colliderPos, { player.collSize.x + player.coll_offset.w, player.collSize.y + player.coll_offset.h }, player.check_collision_offset, up, down, left, right, player.GetState());
+	CheckCollision(colliderPos, { player.collisionSize.x + player.collisionOffset.w, player.collisionSize.y + player.collisionOffset.h }, player.checkCollisionOffset, up, down, left, right, player.GetState());
 
 	// Update state
 	if (!App->scene->pause)
@@ -76,7 +76,7 @@ void Player::Move(float dt)
 	UpdateAnimations(dt);
 
 	// Update collider
-	colliderPos = { (int)position.x + player.coll_offset.x, (int)position.y + player.coll_offset.y };
+	colliderPos = { (int)position.x + player.collisionOffset.x, (int)position.y + player.collisionOffset.y };
 	collider->SetPos(colliderPos.x, colliderPos.y);
 
 	animationPlayer = animation;
@@ -86,7 +86,7 @@ void Player::Move(float dt)
 void Player::UpdateAnimations(float dt)
 {
 	/*
-	player.idle.speed = idle_speed * dt;
+	player.idle.speed = idleSpeed * dt;
 	*/
 }
 
@@ -94,7 +94,7 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 {
 }
 
-void PlayerInfo::SetState(playerstates state) {
+void PlayerInfo::SetState(PLAYERSTATE state) {
 	this->state = state;
 }
 
@@ -102,24 +102,28 @@ void Player::PlayerStateMachine() {
 
 	switch (player.state) {
 
-	case idle_:
+	case PLAYERSTATE_IDLE:
 
 		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && right) {
-			player.state = forward_;
+			player.state = PLAYERSTATE_FORWARD;
 			break;
 
 			animation = &player.idle;
 
 			break;
 
-	case forward_:
+	case PLAYERSTATE_FORWARD:
 
 		break;
+
+	default:
+		break;
+
 		}
 	}
 }
 
-void Player::CheckCollision(iPoint position, iPoint size, int offset, bool &up, bool &down, bool &left, bool &right, playerstates state) {
+void Player::CheckCollision(iPoint position, iPoint size, int offset, bool &up, bool &down, bool &left, bool &right, PLAYERSTATE state) {
 
 	BROFILER_CATEGORY("CheckForCollision", Profiler::Color::Azure);
 
@@ -140,7 +144,7 @@ void Player::CheckCollision(iPoint position, iPoint size, int offset, bool &up, 
 	}
 }
 
-void Player::CalculateCollision(iPoint position, iPoint size, uint x, uint y, uint id, int offset, bool &up, bool &down, bool &left, bool &right, playerstates state) {
+void Player::CalculateCollision(iPoint position, iPoint size, uint x, uint y, uint id, int offset, bool &up, bool &down, bool &left, bool &right, PLAYERSTATE state) {
 
 	if (App->toCap && App->capFrames <= 30) {
 		offset = 6;
@@ -152,20 +156,20 @@ void Player::CalculateCollision(iPoint position, iPoint size, uint x, uint y, ui
 
 	SDL_Rect B = { x, y, 16, 16 }; //object rectangle
 
-	iPoint c_up = { 0, -offset };
-	iPoint c_down = { 0, offset };
-	iPoint c_left = { -offset, 0 };
-	iPoint c_right = { offset, 0 };
+	iPoint cUp = { 0, -offset };
+	iPoint cDown = { 0, offset };
+	iPoint cLeft = { -offset, 0 };
+	iPoint cRight = { offset, 0 };
 
-	// TODO: polish collisions
+	/// TODO: polish collisions
 
 	//UP
-	SDL_Rect A_up = { position.x + c_up.x, position.y + c_up.y, size.x, size.y }; //player rectangle
-	if (SDL_HasIntersection(&A_up, &B)) {
+	SDL_Rect aUp = { position.x + cUp.x, position.y + cUp.y, size.x, size.y }; //player rectangle
+	if (SDL_HasIntersection(&aUp, &B)) {
 		/*
 		if (id == 1181 || (id == 1182 && App->scene->gate == false))
 			up = false;
-		else if (id == 1183 && state != null_) {
+		else if (id == 1183 && state != PLAYERSTATE_NONE) {
 			player.SetState(punished_);
 			lava_dead = true;
 		}
@@ -173,20 +177,20 @@ void Player::CalculateCollision(iPoint position, iPoint size, uint x, uint y, ui
 	}
 
 	//DOWN
-	SDL_Rect A_down = { position.x + c_down.x, position.y + c_down.y, size.x, size.y }; //player rectangle
-	if (SDL_HasIntersection(&A_down, &B))
+	SDL_Rect aDown = { position.x + cDown.x, position.y + cDown.y, size.x, size.y }; //player rectangle
+	if (SDL_HasIntersection(&aDown, &B))
 		if (id == 1181)
 			down = false;
 	
 	//LEFT
-	SDL_Rect A_left = { position.x + c_left.x, position.y + c_left.y, size.x, size.y }; //player rectangle
-	if (SDL_HasIntersection(&A_left, &B))
+	SDL_Rect aLeft = { position.x + cLeft.x, position.y + cLeft.y, size.x, size.y }; //player rectangle
+	if (SDL_HasIntersection(&aLeft, &B))
 		if (id == 1181)
 			left = false;
 
 	//RIGHT
-	SDL_Rect A_right = { position.x + c_right.x, position.y + c_right.y, size.x, size.y }; //player rectangle
-	if (SDL_HasIntersection(&A_right, &B))
+	SDL_Rect aRight = { position.x + cRight.x, position.y + cRight.y, size.x, size.y }; //player rectangle
+	if (SDL_HasIntersection(&aRight, &B))
 		if (id == 1181)
 			right = false;
 }
@@ -198,9 +202,9 @@ PlayerInfo::PlayerInfo() {}
 
 PlayerInfo::PlayerInfo(const PlayerInfo& i) :
 	idle(i.idle),
-	collSize(i.collSize), coll_offset(i.coll_offset),
+	collisionSize(i.collisionSize), collisionOffset(i.collisionOffset),
 	gravity(i.gravity), speed(i.speed), state(i.state),
-	check_collision_offset(i.check_collision_offset)
+	checkCollisionOffset(i.checkCollisionOffset)
 {}
 
 PlayerInfo::~PlayerInfo() {}
