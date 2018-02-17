@@ -6,18 +6,18 @@
 #include "j1Window.h"
 #include "j1Textures.h"
 
-UILabel::UILabel(iPoint local_pos, UIElement* parent, UILabel_Info& info, j1Module* listener) : UIElement(local_pos, parent, listener), label(info)
+UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), label(info)
 {
-	type = UIElement_TYPE::LABEL_;
+	type = UIE_TYPE::UIE_TYPE_LABEL;
 
 	draggable = label.draggable;
 	interactive = label.interactive;
-	horizontal = label.horizontal_orientation;
-	vertical = label.vertical_orientation;
-	font = App->gui->GetFont(label.font_name);
-	color = label.normal_color;
+	horizontal = label.horizontalOrientation;
+	vertical = label.verticalOrientation;
+	font = App->gui->GetFont(label.fontName);
+	color = label.normalColor;
 
-	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.text_wrap_length);
+	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.textWrapLength);
 	App->font->CalcSize(label.text.data(), width, height, font);
 
 	SetOrientation();
@@ -36,32 +36,32 @@ UILabel::~UILabel()
 
 void UILabel::Draw() const
 {
-	iPoint blit_pos;
+	iPoint blitPos;
 	int scale = App->win->GetScale();
-	blit_pos.x = (GetLocalPos().x - App->render->camera.x) / scale;
-	blit_pos.y = (GetLocalPos().y - App->render->camera.y) / scale;
+	blitPos.x = (GetLocalPos().x - App->render->camera.x) / scale;
+	blitPos.y = (GetLocalPos().y - App->render->camera.y) / scale;
 
 	if (GetParent() != nullptr) {
 		SDL_Rect daddy = GetParent()->GetScreenRect();
 		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
 	}
 
-	if (tex_area.w != 0)
-		App->render->Blit(tex, blit_pos.x, blit_pos.y, &tex_area);
+	if (texArea.w > 0)
+		App->render->Blit(tex, blitPos.x, blitPos.y, &texArea);
 	else
-		App->render->Blit(tex, blit_pos.x, blit_pos.y);
+		App->render->Blit(tex, blitPos.x, blitPos.y);
 
-	if (App->gui->debug_draw)
-		DebugDraw(blit_pos);
+	if (App->gui->isDebug)
+		DebugDraw(blitPos);
 
 	App->render->ResetViewPort();
 }
 
-void UILabel::DebugDraw(iPoint blit_pos) const
+void UILabel::DebugDraw(iPoint blitPos) const
 {
 	Uint8 alpha = 80;
 
-	SDL_Rect quad = { blit_pos.x, blit_pos.y, width, height };
+	SDL_Rect quad = { blitPos.x, blitPos.y, width, height };
 	App->render->DrawQuad(quad, 10, 30, 5, alpha, false);
 }
 
@@ -71,69 +71,71 @@ bool UILabel::MouseHover() const
 	App->input->GetMousePosition(x, y);
 	uint scale = App->win->GetScale();
 
-	if (!label.interaction_from_father)
-		return x > GetScreenPos().x / scale && x < GetScreenPos().x / scale + GetLocalRect().w && y > GetScreenPos().y / scale && y < GetScreenPos().y / scale + GetLocalRect().h;
+	if (!label.interactionFromFather)
+		return x > GetScreenPos().x / scale && x < GetScreenPos().x / scale + GetLocalRect().w && 
+		       y > GetScreenPos().y / scale && y < GetScreenPos().y / scale + GetLocalRect().h;
 	else
-		return x > GetParent()->GetScreenPos().x / scale && x < GetParent()->GetScreenPos().x / scale + GetParent()->GetLocalRect().w && y > GetParent()->GetScreenPos().y / scale && y < GetParent()->GetScreenPos().y / scale + GetParent()->GetLocalRect().h;
+		return x > GetParent()->GetScreenPos().x / scale && x < GetParent()->GetScreenPos().x / scale + GetParent()->GetLocalRect().w &&
+		       y > GetParent()->GetScreenPos().y / scale && y < GetParent()->GetScreenPos().y / scale + GetParent()->GetLocalRect().h;
 }
 
 void UILabel::HandleInput()
 {
-	iPoint mouse_pos;
-	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
+	iPoint mousePos;
+	App->input->GetMousePosition(mousePos.x, mousePos.y);
 
 	switch (UIevent) {
 
-	case UIEvents::NO_EVENT_:
+	case UI_EVENT_NONE:
 		if (MouseHover()) {
-			next_event = false;
-			UIevent = UIEvents::MOUSE_ENTER_;
-			SetColor(label.hover_color);
+			nextEvent = false;
+			UIevent = UI_EVENT_MOUSE_ENTER;
+			SetColor(label.hoverColor);
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
 		break;
-	case UIEvents::MOUSE_ENTER_:
+	case UI_EVENT_MOUSE_ENTER:
 
 		if (!MouseHover()) {
 			LOG("MOUSE LEAVE");
-			next_event = false;
-			UIevent = UIEvents::MOUSE_LEAVE_;
+			nextEvent = false;
+			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
-			next_event = false;
+			nextEvent = false;
 			LOG("MOUSE L CLICK START");
-			SetColor(label.pressed_color);
-			UIevent = UIEvents::MOUSE_LEFT_CLICK_;
+			SetColor(label.pressedColor);
+			UIevent = UI_EVENT_MOUSE_LEFT_CLICK;
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
-			next_event = false;
+			nextEvent = false;
 			LOG("MOUSE R CLICK START");
-			SetColor(label.pressed_color);
+			SetColor(label.pressedColor);
 
-			mouse_click_pos.x = mouse_pos.x * App->win->GetScale() - GetLocalPos().x;
-			mouse_click_pos.y = mouse_pos.y * App->win->GetScale() - GetLocalPos().y;
+			mouseClickPos.x = mousePos.x * App->win->GetScale() - GetLocalPos().x;
+			mouseClickPos.y = mousePos.y * App->win->GetScale() - GetLocalPos().y;
 
 			if (draggable) {
 				drag = true;
 				//App->gui->drag_to_true = true;
 			}
 
-			UIevent = UIEvents::MOUSE_RIGHT_CLICK_;
+			UIevent = UI_EVENT_MOUSE_RIGHT_CLICK;
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
 
-		if (!next_event) {
+		if (!nextEvent) {
 			LOG("MOUSE ENTER");
-			next_event = true;
+			nextEvent = true;
 		}
 
 		break;
-	case UIEvents::MOUSE_RIGHT_CLICK_:
+	case UI_EVENT_MOUSE_RIGHT_CLICK:
 
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED) {
 			LOG("MOUSE R CLICK FINISH");
@@ -144,31 +146,31 @@ void UILabel::HandleInput()
 			}
 
 			listener->OnUIEvent((UIElement*)this, UIevent);
-			UIevent = UIEvents::MOUSE_ENTER_;
+			UIevent = UI_EVENT_MOUSE_ENTER;
 			break;
 		}
 
 		break;
-	case UIEvents::MOUSE_LEFT_CLICK_:
+	case UI_EVENT_MOUSE_LEFT_CLICK:
 
 		if (!MouseHover()) {
 			LOG("MOUSE LEAVE");
-			UIevent = UIEvents::MOUSE_LEAVE_;
+			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED) {
 			LOG("MOUSE L CLICK FINISH");
 			// Uncomment next line and create a new UIEvent if you want to execute a function when mouse button is released
 			//listener->OnUIEvent((UIElement*)this, UIevent);
-			UIevent = MOUSE_ENTER_;
+			UIevent = UI_EVENT_MOUSE_ENTER;
 			break;
 		}
 
 		break;
-	case UIEvents::MOUSE_LEAVE_:
-		SetColor(label.normal_color);
+	case UI_EVENT_MOUSE_LEAVE:
+		SetColor(label.normalColor);
 		listener->OnUIEvent((UIElement*)this, UIevent);
-		UIevent = UIEvents::NO_EVENT_;
+		UIevent = UI_EVENT_NONE;
 		break;
 	}
 }
@@ -188,53 +190,53 @@ void UILabel::SetColor(SDL_Color color, bool normal, bool hover, bool pressed)
 	tex = App->font->Print(label.text.data(), color, font);
 
 	if (normal)
-		label.normal_color = color;
+		label.normalColor = color;
 	else if (hover)
-		label.hover_color = color;
+		label.hoverColor = color;
 	else if (pressed)
-		label.pressed_color = color;
+		label.pressedColor = color;
 }
 
 SDL_Color UILabel::GetColor(bool normal, bool hover, bool pressed)
 {
 	if (normal)
-		return label.normal_color;
+		return label.normalColor;
 	else if (hover)
-		return label.hover_color;
+		return label.hoverColor;
 	else if (pressed)
-		return label.pressed_color;
+		return label.pressedColor;
 	else
 		return color;
 }
 
-bool UILabel::IntermitentFade(float seconds, bool loop, bool half_loop)
+bool UILabel::IntermitentFade(float seconds, bool loop, bool halfLoop)
 {
 	bool ret = false;
 
 	if (reset) {
-		start_time = SDL_GetTicks();
+		startTime = SDL_GetTicks();
 		reset = false;
 	}
 
 	// Math operations
-	total_time = (Uint32)(seconds * 0.5f * 1000.0f);
+	totalTime = (Uint32)(seconds * 0.5f * 1000.0f);
 
-	Uint32 now = (SDL_GetTicks() - start_time);
-	float normalized = MIN(1.0f, (float)now / (float)total_time);
-	float normalized2 = MIN(1.0f, (float)now / (float)total_time);
+	Uint32 now = (SDL_GetTicks() - startTime);
+	float normalized = MIN(1.0f, (float)now / (float)totalTime);
+	float normalized2 = MIN(1.0f, (float)now / (float)totalTime);
 	normalized2 = 1 - normalized2;
 
 	float alpha = 255.0f * normalized;
 	float alpha2 = 255.0f * normalized2;
 
 	// Color change
-	if (!is_invisible) {
+	if (!isInvisible) {
 		SetColor({ GetColor().r,GetColor().g,GetColor().b,(Uint8)alpha2 });
 
 		if (alpha2 == 0.0f) {
 			if (loop) {
 				alpha = 255.0f;
-				is_invisible = true;
+				isInvisible = true;
 				ResetFade();
 			}
 			ret = true;
@@ -244,9 +246,9 @@ bool UILabel::IntermitentFade(float seconds, bool loop, bool half_loop)
 		SetColor({ GetColor().r,GetColor().g,GetColor().b,(Uint8)alpha });
 
 		if (alpha == 255.0f) {
-			if (!half_loop) {
+			if (!halfLoop) {
 				alpha2 = 0.0f;
-				is_invisible = false;
+				isInvisible = false;
 				ResetFade();
 			}
 			else
@@ -262,16 +264,16 @@ bool UILabel::FromAlphaToAlphaFade(float from, float to, float seconds)
 	bool ret = false;
 
 	if (reset) {
-		start_time = SDL_GetTicks();
+		startTime = SDL_GetTicks();
 		reset = false;
 	}
 
 	// Math operations
-	total_time = (Uint32)(seconds * 0.5f * 1000.0f);
+	totalTime = (Uint32)(seconds * 0.5f * 1000.0f);
 
-	Uint32 now = (SDL_GetTicks() - start_time);
-	float normalized = MIN(1.0f, (float)now / (float)total_time);
-	float normalized2 = MIN(1.0f, (float)now / (float)total_time);
+	Uint32 now = (SDL_GetTicks() - startTime);
+	float normalized = MIN(1.0f, (float)now / (float)totalTime);
+	float normalized2 = MIN(1.0f, (float)now / (float)totalTime);
 	normalized2 = 1 - normalized2;
 
 	float alpha = (to - from) * normalized;
@@ -301,13 +303,13 @@ void UILabel::ResetFade()
 	reset = true;
 }
 
-void UILabel::RandomAlphaPainting(float dt, SDL_Color color, int base_alpha, int min_alpha, int max_alpha, float speed)
+void UILabel::RandomAlphaPainting(float dt, SDL_Color color, int baseAlpha, int minAlpha, int maxAlpha, float speed)
 {
 	if (timer >= speed) {
 		int random = rand() % 2;
 
-		int min = min_alpha + rand() % (base_alpha - min_alpha + 1);
-		int max = min_alpha + rand() % (max_alpha - min_alpha + 1);
+		int min = minAlpha + rand() % (baseAlpha - minAlpha + 1);
+		int max = minAlpha + rand() % (maxAlpha - minAlpha + 1);
 
 		if (min >= 0 && min <= 255 && max >= 0 && max <= 255) {
 			switch (random) {
@@ -327,20 +329,20 @@ void UILabel::RandomAlphaPainting(float dt, SDL_Color color, int base_alpha, int
 	timer += 1.0f * dt;
 }
 
-bool UILabel::SlideTransition(float dt, int end_pos_y, float speed, bool bounce, float bounce_interval, float bounce_speed, bool down)
+bool UILabel::SlideTransition(float dt, int endPosY, float speed, bool bounce, float bounceInterval, float bounceSpeed, bool down)
 {
 	bool ret = false;
 
 	iPoint pos = GetLocalPos();
 
 	if (down) {
-		if (pos.y + height >= (int)end_pos_y - height / 2) {
-			if (bounce && !start_bouncing)
-				start_bouncing = true;
+		if (pos.y + height >= (int)endPosY - height / 2) {
+			if (bounce && !startBouncing)
+				startBouncing = true;
 			else if (!bounce)
 				ret = true;
 		}
-		else if (!start_bouncing) {
+		else if (!startBouncing) {
 			if ((int)(speed * dt) >= 1)
 				IncreasePos({ 0,(int)(speed * dt) });
 			else
@@ -348,13 +350,13 @@ bool UILabel::SlideTransition(float dt, int end_pos_y, float speed, bool bounce,
 		}
 	}
 	else {
-		if (pos.y + height <= (int)end_pos_y - height / 2) {
-			if (bounce && !start_bouncing)
-				start_bouncing = true;
+		if (pos.y + height <= (int)endPosY - height / 2) {
+			if (bounce && !startBouncing)
+				startBouncing = true;
 			else if (!bounce)
 				ret = true;
 		}
-		else if (!start_bouncing) {
+		else if (!startBouncing) {
 			if ((int)(speed * dt) >= 1)
 				DecreasePos({ 0,(int)(speed * dt) });
 			else
@@ -362,8 +364,8 @@ bool UILabel::SlideTransition(float dt, int end_pos_y, float speed, bool bounce,
 		}
 	}
 
-	if (start_bouncing) {
-		if (Bounce(dt, bounce_interval, bounce_speed, down)) {
+	if (startBouncing) {
+		if (Bounce(dt, bounceInterval, bounceSpeed, down)) {
 			ret = true;
 		}
 	}
@@ -371,40 +373,40 @@ bool UILabel::SlideTransition(float dt, int end_pos_y, float speed, bool bounce,
 	return ret;
 }
 
-bool UILabel::Bounce(float dt, float bounce_interval, float bounce_speed, bool down)
+bool UILabel::Bounce(float dt, float bounceInterval, float bounceSpeed, bool down)
 {
 	bool ret = false;
 
 	iPoint pos = GetLocalPos();
 
 	if (reset) {
-		InitializeBounce(bounce_interval, down);
+		InitializeBounce(bounceInterval, down);
 		reset = false;
 	}
 
-	if (bounce_value <= bounce_speed)
+	if (bounceValue <= bounceSpeed)
 		ret = true;
 
-	if (first_bounce) {
-		if (pos.y >= start_pos.y + bounce_value) {
-			bounce_value -= bounce_speed;
-			first_bounce = false;
+	if (firstBounce) {
+		if (pos.y >= startPos.y + bounceValue) {
+			bounceValue -= bounceSpeed;
+			firstBounce = false;
 		}
 		else {
-			if ((int)(bounce_value * 10.0f * dt) >= 1)
-				IncreasePos({ 0, (int)(bounce_value * 10.0f * dt) });
+			if ((int)(bounceValue * 10.0f * dt) >= 1)
+				IncreasePos({ 0, (int)(bounceValue * 10.0f * dt) });
 			else
 				IncreasePos({ 0, 1 });
 		}
 	}
 	else {
-		if (pos.y <= start_pos.y - bounce_value) {
-			bounce_value -= bounce_speed;
-			first_bounce = true;
+		if (pos.y <= startPos.y - bounceValue) {
+			bounceValue -= bounceSpeed;
+			firstBounce = true;
 		}
 		else {
-			if ((int)(bounce_value * 10.0f * dt) >= 1)
-				DecreasePos({ 0, (int)(bounce_value * 10.0f * dt) });
+			if ((int)(bounceValue * 10.0f * dt) >= 1)
+				DecreasePos({ 0, (int)(bounceValue * 10.0f * dt) });
 			else
 				DecreasePos({ 0, 1 });
 		}
@@ -413,11 +415,11 @@ bool UILabel::Bounce(float dt, float bounce_interval, float bounce_speed, bool d
 	return ret;
 }
 
-void UILabel::InitializeBounce(float bounce_interval, bool down)
+void UILabel::InitializeBounce(float bounceInterval, bool down)
 {
-	bounce_value = bounce_interval;
-	start_pos = GetLocalPos();
+	bounceValue = bounceInterval;
+	startPos = GetLocalPos();
 
 	if (!down)
-		first_bounce = false;
+		firstBounce = false;
 }

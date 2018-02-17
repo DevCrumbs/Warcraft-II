@@ -10,12 +10,12 @@
 #include "j1Gui.h"
 
 struct UIImage_Info {
-	UIElement_Rect tex_area = UIElement_Rect::NO_ELEMENT_RECT_;
-	UIElement_HORIZONTAL_POS horizontal_orientation = UIElement_HORIZONTAL_POS::LEFT_;
-	UIElement_VERTICAL_POS vertical_orientation = UIElement_VERTICAL_POS::TOP_;
+	UIE_RECT texArea = NO_ELEMENT_RECT;
+	UIE_HORIZONTAL_POS horizontalOrientation = HORIZONTAL_POS_LEFT;
+	UIE_VERTICAL_POS verticalOrientation = VERTICAL_POS_TOP;
 
 	bool quad = false;
-	SDL_Rect quad_area = { 0,0,0,0 };
+	SDL_Rect quadArea = { 0,0,0,0 };
 
 	SDL_Color color = { 0,0,0,255 };
 	bool draggable = false;
@@ -26,14 +26,14 @@ struct UIImage_Info {
 class UIImage : public UIElement
 {
 public:
-	UIImage(iPoint local_pos, UIElement* parent, UIImage_Info& info, j1Module* listener = nullptr);
+	UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener = nullptr);
 	void Draw() const;
-	void DebugDraw(iPoint blit_pos) const;
+	void DebugDraw(iPoint blitPos) const;
 	void SetColor(const SDL_Color color);
 	void StartAnimation(Animation anim);
 	void Update(float dt);
 	SDL_Color GetColor();
-	void SetNewRect(SDL_Rect& new_rect);
+	void SetNewRect(SDL_Rect& newRect);
 	SDL_Rect GetRect();
 
 	void ResetFade();
@@ -43,14 +43,14 @@ private:
 	UIImage_Info image;
 
 	// Fade parameters
-	float total_time = 0.0f;
-	float start_time = 0.0f;
+	float totalTime = 0.0f;
+	float startTime = 0.0f;
 	bool reset = true;
 
-	Animation anim_to_play;
-	Animation* anim;
+	Animation animToPlay;
+	Animation* anim = nullptr;
 	float speed = 0.0f;
-	bool start_aimation = false;
+	bool startAimation = false;
 };
 
 #endif //__UIImage_H__

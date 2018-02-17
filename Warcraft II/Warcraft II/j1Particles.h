@@ -23,7 +23,7 @@ struct Particle
 	Uint32 born = 0;
 	Uint32 life = 0;
 
-	iPoint coll_size = { 0,0 };
+	iPoint collisionSize = { 0,0 };
 	fPoint destination = { 0,0 };
 
 	bool left = true, right = true, up = true, down = true;
@@ -47,7 +47,7 @@ public:
 	bool Update(float dt);
 	bool CleanUp();
 
-	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, Uint32 delay, fPoint speed);
+	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType, Uint32 delay, fPoint speed);
 	void OnCollision(Collider* c1, Collider* c2);
 
 	void UpdateAnimations(const float dt);
@@ -55,7 +55,7 @@ public:
 
 private:
 	Particle* active[MAX_ACTIVE_PARTICLES];
-	uint last_particle = 0;
+	uint lastParticle = 0;
 
 public:
 	Particle arrowRight;

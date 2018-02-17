@@ -14,9 +14,9 @@ j1Input::j1Input() : j1Module()
 {
 	name.assign("input");
 
-	keyboard = new j1KeyState[MAX_KEYS];
-	memset(keyboard, KEY_IDLE, sizeof(j1KeyState) * MAX_KEYS);
-	memset(mouse_buttons, KEY_IDLE, sizeof(j1KeyState) * NUM_MOUSE_BUTTONS);
+	keyboard = new KEY_STATE[MAX_KEYS];
+	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);
+	memset(mouseButtons, KEY_IDLE, sizeof(KEY_STATE) * NUM_MOUSE_BUTTONS);
 }
 
 // Destructor
@@ -56,7 +56,7 @@ bool j1Input::PreUpdate()
 {
 	bool ret = true;
 
-	key_pressed = false;
+	isPressed = false;
 
 	static SDL_Event event;
 
@@ -66,7 +66,7 @@ bool j1Input::PreUpdate()
 	{
 		if (keys[i] == 1)
 		{
-			key_pressed = true;
+			isPressed = true;
 
 			if (keyboard[i] == KEY_IDLE)
 				keyboard[i] = KEY_DOWN;
@@ -84,11 +84,11 @@ bool j1Input::PreUpdate()
 
 	for (int i = 0; i < NUM_MOUSE_BUTTONS; ++i)
 	{
-		if (mouse_buttons[i] == KEY_DOWN)
-			mouse_buttons[i] = KEY_REPEAT;
+		if (mouseButtons[i] == KEY_DOWN)
+			mouseButtons[i] = KEY_REPEAT;
 
-		if (mouse_buttons[i] == KEY_UP)
-			mouse_buttons[i] = KEY_IDLE;
+		if (mouseButtons[i] == KEY_UP)
+			mouseButtons[i] = KEY_IDLE;
 	}
 
 	while (SDL_PollEvent(&event) != 0)
@@ -120,22 +120,22 @@ bool j1Input::PreUpdate()
 			break;
 
 		case SDL_MOUSEBUTTONDOWN:
-			mouse_buttons[event.button.button - 1] = KEY_DOWN;
+			mouseButtons[event.button.button - 1] = KEY_DOWN;
 			//LOG("Mouse button %d down", event.button.button-1);
 			break;
 
 		case SDL_MOUSEBUTTONUP:
-			mouse_buttons[event.button.button - 1] = KEY_UP;
+			mouseButtons[event.button.button - 1] = KEY_UP;
 			//LOG("Mouse button %d up", event.button.button-1);
 			break;
 
 		case SDL_MOUSEMOTION:
 			int scale = App->win->GetScale();
-			mouse_motion_x = event.motion.xrel / scale;
-			mouse_motion_y = event.motion.yrel / scale;
-			mouse_x = event.motion.x / scale;
-			mouse_y = event.motion.y / scale;
-			//LOG("Mouse motion x %d y %d", mouse_motion_x, mouse_motion_y);
+			mouseMotionX = event.motion.xrel / scale;
+			mouseMotionY = event.motion.yrel / scale;
+			mouseX = event.motion.x / scale;
+			mouseY = event.motion.y / scale;
+			//LOG("Mouse motion x %d y %d", mouseMotionX, mouseMotionY);
 			break;
 		}
 	}
@@ -163,19 +163,19 @@ bool j1Input::GetWindowEvent(j1EventWindow ev)
 
 void j1Input::GetMousePosition(int& x, int& y)
 {
-	x = mouse_x;
-	y = mouse_y;
+	x = mouseX;
+	y = mouseY;
 }
 
 void j1Input::GetMouseMotion(int& x, int& y)
 {
-	x = mouse_motion_x;
-	y = mouse_motion_y;
+	x = mouseMotionX;
+	y = mouseMotionY;
 }
 
 bool j1Input::IsAnyKeyPressed()
 {
-	bool is_any_key_pressed = key_pressed;
-	key_pressed = false;
-	return is_any_key_pressed;
+	bool isAnyKeyPressed = isPressed;
+	isPressed = false;
+	return isAnyKeyPressed;
 }

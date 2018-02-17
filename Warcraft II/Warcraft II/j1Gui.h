@@ -1,12 +1,13 @@
 #ifndef __j1GUI_H__
 #define __j1GUI_H__
 
+#include <map>
+#include <list>
+
 #include "j1Module.h"
 #include "UIElement.h"
 #include "NTree.h"
 
-#include <map>
-#include <list>
 using namespace std;
 
 #define CURSOR_WIDTH 2
@@ -24,28 +25,29 @@ using namespace std;
 
 struct _TTF_Font;
 
-enum Font_Names {
-	DEFAULT_,
-	MSMINCHO_,
-	ZELDA_,
-	MAX_FONTS_
+enum FONT_NAME {
+	FONT_NAME_DEFAULT,
+	FONT_NAME_MSMINCHO,
+	FONT_NAME_ZELDA,
+	FONT_NAME_MAX_FONTS
 };
 
-enum UIElement_Rect {
-	NO_ELEMENT_RECT_,
-	MM_OPT_1_NORMAL_,
-	MM_OPT_2_NORMAL_,
-	MM_OPT_3_NORMAL_,
-	MM_OPT_4_NORMAL_,
-	MM_OPT_5_NORMAL_,
+enum UIE_RECT {
 
-	MM_OPT_1_HOVER_,
-	MM_OPT_2_HOVER_,
-	MM_OPT_3_HOVER_,
-	MM_OPT_4_HOVER_,
-	MM_OPT_5_HOVER_,
+	NO_ELEMENT_RECT,
+	MM_OPT_1_NORMAL,
+	MM_OPT_2_NORMAL,
+	MM_OPT_3_NORMAL,
+	MM_OPT_4_NORMAL,
+	MM_OPT_5_NORMAL,
 
-	MAX_RECTS_
+	MM_OPT_1_HOVER,
+	MM_OPT_2_HOVER,
+	MM_OPT_3_HOVER,
+	MM_OPT_4_HOVER,
+	MM_OPT_5_HOVER,
+
+	MAX_RECTS
 };
 
 struct UIImage_Info;
@@ -89,9 +91,9 @@ public:
 	bool Blit(float dt) const;
 
 	// Gui creation functions
-	UIImage* CreateUIImage(iPoint local_pos, UIImage_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
-	UILabel* CreateUILabel(iPoint local_pos, UILabel_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
-	UIButton* CreateUIButton(iPoint local_pos, UIButton_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
+	UIImage* CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
+	UILabel* CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
+	UIButton* CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UICursor* CreateUICursor(UICursor_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 
 	bool DestroyElement(UIElement* elem);
@@ -101,32 +103,33 @@ public:
 	void SetUpDraggingChildren(UIElement* elem, bool dragging);
 	void SetUpDraggingNode(bool drag);
 
-	_TTF_Font* GetFont(Font_Names font_name);
+	_TTF_Font* GetFont(FONT_NAME fontName);
 
 	const SDL_Texture* GetAtlas() const;
-	SDL_Rect GetRectFromAtlas(UIElement_Rect rect);
+	SDL_Rect GetRectFromAtlas(UIE_RECT rect);
 
 	void SetTextureAlphaMod(float alpha);
 	float IncreaseDecreaseAlpha(float from, float to, float seconds);
 	void ResetAlpha();
 
 private:
-	string atlas_file_name;
-	const SDL_Texture* atlas;
 
-	list<UIElement*> UI_elements_list;
+	string atlasFileName;
+	const SDL_Texture* atlas = nullptr;
 
-	map<UIElement_Rect, SDL_Rect> UI_elements_rects;
-	map<Font_Names, _TTF_Font*> map_fonts;
+	list<UIElement*> UIElementsList;
+
+	map<UIE_RECT, SDL_Rect> UIElementsRects;
+	map<FONT_NAME, _TTF_Font*> mapFonts;
 
 	// Alpha parameters
-	float total_time = 0.0f;
-	float start_time = 0.0f;
+	float totalTime = 0.0f;
+	float startTime = 0.0f;
 	bool reset = true;
 
 public:
-	NTree<UIElement*>* UI_elements_tree;
-	bool debug_draw = false;
+	NTree<UIElement*>* UIElementsTree;
+	bool isDebug = false;
 };
 
 #endif //__j1GUI_H__

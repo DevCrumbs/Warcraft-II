@@ -1,3 +1,5 @@
+#include "SDL/include/SDL.h"
+
 #include "Defs.h"
 #include "p2Log.h"
 
@@ -5,13 +7,11 @@
 
 #include "j1Window.h"
 
-#include "SDL/include/SDL.h"
-
 
 j1Window::j1Window() : j1Module()
 {
 	window = NULL;
-	screen_surface = NULL;
+	screenSurface = NULL;
 	name.assign("window");
 }
 
@@ -27,7 +27,7 @@ bool j1Window::Awake(pugi::xml_node& config)
 	bool ret = true;
 
 	icon = config.child("icon").attribute("name").as_string();
-	icon_surface = SDL_LoadBMP(icon.data());
+	iconSurface = SDL_LoadBMP(icon.data());
 
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -48,28 +48,28 @@ bool j1Window::Awake(pugi::xml_node& config)
 		height = config.child("resolution").attribute("height").as_int();
 		scale = config.child("resolution").attribute("scale").as_int();
 
-		if (fullscreen == true)
+		if (fullscreen)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN;
 		}
 
-		if (borderless == true)
+		if (borderless)
 		{
 			flags |= SDL_WINDOW_BORDERLESS;
 		}
 
-		if (resizable == true)
+		if (resizable)
 		{
 			flags |= SDL_WINDOW_RESIZABLE;
 		}
 
-		if (fullscreen_window == true)
+		if (fullscreen_window)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
 		window = SDL_CreateWindow(App->GetTitle(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
-		SDL_SetWindowIcon(window, icon_surface);
+		SDL_SetWindowIcon(window, iconSurface);
 
 		if (window == NULL)
 		{
@@ -79,7 +79,7 @@ bool j1Window::Awake(pugi::xml_node& config)
 		else
 		{
 			//Get window surface
-			screen_surface = SDL_GetWindowSurface(window);
+			screenSurface = SDL_GetWindowSurface(window);
 		}
 	}
 
@@ -103,10 +103,10 @@ bool j1Window::CleanUp()
 }
 
 // Set new window title
-void j1Window::SetTitle(const char* new_title)
+void j1Window::SetTitle(const char* newTitle)
 {
-	//title.create(new_title);
-	SDL_SetWindowTitle(window, new_title);
+	//title.create(newTitle);
+	SDL_SetWindowTitle(window, newTitle);
 }
 
 void j1Window::GetWindowSize(uint& width, uint& height) const

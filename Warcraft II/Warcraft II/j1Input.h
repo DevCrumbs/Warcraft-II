@@ -20,7 +20,7 @@ enum j1EventWindow
 	WE_COUNT
 };
 
-enum j1KeyState
+enum KEY_STATE
 {
 	KEY_IDLE = 0,
 	KEY_DOWN,
@@ -54,14 +54,14 @@ public:
 	bool GetWindowEvent(j1EventWindow ev);
 
 	// Check key states (includes mouse and joy buttons)
-	j1KeyState GetKey(int id) const
+	KEY_STATE GetKey(int id) const
 	{
 		return keyboard[id];
 	}
 
-	j1KeyState GetMouseButtonDown(int id) const
+	KEY_STATE GetMouseButtonDown(int id) const
 	{
-		return mouse_buttons[id - 1];
+		return mouseButtons[id - 1];
 	}
 
 	// Check if a certain window event happened
@@ -75,14 +75,14 @@ public:
 
 private:
 	bool		windowEvents[WE_COUNT];
-	j1KeyState*	keyboard;
-	j1KeyState	mouse_buttons[NUM_MOUSE_BUTTONS];
-	int			mouse_motion_x;
-	int			mouse_motion_y;
-	int			mouse_x;
-	int			mouse_y;
+	KEY_STATE*	keyboard = nullptr;
+	KEY_STATE	mouseButtons[NUM_MOUSE_BUTTONS];
+	int			mouseMotionX = 0;
+	int			mouseMotionY = 0;
+	int			mouseX = 0;
+	int			mouseY = 0;
 
-	bool		key_pressed = false;
+	bool		isPressed = false;
 };
 
 #endif // __j1INPUT_H__

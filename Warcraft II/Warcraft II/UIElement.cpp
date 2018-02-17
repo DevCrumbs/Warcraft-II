@@ -10,7 +10,7 @@
 #include "j1Map.h"
 #include "j1Window.h"
 
-UIElement::UIElement(iPoint local_pos, UIElement* parent, j1Module* listener) : local_pos(local_pos), parent(parent), listener(listener)
+UIElement::UIElement(iPoint localPos, UIElement* parent, j1Module* listener) : localPos(localPos), parent(parent), listener(listener)
 {
 	uint width = 0, height = 0, scale = 0;
 
@@ -30,46 +30,46 @@ void UIElement::UpdateDragging(float dt)
 
 	if (parent != nullptr) {
 		if (parent->drag) {
-			local_pos.x = parent->GetLocalPos().x - (mouse_pos.x * scale - mouse_click_pos.x);
-			local_pos.y = parent->GetLocalPos().y - (mouse_pos.y * scale - mouse_click_pos.y);
+			localPos.x = parent->GetLocalPos().x - (mouse_pos.x * scale - mouseClickPos.x);
+			localPos.y = parent->GetLocalPos().y - (mouse_pos.y * scale - mouseClickPos.y);
 		}
 		else {
-			local_pos.x = mouse_pos.x * scale - mouse_click_pos.x;
-			local_pos.y = mouse_pos.y * scale - mouse_click_pos.y;
+			localPos.x = mouse_pos.x * scale - mouseClickPos.x;
+			localPos.y = mouse_pos.y * scale - mouseClickPos.y;
 		}
 	}
 	else {
-		local_pos.x = mouse_pos.x * scale - mouse_click_pos.x;
-		local_pos.y = mouse_pos.y * scale - mouse_click_pos.y;
+		localPos.x = mouse_pos.x * scale - mouseClickPos.x;
+		localPos.y = mouse_pos.y * scale - mouseClickPos.y;
 	}
 }
 
 void UIElement::Draw() const
 {
-	iPoint blit_pos;
+	iPoint blitPos;
 	int scale = App->win->GetScale();
-	blit_pos.x = (GetLocalPos().x - App->render->camera.x) / scale;
-	blit_pos.y = (GetLocalPos().y - App->render->camera.y) / scale;
+	blitPos.x = (GetLocalPos().x - App->render->camera.x) / scale;
+	blitPos.y = (GetLocalPos().y - App->render->camera.y) / scale;
 
 	if (parent != nullptr) {
 		SDL_Rect daddy = parent->GetScreenRect();
 		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
 	}
 
-	if (tex_area.w != 0)
-		App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &tex_area);
+	if (texArea.w != 0)
+		App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);
 
-	if (App->gui->debug_draw)
-		DebugDraw(blit_pos);
+	if (App->gui->isDebug)
+		DebugDraw(blitPos);
 
 	App->render->ResetViewPort();
 }
 
-void UIElement::DebugDraw(iPoint blit_pos) const
+void UIElement::DebugDraw(iPoint blitPos) const
 {
 	Uint8 alpha = 80;
 
-	SDL_Rect quad = { blit_pos.x, blit_pos.y, width, height };
+	SDL_Rect quad = { blitPos.x, blitPos.y, width, height };
 	App->render->DrawQuad(quad, 255, 255, 255, alpha, false);
 }
 
@@ -77,10 +77,10 @@ void UIElement::HandleInput() {}
 
 bool UIElement::HasToBeRemoved() const
 {
-	return to_remove;
+	return toRemove;
 }
 
-UIElement_TYPE UIElement::GetType() const
+UIE_TYPE UIElement::GetType() const
 {
 	return type;
 }
@@ -99,24 +99,24 @@ void UIElement::SetOrientation()
 	uint scale = App->win->GetScale();
 
 	switch (horizontal) {
-	case UIElement_HORIZONTAL_POS::LEFT_:
+	case UIE_HORIZONTAL_POS::HORIZONTAL_POS_LEFT:
 		break;
-	case UIElement_HORIZONTAL_POS::RIGHT_:
-		local_pos.x -= width * scale;
+	case UIE_HORIZONTAL_POS::HORIZONTAL_POS_RIGHT:
+		localPos.x -= width * scale;
 		break;
-	case UIElement_HORIZONTAL_POS::CENTER_:
-		local_pos.x -= (width / 2) * scale;
+	case UIE_HORIZONTAL_POS::HORIZONTAL_POS_CENTER:
+		localPos.x -= (width / 2) * scale;
 		break;
 	}
 
 	switch (vertical) {
-	case UIElement_VERTICAL_POS::TOP_:
+	case UIE_VERTICAL_POS::VERTICAL_POS_TOP:
 		break;
-	case UIElement_VERTICAL_POS::BOTTOM_:
-		local_pos.y -= height * scale;
+	case UIE_VERTICAL_POS::VERTICAL_POS_BOTTOM:
+		localPos.y -= height * scale;
 		break;
-	case UIElement_VERTICAL_POS::MIDDLE_:
-		local_pos.y -= (height / 2) * scale;
+	case UIE_VERTICAL_POS::VERTICAL_POS_CENTER:
+		localPos.y -= (height / 2) * scale;
 		break;
 	}
 }
@@ -138,12 +138,12 @@ iPoint UIElement::GetScreenPos() const
 	iPoint screen_pos;
 
 	if (parent != nullptr) {
-		screen_pos.x = parent->GetScreenPos().x + local_pos.x;
-		screen_pos.y = parent->GetScreenPos().y + local_pos.y;
+		screen_pos.x = parent->GetScreenPos().x + localPos.x;
+		screen_pos.y = parent->GetScreenPos().y + localPos.y;
 	}
 	else {
-		screen_pos.x = local_pos.x;
-		screen_pos.y = local_pos.y;
+		screen_pos.x = localPos.x;
+		screen_pos.y = localPos.y;
 	}
 
 	return screen_pos;
@@ -151,24 +151,24 @@ iPoint UIElement::GetScreenPos() const
 
 iPoint UIElement::GetLocalPos() const
 {
-	return local_pos;
+	return localPos;
 }
 
-void UIElement::SetLocalPos(iPoint local_pos)
+void UIElement::SetLocalPos(iPoint localPos)
 {
-	this->local_pos = local_pos;
+	this->localPos = localPos;
 }
 
-void UIElement::IncreasePos(iPoint add_local_pos)
+void UIElement::IncreasePos(iPoint add_localPos)
 {
-	local_pos.x += add_local_pos.x;
-	local_pos.y += add_local_pos.y;
+	localPos.x += add_localPos.x;
+	localPos.y += add_localPos.y;
 }
 
-void UIElement::DecreasePos(iPoint add_local_pos)
+void UIElement::DecreasePos(iPoint add_localPos)
 {
-	local_pos.x -= add_local_pos.x;
-	local_pos.y -= add_local_pos.y;
+	localPos.x -= add_localPos.x;
+	localPos.y -= add_localPos.y;
 }
 
 void UIElement::SetInteraction(bool interactive)

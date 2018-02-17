@@ -204,7 +204,7 @@ namespace pugi
 	const unsigned int format_save_file_text = 0x20;
 
 	// The default set of formatting flags.
-	// Nodes are indented depending on their depth in DOM tree, a default declaration is output if document has none.
+	// Nodes are indented depending on their depth in DOM tree, a default declaration is output if document has FADE_STEP_NONE.
 	const unsigned int format_default = format_indent;
 		
 	// Forward declarations
@@ -464,10 +464,10 @@ namespace pugi
 		xml_node previous_sibling(const char_t* name) const;
 
 		// Get child value of current node; that is, value of the first child node of type PCDATA/CDATA
-		const char_t* child_value() const;
+		const char_t* childValue() const;
 
 		// Get child value of child with specified name. Equivalent to child(name).child_value().
-		const char_t* child_value(const char_t* name) const;
+		const char_t* childValue(const char_t* name) const;
 
 		// Set node name/value (returns false if node is empty, there is not enough memory, or node can not have name/value)
 		bool set_name(const char_t* rhs);
@@ -970,8 +970,8 @@ namespace pugi
 		xml_parse_result load_string(const char_t* contents, unsigned int options = parse_default);
 
 		// Load document from file
-		xml_parse_result load_file(const char* path, unsigned int options = parse_default, xml_encoding encoding = encoding_auto);
-		xml_parse_result load_file(const wchar_t* path, unsigned int options = parse_default, xml_encoding encoding = encoding_auto);
+		xml_parse_result loadFile(const char* path, unsigned int options = parse_default, xml_encoding encoding = encoding_auto);
+		xml_parse_result loadFile(const wchar_t* path, unsigned int options = parse_default, xml_encoding encoding = encoding_auto);
 
 		// Load document from buffer. Copies/converts the buffer, so it may be deleted or changed after the function returns.
 		xml_parse_result load_buffer(const void* contents, size_t size, unsigned int options = parse_default, xml_encoding encoding = encoding_auto);

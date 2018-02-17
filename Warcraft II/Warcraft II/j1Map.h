@@ -1,6 +1,11 @@
 #ifndef __j1MAP_H__
 #define __j1MAP_H__
 
+#include <list>
+
+#include "PugiXml/src/pugixml.hpp"
+#include "SDL\include\SDL.h"
+
 #include "j1Module.h"
 
 #include "p2Point.h"
@@ -8,10 +13,6 @@
 #include "j1App.h"
 #include "j1Textures.h"
 
-#include "PugiXml/src/pugixml.hpp"
-#include "SDL\include\SDL.h"
-
-#include <list>
 using namespace std;
 
 struct Object {
@@ -73,23 +74,23 @@ struct Properties
 // TODO 1: Create a struct for the map layer
 // ----------------------------------------------------
 
-enum layerType {
-	NONE,
-	COLLISION,
-	ABOVE,
-	PARALLAX
+enum LAYER_TYPE {
+	LAYER_TYPE_NONE,
+	LAYER_TYPE_COLLISION,
+	LAYER_TYPE_ABOVE,
+	LAYER_TYPE_PARALLAX
 };
 
 struct MapLayer {
 
 	string name;
-	layerType index = NONE;
+	LAYER_TYPE index = LAYER_TYPE_NONE;
 
 	uint width = 0; //number of tiles in the x axis
 	uint height = 0; //number of tiles in the y axis
 
 	uint* data = nullptr;
-	uint size_data = 0;
+	uint sizeData = 0;
 
 	float speed = 1.0f; //parallax (speed of the layer)
 
@@ -113,15 +114,15 @@ struct TileSet
 	int					firstgid = 0;
 	int					margin = 0;
 	int					spacing = 0;
-	int					tile_width = 0;
-	int					tile_height = 0;
+	int					tileWidth = 0;
+	int					tileHeight = 0;
 	SDL_Texture*		texture = nullptr;
-	int					tex_width = 0;
-	int					tex_height = 0;
-	int					num_tiles_width = 0;
-	int					num_tiles_height = 0;
-	int					offset_x = 0;
-	int					offset_y = 0;
+	int					texWidth = 0;
+	int					texHeight = 0;
+	int					numTilesWidth = 0;
+	int					numTilesHeight = 0;
+	int					offsetX = 0;
+	int					offsetY = 0;
 
 	~TileSet() {
 		App->tex->UnLoad(texture);
@@ -143,9 +144,9 @@ struct MapData
 {
 	int					width = 0;
 	int					height = 0;
-	int					tile_width = 0;
-	int					tile_height = 0;
-	SDL_Color			background_color;
+	int					tileWidth = 0;
+	int					tileHeight = 0;
+	SDL_Color			backgroundColor;
 	MapTypes			type = MAPTYPE_UNKNOWN;
 	list<TileSet*>	tilesets;
 
@@ -162,6 +163,7 @@ struct MapData
 };
 
 // ----------------------------------------------------
+
 class j1Map : public j1Module
 {
 public:
@@ -196,15 +198,15 @@ public:
 private:
 
 	bool LoadMap();
-	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
-	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
+	bool LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set);
+	bool LoadTilesetImage(pugi::xml_node& tilesetNode, TileSet* set);
 
 	// TODO 3: Create a method that loads a single layer
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 	bool LoadProperties(pugi::xml_node& node, Properties& properties);
 
-	bool LoadObjectGroupDetails(pugi::xml_node& objectGroup_node, ObjectGroup* objectGroup);
-	bool LoadObject(pugi::xml_node& object_node, Object* object);
+	bool LoadObjectGroupDetails(pugi::xml_node& objectGroupNode, ObjectGroup* objectGroup);
+	bool LoadObject(pugi::xml_node& objectNode, Object* object);
 
 	TileSet* GetTilesetFromTileId(int id) const;
 
@@ -215,17 +217,17 @@ public:
 
 private:
 
-	pugi::xml_document	map_file;
+	pugi::xml_document	mapFile;
 	string				folder;
-	bool				map_loaded = false;
+	bool				isMapLoaded = false;
 
 	MapLayer*			aboveLayer = nullptr;
 
 public:
 
-	int					culing_offset = 0;
-	int					blit_offset = 0;
-	bool				camera_blit = false;
+	int					culingOffset = 0;
+	int					blitOffset = 0;
+	bool				cameraBlit = false;
 };
 
 #endif // __j1MAP_H__

@@ -29,12 +29,12 @@ public:
 	node* getParent() const;
 	node* getChild(uint index) const;
 
-private:
-	Type value;
-	node* parent;
-
 public:
 	p2List<node*> children;
+
+private:
+	Type value;
+	node* parent = nullptr;
 };
 
 template<class Type>
@@ -277,11 +277,11 @@ int NTree<Type>::recursiveCount(node<Type>* n, uint size) const
 {
 	if (n != NULL)
 	{
-		p2List_item<node<Type>*>* children_it = n->children.start;
+		p2List_item<node<Type>*>* childrenIt = n->children.start;
 
-		while (children_it != nullptr) {
-			size = 1 + recursiveCount(children_it->data, size);
-			children_it = children_it->next;
+		while (childrenIt != nullptr) {
+			size = 1 + recursiveCount(childrenIt->data, size);
+			childrenIt = childrenIt->next;
 		}
 
 		return size;

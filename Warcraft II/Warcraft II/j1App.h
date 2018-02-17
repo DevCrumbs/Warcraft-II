@@ -88,6 +88,8 @@ private:
 	bool LoadGameNow();
 	bool SavegameNow() const;
 
+	double CalculateDt() const;
+
 public:
 
 	// Modules
@@ -111,19 +113,19 @@ private:
 	list<j1Module*>		modules;
 	uint				frames = 0;
 	double				dt = 0;
-	int					argc;
+	int					argc = 0;
 	char**				args;
 
 	string				title;
 	string				organization;
 
-	mutable bool		want_to_save;
-	bool				want_to_load;
-	string				load_game;
-	mutable string		save_game;
+	mutable bool		wantToSave = false;
+	bool				wantToLoad = false;
+	string				loadGame;
+	mutable string		saveGame;
 
-	uint64 last_frame_ms = 0;
-	uint64 frame_count = 0;
+	uint64 lastFrameMs = 0;
+	uint64 frameCount = 0;
 	j1Timer clock;
 	j1PerfTimer perfClock;
 
@@ -131,8 +133,8 @@ public:
 
 	uint				capFrames = 0;
 	bool				toCap = true;
-	bool				quit_game = false;
-	double				auxiliar_dt = 0;
+	bool				quitGame = false;
+	double				auxiliarDt = 0;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S

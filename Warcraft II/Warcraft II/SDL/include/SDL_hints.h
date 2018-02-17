@@ -397,7 +397,7 @@ extern "C" {
 *  This variable can be set to the following values:
 *    "d3dcompiler_46.dll" - default, best for Vista or later.
 *    "d3dcompiler_43.dll" - for XP support.
-*    "none" - do not load any library, useful if you compiled ANGLE from source and included the compiler in your binaries.
+*    "FADE_STEP_NONE" - do not load any library, useful if you compiled ANGLE from source and included the compiler in your binaries.
 *
 */
 #define SDL_HINT_VIDEO_WIN_D3DCOMPILER              "SDL_VIDEO_WIN_D3DCOMPILER"

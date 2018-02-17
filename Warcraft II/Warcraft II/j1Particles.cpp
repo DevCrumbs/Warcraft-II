@@ -42,7 +42,7 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	sparkle.anim.speed = node.attribute("speed").as_float();
 	sparkle.anim.loop = node.attribute("loop").as_bool();
 	node = node.child("frame");
-	sparkle.coll_size = { node.attribute("w").as_int(), node.attribute("h").as_int() };
+	sparkle.collisionSize = { node.attribute("w").as_int(), node.attribute("h").as_int() };
 
 	LoadAnimationsSpeed();
 	*/
@@ -98,7 +98,7 @@ bool j1Particles::Update(float dt)
 		if (p == nullptr)
 			continue;
 
-		if (p->Update(dt) == false)
+		if (!p->Update(dt))
 		{
 			delete p;
 			active[i] = nullptr;
@@ -126,7 +126,7 @@ void j1Particles::UpdateAnimations(const float dt)
 	*/
 }
 
-void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE collider_type, Uint32 delay, fPoint speed)
+void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType, Uint32 delay, fPoint speed)
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
@@ -140,9 +140,9 @@ void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_T
 			p->speed.y = speed.y;
 
 			/*
-			if (collider_type != COLLIDER_NONE && collider_type != COLLIDER_CATPEASANT_SHOT && collider_type != COLLIDER_MONKEY_HIT)
-				p->collider = App->collision->AddCollider(p->anim.GetCurrentFrame(), collider_type, this);
-			else if (collider_type == COLLIDER_CATPEASANT_SHOT) {
+			if (colliderType != COLLIDER_NONE && colliderType != COLLIDER_CATPEASANT_SHOT && colliderType != COLLIDER_MONKEY_HIT)
+				p->collider = App->collision->AddCollider(p->anim.GetCurrentFrame(), colliderType, this);
+			else if (colliderType == COLLIDER_CATPEASANT_SHOT) {
 				if (App->entities->playerData != nullptr) {
 
 					// Shot towards something
@@ -151,10 +151,10 @@ void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_T
 					p->destination.y = (App->entities->playerData->position.y - p->position.y) / m;
 				}
 
-				p->collider = App->collision->AddCollider({ 0, 0, p->coll_size.x - 40, p->coll_size.y - 40 }, collider_type, this);
+				p->collider = App->collision->AddCollider({ 0, 0, p->collisionSize.x - 40, p->collisionSize.y - 40 }, colliderType, this);
 			}
-			else if (collider_type == COLLIDER_MONKEY_HIT)
-				p->collider = App->collision->AddCollider({ 0, 0, p->coll_size.x, p->coll_size.y }, collider_type, this);
+			else if (colliderType == COLLIDER_MONKEY_HIT)
+				p->collider = App->collision->AddCollider({ 0, 0, p->collisionSize.x, p->collisionSize.y }, colliderType, this);
 			*/
 
 			active[i] = p;
@@ -197,13 +197,13 @@ Particle::Particle()
 
 Particle::Particle(const Particle& p) :
 	anim(p.anim), position(p.position), speed(p.speed),
-	fx(p.fx), born(p.born), life(p.life), coll_size(p.coll_size)
+	fx(p.fx), born(p.born), life(p.life), collisionSize(p.collisionSize)
 {}
 
 Particle::~Particle()
 {
 	if (collider != nullptr)
-		collider->to_delete = true;
+		collider->toDelete = true;
 }
 
 bool Particle::Update(float dt)

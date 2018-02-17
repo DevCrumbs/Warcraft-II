@@ -1,3 +1,5 @@
+#include"Brofiler\Brofiler.h"
+
 #include "Defs.h"
 #include "p2Log.h"
 
@@ -22,7 +24,6 @@
 #include "UIImage.h"
 #include "UICursor.h"
 
-#include"Brofiler\Brofiler.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -72,7 +73,7 @@ bool j1Scene::Start()
 	}
 	*/
 
-	debug_tex = App->tex->Load("maps/path2.png");
+	debugTex = App->tex->Load("maps/path2.png");
 
 	// Change between maps
 	/*
@@ -104,7 +105,7 @@ bool j1Scene::PreUpdate()
 
 	// debug pathfing ------------------
 	static iPoint origin;
-	static bool origin_selected = false;
+	static bool isSelected = false;
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
@@ -113,22 +114,22 @@ bool j1Scene::PreUpdate()
 
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
-		if (origin_selected == true)
+		if (isSelected)
 		{
 			App->pathfinding->CreatePath(origin, p, DISTANCE_TO);
-			origin_selected = false;
+			isSelected = false;
 		}
 		else
 		{
 			origin = p;
-			origin_selected = true;
+			isSelected = true;
 		}
 	}
 
 	// Player start position
 	/*
-	App->entities->playerData->start_pos = App->map->data.GetObjectPosition("Player", "StartPos");
-	App->entities->playerData->position = App->entities->playerData->start_pos;
+	App->entities->playerData->startPos = App->map->data.GetObjectPosition("Player", "StartPos");
+	App->entities->playerData->position = App->entities->playerData->startPos;
 	*/
 
 	return ret;
@@ -140,20 +141,20 @@ bool j1Scene::Update(float dt)
 	bool ret = true;
 
 	// Debug pathfinding ------------------------------
-	int x, y;
+	int x = 0, y = 0;
 	App->input->GetMousePosition(x, y);
 	iPoint p = App->render->ScreenToWorld(x, y);
 	p = App->map->WorldToMap(p.x, p.y);
 	p = App->map->MapToWorld(p.x, p.y);
 
-	App->render->Blit(debug_tex, p.x, p.y);
+	App->render->Blit(debugTex, p.x, p.y);
 
 	const vector<iPoint>* path = App->pathfinding->GetLastPath();
 
 	for (uint i = 0; i < path->size(); ++i)
 	{
 		iPoint pos = App->map->MapToWorld(path->at(i).x, path->at(i).y);
-		App->render->Blit(debug_tex, pos.x, pos.y);
+		App->render->Blit(debugTex, pos.x, pos.y);
 	}
 
 	// F1, F2, F3, F4, F5, F6, +, -
@@ -198,18 +199,18 @@ void j1Scene::DebugKeys()
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
 		/*
 		if (index == 0)
-			App->entities->playerData->position = App->entities->playerData->start_pos;
+			App->entities->playerData->position = App->entities->playerData->startPos;
 		else
 			index = 0;
 
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, fades::slider_fade);
+		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
 	}
 
 	// F2: start from the beginning of the current level
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
 		/*
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, fades::slider_fade);
+		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
 	}
 
@@ -221,7 +222,7 @@ void j1Scene::DebugKeys()
 		else
 			index = 0;
 
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, fades::slider_fade);
+		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
 	}
 
@@ -252,33 +253,33 @@ void j1Scene::DebugKeys()
 		god = !god;
 
 	// 1, 2, 3: camera blit
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN && App->map->blit_offset < 15 && App->map->camera_blit)
-		App->map->blit_offset += 7;
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN && App->map->blitOffset < 15 && App->map->cameraBlit)
+		App->map->blitOffset += 7;
 
-	else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN && App->map->blit_offset > -135 && App->map->camera_blit)
-		App->map->blit_offset -= 7;
+	else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN && App->map->blitOffset > -135 && App->map->cameraBlit)
+		App->map->blitOffset -= 7;
 
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-		App->map->camera_blit = !App->map->camera_blit;
+		App->map->cameraBlit = !App->map->cameraBlit;
 }
 
-void j1Scene::OnUIEvent(UIElement* UIelem, UIEvents UIevent)
+void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 {
 	switch (UIevent)
 	{
-	case UIEvents::MOUSE_ENTER_:
+	case UI_EVENT_MOUSE_ENTER:
 
 		break;
 
-	case UIEvents::MOUSE_LEAVE_:
+	case UI_EVENT_MOUSE_LEAVE:
 
 		break;
 
-	case UIEvents::MOUSE_LEFT_CLICK_:
+	case UI_EVENT_MOUSE_LEFT_CLICK:
 
 		break;
 
-	case UIEvents::MOUSE_LEFT_UP_:
+	case UI_EVENT_MOUSE_LEFT_UP:
 
 		break;
 	}

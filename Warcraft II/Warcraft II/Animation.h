@@ -8,8 +8,8 @@ class Animation
 {
 private:
 	int loops = 0;
-	float current_frame = 0.0f;
-	int last_frame = 0;
+	float currentFrame = 0.0f;
+	int lastFrame = 0;
 
 	SDL_Rect frames[MAX_FRAMES];
 
@@ -21,19 +21,19 @@ public:
 
 	void PushBack(const SDL_Rect& rect)
 	{
-		frames[last_frame++] = rect;
+		frames[lastFrame++] = rect;
 	}
 
 	SDL_Rect& GetCurrentFrame()
 	{
-		current_frame += speed;
-		if (current_frame >= last_frame)
+		currentFrame += speed;
+		if (currentFrame >= lastFrame)
 		{
 			loops++;
-			current_frame = (loop) ? 0.0f : last_frame - 1;
+			currentFrame = (loop) ? 0.0f : lastFrame - 1;
 		}
 
-		return frames[(int)current_frame];
+		return frames[(int)currentFrame];
 	}
 
 	bool Finished() const
@@ -44,7 +44,7 @@ public:
 	void Reset()
 	{
 		loops = 0;
-		current_frame = 0;
+		currentFrame = 0;
 	}
 
 	void Start()

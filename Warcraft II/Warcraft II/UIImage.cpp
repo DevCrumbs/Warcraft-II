@@ -2,63 +2,63 @@
 #include "j1Render.h"
 #include "j1Window.h"
 
-UIImage::UIImage(iPoint local_pos, UIElement* parent, UIImage_Info& info, j1Module* listener) : UIElement(local_pos, parent, listener), image(info)
+UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), image(info)
 {
-	type = UIElement_TYPE::IMAGE_;
+	type = UIE_TYPE_IMAGE;
 
-	tex_area = App->gui->GetRectFromAtlas(image.tex_area);
+	texArea = App->gui->GetRectFromAtlas(image.texArea);
 
 	draggable = image.draggable;
-	horizontal = image.horizontal_orientation;
-	vertical = image.vertical_orientation;
-	width = tex_area.w;
-	height = tex_area.h;
+	horizontal = image.horizontalOrientation;
+	vertical = image.verticalOrientation;
+	width = texArea.w;
+	height = texArea.h;
 
 	SetOrientation();
 }
 
 void UIImage::Update(float dt)
 {
-	if (start_aimation && anim_to_play.Finished()) {
-		anim_to_play.Reset();
-		start_aimation = false;
+	if (startAimation && animToPlay.Finished()) {
+		animToPlay.Reset();
+		startAimation = false;
 	}
-	else if (start_aimation) {
-		anim_to_play.speed = speed * dt;
-		anim = &anim_to_play;
+	else if (startAimation) {
+		animToPlay.speed = speed * dt;
+		anim = &animToPlay;
 	}
 }
 
 void UIImage::Draw() const
 {
-	iPoint blit_pos;
+	iPoint blitPos;
 	int scale = App->win->GetScale();
-	blit_pos.x = (GetScreenPos().x - App->render->camera.x) / scale;
-	blit_pos.y = (GetScreenPos().y - App->render->camera.y) / scale;
+	blitPos.x = (GetScreenPos().x - App->render->camera.x) / scale;
+	blitPos.y = (GetScreenPos().y - App->render->camera.y) / scale;
 
 	if (image.quad) {
 		SDL_SetRenderDrawColor(App->render->renderer, image.color.r, image.color.g, image.color.b, image.color.a);
-		SDL_RenderFillRect(App->render->renderer, &image.quad_area);
+		SDL_RenderFillRect(App->render->renderer, &image.quadArea);
 	}
 	else {
-		if (tex_area.w != 0 && start_aimation)
-			App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &anim->GetCurrentFrame());
-		else if (tex_area.w != 0 && !start_aimation) {
-			App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &tex_area);
+		if (texArea.w != 0 && startAimation)
+			App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &anim->GetCurrentFrame());
+		else if (texArea.w != 0 && !startAimation) {
+			App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);
 		}
 		else
-			App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y);
+			App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y);
 	}
 
-	if (App->gui->debug_draw)
-		DebugDraw(blit_pos);
+	if (App->gui->isDebug)
+		DebugDraw(blitPos);
 }
 
-void UIImage::DebugDraw(iPoint blit_pos) const
+void UIImage::DebugDraw(iPoint blitPos) const
 {
 	Uint8 alpha = 80;
 
-	SDL_Rect quad = { blit_pos.x, blit_pos.y, width, height };
+	SDL_Rect quad = { blitPos.x, blitPos.y, width, height };
 	App->render->DrawQuad(quad, 255, 0, 40, alpha, false);
 }
 
@@ -79,16 +79,16 @@ bool UIImage::FromAlphaToAlphaFade(float from, float to, float seconds)
 	bool ret = false;
 
 	if (reset) {
-		start_time = SDL_GetTicks();
+		startTime = SDL_GetTicks();
 		reset = false;
 	}
 
 	// Math operations
-	total_time = (Uint32)(seconds * 0.5f * 1000.0f);
+	totalTime = (Uint32)(seconds * 0.5f * 1000.0f);
 
-	Uint32 now = (SDL_GetTicks() - start_time);
-	float normalized = MIN(1.0f, (float)now / (float)total_time);
-	float normalized2 = MIN(1.0f, (float)now / (float)total_time);
+	Uint32 now = (SDL_GetTicks() - startTime);
+	float normalized = MIN(1.0f, (float)now / (float)totalTime);
+	float normalized2 = MIN(1.0f, (float)now / (float)totalTime);
 	normalized2 = 1 - normalized2;
 
 	float alpha = (to - from) * normalized;
@@ -118,20 +118,20 @@ void UIImage::ResetFade()
 	reset = true;
 }
 
-void UIImage::SetNewRect(SDL_Rect& new_rect)
+void UIImage::SetNewRect(SDL_Rect& newRect)
 {
-	tex_area = new_rect;
+	texArea = newRect;
 }
 
 SDL_Rect UIImage::GetRect()
 {
-	return tex_area;
+	return texArea;
 }
 void UIImage::StartAnimation(Animation anim)
 {
-	start_aimation = true;
-	anim_to_play = anim;
-	speed = anim_to_play.speed;
-	this->anim = &anim_to_play;
+	startAimation = true;
+	animToPlay = anim;
+	speed = animToPlay.speed;
+	this->anim = &animToPlay;
 }
 

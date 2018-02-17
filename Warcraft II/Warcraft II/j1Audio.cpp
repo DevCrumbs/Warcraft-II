@@ -1,13 +1,14 @@
-#include "Defs.h"
-#include "p2Log.h"
-#include "j1App.h"
-#include "j1Audio.h"
+#include <iostream>
 
 #include "SDL/include/SDL.h"
 #include "SDL_mixer\include\SDL_mixer.h"
 #pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
 
-#include <iostream>
+#include "Defs.h"
+#include "p2Log.h"
+#include "j1App.h"
+#include "j1Audio.h"
+
 using namespace std;
 
 j1Audio::j1Audio() : j1Module()
@@ -26,8 +27,8 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	LOG("Loading Audio Mixer");
 	bool ret = true;
 
-	music_folder.assign(config.child("music_folder").child_value());
-	fx_folder.assign(config.child("fx_folder").child_value());
+	musicFolder.assign(config.child("music_folder").childValue());
+	fxFolder.assign(config.child("fx_folder").childValue());
 
 	SDL_Init(0);
 
@@ -38,7 +39,7 @@ bool j1Audio::Awake(pugi::xml_node& config)
 		ret = true;
 	}
 
-	music_volume = config.child("volume").attribute("default").as_int();
+	musicVolume = config.child("volume").attribute("default").as_int();
 
 	// load support for the JPG and PNG image formats
 	int flags = MIX_INIT_OGG;
@@ -111,7 +112,7 @@ bool j1Audio::PlayMusic(const char* path, float fade_time)
 		Mix_FreeMusic(music);
 	}
 
-	string tmp = music_folder.data();
+	string tmp = musicFolder.data();
 	tmp += path;
 
 	music = Mix_LoadMUS(tmp.data());
@@ -153,7 +154,7 @@ unsigned int j1Audio::LoadFx(const char* path)
 	if (!active)
 		return 0;
 
-	string tmp = fx_folder.data();
+	string tmp = fxFolder.data();
 	tmp += path;
 
 	Mix_Chunk* chunk = Mix_LoadWAV(tmp.data());
@@ -191,11 +192,11 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 
 // Control music volume
 void j1Audio::ChangeMusicVolume(bool positive) {
-	if (positive && music_volume <= 120) {
-		cout << "Music volume was: " << Mix_VolumeMusic(music_volume += 8) << endl;
+	if (positive && musicVolume <= 120) {
+		cout << "Music volume was: " << Mix_VolumeMusic(musicVolume += 8) << endl;
 	}
-	else if (!positive && music_volume >= 8) {
-		cout << "Music volume was: " << Mix_VolumeMusic(music_volume -= 8) << endl;
+	else if (!positive && musicVolume >= 8) {
+		cout << "Music volume was: " << Mix_VolumeMusic(musicVolume -= 8) << endl;
 	}
 
 	cout << "Music volume is now: " << Mix_VolumeMusic(-1) << endl;
@@ -203,8 +204,8 @@ void j1Audio::ChangeMusicVolume(bool positive) {
 
 bool j1Audio::Load(pugi::xml_node& save) {
 	if (save.child("volume").attribute("default") != NULL) {
-		music_volume = save.child("volume").attribute("default").as_int();
-		Mix_VolumeMusic(music_volume);
+		musicVolume = save.child("volume").attribute("default").as_int();
+		Mix_VolumeMusic(musicVolume);
 	}
 
 	return true;
@@ -213,9 +214,9 @@ bool j1Audio::Load(pugi::xml_node& save) {
 bool j1Audio::Save(pugi::xml_node& save) const {
 
 	if (save.child("volume") == NULL)
-		save.append_child("volume").append_attribute("default") = music_volume;
+		save.append_child("volume").append_attribute("default") = musicVolume;
 	else
-		save.child("volume").attribute("default").set_value(music_volume);
+		save.child("volume").attribute("default").set_value(musicVolume);
 
 	return true;
 }
@@ -228,11 +229,11 @@ void j1Audio::PauseMusic() const {
 // Set music volume
 void j1Audio::SetMusicVolume(int volume) {
 	Mix_VolumeMusic(volume);
-	music_volume = volume;
+	musicVolume = volume;
 }
 
 // Set FX volume
 void j1Audio::SetFxVolume(int volume) {
 	Mix_Volume(-1, volume);
-	fx_volume = volume;
+	fxVolume = volume;
 }

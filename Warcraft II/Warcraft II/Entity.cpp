@@ -6,12 +6,12 @@
 #include "j1Particles.h"
 #include "j1Render.h"
 
-Entity::Entity(float x, float y) : position(x, y), start_pos(x, y) {}
+Entity::Entity(float x, float y) : position(x, y), startPos(x, y) {}
 
 Entity::~Entity()
 {
 	if (collider != nullptr)
-		collider->to_delete = true;
+		collider->toDelete = true;
 }
 
 const Collider* Entity::GetCollider() const

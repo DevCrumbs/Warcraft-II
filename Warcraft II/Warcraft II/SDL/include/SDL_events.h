@@ -617,7 +617,7 @@ extern DECLSPEC void SDLCALL SDL_FlushEvents(Uint32 minType, Uint32 maxType);
 /**
  *  \brief Polls for currently pending events.
  *
- *  \return 1 if there are any pending events, or 0 if there are none available.
+ *  \return 1 if there are any pending events, or 0 if there are FADE_STEP_NONE available.
  *
  *  \param event If not NULL, the next event is removed from the queue and
  *               stored in that area.

@@ -1,8 +1,5 @@
 #include <stdlib.h>
 
-#include "Defs.h"
-#include "p2Log.h"
-#include "j1App.h"
 // This is needed here because SDL redefines main function
 // do not add any other libraries here, instead put them in their modules
 #include "SDL/include/SDL.h"
@@ -10,8 +7,11 @@
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
 
 #include "Brofiler/Brofiler.h"
-
 #pragma comment (lib, "Brofiler/ProfilerCore32.lib")
+
+#include "Defs.h"
+#include "p2Log.h"
+#include "j1App.h"
 
 enum MainState
 {
@@ -30,7 +30,7 @@ int main(int argc, char* args[])
 {
 	LOG("Engine starting ... %d");
 
-	MainState state = MainState::CREATE;
+	MainState state = CREATE;
 	int result = EXIT_FAILURE;
 
 	while (state != EXIT)

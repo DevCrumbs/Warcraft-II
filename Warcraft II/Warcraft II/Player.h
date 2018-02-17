@@ -18,22 +18,22 @@
 #define SHOT_X 5
 #define SHOT_Y 22
 
-enum playerstates {
-	null_,
-	stop_,
-	idle_, 
-	forward_
+enum PLAYERSTATE {
+	PLAYERSTATE_NONE,
+	PLAYERSTATE_STOP,
+	PLAYERSTATE_IDLE, 
+	PLAYERSTATE_FORWARD
 };
 
 struct PlayerInfo
 {
 	Animation idle;
 
-	iPoint coll_size = { 0,0 };
-	SDL_Rect coll_offset = { 0,0,0,0 };
-	uint check_collision_offset = 0;
+	iPoint collisionSize = { 0,0 };
+	SDL_Rect collisionOffset = { 0,0,0,0 };
+	uint checkCollisionOffset = 0;
 
-	playerstates state = null_;
+	PLAYERSTATE state = PLAYERSTATE_NONE;
 	float gravity = 0.0f;
 	fPoint speed = { 0,0 };
 
@@ -41,8 +41,8 @@ struct PlayerInfo
 	PlayerInfo(const PlayerInfo& i);
 	~PlayerInfo();
 
-	void SetState(playerstates);
-	playerstates GetState() { return state; }
+	void SetState(PLAYERSTATE);
+	PLAYERSTATE GetState() { return state; }
 };
 
 class Player : public Entity
@@ -57,14 +57,16 @@ public:
 
 	void PlayerStateMachine();
 
-	void CheckCollision(iPoint position, iPoint size, int offset, bool &up, bool &down, bool &left, bool &right, playerstates state = null_);
-	void CalculateCollision(iPoint position, iPoint size, uint x, uint y, uint id, int offset, bool &up, bool &down, bool &left, bool &right, playerstates state = null_);
+	void CheckCollision(iPoint position, iPoint size, int offset, bool &up, bool &down, bool &left, bool &right, PLAYERSTATE state = PLAYERSTATE_NONE);
+	void CalculateCollision(iPoint position, iPoint size, uint x, uint y, uint id, int offset, bool &up, bool &down, bool &left, bool &right, PLAYERSTATE state = PLAYERSTATE_NONE);
 
 public:
 
 	// General info
-	playerstates default_state = null_;
+	PLAYERSTATE defaultState = PLAYERSTATE_NONE;
 	Animation* animationPlayer = nullptr;
+
+	PlayerInfo player;
 
 private:
 
@@ -72,10 +74,8 @@ private:
 	bool up = true, down = true, left = true, right = true, gravitySpeed = false;
 
 	// Animations speed
-	float idle_speed = 0.0f;
+	float idleSpeed = 0.0f;
 
-public:
-	PlayerInfo player;
 };
 
 #endif //__Player_H__

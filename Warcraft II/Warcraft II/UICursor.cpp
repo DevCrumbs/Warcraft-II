@@ -3,16 +3,16 @@
 #include "j1Render.h"
 #include "j1Window.h"
 
-UICursor::UICursor(iPoint local_pos, UIElement* parent, UICursor_Info& info, j1Module* listener) : UIElement(local_pos, parent, listener), cursor(info)
+UICursor::UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), cursor(info)
 {
-	type = UIElement_TYPE::CURSOR_;
+	type = UIE_TYPE::UIE_TYPE_CURSOR;
 
 	default = App->gui->GetRectFromAtlas(cursor.default);
-	on_click = App->gui->GetRectFromAtlas(cursor.on_click);
+	onClick = App->gui->GetRectFromAtlas(cursor.onClick);
 
-	tex_area = default;
-	width = tex_area.w;
-	height = tex_area.h;
+	texArea = default;
+	width = texArea.w;
+	height = texArea.h;
 
 	SDL_ShowCursor(0);
 }
@@ -29,50 +29,50 @@ void UICursor::Draw() const {}
 
 void  UICursor::DrawAbove() const
 {
-	iPoint blit_pos;
+	iPoint blitPos;
 	int scale = App->win->GetScale();
-	blit_pos.x = (GetLocalPos().x - App->render->camera.x) / scale;
-	blit_pos.y = (GetLocalPos().y - App->render->camera.y) / scale;
+	blitPos.x = (GetLocalPos().x - App->render->camera.x) / scale;
+	blitPos.y = (GetLocalPos().y - App->render->camera.y) / scale;
 
-	if (tex_area.w != 0)
-		App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &tex_area);
+	if (texArea.w != 0)
+		App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);
 	else
-		App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y);
+		App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y);
 
-	if (App->gui->debug_draw)
-		DebugDraw(blit_pos);
+	if (App->gui->isDebug)
+		DebugDraw(blitPos);
 }
 
 void UICursor::HandleInput()
 {
 	switch (UIevent)
 	{
-	case UIEvents::NO_EVENT_:
+	case UI_EVENT_NONE:
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
-			UIevent = UIEvents::MOUSE_LEFT_CLICK_;
-			tex_area = on_click;
+			UIevent = UI_EVENT_MOUSE_LEFT_CLICK;
+			texArea = onClick;
 			listener->OnUIEvent(this, UIevent);
 			break;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
-			UIevent = UIEvents::MOUSE_RIGHT_CLICK_;
-			tex_area = on_click;
+			UIevent = UI_EVENT_MOUSE_RIGHT_CLICK;
+			texArea = onClick;
 			listener->OnUIEvent(this, UIevent);
 			break;
 		}
 		break;
-	case UIEvents::MOUSE_LEFT_CLICK_:
+	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED) {
-			UIevent = UIEvents::NO_EVENT_;
-			tex_area = default;
+			UIevent = UI_EVENT_NONE;
+			texArea = default;
 			listener->OnUIEvent(this, UIevent);
 			break;
 		}
 		break;
-	case UIEvents::MOUSE_RIGHT_CLICK_:
+	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED) {
-			UIevent = UIEvents::NO_EVENT_;
-			tex_area = default;
+			UIevent = UI_EVENT_NONE;
+			texArea = default;
 			listener->OnUIEvent(this, UIevent);
 			break;
 		}

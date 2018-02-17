@@ -30,7 +30,7 @@ bool j1Collision::PreUpdate()
 	// Remove all colliders scheduled for deletion
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{
-		if (colliders[i] != nullptr && colliders[i]->to_delete == true)
+		if (colliders[i] != nullptr && colliders[i]->toDelete)
 		{
 			delete colliders[i];
 			colliders[i] = nullptr;
@@ -63,7 +63,7 @@ bool j1Collision::Update(float dt)
 
 			c2 = colliders[k];
 
-			if (c1->CheckCollision(c2->rect) == true)
+			if (c1->CheckCollision(c2->rect))
 			{
 				if (matrix[c1->type][c2->type] && c1->callback)
 					c1->callback->OnCollision(c1, c2);

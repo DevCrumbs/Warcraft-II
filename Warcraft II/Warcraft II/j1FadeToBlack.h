@@ -9,19 +9,19 @@
 
 struct UILabel;
 
-enum fades
+enum FADE_TYPE
 {
-	no_fade,
-	normal_fade,
-	slider_fade,
-	total_black_fade
+	FADE_TYPE_NONE,
+	FADE_TYPE_NORMAL,
+	FADE_TYPE_SLIDE,
+	FADE_TYPE_TOTAL_BLACK
 };
 
-enum fade_step
+enum FADE_STEP
 {
-	none,
-	fade_to_black,
-	fade_from_black
+	FADE_STEP_NONE,
+	FADE_STEP_TO_BLACK,
+	FADE_STEP_FROM_BLACK
 };
 
 class j1FadeToBlack : public j1Module
@@ -32,10 +32,10 @@ public:
 
 	bool Start();
 	bool Update(float dt);
-	bool FadeToBlack(j1Module* module_off, j1Module* module_on, float time = 2.0f, fades kind_of_fade = normal_fade, bool cleanup_off = true, bool start_on = true);
+	bool FadeToBlack(j1Module* moduleOff, j1Module* module_on, float time = 2.0f, FADE_TYPE fadeType = FADE_TYPE_NORMAL, bool cleanupOff = true, bool startOn = true);
 
 	bool IsFading() const;
-	fade_step GetStep() const;
+	FADE_STEP GetStep() const;
 	Uint32 GetNow() const;
 	Uint32 GetTotalTime() const;
 
@@ -45,22 +45,22 @@ private:
 	void BlackFade();
 
 private:
-	j1Module* off;
-	j1Module* on;
+	j1Module* off = nullptr;
+	j1Module* on = nullptr;
 
-	fade_step current_step = fade_step::none;
+	FADE_STEP currentStep = FADE_STEP_NONE;
 
 	Uint32 now = 0;
-	Uint32 start_time = 0;
-	Uint32 total_time = 0;
+	Uint32 startTime = 0;
+	Uint32 totalTime = 0;
 
 	SDL_Rect screen;
-	SDL_Rect Slider_rect;
+	SDL_Rect sliderRect;
 	float dt = 0.0f;
-	fades thisFade;
+	FADE_TYPE thisFade = FADE_TYPE_NONE;
 
-	bool cleanup_off = true;
-	bool start_on = true;
+	bool cleanupOff = true;
+	bool startOn = true;
 };
 
 #endif //__j1MODULEFADETOBLACK_H__

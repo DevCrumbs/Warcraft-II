@@ -1,10 +1,11 @@
 #ifndef __j1FONTS_H__
 #define __j1FONTS_H__
+#include <list>
 
-#include "j1Module.h"
 #include "SDL\include\SDL_pixels.h"
 
-#include <list>
+#include "j1Module.h"
+
 using namespace std;
 
 #define DEFAULT_FONT "fonts/open_sans/OpenSans-Regular.ttf"
@@ -39,7 +40,7 @@ public:
 public:
 
 	list<_TTF_Font*>	fonts;
-	_TTF_Font*			default;
+	_TTF_Font*			default = nullptr;
 };
 
 
