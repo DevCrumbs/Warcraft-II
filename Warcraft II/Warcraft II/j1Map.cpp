@@ -46,13 +46,13 @@ void j1Map::Draw()
 {
 	BROFILER_CATEGORY("Draw(notAbove)", Profiler::Color::Azure);
 
-	if (isMapLoaded == false)
+	if (!isMapLoaded)
 		return;
 
 	// TODO 5: Prepare the loop to draw all tilesets + Blit
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer) {
 
-		if ((*layer)->properties.GetProperty("Draw", false) == false)
+		if (!(*layer)->properties.GetProperty("Draw", false))
 			continue;
 
 		if ((*layer)->index != LAYER_TYPE_ABOVE) {
@@ -423,7 +423,7 @@ bool j1Map::Load(const char* fileName)
 	}
 
 	// Load general info ----------------------------------------------
-	if (ret == true)
+	if (ret)
 	{
 		ret = LoadMap();
 	}
@@ -434,12 +434,12 @@ bool j1Map::Load(const char* fileName)
 	{
 		TileSet* set = new TileSet();
 
-		if (ret == true)
+		if (ret)
 		{
 			ret = LoadTilesetDetails(tileset, set);
 		}
 
-		if (ret == true)
+		if (ret)
 		{
 			ret = LoadTilesetImage(tileset, set);
 		}
@@ -454,7 +454,7 @@ bool j1Map::Load(const char* fileName)
 	{
 		MapLayer* set = new MapLayer();
 
-		if (ret == true)
+		if (ret)
 		{
 			ret = LoadLayer(layer, set);
 		}
@@ -470,7 +470,7 @@ bool j1Map::Load(const char* fileName)
 	{
 		ObjectGroup* set = new ObjectGroup();
 
-		if (ret == true)
+		if (ret)
 		{
 			ret = LoadObjectGroupDetails(objectGroup, set);
 		}
@@ -479,7 +479,7 @@ bool j1Map::Load(const char* fileName)
 		{
 			Object* set1 = new Object();
 
-			if (ret == true)
+			if (ret)
 			{
 				ret = LoadObject(object, set1);
 			}
@@ -491,7 +491,7 @@ bool j1Map::Load(const char* fileName)
 	}
 
 
-	if (ret == true)
+	if (ret)
 	{
 		LOG("Successfully parsed map XML file: %s", fileName);
 		LOG("width: %d height: %d", data.width, data.height);
@@ -670,7 +670,7 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 	{
 		MapLayer* layer = *item;
 
-		if (layer->properties.GetProperty("Navigation", false) == false)
+		if (!layer->properties.GetProperty("Navigation", false))
 			continue;
 
 		uchar* map = new uchar[layer->width*layer->height];
