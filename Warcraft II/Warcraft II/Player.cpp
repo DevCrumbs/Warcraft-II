@@ -1,4 +1,13 @@
+
+#include <math.h>
+
+#include "SDL/include/SDL_timer.h"
+
+#include "Brofiler\Brofiler.h"
+
+
 #include "j1App.h"
+#include "p2Log.h"
 #include "j1EntityFactory.h"
 #include "Player.h"
 
@@ -13,11 +22,6 @@
 #include "j1Window.h"
 #include "j1Particles.h"
 
-#include "Brofiler\Brofiler.h"
-
-#include <math.h>
-
-#include "SDL/include/SDL_timer.h"
 
 Player::Player(float x, float y) : Entity(x, y)
 {
@@ -81,6 +85,7 @@ void Player::Move(float dt)
 
 	animationPlayer = animation;
 	*/
+
 }
 
 void Player::UpdateAnimations(float dt)
@@ -167,7 +172,7 @@ void Player::CalculateCollision(iPoint position, iPoint size, uint x, uint y, ui
 	SDL_Rect aUp = { position.x + cUp.x, position.y + cUp.y, size.x, size.y }; //player rectangle
 	if (SDL_HasIntersection(&aUp, &B)) {
 		/*
-		if (id == 1181 || (id == 1182 && App->scene->gate == false))
+		if (id == 1181 || (id == 1182 && !App->scene->gate))
 			up = false;
 		else if (id == 1183 && state != PLAYERSTATE_NONE) {
 			player.SetState(punished_);
@@ -195,6 +200,7 @@ void Player::CalculateCollision(iPoint position, iPoint size, uint x, uint y, ui
 			right = false;
 }
 
+
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
@@ -208,3 +214,4 @@ PlayerInfo::PlayerInfo(const PlayerInfo& i) :
 {}
 
 PlayerInfo::~PlayerInfo() {}
+

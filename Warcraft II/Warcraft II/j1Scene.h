@@ -1,11 +1,15 @@
 #ifndef __j1SCENE_H__
 #define __j1SCENE_H__
 
+#include <vector>
+#include <string>
+
 #include "j1Module.h"
 #include "Animation.h"
 
-#include <vector>
-#include <string>
+#define CAMERA_MOVEMENT_MARGIN 0.05f
+#define CAMERA_SPEED 3500
+
 using namespace std;
 
 struct SDL_Texture;
@@ -53,6 +57,8 @@ public:
 
 	// Debug keys
 	void DebugKeys();
+
+	void MoveCamera(float dt);
 
 public:
 	// Camera

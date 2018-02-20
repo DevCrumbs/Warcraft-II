@@ -84,7 +84,7 @@ void j1Collision::DebugDraw()
 	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		debug = !debug;
 
-	if (debug == false)
+	if (!debug)
 		return;
 
 	Uint8 alpha = 80;

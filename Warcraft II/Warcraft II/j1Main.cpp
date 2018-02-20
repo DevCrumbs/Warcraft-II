@@ -54,7 +54,7 @@ int main(int argc, char* args[])
 			// Awake all modules -----------------------------------------------
 		case AWAKE:
 			LOG("AWAKE PHASE ===============================");
-			if (App->Awake() == true)
+			if (App->Awake())
 				state = START;
 			else
 			{
@@ -67,7 +67,7 @@ int main(int argc, char* args[])
 			// Call all modules before first frame  ----------------------------
 		case START:
 			LOG("START PHASE ===============================");
-			if (App->Start() == true)
+			if (App->Start())
 			{
 				state = LOOP;
 				LOG("UPDATE PHASE ===============================");
@@ -83,7 +83,7 @@ int main(int argc, char* args[])
 		case LOOP:
 		{
 			BROFILER_FRAME("Loop");
-			if (App->Update() == false)
+			if (!App->Update())
 				state = CLEAN;
 		}
 		break;
@@ -91,7 +91,7 @@ int main(int argc, char* args[])
 		// Cleanup allocated memory -----------------------------------------
 		case CLEAN:
 			LOG("CLEANUP PHASE ===============================");
-			if (App->CleanUp() == true)
+			if (App->CleanUp())
 			{
 				RELEASE(App);
 				result = EXIT_SUCCESS;

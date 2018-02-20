@@ -171,6 +171,8 @@ bool j1Scene::Update(float dt)
 	// F1, F2, F3, F4, F5, F6, +, -
 	DebugKeys();
 
+	MoveCamera(dt);
+
 	return ret;
 }
 
@@ -329,4 +331,35 @@ bool j1Scene::Load(pugi::xml_node& save)
 	*/
 
 	return ret;
+}
+
+void j1Scene::MoveCamera(float dt)
+{
+
+	iPoint mousePos{ 0,0 };
+	App->input->GetMousePosition(mousePos.x, mousePos.y);
+
+	// X movement
+	
+	if (mousePos.x > App->scene->width - (App->scene->width * CAMERA_MOVEMENT_MARGIN))
+		if (App->render->camera.x >= -((App->map->data.width - 1) * App->map->data.tileWidth) + App->render->camera.w)
+			App->render->camera.x -= CAMERA_SPEED * dt;
+		else
+			App->render->camera.x = -((App->map->data.width - 1) * App->map->data.tileWidth) + App->render->camera.w;
+	
+	if (App->render->camera.x < 0)
+		if (mousePos.x < (App->scene->width * CAMERA_MOVEMENT_MARGIN))
+			App->render->camera.x += CAMERA_SPEED * dt;
+	
+
+	// Y movement
+	if (mousePos.y > App->scene->height - (App->scene->height * CAMERA_MOVEMENT_MARGIN))
+	{
+		App->render->camera.y -= CAMERA_SPEED * dt;
+	}
+	if (mousePos.y < (App->scene->height * CAMERA_MOVEMENT_MARGIN))
+	{
+		App->render->camera.y += CAMERA_SPEED * dt;
+	}
+
 }
