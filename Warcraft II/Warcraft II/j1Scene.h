@@ -54,6 +54,8 @@ public:
 	// Debug keys
 	void DebugKeys();
 
+	void CheckCameraMovement();
+
 public:
 	// Camera
 	float up = false, down = false, left = false, right = false;
@@ -75,6 +77,10 @@ private:
 	SDL_Texture* debugTex = nullptr;
 
 	iPoint mouse = { 0,0 };
+
+	//Camera attributes
+	float camSpeed = 0.0f;
+	int camMovMargin = 0;
 };
 
 #endif //__j1SCENE1_H__
