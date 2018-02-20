@@ -107,6 +107,8 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 	}
 
+	App->gui->CreateUIInputText({ 100,100 }, this);
+
 	return ret;
 }
 

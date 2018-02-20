@@ -73,6 +73,12 @@ public:
 
 	bool IsAnyKeyPressed();
 
+
+public:
+	
+	char* newLetter = nullptr;
+	bool isPresed = false;
+
 private:
 	bool		windowEvents[WE_COUNT];
 	KEY_STATE*	keyboard = nullptr;

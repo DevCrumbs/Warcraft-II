@@ -15,6 +15,7 @@ struct UILabel;
 struct UIButton;
 struct UIImage;
 struct UISlider;
+class UIInputText;
 
 class j1Scene : public j1Module
 {
@@ -69,6 +70,8 @@ public:
 	bool pause = false;
 
 private:
+
+	
 
 	string orthogonalMap, isometricMap, warcraftMap;
 	string orthogonalTexName, isometricTexName, warcraftTexName;
