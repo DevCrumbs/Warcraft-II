@@ -50,66 +50,37 @@ void j1Map::Draw()
 		return;
 
 	// TODO 5: Prepare the loop to draw all tilesets + Blit
-	list<TileSet*>::const_iterator drawTilesets = data.tilesets.begin();
-	while (drawTilesets != data.tilesets.end())
-	{
-		list<MapLayer*>::const_iterator drawLayers = data.layers.begin();
-		while (drawLayers != data.layers.end()) {
+	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer) {
 
-			if ((*drawLayers)->index != LAYER_TYPE_ABOVE && (*drawLayers)->index != LAYER_TYPE_PARALLAX) {
-				
-				for (int i = 0; i < (*drawLayers)->width; i++) {
-					for (int j = 0; j < (*drawLayers)->height; j++) {
+		if ((*layer)->properties.GetProperty("Draw", false) == false)
+			continue;
 
-						if ((*drawLayers)->Get(i, j) != 0) {
+		if ((*layer)->index != LAYER_TYPE_ABOVE) {
 
-							SDL_Rect rect = (*drawTilesets)->GetTileRect((*drawLayers)->Get(i, j));
+			for (int i = 0; i < (*layer)->width; ++i) {
+				for (int j = 0; j < (*layer)->height; ++j) {
 
-							SDL_Rect* section = &rect;
-							iPoint world = MapToWorld(i, j);
+					int tile_id = (*layer)->Get(i, j);
+					if (tile_id > 0) {
 
-							if ((*drawLayers)->index == LAYER_TYPE_PARALLAX) {
-								App->render->Blit((*drawTilesets)->texture, world.x, world.y, section, (*drawLayers)->speed);
-							}
-							else if ((*drawLayers)->index == LAYER_TYPE_COLLISION) {
-								if (App->collision->GetDebug())
-									App->render->Blit((*drawTilesets)->texture, world.x, world.y, section, (*drawLayers)->speed);
-							}
-							else {
-								App->render->Blit((*drawTilesets)->texture, world.x, world.y, section, (*drawLayers)->speed);
-							}
-						}
+						TileSet* tileset = GetTilesetFromTileId(tile_id);
+
+						SDL_Rect rect = tileset->GetTileRect(tile_id);
+
+						SDL_Rect* section = &rect;
+						iPoint world = MapToWorld(i, j);
+
+						App->render->Blit(tileset->texture, world.x, world.y, section, (*layer)->speed);
 					}
 				}//for
-			}
-
-			if ((*drawLayers)->index == LAYER_TYPE_PARALLAX) {
-
-				for (int i = 0; i < (*drawLayers)->width; i++) {
-					for (int j = 0; j < (*drawLayers)->height; j++) {
-
-						if ((*drawLayers)->Get(i, j) != 0) {
-
-							SDL_Rect rect = (*drawTilesets)->GetTileRect((*drawLayers)->Get(i, j));
-
-							SDL_Rect* section = &rect;
-							iPoint world = MapToWorld(i, j);
-
-							if ((*drawLayers)->index == LAYER_TYPE_PARALLAX) {
-								App->render->Blit((*drawTilesets)->texture, world.x, world.y, section, (*drawLayers)->speed);
-							}
-						}
-					}
-				}
-			}
-			drawLayers++;
+			}//for
 		}
-		drawTilesets++;
 	}
 }
 
 void j1Map::DrawAboveLayer()
 {
+	/*
 	BROFILER_CATEGORY("DrawAboveLayer", Profiler::Color::Azure);
 
 	if (!isMapLoaded)
@@ -137,6 +108,7 @@ void j1Map::DrawAboveLayer()
 			drawTilesets++;
 		}
 	}
+	*/
 }
 
 TileSet* j1Map::GetTilesetFromTileId(int id) const
@@ -635,7 +607,7 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 
 	layer->width = node.attribute("width").as_uint();
 	layer->height = node.attribute("height").as_uint();
-
+	LoadProperties(node, layer->properties);
 	layer->data = new uint[layer->width * layer->height];
 
 	memset(layer->data, 0, layer->width * layer->height);
@@ -678,7 +650,7 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 			Properties::Property* p = new Properties::Property();
 
 			p->name = prop.attribute("name").as_string();
-			p->value = prop.attribute("value").as_int();
+			p->value = prop.attribute("value").as_bool();
 
 			properties.properties.push_back(p);
 		}
@@ -694,12 +666,12 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 	list<MapLayer*>::const_iterator item;
 	item = data.layers.begin();
 
-	for (item; item != data.layers.end(); item++)
+	for (item; item != data.layers.end(); ++item)
 	{
 		MapLayer* layer = *item;
 
-		//if (layer->properties.Get("Navigation", 0) == 0)
-			//continue;
+		if (layer->properties.GetProperty("Navigation", false) == false)
+			continue;
 
 		uchar* map = new uchar[layer->width*layer->height];
 		memset(map, 1, layer->width*layer->height);
@@ -734,6 +706,20 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 	}
 
 	return ret;
+}
+
+bool Properties::GetProperty(const char* value, bool default_value) const
+{
+	list<Property*>::const_iterator item = properties.begin();
+
+	while (item != properties.end())
+	{
+		if ((*item)->name == value)
+			return (*item)->value;
+		item++;
+	}
+
+	return default_value;
 }
 
 bool j1Map::LoadObjectGroupDetails(pugi::xml_node& objectGroupNode, ObjectGroup* objectGroup)

@@ -61,17 +61,17 @@ public:
 	uint height = 0;
 	uint scale = 0;
 
-	// Map
-	uint index = 0;
-	uint lastIndex = 0;
-
 	// Player
 	bool god = false;
 
 	bool pause = false;
 
 private:
-	string map;
+
+	string orthogonalMap, isometricMap, warcraftMap;
+	string orthogonalTexName, isometricTexName, warcraftTexName;
+	bool orthogonalActive, isometricActive, warcraftActive;
+
 	SDL_Texture* debugTex = nullptr;
 
 	iPoint mouse = { 0,0 };

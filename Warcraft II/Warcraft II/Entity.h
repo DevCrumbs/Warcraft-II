@@ -32,7 +32,7 @@ public:
 
 	int type = 0;
 	int lives = 0;
-	bool dead = false;
+	bool remove = false;
 
 	// Entity movement
 	fPoint position = { 0,0 };

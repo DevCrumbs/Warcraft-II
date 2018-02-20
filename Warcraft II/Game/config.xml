@@ -12,7 +12,7 @@
   </renderer>
 
   <window>
-    <resolution width="1024" height="768" scale="3"/>
+    <resolution width="1024" height="768" scale="1"/>
     <fullscreen value="false"/>
     <borderless value="false"/>
     <resizable value="false"/>
@@ -21,12 +21,7 @@
   </window>
 
   <map>
-    <folder>Assets/Sprites/Maps/</folder>
-    <general>
-      <blit offset="15"/>
-      <camera_blit value="1"/>
-      <culing value="50"/>
-    </general>
+    <folder>data/assets/textures/maps/</folder>
   </map>
 
   <audio>
@@ -41,8 +36,9 @@
 
   <scene>
     <maps>
-      <index first="0"/>
-      <map id="1" name="scene.tmx"/>
+      <orthogonal name="orthogonal_walk.tmx" active="0"/>
+      <isometric name="iso_walk.tmx" active="0" tex="data/assets/textures/maps/isometricDebugTex.png"/>
+      <warcraft name="warcraft_walk.tmx" active="1" tex="data/assets/textures/maps/warcraftDebugTex.png"/>
     </maps>
   </scene>
 

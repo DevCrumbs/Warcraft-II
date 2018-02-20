@@ -39,11 +39,22 @@ bool j1Scene::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
-	LOG("Loading scene %d", index);
-
-	index = config.child("maps").child("index").attribute("first").as_uint();
+	LOG("Loading scene");
 
 	// Load maps
+	pugi::xml_node maps = config.child("maps");
+
+	orthogonalMap = maps.child("orthogonal").attribute("name").as_string();
+	orthogonalActive = maps.child("orthogonal").attribute("active").as_bool();
+	orthogonalTexName = maps.child("orthogonal").attribute("tex").as_string();
+
+	isometricMap = maps.child("isometric").attribute("name").as_string();
+	isometricActive = maps.child("isometric").attribute("active").as_bool();
+	isometricTexName = maps.child("isometric").attribute("tex").as_string();
+
+	warcraftMap = maps.child("warcraft").attribute("name").as_string();
+	warcraftActive = maps.child("warcraft").attribute("active").as_bool();
+	warcraftTexName = maps.child("warcraft").attribute("tex").as_string();
 
 	// Load songs
 
@@ -59,10 +70,28 @@ bool j1Scene::Awake(pugi::xml_node& config)
 // Called before the first frame
 bool j1Scene::Start()
 {
-	bool ret = true;
+	bool ret = false;
 
-	/*
-	if (App->map->Load("iso_walk.tmx") == true)
+	// Save camera info
+	App->win->GetWindowSize(width, height);
+	scale = App->win->GetScale();
+
+	// Load an orthogonal, isometric or warcraft-based map
+	if (orthogonalActive) {
+		ret = App->map->Load(orthogonalMap.data());
+		debugTex = App->tex->Load(orthogonalTexName.data());
+	}
+	else if (isometricActive) {
+		ret = App->map->Load(isometricMap.data());
+		debugTex = App->tex->Load(isometricTexName.data());
+	}
+	else if (warcraftActive) {
+		ret = App->map->Load(warcraftMap.data());
+		debugTex = App->tex->Load(warcraftTexName.data());
+	}
+
+	// Create walkability map
+	if (ret)
 	{
 		int w, h;
 		uchar* data = NULL;
@@ -71,29 +100,6 @@ bool j1Scene::Start()
 
 		RELEASE_ARRAY(data);
 	}
-	*/
-
-	debugTex = App->tex->Load("maps/path2.png");
-
-	// Change between maps
-	/*
-	if (index == 0) {
-		App->map->Load(map.GetString());
-		App->audio->PlayMusic(song1.GetString());
-		App->audio->SetMusicVolume(App->audio->music_volume);
-	}
-	*/
-
-	// Camera
-	App->win->GetWindowSize(width, height);
-	scale = App->win->GetScale();
-
-	// Load entities
-
-	// Pathfinding collision data
-	/*
-	App->pathfinding->SetMap(App->map->data.width, App->map->data.height, (uchar*)App->map->collisionLayer->data);
-	*/
 
 	return ret;
 }
@@ -140,7 +146,12 @@ bool j1Scene::Update(float dt)
 {
 	bool ret = true;
 
+	// Draw
+	App->map->Draw(); // map
+	//App->entities->Draw(); // entities
+
 	// Debug pathfinding ------------------------------
+
 	int x = 0, y = 0;
 	App->input->GetMousePosition(x, y);
 	iPoint p = App->render->ScreenToWorld(x, y);
@@ -159,9 +170,6 @@ bool j1Scene::Update(float dt)
 
 	// F1, F2, F3, F4, F5, F6, +, -
 	DebugKeys();
-
-	// Set window title
-	App->input->GetMousePosition(mouse.x, mouse.y);
 
 	return ret;
 }
@@ -182,10 +190,11 @@ bool j1Scene::CleanUp()
 {
 	bool ret = true;
 
-	LOG("Freeing scene %d", index);
+	LOG("Freeing scene");
 
 	App->audio->PauseMusic();
 	App->map->UnLoad();
+	App->tex->UnLoad(debugTex);
 
 	// Set to nullptr the pointers to the UI elements
 

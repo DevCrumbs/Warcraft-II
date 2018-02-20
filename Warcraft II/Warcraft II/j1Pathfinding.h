@@ -1,19 +1,18 @@
 #ifndef __j1PATHFINDING_H__
 #define __j1PATHFINDING_H__
 
-#include <list>
-#include <vector>
-
 #include "j1Module.h"
 #include "p2Point.h"
 
+#include <list>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 #define DEFAULT_PATH_LENGTH 50
-#define INVALID_WALK_CODE 1181
-#define INVALID_WALK_CODES t != 1180 && t != 1181 && t != 1182 && t != 1183
+#define INVALID_WALK_CODE 255
 
-enum DISTANCE {
+enum Distance {
 	DISTANCE_TO,
 	DISTANCE_NO_SQRT,
 	DISTANCE_MANHATTAN
@@ -43,7 +42,7 @@ public:
 	void SetMap(uint width, uint height, uchar* data);
 
 	// Main function to request a path from A to B
-	int CreatePath(const iPoint& origin, const iPoint& destination, DISTANCE distanceType);
+	int CreatePath(const iPoint& origin, const iPoint& destination, Distance distance_type);
 
 	// To request all tiles involved in the last generated path
 	const vector<iPoint>* GetLastPath() const;
@@ -65,7 +64,7 @@ private:
 	// all map walkability values [0..255]
 	uchar* map = nullptr;
 	// we store the created path here
-	vector<iPoint> lastPath;
+	vector<iPoint> last_path;
 };
 
 // forward declaration
@@ -82,11 +81,11 @@ struct PathNode
 	PathNode(const PathNode& node);
 
 	// Fills a list (PathList) of all valid adjacent pathnodes
-	uint FindWalkableAdjacents(PathList& listToFill) const;
+	uint FindWalkableAdjacents(PathList& list_to_fill) const;
 	// Calculates this tile score
 	float Score() const;
 	// Calculate the F for a specific destination tile
-	float CalculateF(const iPoint& destination, DISTANCE distanceType);
+	float CalculateF(const iPoint& destination, Distance distance_type);
 
 	// -----------
 	float g = 0;
@@ -109,12 +108,10 @@ struct PathList
 
 	// -----------
 	// The list itself
-	list<PathNode*> pathList;
+	list<PathNode> pathNodeList;
 };
 
 // Utility: calculate a specific distance
-int CalculateDistance(iPoint origin, iPoint destination, DISTANCE distanceType);
-
-
+int CalculateDistance(iPoint origin, iPoint destination, Distance distance_type);
 
 #endif //__j1PATHFINDING_H__

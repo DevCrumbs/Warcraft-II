@@ -2,33 +2,21 @@
 #define __j1ENTITY_FACTORY_H__
 
 #include "j1Module.h"
-#include "Animation.h"
 
 #include "p2Point.h"
 
-#define MAX_ENTITIES 100
+#include <algorithm>
+using namespace std;
+
+#define MAX_ENTITIES_SELECTED 8
 
 struct SDL_Texture;
-
-// Utility: use ENTITY_TYPES values to assign a type to entities in Tiled 
-enum ENTITY_TYPE
-{
-	ENTITY_TYPE_NO_TYPE,
-	ENTITY_TYPE_IMP,
-	ENTITY_TYPE_CAT_PEASANT,
-	ENTITY_TYPE_MONKEY,
-	ENTITY_TYPE_PLANT,
-	ENTITY_TYPE_PLAYER,
-	ENTITY_TYPE_CAT,
-};
+struct SDL_Rect;
 
 class Entity;
-
-struct EntityInfo
-{
-	ENTITY_TYPE type = ENTITY_TYPE::ENTITY_TYPE_NO_TYPE;
-	iPoint position = { 0,0 };
-};
+class Unit;
+struct EntityInfo;
+struct UnitInfo;
 
 class j1EntityFactory : public j1Module
 {
@@ -36,7 +24,6 @@ public:
 
 	j1EntityFactory();
 	virtual ~j1EntityFactory();
-
 	bool Awake(pugi::xml_node&);
 	bool Start();
 	bool PreUpdate();
@@ -44,10 +31,18 @@ public:
 	bool PostUpdate();
 	bool CleanUp();
 	void OnCollision(Collider* c1, Collider* c2);
+	void Draw();
 
-	bool AddEntities();
-	bool AddEntity(EntityInfo& info);
-	Entity* SpawnEntity(const EntityInfo& info);
+	Unit* AddUnit(const EntityInfo& entityInfo, const UnitInfo& unitInfo);
+
+	// Returns a list with all the entities within a given rectangle
+	list<Entity*> SelectEntitiesWithinRectangle(SDL_Rect rectangleRect);
+
+	// Returns true if an entity (different from the one passed as an argument) occupies the tile
+	bool IsAnotherEntityOnTile(Entity* entity, iPoint tile) const;
+
+	// Looks for the closest walkable tile to the tile passed as an argument
+	iPoint FindClosestWalkableTile(Entity* entity, iPoint tile) const;
 
 	// Get entities info
 	/*
@@ -59,25 +54,21 @@ public:
 
 private:
 
-	EntityInfo queue[MAX_ENTITIES];
-	Entity* entities[MAX_ENTITIES];
+	list<Entity*> unitsSelected;
 
-	string CatPeasantSpritesheet;
+	list<Entity*> toSpawnEntities;
+	list<Entity*> activeEntities;
+
+	string CatPeasant_spritesheet;
 
 	// Entities textures
-	/*
-	SDL_Texture* CatPeasantTex = nullptr;
-	*/
+	string footmanTexName;
+	SDL_Texture* footmanTex = nullptr;
+
 
 	// Entities info
 	/*
 	PlayerInfo player;
-	*/
-
-public:
-
-	/*
-	Player* playerData = nullptr;
 	*/
 };
 

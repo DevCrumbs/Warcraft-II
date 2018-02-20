@@ -243,12 +243,6 @@ void j1App::FinishUpdate()
 	else
 		vSyncOnOff = "off";
 
-	string cameraBlit;
-	if (App->map->cameraBlit)
-		cameraBlit = "enable";
-	else
-		cameraBlit = "disable";
-
 	string godMode;
 	if (App->scene->god)
 		godMode = "on";
@@ -257,8 +251,8 @@ void j1App::FinishUpdate()
 
 	static char title[256];
 
-	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u | capFrames: %s | Vsync: %s | CameraBlit: %s | GOD: %s",
-		fps, avgFPS, actualFrameMs, capOnOff.data(), vSyncOnOff.data(), cameraBlit.data(), godMode.data());
+	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u | capFrames: %s | Vsync: %s",
+		fps, avgFPS, actualFrameMs, capOnOff.data(), vSyncOnOff.data());
 
 	if (App->scene->pause) {
 		auxiliarDt = dt;

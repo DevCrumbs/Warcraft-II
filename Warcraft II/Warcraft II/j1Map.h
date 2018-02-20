@@ -49,7 +49,7 @@ struct Properties
 	struct Property
 	{
 		string name;
-		int value = 0;
+		bool value = false;
 	};
 
 	~Properties()
@@ -59,14 +59,14 @@ struct Properties
 
 		while (item != properties.end())
 		{
-			properties.erase(item);
+			delete *item;
 			item++;
 		}
 
 		properties.clear();
 	}
 
-	//int Get(const char* name, int default_value = 0) const;
+	bool GetProperty(const char* name, bool default_value = false) const;
 
 	list<Property*>	properties;
 };

@@ -89,7 +89,6 @@ bool j1Textures::UnLoad(SDL_Texture* texture)
 		if (texture == *item)
 		{
 			SDL_DestroyTexture(texture);
-			delete texture;
 			textures.remove(texture);
 
 			return true;
