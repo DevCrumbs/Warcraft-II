@@ -64,6 +64,12 @@ bool j1Scene::Awake(pugi::xml_node& config)
 		App->audio->LoadFx(node.attribute("name").as_string());
 	*/
 
+	//Load camera attributes
+	pugi::xml_node camera = config.child("camera");
+
+	camSpeed = camera.attribute("speed").as_float();
+	camMovMargin = camera.attribute("movMargin").as_int();
+
 	return ret;
 }
 
@@ -100,6 +106,8 @@ bool j1Scene::Start()
 
 		RELEASE_ARRAY(data);
 	}
+
+	App->gui->CreateUIInputText({ 100,100 }, this);
 
 	return ret;
 }
@@ -170,6 +178,7 @@ bool j1Scene::Update(float dt)
 
 	// F1, F2, F3, F4, F5, F6, +, -
 	DebugKeys();
+	CheckCameraMovement();
 
 	return ret;
 }
@@ -270,6 +279,35 @@ void j1Scene::DebugKeys()
 
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
 		App->map->cameraBlit = !App->map->cameraBlit;
+}
+
+void j1Scene::CheckCameraMovement() {
+
+	//Move with arrows
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) //UP
+		App->render->camera.y += camSpeed;
+
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) //DOWN
+		App->render->camera.y -= camSpeed;
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) //LEFT
+		App->render->camera.x += camSpeed;
+
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) //RIGHT
+		App->render->camera.x -= camSpeed;
+
+	//Move with mouse
+	App->input->GetMousePosition(mouse.x, mouse.y);
+
+	if (mouse.y <= camMovMargin) //UP
+		App->render->camera.y += camSpeed;
+	if (mouse.y >= height - camMovMargin) //DOWN
+		App->render->camera.y -= camSpeed;
+	if (mouse.x <= camMovMargin) //LEFT
+		App->render->camera.x += camSpeed;
+	if (mouse.x >= width - camMovMargin) //RIGHT
+		App->render->camera.x -= camSpeed;
+
 }
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)

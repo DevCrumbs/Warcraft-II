@@ -16,7 +16,7 @@
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UICursor.h"
-
+#include "UIInputText.h"
 
 j1Gui::j1Gui() : j1Module()
 {
@@ -200,6 +200,18 @@ UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* 
 	UIElementsTree->insertChild((UIElement*)button, parent);
 
 	return button;
+}
+
+UIInputText* j1Gui::CreateUIInputText(iPoint localPos, j1Module* listener, UIElement* parent)
+{
+	UIInputText* inputText = new UIInputText(localPos, parent, listener);
+
+	if (parent == nullptr)
+		parent = (UIElement*)App->win->window;
+
+	UIElementsTree->insertChild((UIElement*)inputText, parent);
+
+	return inputText;
 }
 
 UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIElement* parent)

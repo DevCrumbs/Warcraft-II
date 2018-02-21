@@ -149,6 +149,7 @@
     <ClInclude Include="UICursor.h" />
     <ClInclude Include="UIElement.h" />
     <ClInclude Include="UIImage.h" />
+    <ClInclude Include="UIInputText.h" />
     <ClInclude Include="UILabel.h" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +179,7 @@
     <ClCompile Include="UICursor.cpp" />
     <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="UIImage.cpp" />
+    <ClCompile Include="UIInputText.cpp" />
     <ClCompile Include="UILabel.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

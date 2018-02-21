@@ -35,11 +35,15 @@
   </gui>
 
   <scene>
+
+    <camera speed ="8.0" movMargin ="40"/>
+    
     <maps>
       <orthogonal name="orthogonal_walk.tmx" active="0"/>
       <isometric name="iso_walk.tmx" active="0" tex="data/assets/textures/maps/isometricDebugTex.png"/>
       <warcraft name="warcraft_walk.tmx" active="1" tex="data/assets/textures/maps/warcraftDebugTex.png"/>
     </maps>
+    
   </scene>
 
   <entities>
