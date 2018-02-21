@@ -86,10 +86,10 @@ struct MapLayer {
 	string name;
 	LAYER_TYPE index = LAYER_TYPE_NONE;
 
-	uint width = 0; //number of tiles in the x axis
-	uint height = 0; //number of tiles in the y axis
+	uint width = 0; // number of tiles in the x axis
+	uint height = 0; // number of tiles in the y axis
 
-	uint* data = nullptr;
+	uint* data = nullptr; // tile gid
 	uint sizeData = 0;
 
 	float speed = 1.0f; //parallax (speed of the layer)
@@ -130,30 +130,31 @@ struct TileSet
 
 };
 
-enum MapTypes
+enum ROOM_TYPE
 {
-	MAPTYPE_UNKNOWN = 0,
-	MAPTYPE_ORTHOGONAL,
-	MAPTYPE_ISOMETRIC,
-	MAPTYPE_STAGGERED
+	ROOMTYPE_UNKNOWN = 0,
+	ROOMTYPE_ORTHOGONAL,
+	ROOMTYPE_ISOMETRIC,
+	ROOMTYPE_STAGGERED
 };
 
 // ----------------------------------------------------
 
-struct MapData
+struct RoomData
 {
 	int					width = 0;
 	int					height = 0;
 	int					tileWidth = 0;
 	int					tileHeight = 0;
+	fPoint				roomPos{ 0, 0 };
 	SDL_Color			backgroundColor;
-	MapTypes			type = MAPTYPE_UNKNOWN;
-	list<TileSet*>	tilesets;
+	ROOM_TYPE			type = ROOMTYPE_UNKNOWN;
+	list<TileSet*>		tilesets;
 
 	// TODO 2: Add a list/array of layers to the map!
-	list<MapLayer*> layers;
+	list<MapLayer*>		layers;
 
-	list<ObjectGroup*> objectGroups;
+	list<ObjectGroup*>	objectGroups;
 
 	fPoint GetObjectPosition(string groupObject, string object);
 	fPoint GetObjectSize(string groupObject, string object);
@@ -163,6 +164,20 @@ struct MapData
 };
 
 // ----------------------------------------------------
+enum MAP_TYPE
+{
+	MAPTYPE_NONE
+};
+struct RoomMap
+{
+	list<RoomData>		rooms;
+
+	MAP_TYPE			mType = MAPTYPE_NONE;
+
+
+};
+	
+//-----------------------------------------------------
 
 class j1Map : public j1Module
 {
@@ -212,7 +227,7 @@ private:
 
 public:
 
-	MapData				data;
+	RoomData				data;
 	MapLayer*			collisionLayer = nullptr;
 
 private:

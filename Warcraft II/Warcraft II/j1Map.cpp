@@ -134,12 +134,12 @@ iPoint j1Map::MapToWorld(int x, int y) const
 {
 	iPoint ret;
 
-	if (data.type == MAPTYPE_ORTHOGONAL)
+	if (data.type == ROOMTYPE_ORTHOGONAL)
 	{
 		ret.x = x * data.tileWidth;
 		ret.y = y * data.tileHeight;
 	}
-	else if (data.type == MAPTYPE_ISOMETRIC)
+	else if (data.type == ROOMTYPE_ISOMETRIC)
 	{
 		ret.x = (x - y) * (data.tileWidth * 0.5f);
 		ret.y = (x + y) * (data.tileHeight * 0.5f);
@@ -157,12 +157,12 @@ iPoint j1Map::WorldToMap(int x, int y) const
 {
 	iPoint ret(0, 0);
 
-	if (data.type == MAPTYPE_ORTHOGONAL)
+	if (data.type == ROOMTYPE_ORTHOGONAL)
 	{
 		ret.x = x / data.tileWidth;
 		ret.y = y / data.tileHeight;
 	}
-	else if (data.type == MAPTYPE_ISOMETRIC)
+	else if (data.type == ROOMTYPE_ISOMETRIC)
 	{
 
 		float half_width = data.tileWidth * 0.5f;
@@ -363,19 +363,19 @@ bool j1Map::LoadMap()
 
 		if (orientation == "orthogonal")
 		{
-			data.type = MAPTYPE_ORTHOGONAL;
+			data.type = ROOMTYPE_ORTHOGONAL;
 		}
 		else if (orientation == "isometric")
 		{
-			data.type = MAPTYPE_ISOMETRIC;
+			data.type = ROOMTYPE_ISOMETRIC;
 		}
 		else if (orientation == "staggered")
 		{
-			data.type = MAPTYPE_STAGGERED;
+			data.type = ROOMTYPE_STAGGERED;
 		}
 		else
 		{
-			data.type = MAPTYPE_UNKNOWN;
+			data.type = ROOMTYPE_UNKNOWN;
 		}
 	}
 
@@ -745,7 +745,7 @@ bool j1Map::LoadObject(pugi::xml_node& objectNode, Object* object)
 	return ret;
 }
 
-fPoint MapData::GetObjectPosition(string groupObject, string object)
+fPoint RoomData::GetObjectPosition(string groupObject, string object)
 {
 	fPoint pos = { 0,0 };
 
@@ -778,7 +778,7 @@ fPoint MapData::GetObjectPosition(string groupObject, string object)
 	return pos;
 }
 
-fPoint MapData::GetObjectSize(string groupObject, string object)
+fPoint RoomData::GetObjectSize(string groupObject, string object)
 {
 	fPoint size = { 0,0 };
 
@@ -811,7 +811,7 @@ fPoint MapData::GetObjectSize(string groupObject, string object)
 	return size;
 }
 
-Object* MapData::GetObjectByName(string groupObject, string object)
+Object* RoomData::GetObjectByName(string groupObject, string object)
 {
 
 	Object* obj = nullptr;
@@ -844,7 +844,7 @@ Object* MapData::GetObjectByName(string groupObject, string object)
 	return obj;
 }
 
-bool MapData::CheckIfEnter(string groupObject, string object, fPoint position)
+bool RoomData::CheckIfEnter(string groupObject, string object, fPoint position)
 {
 
 	fPoint objectPos = GetObjectPosition(groupObject, object);
