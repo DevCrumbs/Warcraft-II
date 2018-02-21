@@ -108,7 +108,7 @@ bool j1App::Awake()
 		capFrames = config.child("renderer").child("CapFrames").attribute("value").as_uint();
 	}
 
-	if (ret)
+	if (ret == true)
 	{
 		list<j1Module*>::const_iterator item;
 		item = modules.begin();
@@ -272,7 +272,7 @@ bool j1App::PreUpdate()
 	item = modules.begin();
 	j1Module* pModule = NULL;
 
-	for (item = modules.begin(); item != modules.end() && ret; ++item)
+	for (item = modules.begin(); item != modules.end() && ret == true; ++item)
 	{
 		pModule = *item;
 
