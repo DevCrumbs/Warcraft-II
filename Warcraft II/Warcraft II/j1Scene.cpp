@@ -283,30 +283,41 @@ void j1Scene::DebugKeys()
 
 void j1Scene::CheckCameraMovement() {
 
+	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
+	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
+
 	//Move with arrows
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) //UP
+	//UP
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed;
-
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) //DOWN
+	//DOWN
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed;
-
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) //LEFT
+	//LEFT
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed;
-
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) //RIGHT
+	//RIGHT
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed;
 
 	//Move with mouse
 	App->input->GetMousePosition(mouse.x, mouse.y);
 
-	if (mouse.y <= camMovMargin) //UP
+	//UP
+	if (mouse.y <= camMovMargin/scale && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed;
-	if (mouse.y >= height - camMovMargin) //DOWN
+	//DOWN
+	if (mouse.y >= (height - camMovMargin) / scale && App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed;
-	if (mouse.x <= camMovMargin) //LEFT
+	//LEFT
+	if (mouse.x <= camMovMargin / scale && App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed;
-	if (mouse.x >= width - camMovMargin) //RIGHT
+	//RIGHT
+	if (mouse.x >= (width - camMovMargin) / scale && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed;
+
+
+		
 
 }
 
