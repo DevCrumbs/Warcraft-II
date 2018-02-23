@@ -68,7 +68,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	pugi::xml_node camera = config.child("camera");
 
 	camSpeed = camera.attribute("speed").as_float();
-	camMovMargin = camera.attribute("movMargin").as_int();
+	camMovMargin = camera.attribute("movMarginPcnt").as_int();
 
 	return ret;
 }
@@ -108,6 +108,9 @@ bool j1Scene::Start()
 	}
 
 	App->gui->CreateUIInputText({ 100,100 }, this);
+
+	//Calculate camera movement in pixels through the percentatge given
+	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
 
 	return ret;
 }
@@ -315,9 +318,6 @@ void j1Scene::CheckCameraMovement() {
 	//RIGHT
 	if (mouse.x >= (width - camMovMargin) / scale && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed;
-
-
-		
 
 }
 
