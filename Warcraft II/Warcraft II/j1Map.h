@@ -140,7 +140,7 @@ enum ROOM_TYPE
 
 // ----------------------------------------------------
 
-struct RoomData
+struct Room
 {
 	int					width = 0;
 	int					height = 0;
@@ -170,9 +170,18 @@ enum MAP_TYPE
 };
 struct RoomMap
 {
-	list<RoomData>		rooms;
+	list<Room>		rooms;
 
 	MAP_TYPE			mType = MAPTYPE_NONE;
+
+};
+
+struct RoomInfo
+{
+	int type = -1;
+	int x = 0, y = 0;
+
+	list<int> doors;
 
 
 };
@@ -210,9 +219,12 @@ public:
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
+	bool CrateNewMap();
+	bool LoadMapInfo(pugi::xml_node& mapInfoDocument);
+
 private:
 
-	bool LoadMap();
+	bool LoadRoom();
 	bool LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tilesetNode, TileSet* set);
 
@@ -227,22 +239,28 @@ private:
 
 public:
 
-	RoomData				data;
+	Room				data;
 	MapLayer*			collisionLayer = nullptr;
 
 private:
 
 	pugi::xml_document	mapFile;
+	pugi::xml_document  mapInfoDocument;
+
 	string				folder;
 	bool				isMapLoaded = false;
 
 	MapLayer*			aboveLayer = nullptr;
+
+	RoomMap				playableMap;
+	list<RoomInfo>		roomsInfo;
 
 public:
 
 	int					culingOffset = 0;
 	int					blitOffset = 0;
 	bool				cameraBlit = false;
+	int					mapTypesNo = 0;
 };
 
 #endif // __j1MAP_H__

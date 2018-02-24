@@ -38,6 +38,10 @@ bool j1Map::Awake(pugi::xml_node& config)
 	blitOffset = config.child("general").child("blit").attribute("offset").as_int();
 	cameraBlit = config.child("general").child("cameraBlit").attribute("value").as_bool();
 	culingOffset = config.child("general").child("culing").attribute("value").as_int();
+	mapTypesNo = config.child("general").child("mapTypesNo").attribute("number").as_int();
+
+	
+	mapInfoDocument.loadFile("data/maps/mapTypes/test.xml");
 
 	return ret;
 }
@@ -317,7 +321,7 @@ bool j1Map::UnLoad()
 }
 
 // Load map general properties
-bool j1Map::LoadMap()
+bool j1Map::LoadRoom()
 {
 	bool ret = true;
 	pugi::xml_node map = mapFile.child("map");
@@ -425,7 +429,7 @@ bool j1Map::Load(const char* fileName)
 	// Load general info ----------------------------------------------
 	if (ret)
 	{
-		ret = LoadMap();
+		ret = LoadRoom();
 	}
 
 	// Load all tilesets info ----------------------------------------------
@@ -745,7 +749,76 @@ bool j1Map::LoadObject(pugi::xml_node& objectNode, Object* object)
 	return ret;
 }
 
-fPoint RoomData::GetObjectPosition(string groupObject, string object)
+bool j1Map::CrateNewMap()
+{
+	bool ret = true;
+	//Decide map type
+	int mapType = 0;
+	if (mapTypesNo > 0)
+		mapType = (rand() % mapTypesNo);
+	else
+	{
+		ret = false;
+		LOG("Could not load map, no map types found");
+	}
+	//Search map type
+	if (ret)
+		for (pugi::xml_node iterator = mapInfoDocument.child("map"); iterator; iterator = iterator.next_sibling("map"))
+		{
+			if (iterator.attribute("type").as_int(-1) == mapType)
+			{
+			ret = LoadMapInfo(iterator);
+			if (!ret)
+			{
+				LOG("Could not load rooms");
+				break;
+			}
+			}
+		}
+
+
+
+}
+
+bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
+{
+	bool ret = true;
+	
+	int direction = -1;
+	RoomInfo newRoom;
+	
+	for (pugi::xml_node iterator = mapInfoDocument.child("rooms").child("room"); iterator; iterator = iterator.next_sibling("room"))
+	{
+		newRoom.type = iterator.attribute("type").as_int(-1);
+		if (newRoom.type == -1) 
+		{
+			ret = false;
+			LOG("Wrong room type");
+			break;
+		}
+		newRoom.x = iterator.attribute("x").as_int();
+		newRoom.y = iterator.attribute("y").as_int();
+
+		for (pugi::xml_node doorIterator = iterator.child("doors").child("door"); doorIterator; doorIterator = doorIterator.next_sibling("door"))
+		{
+			direction = doorIterator.attribute("direction").as_int(-1);
+			
+			if (direction > -1)
+				newRoom.doors.push_back(direction);
+			else {
+				ret = false;
+				LOG("Wrong dor direction");
+				break;
+			}
+		
+		roomsInfo.push_back(newRoom);
+	}}
+	return ret;
+}
+
+//----------------------------------
+
+fPoint Room::GetObjectPosition(string groupObject, string object)
 {
 	fPoint pos = { 0,0 };
 
@@ -778,7 +851,7 @@ fPoint RoomData::GetObjectPosition(string groupObject, string object)
 	return pos;
 }
 
-fPoint RoomData::GetObjectSize(string groupObject, string object)
+fPoint Room::GetObjectSize(string groupObject, string object)
 {
 	fPoint size = { 0,0 };
 
@@ -811,7 +884,7 @@ fPoint RoomData::GetObjectSize(string groupObject, string object)
 	return size;
 }
 
-Object* RoomData::GetObjectByName(string groupObject, string object)
+Object* Room::GetObjectByName(string groupObject, string object)
 {
 
 	Object* obj = nullptr;
@@ -844,7 +917,7 @@ Object* RoomData::GetObjectByName(string groupObject, string object)
 	return obj;
 }
 
-bool RoomData::CheckIfEnter(string groupObject, string object, fPoint position)
+bool Room::CheckIfEnter(string groupObject, string object, fPoint position)
 {
 
 	fPoint objectPos = GetObjectPosition(groupObject, object);
