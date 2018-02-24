@@ -2,6 +2,7 @@
 #define __j1MAP_H__
 
 #include <list>
+#include <vector>
 
 #include "PugiXml/src/pugixml.hpp"
 #include "SDL\include\SDL.h"
@@ -144,8 +145,11 @@ struct Room
 {
 	int					width = 0;
 	int					height = 0;
+	int					x = 0;
+	int					y = 0;
 	int					tileWidth = 0;
 	int					tileHeight = 0;
+
 	fPoint				roomPos{ 0, 0 };
 	SDL_Color			backgroundColor;
 	ROOM_TYPE			type = ROOMTYPE_UNKNOWN;
@@ -180,6 +184,8 @@ struct RoomInfo
 {
 	int type = -1;
 	int x = 0, y = 0;
+
+	int pullRoomNo = -1;
 
 	list<int> doors;
 
@@ -221,6 +227,8 @@ public:
 
 	bool CrateNewMap();
 	bool LoadMapInfo(pugi::xml_node& mapInfoDocument);
+	bool SelectRooms();
+	bool LoadRooms();
 
 private:
 
@@ -254,6 +262,7 @@ private:
 
 	RoomMap				playableMap;
 	list<RoomInfo>		roomsInfo;
+	vector<int>			noPullRoom;
 
 public:
 

@@ -93,6 +93,7 @@ bool j1Scene::Start()
 	}
 	else if (warcraftActive) {
 		ret = App->map->Load(warcraftMap.data());
+		ret = App->map->Load(warcraftMap.data());
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
