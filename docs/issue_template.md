@@ -2,7 +2,23 @@
 
 ### Type: 
 
-### Severity: 
+- A ()
+- B ()
+- C ()
+
+### Priority: 
+
+- Urgent ()
+- High ()
+- Regular ()
+- Low ()
+
+### Frequency
+
+- Always ()
+- High ()
+- Regular ()
+- Low ()
 
 ### Steps to reproduce: 
 
