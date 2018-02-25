@@ -276,6 +276,24 @@ bool j1Map::UnLoad()
 {
 	bool ret = true;
 
+
+	roomsInfo.clear();
+//	noPullRoom.clear();
+	
+	list<Room>::iterator iterator = playableMap.rooms.begin();
+	while (iterator != playableMap.rooms.end())
+	{
+		list<TileSet*>::iterator tileIterator = (*iterator).tilesets.begin();
+		while (tileIterator != (*iterator).tilesets.end())
+		{
+			App->tex->UnLoad((*tileIterator)->texture);
+			tileIterator++;
+		}
+		iterator++;
+	}
+
+	playableMap.rooms.clear();
+
 	LOG("Unloading map");
 
 	// Remove all objectGroups
@@ -776,9 +794,10 @@ bool j1Map::LoadObject(pugi::xml_node& objectNode, Object* object)
 	return ret;
 }
 
-bool j1Map::CrateNewMap()
+bool j1Map::CreateNewMap()
 {
 	bool ret = true;
+
 	//Decide map type
 	int mapType = 0;
 	if (mapTypesNo > 0)
@@ -867,7 +886,7 @@ bool j1Map::SelectRooms()
 	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
 	while (roomIterator != roomsInfo.end())
 	{
-		if (noPullRoom.size() >= (*roomIterator).type)
+		if (noPullRoom.size() >= (*roomIterator).type && noPullRoom.size() > 0)
 		{
 			room = rand() % noPullRoom[(*roomIterator).type];
 			(*roomIterator).pullRoomNo = room;

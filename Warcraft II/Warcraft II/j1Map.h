@@ -225,7 +225,7 @@ public:
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
-	bool CrateNewMap();
+	bool CreateNewMap();
 	bool LoadMapInfo(pugi::xml_node& mapInfoDocument);
 	bool SelectRooms();
 	bool LoadRooms();
