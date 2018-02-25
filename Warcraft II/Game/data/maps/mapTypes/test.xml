@@ -3,7 +3,6 @@
 <!-- Map layout -->
 
 <map type = "0">
-  
   <rooms>
     <room type ="0" x = "0" y = "0">
       <doors>
@@ -13,14 +12,22 @@
       </doors>
     </room>
     
-    <room type ="1" x = "0" y = "0">
+    <room type ="1" x = "480" y = "0">
       <doors>
         <door direction = "0"/>
 
       </doors>
     </room>
     
-    <room type ="0" x = "0" y = "0">
+    <room type ="2" x = "0" y = "480">
+      <doors>
+        <door direction = "0"/>
+        <door direction = "1"/>
+        <door direction = "2"/>
+        <door direction = "3"/>
+      </doors>
+    </room>
+    <room type ="2" x = "480" y = "480">
       <doors>
         <door direction = "0"/>
         <door direction = "1"/>

@@ -214,7 +214,7 @@ public:
 	bool CleanUp();
 
 	// Load new map
-	bool Load(const char* path);
+	bool Load(const char* path, int x = 0, int y = 0);
 
 	// Unload map
 	bool UnLoad();

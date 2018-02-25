@@ -1,4 +1,5 @@
 #include <math.h>
+#include <time.h>
 
 #include "Brofiler\Brofiler.h"
 
@@ -46,7 +47,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 	}
 	mapInfoDocument.loadFile("data/maps/mapTypes/test.xml");
 
-
+	srand(time(NULL));
 
 	return ret;
 }
@@ -65,8 +66,8 @@ void j1Map::Draw()
 	{
 		for (list<MapLayer*>::const_iterator layer = (*roomIterator).layers.begin(); layer != (*roomIterator).layers.end(); ++layer) {
 
-			if (!(*layer)->properties.GetProperty("Draw", false))
-				continue;
+//			if (!(*layer)->properties.GetProperty("Draw", false))
+//				continue;
 
 			if ((*layer)->index != LAYER_TYPE_ABOVE) {
 
@@ -83,7 +84,7 @@ void j1Map::Draw()
 							SDL_Rect* section = &rect;
 							iPoint world = MapToWorld(i, j);
 
-							App->render->Blit(tileset->texture, world.x + (*roomIterator).x, world.y + (*roomIterator).x, section, (*layer)->speed);
+							App->render->Blit(tileset->texture, world.x + (*roomIterator).x, world.y + (*roomIterator).y, section, (*layer)->speed);
 						}
 					}//for
 				}//for
@@ -427,19 +428,21 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set)
 }
 
 // Load new map
-bool j1Map::Load(const char* fileName)
+bool j1Map::Load(const char* fileName, int x, int y)
 {
 	Room* newRoom = new Room;
+	newRoom->x = x;
+	newRoom->y = y;
 	data = *newRoom;
 	delete newRoom;
 
 	bool ret = true;
-	string tmp = folder.data();
-	tmp += fileName;
+//	string tmp = folder.data();
+//	tmp += fileName;
 
-	pugi::xml_parse_result result = mapFile.loadFile(tmp.data());
+//	pugi::xml_parse_result result = mapFile.loadFile(tmp.data());
 
-//	pugi::xml_parse_result result = mapFile.loadFile(fileName);
+	pugi::xml_parse_result result = mapFile.loadFile(fileName);
 
 	if (result == NULL)
 	{
@@ -567,11 +570,6 @@ bool j1Map::Load(const char* fileName)
 			}
 			item_group++;
 		}
-	}
-
-	if (isMapLoaded)
-	{
-		data.x = 800;
 	}
 
 	isMapLoaded = ret;
@@ -826,14 +824,14 @@ bool j1Map::CrateNewMap()
 bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 {
 	bool ret = true;
-	
+
 	int direction = -1;
 	RoomInfo newRoom;
-	
+
 	for (pugi::xml_node iterator = mapInfoDocument.child("rooms").child("room"); iterator; iterator = iterator.next_sibling("room"))
 	{
 		newRoom.type = iterator.attribute("type").as_int(-1);
-		if (newRoom.type == -1) 
+		if (newRoom.type == -1)
 		{
 			ret = false;
 			LOG("Wrong room type");
@@ -845,7 +843,7 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 		for (pugi::xml_node doorIterator = iterator.child("doors").child("door"); doorIterator; doorIterator = doorIterator.next_sibling("door"))
 		{
 			direction = doorIterator.attribute("direction").as_int(-1);
-			
+
 			if (direction >= 0 && direction <= 4)
 				newRoom.doors.push_back(direction);
 			else {
@@ -853,9 +851,11 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 				LOG("Wrong door direction");
 				break;
 			}
-		
+
+
+		}
 		roomsInfo.push_back(newRoom);
-	}}
+	}
 	return ret;
 }
 
@@ -878,6 +878,7 @@ bool j1Map::SelectRooms()
 			ret = false;
 			break;
 		}
+		roomIterator++;
 	}
 	return ret;
 }
@@ -892,11 +893,12 @@ bool j1Map::LoadRooms()
 		{
 			static char roomPath[50];
 			sprintf_s(roomPath, 50, "data/maps/rooms/pull%i/room%i.tmx", (*roomIterator).type, (*roomIterator).pullRoomNo);
-
-			ret = Load(roomPath);
+			ret = Load(roomPath, (*roomIterator).x, (*roomIterator).y);
 		}
 		if (!ret)
 			break;
+
+		roomIterator++;
 	}
 	return ret;
 }
