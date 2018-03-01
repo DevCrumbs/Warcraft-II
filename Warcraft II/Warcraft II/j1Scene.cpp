@@ -76,7 +76,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 // Called before the first frame
 bool j1Scene::Start()
 {
-	bool ret = false;
+	bool ret = true;
 
 	// Save camera info
 	App->win->GetWindowSize(width, height);
@@ -92,7 +92,8 @@ bool j1Scene::Start()
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = App->map->Load(warcraftMap.data());
+		ret = App->map->CreateNewMap();
+
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
@@ -183,6 +184,11 @@ bool j1Scene::Update(float dt)
 	DebugKeys();
 	CheckCameraMovement();
 
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
+	{
+		App->map->UnLoad();
+		App->map->CreateNewMap();
+	}
 	return ret;
 }
 
@@ -288,6 +294,9 @@ void j1Scene::CheckCameraMovement() {
 
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
 	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
+
+	downMargin = -10000;
+	rightMargin = -10000;
 
 	//Move with arrows
 	//UP

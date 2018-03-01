@@ -1,4 +1,5 @@
 #include <math.h>
+#include <time.h>
 
 #include "Brofiler\Brofiler.h"
 
@@ -39,6 +40,15 @@ bool j1Map::Awake(pugi::xml_node& config)
 	cameraBlit = config.child("general").child("cameraBlit").attribute("value").as_bool();
 	culingOffset = config.child("general").child("culing").attribute("value").as_int();
 
+	mapTypesNo = config.child("general").child("mapTypesNo").attribute("number").as_int();
+	for (pugi::xml_node iterator = config.child("general").child("roomPullNo"); iterator; iterator = iterator.next_sibling("roomPullNo"))
+	{
+		noPullRoom.push_back(iterator.attribute("number").as_int());
+	}
+	mapInfoDocument.loadFile("data/maps/mapTypes/test.xml");
+
+	srand(time(NULL));
+
 	return ret;
 }
 
@@ -50,31 +60,37 @@ void j1Map::Draw()
 		return;
 
 	// TODO 5: Prepare the loop to draw all tilesets + Blit
-	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer) {
 
-		if (!(*layer)->properties.GetProperty("Draw", false))
-			continue;
+	list<Room>::iterator roomIterator = playableMap.rooms.begin();
+	while (roomIterator != playableMap.rooms.end())
+	{
+		for (list<MapLayer*>::const_iterator layer = (*roomIterator).layers.begin(); layer != (*roomIterator).layers.end(); ++layer) {
 
-		if ((*layer)->index != LAYER_TYPE_ABOVE) {
+//			if (!(*layer)->properties.GetProperty("Draw", false))
+//				continue;
 
-			for (int i = 0; i < (*layer)->width; ++i) {
-				for (int j = 0; j < (*layer)->height; ++j) {
+			if ((*layer)->index != LAYER_TYPE_ABOVE) {
 
-					int tile_id = (*layer)->Get(i, j);
-					if (tile_id > 0) {
+				for (int i = 0; i < (*layer)->width; ++i) {
+					for (int j = 0; j < (*layer)->height; ++j) {
 
-						TileSet* tileset = GetTilesetFromTileId(tile_id);
+						int tile_id = (*layer)->Get(i, j);
+						if (tile_id > 0) {
 
-						SDL_Rect rect = tileset->GetTileRect(tile_id);
+							TileSet* tileset = GetTilesetFromTileId(tile_id);
 
-						SDL_Rect* section = &rect;
-						iPoint world = MapToWorld(i, j);
+							SDL_Rect rect = tileset->GetTileRect(tile_id);
 
-						App->render->Blit(tileset->texture, world.x, world.y, section, (*layer)->speed);
-					}
+							SDL_Rect* section = &rect;
+							iPoint world = MapToWorld(i, j);
+
+							App->render->Blit(tileset->texture, world.x + (*roomIterator).x, world.y + (*roomIterator).y, section, (*layer)->speed);
+						}
+					}//for
 				}//for
-			}//for
+			}
 		}
+		roomIterator++;
 	}
 }
 
@@ -134,12 +150,12 @@ iPoint j1Map::MapToWorld(int x, int y) const
 {
 	iPoint ret;
 
-	if (data.type == MAPTYPE_ORTHOGONAL)
+	if (data.type == ROOMTYPE_ORTHOGONAL)
 	{
 		ret.x = x * data.tileWidth;
 		ret.y = y * data.tileHeight;
 	}
-	else if (data.type == MAPTYPE_ISOMETRIC)
+	else if (data.type == ROOMTYPE_ISOMETRIC)
 	{
 		ret.x = (x - y) * (data.tileWidth * 0.5f);
 		ret.y = (x + y) * (data.tileHeight * 0.5f);
@@ -157,12 +173,12 @@ iPoint j1Map::WorldToMap(int x, int y) const
 {
 	iPoint ret(0, 0);
 
-	if (data.type == MAPTYPE_ORTHOGONAL)
+	if (data.type == ROOMTYPE_ORTHOGONAL)
 	{
 		ret.x = x / data.tileWidth;
 		ret.y = y / data.tileHeight;
 	}
-	else if (data.type == MAPTYPE_ISOMETRIC)
+	else if (data.type == ROOMTYPE_ISOMETRIC)
 	{
 
 		float half_width = data.tileWidth * 0.5f;
@@ -260,6 +276,24 @@ bool j1Map::UnLoad()
 {
 	bool ret = true;
 
+
+	roomsInfo.clear();
+//	noPullRoom.clear();
+	
+	list<Room>::iterator iterator = playableMap.rooms.begin();
+	while (iterator != playableMap.rooms.end())
+	{
+		list<TileSet*>::iterator tileIterator = (*iterator).tilesets.begin();
+		while (tileIterator != (*iterator).tilesets.end())
+		{
+			App->tex->UnLoad((*tileIterator)->texture);
+			tileIterator++;
+		}
+		iterator++;
+	}
+
+	playableMap.rooms.clear();
+
 	LOG("Unloading map");
 
 	// Remove all objectGroups
@@ -317,7 +351,7 @@ bool j1Map::UnLoad()
 }
 
 // Load map general properties
-bool j1Map::LoadMap()
+bool j1Map::LoadRoom()
 {
 	bool ret = true;
 	pugi::xml_node map = mapFile.child("map");
@@ -327,8 +361,11 @@ bool j1Map::LoadMap()
 		LOG("Error parsing map xml file: Cannot find 'map' tag.");
 		ret = false;
 	}
+
 	else
 	{
+		Room tempRoom;
+		
 		data.width = map.attribute("width").as_int();
 		data.height = map.attribute("height").as_int();
 		data.tileWidth = map.attribute("tilewidth").as_int();
@@ -363,21 +400,22 @@ bool j1Map::LoadMap()
 
 		if (orientation == "orthogonal")
 		{
-			data.type = MAPTYPE_ORTHOGONAL;
+			data.type = ROOMTYPE_ORTHOGONAL;
 		}
 		else if (orientation == "isometric")
 		{
-			data.type = MAPTYPE_ISOMETRIC;
+			data.type = ROOMTYPE_ISOMETRIC;
 		}
 		else if (orientation == "staggered")
 		{
-			data.type = MAPTYPE_STAGGERED;
+			data.type = ROOMTYPE_STAGGERED;
 		}
 		else
 		{
-			data.type = MAPTYPE_UNKNOWN;
+			data.type = ROOMTYPE_UNKNOWN;
 		}
 	}
+
 
 	return ret;
 }
@@ -408,13 +446,21 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set)
 }
 
 // Load new map
-bool j1Map::Load(const char* fileName)
+bool j1Map::Load(const char* fileName, int x, int y)
 {
-	bool ret = true;
-	string tmp = folder.data();
-	tmp += fileName;
+	Room* newRoom = new Room;
+	newRoom->x = x;
+	newRoom->y = y;
+	data = *newRoom;
+	delete newRoom;
 
-	pugi::xml_parse_result result = mapFile.loadFile(tmp.data());
+	bool ret = true;
+//	string tmp = folder.data();
+//	tmp += fileName;
+
+//	pugi::xml_parse_result result = mapFile.loadFile(tmp.data());
+
+	pugi::xml_parse_result result = mapFile.loadFile(fileName);
 
 	if (result == NULL)
 	{
@@ -425,7 +471,7 @@ bool j1Map::Load(const char* fileName)
 	// Load general info ----------------------------------------------
 	if (ret)
 	{
-		ret = LoadMap();
+		ret = LoadRoom();
 	}
 
 	// Load all tilesets info ----------------------------------------------
@@ -545,6 +591,9 @@ bool j1Map::Load(const char* fileName)
 	}
 
 	isMapLoaded = ret;
+
+	if (ret)
+		playableMap.rooms.push_back(data);
 
 	return ret;
 }
@@ -745,7 +794,137 @@ bool j1Map::LoadObject(pugi::xml_node& objectNode, Object* object)
 	return ret;
 }
 
-fPoint MapData::GetObjectPosition(string groupObject, string object)
+bool j1Map::CreateNewMap()
+{
+	bool ret = true;
+
+	//Decide map type
+	int mapType = 0;
+	if (mapTypesNo > 0)
+		mapType = (rand() % mapTypesNo);
+	else
+	{
+		ret = false;
+		LOG("Could not load map, no map types found");
+	}
+	//Search map type
+	bool isFound = false;
+	if (ret)
+		for (pugi::xml_node iterator = mapInfoDocument.child("map"); iterator; iterator = iterator.next_sibling("map"))
+		{
+			if (iterator.attribute("type").as_int(-1) == mapType)
+			{
+				isFound = true;
+				ret = LoadMapInfo(iterator);
+
+				if (!ret)
+					LOG("Could not load rooms");
+	
+				break;
+			}
+		}
+	if (!isFound) 
+	{
+
+		LOG("Could not find map with specific type (type is %i)", mapType);
+			ret = false;
+	}
+		
+	if (ret)
+		ret = SelectRooms();
+
+	if (ret)
+		ret = LoadRooms();
+
+
+	return ret;
+}
+
+bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
+{
+	bool ret = true;
+
+	int direction = -1;
+	RoomInfo newRoom;
+
+	for (pugi::xml_node iterator = mapInfoDocument.child("rooms").child("room"); iterator; iterator = iterator.next_sibling("room"))
+	{
+		newRoom.type = iterator.attribute("type").as_int(-1);
+		if (newRoom.type == -1)
+		{
+			ret = false;
+			LOG("Wrong room type");
+			break;
+		}
+		newRoom.x = iterator.attribute("x").as_int();
+		newRoom.y = iterator.attribute("y").as_int();
+
+		for (pugi::xml_node doorIterator = iterator.child("doors").child("door"); doorIterator; doorIterator = doorIterator.next_sibling("door"))
+		{
+			direction = doorIterator.attribute("direction").as_int(-1);
+
+			if (direction >= 0 && direction <= 4)
+				newRoom.doors.push_back(direction);
+			else {
+				ret = false;
+				LOG("Wrong door direction");
+				break;
+			}
+
+
+		}
+		roomsInfo.push_back(newRoom);
+	}
+	return ret;
+}
+
+bool j1Map::SelectRooms()
+{
+	bool ret = true;
+	int room = 0;
+
+	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
+	while (roomIterator != roomsInfo.end())
+	{
+		if (noPullRoom.size() >= (*roomIterator).type && noPullRoom.size() > 0)
+		{
+			room = rand() % noPullRoom[(*roomIterator).type];
+			(*roomIterator).pullRoomNo = room;
+		}
+		else
+		{
+			LOG("Error, room type exeed pull size");
+			ret = false;
+			break;
+		}
+		roomIterator++;
+	}
+	return ret;
+}
+
+bool j1Map::LoadRooms()
+{
+	bool ret = true;
+	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
+	while (roomIterator != roomsInfo.end())
+	{
+		if ((*roomIterator).type >= 0 && (*roomIterator).pullRoomNo >= 0)
+		{
+			static char roomPath[50];
+			sprintf_s(roomPath, 50, "data/maps/rooms/pull%i/room%i.tmx", (*roomIterator).type, (*roomIterator).pullRoomNo);
+			ret = Load(roomPath, (*roomIterator).x, (*roomIterator).y);
+		}
+		if (!ret)
+			break;
+
+		roomIterator++;
+	}
+	return ret;
+}
+
+//----------------------------------
+
+fPoint Room::GetObjectPosition(string groupObject, string object)
 {
 	fPoint pos = { 0,0 };
 
@@ -778,7 +957,7 @@ fPoint MapData::GetObjectPosition(string groupObject, string object)
 	return pos;
 }
 
-fPoint MapData::GetObjectSize(string groupObject, string object)
+fPoint Room::GetObjectSize(string groupObject, string object)
 {
 	fPoint size = { 0,0 };
 
@@ -811,7 +990,7 @@ fPoint MapData::GetObjectSize(string groupObject, string object)
 	return size;
 }
 
-Object* MapData::GetObjectByName(string groupObject, string object)
+Object* Room::GetObjectByName(string groupObject, string object)
 {
 
 	Object* obj = nullptr;
@@ -844,7 +1023,7 @@ Object* MapData::GetObjectByName(string groupObject, string object)
 	return obj;
 }
 
-bool MapData::CheckIfEnter(string groupObject, string object, fPoint position)
+bool Room::CheckIfEnter(string groupObject, string object, fPoint position)
 {
 
 	fPoint objectPos = GetObjectPosition(groupObject, object);
@@ -852,3 +1031,4 @@ bool MapData::CheckIfEnter(string groupObject, string object, fPoint position)
 
 	return (objectPos.x < position.x + 1 && objectPos.x + objectSize.x > position.x && objectPos.y < position.y + 1 && objectSize.y + objectPos.y > position.y);
 }
+

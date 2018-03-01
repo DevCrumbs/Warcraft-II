@@ -30,12 +30,12 @@ bool j1PathFinding::CleanUp()
 // Sets up the walkability map
 void j1PathFinding::SetMap(uint width, uint height, uchar* data)
 {
-	this->width = width;
-	this->height = height;
+	//this->width = width;
+	//this->height = height;
 
-	RELEASE_ARRAY(map);
-	map = new uchar[width*height];
-	memcpy(map, data, width*height);
+	//RELEASE_ARRAY(map);
+	//map = new uchar[width*height];
+	//memcpy(map, data, width*height);
 }
 
 // Utility: return true if pos is inside the map boundaries

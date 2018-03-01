@@ -2,6 +2,7 @@
 #define __j1MAP_H__
 
 #include <list>
+#include <vector>
 
 #include "PugiXml/src/pugixml.hpp"
 #include "SDL\include\SDL.h"
@@ -86,10 +87,10 @@ struct MapLayer {
 	string name;
 	LAYER_TYPE index = LAYER_TYPE_NONE;
 
-	uint width = 0; //number of tiles in the x axis
-	uint height = 0; //number of tiles in the y axis
+	uint width = 0; // number of tiles in the x axis
+	uint height = 0; // number of tiles in the y axis
 
-	uint* data = nullptr;
+	uint* data = nullptr; // tile gid
 	uint sizeData = 0;
 
 	float speed = 1.0f; //parallax (speed of the layer)
@@ -130,30 +131,34 @@ struct TileSet
 
 };
 
-enum MapTypes
+enum ROOM_TYPE
 {
-	MAPTYPE_UNKNOWN = 0,
-	MAPTYPE_ORTHOGONAL,
-	MAPTYPE_ISOMETRIC,
-	MAPTYPE_STAGGERED
+	ROOMTYPE_UNKNOWN = 0,
+	ROOMTYPE_ORTHOGONAL,
+	ROOMTYPE_ISOMETRIC,
+	ROOMTYPE_STAGGERED
 };
 
 // ----------------------------------------------------
 
-struct MapData
+struct Room
 {
 	int					width = 0;
 	int					height = 0;
+	int					x = 0;
+	int					y = 0;
 	int					tileWidth = 0;
 	int					tileHeight = 0;
+
+	fPoint				roomPos{ 0, 0 };
 	SDL_Color			backgroundColor;
-	MapTypes			type = MAPTYPE_UNKNOWN;
-	list<TileSet*>	tilesets;
+	ROOM_TYPE			type = ROOMTYPE_UNKNOWN;
+	list<TileSet*>		tilesets;
 
 	// TODO 2: Add a list/array of layers to the map!
-	list<MapLayer*> layers;
+	list<MapLayer*>		layers;
 
-	list<ObjectGroup*> objectGroups;
+	list<ObjectGroup*>	objectGroups;
 
 	fPoint GetObjectPosition(string groupObject, string object);
 	fPoint GetObjectSize(string groupObject, string object);
@@ -163,6 +168,31 @@ struct MapData
 };
 
 // ----------------------------------------------------
+enum MAP_TYPE
+{
+	MAPTYPE_NONE
+};
+struct RoomMap
+{
+	list<Room>		rooms;
+
+	MAP_TYPE			mType = MAPTYPE_NONE;
+
+};
+
+struct RoomInfo
+{
+	int type = -1;
+	int x = 0, y = 0;
+
+	int pullRoomNo = -1;
+
+	list<int> doors;
+
+
+};
+	
+//-----------------------------------------------------
 
 class j1Map : public j1Module
 {
@@ -184,7 +214,7 @@ public:
 	bool CleanUp();
 
 	// Load new map
-	bool Load(const char* path);
+	bool Load(const char* path, int x = 0, int y = 0);
 
 	// Unload map
 	bool UnLoad();
@@ -195,9 +225,14 @@ public:
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
+	bool CreateNewMap();
+	bool LoadMapInfo(pugi::xml_node& mapInfoDocument);
+	bool SelectRooms();
+	bool LoadRooms();
+
 private:
 
-	bool LoadMap();
+	bool LoadRoom();
 	bool LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tilesetNode, TileSet* set);
 
@@ -212,22 +247,29 @@ private:
 
 public:
 
-	MapData				data;
+	Room				data;
 	MapLayer*			collisionLayer = nullptr;
 
 private:
 
 	pugi::xml_document	mapFile;
+	pugi::xml_document  mapInfoDocument;
+
 	string				folder;
 	bool				isMapLoaded = false;
 
 	MapLayer*			aboveLayer = nullptr;
+
+	RoomMap				playableMap;
+	list<RoomInfo>		roomsInfo;
+	vector<int>			noPullRoom;
 
 public:
 
 	int					culingOffset = 0;
 	int					blitOffset = 0;
 	bool				cameraBlit = false;
+	int					mapTypesNo = 0;
 };
 
 #endif // __j1MAP_H__
