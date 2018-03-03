@@ -836,6 +836,9 @@ bool j1Map::CreateNewMap()
 	if (ret)
 		ret = LoadRooms();
 
+	if (ret)
+		ret = LoadCorridors();
+
 
 	return ret;
 }
@@ -844,11 +847,12 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 {
 	bool ret = true;
 
-	int direction = -1;
-	RoomInfo newRoom;
+	DIRECTION direction = DIRECTION_NONE;
+
 
 	for (pugi::xml_node iterator = mapInfoDocument.child("rooms").child("room"); iterator; iterator = iterator.next_sibling("room"))
 	{
+		RoomInfo newRoom;
 		newRoom.type = iterator.attribute("type").as_int(-1);
 		if (newRoom.type == -1)
 		{
@@ -861,7 +865,7 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 
 		for (pugi::xml_node doorIterator = iterator.child("doors").child("door"); doorIterator; doorIterator = doorIterator.next_sibling("door"))
 		{
-			direction = doorIterator.attribute("direction").as_int(-1);
+			direction = (DIRECTION)doorIterator.attribute("direction").as_int(-1);
 
 			if (direction >= 0 && direction <= 4)
 				newRoom.doors.push_back(direction);
@@ -906,7 +910,9 @@ bool j1Map::LoadRooms()
 {
 	bool ret = true;
 	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
+
 	while (roomIterator != roomsInfo.end())
+
 	{
 		if ((*roomIterator).type >= 0 && (*roomIterator).pullRoomNo >= 0)
 		{
@@ -918,8 +924,73 @@ bool j1Map::LoadRooms()
 			break;
 
 		roomIterator++;
+
 	}
 	return ret;
+}
+
+bool j1Map::LoadCorridors()
+{
+	bool ret = true;
+	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
+	list<Room>::iterator mapIterator = playableMap.rooms.begin();
+
+	while (roomIterator != roomsInfo.end() && mapIterator != playableMap.rooms.end())
+	{
+		list<DIRECTION>::iterator doorIterator = (*roomIterator).doors.begin();
+		
+		while (doorIterator != (*roomIterator).doors.end())
+		{
+			CreateCorridor((*mapIterator), (*doorIterator));
+			doorIterator++;
+		}
+
+
+		roomIterator++;
+		mapIterator++;
+	}
+	return ret;
+}
+
+bool j1Map::CreateCorridor(Room room, DIRECTION direction)
+{
+	bool ret = true;
+	int roomX = room.x;
+	int roomY = room.y;
+	int tileNoX = room.width;
+	int tileNoY = room.height;
+	int tileWidth = room.tileWidth;
+	int tileHeight = room.tileHeight;
+
+	int corridorX = 0, corridorY = 0;
+
+	int CORRIDOR_WIDTH = 2;
+
+	switch ((direction))
+	{
+	case DIRECTION_NONE:
+		break;
+	case DIRECTION_NORTH:
+
+		break;
+	case DIRECTION_EAST:
+		corridorX = roomX + (tileNoX * tileWidth);
+		corridorY = roomY + (((tileNoY / 2) - 2) * tileWidth);
+		ret = Load("data/maps/corridors/corridorV.tmx", corridorX, corridorY);
+		break;
+	case DIRECTION_SOUTH:
+		corridorX = roomX + (((tileNoX / 2) - 2) * tileWidth);
+		corridorY = roomY + (tileNoY * tileHeight);
+		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
+
+		break;
+	case DIRECTION_WEST:
+
+		break;
+	default:
+		break;
+	}
+	return true;
 }
 
 //----------------------------------

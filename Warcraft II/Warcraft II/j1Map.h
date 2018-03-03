@@ -180,6 +180,15 @@ struct RoomMap
 
 };
 
+enum DIRECTION
+{
+	DIRECTION_NONE = -1,
+	DIRECTION_NORTH = 0,
+	DIRECTION_EAST,
+	DIRECTION_SOUTH,
+	DIRECTION_WEST
+};
+
 struct RoomInfo
 {
 	int type = -1;
@@ -187,7 +196,7 @@ struct RoomInfo
 
 	int pullRoomNo = -1;
 
-	list<int> doors;
+	list<DIRECTION> doors;
 
 
 };
@@ -229,6 +238,8 @@ public:
 	bool LoadMapInfo(pugi::xml_node& mapInfoDocument);
 	bool SelectRooms();
 	bool LoadRooms();
+	bool LoadCorridors();
+	bool CreateCorridor(Room room, DIRECTION direction = DIRECTION_NONE);
 
 private:
 

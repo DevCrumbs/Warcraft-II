@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="10" height="4" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="summerTiles" tilewidth="32" tileheight="32" spacing="1" tilecount="0" columns="19">
+  <image source="summerTiles.png" width="626" height="659"/>
+ </tileset>
+  <layer name="Capa de Patrones 1" width="10" height="4">
+  <data>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="119"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+   <tile gid="28"/>
+  </data>
+ </layer>
+</map>
