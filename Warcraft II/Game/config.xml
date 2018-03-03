@@ -23,7 +23,7 @@
   <map>
     <folder>data/assets/textures/maps/</folder>
     <general>
-      <mapTypesNo number="1"/>
+      <mapTypesNo number="3"/>
       <roomPullNo number="1"/>
       <roomPullNo number="4"/>
       <roomPullNo number="4"/>

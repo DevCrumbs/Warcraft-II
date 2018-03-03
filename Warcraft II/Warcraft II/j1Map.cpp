@@ -45,7 +45,6 @@ bool j1Map::Awake(pugi::xml_node& config)
 	{
 		noPullRoom.push_back(iterator.attribute("number").as_int());
 	}
-	mapInfoDocument.loadFile("data/maps/mapTypes/test.xml");
 
 	srand(time(NULL));
 
@@ -808,22 +807,23 @@ bool j1Map::CreateNewMap()
 		LOG("Could not load map, no map types found");
 	}
 	//Search map type
-	bool isFound = false;
-	if (ret)
-		for (pugi::xml_node iterator = mapInfoDocument.child("map"); iterator; iterator = iterator.next_sibling("map"))
-		{
-			if (iterator.attribute("type").as_int(-1) == mapType)
-			{
-				isFound = true;
-				ret = LoadMapInfo(iterator);
 
-				if (!ret)
-					LOG("Could not load rooms");
-	
-				break;
-			}
-		}
-	if (!isFound) 
+
+	if (ret)
+	{
+		static char typePath[50];
+		sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
+		mapInfoDocument.loadFile(typePath);
+
+		pugi::xml_node mapInfo = mapInfoDocument.child("map");
+		ret = LoadMapInfo(mapInfo);
+
+		if (!ret)
+			LOG("Could not load rooms");
+
+
+	}
+	if (!ret) 
 	{
 
 		LOG("Could not find map with specific type (type is %i)", mapType);

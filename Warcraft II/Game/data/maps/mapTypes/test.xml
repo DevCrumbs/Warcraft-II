@@ -2,74 +2,66 @@
 
 <!-- Map layout -->
 
-<map type = "0">
-  <rooms>
-    <room type ="0" x = "0" y = "0">
-      <doors>
-        <door direction = "1"/>
-        <door direction = "2"/>
-      </doors>
-    </room>
-    
-    <room type ="0" x = "960" y = "0">
-    </room>
-       
-    <room type ="0" x = "" y = "960">
-      </room>
-      
-    <room type ="0" x = "960" y = "960">
+<map>
+  <type type = "0">
+    <rooms>
+      <room type ="0" x = "0" y = "0">
         <doors>
-            <door direction = "0"/>
+          <door direction = "1"/>
+          <door direction = "2"/>
+        </doors>
+      </room>
+
+      <room type ="0" x = "960" y = "0">
+      </room>
+
+      <room type ="0" x = "" y = "960">
+      </room>
+
+      <room type ="0" x = "960" y = "960">
+        <doors>
+          <door direction = "0"/>
+          <door direction = "1"/>
+          <door direction = "2"/>
+          <door direction = "3"/>
+        </doors>
+      </room>
+
+      <room type ="0" x = "960" y = "1920">
+      </room>
+
+      <room type ="0" x = "1920" y = "960">
+      </room>
+    </rooms>
+  </type>
+
+  <type type = "1">
+      <rooms>
+        <room type ="0" x = "0" y = "0">
+          <doors>
+            <door direction = "2"/>
+          </doors>
+        </room>
+
+        <room type ="0" x = "" y = "960">
+          <doors>
+            <door direction = "1"/>
+          </doors>
+        </room>
+
+        <room type ="0" x = "960" y = "960">
+          <doors>
             <door direction = "1"/>
             <door direction = "2"/>
-            <door direction = "3"/>
-        </doors>
-    </room>
-            
-    <room type ="0" x = "960" y = "1920">
-      </room>
-            
-    <room type ="0" x = "1920" y = "960">
-      </room>
-  </rooms>
-  
+          </doors>
+        </room>
+
+        <room type ="0" x = "960" y = "1920">
+        </room>
+
+        <room type ="0" x = "1920" y = "960">
+        </room>
+      </rooms>
+  </type>
 </map>
 
-
-<nothing>
-<map type = "0">
-  <rooms>
-    <room type ="0" x = "0" y = "0">
-      <doors>
-        <door direction = "1"/>
-        <door direction = "2"/>
-      </doors>
-    </room>
-    
-    <room type ="0" x = "960" y = "0">
-        <doors>
-            <door direction = "2"/>
-        </doors>
-    </room>
-       
-    <room type ="0" x = "" y = "960">
-                <doors>
-            <door direction = "1"/>
-        </doors>
-      </room>
-      
-    <room type ="0" x = "960" y = "960">
-        <doors>
-            <door direction = "1"/>
-            <door direction = "2"/>
-      </doors>
-    </room>
-            
-    <room type ="0" x = "960" y = "1920">
-      </room>
-            
-    <room type ="0" x = "1920" y = "960">
-      </room>
-  </rooms>
-  
-</map></nothing>

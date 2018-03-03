@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<!-- Map layout -->
+
+<map type = "0">
+  <rooms>
+    <room type ="0" x = "0" y = "0">
+      <doors>
+        <door direction = "1"/>
+      </doors>
+    </room>
+           
+    <room type ="0" x = "960" y = "0">
+        <doors>
+            <door direction = "1"/>
+        </doors>
+      </room>
+      
+    <room type ="0" x = "960" y = "960">
+        <doors>
+            <door direction = "1"/>
+            <door direction = "2"/>
+      </doors>
+    </room>
+            
+    <room type ="0" x = "960" y = "1920">
+      </room>
+            
+    <room type ="0" x = "1920" y = "960">
+      </room>
+  </rooms>
+  
+</map>
