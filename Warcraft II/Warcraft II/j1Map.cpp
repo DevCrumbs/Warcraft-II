@@ -965,13 +965,16 @@ bool j1Map::CreateCorridor(Room room, DIRECTION direction)
 	int corridorX = 0, corridorY = 0;
 
 	int CORRIDOR_WIDTH = 2;
+	int CORRIDOR_HEIGHT = 10;
 
 	switch ((direction))
 	{
 	case DIRECTION_NONE:
 		break;
 	case DIRECTION_NORTH:
-
+		corridorX = roomX + (((tileNoX / 2) - 2) * tileWidth);
+		corridorY = roomY - (CORRIDOR_HEIGHT * tileHeight);
+		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
 		break;
 	case DIRECTION_EAST:
 		corridorX = roomX + (tileNoX * tileWidth);
@@ -982,10 +985,11 @@ bool j1Map::CreateCorridor(Room room, DIRECTION direction)
 		corridorX = roomX + (((tileNoX / 2) - 2) * tileWidth);
 		corridorY = roomY + (tileNoY * tileHeight);
 		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
-
 		break;
 	case DIRECTION_WEST:
-
+		corridorX = roomX - (CORRIDOR_HEIGHT * tileWidth);
+		corridorY = roomY + (((tileNoY / 2) - 2) * tileWidth);
+		ret = Load("data/maps/corridors/corridorV.tmx", corridorX, corridorY);
 		break;
 	default:
 		break;
