@@ -189,6 +189,7 @@ bool j1Scene::Update(float dt)
 		App->map->UnLoad();
 		App->map->CreateNewMap();
 	}
+
 	return ret;
 }
 

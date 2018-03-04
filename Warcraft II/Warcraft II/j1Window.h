@@ -28,7 +28,7 @@ public:
 	void GetWindowSize(uint& width, uint& height) const;
 
 	// Retrieve window scale
-	uint GetScale() const;
+	float GetScale() const;
 
 public:
 	//The window we'll be rendering to
@@ -47,7 +47,7 @@ private:
 	// Screen parameters
 	uint		width = 0;
 	uint		height = 0;
-	uint		scale = 0;
+	float		scale = 0;
 };
 
 #endif //__j1WINDOW_H__

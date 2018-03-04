@@ -63,10 +63,10 @@ void j1Map::Draw()
 	list<Room>::iterator roomIterator = playableMap.rooms.begin();
 	while (roomIterator != playableMap.rooms.end())
 	{
-		for (list<MapLayer*>::const_iterator layer = (*roomIterator).layers.begin(); layer != (*roomIterator).layers.end(); ++layer) {
-
-//			if (!(*layer)->properties.GetProperty("Draw", false))
-//				continue;
+		for (list<MapLayer*>::const_iterator layer = (*roomIterator).layers.begin(); layer != (*roomIterator).layers.end(); ++layer)
+		{
+			//			if (!(*layer)->properties.GetProperty("Draw", false))
+			//				continue;
 
 			if ((*layer)->index != LAYER_TYPE_ABOVE) {
 
@@ -82,6 +82,7 @@ void j1Map::Draw()
 
 							SDL_Rect* section = &rect;
 							iPoint world = MapToWorld(i, j);
+
 
 							App->render->Blit(tileset->texture, world.x + (*roomIterator).x, world.y + (*roomIterator).y, section, (*layer)->speed);
 						}
@@ -444,7 +445,7 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set)
 	return ret;
 }
 
-// Load new map
+// Load new room
 bool j1Map::Load(const char* fileName, int x, int y)
 {
 	Room* newRoom = new Room;
@@ -853,8 +854,8 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 	for (pugi::xml_node iterator = mapInfoDocument.child("rooms").child("room"); iterator; iterator = iterator.next_sibling("room"))
 	{
 		RoomInfo newRoom;
-		newRoom.type = iterator.attribute("type").as_int(-1);
-		if (newRoom.type == -1)
+		newRoom.type = iterator.attribute("type").as_int(-3);
+		if (newRoom.type == -3)
 		{
 			ret = false;
 			LOG("Wrong room type");
@@ -890,10 +891,14 @@ bool j1Map::SelectRooms()
 	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
 	while (roomIterator != roomsInfo.end())
 	{
-		if (noPullRoom.size() >= (*roomIterator).type && noPullRoom.size() > 0)
+		if (noPullRoom.size() >= (*roomIterator).type)
 		{
 			room = rand() % noPullRoom[(*roomIterator).type];
 			(*roomIterator).pullRoomNo = room;
+		}
+		else if ((*roomIterator).type == -1 || (*roomIterator).type == -2)
+		{
+			(*roomIterator).pullRoomNo = (*roomIterator).type;
 		}
 		else
 		{
@@ -919,6 +924,14 @@ bool j1Map::LoadRooms()
 			static char roomPath[50];
 			sprintf_s(roomPath, 50, "data/maps/rooms/pull%i/room%i.tmx", (*roomIterator).type, (*roomIterator).pullRoomNo);
 			ret = Load(roomPath, (*roomIterator).x, (*roomIterator).y);
+		}
+		else if ((*roomIterator).type == -1)
+		{
+			ret = Load("data/maps/rooms/base/base.tmx", (*roomIterator).x, (*roomIterator).y);
+		}
+		else if ((*roomIterator).type == -2)
+		{
+			ret = Load("data/maps/rooms/boss/boss.tmx", (*roomIterator).x, (*roomIterator).y);
 		}
 		if (!ret)
 			break;
@@ -964,31 +977,31 @@ bool j1Map::CreateCorridor(Room room, DIRECTION direction)
 
 	int corridorX = 0, corridorY = 0;
 
-	int CORRIDOR_WIDTH = 2;
-	int CORRIDOR_HEIGHT = 10;
+	int CORRIDOR_WIDTH = 4;
+	int CORRIDOR_HEIGHT = 20;
 
 	switch ((direction))
 	{
 	case DIRECTION_NONE:
 		break;
 	case DIRECTION_NORTH:
-		corridorX = roomX + (((tileNoX / 2) - 2) * tileWidth);
+		corridorX = roomX + (((tileNoX / 2) - CORRIDOR_WIDTH) * tileWidth);
 		corridorY = roomY - (CORRIDOR_HEIGHT * tileHeight);
 		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
 		break;
 	case DIRECTION_EAST:
 		corridorX = roomX + (tileNoX * tileWidth);
-		corridorY = roomY + (((tileNoY / 2) - 2) * tileWidth);
+		corridorY = roomY + (((tileNoY / 2) - CORRIDOR_WIDTH) * tileWidth);
 		ret = Load("data/maps/corridors/corridorV.tmx", corridorX, corridorY);
 		break;
 	case DIRECTION_SOUTH:
-		corridorX = roomX + (((tileNoX / 2) - 2) * tileWidth);
+		corridorX = roomX + (((tileNoX / 2) - CORRIDOR_WIDTH) * tileWidth);
 		corridorY = roomY + (tileNoY * tileHeight);
 		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
 		break;
 	case DIRECTION_WEST:
 		corridorX = roomX - (CORRIDOR_HEIGHT * tileWidth);
-		corridorY = roomY + (((tileNoY / 2) - 2) * tileWidth);
+		corridorY = roomY + (((tileNoY / 2) - CORRIDOR_WIDTH) * tileWidth);
 		ret = Load("data/maps/corridors/corridorV.tmx", corridorX, corridorY);
 		break;
 	default:
