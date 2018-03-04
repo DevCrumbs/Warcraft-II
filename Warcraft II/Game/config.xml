@@ -12,7 +12,7 @@
   </renderer>
 
   <window>
-    <resolution width="1024" height="768" scale="1"/>
+    <resolution width="2560" height="1440" scale="1"/>
     <fullscreen value="false"/>
     <borderless value="false"/>
     <resizable value="true"/>
@@ -42,7 +42,7 @@
 
   <scene>
 
-    <camera speed ="8.0" movMarginPcnt = "5"/>
+    <camera speed ="80.0" movMarginPcnt = "5"/>
     
     <maps>
       <orthogonal name="orthogonal_walk.tmx" active="0"/>

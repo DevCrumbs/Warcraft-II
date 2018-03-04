@@ -55,7 +55,7 @@ public:
 	// Debug keys
 	void DebugKeys();
 
-	void CheckCameraMovement();
+	void CheckCameraMovement(float dt);
 
 public:
 	// Camera

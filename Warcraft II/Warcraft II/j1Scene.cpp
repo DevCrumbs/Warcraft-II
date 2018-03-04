@@ -182,13 +182,19 @@ bool j1Scene::Update(float dt)
 
 	// F1, F2, F3, F4, F5, F6, +, -
 	DebugKeys();
-	CheckCameraMovement();
+	CheckCameraMovement(dt);
 
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
 	{
 		App->map->UnLoad();
 		App->map->CreateNewMap();
 	}
+
+	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
+		App->win->scale += 0.05f;
+
+	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT)
+		App->win->scale -= 0.05f;
 
 	return ret;
 }
@@ -291,7 +297,7 @@ void j1Scene::DebugKeys()
 		App->map->cameraBlit = !App->map->cameraBlit;
 }
 
-void j1Scene::CheckCameraMovement() {
+void j1Scene::CheckCameraMovement(float dt) {
 
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
 	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
@@ -302,32 +308,32 @@ void j1Scene::CheckCameraMovement() {
 	//Move with arrows
 	//UP
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && App->render->camera.y <= 0)
-		App->render->camera.y += camSpeed;
+		App->render->camera.y += camSpeed * dt;
 	//DOWN
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && App->render->camera.y >= downMargin)
-		App->render->camera.y -= camSpeed;
+		App->render->camera.y -= camSpeed * dt;
 	//LEFT
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && App->render->camera.x <= 0)
-		App->render->camera.x += camSpeed;
+		App->render->camera.x += camSpeed * dt;
 	//RIGHT
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && App->render->camera.x >= rightMargin)
-		App->render->camera.x -= camSpeed;
+		App->render->camera.x -= camSpeed * dt;
 
 	//Move with mouse
 	App->input->GetMousePosition(mouse.x, mouse.y);
 
 	//UP
 	if (mouse.y <= camMovMargin/scale && App->render->camera.y <= 0)
-		App->render->camera.y += camSpeed;
+		App->render->camera.y += camSpeed * dt;
 	//DOWN
 	if (mouse.y >= (height - camMovMargin) / scale && App->render->camera.y >= downMargin)
-		App->render->camera.y -= camSpeed;
+		App->render->camera.y -= camSpeed * dt;
 	//LEFT
 	if (mouse.x <= camMovMargin / scale && App->render->camera.x <= 0)
-		App->render->camera.x += camSpeed;
+		App->render->camera.x += camSpeed * dt;
 	//RIGHT
 	if (mouse.x >= (width - camMovMargin) / scale && App->render->camera.x >= rightMargin)
-		App->render->camera.x -= camSpeed;
+		App->render->camera.x -= camSpeed * dt;
 
 }
 

@@ -40,14 +40,16 @@ public:
 
 	bool fullscreen;
 
-private:
-	string		title;
-	string		icon;
-
 	// Screen parameters
 	uint		width = 0;
 	uint		height = 0;
 	float		scale = 0;
+
+private:
+	string		title;
+	string		icon;
+
+
 };
 
 #endif //__j1WINDOW_H__
