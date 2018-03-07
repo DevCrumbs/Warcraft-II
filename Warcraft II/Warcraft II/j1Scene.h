@@ -69,6 +69,8 @@ public:
 
 	bool pause = false;
 
+	UIInputText* inputText;
+
 private:
 
 	

@@ -108,7 +108,7 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 	}
 
-	App->gui->CreateUIInputText({ 100,100 }, this);
+	inputText = App->gui->CreateUIInputText({ 100, 100 }, this);
 
 	//Calculate camera movement in pixels through the percentatge given
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;

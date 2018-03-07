@@ -12,16 +12,15 @@
 UIInputText::UIInputText(iPoint localPos, UIElement* parent, j1Module* listener) : UIElement (localPos, parent, listener){
 
 	type = UIE_TYPE_INPUT_TEXT;
-	//original_pos = position;
+	original_pos = localPos;
+	r = { 0,0,0,0 };
 
-	/*imageInputText = (Image*)App->gui->AdUIElement(x, y, IMAGE);
-	labelInputText = (Label*)App->gui->AdUIElement(x, y, LABEL);*/
 }
 
 void UIInputText::Update(float dt) {
 	
 	if (InputText_Actived) {	
-		App->render->DrawQuad({ 1000 + r.w,10,3,13 }, 255, 255, 255, 255);
+		App->render->DrawQuad({ original_pos.x + r.w ,original_pos.y,3,13 }, 255, 255, 255, 255);
 		if (App->input->isPresed) {
 			text += App->input->newLetter;
 			App->font->CalcSize(text.data(), r.w, r.h);
@@ -30,11 +29,13 @@ void UIInputText::Update(float dt) {
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_BACKSPACE) == KEY_DOWN) {
-			text.pop_back();
-			App->font->CalcSize(text.data(), r.w, r.h);
-			texture = App->font->Print(text.data());
+			if (!text.empty()) {
+				text.pop_back();
+				App->font->CalcSize(text.data(), r.w, r.h);
+				texture = App->font->Print(text.data());
+			}
 		}
-		App->render->Blit(texture, 1000, 10, &r);
+		App->render->Blit(texture, original_pos.x, original_pos.y, &r);
 	}
 
 

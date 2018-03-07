@@ -18,6 +18,7 @@ public:
 
 	void Update(float dt);
 
+	iPoint original_pos;
 
 private:
 
@@ -27,9 +28,6 @@ private:
 
 	SDL_Texture* texture = nullptr;
 	SDL_Rect r;
-
-	/*Label* labelInputText;
-	Image* imageInputText;*/
 
 };
 

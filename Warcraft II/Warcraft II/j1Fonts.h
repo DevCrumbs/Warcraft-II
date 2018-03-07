@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define DEFAULT_FONT "fonts/open_sans/OpenSans-Regular.ttf"
+#define DEFAULT_FONT "data/fonts/EurostileLTStd-BoldEx2.otf"
 #define DEFAULT_FONT_SIZE 12
 
 struct SDL_Texture;

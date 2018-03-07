@@ -60,7 +60,7 @@ bool j1Gui::Start()
 	mapFonts[FONT_NAME_MSMINCHO] = App->font->Load("Assets/Fonts/MSMINCHO.TTF");
 	mapFonts[FONT_NAME_ZELDA] = App->font->Load("Assets/Fonts/Zelda.ttf", 60);
 
-	UIElementsTree = new NTree<UIElement*>((UIElement*)App->win->window);
+	//UIElementsTree = new NTree<UIElement*>((UIElement*)App->win->window);
 
 	return ret;
 }
@@ -72,7 +72,7 @@ bool j1Gui::PreUpdate()
 
 	UIElementsList.clear();
 
-	///UIElementsTree->recursivePreOrderList(UIElementsTree->getRoot(), &UIElementsList);
+	UIElementsList = addedElementUI;
 
 	return ret;
 }
@@ -148,7 +148,7 @@ bool j1Gui::CleanUp()
 	LOG("Freeing GUI");
 
 	if (ClearAllUI()) {
-		UIElementsTree->clear();
+		//UIElementsTree->clear();
 
 		// Clear UI_elements list (active elements)
 		list<UIElement*>::const_iterator iterator = UIElementsList.begin();
@@ -173,7 +173,7 @@ UIImage* j1Gui::CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* lis
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
 
-	addElementUI.push_back((UIElement*)image);
+	addedElementUI.push_back((UIElement*)image);
 
 	return image;
 }
@@ -185,7 +185,7 @@ UILabel* j1Gui::CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* lis
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
 
-	addElementUI.push_back((UIElement*)label);
+	addedElementUI.push_back((UIElement*)label);
 	
 
 	return label;
@@ -198,7 +198,7 @@ UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* 
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
 
-	addElementUI.push_back((UIElement*)button);
+	addedElementUI.push_back((UIElement*)button);
 
 
 	return button;
@@ -211,7 +211,7 @@ UIInputText* j1Gui::CreateUIInputText(iPoint localPos, j1Module* listener, UIEle
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
 
-	addElementUI.push_back((UIElement*)inputText);
+	addedElementUI.push_back((UIElement*)inputText);
 
 
 	return inputText;
@@ -226,7 +226,7 @@ UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIEleme
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
 
-	addElementUI.push_back((UIElement*)cursor);
+	addedElementUI.push_back((UIElement*)cursor);
 
 
 	return cursor;
@@ -236,8 +236,7 @@ bool j1Gui::DestroyElement(UIElement* elem)
 {
 	bool ret = false;
 
-
-	elem->toRemove = true;
+	addedElementUI.remove(elem);
 
 	return ret;
 }
@@ -247,8 +246,17 @@ bool j1Gui::ClearAllUI()
 	bool ret = false;
 
 	// Clear UI_elements tree
-	
 
+
+	for (list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin(); UI_elem_it != UIElementsList.end(); UI_elem_it++)
+	{
+
+	}
+
+
+
+	addedElementUI.clear();
+	UIElementsList.clear();
 	// Delete trans pointer to cursor?
 	/*
 	App->trans->CreateCursor();
@@ -354,7 +362,7 @@ void j1Gui::SetUpDraggingChildren(UIElement* elem, bool drag)
 	*/
 }
 
-void j1Gui::SetUpDraggingNode(bool drag)
+/*void j1Gui::SetUpDraggingNode(bool drag)
 {
 	UIElement* draggingNode = nullptr;
 	int lowest_level = UIElementsTree->getNumLevels(UIElementsTree->getRoot()) + 1;
@@ -376,4 +384,4 @@ void j1Gui::SetUpDraggingNode(bool drag)
 	}
 
 	SetUpDraggingChildren(draggingNode, drag);
-}
+}*/

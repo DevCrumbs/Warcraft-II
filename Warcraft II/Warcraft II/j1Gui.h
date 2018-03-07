@@ -54,7 +54,6 @@ struct UIImage_Info;
 struct UILabel_Info;
 struct UIButton_Info;
 struct UICursor_Info;
-//struct UIInpuText_info;
 struct UIImage;
 struct UILabel;
 struct UIButton;
@@ -131,9 +130,9 @@ private:
 	bool reset = true;
 
 public:
-	std::list<UIElement*> addElementUI;
+	std::list<UIElement*> addedElementUI;
 
-	NTree<UIElement*>* UIElementsTree;
+	//NTree<UIElement*>* UIElementsTree; Don't delete yet
 	bool isDebug = false;
 };
 
