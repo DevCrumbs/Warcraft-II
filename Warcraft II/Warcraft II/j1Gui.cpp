@@ -173,7 +173,7 @@ UIImage* j1Gui::CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* lis
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
 
-	UIElementsTree->insertChild((UIElement*)image, parent);
+	addElementUI.push_back((UIElement*)image);
 
 	return image;
 }
@@ -185,7 +185,8 @@ UILabel* j1Gui::CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* lis
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
 
-	UIElementsTree->insertChild((UIElement*)label, parent);
+	addElementUI.push_back((UIElement*)label);
+	
 
 	return label;
 }
@@ -197,7 +198,8 @@ UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* 
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
 
-	UIElementsTree->insertChild((UIElement*)button, parent);
+	addElementUI.push_back((UIElement*)button);
+
 
 	return button;
 }
@@ -209,7 +211,8 @@ UIInputText* j1Gui::CreateUIInputText(iPoint localPos, j1Module* listener, UIEle
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
 
-	UIElementsTree->insertChild((UIElement*)inputText, parent);
+	addElementUI.push_back((UIElement*)inputText);
+
 
 	return inputText;
 }
@@ -223,7 +226,8 @@ UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIEleme
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;
 
-	UIElementsTree->insertChild((UIElement*)cursor, parent);
+	addElementUI.push_back((UIElement*)cursor);
+
 
 	return cursor;
 }
@@ -232,7 +236,7 @@ bool j1Gui::DestroyElement(UIElement* elem)
 {
 	bool ret = false;
 
-	UIElementsTree->remove(elem);
+
 	elem->toRemove = true;
 
 	return ret;
@@ -243,7 +247,7 @@ bool j1Gui::ClearAllUI()
 	bool ret = false;
 
 	// Clear UI_elements tree
-	UIElementsTree->getRoot()->removeChildren();
+	
 
 	// Delete trans pointer to cursor?
 	/*

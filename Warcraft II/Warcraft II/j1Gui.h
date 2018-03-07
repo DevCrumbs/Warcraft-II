@@ -131,6 +131,8 @@ private:
 	bool reset = true;
 
 public:
+	std::list<UIElement*> addElementUI;
+
 	NTree<UIElement*>* UIElementsTree;
 	bool isDebug = false;
 };

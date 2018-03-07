@@ -180,7 +180,7 @@ bool j1Scene::Update(float dt)
 		App->render->Blit(debugTex, pos.x, pos.y);
 	}
 
-	// F1, F2, F3, F4, F5, F6, +, -
+
 	DebugKeys();
 	CheckCameraMovement();
 
