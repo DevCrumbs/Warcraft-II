@@ -42,7 +42,7 @@
 
   <scene>
 
-    <camera speed ="120.0" movMarginPcnt = "5"/>
+    <camera speed ="300.0" movMarginPcnt = "5"/>
     
     <maps>
       <orthogonal name="orthogonal_walk.tmx" active="0"/>

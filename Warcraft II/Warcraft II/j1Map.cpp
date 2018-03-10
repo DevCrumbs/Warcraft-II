@@ -69,8 +69,10 @@ void j1Map::Draw()
 			//				continue;
 
 			if ((*layer)->index != LAYER_TYPE_ABOVE) {
-				iPoint pos1 = WorldToMap(-App->render->camera.x - (*roomIterator).x, -App->render->camera.y - (*roomIterator).y);
-				iPoint pos2 = WorldToMap(-App->render->camera.x - (*roomIterator).x + 1024, -App->render->camera.y - (*roomIterator).y + 768);
+				iPoint pos1 = WorldToMap(-App->render->camera.x  / App->win->GetScale() - (*roomIterator).x,
+										 -App->render->camera.y / App->win->GetScale() - (*roomIterator).y);
+				iPoint pos2 = WorldToMap(-App->render->camera.x / App->win->GetScale() - (*roomIterator).x + App->render->camera.w,
+										 -App->render->camera.y / App->win->GetScale() - (*roomIterator).y + App->render->camera.h);
 				int i = pos1.x + 1;
 				if (i < 0 && pos2.x >= 0)
 					i = 0;
@@ -1035,12 +1037,12 @@ bool j1Map::LoadLogic()
 {
 	bool ret = true;
 	// Iterate all rooms
-	for (list<Room>::iterator iterator = playableMap.rooms.begin;
-		iterator != playableMap.rooms.end; ++iterator)
+	for (list<Room>::iterator iterator = playableMap.rooms.begin();
+		iterator != playableMap.rooms.end(); ++iterator)
 	{
 		// Iterate all layers
-		for (list<MapLayer*>::iterator layerIterator = (*iterator).layers.begin;
-			layerIterator != (*iterator).layers.end; ++layerIterator)
+		for (list<MapLayer*>::iterator layerIterator = (*iterator).layers.begin();
+			layerIterator != (*iterator).layers.end(); ++layerIterator)
 		{
 			// Check if layer is a logic layer
 			if ((*layerIterator)->name == "logic")
