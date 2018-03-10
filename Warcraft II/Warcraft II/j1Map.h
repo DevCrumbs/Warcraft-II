@@ -262,6 +262,12 @@ public:
 	Room				data;
 	MapLayer*			collisionLayer = nullptr;
 
+	int					culingOffset = 0;
+	int					blitOffset = 0;
+	bool				cameraBlit = false;
+
+	int					mapTypesNo = 0;
+
 private:
 
 	pugi::xml_document	mapFile;
@@ -276,12 +282,6 @@ private:
 	list<RoomInfo>		roomsInfo;
 	vector<int>			noPullRoom;
 
-public:
-
-	int					culingOffset = 0;
-	int					blitOffset = 0;
-	bool				cameraBlit = false;
-	int					mapTypesNo = 0;
 };
 
 #endif // __j1MAP_H__
