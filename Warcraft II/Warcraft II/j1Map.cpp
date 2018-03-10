@@ -1049,9 +1049,12 @@ bool j1Map::LoadLogic()
 				for (int i = 0; i < (*layerIterator)->sizeData; ++i)
 				{
 					// Check if tile is not empty
-					if ((*layerIterator)->data > 0)
+					if ((*layerIterator)->data[i] > 0)
 					{
-//						ret = App->entities->AddEntity(/*Something*/);
+						int x = i % (*layerIterator)->width;
+						int y = i / (*layerIterator)->width;
+
+//						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);
 					}
 				}
 
