@@ -240,6 +240,7 @@ public:
 	bool LoadRooms();
 	bool LoadCorridors();
 	bool CreateCorridor(Room room, DIRECTION direction = DIRECTION_NONE);
+	bool LoadLogic();
 
 private:
 

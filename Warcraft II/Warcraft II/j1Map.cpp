@@ -16,7 +16,7 @@
 #include "j1Audio.h"
 #include "j1Map.h"
 #include "j1Window.h"
-
+#include "j1EntityFactory.h"
 
 
 j1Map::j1Map() : j1Module(), isMapLoaded(false)
@@ -856,6 +856,9 @@ bool j1Map::CreateNewMap()
 		ret = LoadRooms();
 
 	if (ret)
+		ret = LoadLogic();
+
+	if (ret)
 		ret = LoadCorridors();
 
 
@@ -1028,6 +1031,38 @@ bool j1Map::CreateCorridor(Room room, DIRECTION direction)
 	return true;
 }
 
+bool j1Map::LoadLogic()
+{
+	bool ret = true;
+	// Iterate all rooms
+	for (list<Room>::iterator iterator = playableMap.rooms.begin;
+		iterator != playableMap.rooms.end; ++iterator)
+	{
+		// Iterate all layers
+		for (list<MapLayer*>::iterator layerIterator = (*iterator).layers.begin;
+			layerIterator != (*iterator).layers.end; ++layerIterator)
+		{
+			// Check if layer is a logic layer
+			if ((*layerIterator)->name == "logic")
+			{
+				// Iterate layer
+				for (int i = 0; i < (*layerIterator)->sizeData; ++i)
+				{
+					// Check if tile is not empty
+					if ((*layerIterator)->data > 0)
+					{
+//						ret = App->entities->AddEntity(/*Something*/);
+					}
+				}
+
+			}
+		}
+	}
+	
+
+
+	return ret;
+}
 //----------------------------------
 
 fPoint Room::GetObjectPosition(string groupObject, string object)
@@ -1135,6 +1170,7 @@ bool Room::CheckIfEnter(string groupObject, string object, fPoint position)
 	fPoint objectPos = GetObjectPosition(groupObject, object);
 	fPoint objectSize = GetObjectSize(groupObject, object);
 
-	return (objectPos.x < position.x + 1 && objectPos.x + objectSize.x > position.x && objectPos.y < position.y + 1 && objectSize.y + objectPos.y > position.y);
+	return (objectPos.x < position.x + 1 && objectPos.x + objectSize.x > position.x &&
+		objectPos.y < position.y + 1 && objectSize.y + objectPos.y > position.y);
 }
 
