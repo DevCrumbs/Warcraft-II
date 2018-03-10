@@ -322,18 +322,18 @@ void j1Scene::CheckCameraMovement(float dt) {
 	//Move with mouse
 	App->input->GetMousePosition(mouse.x, mouse.y);
 
-	//UP
-	if (mouse.y <= camMovMargin/scale && App->render->camera.y <= 0)
-		App->render->camera.y += camSpeed * dt;
-	//DOWN
-	if (mouse.y >= (height - camMovMargin) / scale && App->render->camera.y >= downMargin)
-		App->render->camera.y -= camSpeed * dt;
-	//LEFT
-	if (mouse.x <= camMovMargin / scale && App->render->camera.x <= 0)
-		App->render->camera.x += camSpeed * dt;
-	//RIGHT
-	if (mouse.x >= (width - camMovMargin) / scale && App->render->camera.x >= rightMargin)
-		App->render->camera.x -= camSpeed * dt;
+	////UP
+	//if (mouse.y <= camMovMargin/scale && App->render->camera.y <= 0)
+	//	App->render->camera.y += camSpeed * dt;
+	////DOWN
+	//if (mouse.y >= (height - camMovMargin) / scale && App->render->camera.y >= downMargin)
+	//	App->render->camera.y -= camSpeed * dt;
+	////LEFT
+	//if (mouse.x <= camMovMargin / scale && App->render->camera.x <= 0)
+	//	App->render->camera.x += camSpeed * dt;
+	////RIGHT
+	//if (mouse.x >= (width - camMovMargin) / scale && App->render->camera.x >= rightMargin)
+	//	App->render->camera.x -= camSpeed * dt;
 
 }
 

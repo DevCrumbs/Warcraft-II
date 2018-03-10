@@ -6,19 +6,20 @@
   <rooms>
     <room type ="-2" x = "0" y = "0">
       <doors>
-
+        <door direction = "2"/>
       </doors>
     </room>
 
     <room type ="0" x = "2240" y = "2240">
       <doors>
-
+        <door direction = "2"/>
       </doors>
     </room>
 
     <room type ="0" x = "6720" y = "2240">
       <doors>
-
+        <door direction = "1"/>
+        <door direction = "2"/>
       </doors>
     </room>
 
@@ -28,19 +29,20 @@
 
     <room type ="0" x = "0" y = "4480">
       <doors>
-
+        <door direction = "1"/>
       </doors>
     </room>
 
     <room type ="0" x = "2240" y = "4480">
       <doors>
-
+        <door direction = "1"/>
+        <door direction = "2"/>
       </doors>
     </room>
 
     <room type ="0" x = "4480" y = "4480">
       <doors>
-
+        <door direction = "1"/>
       </doors>
     </room>
 

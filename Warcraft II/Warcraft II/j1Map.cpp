@@ -69,9 +69,18 @@ void j1Map::Draw()
 			//				continue;
 
 			if ((*layer)->index != LAYER_TYPE_ABOVE) {
+				iPoint pos1 = WorldToMap(-App->render->camera.x - (*roomIterator).x, -App->render->camera.y - (*roomIterator).y);
+				iPoint pos2 = WorldToMap(-App->render->camera.x - (*roomIterator).x + 1024, -App->render->camera.y - (*roomIterator).y + 768);
+				int i = pos1.x + 1;
+				if (i < 0 && pos2.x >= 0)
+					i = 0;
 
-				for (int i = 0; i < (*layer)->width; ++i) {
-					for (int j = 0; j < (*layer)->height; ++j) {
+				for (; i < (*layer)->width && i < pos2.x; ++i) {
+					int j = pos1.y + 1;
+					if (j < 0 && pos2.y >= 0)
+						j = 0;
+
+					for (; j < (*layer)->height && j < pos2.y; ++j) {
 
 						int tile_id = (*layer)->Get(i, j);
 						if (tile_id > 0) {
@@ -88,9 +97,18 @@ void j1Map::Draw()
 						}
 					}//for
 				}//for
+
+
 			}
 		}
 		roomIterator++;
+	}
+
+
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+	{
+		App->render->camera.x = -2400;
+		App->render->camera.y = -6720;
 	}
 }
 
