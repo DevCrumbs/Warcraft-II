@@ -8,14 +8,14 @@
 	
   <renderer>
     <vsync value="false"/>
-    <CapFrames value= "60"/>
+    <CapFrames value="5500"/>
   </renderer>
 
   <window>
     <resolution width="1024" height="768" scale="1"/>
     <fullscreen value="false"/>
     <borderless value="false"/>
-    <resizable value="false"/>
+    <resizable value="true"/>
     <fullscreen_window value="false"/>
     <icon name="Assets/Sprites/Textures/Icon.bmp"/>
   </window>
@@ -24,7 +24,7 @@
     <folder>data/assets/textures/maps/</folder>
     <general>
       <mapTypesNo number="1"/>
-      <roomPullNo number="4"/>
+      <roomPullNo number="5"/>
       <roomPullNo number="4"/>
       <roomPullNo number="4"/>
     </general>
@@ -42,7 +42,7 @@
 
   <scene>
 
-    <camera speed ="8.0" movMarginPcnt = "5"/>
+    <camera speed ="120.0" movMarginPcnt = "5"/>
     
     <maps>
       <orthogonal name="orthogonal_walk.tmx" active="0"/>

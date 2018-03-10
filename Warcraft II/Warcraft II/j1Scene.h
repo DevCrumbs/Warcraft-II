@@ -55,14 +55,14 @@ public:
 	// Debug keys
 	void DebugKeys();
 
-	void CheckCameraMovement();
+	void CheckCameraMovement(float dt);
 
 public:
 	// Camera
 	float up = false, down = false, left = false, right = false;
 	uint width = 0;
 	uint height = 0;
-	uint scale = 0;
+	float scale = 0;
 
 	// Player
 	bool god = false;

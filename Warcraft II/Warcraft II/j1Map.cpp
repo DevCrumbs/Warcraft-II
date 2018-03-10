@@ -45,7 +45,6 @@ bool j1Map::Awake(pugi::xml_node& config)
 	{
 		noPullRoom.push_back(iterator.attribute("number").as_int());
 	}
-	mapInfoDocument.loadFile("data/maps/mapTypes/test.xml");
 
 	srand(time(NULL));
 
@@ -64,15 +63,24 @@ void j1Map::Draw()
 	list<Room>::iterator roomIterator = playableMap.rooms.begin();
 	while (roomIterator != playableMap.rooms.end())
 	{
-		for (list<MapLayer*>::const_iterator layer = (*roomIterator).layers.begin(); layer != (*roomIterator).layers.end(); ++layer) {
-
-//			if (!(*layer)->properties.GetProperty("Draw", false))
-//				continue;
+		for (list<MapLayer*>::const_iterator layer = (*roomIterator).layers.begin(); layer != (*roomIterator).layers.end(); ++layer)
+		{
+			//			if (!(*layer)->properties.GetProperty("Draw", false))
+			//				continue;
 
 			if ((*layer)->index != LAYER_TYPE_ABOVE) {
+				iPoint pos1 = WorldToMap(-App->render->camera.x - (*roomIterator).x, -App->render->camera.y - (*roomIterator).y);
+				iPoint pos2 = WorldToMap(-App->render->camera.x - (*roomIterator).x + 1024, -App->render->camera.y - (*roomIterator).y + 768);
+				int i = pos1.x + 1;
+				if (i < 0 && pos2.x >= 0)
+					i = 0;
 
-				for (int i = 0; i < (*layer)->width; ++i) {
-					for (int j = 0; j < (*layer)->height; ++j) {
+				for (; i < (*layer)->width && i < pos2.x; ++i) {
+					int j = pos1.y + 1;
+					if (j < 0 && pos2.y >= 0)
+						j = 0;
+
+					for (; j < (*layer)->height && j < pos2.y; ++j) {
 
 						int tile_id = (*layer)->Get(i, j);
 						if (tile_id > 0) {
@@ -84,13 +92,23 @@ void j1Map::Draw()
 							SDL_Rect* section = &rect;
 							iPoint world = MapToWorld(i, j);
 
+
 							App->render->Blit(tileset->texture, world.x + (*roomIterator).x, world.y + (*roomIterator).y, section, (*layer)->speed);
 						}
 					}//for
 				}//for
+
+
 			}
 		}
 		roomIterator++;
+	}
+
+
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+	{
+		App->render->camera.x = -2400;
+		App->render->camera.y = -6720;
 	}
 }
 
@@ -445,7 +463,7 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set)
 	return ret;
 }
 
-// Load new map
+// Load new room
 bool j1Map::Load(const char* fileName, int x, int y)
 {
 	Room* newRoom = new Room;
@@ -808,22 +826,23 @@ bool j1Map::CreateNewMap()
 		LOG("Could not load map, no map types found");
 	}
 	//Search map type
-	bool isFound = false;
-	if (ret)
-		for (pugi::xml_node iterator = mapInfoDocument.child("map"); iterator; iterator = iterator.next_sibling("map"))
-		{
-			if (iterator.attribute("type").as_int(-1) == mapType)
-			{
-				isFound = true;
-				ret = LoadMapInfo(iterator);
 
-				if (!ret)
-					LOG("Could not load rooms");
-	
-				break;
-			}
-		}
-	if (!isFound) 
+
+	if (ret)
+	{
+		static char typePath[50];
+		sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
+		mapInfoDocument.loadFile(typePath);
+
+		pugi::xml_node mapInfo = mapInfoDocument.child("map");
+		ret = LoadMapInfo(mapInfo);
+
+		if (!ret)
+			LOG("Could not load rooms");
+
+
+	}
+	if (!ret) 
 	{
 
 		LOG("Could not find map with specific type (type is %i)", mapType);
@@ -836,6 +855,9 @@ bool j1Map::CreateNewMap()
 	if (ret)
 		ret = LoadRooms();
 
+	if (ret)
+		ret = LoadCorridors();
+
 
 	return ret;
 }
@@ -844,13 +866,14 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 {
 	bool ret = true;
 
-	int direction = -1;
-	RoomInfo newRoom;
+	DIRECTION direction = DIRECTION_NONE;
+
 
 	for (pugi::xml_node iterator = mapInfoDocument.child("rooms").child("room"); iterator; iterator = iterator.next_sibling("room"))
 	{
-		newRoom.type = iterator.attribute("type").as_int(-1);
-		if (newRoom.type == -1)
+		RoomInfo newRoom;
+		newRoom.type = iterator.attribute("type").as_int(-3);
+		if (newRoom.type == -3)
 		{
 			ret = false;
 			LOG("Wrong room type");
@@ -861,7 +884,7 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 
 		for (pugi::xml_node doorIterator = iterator.child("doors").child("door"); doorIterator; doorIterator = doorIterator.next_sibling("door"))
 		{
-			direction = doorIterator.attribute("direction").as_int(-1);
+			direction = (DIRECTION)doorIterator.attribute("direction").as_int(-1);
 
 			if (direction >= 0 && direction <= 4)
 				newRoom.doors.push_back(direction);
@@ -886,10 +909,14 @@ bool j1Map::SelectRooms()
 	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
 	while (roomIterator != roomsInfo.end())
 	{
-		if (noPullRoom.size() >= (*roomIterator).type && noPullRoom.size() > 0)
+		if (noPullRoom.size() >= (*roomIterator).type)
 		{
 			room = rand() % noPullRoom[(*roomIterator).type];
 			(*roomIterator).pullRoomNo = room;
+		}
+		else if ((*roomIterator).type == -1 || (*roomIterator).type == -2)
+		{
+			(*roomIterator).pullRoomNo = (*roomIterator).type;
 		}
 		else
 		{
@@ -906,7 +933,9 @@ bool j1Map::LoadRooms()
 {
 	bool ret = true;
 	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
+
 	while (roomIterator != roomsInfo.end())
+
 	{
 		if ((*roomIterator).type >= 0 && (*roomIterator).pullRoomNo >= 0)
 		{
@@ -914,12 +943,89 @@ bool j1Map::LoadRooms()
 			sprintf_s(roomPath, 50, "data/maps/rooms/pull%i/room%i.tmx", (*roomIterator).type, (*roomIterator).pullRoomNo);
 			ret = Load(roomPath, (*roomIterator).x, (*roomIterator).y);
 		}
+		else if ((*roomIterator).type == -1)
+		{
+			ret = Load("data/maps/rooms/base/base.tmx", (*roomIterator).x, (*roomIterator).y);
+		}
+		else if ((*roomIterator).type == -2)
+		{
+			ret = Load("data/maps/rooms/boss/boss.tmx", (*roomIterator).x, (*roomIterator).y);
+		}
 		if (!ret)
 			break;
 
 		roomIterator++;
+
 	}
 	return ret;
+}
+
+bool j1Map::LoadCorridors()
+{
+	bool ret = true;
+	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
+	list<Room>::iterator mapIterator = playableMap.rooms.begin();
+
+	while (roomIterator != roomsInfo.end() && mapIterator != playableMap.rooms.end())
+	{
+		list<DIRECTION>::iterator doorIterator = (*roomIterator).doors.begin();
+		
+		while (doorIterator != (*roomIterator).doors.end())
+		{
+			CreateCorridor((*mapIterator), (*doorIterator));
+			doorIterator++;
+		}
+
+
+		roomIterator++;
+		mapIterator++;
+	}
+	return ret;
+}
+
+bool j1Map::CreateCorridor(Room room, DIRECTION direction)
+{
+	bool ret = true;
+	int roomX = room.x;
+	int roomY = room.y;
+	int tileNoX = room.width;
+	int tileNoY = room.height;
+	int tileWidth = room.tileWidth;
+	int tileHeight = room.tileHeight;
+
+	int corridorX = 0, corridorY = 0;
+
+	int CORRIDOR_WIDTH = 4;
+	int CORRIDOR_HEIGHT = 20;
+
+	switch ((direction))
+	{
+	case DIRECTION_NONE:
+		break;
+	case DIRECTION_NORTH:
+		corridorX = roomX + (((tileNoX / 2) - CORRIDOR_WIDTH) * tileWidth);
+		corridorY = roomY - (CORRIDOR_HEIGHT * tileHeight);
+		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
+		break;
+	case DIRECTION_EAST:
+		corridorX = roomX + (tileNoX * tileWidth);
+		corridorY = roomY + (((tileNoY / 2) - CORRIDOR_WIDTH) * tileWidth);
+		ret = Load("data/maps/corridors/corridorV.tmx", corridorX, corridorY);
+		break;
+	case DIRECTION_SOUTH:
+		corridorX = roomX + (((tileNoX / 2) - CORRIDOR_WIDTH) * tileWidth);
+		corridorY = roomY + (tileNoY * tileHeight);
+		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
+		break;
+	case DIRECTION_WEST:
+		corridorX = roomX - (CORRIDOR_HEIGHT * tileWidth);
+		corridorY = roomY + (((tileNoY / 2) - CORRIDOR_WIDTH) * tileWidth);
+		ret = Load("data/maps/corridors/corridorV.tmx", corridorX, corridorY);
+		break;
+	default:
+		break;
+	}
+	return true;
 }
 
 //----------------------------------
