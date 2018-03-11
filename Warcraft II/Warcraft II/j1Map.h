@@ -246,7 +246,7 @@ private:
 
 	bool LoadRoom();
 	bool LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set);
-	bool LoadTilesetImage(pugi::xml_node& tilesetNode, TileSet* set);
+	bool LoadTilesetImage(pugi::xml_node imageInfo);
 
 	// TODO 3: Create a method that loads a single layer
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
