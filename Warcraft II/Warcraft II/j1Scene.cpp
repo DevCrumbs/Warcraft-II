@@ -108,8 +108,6 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 	}
 
-	inputText = App->gui->CreateUIInputText({ 100, 100 }, this);
-
 	//Calculate camera movement in pixels through the percentatge given
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
 
@@ -158,6 +156,8 @@ bool j1Scene::Update(float dt)
 {
 	bool ret = true;
 
+
+
 	// Draw
 	App->map->Draw(); // map
 	//App->entities->Draw(); // entities
@@ -190,11 +190,13 @@ bool j1Scene::Update(float dt)
 		App->map->CreateNewMap();
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
-		App->win->scale += 0.05f;
+//	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
+	//	App->win->scale += 0.05f;
 
-	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
 		App->win->scale -= 0.05f;
+
+
 
 	return ret;
 }
@@ -271,16 +273,8 @@ void j1Scene::DebugKeys()
 	}
 
 	// F7: fullscreen
-	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN) {
-		if (App->win->fullscreen) {
-			App->win->fullscreen = false;
-			SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
-		}
-		else {
-			App->win->fullscreen = true;
-			SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-		}
-	}
+	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
+		App->win->SetFullscreen();
 
 	// F10: God mode
 	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)

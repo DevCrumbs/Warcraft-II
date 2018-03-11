@@ -119,3 +119,14 @@ float j1Window::GetScale() const
 {
 	return scale;
 }
+
+void j1Window::SetFullscreen() {
+	if (fullscreen) {
+		fullscreen = false;
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_SHOWN);
+	}
+	else {
+		fullscreen = true;
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	}
+}

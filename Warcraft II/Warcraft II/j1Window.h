@@ -29,6 +29,7 @@ public:
 
 	// Retrieve window scale
 	float GetScale() const;
+	void SetFullscreen();
 
 public:
 	//The window we'll be rendering to
