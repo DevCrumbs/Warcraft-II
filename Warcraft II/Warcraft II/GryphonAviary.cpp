@@ -4,7 +4,7 @@
 
 GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int life, const GryphonAviaryInfo& gryphonAviaryInfo) :StaticEntity(pos, size, life), gryphonAviaryInfo(gryphonAviaryInfo) 
 {
-
+	texArea = &gryphonAviaryInfo.completeTexArea;
 }
 
 void GryphonAviary::Move(float dt)

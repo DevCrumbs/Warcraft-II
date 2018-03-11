@@ -9,12 +9,12 @@ Entity::Entity(fPoint pos, iPoint size, int life) : pos(pos), size(size), life(l
 
 Entity::~Entity() {}
 
+void Entity::SetPosition(fPoint pos) 
+{
+	this->pos = pos;
+}
+
 fPoint Entity::GetPosition() const 
 {
 	return pos;
-}
-
-void Entity::HandleInput() 
-{
-
 }

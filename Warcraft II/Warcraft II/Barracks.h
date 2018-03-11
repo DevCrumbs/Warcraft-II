@@ -12,6 +12,8 @@ enum BarracksType
 struct BarracksInfo
 {
 	BarracksType barracksType = BarracksType_Barracks;
+	SDL_Rect barracksCompleteTexArea = { 0,0,0,0 };
+	SDL_Rect barracks2CompleteTexArea = { 0,0,0,0 };
 };
 
 class Barracks :public StaticEntity

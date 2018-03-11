@@ -4,7 +4,7 @@
 
 Stables::Stables(fPoint pos, iPoint size, int life, const StablesInfo& stablesInfo) :StaticEntity(pos, size, life), stablesInfo(stablesInfo) 
 {
-
+	texArea = &stablesInfo.completeTexArea;
 }
 
 void Stables::Move(float dt)

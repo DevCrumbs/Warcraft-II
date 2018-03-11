@@ -5,7 +5,7 @@
 
 Barracks::Barracks(fPoint pos, iPoint size, int life, const BarracksInfo& barracksInfo) :StaticEntity(pos, size, life), barracksInfo(barracksInfo) 
 {
-
+	texArea = &barracksInfo.barracksCompleteTexArea;
 }
 
 void Barracks::Move(float dt)

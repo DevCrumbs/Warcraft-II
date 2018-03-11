@@ -2,7 +2,7 @@
 
 GoldMine::GoldMine(fPoint pos, iPoint size, int life, const GoldMineInfo& goldMineInfo) :StaticEntity(pos, size, life), goldMineInfo(goldMineInfo) 
 {
-
+	texArea = &goldMineInfo.completeTexArea;
 }
 
 void GoldMine::Move(float dt)

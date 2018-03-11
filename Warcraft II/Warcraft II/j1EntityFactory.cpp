@@ -6,12 +6,12 @@
 
 #include "j1EntityFactory.h"
 #include "j1Render.h"
-
 #include "j1Textures.h"
 #include "j1Scene.h"
 #include "j1Map.h"
 #include "j1Pathfinding.h"
 #include "j1Collision.h"
+#include "j1Input.h"
 
 #include "Entity.h"
 #include "DynamicEntity.h"
@@ -31,9 +31,50 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	bool ret = true;
 
+	// Spritesheets
 	pugi::xml_node spritesheets = config.child("spritesheets");
+	humanBuildingsTexName = spritesheets.child("humanBuildings").attribute("name").as_string();
 
-	footmanTexName = spritesheets.child("footman").attribute("name").as_string();
+	// Static entities
+	pugi::xml_node staticEntities = config.child("staticEntities");
+
+	pugi::xml_node aux = staticEntities.child("townHall").child("sprites");
+	townHallInfo.townHallCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	townHallInfo.townHallInProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	aux = staticEntities.child("keep").child("sprites");
+	townHallInfo.keepCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	townHallInfo.keepInProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	aux = staticEntities.child("castle").child("sprites");
+	townHallInfo.castleCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	townHallInfo.castleInProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	aux = staticEntities.child("chickenFarm").child("sprites");
+	chickenFarmInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	chickenFarmInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	aux = staticEntities.child("scoutTower").child("sprites");
+	scoutTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	scoutTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	aux = staticEntities.child("barracks").child("sprites");
+	barracksInfo.barracksCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+
+	aux = staticEntities.child("barracks2").child("sprites");
+	barracksInfo.barracks2CompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+
+	aux = staticEntities.child("mageTower").child("sprites");
+	mageTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	mageTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	aux = staticEntities.child("gryphonAviary").child("sprites");
+	gryphonAviaryInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	gryphonAviaryInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	aux = staticEntities.child("stables").child("sprites");
+	stablesInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	stablesInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
 	return ret;
 }
@@ -44,7 +85,7 @@ bool j1EntityFactory::Start()
 
 	LOG("Loading entities textures");
 
-	footmanTex = App->tex->Load(footmanTexName.data());
+	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
 
 	return ret;
 }
@@ -95,6 +136,19 @@ bool j1EntityFactory::Update(float dt)
 		it++;
 	}
 
+	// Mouse position (world and map coords)
+	int x, y;
+	App->input->GetMousePosition(x, y);
+	iPoint mousePos = App->render->ScreenToWorld(x, y);
+	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
+	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		DrawStaticEntityPreview(StaticEntityType_TownHall, { mouseTilePos.x, mouseTilePos.y });
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 255);
+	}
+
 	return ret;
 }
 
@@ -114,37 +168,37 @@ void j1EntityFactory::Draw()
 			(*dynEnt)->Draw(footmanTex);
 			break;
 		case DynamicEntityType_ElvenArcher:
-			(*dynEnt)->Draw(footmanTex);
+			(*dynEnt)->Draw(elvenArcherTex);
 			break;
 		case DynamicEntityType_GryphonRider:
-			(*dynEnt)->Draw(footmanTex);
+			(*dynEnt)->Draw(gryphonRiderTex);
 			break;
 		case DynamicEntityType_Mage:
-			(*dynEnt)->Draw(footmanTex);
+			(*dynEnt)->Draw(mageTex);
 			break;
 		case DynamicEntityType_Paladin:
-			(*dynEnt)->Draw(footmanTex);
+			(*dynEnt)->Draw(paladinTex);
 			break;
 
 		case DynamicEntityType_Turalyon:
-			(*dynEnt)->Draw(footmanTex);
+			(*dynEnt)->Draw(turalyonTex);
 			break;
 		case DynamicEntityType_Khadgar:
-			(*dynEnt)->Draw(footmanTex);
+			(*dynEnt)->Draw(khadgarTex);
 			break;
 		case DynamicEntityType_Alleria:
-			(*dynEnt)->Draw(footmanTex);
+			(*dynEnt)->Draw(alleriaTex);
 			break;
 
 			// Enemy
 		case DynamicEntityType_Grunt:
-			(*dynEnt)->Draw(footmanTex);
+			(*dynEnt)->Draw(gruntTex);
 			break;
 		case DynamicEntityType_TrollAxethrower:
-			(*dynEnt)->Draw(footmanTex);
+			(*dynEnt)->Draw(trollAxethrowerTex);
 			break;
 		case DynamicEntityType_Dragon:
-			(*dynEnt)->Draw(footmanTex);
+			(*dynEnt)->Draw(dragonTex);
 			break;
 
 		default:
@@ -162,13 +216,13 @@ void j1EntityFactory::Draw()
 		switch ((*statEnt)->staticEntityCategory) {
 
 		case StaticEntityCategory_HumanBuilding:
-			(*statEnt)->Draw(footmanTex);
+			(*statEnt)->Draw(humanBuildingsTex);
 			break;
 		case StaticEntityCategory_NeutralBuilding:
-			(*statEnt)->Draw(footmanTex);
+			(*statEnt)->Draw(neutralBuildingsTex);
 			break;
 		case StaticEntityCategory_OrcishBuilding:
-			(*statEnt)->Draw(footmanTex);
+			(*statEnt)->Draw(orcishBuildingsTex);
 			break;
 
 		default:
@@ -178,6 +232,44 @@ void j1EntityFactory::Draw()
 		statEnt++;
 	}
 }
+
+void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos)
+{
+	switch (staticEntityType) {
+
+	case StaticEntityType_TownHall:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &townHallInfo.townHallCompleteTexArea);
+		break;
+	case StaticEntityType_ChickenFarm:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
+		break;
+	case StaticEntityType_Barracks:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &barracksInfo.barracksCompleteTexArea);
+		break;
+	case StaticEntityType_MageTower:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
+		break;
+	case StaticEntityType_GryphonAviary:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
+		break;
+	case StaticEntityType_Stables:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
+		break;
+	case StaticEntityType_ScoutTower:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
+		break;
+	case StaticEntityType_PlayerGuardTower:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
+		break;
+	case StaticEntityType_PlayerCannonTower:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
+		break;
+
+	default:
+		break;
+	}
+}
+
 
 bool j1EntityFactory::PostUpdate()
 {

@@ -22,8 +22,8 @@ public:
 
 	Entity(fPoint pos, iPoint size, int life);
 	virtual ~Entity();
-	virtual void HandleInput();
 
+	void SetPosition(fPoint pos);
 	fPoint GetPosition() const;
 
 public:

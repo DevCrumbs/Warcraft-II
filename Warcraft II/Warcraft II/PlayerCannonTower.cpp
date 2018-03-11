@@ -2,7 +2,7 @@
 
 PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int life, const PlayerCannonTowerInfo& playerCannonTowerInfo) :StaticEntity(pos, size, life), playerCannonTowerInfo(playerCannonTowerInfo) 
 {
-
+	texArea = &playerCannonTowerInfo.completeTexArea;
 }
 
 void PlayerCannonTower::Move(float dt)

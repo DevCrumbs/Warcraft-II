@@ -61,6 +61,7 @@ public:
 	bool PostUpdate();
 	bool CleanUp();
 	void Draw();
+	void DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos);
 
 	StaticEntity* AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, iPoint size, uint life, const EntityInfo& entityInfo);
 	DynamicEntity* AddDynamicEntity(DynamicEntityType dynamicEntityType, fPoint pos, iPoint size, uint life, float speed, const EntityInfo& entityInfo);
@@ -105,9 +106,9 @@ private:
 	string orcishBuildingsTexName;
 	string neutralBuildingsTexName;
 
-	SDL_Texture* humanBuildings = nullptr;
-	SDL_Texture* orcishBuildings = nullptr;
-	SDL_Texture* neutralBuildings = nullptr;
+	SDL_Texture* humanBuildingsTex = nullptr;
+	SDL_Texture* orcishBuildingsTex = nullptr;
+	SDL_Texture* neutralBuildingsTex = nullptr;
 
 	// Info structs
 	/// Dynamic entities
@@ -131,13 +132,15 @@ private:
 	GryphonAviaryInfo gryphonAviaryInfo;
 	MageTowerInfo mageTowerInfo;
 	ScoutTowerInfo scoutTowerInfo;
-	PlayerGuardTowerInfo playerGuardTowerInfo;
-	PlayerCannonTowerInfo playerCannonTowerInfo;
+	PlayerGuardTowerInfo playerGuardTowerInfo; // TODO
+	PlayerCannonTowerInfo playerCannonTowerInfo; // TODO
 	GoldMineInfo goldMineInfo;
 	RunestoneInfo runestoneInfo;
 	WatchTowerInfo watchTowerInfo;
 	EnemyGuardTowerInfo enemyGuardTowerInfo;
 	EnemyCannonTowerInfo enemyCannonTowerInfo;
+
+	TownHall* townHall = nullptr;
 };
 
 #endif //__j1ENTITY_FACTORY_H__

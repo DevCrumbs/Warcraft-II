@@ -5,7 +5,8 @@
 
 struct RunestoneInfo
 {
-
+	SDL_Rect completeTexArea = { 0,0,0,0 };
+	SDL_Rect inProgressTexArea = { 0,0,0,0 };
 };
 
 class Runestone :public StaticEntity

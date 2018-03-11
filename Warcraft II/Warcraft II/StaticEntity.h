@@ -64,7 +64,7 @@ public:
 
 protected:
 
-	SDL_Rect* texArea = nullptr;
+	const SDL_Rect* texArea = nullptr;
 };
 
 #endif //__StaticEntity_H__

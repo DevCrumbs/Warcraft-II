@@ -2,7 +2,7 @@
 
 Runestone::Runestone(fPoint pos, iPoint size, int life, const RunestoneInfo& runestoneInfo) :StaticEntity(pos, size, life), runestoneInfo(runestoneInfo) 
 {
-
+	texArea = &runestoneInfo.completeTexArea;
 }
 
 void Runestone::Move(float dt)
