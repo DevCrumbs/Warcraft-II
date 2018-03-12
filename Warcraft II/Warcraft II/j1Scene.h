@@ -57,6 +57,8 @@ public:
 
 	void CheckCameraMovement(float dt);
 
+	void LoadInGameUI();
+
 public:
 	// Camera
 	float up = false, down = false, left = false, right = false;
@@ -72,7 +74,12 @@ public:
 
 private:
 
-	
+	//UI
+	UIButton * buildingButton;
+	UILabel * buildingLabel;
+	UIImage * buildingMenu;
+
+	bool buildingMenuOn = false;
 
 	string orthogonalMap, isometricMap, warcraftMap;
 	string orthogonalTexName, isometricTexName, warcraftTexName;

@@ -37,7 +37,7 @@
   </audio>
 
   <gui>
-    <atlas file="Assets/Sprites/atlas.png"/>
+    <atlas file="data/assets/textures/UI/atlas.png"/>
   </gui>
 
   <scene>
