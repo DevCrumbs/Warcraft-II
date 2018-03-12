@@ -10,8 +10,4 @@ after_build:
 - 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\README.md"
 
 artifacts:
-  - path: WarcraftII_The_Stolen_Artifacts.zip
-  
-  deploy:
-  on:
-    branch: Development                        
+  - path: WarcraftII_The_Stolen_Artifacts.zip                     
