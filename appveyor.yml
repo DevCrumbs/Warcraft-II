@@ -11,3 +11,8 @@ after_build:
 
 artifacts:
   - path: WarcraftII_The_Stolen_Artifacts.zip
+  
+  deploy:
+  on:
+    branch: Development                 
+    appveyor_repo_tag: true        
