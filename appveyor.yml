@@ -14,5 +14,4 @@ artifacts:
   
   deploy:
   on:
-    branch: Development                 
-    appveyor_repo_tag: true        
+    branch: Development                        
