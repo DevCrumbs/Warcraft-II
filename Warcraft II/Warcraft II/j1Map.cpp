@@ -16,7 +16,7 @@
 #include "j1Audio.h"
 #include "j1Map.h"
 #include "j1Window.h"
-
+#include "j1EntityFactory.h"
 
 
 j1Map::j1Map() : j1Module(), isMapLoaded(false)
@@ -69,25 +69,27 @@ void j1Map::Draw()
 			//				continue;
 
 			if ((*layer)->index != LAYER_TYPE_ABOVE) {
-				iPoint pos1 = WorldToMap(-App->render->camera.x - (*roomIterator).x, -App->render->camera.y - (*roomIterator).y);
-				iPoint pos2 = WorldToMap(-App->render->camera.x - (*roomIterator).x + 1024, -App->render->camera.y - (*roomIterator).y + 768);
-				int i = pos1.x + 1;
-				if (i < 0 && pos2.x >= 0)
+				iPoint startTile = WorldToMap(-App->render->camera.x  / App->win->GetScale() - (*roomIterator).x,
+										 -App->render->camera.y / App->win->GetScale() - (*roomIterator).y);
+				iPoint endTile = WorldToMap(-App->render->camera.x / App->win->GetScale() - (*roomIterator).x + App->render->camera.w,
+										 -App->render->camera.y / App->win->GetScale() - (*roomIterator).y + App->render->camera.h);
+				int i = startTile.x + 1;
+				if (i < 0 && endTile.x >= 0)
 					i = 0;
 
-				for (; i < (*layer)->width && i < pos2.x; ++i) {
-					int j = pos1.y + 1;
-					if (j < 0 && pos2.y >= 0)
+				for (; i < (*layer)->width && i < endTile.x; ++i) {
+					int j = startTile.y + 1;
+					if (j < 0 && endTile.y >= 0)
 						j = 0;
 
-					for (; j < (*layer)->height && j < pos2.y; ++j) {
+					for (; j < (*layer)->height && j < endTile.y; ++j) {
 
-						int tile_id = (*layer)->Get(i, j);
-						if (tile_id > 0) {
+						int tileId = (*layer)->Get(i, j);
+						if (tileId > 0) {
 
-							TileSet* tileset = GetTilesetFromTileId(tile_id);
+							TileSet* tileset = GetTilesetFromTileId(tileId);
 
-							SDL_Rect rect = tileset->GetTileRect(tile_id);
+							SDL_Rect rect = tileset->GetTileRect(tileId);
 
 							SDL_Rect* section = &rect;
 							iPoint world = MapToWorld(i, j);
@@ -503,11 +505,6 @@ bool j1Map::Load(const char* fileName, int x, int y)
 			ret = LoadTilesetDetails(tileset, set);
 		}
 
-		if (ret)
-		{
-			ret = LoadTilesetImage(tileset, set);
-		}
-
 		data.tilesets.push_back(set);
 	}
 
@@ -616,37 +613,46 @@ bool j1Map::Load(const char* fileName, int x, int y)
 	return ret;
 }
 
-bool j1Map::LoadTilesetImage(pugi::xml_node& tilesetNode, TileSet* set)
+bool j1Map::LoadTilesetImage(pugi::xml_node imageInfo)
 {
 	bool ret = true;
-	pugi::xml_node image = tilesetNode.child("image");
 
-	if (image == NULL)
+	if (imageInfo == NULL)
 	{
 		LOG("Error parsing tileset xml file: Cannot find 'image' tag.");
 		ret = false;
 	}
 	else
 	{
-		set->texture = App->tex->Load(PATH(folder.data(), image.attribute("source").as_string()));
+		SDL_Texture* texture = App->tex->Load(PATH(folder.data(), imageInfo.attribute("source").as_string()));
+
 		int w, h;
-		SDL_QueryTexture(set->texture, NULL, NULL, &w, &h);
-		set->texWidth = image.attribute("width").as_int();
+		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
 
-		if (set->texWidth <= 0)
+		for (list<Room>::iterator roomIterator = playableMap.rooms.begin(); roomIterator != playableMap.rooms.end(); ++roomIterator)
 		{
-			set->texWidth = w;
+			for (list<TileSet*>::iterator setIterator = (*roomIterator).tilesets.begin(); setIterator != (*roomIterator).tilesets.end(); ++setIterator) {
+
+				(*setIterator)->texture = texture;
+
+				(*setIterator)->texWidth = imageInfo.attribute("width").as_int();
+
+				if ((*setIterator)->texWidth <= 0)
+				{
+					(*setIterator)->texWidth = w;
+				}
+
+				(*setIterator)->texHeight = imageInfo.attribute("height").as_int();
+
+				if ((*setIterator)->texHeight <= 0)
+				{
+					(*setIterator)->texHeight = h;
+				}
+
+				(*setIterator)->numTilesWidth = (*setIterator)->texWidth / (*setIterator)->tileWidth;
+				(*setIterator)->numTilesHeight = (*setIterator)->texHeight / (*setIterator)->tileHeight;
+			}
 		}
-
-		set->texHeight = image.attribute("height").as_int();
-
-		if (set->texHeight <= 0)
-		{
-			set->texHeight = h;
-		}
-
-		set->numTilesWidth = set->texWidth / set->tileWidth;
-		set->numTilesHeight = set->texHeight / set->tileHeight;
 	}
 
 	return ret;
@@ -755,7 +761,7 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 				if (tileset != NULL)
 				{
 					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
-					/*TileType* ts = tileset->GetTileType(tile_id);
+					/*TileType* ts = tileset->GetTileType(tileId);
 					if(ts != NULL)
 					{
 					map[i] = ts->properties.Get("walkable", 1);
@@ -856,7 +862,19 @@ bool j1Map::CreateNewMap()
 		ret = LoadRooms();
 
 	if (ret)
+		ret = LoadLogic();
+
+	if (ret)
 		ret = LoadCorridors();
+
+	if (ret)
+	{
+		pugi::xml_node imageInfo = mapInfoDocument.child("map").child("image");
+
+		ret = LoadTilesetImage(imageInfo);
+	}
+
+
 
 
 	return ret;
@@ -1028,6 +1046,41 @@ bool j1Map::CreateCorridor(Room room, DIRECTION direction)
 	return true;
 }
 
+bool j1Map::LoadLogic()
+{
+	bool ret = true;
+	// Iterate all rooms
+	for (list<Room>::iterator iterator = playableMap.rooms.begin();
+		iterator != playableMap.rooms.end(); ++iterator)
+	{
+		// Iterate all layers
+		for (list<MapLayer*>::iterator layerIterator = (*iterator).layers.begin();
+			layerIterator != (*iterator).layers.end(); ++layerIterator)
+		{
+			// Check if layer is a logic layer
+			if ((*layerIterator)->name == "logic")
+			{
+				// Iterate layer
+				for (int i = 0; i < (*layerIterator)->sizeData; ++i)
+				{
+					// Check if tile is not empty
+					if ((*layerIterator)->data[i] > 0)
+					{
+						int x = i % (*layerIterator)->width;
+						int y = i / (*layerIterator)->width;
+
+//						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);
+					}
+				}
+
+			}
+		}
+	}
+	
+
+
+	return ret;
+}
 //----------------------------------
 
 fPoint Room::GetObjectPosition(string groupObject, string object)
@@ -1135,6 +1188,7 @@ bool Room::CheckIfEnter(string groupObject, string object, fPoint position)
 	fPoint objectPos = GetObjectPosition(groupObject, object);
 	fPoint objectSize = GetObjectSize(groupObject, object);
 
-	return (objectPos.x < position.x + 1 && objectPos.x + objectSize.x > position.x && objectPos.y < position.y + 1 && objectSize.y + objectPos.y > position.y);
+	return (objectPos.x < position.x + 1 && objectPos.x + objectSize.x > position.x &&
+		objectPos.y < position.y + 1 && objectSize.y + objectPos.y > position.y);
 }
 
