@@ -108,6 +108,9 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 	}
 
+	//LoadInGameUI
+	LoadInGameUI();
+
 	//Calculate camera movement in pixels through the percentatge given
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
 
@@ -331,6 +334,24 @@ void j1Scene::CheckCameraMovement(float dt) {
 
 }
 
+void j1Scene::LoadInGameUI()
+{
+	UIButton_Info buildingButtonInfo;
+	buildingButtonInfo.normalTexArea = {0, 0, 79, 20};
+	buildingButtonInfo.hoverTexArea = { 79, 0, 79, 20 };
+	buildingButtonInfo.pressedTexArea = { 158, 0, 79, 20 };
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buildingButtonInfo.normalTexArea.w, 5 }, buildingButtonInfo, this, nullptr);
+
+	UILabel_Info buildingLabelInfo;
+	buildingLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	buildingLabelInfo.normalColor = White_;
+	buildingLabelInfo.text = "Buildings";
+	buildingLabelInfo.verticalOrientation = UIE_VERTICAL_POS::VERTICAL_POS_CENTER;
+	buildingLabelInfo.horizontalOrientation = UIE_HORIZONTAL_POS::HORIZONTAL_POS_CENTER;
+	buildingLabel = App->gui->CreateUILabel({ 79/2,20/2 }, buildingLabelInfo, this, buildingButton);
+
+}
+
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 {
 	switch (UIevent)
@@ -344,6 +365,18 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		break;
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
+		if (UIelem == buildingButton) {
+			if (!buildingMenuOn) {
+				UIImage_Info buildingMenuInfo;
+				buildingMenuInfo.texArea = { 0,20,197,212 };
+				buildingMenu = App->gui->CreateUIImage({ -117, 20 }, buildingMenuInfo, this, buildingButton);
+				buildingMenuOn = true;
+			}
+			else {
+				App->gui->DestroyElement(buildingMenu);
+				buildingMenuOn = false;
+			}
+		}
 
 		break;
 

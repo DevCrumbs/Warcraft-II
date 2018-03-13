@@ -240,12 +240,13 @@ public:
 	bool LoadRooms();
 	bool LoadCorridors();
 	bool CreateCorridor(Room room, DIRECTION direction = DIRECTION_NONE);
+	bool LoadLogic();
 
 private:
 
 	bool LoadRoom();
 	bool LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set);
-	bool LoadTilesetImage(pugi::xml_node& tilesetNode, TileSet* set);
+	bool LoadTilesetImage(pugi::xml_node imageInfo);
 
 	// TODO 3: Create a method that loads a single layer
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
@@ -261,6 +262,12 @@ public:
 	Room				data;
 	MapLayer*			collisionLayer = nullptr;
 
+	int					culingOffset = 0;
+	int					blitOffset = 0;
+	bool				cameraBlit = false;
+
+	int					mapTypesNo = 0;
+
 private:
 
 	pugi::xml_document	mapFile;
@@ -275,12 +282,6 @@ private:
 	list<RoomInfo>		roomsInfo;
 	vector<int>			noPullRoom;
 
-public:
-
-	int					culingOffset = 0;
-	int					blitOffset = 0;
-	bool				cameraBlit = false;
-	int					mapTypesNo = 0;
 };
 
 #endif // __j1MAP_H__

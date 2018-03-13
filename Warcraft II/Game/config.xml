@@ -37,12 +37,12 @@
   </audio>
 
   <gui>
-    <atlas file="Assets/Sprites/atlas.png"/>
+    <atlas file="data/assets/textures/UI/atlas.png"/>
   </gui>
 
   <scene>
 
-    <camera speed ="120.0" movMarginPcnt = "5"/>
+    <camera speed ="300.0" movMarginPcnt = "5"/>
     
     <maps>
       <orthogonal name="orthogonal_walk.tmx" active="0"/>

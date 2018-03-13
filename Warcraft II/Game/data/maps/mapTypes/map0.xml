@@ -3,6 +3,7 @@
 <!-- Map layout -->
 
 <map>
+    <image source="wastelandTiles.png" width="626" height="659"/> 
   <rooms>
     <room type ="-2" x = "0" y = "0">
       <doors>
@@ -51,8 +52,6 @@
 
     <room type ="-1" x = "2400" y = "6720">
     </room>
-
-
   </rooms>
-
+    
 </map>
