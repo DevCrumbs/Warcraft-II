@@ -14,7 +14,7 @@ artifacts:
   
 deploy:
   - provider: GitHub
-    release: Warcraft II: The Stolen Artifacts v$(appveyor_build_version)
+    release: Warcraft II The Stolen Artifacts v$(appveyor_build_version)
     artifact: "WarcraftII_The_Stolen_Artifacts.zip"
     auth_token:
       secure: JcMPWRUJB+nle8Oj8XmkH2SckI3nFL6kMl1mpctsApIPoxscRoFyNtI5Gmoer62p
