@@ -58,6 +58,8 @@ public:
 	void CheckCameraMovement(float dt);
 
 	void LoadInGameUI();
+	void LoadBuildingMenu();
+	void UnLoadBuildingMenu();
 
 public:
 	// Camera
@@ -75,8 +77,8 @@ public:
 private:
 
 	//UI
-	UIButton * buildingButton;
-	UILabel * buildingLabel;
+	UIButton * buildingButton, *chickenFarmButton;
+	UILabel * buildingLabel, *chickenFarmLabel;
 	UIImage * buildingMenu;
 
 	bool buildingMenuOn = false;
