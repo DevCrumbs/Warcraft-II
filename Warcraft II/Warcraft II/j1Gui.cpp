@@ -103,10 +103,16 @@ bool j1Gui::Blit(float dt) const
 	list<UIElement*>::const_iterator iterator = UIElementsList.begin();
 
 	while (iterator != UIElementsList.end()) {
+		if((*iterator)->GetType() != UIE_TYPE_CURSOR)
 		(*iterator)->Draw();
 		iterator++;
 	}
-
+	iterator = UIElementsList.begin();
+	while (iterator != UIElementsList.end()) {
+		if ((*iterator)->GetType() == UIE_TYPE_CURSOR)
+			(*iterator)->Draw();
+		iterator++;
+	}
 	return ret;
 }
 
