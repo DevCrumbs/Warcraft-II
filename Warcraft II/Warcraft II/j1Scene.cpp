@@ -346,10 +346,36 @@ void j1Scene::LoadInGameUI()
 	buildingLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
 	buildingLabelInfo.normalColor = White_;
 	buildingLabelInfo.text = "Buildings";
-	buildingLabelInfo.verticalOrientation = UIE_VERTICAL_POS::VERTICAL_POS_CENTER;
-	buildingLabelInfo.horizontalOrientation = UIE_HORIZONTAL_POS::HORIZONTAL_POS_CENTER;
-	buildingLabel = App->gui->CreateUILabel({ 79/2,20/2 }, buildingLabelInfo, this, buildingButton);
+	buildingLabel = App->gui->CreateUILabel({ 5,5 }, buildingLabelInfo, this, buildingButton);
 
+}
+
+void j1Scene::LoadBuildingMenu()
+{
+	UIImage_Info buildingMenuInfo;
+	buildingMenuInfo.texArea = { 0,20,172,251 };
+	buildingMenu = App->gui->CreateUIImage({ -92, 1 }, buildingMenuInfo, this, buildingButton);
+	buildingMenuOn = true;
+
+	UIButton_Info chickenFarmInfo;
+	chickenFarmInfo.normalTexArea = { 202,21,46,38 };
+	chickenFarmInfo.hoverTexArea = { 249,21,46,38 };
+	chickenFarmInfo.pressedTexArea = { 296,21,46,38 };
+	chickenFarmButton = App->gui->CreateUIButton({ 10, 30 }, chickenFarmInfo, this, buildingMenu);
+
+	UILabel_Info chickenFarmLabelInfo;
+	chickenFarmLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	chickenFarmLabelInfo.normalColor = White_;
+	chickenFarmLabelInfo.text = "Chicken Farm";
+	chickenFarmLabel = App->gui->CreateUILabel({ 64, 45 }, chickenFarmLabelInfo, this, buildingMenu);
+}
+
+void j1Scene::UnLoadBuildingMenu()
+{
+	App->gui->DestroyElement(buildingMenu);
+	App->gui->DestroyElement(chickenFarmButton);
+	App->gui->DestroyElement(chickenFarmLabel);
+	buildingMenuOn = false;
 }
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
@@ -366,16 +392,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (UIelem == buildingButton) {
-			if (!buildingMenuOn) {
-				UIImage_Info buildingMenuInfo;
-				buildingMenuInfo.texArea = { 0,20,197,212 };
-				buildingMenu = App->gui->CreateUIImage({ -117, 20 }, buildingMenuInfo, this, buildingButton);
-				buildingMenuOn = true;
-			}
-			else {
-				App->gui->DestroyElement(buildingMenu);
-				buildingMenuOn = false;
-			}
+			if (!buildingMenuOn) 			
+				LoadBuildingMenu();
+		
+			else 
+				UnLoadBuildingMenu();
+			
 		}
 
 		break;
