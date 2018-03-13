@@ -15,6 +15,7 @@ struct UILabel;
 struct UIButton;
 struct UIImage;
 struct UISlider;
+struct UICursor;
 class UIInputText;
 
 class j1Scene : public j1Module
@@ -80,6 +81,8 @@ private:
 	UIButton * buildingButton, *chickenFarmButton;
 	UILabel * buildingLabel, *chickenFarmLabel;
 	UIImage * buildingMenu;
+	UIImage* entitiesStats;
+	UICursor* mouseText;
 
 	bool buildingMenuOn = false;
 

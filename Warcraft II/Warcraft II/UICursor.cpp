@@ -25,8 +25,6 @@ void UICursor::Update(float dt)
 		HandleInput();
 }
 
-void UICursor::Draw() const {}
-
 void  UICursor::DrawAbove() const
 {
 	iPoint blitPos;

@@ -348,6 +348,16 @@ void j1Scene::LoadInGameUI()
 	buildingLabelInfo.text = "Buildings";
 	buildingLabel = App->gui->CreateUILabel({ 5,5 }, buildingLabelInfo, this, buildingButton);
 
+
+	UIImage_Info entitiesInfo;
+	entitiesInfo.texArea = { 0, 430, 218, 82 };
+	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w / 2,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
+
+	UICursor_Info mouseInfo;
+	mouseInfo.default = { 1, 274, 28, 33 };
+	mouseInfo.onClick = { 1, 274, 28, 33 };
+	mouseText = App->gui->CreateUICursor(mouseInfo, this);
+
 }
 
 void j1Scene::LoadBuildingMenu()
