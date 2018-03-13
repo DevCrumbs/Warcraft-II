@@ -56,6 +56,8 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	warcraftActive = maps.child("warcraft").attribute("active").as_bool();
 	warcraftTexName = maps.child("warcraft").attribute("tex").as_string();
 
+	LoadKeys(config.child("buttons"));
+
 	// Load songs
 
 	// Load FX
@@ -187,7 +189,7 @@ bool j1Scene::Update(float dt)
 	DebugKeys();
 	CheckCameraMovement(dt);
 
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
+	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
 		App->map->UnLoad();
 		App->map->CreateNewMap();
@@ -196,8 +198,8 @@ bool j1Scene::Update(float dt)
 //	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
 	//	App->win->scale += 0.05f;
 
-	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
-		App->win->scale -= 0.05f;
+//	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
+//		App->win->scale -= 0.05f;
 
 
 
@@ -209,7 +211,7 @@ bool j1Scene::PostUpdate()
 {
 	bool ret = true;
 
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN)
 		ret = false;
 
 	return ret;
@@ -266,21 +268,21 @@ void j1Scene::DebugKeys()
 	}
 
 	// F5: save the current state
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN) {
+	if (App->input->GetKey(buttonSaveGame) == KEY_DOWN) {
 		App->SaveGame();
 	}
 
 	// F6: load the previous state
-	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN) {
+	if (App->input->GetKey(buttonLoadGame) == KEY_DOWN) {
 		App->LoadGame();
 	}
 
 	// F7: fullscreen
-	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
+	if (App->input->GetKey(buttonFullScreen) == KEY_DOWN)
 		App->win->SetFullscreen();
 
 	// F10: God mode
-	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+	if (App->input->GetKey(buttonGodMode) == KEY_DOWN)
 		god = !god;
 
 	// 1, 2, 3: camera blit
@@ -304,20 +306,20 @@ void j1Scene::CheckCameraMovement(float dt) {
 
 	//Move with arrows
 	//UP
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && App->render->camera.y <= 0)
+	if (App->input->GetKey(buttonMoveUp) == KEY_REPEAT && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	//DOWN
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && App->render->camera.y >= downMargin)
+	if (App->input->GetKey(buttonMoveDown) == KEY_REPEAT && App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	//LEFT
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && App->render->camera.x <= 0)
+	if (App->input->GetKey(buttonMoveLeft) == KEY_REPEAT && App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	//RIGHT
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && App->render->camera.x >= rightMargin)
+	if (App->input->GetKey(buttonMoveRight) == KEY_REPEAT && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
 
 	//Move with mouse
-	App->input->GetMousePosition(mouse.x, mouse.y);
+	//App->input->GetMousePosition(mouse.x, mouse.y);
 
 	////UP
 	//if (mouse.y <= camMovMargin/scale && App->render->camera.y <= 0)
@@ -343,7 +345,7 @@ void j1Scene::LoadInGameUI()
 	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buildingButtonInfo.normalTexArea.w, 5 }, buildingButtonInfo, this, nullptr);
 
 	UILabel_Info buildingLabelInfo;
-	buildingLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	buildingLabelInfo.fontName = FONT_NAME_WARCRAFT;
 	buildingLabelInfo.normalColor = White_;
 	buildingLabelInfo.text = "Buildings";
 	buildingLabel = App->gui->CreateUILabel({ 5,5 }, buildingLabelInfo, this, buildingButton);
@@ -364,7 +366,7 @@ void j1Scene::LoadBuildingMenu()
 	chickenFarmButton = App->gui->CreateUIButton({ 10, 30 }, chickenFarmInfo, this, buildingMenu);
 
 	UILabel_Info chickenFarmLabelInfo;
-	chickenFarmLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	chickenFarmLabelInfo.fontName = FONT_NAME_WARCRAFT;
 	chickenFarmLabelInfo.normalColor = White_;
 	chickenFarmLabelInfo.text = "Chicken Farm";
 	chickenFarmLabel = App->gui->CreateUILabel({ 64, 45 }, chickenFarmLabelInfo, this, buildingMenu);
@@ -374,8 +376,8 @@ void j1Scene::UnLoadBuildingMenu()
 {
 	App->gui->DestroyElement(buildingMenu);
 	App->gui->DestroyElement(chickenFarmButton);
-	App->gui->DestroyElement(chickenFarmLabel);
-	buildingMenuOn = false;
+App->gui->DestroyElement(chickenFarmLabel);
+buildingMenuOn = false;
 }
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
@@ -392,12 +394,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (UIelem == buildingButton) {
-			if (!buildingMenuOn) 			
+			if (!buildingMenuOn)
 				LoadBuildingMenu();
-		
-			else 
+
+			else
 				UnLoadBuildingMenu();
-			
+
 		}
 
 		break;
@@ -441,6 +443,75 @@ bool j1Scene::Load(pugi::xml_node& save)
 	fx = save.child("gate").attribute("fx").as_bool();
 	}
 	*/
+
+	return ret;
+}
+
+bool j1Scene::LoadKeys(pugi::xml_node& buttons)
+{
+	bool ret = true;
+
+	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load SaveGame button");
+		ret = false;
+	}
+
+	if ((buttonLoadGame = (SDL_Scancode)buttons.attribute("buttonLoadGame").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load SaveGame button");
+		ret = false;
+	}
+
+	if ((buttonFullScreen = (SDL_Scancode)buttons.attribute("buttonFullScreen").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load FullScreen button");
+		ret = false;
+	}
+
+	if ((buttonGodMode = (SDL_Scancode)buttons.attribute("buttonGodMode").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load GodMode button");
+		ret = false;
+	}
+
+	if ((buttonMoveUp = (SDL_Scancode)buttons.attribute("buttonMoveUp").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load MoveUp button");
+		ret = false;
+	}
+
+	if ((buttonMoveDown = (SDL_Scancode)buttons.attribute("buttonMoveDown").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load MoveDown button");
+		ret = false;
+	}
+
+	if ((buttonMoveLeft = (SDL_Scancode)buttons.attribute("buttonMoveLeft").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load MoveLeft button");
+		ret = false;
+	}
+
+	if ((buttonMoveRight = (SDL_Scancode)buttons.attribute("buttonMoveRight").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load MoveRight button");
+		ret = false;
+	}
+
+	if ((buttonLeaveGame = (SDL_Scancode)buttons.attribute("buttonLeaveGame").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load LeaveGame button");
+		ret = false;
+	}
+
+	if ((buttonReloadMap = (SDL_Scancode)buttons.attribute("buttonReloadMap").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load ReloadMap button");
+		ret = false;
+	}
+	
+
 
 	return ret;
 }
