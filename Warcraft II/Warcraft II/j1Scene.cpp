@@ -337,24 +337,24 @@ void j1Scene::CheckCameraMovement(float dt) {
 void j1Scene::LoadInGameUI()
 {
 	UIButton_Info buildingButtonInfo;
-	buildingButtonInfo.normalTexArea = {0, 0, 79, 20};
-	buildingButtonInfo.hoverTexArea = { 79, 0, 79, 20 };
-	buildingButtonInfo.pressedTexArea = { 158, 0, 79, 20 };
-	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buildingButtonInfo.normalTexArea.w, 5 }, buildingButtonInfo, this, nullptr);
+	buildingButtonInfo.normalTexArea = {0, 0, 129, 33};
+	buildingButtonInfo.hoverTexArea = { 129, 0, 129, 33 };
+	buildingButtonInfo.pressedTexArea = { 257, 0, 129, 33 };
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buildingButtonInfo.normalTexArea.w, 0 }, buildingButtonInfo, this, nullptr);
 
 	UILabel_Info buildingLabelInfo;
 	buildingLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
 	buildingLabelInfo.normalColor = White_;
 	buildingLabelInfo.text = "Buildings";
-	buildingLabel = App->gui->CreateUILabel({ 5,5 }, buildingLabelInfo, this, buildingButton);
+	buildingLabel = App->gui->CreateUILabel({ 27,12 }, buildingLabelInfo, this, buildingButton);
 
 }
 
 void j1Scene::LoadBuildingMenu()
 {
 	UIImage_Info buildingMenuInfo;
-	buildingMenuInfo.texArea = { 0,20,172,251 };
-	buildingMenu = App->gui->CreateUIImage({ -92, 1 }, buildingMenuInfo, this, buildingButton);
+	buildingMenuInfo.texArea = { 0,33,291,529 };
+	buildingMenu = App->gui->CreateUIImage({ -162, 1 }, buildingMenuInfo, this, buildingButton);
 	buildingMenuOn = true;
 
 	UIButton_Info chickenFarmInfo;
