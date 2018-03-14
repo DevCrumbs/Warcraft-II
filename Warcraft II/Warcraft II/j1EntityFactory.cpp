@@ -137,6 +137,7 @@ bool j1EntityFactory::Update(float dt)
 	}
 
 	// Mouse position (world and map coords)
+	// TODO: Valdivia. Això no s'ha de fer aquí. Està molt cutre a sobre xd. Porta-ho al mòdul de player o així per fer-ho ben fet
 	int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
@@ -148,6 +149,7 @@ bool j1EntityFactory::Update(float dt)
 		DrawStaticEntityPreview(StaticEntityType_TownHall, { mouseTilePos.x, mouseTilePos.y });
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 255);
 	}
+	// TODO: Valdivia. Fins aquí
 
 	return ret;
 }
