@@ -54,20 +54,80 @@
 
   <entities>
     <spritesheets>
-      <spritesheet name="Assets/Sprites/Textures/CatPeasant.png"/>
+      <humanBuildings name="Assets/Sprites/Textures/HumanBuildings.png"/>
     </spritesheets>
-    <types>
-      <player>
-        <general>
-        </general>
-        <animations>
-          <idle speed="10" loop="1">
-            <frame x="1" y="454" w="48" h="48"/>
-            <frame x="50" y="454" w="48" h="48"/>
-          </idle>
-        </animations>
-      </player>
-    </types>    
+    
+    <staticEntities>
+      
+      <townHall>
+        <sprites>
+          <complete x="265" y="5" w="128" h="128"/>
+          <inProgress x="265" y="133" w="128" h="128"/>  
+      </sprites>
+      </townHall>
+      
+      <keep>
+        <sprites>
+          <complete x="2" y="2" w="128" h="128"/>
+          <inProgress x="2" y="130" w="128" h="128"/>  
+      </sprites>
+      </keep>
+      
+      <castle>
+        <sprites>
+          <complete x="135" y="4" w="128" h="128"/>
+          <inProgress x="135" y="132" w="128" h="128"/>  
+      </sprites>
+      </castle>
+      
+      <chickenFarm>
+        <sprites>
+          <complete x="398" y="4" w="64" h="64"/>
+          <inProgress x="398" y="68" w="64" h="64"/>  
+        </sprites>
+      </chickenFarm>
+      
+      <scoutTower>
+        <sprites>
+          <complete x="465" y="4" w="64" h="64"/>
+          <inProgress x="465" y="68" w="64" h="64"/>  
+        </sprites>
+      </scoutTower>
+    
+      <barracks>
+        <sprites>
+          <complete x="530" y="111" w="128" h="128"/>
+        </sprites>
+      </barracks>
+       
+      <barracks2>
+        <sprites>
+          <complete x="530" y="0" w="128" h="128"/>
+        </sprites>
+      </barracks2>
+      
+      <mageTower>
+        <sprites>
+          <complete x="572" y="226" w="128" h="128"/>
+          <inProcess x="572" y="340" w="128" h="128"/>
+        </sprites>
+      </mageTower>
+      
+      <gryphonAviary>
+        <sprites>
+          <complete x="196" y="523" w="128" h="128"/>
+          <inProcess x="29" y="523" w="128" h="128"/>
+        </sprites>
+      </gryphonAviary>
+          
+      <stables>
+        <sprites>
+          <complete x="317" y="272" w="128" h="128"/>
+          <inProcess x="317" y="407" w="128" h="128"/>
+        </sprites>
+      </stables>
+        
+    </staticEntities>    
   </entities>
   
   <particles>

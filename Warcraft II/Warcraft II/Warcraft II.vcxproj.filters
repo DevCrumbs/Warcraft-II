@@ -34,6 +34,39 @@
     <Filter Include="Modules\p2Containers">
       <UniqueIdentifier>{cdbc97d9-1655-4a36-944a-2ecf11281fba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\Entities\DynamicEntities">
+      <UniqueIdentifier>{0191d372-cfcc-4684-9da7-c0a379e47cf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\StaticEntities">
+      <UniqueIdentifier>{8eb0ffb2-7af7-42a6-b3a2-67393c283d07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\DynamicEntities\EnemyUnits">
+      <UniqueIdentifier>{0e2f6ac0-2d0a-4cd0-a7bc-91157c10e4df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\DynamicEntities\PlayerUnits">
+      <UniqueIdentifier>{9ca3e7f1-d5a0-4130-8555-dce1d965ffa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\StaticEntities\EnemyBuildings">
+      <UniqueIdentifier>{2f34f51e-d55c-43f1-8944-11cc44441086}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\StaticEntities\PlayerBuildings">
+      <UniqueIdentifier>{c998c991-e058-49cd-bbe5-c9fd6d8c53ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\StaticEntities\NeutralBuildings">
+      <UniqueIdentifier>{79523fc1-39f2-4b52-ae20-44a58e8fee07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Player">
+      <UniqueIdentifier>{7d9a35a2-3e8a-4e1c-b5e0-506e19c8d679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\DynamicEntities\PlayerUnits\Prisoners">
+      <UniqueIdentifier>{af0236e1-4356-4730-89d1-5940da3f499e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings">
+      <UniqueIdentifier>{ccf3be90-6cf6-4c09-b3a3-3c1bbde086e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings">
+      <UniqueIdentifier>{dfa694f3-6299-4555-b5cb-431c1258f6f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PugiXml\src\pugiconfig.hpp">
@@ -129,15 +162,95 @@
     <ClInclude Include="UILabel.h">
       <Filter>Modules\UIElements</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Modules\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="j1Particles.h">
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="UIInputText.h">
       <Filter>Modules\UIElements</Filter>
     </ClInclude>
+    <ClInclude Include="StaticEntity.h">
+      <Filter>Modules\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicEntity.h">
+      <Filter>Modules\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Dragon.h">
+      <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
+    </ClInclude>
+    <ClInclude Include="ElvenArcher.h">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
+    </ClInclude>
+    <ClInclude Include="Footman.h">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
+    </ClInclude>
+    <ClInclude Include="Grunt.h">
+      <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
+    </ClInclude>
+    <ClInclude Include="GryphonRider.h">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
+    </ClInclude>
+    <ClInclude Include="Mage.h">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
+    </ClInclude>
+    <ClInclude Include="TrollAxethrower.h">
+      <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
+    </ClInclude>
+    <ClInclude Include="GoldMine.h">
+      <Filter>Modules\Entities\StaticEntities\NeutralBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="Runestone.h">
+      <Filter>Modules\Entities\StaticEntities\NeutralBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="WatchTower.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyCannonTower.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyGuardTower.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Player.h">
+      <Filter>Modules\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Alleria.h">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
+    </ClInclude>
+    <ClInclude Include="Turalyon.h">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
+    </ClInclude>
+    <ClInclude Include="Khadgar.h">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
+    </ClInclude>
+    <ClInclude Include="Paladin.h">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
+    </ClInclude>
+    <ClInclude Include="Barracks.h">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="ChickenFarm.h">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="GryphonAviary.h">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="MageTower.h">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="Stables.h">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="TownHall.h">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCannonTower.h">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerGuardTower.h">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoutTower.h">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings</Filter>
     <ClInclude Include="j1Console.h">
       <Filter>Modules</Filter>
     </ClInclude>
@@ -218,15 +331,95 @@
     <ClCompile Include="UILabel.cpp">
       <Filter>Modules\UIElements</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Modules\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="j1Particles.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="UIInputText.cpp">
       <Filter>Modules\UIElements</Filter>
     </ClCompile>
+    <ClCompile Include="StaticEntity.cpp">
+      <Filter>Modules\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicEntity.cpp">
+      <Filter>Modules\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Dragon.cpp">
+      <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="ElvenArcher.cpp">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="Footman.cpp">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="Grunt.cpp">
+      <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="GryphonRider.cpp">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="Mage.cpp">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="TrollAxethrower.cpp">
+      <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="GoldMine.cpp">
+      <Filter>Modules\Entities\StaticEntities\NeutralBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="Runestone.cpp">
+      <Filter>Modules\Entities\StaticEntities\NeutralBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="WatchTower.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyCannonTower.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyGuardTower.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Player.cpp">
+      <Filter>Modules\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Alleria.cpp">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
+    </ClCompile>
+    <ClCompile Include="Turalyon.cpp">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
+    </ClCompile>
+    <ClCompile Include="Khadgar.cpp">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
+    </ClCompile>
+    <ClCompile Include="Paladin.cpp">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="Barracks.cpp">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="ChickenFarm.cpp">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="GryphonAviary.cpp">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="MageTower.cpp">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="Stables.cpp">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="TownHall.cpp">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerCannonTower.cpp">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerGuardTower.cpp">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoutTower.cpp">
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings</Filter>
     <ClCompile Include="j1Console.cpp">
       <Filter>Modules</Filter>
     </ClCompile>

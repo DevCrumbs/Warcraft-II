@@ -2,8 +2,36 @@
 #define __j1ENTITY_FACTORY_H__
 
 #include "j1Module.h"
-
 #include "p2Point.h"
+
+// Units
+#include "Dragon.h"
+#include "Grunt.h"
+#include "TrollAxethrower.h"
+#include "Alleria.h"
+#include "Khadgar.h"
+#include "Turalyon.h"
+#include "ElvenArcher.h"
+#include "Footman.h"
+#include "GryphonRider.h"
+#include "Mage.h"
+#include "Paladin.h"
+
+// Buildings
+#include "EnemyCannonTower.h"
+#include "EnemyGuardTower.h"
+#include "WatchTower.h"
+#include "GoldMine.h"
+#include "Runestone.h"
+#include "PlayerCannonTower.h"
+#include "PlayerGuardTower.h"
+#include "ScoutTower.h"
+#include "Barracks.h"
+#include "ChickenFarm.h"
+#include "GryphonAviary.h"
+#include "MageTower.h"
+#include "Stables.h"
+#include "TownHall.h"
 
 #include <algorithm>
 using namespace std;
@@ -14,9 +42,11 @@ struct SDL_Texture;
 struct SDL_Rect;
 
 class Entity;
-class Unit;
+class StaticEntity;
+class DynamicEntity;
 struct EntityInfo;
-struct UnitInfo;
+enum StaticEntityType;
+enum DynamicEntityType;
 
 class j1EntityFactory : public j1Module
 {
@@ -30,46 +60,87 @@ public:
 	bool Update(float dt);
 	bool PostUpdate();
 	bool CleanUp();
-	void OnCollision(Collider* c1, Collider* c2);
 	void Draw();
+	void DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos);
 
-	Unit* AddUnit(const EntityInfo& entityInfo, const UnitInfo& unitInfo);
-
-	// Returns a list with all the entities within a given rectangle
-	list<Entity*> SelectEntitiesWithinRectangle(SDL_Rect rectangleRect);
-
-	// Returns true if an entity (different from the one passed as an argument) occupies the tile
-	bool IsAnotherEntityOnTile(Entity* entity, iPoint tile) const;
-
-	// Looks for the closest walkable tile to the tile passed as an argument
-	iPoint FindClosestWalkableTile(Entity* entity, iPoint tile) const;
-
-	// Get entities info
-	/*
-	PlayerInfo& GetPlayerInfo() { return player; }
-	*/
+	StaticEntity* AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, iPoint size, uint life, const EntityInfo& entityInfo);
+	DynamicEntity* AddDynamicEntity(DynamicEntityType dynamicEntityType, fPoint pos, iPoint size, uint life, float speed, const EntityInfo& entityInfo);
 
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);
 
 private:
 
-	list<Entity*> unitsSelected;
-
 	list<Entity*> toSpawnEntities;
-	list<Entity*> activeEntities;
+	list<DynamicEntity*> activeDynamicEntities;
+	list<StaticEntity*> activeStaticEntities;
 
-	string CatPeasant_spritesheet;
-
-	// Entities textures
+	// Textures
+	/// Dynamic entities
 	string footmanTexName;
+	string elvenArcherTexName;
+	string gryphonRiderTexName;
+	string mageTexName;
+	string paladinTexName;
+	string alleriaTexName;
+	string khadgarTexName;
+	string turalyonTexName;
+	string gruntTexName;
+	string trollAxethrowerTexName;
+	string dragonTexName;
+
 	SDL_Texture* footmanTex = nullptr;
+	SDL_Texture* elvenArcherTex = nullptr;
+	SDL_Texture* gryphonRiderTex = nullptr;
+	SDL_Texture* mageTex = nullptr;
+	SDL_Texture* paladinTex = nullptr;
+	SDL_Texture* alleriaTex = nullptr;
+	SDL_Texture* khadgarTex = nullptr;
+	SDL_Texture* turalyonTex = nullptr;
+	SDL_Texture* gruntTex = nullptr;
+	SDL_Texture* trollAxethrowerTex = nullptr;
+	SDL_Texture* dragonTex = nullptr;
 
+	/// Static entities
+	string humanBuildingsTexName;
+	string orcishBuildingsTexName;
+	string neutralBuildingsTexName;
 
-	// Entities info
-	/*
-	PlayerInfo player;
-	*/
+	SDL_Texture* humanBuildingsTex = nullptr;
+	SDL_Texture* orcishBuildingsTex = nullptr;
+	SDL_Texture* neutralBuildingsTex = nullptr;
+
+	// Info structs
+	/// Dynamic entities
+	FootmanInfo footmanInfo;
+	ElvenArcherInfo elvenArcherInfo;
+	GryphonRiderInfo gryphonRiderInfo;
+	MageInfo mageInfo;
+	PaladinInfo paladinInfo;
+	AlleriaInfo alleriaInfo;
+	KhadgarInfo khadgarInfo;
+	TuralyonInfo turalyonInfo;
+	GruntInfo gruntInfo;
+	TrollAxethrowerInfo trollAxethrowerInfo;
+	DragonInfo dragonInfo;
+
+	/// Static entities
+	TownHallInfo townHallInfo;
+	BarracksInfo barracksInfo;
+	ChickenFarmInfo chickenFarmInfo;
+	StablesInfo stablesInfo;
+	GryphonAviaryInfo gryphonAviaryInfo;
+	MageTowerInfo mageTowerInfo;
+	ScoutTowerInfo scoutTowerInfo;
+	PlayerGuardTowerInfo playerGuardTowerInfo; // TODO
+	PlayerCannonTowerInfo playerCannonTowerInfo; // TODO
+	GoldMineInfo goldMineInfo;
+	RunestoneInfo runestoneInfo;
+	WatchTowerInfo watchTowerInfo;
+	EnemyGuardTowerInfo enemyGuardTowerInfo;
+	EnemyCannonTowerInfo enemyCannonTowerInfo;
+
+	TownHall* townHall = nullptr;
 };
 
 #endif //__j1ENTITY_FACTORY_H__
