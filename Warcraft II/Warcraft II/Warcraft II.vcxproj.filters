@@ -251,6 +251,7 @@
     </ClInclude>
     <ClInclude Include="ScoutTower.h">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings</Filter>
+    </ClInclude>
     <ClInclude Include="j1Console.h">
       <Filter>Modules</Filter>
     </ClInclude>
@@ -420,6 +421,7 @@
     </ClCompile>
     <ClCompile Include="ScoutTower.cpp">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings</Filter>
+    </ClCompile>
     <ClCompile Include="j1Console.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
