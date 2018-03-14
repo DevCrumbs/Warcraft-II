@@ -2,6 +2,11 @@
 
 #include "Defs.h"
 #include "p2Log.h"
+#include "j1Input.h"
+#include "j1Map.h"
+#include "j1Render.h"
+#include "j1App.h"
+#include "j1EntityFactory.h"
 
 j1Player::j1Player() : j1Module()
 {
@@ -25,6 +30,35 @@ bool j1Player::Start()
 	bool ret = true;
 
 	return ret;
+}
+
+bool j1Player::Update(float dt) {
+
+	// Mouse position (world and map coords)
+	int x, y;
+	App->input->GetMousePosition(x, y);
+	iPoint mousePos = App->render->ScreenToWorld(x, y);
+	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
+	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+
+	//TRANSPARENT BUILDING HOVERING (DEBUG)
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
+		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 100);
+		App->entities->DrawStaticEntityPreview(StaticEntityType_TownHall, { mouseTilePos.x, mouseTilePos.y });
+	}
+
+	//CREATING A STATIC ENTITY (DEBUG)
+	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN) {
+		TownHallInfo info;
+		info.townHallCompleteTexArea = { 265,5,128,128 };
+		float auxX = (int)mouseTilePos.x;
+		float auxY = (int)mouseTilePos.y;
+		fPoint buildingPos = { auxX, auxY };
+		App->entities->AddStaticEntity(StaticEntityType_TownHall, buildingPos, { 128,128 }, 30, (const EntityInfo&)info);
+	}
+
+
+	return true;
 }
 
 // Called before quitting

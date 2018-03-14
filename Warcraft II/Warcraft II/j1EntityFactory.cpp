@@ -127,7 +127,6 @@ bool j1EntityFactory::PreUpdate()
 bool j1EntityFactory::Update(float dt)
 {
 	bool ret = true;
-
 	// Update active dynamic entities
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
@@ -135,21 +134,6 @@ bool j1EntityFactory::Update(float dt)
 		(*it)->Move(dt);
 		it++;
 	}
-
-	// Mouse position (world and map coords)
-	// TODO: Valdivia. Això no s'ha de fer aquí. Està molt cutre a sobre xd. Porta-ho al mòdul de player o així per fer-ho ben fet
-	int x, y;
-	App->input->GetMousePosition(x, y);
-	iPoint mousePos = App->render->ScreenToWorld(x, y);
-	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
-	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		DrawStaticEntityPreview(StaticEntityType_TownHall, { mouseTilePos.x, mouseTilePos.y });
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 255);
-	}
-	// TODO: Valdivia. Fins aquí
 
 	return ret;
 }
@@ -272,6 +256,10 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 	}
 }
 
+
+SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
+	return humanBuildingsTex;
+}
 
 bool j1EntityFactory::PostUpdate()
 {

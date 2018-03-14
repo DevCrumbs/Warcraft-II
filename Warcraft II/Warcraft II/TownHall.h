@@ -13,7 +13,7 @@ enum TownHallType
 struct TownHallInfo
 {
 	TownHallType townHallType = TownHallType_TownHall;
-	SDL_Rect townHallCompleteTexArea = { 0,0,0,0 };
+	SDL_Rect townHallCompleteTexArea = { 265,5,128,128 };
 	SDL_Rect townHallInProgressTexArea = { 0,0,0,0 };
 	SDL_Rect keepCompleteTexArea = { 0,0,0,0 };
 	SDL_Rect keepInProgressTexArea = { 0,0,0,0 };

@@ -60,8 +60,10 @@ public:
 	bool Update(float dt);
 	bool PostUpdate();
 	bool CleanUp();
+
 	void Draw();
 	void DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos);
+	SDL_Texture* GetHumanBuildingTexture();
 
 	StaticEntity* AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, iPoint size, uint life, const EntityInfo& entityInfo);
 	DynamicEntity* AddDynamicEntity(DynamicEntityType dynamicEntityType, fPoint pos, iPoint size, uint life, float speed, const EntityInfo& entityInfo);
