@@ -10,9 +10,9 @@
 #include "j1Gui.h"
 
 struct UIButton_Info {
-	UIE_RECT normalTexArea = NO_ELEMENT_RECT;
-	UIE_RECT hoverTexArea = NO_ELEMENT_RECT;
-	UIE_RECT pressedTexArea = NO_ELEMENT_RECT;
+	SDL_Rect normalTexArea = { 0, 0, 0, 0 };
+	SDL_Rect hoverTexArea = { 0, 0, 0, 0 };
+	SDL_Rect pressedTexArea = { 0, 0, 0, 0 };
 
 	bool checkbox = false;
 	bool isChecked = false;

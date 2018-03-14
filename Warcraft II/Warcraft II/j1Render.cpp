@@ -40,6 +40,7 @@ bool j1Render::Awake(pugi::xml_node& config)
 
 	renderer = SDL_CreateRenderer(App->win->window, -1, flags);
 
+
 	if (renderer == NULL)
 	{
 		LOG("Could not create the renderer! SDL_Error: %s\n", SDL_GetError());
@@ -137,7 +138,7 @@ void j1Render::ResetViewPort()
 iPoint j1Render::ScreenToWorld(int x, int y) const
 {
 	iPoint ret;
-	int scale = App->win->GetScale();
+	float scale = App->win->GetScale();
 
 	ret.x = (x - camera.x / scale);
 	ret.y = (y - camera.y / scale);
@@ -149,7 +150,7 @@ iPoint j1Render::ScreenToWorld(int x, int y) const
 bool j1Render::Blit(const SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle, int pivot_x, int pivot_y) const
 {
 	bool ret = true;
-	uint scale = App->win->GetScale();
+	float scale = App->win->GetScale();
 
 	SDL_Rect rect;
 	rect.x = (int)(camera.x * speed) + x * scale;

@@ -108,7 +108,8 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 	}
 
-	inputText = App->gui->CreateUIInputText({ 100, 100 }, this);
+	//LoadInGameUI
+	LoadInGameUI();
 
 	//Calculate camera movement in pixels through the percentatge given
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
@@ -158,6 +159,8 @@ bool j1Scene::Update(float dt)
 {
 	bool ret = true;
 
+
+
 	// Draw
 	//App->map->Draw(); // map
 	App->entities->Draw(); // entities
@@ -182,13 +185,22 @@ bool j1Scene::Update(float dt)
 
 
 	DebugKeys();
-	CheckCameraMovement();
+	CheckCameraMovement(dt);
 
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
 	{
 		App->map->UnLoad();
 		App->map->CreateNewMap();
 	}
+
+//	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
+	//	App->win->scale += 0.05f;
+
+	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
+		App->win->scale -= 0.05f;
+
+
+
 	return ret;
 }
 
@@ -264,16 +276,8 @@ void j1Scene::DebugKeys()
 	}
 
 	// F7: fullscreen
-	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN) {
-		if (App->win->fullscreen) {
-			App->win->fullscreen = false;
-			SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
-		}
-		else {
-			App->win->fullscreen = true;
-			SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-		}
-	}
+	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
+		App->win->SetFullscreen();
 
 	// F10: God mode
 	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
@@ -290,7 +294,7 @@ void j1Scene::DebugKeys()
 		App->map->cameraBlit = !App->map->cameraBlit;
 }
 
-void j1Scene::CheckCameraMovement() {
+void j1Scene::CheckCameraMovement(float dt) {
 
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
 	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
@@ -301,33 +305,77 @@ void j1Scene::CheckCameraMovement() {
 	//Move with arrows
 	//UP
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && App->render->camera.y <= 0)
-		App->render->camera.y += camSpeed;
+		App->render->camera.y += camSpeed * dt;
 	//DOWN
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && App->render->camera.y >= downMargin)
-		App->render->camera.y -= camSpeed;
+		App->render->camera.y -= camSpeed * dt;
 	//LEFT
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && App->render->camera.x <= 0)
-		App->render->camera.x += camSpeed;
+		App->render->camera.x += camSpeed * dt;
 	//RIGHT
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && App->render->camera.x >= rightMargin)
-		App->render->camera.x -= camSpeed;
+		App->render->camera.x -= camSpeed * dt;
 
 	//Move with mouse
 	App->input->GetMousePosition(mouse.x, mouse.y);
 
-	//UP
-	if (mouse.y <= camMovMargin/scale && App->render->camera.y <= 0)
-		App->render->camera.y += camSpeed;
-	//DOWN
-	if (mouse.y >= (height - camMovMargin) / scale && App->render->camera.y >= downMargin)
-		App->render->camera.y -= camSpeed;
-	//LEFT
-	if (mouse.x <= camMovMargin / scale && App->render->camera.x <= 0)
-		App->render->camera.x += camSpeed;
-	//RIGHT
-	if (mouse.x >= (width - camMovMargin) / scale && App->render->camera.x >= rightMargin)
-		App->render->camera.x -= camSpeed;
+	////UP
+	//if (mouse.y <= camMovMargin/scale && App->render->camera.y <= 0)
+	//	App->render->camera.y += camSpeed * dt;
+	////DOWN
+	//if (mouse.y >= (height - camMovMargin) / scale && App->render->camera.y >= downMargin)
+	//	App->render->camera.y -= camSpeed * dt;
+	////LEFT
+	//if (mouse.x <= camMovMargin / scale && App->render->camera.x <= 0)
+	//	App->render->camera.x += camSpeed * dt;
+	////RIGHT
+	//if (mouse.x >= (width - camMovMargin) / scale && App->render->camera.x >= rightMargin)
+	//	App->render->camera.x -= camSpeed * dt;
 
+}
+
+void j1Scene::LoadInGameUI()
+{
+	UIButton_Info buildingButtonInfo;
+	buildingButtonInfo.normalTexArea = {0, 0, 79, 20};
+	buildingButtonInfo.hoverTexArea = { 79, 0, 79, 20 };
+	buildingButtonInfo.pressedTexArea = { 158, 0, 79, 20 };
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buildingButtonInfo.normalTexArea.w, 5 }, buildingButtonInfo, this, nullptr);
+
+	UILabel_Info buildingLabelInfo;
+	buildingLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	buildingLabelInfo.normalColor = White_;
+	buildingLabelInfo.text = "Buildings";
+	buildingLabel = App->gui->CreateUILabel({ 5,5 }, buildingLabelInfo, this, buildingButton);
+
+}
+
+void j1Scene::LoadBuildingMenu()
+{
+	UIImage_Info buildingMenuInfo;
+	buildingMenuInfo.texArea = { 0,20,172,251 };
+	buildingMenu = App->gui->CreateUIImage({ -92, 1 }, buildingMenuInfo, this, buildingButton);
+	buildingMenuOn = true;
+
+	UIButton_Info chickenFarmInfo;
+	chickenFarmInfo.normalTexArea = { 202,21,46,38 };
+	chickenFarmInfo.hoverTexArea = { 249,21,46,38 };
+	chickenFarmInfo.pressedTexArea = { 296,21,46,38 };
+	chickenFarmButton = App->gui->CreateUIButton({ 10, 30 }, chickenFarmInfo, this, buildingMenu);
+
+	UILabel_Info chickenFarmLabelInfo;
+	chickenFarmLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	chickenFarmLabelInfo.normalColor = White_;
+	chickenFarmLabelInfo.text = "Chicken Farm";
+	chickenFarmLabel = App->gui->CreateUILabel({ 64, 45 }, chickenFarmLabelInfo, this, buildingMenu);
+}
+
+void j1Scene::UnLoadBuildingMenu()
+{
+	App->gui->DestroyElement(buildingMenu);
+	App->gui->DestroyElement(chickenFarmButton);
+	App->gui->DestroyElement(chickenFarmLabel);
+	buildingMenuOn = false;
 }
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
@@ -343,6 +391,14 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		break;
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
+		if (UIelem == buildingButton) {
+			if (!buildingMenuOn) 			
+				LoadBuildingMenu();
+		
+			else 
+				UnLoadBuildingMenu();
+			
+		}
 
 		break;
 

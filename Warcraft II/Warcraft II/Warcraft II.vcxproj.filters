@@ -251,6 +251,8 @@
     </ClInclude>
     <ClInclude Include="ScoutTower.h">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings</Filter>
+    <ClInclude Include="j1Console.h">
+      <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -418,6 +420,8 @@
     </ClCompile>
     <ClCompile Include="ScoutTower.cpp">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings</Filter>
+    <ClCompile Include="j1Console.cpp">
+      <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

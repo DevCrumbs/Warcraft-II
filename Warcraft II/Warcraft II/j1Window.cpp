@@ -46,7 +46,7 @@ bool j1Window::Awake(pugi::xml_node& config)
 
 		width = config.child("resolution").attribute("width").as_int();
 		height = config.child("resolution").attribute("height").as_int();
-		scale = config.child("resolution").attribute("scale").as_int();
+		scale = config.child("resolution").attribute("scale").as_float();
 
 		if (fullscreen)
 		{
@@ -115,7 +115,18 @@ void j1Window::GetWindowSize(uint& width, uint& height) const
 	height = this->height;
 }
 
-uint j1Window::GetScale() const
+float j1Window::GetScale() const
 {
 	return scale;
+}
+
+void j1Window::SetFullscreen() {
+	if (fullscreen) {
+		fullscreen = false;
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_SHOWN);
+	}
+	else {
+		fullscreen = true;
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	}
 }

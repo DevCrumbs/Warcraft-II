@@ -27,6 +27,7 @@ void UILabel::Update(float dt)
 {
 	if (listener != nullptr && interactive)
 		HandleInput();
+	Draw();
 }
 
 UILabel::~UILabel()

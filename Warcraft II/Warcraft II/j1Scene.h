@@ -55,25 +55,33 @@ public:
 	// Debug keys
 	void DebugKeys();
 
-	void CheckCameraMovement();
+	void CheckCameraMovement(float dt);
+
+	void LoadInGameUI();
+	void LoadBuildingMenu();
+	void UnLoadBuildingMenu();
 
 public:
 	// Camera
 	float up = false, down = false, left = false, right = false;
 	uint width = 0;
 	uint height = 0;
-	uint scale = 0;
+	float scale = 0;
 
 	// Player
 	bool god = false;
 
 	bool pause = false;
 
-	UIInputText* inputText;
 
 private:
 
-	
+	//UI
+	UIButton * buildingButton, *chickenFarmButton;
+	UILabel * buildingLabel, *chickenFarmLabel;
+	UIImage * buildingMenu;
+
+	bool buildingMenuOn = false;
 
 	string orthogonalMap, isometricMap, warcraftMap;
 	string orthogonalTexName, isometricTexName, warcraftTexName;
