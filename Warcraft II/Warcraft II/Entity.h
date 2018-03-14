@@ -5,51 +5,38 @@
 #include "Animation.h"
 
 struct SDL_Texture;
-struct Collider;
+
+enum EntityType {
+
+	EntityType_NoType,
+	EntityType_StaticEntity,
+	EntityType_DynamicEntity,
+	EntityType_MaxTypes
+};
+
+struct EntityInfo; // empty container
 
 class Entity
 {
 public:
 
-	Entity(float x, float y);
+	Entity(fPoint pos, iPoint size, int life);
 	virtual ~Entity();
 
-	const Collider* GetCollider() const;
-
-	virtual void Move(float dt) {};
-	virtual void LoadAnimationsSpeed() {};
-	virtual void UpdateAnimations(float dt) {};
-	virtual void Draw(SDL_Texture* sprites);
-	virtual void OnCollision(Collider* collider, Collider* c2);
-
-protected:
-
-	Collider* collider = nullptr;
-	Animation* animation = nullptr;
-	float deltaTime = 0.0f;
+	void SetPosition(fPoint pos);
+	fPoint GetPosition() const;
 
 public:
 
-	int type = 0;
-	int lives = 0;
+	EntityType entityType = EntityType_NoType;
 	bool remove = false;
+	bool isSelected = false;
 
-	// Entity movement
-	fPoint position = { 0,0 };
-	iPoint iPos = { 0,0 };
-	fPoint startPos = { 0,0 };
+protected:
 
-	fPoint speed = { 0,0 };
-
-	fPoint lastPos = { 0,0 };
-	bool up = false, down = false, left = false, right = false;
-	//_enemy_movement
-
-	// Particles
-	iPoint colliderPos = { 0,0 };
-	iPoint colliderSize = { 0,0 };
-
-
+	fPoint pos = { 0.0f,0.0f };
+	iPoint size = { 0,0 };
+	int life = 0;
 };
 
 #endif //__Entity_H__
