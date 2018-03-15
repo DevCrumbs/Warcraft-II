@@ -25,6 +25,9 @@ public:
 private:
 
 	StablesInfo stablesInfo;
+
+	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+
 };
 
 #endif //__Stables_H__

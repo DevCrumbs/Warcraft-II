@@ -25,6 +25,8 @@ public:
 private:
 
 	GryphonAviaryInfo gryphonAviaryInfo;
+
+	EntitiesEvent EntityEvent = EntitiesEvent_Created;
 };
 
 #endif //__GryphonAviary_H__

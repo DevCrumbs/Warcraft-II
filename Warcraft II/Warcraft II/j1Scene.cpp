@@ -177,14 +177,14 @@ bool j1Scene::Update(float dt)
 
 	App->render->Blit(debugTex, p.x, p.y);
 
-	const vector<iPoint>* path = App->pathfinding->GetLastPath();
+	//const vector<iPoint>* path = App->pathfinding->GetLastPath();
 
-	for (uint i = 0; i < path->size(); ++i)
+	/*for (uint i = 0; i < path->size(); ++i)
 	{
 		iPoint pos = App->map->MapToWorld(path->at(i).x, path->at(i).y);
 		App->render->Blit(debugTex, pos.x, pos.y);
 	}
-
+	*/
 
 	DebugKeys();
 	CheckCameraMovement(dt);
@@ -536,8 +536,41 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else
 				UnLoadBuildingMenu();
-
 		}
+		if (UIelem == chickenFarmButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaChickenFarm = !App->entities->alphaChickenFarm;
+		}
+
+		if (UIelem == elvenLumberButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaElvenLumber = !App->entities->alphaElvenLumber;
+		}
+		//if (UIelem == blackSmithButton){} 
+		
+		if (UIelem == stablesButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaStables = !App->entities->alphaStables;
+		}
+		
+		//if(UIelem == churchButton){}
+		
+		if (UIelem == gryphonAviaryButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaGryphonAviary = !App->entities->alphaGryphonAviary;
+		}
+
+		if (UIelem == mageTowerButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaMageTower = !App->entities->alphaMageTower;
+		}
+
+		if (UIelem == scoutTowerButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaScoutTower = !App->entities->alphaScoutTower;
+		}
+		
+
 
 		break;
 

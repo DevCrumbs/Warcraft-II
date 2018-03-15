@@ -9,7 +9,8 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int life, const GryphonAvi
 
 void GryphonAviary::Move(float dt)
 {
-
+	if (listener != nullptr)
+		HandleInput(EntityEvent);
 }
 
 // Animations

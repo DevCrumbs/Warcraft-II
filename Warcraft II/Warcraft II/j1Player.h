@@ -79,7 +79,17 @@ private:
 	UIImage* entityIcon;
 
 
-	StaticEntity* ChickenFarm;
+	StaticEntity* chickenFarm;
+	StaticEntity* elvenLumberMill;
+	StaticEntity* blacksmith;
+	StaticEntity* stables;
+	StaticEntity* church;
+	StaticEntity* mageTower;
+	StaticEntity* cannonTower;
+	StaticEntity* guardTower;
+	StaticEntity* scoutTower;
+	StaticEntity* gryphonAviary;
+
 
 	list<UIElement*> UIMenuInfoList;
 

@@ -10,7 +10,8 @@ TownHall::TownHall(fPoint pos, iPoint size, int life, const TownHallInfo& townHa
 
 void TownHall::Move(float dt)
 {
-
+	if (listener != nullptr)
+		HandleInput(EntityEvent);
 }
 
 // Animations

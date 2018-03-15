@@ -255,6 +255,9 @@
     <ClInclude Include="j1Console.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ElvenLumberMill.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -424,6 +427,9 @@
     </ClCompile>
     <ClCompile Include="j1Console.cpp">
       <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ElvenLumberMill.cpp">
+      <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

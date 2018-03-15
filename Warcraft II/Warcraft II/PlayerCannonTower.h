@@ -25,6 +25,9 @@ public:
 private:
 
 	PlayerCannonTowerInfo playerCannonTowerInfo;
+
+	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+
 };
 
 #endif //__PlayerCannonTower_H__

@@ -25,6 +25,7 @@ public:
 private:
 
 	MageTowerInfo mageTowerInfo;
+	EntitiesEvent EntityEvent = EntitiesEvent_Created;
 };
 
 #endif //__MageTower_H__

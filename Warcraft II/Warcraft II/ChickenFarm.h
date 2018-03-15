@@ -7,6 +7,7 @@
 #include "StaticEntity.h"
 
 
+
 struct ChickenFarmInfo
 {
 	SDL_Rect completeTexArea = { 0,0,0,0 };
@@ -25,9 +26,6 @@ public:
 	// Animations
 	void LoadAnimationsSpeed();
 	void UpdateAnimations(float dt);
-
-	void HandleInput();
-	bool MouseHover() const;
 
 	bool nextEvent = false;
 

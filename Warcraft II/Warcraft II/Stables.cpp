@@ -9,7 +9,8 @@ Stables::Stables(fPoint pos, iPoint size, int life, const StablesInfo& stablesIn
 
 void Stables::Move(float dt)
 {
-
+	if (listener != nullptr)
+		HandleInput(EntityEvent);
 }
 
 // Animations

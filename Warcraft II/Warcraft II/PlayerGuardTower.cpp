@@ -7,7 +7,8 @@ PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int life, const Play
 
 void PlayerGuardTower::Move(float dt)
 {
-
+	if (listener != nullptr)
+		HandleInput(EntityEvent);
 }
 
 // Animations

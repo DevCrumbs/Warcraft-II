@@ -25,6 +25,9 @@ public:
 private:
 
 	ScoutTowerInfo scoutTowerInfo;
+
+	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+
 };
 
 #endif //__ScoutTower_H__

@@ -25,6 +25,9 @@ public:
 private:
 
 	PlayerGuardTowerInfo playerGuardTowerInfo;
+
+	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+
 };
 
 #endif //__PlayerGuardTower_H__

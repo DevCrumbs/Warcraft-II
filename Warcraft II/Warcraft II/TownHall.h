@@ -37,6 +37,9 @@ public:
 private:
 
 	TownHallInfo townHallInfo;
+
+	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+
 };
 
 #endif //__TownHall_H__

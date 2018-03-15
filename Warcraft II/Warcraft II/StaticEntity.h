@@ -4,6 +4,8 @@
 #include "p2Point.h"
 #include "Animation.h"
 #include "Entity.h"
+#include "j1Input.h"
+#include "j1Window.h"
 
 struct SDL_Texture;
 
@@ -16,6 +18,7 @@ enum StaticEntityType
 	StaticEntityType_TownHall,
 	StaticEntityType_ChickenFarm,
 	StaticEntityType_Barracks,
+	StaticEntityType_ElvenLumberMill,
 	StaticEntityType_MageTower,
 	StaticEntityType_GryphonAviary,
 	StaticEntityType_Stables,
@@ -57,6 +60,9 @@ public:
 	virtual void Move(float dt) {}
 
 	//virtual void DebugDrawSelected();
+	
+	void HandleInput(EntitiesEvent &EntityEvent);
+	bool MouseHover() const;
 
 public:
 

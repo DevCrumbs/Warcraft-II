@@ -32,6 +32,7 @@
 #include "MageTower.h"
 #include "Stables.h"
 #include "TownHall.h"
+#include "ElvenLumberMill.h"
 
 #include <algorithm>
 using namespace std;
@@ -75,9 +76,9 @@ public:
 	//Alpha booleans
 	bool alphaChickenFarm = false;
 	bool alphaElvenLumber = false;
-	bool alphaBlacksmith = false;
+	//bool alphaBlacksmith = false;
 	bool alphaStables = false;
-	bool alphaChurch = false;
+	//bool alphaChurch = false;
 	bool alphaGryphonAviary = false;
 	bool alphaMageTower = false;
 	bool alphaScoutTower = false;
@@ -143,6 +144,7 @@ private:
 	TownHallInfo townHallInfo;
 	BarracksInfo barracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
+	ElvenLumberMillInfo elvenLumberMillInfo;
 	StablesInfo stablesInfo;
 	GryphonAviaryInfo gryphonAviaryInfo;
 	MageTowerInfo mageTowerInfo;

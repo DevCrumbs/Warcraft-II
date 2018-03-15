@@ -7,7 +7,8 @@ PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int life, const Pl
 
 void PlayerCannonTower::Move(float dt)
 {
-
+	if (listener != nullptr)
+		HandleInput(EntityEvent);
 }
 
 // Animations

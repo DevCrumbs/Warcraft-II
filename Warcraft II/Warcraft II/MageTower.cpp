@@ -9,7 +9,8 @@ MageTower::MageTower(fPoint pos, iPoint size, int life, const MageTowerInfo& mag
 
 void MageTower::Move(float dt)
 {
-
+	if (listener != nullptr)
+		HandleInput(EntityEvent);
 }
 
 // Animations

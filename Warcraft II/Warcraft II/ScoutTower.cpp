@@ -7,7 +7,8 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int life, const ScoutTowerInfo& 
 
 void ScoutTower::Move(float dt)
 {
-
+	if (listener != nullptr)
+		HandleInput(EntityEvent);
 }
 
 // Animations
