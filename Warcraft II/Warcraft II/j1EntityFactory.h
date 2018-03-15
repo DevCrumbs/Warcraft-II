@@ -63,7 +63,7 @@ public:
 
 	void Draw();
 	void DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos);
-	//const EntityInfo GetBuildingInfo();
+	const EntityInfo& GetBuildingInfo(StaticEntityType staticEntityType);
 	SDL_Texture* GetHumanBuildingTexture();
 
 	StaticEntity* AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, iPoint size, uint life, const EntityInfo& entityInfo);
@@ -81,9 +81,9 @@ public:
 	bool alphaGryphonAviary = false;
 	bool alphaMageTower = false;
 	bool alphaScoutTower = false;
-
-	//CHANGE THIS
-	ChickenFarmInfo chickenFarmInfo;
+	// Guard Tower
+	//Cannon Tower
+	
 private:
 
 	list<Entity*> toSpawnEntities;
@@ -142,7 +142,7 @@ private:
 	/// Static entities
 	TownHallInfo townHallInfo;
 	BarracksInfo barracksInfo;
-	//
+	ChickenFarmInfo chickenFarmInfo;
 	StablesInfo stablesInfo;
 	GryphonAviaryInfo gryphonAviaryInfo;
 	MageTowerInfo mageTowerInfo;
