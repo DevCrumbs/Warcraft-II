@@ -77,8 +77,8 @@ public:
 private:
 
 	//UI
-	UIButton * buildingButton, *chickenFarmButton;
-	UILabel * buildingLabel, *chickenFarmLabel;
+	UIButton * buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
+	UILabel * buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
 	UIImage * buildingMenu;
 
 	bool buildingMenuOn = false;
