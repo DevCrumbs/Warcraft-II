@@ -63,6 +63,7 @@ public:
 
 	void Draw();
 	void DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos);
+	const EntityInfo& GetBuildingInfo(StaticEntityType staticEntityType);
 	SDL_Texture* GetHumanBuildingTexture();
 
 	StaticEntity* AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, iPoint size, uint life, const EntityInfo& entityInfo);
@@ -71,6 +72,18 @@ public:
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);
 
+	//Alpha booleans
+	bool alphaChickenFarm = false;
+	bool alphaElvenLumber = false;
+	bool alphaBlacksmith = false;
+	bool alphaStables = false;
+	bool alphaChurch = false;
+	bool alphaGryphonAviary = false;
+	bool alphaMageTower = false;
+	bool alphaScoutTower = false;
+	// Guard Tower
+	//Cannon Tower
+	
 private:
 
 	list<Entity*> toSpawnEntities;

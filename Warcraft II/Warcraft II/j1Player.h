@@ -23,6 +23,8 @@ public:
 
 	bool Update(float dt);
 
+	void CheckIfPlaceBuilding();
+
 	// Called before quitting
 	bool CleanUp();
 

@@ -217,6 +217,45 @@ void j1EntityFactory::Draw()
 
 		statEnt++;
 	}
+
+	//Mouse position
+	int x, y;
+	App->input->GetMousePosition(x, y);
+	iPoint mousePos = App->render->ScreenToWorld(x, y);
+	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
+	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+
+	//Alpha static entities
+	if (alphaChickenFarm) {
+		SDL_SetTextureAlphaMod(GetHumanBuildingTexture(), 100);
+		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &chickenFarmInfo.completeTexArea);
+	}
+	//if (alphaElvenLumber) {
+	
+	//}
+	//if (alphaBlacksmith) {
+
+	//}
+	if (alphaStables) {
+		SDL_SetTextureAlphaMod(GetHumanBuildingTexture(), 100);
+		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &stablesInfo.completeTexArea);
+	}
+	//if (alphaChurch) {
+
+	//}
+	if (alphaGryphonAviary) {
+		SDL_SetTextureAlphaMod(GetHumanBuildingTexture(), 100);
+		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &gryphonAviaryInfo.completeTexArea);
+	}
+	if (alphaMageTower) {
+		SDL_SetTextureAlphaMod(GetHumanBuildingTexture(), 100);
+		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &mageTowerInfo.completeTexArea);
+	}
+	if (alphaScoutTower) {
+		SDL_SetTextureAlphaMod(GetHumanBuildingTexture(), 100);
+		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &scoutTowerInfo.completeTexArea);
+	}
+
 }
 
 void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos)
@@ -257,7 +296,42 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 }
 
 
+const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntityType) {
+	switch (staticEntityType) {
+	case StaticEntityType_ChickenFarm:
+		return (const EntityInfo&)chickenFarmInfo;
+		break;
+	case StaticEntityType_Barracks:
+		return (const EntityInfo&)barracksInfo;
+		break;
+	case StaticEntityType_MageTower:
+		return(const EntityInfo&)mageTowerInfo;
+		break;
+	case StaticEntityType_GryphonAviary:
+		return(const EntityInfo&)gryphonAviaryInfo;
+		break;
+	case StaticEntityType_Stables:
+		return(const EntityInfo&)stablesInfo;
+		break;
+	case StaticEntityType_ScoutTower:
+		return(const EntityInfo&)scoutTowerInfo;
+		break;
+	case StaticEntityType_PlayerGuardTower:
+		return(const EntityInfo&)playerGuardTowerInfo;
+		break;
+	case StaticEntityType_PlayerCannonTower:
+		return(const EntityInfo&)playerCannonTowerInfo;
+		break;
+	default:
+		return (const EntityInfo&)chickenFarmInfo;
+		break;
+	}
+
+	//return ret;
+}
+
 SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
+
 	return humanBuildingsTex;
 }
 
