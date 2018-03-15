@@ -532,15 +532,18 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			App->entities->alphaChickenFarm = !App->entities->alphaChickenFarm;
 		}
 
-		if (UIelem == elvenLumberButton) {} //TO DO
-		if (UIelem == blackSmithButton){} //TO DO
+		if (UIelem == elvenLumberButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaElvenLumber = !App->entities->alphaElvenLumber;
+		}
+		//if (UIelem == blackSmithButton){} 
 		
 		if (UIelem == stablesButton) {
 			UnLoadBuildingMenu();
 			App->entities->alphaStables = !App->entities->alphaStables;
 		}
 		
-		if(UIelem == churchButton){}
+		//if(UIelem == churchButton){}
 		
 		if (UIelem == gryphonAviaryButton) {
 			UnLoadBuildingMenu();
