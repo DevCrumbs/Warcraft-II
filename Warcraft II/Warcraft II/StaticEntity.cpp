@@ -6,7 +6,7 @@
 #include "j1Render.h"
 #include "StaticEntity.h"
 
-StaticEntity::StaticEntity(fPoint pos, iPoint size, int life) :Entity(pos, size, life) {}
+StaticEntity::StaticEntity(fPoint pos, iPoint size, int life, j1Module* listener) :Entity(pos, size, life, listener) {}
 
 StaticEntity::~StaticEntity() {}
 

@@ -25,7 +25,7 @@ class TownHall :public StaticEntity
 {
 public:
 
-	TownHall(fPoint pos, iPoint size, int life, const TownHallInfo& townHallInfo);
+	TownHall(fPoint pos, iPoint size, int life, const TownHallInfo& townHallInfo, j1Module* listener);
 	~TownHall() {};
 
 	void Move(float dt);

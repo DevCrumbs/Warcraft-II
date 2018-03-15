@@ -7,6 +7,13 @@
 #include "j1Render.h"
 #include "j1App.h"
 #include "j1EntityFactory.h"
+#include "j1Gui.h"
+#include "j1Scene.h"
+
+
+#include "UILabel.h"
+#include "UIButton.h"
+#include "UIImage.h"
 
 j1Player::j1Player() : j1Module()
 {
@@ -59,13 +66,13 @@ void j1Player::CheckIfPlaceBuilding() {
 		//Chicken Farm
 		if (App->entities->alphaChickenFarm) {
 			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-			App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm));
+			ChickenFarm = App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm), this);
 			App->entities->alphaChickenFarm = !App->entities->alphaChickenFarm;
 		}
 		//Stables
 		if (App->entities->alphaStables) {
 			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-			App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_Stables));
+			App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_Stables), this);
 			App->entities->alphaStables = !App->entities->alphaStables;
 		}
 		//Chuch
@@ -131,6 +138,64 @@ bool j1Player::Load(pugi::xml_node& save)
 	fx = save.child("gate").attribute("fx").as_bool();
 	}
 	*/
+	
 
 	return ret;
+
+}
+
+
+void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent) {
+
+	switch (entitiesEvent)
+	{
+	case EntitiesEvent_None:
+		break;
+	case EntitiesEvent_RightClick:
+		break;
+	case EntitiesEvent_LeftClick:
+		break;
+	case EntitiesEvent_Hover:
+		break;
+	case EntitiesEvent_Leave:
+		break;
+	case EntitiesEvent_Created:
+		DeleteEntitiesMenu();
+		if (staticEntity == ChickenFarm) {
+			MakeEntitiesMenu("40/40", "Chicken farm", { 241,34,50,41 });
+		}
+		break;
+	default:
+		break;
+	}
+
+}
+
+void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim) {
+	
+
+	UILabel_Info HPinfo;
+	HPinfo.text = HP_text;
+	HPinfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+	HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, HPinfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+	UILabel_Info nameInfo;
+	nameInfo.text = entityName_text;
+	HPinfo.verticalOrientation = VERTICAL_POS_TOP;
+	entityName = App->gui->CreateUILabel({ 5,5 }, nameInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+	UIImage_Info iconInfo;
+	iconInfo.texArea = iconDim;
+	iconInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	iconInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h/2 }, iconInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+}
+
+void j1Player::DeleteEntitiesMenu() {
+
+	App->gui->DestroyElement(HP);
+	App->gui->DestroyElement(entityName);
+	App->gui->DestroyElement(entityIcon);
+
 }

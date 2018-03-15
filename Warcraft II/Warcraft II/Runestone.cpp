@@ -1,6 +1,6 @@
 #include "Runestone.h"
 
-Runestone::Runestone(fPoint pos, iPoint size, int life, const RunestoneInfo& runestoneInfo) :StaticEntity(pos, size, life), runestoneInfo(runestoneInfo) 
+Runestone::Runestone(fPoint pos, iPoint size, int life, const RunestoneInfo& runestoneInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), runestoneInfo(runestoneInfo)
 {
 	texArea = &runestoneInfo.completeTexArea;
 }

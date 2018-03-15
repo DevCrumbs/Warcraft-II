@@ -12,7 +12,7 @@ class Footman :public DynamicEntity
 {
 public:
 
-	Footman(fPoint pos, iPoint size, int life, float speed, const FootmanInfo& footmanInfo);
+	Footman(fPoint pos, iPoint size, int life, float speed, const FootmanInfo& footmanInfo, j1Module* listener);
 	~Footman() {};
 
 	void Move(float dt);

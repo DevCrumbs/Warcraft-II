@@ -12,7 +12,7 @@ class GryphonRider :public DynamicEntity
 {
 public:
 
-	GryphonRider(fPoint pos, iPoint size, int life, float speed, const GryphonRiderInfo& gryphonRiderInfo);
+	GryphonRider(fPoint pos, iPoint size, int life, float speed, const GryphonRiderInfo& gryphonRiderInfo, j1Module* listener);
 	~GryphonRider() {};
 
 	void Move(float dt);

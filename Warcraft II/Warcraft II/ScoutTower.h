@@ -13,7 +13,7 @@ class ScoutTower :public StaticEntity
 {
 public:
 
-	ScoutTower(fPoint pos, iPoint size, int life, const ScoutTowerInfo& scoutTowerInfo);
+	ScoutTower(fPoint pos, iPoint size, int life, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener);
 	~ScoutTower() {};
 
 	void Move(float dt);

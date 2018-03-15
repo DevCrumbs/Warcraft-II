@@ -2,7 +2,7 @@
 
 #include "GryphonAviary.h"
 
-GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int life, const GryphonAviaryInfo& gryphonAviaryInfo) :StaticEntity(pos, size, life), gryphonAviaryInfo(gryphonAviaryInfo) 
+GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int life, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), gryphonAviaryInfo(gryphonAviaryInfo)
 {
 	texArea = &gryphonAviaryInfo.completeTexArea;
 }

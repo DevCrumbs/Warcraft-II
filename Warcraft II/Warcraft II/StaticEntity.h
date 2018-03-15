@@ -51,9 +51,10 @@ class StaticEntity :public Entity
 {
 public:
 
-	StaticEntity(fPoint pos, iPoint size, int life);
+	StaticEntity(fPoint pos, iPoint size, int life, j1Module* listener);
 	virtual ~StaticEntity();
 	virtual void Draw(SDL_Texture* sprites);
+	virtual void Move(float dt) {}
 
 	//virtual void DebugDrawSelected();
 
@@ -65,6 +66,7 @@ public:
 protected:
 
 	const SDL_Rect* texArea = nullptr;
+	//j1Module* listener = nullptr;
 };
 
 #endif //__StaticEntity_H__

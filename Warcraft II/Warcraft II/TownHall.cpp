@@ -3,7 +3,7 @@
 
 #include "TownHall.h"
 
-TownHall::TownHall(fPoint pos, iPoint size, int life, const TownHallInfo& townHallInfo) :StaticEntity(pos, size, life), townHallInfo(townHallInfo) 
+TownHall::TownHall(fPoint pos, iPoint size, int life, const TownHallInfo& townHallInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), townHallInfo(townHallInfo)
 {
 	texArea = &townHallInfo.townHallCompleteTexArea;
 }

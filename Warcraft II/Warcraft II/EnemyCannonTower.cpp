@@ -1,6 +1,6 @@
 #include "EnemyCannonTower.h"
 
-EnemyCannonTower::EnemyCannonTower(fPoint pos, iPoint size, int life, const EnemyCannonTowerInfo& enemyCannonTowerInfo) :StaticEntity(pos, size, life), enemyCannonTowerInfo(enemyCannonTowerInfo) 
+EnemyCannonTower::EnemyCannonTower(fPoint pos, iPoint size, int life, const EnemyCannonTowerInfo& enemyCannonTowerInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), enemyCannonTowerInfo(enemyCannonTowerInfo)
 {
 	texArea = &enemyCannonTowerInfo.completeTexArea;
 }

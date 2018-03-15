@@ -1,6 +1,6 @@
 #include "ElvenArcher.h"
 
-ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int life, float speed, const ElvenArcherInfo& elvenArcherInfo) :DynamicEntity(pos, size, life, speed), elvenArcherInfo(elvenArcherInfo) 
+ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int life, float speed, const ElvenArcherInfo& elvenArcherInfo, j1Module* listener) :DynamicEntity(pos, size, life, speed, listener), elvenArcherInfo(elvenArcherInfo) 
 {
 
 }

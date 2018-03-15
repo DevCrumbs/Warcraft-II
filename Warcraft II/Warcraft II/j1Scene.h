@@ -76,6 +76,7 @@ public:
 
 	bool pause = false;
 
+	UIImage* entitiesStats;
 
 private:
 
@@ -83,7 +84,6 @@ private:
 	UIButton * buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
 	UILabel * buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
 	UIImage * buildingMenu;
-	UIImage* entitiesStats;
 	UICursor* mouseText;
 
 	bool buildingMenuOn = false;

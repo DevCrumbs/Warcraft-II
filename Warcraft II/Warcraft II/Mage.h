@@ -12,7 +12,7 @@ class Mage :public DynamicEntity
 {
 public:
 
-	Mage(fPoint pos, iPoint size, int life, float speed, const MageInfo& mageInfo);
+	Mage(fPoint pos, iPoint size, int life, float speed, const MageInfo& mageInfo, j1Module* listener);
 	~Mage() {};
 
 	void Move(float dt);
