@@ -350,12 +350,12 @@ void j1Scene::LoadInGameUI()
 
 
 	UIImage_Info entitiesInfo;
-	entitiesInfo.texArea = { 0, 430, 364, 82 };
+	entitiesInfo.texArea = { 0, 565, 371, 82 };
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
 
 	UICursor_Info mouseInfo;
-	mouseInfo.default = { 1, 274, 28, 33 };
-	mouseInfo.onClick = { 1, 274, 28, 33 };
+	mouseInfo.default = { 243, 525, 28, 33 };
+	mouseInfo.onClick = { 243, 525, 28, 33 };
 	mouseText = App->gui->CreateUICursor(mouseInfo, this);
 
 }
