@@ -84,12 +84,12 @@ public:
 	bool alphaScoutTower = false;
 	// Guard Tower
 	//Cannon Tower
-	
-private:
 
 	list<Entity*> toSpawnEntities;
 	list<DynamicEntity*> activeDynamicEntities;
 	list<StaticEntity*> activeStaticEntities;
+
+private:
 
 	// Textures
 	/// Dynamic entities
