@@ -50,15 +50,26 @@ void j1Player::CheckIfPlaceBuilding() {
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+	float auxX = (int)mouseTilePos.x;
+	float auxY = (int)mouseTilePos.y;
+	fPoint buildingPos = { auxX, auxY };
 
 	//CREATING A STATIC ENTITY (DEBUG)
-	if (App->entities->alphaChickenFarm && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
-		float auxX = (int)mouseTilePos.x;
-		float auxY = (int)mouseTilePos.y;
-		fPoint buildingPos = { auxX, auxY };
-		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-		App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm));
-		App->entities->alphaChickenFarm = !App->entities->alphaChickenFarm;
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+		//Chicken Farm
+		if (App->entities->alphaChickenFarm) {
+			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+			App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm));
+			App->entities->alphaChickenFarm = !App->entities->alphaChickenFarm;
+		}
+		//Stables
+		if (App->entities->alphaStables) {
+			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+			App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_Stables));
+			App->entities->alphaStables = !App->entities->alphaStables;
+		}
+		//Chuch
+		//CONTINUE HERE VALDIVIA
 	}
 
 	if (!App->entities->alphaChickenFarm)
