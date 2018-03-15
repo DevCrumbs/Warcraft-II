@@ -47,7 +47,7 @@ bool j1Gui::Start()
 	atlas = App->tex->Load(atlasFileName.data());
 
 	// Load fonts
-	mapFonts[FONT_NAME_WARCRAFT] = App->font->Load("data/fonts/warcraft.ttf", 12);
+	mapFonts[FONT_NAME_WARCRAFT] = App->font->Load("data/fonts/warcraft.ttf", 16);
 
 
 	return ret;

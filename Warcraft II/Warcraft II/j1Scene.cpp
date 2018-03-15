@@ -56,6 +56,8 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	warcraftActive = maps.child("warcraft").attribute("active").as_bool();
 	warcraftTexName = maps.child("warcraft").attribute("tex").as_string();
 
+	LoadKeys(config.child("buttons"));
+
 	// Load songs
 
 	// Load FX
@@ -187,7 +189,7 @@ bool j1Scene::Update(float dt)
 	DebugKeys();
 	CheckCameraMovement(dt);
 
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
+	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
 		App->map->UnLoad();
 		App->map->CreateNewMap();
@@ -196,8 +198,8 @@ bool j1Scene::Update(float dt)
 //	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
 	//	App->win->scale += 0.05f;
 
-	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
-		App->win->scale -= 0.05f;
+//	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
+//		App->win->scale -= 0.05f;
 
 
 
@@ -209,7 +211,7 @@ bool j1Scene::PostUpdate()
 {
 	bool ret = true;
 
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN)
 		ret = false;
 
 	return ret;
@@ -266,21 +268,21 @@ void j1Scene::DebugKeys()
 	}
 
 	// F5: save the current state
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN) {
+	if (App->input->GetKey(buttonSaveGame) == KEY_DOWN) {
 		App->SaveGame();
 	}
 
 	// F6: load the previous state
-	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN) {
+	if (App->input->GetKey(buttonLoadGame) == KEY_DOWN) {
 		App->LoadGame();
 	}
 
 	// F7: fullscreen
-	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
+	if (App->input->GetKey(buttonFullScreen) == KEY_DOWN)
 		App->win->SetFullscreen();
 
 	// F10: God mode
-	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+	if (App->input->GetKey(buttonGodMode) == KEY_DOWN)
 		god = !god;
 
 	// 1, 2, 3: camera blit
@@ -304,20 +306,20 @@ void j1Scene::CheckCameraMovement(float dt) {
 
 	//Move with arrows
 	//UP
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && App->render->camera.y <= 0)
+	if (App->input->GetKey(buttonMoveUp) == KEY_REPEAT && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	//DOWN
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && App->render->camera.y >= downMargin)
+	if (App->input->GetKey(buttonMoveDown) == KEY_REPEAT && App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	//LEFT
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && App->render->camera.x <= 0)
+	if (App->input->GetKey(buttonMoveLeft) == KEY_REPEAT && App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	//RIGHT
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && App->render->camera.x >= rightMargin)
+	if (App->input->GetKey(buttonMoveRight) == KEY_REPEAT && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
 
 	//Move with mouse
-	App->input->GetMousePosition(mouse.x, mouse.y);
+	//App->input->GetMousePosition(mouse.x, mouse.y);
 
 	////UP
 	//if (mouse.y <= camMovMargin/scale && App->render->camera.y <= 0)
@@ -337,16 +339,16 @@ void j1Scene::CheckCameraMovement(float dt) {
 void j1Scene::LoadInGameUI()
 {
 	UIButton_Info buildingButtonInfo;
-	buildingButtonInfo.normalTexArea = {0, 0, 79, 20};
-	buildingButtonInfo.hoverTexArea = { 79, 0, 79, 20 };
-	buildingButtonInfo.pressedTexArea = { 158, 0, 79, 20 };
-	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buildingButtonInfo.normalTexArea.w, 5 }, buildingButtonInfo, this, nullptr);
+	buildingButtonInfo.normalTexArea = {0, 0, 129, 33};
+	buildingButtonInfo.hoverTexArea = { 129, 0, 129, 33 };
+	buildingButtonInfo.pressedTexArea = { 257, 0, 129, 33 };
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buildingButtonInfo.normalTexArea.w, 0 }, buildingButtonInfo, this, nullptr);
 
 	UILabel_Info buildingLabelInfo;
-	buildingLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	buildingLabelInfo.fontName = FONT_NAME_WARCRAFT;
 	buildingLabelInfo.normalColor = White_;
 	buildingLabelInfo.text = "Buildings";
-	buildingLabel = App->gui->CreateUILabel({ 5,5 }, buildingLabelInfo, this, buildingButton);
+	buildingLabel = App->gui->CreateUILabel({ 27,12 }, buildingLabelInfo, this, buildingButton);
 
 
 	UIImage_Info entitiesInfo;
@@ -363,21 +365,129 @@ void j1Scene::LoadInGameUI()
 void j1Scene::LoadBuildingMenu()
 {
 	UIImage_Info buildingMenuInfo;
-	buildingMenuInfo.texArea = { 0,20,172,251 };
-	buildingMenu = App->gui->CreateUIImage({ -92, 1 }, buildingMenuInfo, this, buildingButton);
+	buildingMenuInfo.texArea = { 0,33,240,529 };
+	buildingMenu = App->gui->CreateUIImage({ -112, 0 }, buildingMenuInfo, this, buildingButton);
 	buildingMenuOn = true;
 
 	UIButton_Info chickenFarmInfo;
-	chickenFarmInfo.normalTexArea = { 202,21,46,38 };
-	chickenFarmInfo.hoverTexArea = { 249,21,46,38 };
-	chickenFarmInfo.pressedTexArea = { 296,21,46,38 };
-	chickenFarmButton = App->gui->CreateUIButton({ 10, 30 }, chickenFarmInfo, this, buildingMenu);
+	chickenFarmInfo.normalTexArea = { 241,34,50,41 };
+	chickenFarmInfo.hoverTexArea = { 292,34,50,41 };
+	chickenFarmInfo.pressedTexArea = { 343,34,50,41 };
+	chickenFarmButton = App->gui->CreateUIButton({ 15, 55 }, chickenFarmInfo, this, buildingMenu);
 
 	UILabel_Info chickenFarmLabelInfo;
-	chickenFarmLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	chickenFarmLabelInfo.fontName = FONT_NAME_WARCRAFT;
 	chickenFarmLabelInfo.normalColor = White_;
 	chickenFarmLabelInfo.text = "Chicken Farm";
-	chickenFarmLabel = App->gui->CreateUILabel({ 64, 45 }, chickenFarmLabelInfo, this, buildingMenu);
+	chickenFarmLabel = App->gui->CreateUILabel({ 75, 65 }, chickenFarmLabelInfo, this, buildingMenu);
+
+	UIButton_Info elvenLumberInfo;
+	elvenLumberInfo.normalTexArea = { 241,76,50,41 };
+	elvenLumberInfo.hoverTexArea = { 292,76,50,41 };
+	elvenLumberInfo.pressedTexArea = { 343,76,50,41 };
+	elvenLumberButton = App->gui->CreateUIButton({ 15, 100 }, elvenLumberInfo, this, buildingMenu);
+
+	UILabel_Info elvenLumberLabelInfo;
+	elvenLumberLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	elvenLumberLabelInfo.normalColor = White_;
+	elvenLumberLabelInfo.text = "Elven Lumber Mill";
+	elvenLumberLabel = App->gui->CreateUILabel({ 75, 110}, elvenLumberLabelInfo, this, buildingMenu);
+
+	UIButton_Info blackSmithInfo;
+	blackSmithInfo.normalTexArea = { 241,118,50,41 };
+	blackSmithInfo.hoverTexArea = { 292,118,50,41 };
+	blackSmithInfo.pressedTexArea = { 343,118,50,41 };
+	blackSmithButton = App->gui->CreateUIButton({ 15, 145 }, blackSmithInfo, this, buildingMenu);
+
+	UILabel_Info blackSmithLabelInfo;
+	blackSmithLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	blackSmithLabelInfo.normalColor = White_;
+	blackSmithLabelInfo.text = "Blacksmith";
+	blackSmithLabel = App->gui->CreateUILabel({ 75, 155 }, blackSmithLabelInfo, this, buildingMenu);
+
+	UIButton_Info stablesInfo;
+	stablesInfo.normalTexArea = { 241,160,50,41 };
+	stablesInfo.hoverTexArea = { 292,160,50,41 };
+	stablesInfo.pressedTexArea = { 343,160,50,41 };
+	stablesButton = App->gui->CreateUIButton({ 15, 190 }, stablesInfo, this, buildingMenu);
+
+	UILabel_Info stablesLabelInfo;
+	stablesLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	stablesLabelInfo.normalColor = White_;
+	stablesLabelInfo.text = "Stables";
+	stablesLabel = App->gui->CreateUILabel({ 75, 200 }, stablesLabelInfo, this, buildingMenu);
+
+	UIButton_Info churchInfo;
+	churchInfo.normalTexArea = { 241,202,50,41 };
+	churchInfo.hoverTexArea = { 292,202,50,41 };
+	churchInfo.pressedTexArea = { 343,202,50,41 };
+	churchButton = App->gui->CreateUIButton({ 15, 235 }, churchInfo, this, buildingMenu);
+
+	UILabel_Info churchLabelInfo;
+	churchLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	churchLabelInfo.normalColor = White_;
+	churchLabelInfo.text = "Church";
+	churchLabel = App->gui->CreateUILabel({ 75, 245 }, churchLabelInfo, this, buildingMenu);
+
+	UIButton_Info gryphonAviaryInfo;
+	gryphonAviaryInfo.normalTexArea = { 394,160,50,41 };
+	gryphonAviaryInfo.hoverTexArea = { 445,160,50,41 };
+	gryphonAviaryInfo.pressedTexArea = { 496,160,50,41 };
+	gryphonAviaryButton = App->gui->CreateUIButton({ 15, 280 }, gryphonAviaryInfo, this, buildingMenu);
+
+	UILabel_Info gryphonAviaryLabelInfo;
+	gryphonAviaryLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	gryphonAviaryLabelInfo.normalColor = White_;
+	gryphonAviaryLabelInfo.text = "Gryphon Aviary";
+	gryphonAviaryLabel = App->gui->CreateUILabel({ 75, 290 }, gryphonAviaryLabelInfo, this, buildingMenu);
+
+	UIButton_Info mageTowerInfo;
+	mageTowerInfo.normalTexArea = { 394,202,50,41 };
+	mageTowerInfo.hoverTexArea = { 445,202,50,41 };
+	mageTowerInfo.pressedTexArea = { 496,202,50,41 };
+	mageTowerButton = App->gui->CreateUIButton({ 15, 325 }, mageTowerInfo, this, buildingMenu);
+
+	UILabel_Info mageTowerLabelInfo;
+	mageTowerLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	mageTowerLabelInfo.normalColor = White_;
+	mageTowerLabelInfo.text = "Mage Tower";
+	mageTowerLabel = App->gui->CreateUILabel({ 75, 335 }, mageTowerLabelInfo, this, buildingMenu);
+
+	UIButton_Info scoutTowerInfo;
+	scoutTowerInfo.normalTexArea = { 394,34,50,41 };
+	scoutTowerInfo.hoverTexArea = { 445,34,50,41 };
+	scoutTowerInfo.pressedTexArea = { 496,34,50,41 };
+	scoutTowerButton = App->gui->CreateUIButton({ 15, 370 }, scoutTowerInfo, this, buildingMenu);
+
+	UILabel_Info scoutTowerLabelInfo;
+	scoutTowerLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	scoutTowerLabelInfo.normalColor = White_;
+	scoutTowerLabelInfo.text = "Scout Tower";
+	scoutTowerLabel = App->gui->CreateUILabel({ 75, 380 }, scoutTowerLabelInfo, this, buildingMenu);
+
+	UIButton_Info guardTowerInfo;
+	guardTowerInfo.normalTexArea = { 394,76,50,41 };
+	guardTowerInfo.hoverTexArea = { 445,76,50,41 };
+	guardTowerInfo.pressedTexArea = { 496,76,50,41 };
+	guardTowerButton = App->gui->CreateUIButton({ 15, 415 }, guardTowerInfo, this, buildingMenu);
+
+	UILabel_Info guardTowerLabelInfo;
+	guardTowerLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	guardTowerLabelInfo.normalColor = White_;
+	guardTowerLabelInfo.text = "Guard Tower";
+	guardTowerLabel = App->gui->CreateUILabel({ 75, 425 }, guardTowerLabelInfo, this, buildingMenu);
+
+	UIButton_Info cannonTowerInfo;
+	cannonTowerInfo.normalTexArea = { 394,118,50,41 };
+	cannonTowerInfo.hoverTexArea = { 445,118,50,41 };
+	cannonTowerInfo.pressedTexArea = { 496,118,50,41 };
+	cannonTowerButton = App->gui->CreateUIButton({ 15, 460 }, cannonTowerInfo, this, buildingMenu);
+
+	UILabel_Info cannonTowerLabelInfo;
+	cannonTowerLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	cannonTowerLabelInfo.normalColor = White_;
+	cannonTowerLabelInfo.text = "Cannon Tower";
+	cannonTowerLabel = App->gui->CreateUILabel({ 75, 470 }, cannonTowerLabelInfo, this, buildingMenu);
 }
 
 void j1Scene::UnLoadBuildingMenu()
@@ -385,7 +495,26 @@ void j1Scene::UnLoadBuildingMenu()
 	App->gui->DestroyElement(buildingMenu);
 	App->gui->DestroyElement(chickenFarmButton);
 	App->gui->DestroyElement(chickenFarmLabel);
+	App->gui->DestroyElement(elvenLumberButton);
+	App->gui->DestroyElement(elvenLumberLabel);
+	App->gui->DestroyElement(blackSmithButton);
+	App->gui->DestroyElement(blackSmithLabel);
+	App->gui->DestroyElement(stablesButton);
+	App->gui->DestroyElement(stablesLabel);
+	App->gui->DestroyElement(churchButton);
+	App->gui->DestroyElement(churchLabel);
+	App->gui->DestroyElement(gryphonAviaryButton);
+	App->gui->DestroyElement(gryphonAviaryLabel);
+	App->gui->DestroyElement(mageTowerButton);
+	App->gui->DestroyElement(mageTowerLabel);
+	App->gui->DestroyElement(scoutTowerButton);
+	App->gui->DestroyElement(scoutTowerLabel);
+	App->gui->DestroyElement(guardTowerButton);
+	App->gui->DestroyElement(guardTowerLabel);
+	App->gui->DestroyElement(cannonTowerButton);
+	App->gui->DestroyElement(cannonTowerLabel);
 	buildingMenuOn = false;
+
 }
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
@@ -402,12 +531,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (UIelem == buildingButton) {
-			if (!buildingMenuOn) 			
+			if (!buildingMenuOn)
 				LoadBuildingMenu();
-		
-			else 
+
+			else
 				UnLoadBuildingMenu();
-			
+
 		}
 
 		break;
@@ -451,6 +580,75 @@ bool j1Scene::Load(pugi::xml_node& save)
 	fx = save.child("gate").attribute("fx").as_bool();
 	}
 	*/
+
+	return ret;
+}
+
+bool j1Scene::LoadKeys(pugi::xml_node& buttons)
+{
+	bool ret = true;
+
+	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load SaveGame button");
+		ret = false;
+	}
+
+	if ((buttonLoadGame = (SDL_Scancode)buttons.attribute("buttonLoadGame").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load SaveGame button");
+		ret = false;
+	}
+
+	if ((buttonFullScreen = (SDL_Scancode)buttons.attribute("buttonFullScreen").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load FullScreen button");
+		ret = false;
+	}
+
+	if ((buttonGodMode = (SDL_Scancode)buttons.attribute("buttonGodMode").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load GodMode button");
+		ret = false;
+	}
+
+	if ((buttonMoveUp = (SDL_Scancode)buttons.attribute("buttonMoveUp").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load MoveUp button");
+		ret = false;
+	}
+
+	if ((buttonMoveDown = (SDL_Scancode)buttons.attribute("buttonMoveDown").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load MoveDown button");
+		ret = false;
+	}
+
+	if ((buttonMoveLeft = (SDL_Scancode)buttons.attribute("buttonMoveLeft").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load MoveLeft button");
+		ret = false;
+	}
+
+	if ((buttonMoveRight = (SDL_Scancode)buttons.attribute("buttonMoveRight").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load MoveRight button");
+		ret = false;
+	}
+
+	if ((buttonLeaveGame = (SDL_Scancode)buttons.attribute("buttonLeaveGame").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load LeaveGame button");
+		ret = false;
+	}
+
+	if ((buttonReloadMap = (SDL_Scancode)buttons.attribute("buttonReloadMap").as_int()) == SDL_SCANCODE_UNKNOWN)
+	{
+		LOG("Could not load ReloadMap button");
+		ret = false;
+	}
+	
+
 
 	return ret;
 }

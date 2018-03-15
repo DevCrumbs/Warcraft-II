@@ -81,6 +81,12 @@ public:
 
 	virtual void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {}
 
+	// Load keys
+	virtual bool LoadKeys(pugi::xml_node& buttons)
+	{
+		return true;
+	}
+
 public:
 
 	string		name;
