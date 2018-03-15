@@ -526,8 +526,38 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else
 				UnLoadBuildingMenu();
-
 		}
+		if (UIelem == chickenFarmButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaChickenFarm = !App->entities->alphaChickenFarm;
+		}
+
+		if (UIelem == elvenLumberButton) {} //TO DO
+		if (UIelem == blackSmithButton){} //TO DO
+		
+		if (UIelem == stablesButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaStables = !App->entities->alphaStables;
+		}
+		
+		if(UIelem == churchButton){}
+		
+		if (UIelem == gryphonAviaryButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaGryphonAviary = !App->entities->alphaGryphonAviary;
+		}
+
+		if (UIelem == mageTowerButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaMageTower = !App->entities->alphaMageTower;
+		}
+
+		if (UIelem == scoutTowerButton) {
+			UnLoadBuildingMenu();
+			App->entities->alphaScoutTower = !App->entities->alphaScoutTower;
+		}
+		
+
 
 		break;
 
