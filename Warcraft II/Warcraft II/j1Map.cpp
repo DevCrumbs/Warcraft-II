@@ -290,6 +290,7 @@ bool j1Map::CleanUp()
 	// Clean up the pugui tree
 	mapFile.reset();
 
+
 	return ret;
 }
 
@@ -368,6 +369,12 @@ bool j1Map::UnLoad()
 
 	collisionLayer = nullptr;
 	aboveLayer = nullptr;
+
+	for (list<StaticEntity*>::iterator iterator = App->entities->activeStaticEntities.begin(); iterator != App->entities->activeStaticEntities.end(); ++iterator)
+	{
+		delete (*iterator);
+	}
+	App->entities->activeStaticEntities.clear();
 
 	return ret;
 }
