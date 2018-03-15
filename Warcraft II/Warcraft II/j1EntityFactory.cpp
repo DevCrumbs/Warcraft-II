@@ -64,6 +64,10 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = staticEntities.child("barracks2").child("sprites");
 	barracksInfo.barracks2CompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 
+	aux = staticEntities.child("elvenLumberMill").child("sprites");
+	elvenLumberMillInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	elvenLumberMillInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
 	aux = staticEntities.child("mageTower").child("sprites");
 	mageTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	mageTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
@@ -227,32 +231,33 @@ void j1EntityFactory::Draw()
 
 	//Alpha static entities
 	if (alphaChickenFarm) {
-		SDL_SetTextureAlphaMod(GetHumanBuildingTexture(), 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &chickenFarmInfo.completeTexArea);
 	}
-	//if (alphaElvenLumber) {
-	
-	//}
+	if (alphaElvenLumber) {
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &elvenLumberMillInfo.completeTexArea);
+	}
 	//if (alphaBlacksmith) {
 
 	//}
 	if (alphaStables) {
-		SDL_SetTextureAlphaMod(GetHumanBuildingTexture(), 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &stablesInfo.completeTexArea);
 	}
 	//if (alphaChurch) {
 
 	//}
 	if (alphaGryphonAviary) {
-		SDL_SetTextureAlphaMod(GetHumanBuildingTexture(), 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &gryphonAviaryInfo.completeTexArea);
 	}
 	if (alphaMageTower) {
-		SDL_SetTextureAlphaMod(GetHumanBuildingTexture(), 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &mageTowerInfo.completeTexArea);
 	}
 	if (alphaScoutTower) {
-		SDL_SetTextureAlphaMod(GetHumanBuildingTexture(), 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &scoutTowerInfo.completeTexArea);
 	}
 
@@ -303,6 +308,9 @@ const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntity
 		break;
 	case StaticEntityType_Barracks:
 		return (const EntityInfo&)barracksInfo;
+		break;
+	case StaticEntityType_ElvenLumberMill:
+		return (const EntityInfo&)elvenLumberMillInfo;
 		break;
 	case StaticEntityType_MageTower:
 		return(const EntityInfo&)mageTowerInfo;
@@ -455,6 +463,18 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 		return (StaticEntity*)barracks;
 	}
 		break;
+
+	case StaticEntityType_ElvenLumberMill:
+	{
+		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, size, life, (const ElvenLumberMillInfo&)entityInfo);
+		elvenLumberMill->entityType = EntityType_StaticEntity;
+		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
+		elvenLumberMill->staticEntityType = StaticEntityType_Barracks;
+
+		toSpawnEntities.push_back((Entity*)elvenLumberMill);
+		return (StaticEntity*)elvenLumberMill;
+	}
+	break;
 
 	case StaticEntityType_MageTower:
 	{

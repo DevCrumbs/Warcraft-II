@@ -16,6 +16,7 @@ enum StaticEntityType
 	StaticEntityType_TownHall,
 	StaticEntityType_ChickenFarm,
 	StaticEntityType_Barracks,
+	StaticEntityType_ElvenLumberMill,
 	StaticEntityType_MageTower,
 	StaticEntityType_GryphonAviary,
 	StaticEntityType_Stables,

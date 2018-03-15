@@ -125,6 +125,7 @@
     <ClInclude Include="Dragon.h" />
     <ClInclude Include="DynamicEntity.h" />
     <ClInclude Include="ElvenArcher.h" />
+    <ClInclude Include="ElvenLumberMill.h" />
     <ClInclude Include="EnemyCannonTower.h" />
     <ClInclude Include="EnemyGuardTower.h" />
     <ClInclude Include="Entity.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="Dragon.cpp" />
     <ClCompile Include="DynamicEntity.cpp" />
     <ClCompile Include="ElvenArcher.cpp" />
+    <ClCompile Include="ElvenLumberMill.cpp" />
     <ClCompile Include="EnemyCannonTower.cpp" />
     <ClCompile Include="EnemyGuardTower.cpp" />
     <ClCompile Include="Entity.cpp" />

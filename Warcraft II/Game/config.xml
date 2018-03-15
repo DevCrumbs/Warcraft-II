@@ -118,25 +118,32 @@
           <complete x="530" y="0" w="128" h="128"/>
         </sprites>
       </barracks2>
-      
+
+      <elvenLumberMill>
+        <sprites>
+          <complete x="191" y="260" w="128" h="128"/>
+          <inProgress x="191" y="405" w="128" h="128"/>
+        </sprites>
+      </elvenLumberMill>
+
       <mageTower>
         <sprites>
           <complete x="572" y="226" w="128" h="128"/>
-          <inProcess x="572" y="340" w="128" h="128"/>
+          <inProgress x="572" y="340" w="128" h="128"/>
         </sprites>
       </mageTower>
       
       <gryphonAviary>
         <sprites>
           <complete x="196" y="523" w="128" h="128"/>
-          <inProcess x="29" y="523" w="128" h="128"/>
+          <inProgress x="29" y="523" w="128" h="128"/>
         </sprites>
       </gryphonAviary>
           
       <stables>
         <sprites>
           <complete x="317" y="272" w="128" h="128"/>
-          <inProcess x="317" y="407" w="128" h="128"/>
+          <inProgress x="317" y="407" w="128" h="128"/>
         </sprites>
       </stables>
         
