@@ -34,6 +34,7 @@ public:
 private:
 
 	ChickenFarmInfo chickenFarmInfo;
+	StaticEntityType type = StaticEntityType_ChickenFarm;
 
 	EntitiesEvent EntityEvent = EntitiesEvent_Created;
 };

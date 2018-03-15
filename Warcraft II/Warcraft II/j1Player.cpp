@@ -152,8 +152,13 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 	case EntitiesEvent_None:
 		break;
 	case EntitiesEvent_RightClick:
+		DeleteEntitiesMenu();
 		break;
 	case EntitiesEvent_LeftClick:
+		DeleteEntitiesMenu();
+		if (staticEntity == ChickenFarm) {
+			MakeEntitiesMenu("40/40", "Chicken farm", { 241,34,50,41 });
+		}
 		break;
 	case EntitiesEvent_Hover:
 		break;
