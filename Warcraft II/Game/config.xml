@@ -67,7 +67,7 @@
 
   <entities>
     <spritesheets>
-      <humanBuildings name="Assets/Sprites/Textures/HumanBuildings.png"/>
+      <humanBuildings name="data/assets/textures/buildings/HumanBuildings.png"/>
     </spritesheets>
     
     <staticEntities>
