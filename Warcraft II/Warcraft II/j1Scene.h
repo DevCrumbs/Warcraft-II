@@ -57,6 +57,12 @@ public:
 
 	void CheckCameraMovement(float dt);
 
+	void LoadInGameUI();
+	void LoadBuildingMenu();
+	void UnLoadBuildingMenu();
+
+	bool LoadKeys(pugi::xml_node&);
+
 public:
 	// Camera
 	float up = false, down = false, left = false, right = false;
@@ -69,23 +75,39 @@ public:
 
 	bool pause = false;
 
-	UIInputText* inputText;
 
 private:
 
-	
+	//UI
+	UIButton * buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
+	UILabel * buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
+	UIImage * buildingMenu;
+
+	bool buildingMenuOn = false;
 
 	string orthogonalMap, isometricMap, warcraftMap;
 	string orthogonalTexName, isometricTexName, warcraftTexName;
 	bool orthogonalActive, isometricActive, warcraftActive;
 
-	SDL_Texture* debugTex = nullptr;
+	SDL_Texture* debugTex =	nullptr;
 
 	iPoint mouse = { 0,0 };
 
 	//Camera attributes
 	float camSpeed = 0.0f;
 	int camMovMargin = 0;
+
+	SDL_Scancode buttonSaveGame =	SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonLoadGame =	SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonFullScreen = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonGodMode =	SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveUp =		SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveDown =	SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveLeft =	SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveRight =  SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonLeaveGame =	SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonReloadMap = SDL_SCANCODE_UNKNOWN;
+
 };
 
 #endif //__j1SCENE1_H__

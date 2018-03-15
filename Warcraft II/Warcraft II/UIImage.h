@@ -10,7 +10,7 @@
 #include "j1Gui.h"
 
 struct UIImage_Info {
-	UIE_RECT texArea = NO_ELEMENT_RECT;
+	SDL_Rect texArea = { 0,0,0,0 };
 	UIE_HORIZONTAL_POS horizontalOrientation = HORIZONTAL_POS_LEFT;
 	UIE_VERTICAL_POS verticalOrientation = VERTICAL_POS_TOP;
 

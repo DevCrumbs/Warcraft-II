@@ -27,27 +27,8 @@ struct _TTF_Font;
 
 enum FONT_NAME {
 	FONT_NAME_DEFAULT,
-	FONT_NAME_MSMINCHO,
-	FONT_NAME_ZELDA,
+	FONT_NAME_WARCRAFT,
 	FONT_NAME_MAX_FONTS
-};
-
-enum UIE_RECT {
-
-	NO_ELEMENT_RECT,
-	MM_OPT_1_NORMAL,
-	MM_OPT_2_NORMAL,
-	MM_OPT_3_NORMAL,
-	MM_OPT_4_NORMAL,
-	MM_OPT_5_NORMAL,
-
-	MM_OPT_1_HOVER,
-	MM_OPT_2_HOVER,
-	MM_OPT_3_HOVER,
-	MM_OPT_4_HOVER,
-	MM_OPT_5_HOVER,
-
-	MAX_RECTS
 };
 
 struct UIImage_Info;
@@ -108,7 +89,7 @@ public:
 	_TTF_Font* GetFont(FONT_NAME fontName);
 
 	const SDL_Texture* GetAtlas() const;
-	SDL_Rect GetRectFromAtlas(UIE_RECT rect);
+	SDL_Rect GetRectFromAtlas(SDL_Rect rect);
 
 	void SetTextureAlphaMod(float alpha);
 	float IncreaseDecreaseAlpha(float from, float to, float seconds);
@@ -120,8 +101,6 @@ private:
 	const SDL_Texture* atlas = nullptr;
 
 	list<UIElement*> UIElementsList;
-
-	map<UIE_RECT, SDL_Rect> UIElementsRects;
 	map<FONT_NAME, _TTF_Font*> mapFonts;
 
 	// Alpha parameters

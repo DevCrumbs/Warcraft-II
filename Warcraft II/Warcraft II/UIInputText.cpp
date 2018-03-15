@@ -7,7 +7,7 @@
 #include "j1Render.h"
 #include "j1Input.h"
 #include "UIButton.h"
-#include "j1Input.h"
+
 
 UIInputText::UIInputText(iPoint localPos, UIElement* parent, j1Module* listener) : UIElement (localPos, parent, listener){
 
@@ -19,7 +19,7 @@ UIInputText::UIInputText(iPoint localPos, UIElement* parent, j1Module* listener)
 
 void UIInputText::Update(float dt) {
 	
-	if (InputText_Actived) {	
+	if (isInputText) {	
 		App->render->DrawQuad({ original_pos.x + r.w ,original_pos.y,3,13 }, 255, 255, 255, 255);
 		if (App->input->isPresed) {
 			text += App->input->newLetter;
@@ -37,19 +37,21 @@ void UIInputText::Update(float dt) {
 		}
 		App->render->Blit(texture, original_pos.x, original_pos.y, &r);
 	}
+}
 
+void UIInputText::ChangeInputState() {
+	isInputText = !isInputText;
+	if (isInputText)
+		SDL_StartTextInput();
 
+	else
+		SDL_StopTextInput();
+}
 
-	if (App->input->GetKey(SDL_SCANCODE_GRAVE) == KEY_DOWN) {
-		InputText_Actived = !InputText_Actived;
-		if (InputText_Actived) {
-			//labelInputText->SetText("");
-			SDL_StartTextInput();
+void UIInputText::CleanText() {
 
-		}
-		else if (!InputText_Actived) {
-			//labelInputText->SetText("Your Name");
-			SDL_StopTextInput();
-		}
-	}
+	text.clear();
+	App->font->CalcSize(text.data(), r.w, r.h);
+	texture = App->font->Print(text.data());
+
 }

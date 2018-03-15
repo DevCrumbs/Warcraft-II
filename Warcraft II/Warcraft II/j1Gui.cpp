@@ -35,16 +35,6 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 
 	atlasFileName = conf.child("atlas").attribute("file").as_string("");
 
-	pugi::xml_node rects = conf.child("UI_elements_rects");
-	pugi::xml_node node;
-	uint i = 0;
-	UIElementsRects[(UIE_RECT)i] = { 0,0,0,0 };
-
-	for (node = rects.child("rect"); node; node = node.next_sibling("rect")) {
-		UIElementsRects[(UIE_RECT)++i] = { node.attribute("x").as_int(), node.attribute("y").as_int(), node.attribute("w").as_int(), node.attribute("h").as_int() };
-	}
-	//UIElementsRects
-
 	return ret;
 }
 
@@ -57,10 +47,8 @@ bool j1Gui::Start()
 	atlas = App->tex->Load(atlasFileName.data());
 
 	// Load fonts
-	mapFonts[FONT_NAME_MSMINCHO] = App->font->Load("Assets/Fonts/MSMINCHO.TTF");
-	mapFonts[FONT_NAME_ZELDA] = App->font->Load("Assets/Fonts/Zelda.ttf", 60);
+	mapFonts[FONT_NAME_WARCRAFT] = App->font->Load("data/fonts/warcraft.ttf", 16);
 
-	//UIElementsTree = new NTree<UIElement*>((UIElement*)App->win->window);
 
 	return ret;
 }
@@ -101,6 +89,8 @@ bool j1Gui::Update(float dt)
 
 	UI_elem_it = UIElementsList.begin();
 
+	Blit(dt);
+
 	return ret;
 }
 
@@ -136,6 +126,7 @@ bool j1Gui::PostUpdate()
 
 		iterator++;
 	}
+	
 
 	return ret;
 }
@@ -299,9 +290,9 @@ const SDL_Texture* j1Gui::GetAtlas() const
 	return atlas;
 }
 
-SDL_Rect j1Gui::GetRectFromAtlas(UIE_RECT rect)
+SDL_Rect j1Gui::GetRectFromAtlas(SDL_Rect rect)
 {
-	return UIElementsRects[rect];
+	return rect;
 }
 
 void j1Gui::SetTextureAlphaMod(float alpha)

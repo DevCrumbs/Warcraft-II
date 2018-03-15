@@ -1,0 +1,25 @@
+image: Visual Studio 2017
+build:
+  verbosity: minimal
+  
+after_build:
+- 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\Warcraft II\Debug\Warcraft II.exe"
+- 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\Warcraft II\Game\data"
+- 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\Warcraft II\Game\*xml"
+- 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\Warcraft II\Game\*.dll"
+- 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\README.md"
+
+artifacts:
+  - path: WarcraftII_The_Stolen_Artifacts.zip
+  
+deploy:
+  - provider: GitHub
+    release: Warcraft II The Stolen Artifacts v$(appveyor_build_version)
+    artifact: "WarcraftII_The_Stolen_Artifacts.zip"
+    auth_token:
+      secure: JcMPWRUJB+nle8Oj8XmkH2SckI3nFL6kMl1mpctsApIPoxscRoFyNtI5Gmoer62p
+    draft: true
+    prerelease: true
+    on:
+      appveyor_repo_tag: false
+

@@ -17,14 +17,15 @@ public:
 	~UIInputText() {}
 
 	void Update(float dt);
+	void ChangeInputState();
+	void CleanText();
 
 	iPoint original_pos;
+	std::string text;
 
 private:
 
-	bool InputText_Actived = false;
-
-	std::string text;
+	bool isInputText = false;
 
 	SDL_Texture* texture = nullptr;
 	SDL_Rect r;

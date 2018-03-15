@@ -8,9 +8,9 @@ UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Mo
 {
 	type = UIE_TYPE::UIE_TYPE_BUTTON;
 
-	normalTexArea = App->gui->GetRectFromAtlas(button.normalTexArea);
-	hoverTexArea = App->gui->GetRectFromAtlas(button.hoverTexArea);
-	pressedTexArea = App->gui->GetRectFromAtlas(button.pressedTexArea);
+	normalTexArea = info.normalTexArea;
+	hoverTexArea = info.hoverTexArea;
+	pressedTexArea = info.pressedTexArea;
 
 	draggable = button.draggable;
 	interactive = button.interactive;

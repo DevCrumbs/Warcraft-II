@@ -9,8 +9,8 @@
 #include "j1Gui.h"
 
 struct UICursor_Info {
-	UIE_RECT default = NO_ELEMENT_RECT;
-	UIE_RECT onClick = NO_ELEMENT_RECT;
+	SDL_Rect default = { 0,0,0,0 };
+	SDL_Rect onClick = { 0,0,0,0 };
 };
 
 // ---------------------------------------------------

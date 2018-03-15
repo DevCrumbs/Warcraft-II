@@ -1,0 +1,29 @@
+#ifndef __Khadgar_H__
+#define __Khadgar_H__
+
+#include "DynamicEntity.h"
+
+struct KhadgarInfo
+{
+
+};
+
+class Khadgar :public DynamicEntity
+{
+public:
+
+	Khadgar(fPoint pos, iPoint size, int life, float speed, const KhadgarInfo& khadgarInfo);
+	~Khadgar() {};
+
+	void Move(float dt);
+
+	// Animations
+	void LoadAnimationsSpeed();
+	void UpdateAnimations(float dt);
+
+private:
+
+	KhadgarInfo khadgarInfo;
+};
+
+#endif //__Khadgar_H__
