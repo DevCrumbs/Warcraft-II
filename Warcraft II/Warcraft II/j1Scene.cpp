@@ -164,7 +164,7 @@ bool j1Scene::Update(float dt)
 
 
 	// Draw
-	//App->map->Draw(); // map
+	App->map->Draw(); // map
 	App->entities->Draw(); // entities
 
 	// Debug pathfinding ------------------------------
