@@ -12,7 +12,7 @@ class Paladin :public DynamicEntity
 {
 public:
 
-	Paladin(fPoint pos, iPoint size, int life, float speed, const PaladinInfo& paladinInfo);
+	Paladin(fPoint pos, iPoint size, int life, float speed, const PaladinInfo& paladinInfo, j1Module* listener);
 	~Paladin() {};
 
 	void Move(float dt);

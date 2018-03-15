@@ -12,7 +12,7 @@ class Turalyon :public DynamicEntity
 {
 public:
 
-	Turalyon(fPoint pos, iPoint size, int life, float speed, const TuralyonInfo& turalyonInfo);
+	Turalyon(fPoint pos, iPoint size, int life, float speed, const TuralyonInfo& turalyonInfo, j1Module* listener);
 	~Turalyon() {};
 
 	void Move(float dt);

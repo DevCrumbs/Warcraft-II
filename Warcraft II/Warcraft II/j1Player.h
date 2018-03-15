@@ -3,8 +3,17 @@
 
 #include "j1Module.h"
 #include "Defs.h"
+#include "SDL\include\SDL_rect.h"
 
+#include <list>
 using namespace std;
+
+
+struct UILabel;
+struct UIImage;
+
+class StaticEntity;
+
 
 class j1Player : public j1Module
 {
@@ -34,6 +43,11 @@ public:
 	// Load
 	bool Load(pugi::xml_node&);
 
+	void OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent);
+
+	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim);
+	void DeleteEntitiesMenu();
+
 private:
 
 	int totalGold = 0; // total gold earned during the game
@@ -58,6 +72,27 @@ private:
 	uint totalUnits = 0; // total units created during the game
 	uint activeUnits = 0; // units that the player has at the current moment
 	uint maxUnits = 0; // max units that the player can have at the current moment (it depends on the Chicken Farms built)
+
+
+	UILabel* HP;
+	UILabel* entityName;
+	UIImage* entityIcon;
+
+
+	StaticEntity* chickenFarm;
+	StaticEntity* elvenLumberMill;
+	StaticEntity* blacksmith;
+	StaticEntity* stables;
+	StaticEntity* church;
+	StaticEntity* mageTower;
+	StaticEntity* cannonTower;
+	StaticEntity* guardTower;
+	StaticEntity* scoutTower;
+	StaticEntity* gryphonAviary;
+
+
+	list<UIElement*> UIMenuInfoList;
+
 };
 
 #endif //__j1PLAYER_H__

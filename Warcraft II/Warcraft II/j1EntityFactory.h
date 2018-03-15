@@ -67,8 +67,8 @@ public:
 	const EntityInfo& GetBuildingInfo(StaticEntityType staticEntityType);
 	SDL_Texture* GetHumanBuildingTexture();
 
-	StaticEntity* AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, iPoint size, uint life, const EntityInfo& entityInfo);
-	DynamicEntity* AddDynamicEntity(DynamicEntityType dynamicEntityType, fPoint pos, iPoint size, uint life, float speed, const EntityInfo& entityInfo);
+	StaticEntity* AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, iPoint size, uint life, const EntityInfo& entityInfo, j1Module* listener = nullptr);
+	DynamicEntity* AddDynamicEntity(DynamicEntityType dynamicEntityType, fPoint pos, iPoint size, uint life, float speed, const EntityInfo& entityInfo, j1Module* listener = nullptr);
 
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);

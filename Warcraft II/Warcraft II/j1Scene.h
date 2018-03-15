@@ -15,6 +15,7 @@ struct UILabel;
 struct UIButton;
 struct UIImage;
 struct UISlider;
+struct UICursor;
 class UIInputText;
 
 class j1Scene : public j1Module
@@ -75,6 +76,7 @@ public:
 
 	bool pause = false;
 
+	UIImage* entitiesStats;
 
 private:
 
@@ -82,6 +84,7 @@ private:
 	UIButton * buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
 	UILabel * buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
 	UIImage * buildingMenu;
+	UICursor* mouseText;
 
 	bool buildingMenuOn = false;
 

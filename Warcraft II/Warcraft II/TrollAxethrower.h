@@ -12,7 +12,7 @@ class TrollAxethrower :public DynamicEntity
 {
 public:
 
-	TrollAxethrower(fPoint pos, iPoint size, int life, float speed, const TrollAxethrowerInfo& trollAxethrowerInfo);
+	TrollAxethrower(fPoint pos, iPoint size, int life, float speed, const TrollAxethrowerInfo& trollAxethrowerInfo, j1Module* listener);
 	~TrollAxethrower() {};
 
 	void Move(float dt);

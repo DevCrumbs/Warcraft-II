@@ -1,6 +1,6 @@
 #include "Grunt.h"
 
-Grunt::Grunt(fPoint pos, iPoint size, int life, float speed, const GruntInfo& gruntInfo) :DynamicEntity(pos, size, life, speed), gruntInfo(gruntInfo) 
+Grunt::Grunt(fPoint pos, iPoint size, int life, float speed, const GruntInfo& gruntInfo, j1Module* listener) :DynamicEntity(pos, size, life, speed, listener), gruntInfo(gruntInfo)
 {
 
 }

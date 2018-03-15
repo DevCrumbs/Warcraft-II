@@ -12,7 +12,7 @@ class Alleria :public DynamicEntity
 {
 public:
 
-	Alleria(fPoint pos, iPoint size, int life, float speed, const AlleriaInfo& alleriaInfo);
+	Alleria(fPoint pos, iPoint size, int life, float speed, const AlleriaInfo& alleriaInfo, j1Module* listener);
 	~Alleria() {};
 
 	void Move(float dt);

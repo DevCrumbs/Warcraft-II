@@ -1,7 +1,12 @@
 #ifndef __ChickenFarm_H__
 #define __ChickenFarm_H__
 
+#include "SDL\include\SDL.h"
+
+#include "Defs.h"
 #include "StaticEntity.h"
+
+
 
 struct ChickenFarmInfo
 {
@@ -13,7 +18,7 @@ class ChickenFarm :public StaticEntity
 {
 public:
 
-	ChickenFarm(fPoint pos, iPoint size, int life, const ChickenFarmInfo& chickenFarmInfo);
+	ChickenFarm(fPoint pos, iPoint size, int life, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener = nullptr);
 	~ChickenFarm() {};
 
 	void Move(float dt);
@@ -22,9 +27,14 @@ public:
 	void LoadAnimationsSpeed();
 	void UpdateAnimations(float dt);
 
+	bool nextEvent = false;
+
 private:
 
 	ChickenFarmInfo chickenFarmInfo;
+	StaticEntityType type = StaticEntityType_ChickenFarm;
+
+	EntitiesEvent EntityEvent = EntitiesEvent_Created;
 };
 
 #endif //__ChickenFarm_H__

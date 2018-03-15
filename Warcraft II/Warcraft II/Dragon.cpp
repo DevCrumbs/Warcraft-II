@@ -1,6 +1,6 @@
 #include "Dragon.h"
 
-Dragon::Dragon(fPoint pos, iPoint size, int life, float speed, const DragonInfo& dragonInfo) :DynamicEntity(pos, size, life, speed), dragonInfo(dragonInfo) 
+Dragon::Dragon(fPoint pos, iPoint size, int life, float speed, const DragonInfo& dragonInfo, j1Module* listener) :DynamicEntity(pos, size, life, speed, listener), dragonInfo(dragonInfo)
 {
 
 }

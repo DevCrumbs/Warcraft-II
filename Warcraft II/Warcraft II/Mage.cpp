@@ -1,6 +1,6 @@
 #include "Mage.h"
 
-Mage::Mage(fPoint pos, iPoint size, int life, float speed, const MageInfo& mageInfo) :DynamicEntity(pos, size, life, speed), mageInfo(mageInfo) 
+Mage::Mage(fPoint pos, iPoint size, int life, float speed, const MageInfo& mageInfo, j1Module* listener) :DynamicEntity(pos, size, life, speed, listener), mageInfo(mageInfo)
 {
 
 }

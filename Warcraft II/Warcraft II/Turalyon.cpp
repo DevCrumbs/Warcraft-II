@@ -1,6 +1,6 @@
 #include "Turalyon.h"
 
-Turalyon::Turalyon(fPoint pos, iPoint size, int life, float speed, const TuralyonInfo& turalyonInfo) :DynamicEntity(pos, size, life, speed), turalyonInfo(turalyonInfo) 
+Turalyon::Turalyon(fPoint pos, iPoint size, int life, float speed, const TuralyonInfo& turalyonInfo, j1Module* listener) :DynamicEntity(pos, size, life, speed, listener), turalyonInfo(turalyonInfo)
 {
 
 }
