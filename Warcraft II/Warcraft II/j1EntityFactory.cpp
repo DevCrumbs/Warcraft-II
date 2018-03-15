@@ -217,6 +217,19 @@ void j1EntityFactory::Draw()
 
 		statEnt++;
 	}
+
+	//Mouse position
+	int x, y;
+	App->input->GetMousePosition(x, y);
+	iPoint mousePos = App->render->ScreenToWorld(x, y);
+	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
+	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+
+	//Alpha static entities
+	if (alphaChickenFarm) {
+		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 100);
+		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &chickenFarmInfo.completeTexArea);
+	}
 }
 
 void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos)
@@ -257,7 +270,13 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 }
 
 
+//const EntityInfo j1EntityFactory::GetBuildingInfo() {
+
+	//return (const EntityInfo&)chickenFarmInfo;
+//}
+
 SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
+
 	return humanBuildingsTex;
 }
 

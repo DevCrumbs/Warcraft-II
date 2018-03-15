@@ -42,21 +42,22 @@ bool j1Player::Update(float dt) {
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	//TRANSPARENT BUILDING HOVERING (DEBUG)
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 100);
-		App->entities->DrawStaticEntityPreview(StaticEntityType_TownHall, { mouseTilePos.x, mouseTilePos.y });
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
+		App->entities->alphaChickenFarm = !App->entities->alphaChickenFarm;
 	}
 
 	//CREATING A STATIC ENTITY (DEBUG)
-	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN) {
-		TownHallInfo info;
-		info.townHallCompleteTexArea = { 265,5,128,128 };
+	if (App->entities->alphaChickenFarm && App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN) {
 		float auxX = (int)mouseTilePos.x;
 		float auxY = (int)mouseTilePos.y;
 		fPoint buildingPos = { auxX, auxY };
-		App->entities->AddStaticEntity(StaticEntityType_TownHall, buildingPos, { 128,128 }, 30, (const EntityInfo&)info);
+		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+		App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 30, (const EntityInfo&)App->entities->chickenFarmInfo);
+		App->entities->alphaChickenFarm = !App->entities->alphaChickenFarm;
 	}
 
+	if(!App->entities->alphaChickenFarm)
+		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 
 	return true;
 }
