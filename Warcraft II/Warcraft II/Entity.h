@@ -52,7 +52,7 @@ public:
 	EntityType entityType = EntityType_NoType;
 
 	bool remove = false;
-	bool isSelected = false;
+	//bool isSelected = false;
 
 
 protected:

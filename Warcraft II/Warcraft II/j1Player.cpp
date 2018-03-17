@@ -48,7 +48,8 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)stables;
 			ent->SetDamageLife(20);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
-			//if(entityName->GetType)
+			if (entityName->GetText() == "Stables")
+				HP->SetText(ent->GetStringLife());
 		}
 
 
@@ -244,15 +245,15 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim) {
 	
 
-	UILabel_Info HPinfo;
-	HPinfo.text = HP_text;
-	HPinfo.verticalOrientation = VERTICAL_POS_BOTTOM;
-	HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, HPinfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	UILabel_Info labelInfo;
+	labelInfo.text = HP_text;
+	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+	HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-	UILabel_Info nameInfo;
-	nameInfo.text = entityName_text;
-	nameInfo.verticalOrientation = VERTICAL_POS_TOP;
-	entityName = App->gui->CreateUILabel({ 5,5 }, nameInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+	labelInfo.text = entityName_text;
+	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+	entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 	UIImage_Info iconInfo;
 	iconInfo.texArea = iconDim;
