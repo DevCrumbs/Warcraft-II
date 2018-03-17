@@ -35,60 +35,64 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	// Spritesheets
 	pugi::xml_node spritesheets = config.child("spritesheets");
 	humanBuildingsTexName = spritesheets.child("humanBuildings").attribute("name").as_string();
+	neutralBuildingsTexName = spritesheets.child("neutralBuildings").attribute("name").as_string();
+	orcishBuildingsTexName = spritesheets.child("orcishBuildings").attribute("name").as_string();
 
 	// Static entities
 	pugi::xml_node staticEntities = config.child("staticEntities");
 
-	townHallInfo.townHallMaxLife = { staticEntities.child("townHall").child("maxLife").attribute("value").as_int() };
-	pugi::xml_node aux = staticEntities.child("townHall").child("sprites");
+	pugi::xml_node humanBuildings = staticEntities.child("humanBuildings");
+
+	townHallInfo.townHallMaxLife = { humanBuildings.child("townHall").child("maxLife").attribute("value").as_int() };
+	pugi::xml_node aux = humanBuildings.child("townHall").child("sprites");
 	townHallInfo.townHallCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	townHallInfo.townHallInProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	townHallInfo.keepMaxLife = { staticEntities.child("keep").child("maxLife").attribute("value").as_int() };
-	aux = staticEntities.child("keep").child("sprites");
+	townHallInfo.keepMaxLife = { humanBuildings.child("keep").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("keep").child("sprites");
 	townHallInfo.keepCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	townHallInfo.keepInProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	townHallInfo.castleMaxLife = { staticEntities.child("castle").child("maxLife").attribute("value").as_int() };
-	aux = staticEntities.child("castle").child("sprites");
+	townHallInfo.castleMaxLife = { humanBuildings.child("castle").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("castle").child("sprites");
 	townHallInfo.castleCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	townHallInfo.castleInProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	chickenFarmInfo.maxLife = { staticEntities.child("chickenFarm").child("maxLife").attribute("value").as_int() };
-	aux = staticEntities.child("chickenFarm").child("sprites");
+	chickenFarmInfo.maxLife = { humanBuildings.child("chickenFarm").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("chickenFarm").child("sprites");
 	chickenFarmInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	chickenFarmInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	scoutTowerInfo.maxLife = { staticEntities.child("scoutTower").child("maxLife").attribute("value").as_int() };
-	aux = staticEntities.child("scoutTower").child("sprites");
+	scoutTowerInfo.maxLife = { humanBuildings.child("scoutTower").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("scoutTower").child("sprites");
 	scoutTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	scoutTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	barracksInfo.barracks1MaxLife = { staticEntities.child("barracks").child("maxLife").attribute("value").as_int() };
-	aux = staticEntities.child("barracks").child("sprites");
+	barracksInfo.barracks1MaxLife = { humanBuildings.child("barracks").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("barracks").child("sprites");
 	barracksInfo.barracksCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 
-	barracksInfo.barracks2MaxLife = { staticEntities.child("barracks2").child("maxLife").attribute("value").as_int() };
-	aux = staticEntities.child("barracks2").child("sprites");
+	barracksInfo.barracks2MaxLife = { humanBuildings.child("barracks2").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("barracks2").child("sprites");
 	barracksInfo.barracks2CompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 
-	elvenLumberMillInfo.maxLife= { staticEntities.child("elvenLumberMill").child("maxLife").attribute("value").as_int() };
-	aux = staticEntities.child("elvenLumberMill").child("sprites");
+	elvenLumberMillInfo.maxLife= { humanBuildings.child("elvenLumberMill").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("elvenLumberMill").child("sprites");
 	elvenLumberMillInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	elvenLumberMillInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	mageTowerInfo.maxLife = { staticEntities.child("mageTower").child("maxLife").attribute("value").as_int() };
-	aux = staticEntities.child("mageTower").child("sprites");
+	mageTowerInfo.maxLife = { humanBuildings.child("mageTower").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("mageTower").child("sprites");
 	mageTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	mageTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	gryphonAviaryInfo.maxLife = { staticEntities.child("gryphonAviary").child("maxLife").attribute("value").as_int() };
-	aux = staticEntities.child("gryphonAviary").child("sprites");
+	gryphonAviaryInfo.maxLife = { humanBuildings.child("gryphonAviary").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("gryphonAviary").child("sprites");
 	gryphonAviaryInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	gryphonAviaryInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	stablesInfo.maxLife = { staticEntities.child("stables").child("maxLife").attribute("value").as_int() };
-	aux = staticEntities.child("stables").child("sprites");
+	stablesInfo.maxLife = { humanBuildings.child("stables").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("stables").child("sprites");
 	stablesInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	stablesInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
@@ -102,6 +106,8 @@ bool j1EntityFactory::Start()
 	LOG("Loading entities textures");
 
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
+	neutralBuildingsTex = App->tex->Load(neutralBuildingsTexName.data());
+	orcishBuildingsTex = App->tex->Load(orcishBuildingsTexName.data());
 
 	return ret;
 }
