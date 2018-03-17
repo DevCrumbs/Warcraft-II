@@ -229,37 +229,7 @@ void j1EntityFactory::Draw()
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
-	//Alpha static entities
-	if (alphaChickenFarm) {
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &chickenFarmInfo.completeTexArea);
-	}
-	if (alphaElvenLumber) {
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &elvenLumberMillInfo.completeTexArea);
-	}
-	//if (alphaBlacksmith) {
-
-	//}
-	if (alphaStables) {
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &stablesInfo.completeTexArea);
-	}
-	//if (alphaChurch) {
-
-	//}
-	if (alphaGryphonAviary) {
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &gryphonAviaryInfo.completeTexArea);
-	}
-	if (alphaMageTower) {
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &mageTowerInfo.completeTexArea);
-	}
-	if (alphaScoutTower) {
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &scoutTowerInfo.completeTexArea);
-	}
+	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), mouseTilePos);
 
 }
 
@@ -267,34 +237,40 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 {
 	switch (staticEntityType) {
 
-	case StaticEntityType_TownHall:
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &townHallInfo.townHallCompleteTexArea);
-		break;
 	case StaticEntityType_ChickenFarm:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
 		break;
-	case StaticEntityType_Barracks:
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &barracksInfo.barracksCompleteTexArea);
+	case StaticEntityType_ElvenLumberMill:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &elvenLumberMillInfo.completeTexArea);
 		break;
 	case StaticEntityType_MageTower:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_GryphonAviary:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
 		break;
 	case StaticEntityType_Stables:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
 		break;
 	case StaticEntityType_ScoutTower:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_PlayerGuardTower:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_PlayerCannonTower:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
 		break;
-
+	case StaticEntityType_NoType:
+		break;
 	default:
 		break;
 	}
