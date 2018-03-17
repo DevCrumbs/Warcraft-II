@@ -2,9 +2,11 @@
 
 #include "GryphonAviary.h"
 
-GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int life, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), gryphonAviaryInfo(gryphonAviaryInfo)
+GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int maxLife, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), gryphonAviaryInfo(gryphonAviaryInfo)
 {
 	texArea = &gryphonAviaryInfo.completeTexArea;
+	currentLife = maxLife;
+
 }
 
 void GryphonAviary::Move(float dt)

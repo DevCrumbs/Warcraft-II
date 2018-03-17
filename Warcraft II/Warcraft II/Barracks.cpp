@@ -3,9 +3,11 @@
 
 #include "Barracks.h"
 
-Barracks::Barracks(fPoint pos, iPoint size, int life, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), barracksInfo(barracksInfo)
+Barracks::Barracks(fPoint pos, iPoint size, int maxLife, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), barracksInfo(barracksInfo)
 {
 	texArea = &barracksInfo.barracksCompleteTexArea;
+	currentLife = maxLife;
+
 }
 
 void Barracks::Move(float dt)

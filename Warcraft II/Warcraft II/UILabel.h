@@ -58,6 +58,7 @@ public:
 	bool Bounce(float dt, float bounceInterval = 1.0f, float bounceSpeed = 2.0f, bool down = true);
 	void InitializeBounce(float bounceInterval = 1.0f, bool down = true);
 
+	string GetText();
 private:
 	UILabel_Info label;
 	_TTF_Font* font = nullptr;

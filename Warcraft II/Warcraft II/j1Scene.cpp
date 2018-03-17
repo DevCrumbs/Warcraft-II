@@ -543,11 +543,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			UnLoadBuildingMenu();
 			alphaBuilding = StaticEntityType_ChickenFarm;
 		}
-
-		if (UIelem == elvenLumberButton) {
-			UnLoadBuildingMenu();
-			alphaBuilding = StaticEntityType_ElvenLumberMill;
-		}
 		
 		if (UIelem == stablesButton) {
 			UnLoadBuildingMenu();

@@ -84,16 +84,15 @@ private:
 	UIImage* entityIcon;
 
 
-	StaticEntity* chickenFarm;
-	StaticEntity* elvenLumberMill;
-	StaticEntity* blacksmith;
-	StaticEntity* stables;
-	StaticEntity* church;
-	StaticEntity* mageTower;
-	StaticEntity* cannonTower;
-	StaticEntity* guardTower;
-	StaticEntity* scoutTower;
-	StaticEntity* gryphonAviary;
+	StaticEntity* chickenFarm = nullptr;
+	StaticEntity* blacksmith = nullptr;
+	StaticEntity* stables = nullptr;
+	StaticEntity* church = nullptr;
+	StaticEntity* mageTower = nullptr;
+	StaticEntity* cannonTower = nullptr;
+	StaticEntity* guardTower = nullptr;
+	StaticEntity* scoutTower = nullptr;
+	StaticEntity* gryphonAviary = nullptr;
 
 
 	list<UIElement*> UIMenuInfoList;

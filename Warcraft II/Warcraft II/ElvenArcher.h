@@ -12,7 +12,7 @@ class ElvenArcher :public DynamicEntity
 {
 public:
 
-	ElvenArcher(fPoint pos, iPoint size, int life, float speed, const ElvenArcherInfo& elvenArcherInfo, j1Module* listener);
+	ElvenArcher(fPoint pos, iPoint size, int maxLife, float speed, const ElvenArcherInfo& elvenArcherInfo, j1Module* listener);
 	~ElvenArcher() {};
 
 	void Move(float dt);

@@ -184,6 +184,11 @@ void UILabel::SetText(string text)
 	tex = App->font->Print(text.data(), color, font);
 }
 
+string UILabel::GetText() 
+{
+	return label.text;
+}
+
 void UILabel::SetColor(SDL_Color color, bool normal, bool hover, bool pressed)
 {
 	this->color = color;

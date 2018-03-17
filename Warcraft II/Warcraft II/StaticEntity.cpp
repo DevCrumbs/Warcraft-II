@@ -6,7 +6,7 @@
 #include "j1Render.h"
 #include "StaticEntity.h"
 
-StaticEntity::StaticEntity(fPoint pos, iPoint size, int life, j1Module* listener) :Entity(pos, size, life, listener) {}
+StaticEntity::StaticEntity(fPoint pos, iPoint size, int maxLife, j1Module* listener) :Entity(pos, size, maxLife, listener) {}
 
 StaticEntity::~StaticEntity() {}
 
@@ -69,8 +69,8 @@ bool StaticEntity::MouseHover() const
 	uint scale = App->win->GetScale();
 
 	iPoint screen_pos;
-	screen_pos.x = pos.x;
-	screen_pos.y = pos.y;
+	screen_pos.x = pos.x + App->render->camera.x;
+	screen_pos.y = pos.y + App->render->camera.y;
 
 	return x > screen_pos.x / scale && x < screen_pos.x / scale + size.x && y > screen_pos.y / scale && y < screen_pos.y / scale + size.y;
 }

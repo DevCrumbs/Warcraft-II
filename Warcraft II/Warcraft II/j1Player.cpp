@@ -42,6 +42,53 @@ bool j1Player::Update(float dt) {
 
 	CheckIfPlaceBuilding();
 
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+		if (stables != nullptr) {
+			Entity* ent = (Entity*)stables;
+			ent->SetDamageLife(20);
+			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
+			if (entityName->GetText() == "Stables")
+				HP->SetText(ent->GetStringLife());
+		}
+
+	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
+		if (mageTower != nullptr) {
+			Entity* ent = (Entity*)mageTower;
+			ent->SetDamageLife(20);
+			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
+			if (entityName->GetText() == "Magic Tower")
+				HP->SetText(ent->GetStringLife());
+		}
+
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
+		if (scoutTower != nullptr) {
+			Entity* ent = (Entity*)scoutTower;
+			ent->SetDamageLife(20);
+			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
+			if (entityName->GetText() == "Scout Tower")
+				HP->SetText(ent->GetStringLife());
+		}
+
+	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
+		if (gryphonAviary != nullptr) {
+			Entity* ent = (Entity*)gryphonAviary;
+			ent->SetDamageLife(20);
+			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
+			if (entityName->GetText() == "Gryphon Aviary")
+				HP->SetText(ent->GetStringLife());
+		}
+
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
+		if (chickenFarm != nullptr) {
+			Entity* ent = (Entity*)chickenFarm;
+			ent->SetDamageLife(20);
+			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
+			if (entityName->GetText() == "Chicken Farm")
+				HP->SetText(ent->GetStringLife());
+		}
+
+
+
 	return true;
 }
 
@@ -67,39 +114,38 @@ void j1Player::CheckIfPlaceBuilding() {
 
 	//Creates static entities (buildings)
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
-
 		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 
 		switch (alphaBuilding) {
 
 		case StaticEntityType_ChickenFarm:
-			App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm));
+			chickenFarm = App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 400, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm),this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
-			break;
-
-		case StaticEntityType_ElvenLumberMill:
-			App->entities->AddStaticEntity(StaticEntityType_ElvenLumberMill, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ElvenLumberMill));
-			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			chickenFarm->SetStringLife(chickenFarm->GetCurrLife(), chickenFarm->GetMaxLife());
 			break;
 
 		case StaticEntityType_Stables:
-			App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_Stables));
+			stables = App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, { 128,128 }, 500, App->entities->GetBuildingInfo(StaticEntityType_Stables),this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
 			break;
 
 		case StaticEntityType_GryphonAviary:
-			App->entities->AddStaticEntity(StaticEntityType_GryphonAviary, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_GryphonAviary));
+			gryphonAviary = App->entities->AddStaticEntity(StaticEntityType_GryphonAviary, buildingPos, { 128,128 }, 500, App->entities->GetBuildingInfo(StaticEntityType_GryphonAviary),this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
 			break;
 
 		case StaticEntityType_MageTower:
-			App->entities->AddStaticEntity(StaticEntityType_MageTower, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_MageTower));
+			mageTower = App->entities->AddStaticEntity(StaticEntityType_MageTower, buildingPos, { 128,128 }, 500, App->entities->GetBuildingInfo(StaticEntityType_MageTower),this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
 			break;
 
 		case StaticEntityType_ScoutTower:
-			App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower));
+			scoutTower = App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, { 64,64 }, 150, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower),this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			scoutTower->SetStringLife(scoutTower->GetCurrLife(), scoutTower->GetMaxLife());
 			break;
 
 		case StaticEntityType_NoType:
@@ -110,7 +156,7 @@ void j1Player::CheckIfPlaceBuilding() {
 		}
 	}
 
-	//Vanish alpha building preview with mouse button right
+
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 
@@ -169,6 +215,8 @@ bool j1Player::Load(pugi::xml_node& save)
 
 void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent) {
 
+	Entity* ent = (Entity*)staticEntity;
+
 	switch (entitiesEvent)
 	{
 	case EntitiesEvent_None:
@@ -178,23 +226,20 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		break;
 	case EntitiesEvent_LeftClick:
 		DeleteEntitiesMenu();
-		if (staticEntity == chickenFarm)
-			MakeEntitiesMenu("400/400", "Chicken Farm", { 241,34,50,41 });
+		if (staticEntity->staticEntityType == StaticEntityType_ChickenFarm)
+			MakeEntitiesMenu(ent->GetStringLife(), "Chicken Farm", { 241,34,50,41 });
 
-		else if (staticEntity == gryphonAviary)
-			MakeEntitiesMenu("500/500", "Gryphon Aviary", { 394,160,50,41 });
+		else if (staticEntity->staticEntityType == StaticEntityType_GryphonAviary)
+			MakeEntitiesMenu(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 });
 
-		else if (staticEntity == mageTower)
-			MakeEntitiesMenu("500/500", "Magic Tower", { 394,202,50,41 });
+		else if (staticEntity->staticEntityType == StaticEntityType_MageTower)
+			MakeEntitiesMenu(ent->GetStringLife(), "Magic Tower", { 394,202,50,41 });
 
-		else if (staticEntity == scoutTower)
-			MakeEntitiesMenu("150/150", "Scout Tower", { 394,34,50,41 });
+		else if (staticEntity->staticEntityType == StaticEntityType_ScoutTower)
+			MakeEntitiesMenu(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 });
 
-		else if (staticEntity == stables)
-			MakeEntitiesMenu("500/500", "Stables", { 241,160,50,41 });
-
-		else if (staticEntity == elvenLumberMill)
-			MakeEntitiesMenu("600/600", "Elven Lumber Mill", { 241,76,50,41 });
+		else if (staticEntity->staticEntityType == StaticEntityType_Stables)
+			MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 });
 	
 		break;
 	case EntitiesEvent_Hover:
@@ -203,23 +248,20 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		break;
 	case EntitiesEvent_Created:
 		DeleteEntitiesMenu();
-		if (staticEntity == chickenFarm)
-			MakeEntitiesMenu("400/400", "Chicken Farm", { 241,34,50,41 });
+		if (staticEntity->staticEntityType == StaticEntityType_ChickenFarm)
+			MakeEntitiesMenu(ent->GetStringLife(), "Chicken Farm", { 241,34,50,41 });
 
-		else if (staticEntity == gryphonAviary)
-			MakeEntitiesMenu("500/500", "Gryphon Aviary", { 394,160,50,41 });
+		else if (staticEntity->staticEntityType == StaticEntityType_GryphonAviary)
+			MakeEntitiesMenu(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 });
 
-		else if (staticEntity == mageTower)
-			MakeEntitiesMenu("500/500", "Magic Tower", { 394,202,50,41 });
+		else if (staticEntity->staticEntityType == StaticEntityType_MageTower)
+			MakeEntitiesMenu(ent->GetStringLife(), "Magic Tower", { 394,202,50,41 });
 
-		else if (staticEntity == scoutTower)
-			MakeEntitiesMenu("150/150", "Scout Tower", { 394,34,50,41 });
+		else if (staticEntity->staticEntityType == StaticEntityType_ScoutTower)
+			MakeEntitiesMenu(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 });
 
-		else if (staticEntity == stables)
-			MakeEntitiesMenu("500/500", "Stables", { 241,160,50,41 });
-
-		else if (staticEntity == elvenLumberMill)
-			MakeEntitiesMenu("600/600", "Elven Lumber Mill", { 241,76,50,41 });
+		else if (staticEntity->staticEntityType == StaticEntityType_Stables)
+			MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 });
 
 
 		break;
@@ -232,15 +274,14 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim) {
 	
 
-	UILabel_Info HPinfo;
-	HPinfo.text = HP_text;
-	HPinfo.verticalOrientation = VERTICAL_POS_BOTTOM;
-	HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, HPinfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	UILabel_Info labelInfo;
+	labelInfo.text = HP_text;
+	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+	HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-	UILabel_Info nameInfo;
-	nameInfo.text = entityName_text;
-	HPinfo.verticalOrientation = VERTICAL_POS_TOP;
-	entityName = App->gui->CreateUILabel({ 5,5 }, nameInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	labelInfo.text = entityName_text;
+	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+	entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 	UIImage_Info iconInfo;
 	iconInfo.texArea = iconDim;

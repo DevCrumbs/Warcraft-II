@@ -13,7 +13,7 @@ class GryphonAviary :public StaticEntity
 {
 public:
 
-	GryphonAviary(fPoint pos, iPoint size, int life, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener);
+	GryphonAviary(fPoint pos, iPoint size, int maxLife, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener);
 	~GryphonAviary() {};
 
 	void Move(float dt);

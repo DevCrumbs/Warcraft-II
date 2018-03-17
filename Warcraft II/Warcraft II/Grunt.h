@@ -12,7 +12,7 @@ class Grunt :public DynamicEntity
 {
 public:
 
-	Grunt(fPoint pos, iPoint size, int life, float speed, const GruntInfo& gruntInfo, j1Module* listener);
+	Grunt(fPoint pos, iPoint size, int maxLife, float speed, const GruntInfo& gruntInfo, j1Module* listener);
 	~Grunt() {};
 
 	void Move(float dt);
