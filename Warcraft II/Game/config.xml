@@ -71,10 +71,15 @@
       <neutralBuildings name ="data/assets/textures/buildings/NeutralBuildings.png"/>
       <orcishBuildings name ="data/assets/textures/buildings/OrcishBuildings.png"/>
     </spritesheets>
+
+    <dynamicEntities>
+      
+    </dynamicEntities>
     
     <staticEntities>
       
       <humanBuildings>
+        
         <townHall>
           <maxLife value = "1200"/>
           <sprites>
@@ -114,6 +119,22 @@
             <inProgress x="465" y="68" w="64" h="64"/>
           </sprites>
         </scoutTower>
+
+        <guardTower>
+          <maxLife value = "175"/>
+          <sprites>
+            <complete x="399" y="134" w="64" h="64"/>
+            <inProgress x="399" y="198" w="64" h="64"/>
+          </sprites>
+        </guardTower>
+
+        <canonTower>
+          <maxLife value = "200"/>
+          <sprites>
+            <complete x="466" y="134" w="64" h="64"/>
+            <inProgress x="466" y="198" w="64" h="64"/>
+          </sprites>
+        </canonTower>
 
         <barracks>
           <maxLife value = "800"/>
@@ -160,6 +181,7 @@
             <inProgress x="317" y="407" w="128" h="128"/>
           </sprites>
         </stables>
+        
       </humanBuildings>
 
       <neutralBuildings>
@@ -176,6 +198,11 @@
         </runeStone>
       
     </neutralBuildings>
+
+    <orcishBuildings>
+        
+    </orcishBuildings>
+      
       
     </staticEntities>    
   </entities>

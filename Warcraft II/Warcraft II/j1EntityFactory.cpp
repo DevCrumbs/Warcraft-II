@@ -68,6 +68,16 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	scoutTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	scoutTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
+	playerGuardTowerInfo.maxLife = { humanBuildings.child("guardTower").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("guardTower").child("sprites");
+	playerGuardTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	playerGuardTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	playerCannonTowerInfo.maxLife = { humanBuildings.child("canonTower").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("canonTower").child("sprites");
+	playerCannonTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	playerCannonTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
 	barracksInfo.barracks1MaxLife = { humanBuildings.child("barracks").child("maxLife").attribute("value").as_int() };
 	aux = humanBuildings.child("barracks").child("sprites");
 	barracksInfo.barracksCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
@@ -95,6 +105,16 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = humanBuildings.child("stables").child("sprites");
 	stablesInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	stablesInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	pugi::xml_node neutralBuildings = staticEntities.child("neutralBuildings");
+
+	goldMineInfo.maxLife = { neutralBuildings.child("goldMine").child("maxLife").attribute("value").as_int() };
+	aux = neutralBuildings.child("goldMine").child("sprites");
+	goldMineInfo.completeTexArea = { aux.child("active").attribute("x").as_int(), aux.child("active").attribute("y").as_int(), aux.child("active").attribute("w").as_int(), aux.child("active").attribute("h").as_int() };
+	goldMineInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
+
+	aux = neutralBuildings.child("runeStone").child("sprites");
+	runestoneInfo.completeTexArea = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 
 	return ret;
 }
@@ -536,7 +556,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_GoldMine:
 	{
-		GoldMine* goldMine = new GoldMine(pos, { 128,128 }, 12, (const GoldMineInfo&)entityInfo, listener);
+		GoldMine* goldMine = new GoldMine(pos, { 128,128 }, goldMineInfo.maxLife, (const GoldMineInfo&)entityInfo, listener);
 		goldMine->entityType = EntityType_StaticEntity;
 		goldMine->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		goldMine->staticEntityType = StaticEntityType_GoldMine;
@@ -548,7 +568,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_Runestone:
 	{
-		Runestone* runestone = new Runestone(pos, { 64,64 }, 12, (const RunestoneInfo&)entityInfo, listener);
+		Runestone* runestone = new Runestone(pos, { 64,64 }, 0, (const RunestoneInfo&)entityInfo, listener);
 		runestone->entityType = EntityType_StaticEntity;
 		runestone->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		runestone->staticEntityType = StaticEntityType_Runestone;
