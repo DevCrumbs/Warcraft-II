@@ -3,9 +3,11 @@
 
 #include "TownHall.h"
 
-TownHall::TownHall(fPoint pos, iPoint size, int life, const TownHallInfo& townHallInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), townHallInfo(townHallInfo)
+TownHall::TownHall(fPoint pos, iPoint size, int maxLife, const TownHallInfo& townHallInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), townHallInfo(townHallInfo)
 {
 	texArea = &townHallInfo.townHallCompleteTexArea;
+
+	currentLife = maxLife;
 }
 
 void TownHall::Move(float dt)

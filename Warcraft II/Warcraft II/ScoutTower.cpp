@@ -1,8 +1,10 @@
 #include "ScoutTower.h"
 
-ScoutTower::ScoutTower(fPoint pos, iPoint size, int life, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), scoutTowerInfo(scoutTowerInfo)
+ScoutTower::ScoutTower(fPoint pos, iPoint size, int maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), scoutTowerInfo(scoutTowerInfo)
 {
 	texArea = &scoutTowerInfo.completeTexArea;
+	currentLife = maxLife;
+
 }
 
 void ScoutTower::Move(float dt)

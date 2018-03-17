@@ -12,7 +12,7 @@ class Khadgar :public DynamicEntity
 {
 public:
 
-	Khadgar(fPoint pos, iPoint size, int life, float speed, const KhadgarInfo& khadgarInfo, j1Module* listener);
+	Khadgar(fPoint pos, iPoint size, int maxLife, float speed, const KhadgarInfo& khadgarInfo, j1Module* listener);
 	~Khadgar() {};
 
 	void Move(float dt);

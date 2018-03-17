@@ -12,7 +12,7 @@ class Dragon :public DynamicEntity
 {
 public:
 
-	Dragon(fPoint pos, iPoint size, int life, float speed, const DragonInfo& dragonInfo, j1Module* listener);
+	Dragon(fPoint pos, iPoint size, int maxLife, float speed, const DragonInfo& dragonInfo, j1Module* listener);
 	~Dragon() {};
 
 	void Move(float dt);

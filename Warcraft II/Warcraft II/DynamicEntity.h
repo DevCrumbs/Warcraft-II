@@ -34,7 +34,7 @@ class DynamicEntity :public Entity
 {
 public:
 
-	DynamicEntity(fPoint pos, iPoint size, int life, float speed, j1Module* listener);
+	DynamicEntity(fPoint pos, iPoint size, int maxLife, float speed, j1Module* listener);
 	virtual ~DynamicEntity() {};
 	virtual void Draw(SDL_Texture* sprites);
 	//virtual void DebugDrawSelected();
@@ -54,7 +54,6 @@ protected:
 	float speed = 1.0f;
 	Animation* animation = nullptr;
 
-	//j1Module* listener = nullptr;
 };
 
 #endif //__DynamicEntity_H__

@@ -1,7 +1,8 @@
 #include "Mage.h"
 
-Mage::Mage(fPoint pos, iPoint size, int life, float speed, const MageInfo& mageInfo, j1Module* listener) :DynamicEntity(pos, size, life, speed, listener), mageInfo(mageInfo)
+Mage::Mage(fPoint pos, iPoint size, int maxLife, float speed, const MageInfo& mageInfo, j1Module* listener) :DynamicEntity(pos, size, maxLife, speed, listener), mageInfo(mageInfo)
 {
+	currentLife = maxLife;
 
 }
 

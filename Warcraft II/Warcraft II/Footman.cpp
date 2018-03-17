@@ -1,7 +1,8 @@
 #include "Footman.h"
 
-Footman::Footman(fPoint pos, iPoint size, int life, float speed, const FootmanInfo& footmanInfo, j1Module* listener) :DynamicEntity(pos, size, life, speed, listener),footmanInfo(footmanInfo)
+Footman::Footman(fPoint pos, iPoint size, int maxLife, float speed, const FootmanInfo& footmanInfo, j1Module* listener) :DynamicEntity(pos, size, maxLife, speed, listener),footmanInfo(footmanInfo)
 {
+	currentLife = maxLife;
 
 }
 

@@ -18,7 +18,7 @@ class ChickenFarm :public StaticEntity
 {
 public:
 
-	ChickenFarm(fPoint pos, iPoint size, int life, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener = nullptr);
+	ChickenFarm(fPoint pos, iPoint size, int maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener = nullptr);
 	~ChickenFarm() {};
 
 	void Move(float dt);

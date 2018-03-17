@@ -13,7 +13,7 @@ class PlayerCannonTower :public StaticEntity
 {
 public:
 
-	PlayerCannonTower(fPoint pos, iPoint size, int life, const PlayerCannonTowerInfo& playerCannonTowerInfo, j1Module* listener);
+	PlayerCannonTower(fPoint pos, iPoint size, int maxLife, const PlayerCannonTowerInfo& playerCannonTowerInfo, j1Module* listener);
 	~PlayerCannonTower() {};
 
 	void Move(float dt);

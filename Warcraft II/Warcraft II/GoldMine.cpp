@@ -1,8 +1,10 @@
 #include "GoldMine.h"
 
-GoldMine::GoldMine(fPoint pos, iPoint size, int life, const GoldMineInfo& goldMineInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), goldMineInfo(goldMineInfo)
+GoldMine::GoldMine(fPoint pos, iPoint size, int maxLife, const GoldMineInfo& goldMineInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), goldMineInfo(goldMineInfo)
 {
 	texArea = &goldMineInfo.completeTexArea;
+	currentLife = maxLife;
+
 }
 
 void GoldMine::Move(float dt)

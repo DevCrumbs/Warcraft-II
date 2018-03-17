@@ -75,7 +75,7 @@ public:
 
 	//Alpha booleans
 	bool alphaChickenFarm = false;
-	bool alphaElvenLumber = false;
+	//bool alphaElvenLumber = false;
 	//bool alphaBlacksmith = false;
 	bool alphaStables = false;
 	//bool alphaChurch = false;

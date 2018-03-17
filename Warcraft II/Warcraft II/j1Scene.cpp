@@ -542,10 +542,8 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			App->entities->alphaChickenFarm = !App->entities->alphaChickenFarm;
 		}
 
-		if (UIelem == elvenLumberButton) {
-			UnLoadBuildingMenu();
-			App->entities->alphaElvenLumber = !App->entities->alphaElvenLumber;
-		}
+		//if (UIelem == elvenLumberButton) {}
+
 		//if (UIelem == blackSmithButton){} 
 		
 		if (UIelem == stablesButton) {

@@ -222,9 +222,6 @@
     <ClInclude Include="Khadgar.h">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
     </ClInclude>
-    <ClInclude Include="Paladin.h">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
-    </ClInclude>
     <ClInclude Include="Barracks.h">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClInclude>
@@ -257,6 +254,9 @@
     </ClInclude>
     <ClInclude Include="ElvenLumberMill.h">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Paladin.h">
+      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

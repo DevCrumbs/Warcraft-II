@@ -1,8 +1,10 @@
 #include "PlayerCannonTower.h"
 
-PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int life, const PlayerCannonTowerInfo& playerCannonTowerInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), playerCannonTowerInfo(playerCannonTowerInfo)
+PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int maxLife, const PlayerCannonTowerInfo& playerCannonTowerInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), playerCannonTowerInfo(playerCannonTowerInfo)
 {
 	texArea = &playerCannonTowerInfo.completeTexArea;
+	currentLife = maxLife;
+
 }
 
 void PlayerCannonTower::Move(float dt)

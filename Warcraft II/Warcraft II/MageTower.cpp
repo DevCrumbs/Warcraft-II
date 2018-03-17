@@ -2,9 +2,11 @@
 
 #include "MageTower.h"
 
-MageTower::MageTower(fPoint pos, iPoint size, int life, const MageTowerInfo& mageTowerInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), mageTowerInfo(mageTowerInfo)
+MageTower::MageTower(fPoint pos, iPoint size, int maxLife, const MageTowerInfo& mageTowerInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), mageTowerInfo(mageTowerInfo)
 {
 	texArea = &mageTowerInfo.completeTexArea;
+	currentLife = maxLife;
+
 }
 
 void MageTower::Move(float dt)

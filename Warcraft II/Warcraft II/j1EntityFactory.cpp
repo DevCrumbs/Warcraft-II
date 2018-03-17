@@ -234,10 +234,7 @@ void j1EntityFactory::Draw()
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &chickenFarmInfo.completeTexArea);
 	}
-	if (alphaElvenLumber) {
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mouseTilePos.x, mouseTilePos.y, &elvenLumberMillInfo.completeTexArea);
-	}
+	//if (alphaElvenLumber) {}
 	//if (alphaBlacksmith) {
 
 	//}
