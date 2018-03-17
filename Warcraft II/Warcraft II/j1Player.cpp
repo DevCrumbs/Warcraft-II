@@ -7,13 +7,7 @@
 #include "j1Render.h"
 #include "j1App.h"
 #include "j1EntityFactory.h"
-#include "j1Gui.h"
 #include "j1Scene.h"
-
-
-#include "UILabel.h"
-#include "UIButton.h"
-#include "UIImage.h"
 
 j1Player::j1Player() : j1Module()
 {
@@ -46,82 +40,78 @@ bool j1Player::Update(float dt) {
 	return true;
 }
 
-void j1Player::CheckIfPlaceBuilding() {
+iPoint j1Player::GetMousePos() {
 
-	// Mouse position (world and map coords)
 	int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-	float auxX = (int)mouseTilePos.x;
-	float auxY = (int)mouseTilePos.y;
+
+	return mouseTilePos;
+}
+
+void j1Player::CheckIfPlaceBuilding() {
+
+	// Mouse position (world and map coords)
+	float auxX = (int)GetMousePos().x;
+	float auxY = (int)GetMousePos().y;
 	fPoint buildingPos = { auxX, auxY };
+
+	StaticEntityType alphaBuilding = App->scene->GetAlphaBuilding();
 
 	//Creates static entities (buildings)
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
-		//Chicken Farm
-		if (App->entities->alphaChickenFarm) {
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-			chickenFarm = App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm), this);
-			App->entities->alphaChickenFarm = !App->entities->alphaChickenFarm;
-		}
-		//Elven Lumber Mill
-		if(App->entities->alphaElvenLumber){
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-			elvenLumberMill = App->entities->AddStaticEntity(StaticEntityType_ElvenLumberMill, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ElvenLumberMill), this);
-			App->entities->alphaElvenLumber = !App->entities->alphaElvenLumber;
-		}
-		//Blacksmith
-		//if (App->entities->alphaBlacksmith) {}
-		//Stables
-		if (App->entities->alphaStables) {
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-			stables = App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_Stables), this);
-			App->entities->alphaStables = !App->entities->alphaStables;
-		}
-		//Chuch
-		//if (App->entities->alphaChurch) {}
 
-		//Gryphon Aviary
-		if (App->entities->alphaGryphonAviary) {
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-			gryphonAviary = App->entities->AddStaticEntity(StaticEntityType_GryphonAviary, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_GryphonAviary), this);
-			App->entities->alphaGryphonAviary = !App->entities->alphaGryphonAviary;
-		}
-
-		//Mage Tower
-		if (App->entities->alphaMageTower) {
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-			mageTower = App->entities->AddStaticEntity(StaticEntityType_MageTower, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_MageTower), this);
-			App->entities->alphaMageTower = !App->entities->alphaMageTower;
-		}
-
-		//Scout Tower
-		if (App->entities->alphaScoutTower) {
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-			scoutTower = App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower), this);
-			App->entities->alphaScoutTower = !App->entities->alphaScoutTower;
-		}
-	}
-
-	if (!App->entities->alphaChickenFarm || !App->entities->alphaStables)
 		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 
-	//Vanish alpha building preview with mouse button right
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN) {
-		App->entities->alphaChickenFarm = false;
-		App->entities->alphaElvenLumber = false;
-		//App->entities->alphaBlacksmith = false;
-		App->entities->alphaStables = false;
-		//App->entities->alphaChurch = false;
-		App->entities->alphaGryphonAviary = false;
-		App->entities->alphaMageTower = false;
-		App->entities->alphaScoutTower = false;
-		//Guard Tower
-		//Cannon Tower
+		switch (alphaBuilding) {
+
+		case StaticEntityType_ChickenFarm:
+			App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm));
+			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			break;
+
+		case StaticEntityType_ElvenLumberMill:
+			App->entities->AddStaticEntity(StaticEntityType_ElvenLumberMill, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ElvenLumberMill));
+			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			break;
+
+		case StaticEntityType_Stables:
+			App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_Stables));
+			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			break;
+
+		case StaticEntityType_GryphonAviary:
+			App->entities->AddStaticEntity(StaticEntityType_GryphonAviary, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_GryphonAviary));
+			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			break;
+
+		case StaticEntityType_MageTower:
+			App->entities->AddStaticEntity(StaticEntityType_MageTower, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_MageTower));
+			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			break;
+
+		case StaticEntityType_ScoutTower:
+			App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower));
+			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+			break;
+
+		case StaticEntityType_NoType:
+			break;
+
+		default:
+			break;
+		}
 	}
 
+	//Vanish alpha building preview with mouse button right
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
+		App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+
+	//This makes that buildings on the scene aren't printed on alpha
+	if (alphaBuilding != StaticEntityType_MaxTypes)
+		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 }
 
 // Called before quitting

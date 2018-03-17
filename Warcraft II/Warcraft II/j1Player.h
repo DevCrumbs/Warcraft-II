@@ -3,7 +3,10 @@
 
 #include "j1Module.h"
 #include "Defs.h"
+
+#include "p2Point.h"
 #include "SDL\include\SDL_rect.h"
+
 
 #include <list>
 using namespace std;
@@ -33,6 +36,8 @@ public:
 	bool Update(float dt);
 
 	void CheckIfPlaceBuilding();
+
+	iPoint GetMousePos();
 
 	// Called before quitting
 	bool CleanUp();
