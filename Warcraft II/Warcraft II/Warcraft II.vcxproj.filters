@@ -253,7 +253,7 @@
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="ElvenLumberMill.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClInclude>
     <ClInclude Include="Paladin.h">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
@@ -429,7 +429,7 @@
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="ElvenLumberMill.cpp">
-      <Filter>Archivos de código fuente</Filter>
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

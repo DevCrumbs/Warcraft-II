@@ -73,18 +73,6 @@ public:
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);
 
-	//Alpha booleans
-	bool alphaChickenFarm = false;
-	//bool alphaElvenLumber = false;
-	//bool alphaBlacksmith = false;
-	bool alphaStables = false;
-	//bool alphaChurch = false;
-	bool alphaGryphonAviary = false;
-	bool alphaMageTower = false;
-	bool alphaScoutTower = false;
-	// Guard Tower
-	//Cannon Tower
-
 	list<Entity*> toSpawnEntities;
 	list<DynamicEntity*> activeDynamicEntities;
 	list<StaticEntity*> activeStaticEntities;

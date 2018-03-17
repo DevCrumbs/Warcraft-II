@@ -17,6 +17,7 @@ struct UIImage;
 struct UISlider;
 struct UICursor;
 class UIInputText;
+enum StaticEntityType;
 
 class j1Scene : public j1Module
 {
@@ -77,6 +78,8 @@ public:
 	bool pause = false;
 
 	UIImage* entitiesStats;
+	StaticEntityType GetAlphaBuilding();
+	void SetAplphaBuilding(StaticEntityType alphaBuilding);
 
 private:
 
@@ -110,6 +113,8 @@ private:
 	SDL_Scancode buttonMoveRight =  SDL_SCANCODE_UNKNOWN;
 	SDL_Scancode buttonLeaveGame =	SDL_SCANCODE_UNKNOWN;
 	SDL_Scancode buttonReloadMap = SDL_SCANCODE_UNKNOWN;
+
+	StaticEntityType alphaBuilding;
 
 };
 
