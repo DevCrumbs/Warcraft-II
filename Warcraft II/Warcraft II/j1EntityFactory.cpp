@@ -12,6 +12,7 @@
 #include "j1Pathfinding.h"
 #include "j1Collision.h"
 #include "j1Input.h"
+#include "j1Player.h"
 
 #include "Entity.h"
 #include "DynamicEntity.h"
@@ -222,14 +223,7 @@ void j1EntityFactory::Draw()
 		statEnt++;
 	}
 
-	//Mouse position
-	int x, y;
-	App->input->GetMousePosition(x, y);
-	iPoint mousePos = App->render->ScreenToWorld(x, y);
-	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
-	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-
-	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), mouseTilePos);
+	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
 
 }
 

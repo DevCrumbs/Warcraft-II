@@ -40,17 +40,23 @@ bool j1Player::Update(float dt) {
 	return true;
 }
 
+iPoint j1Player::GetMousePos() {
 
-void j1Player::CheckIfPlaceBuilding() {
-
-	// Mouse position (world and map coords)
 	int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-	float auxX = (int)mouseTilePos.x;
-	float auxY = (int)mouseTilePos.y;
+
+	return mouseTilePos;
+}
+
+void j1Player::CheckIfPlaceBuilding() {
+
+	// Mouse position (world and map coords)
+
+	float auxX = (int)GetMousePos().x;
+	float auxY = (int)GetMousePos().y;
 	fPoint buildingPos = { auxX, auxY };
 
 	StaticEntityType alphaBuilding = App->scene->GetAlphaBuilding();
