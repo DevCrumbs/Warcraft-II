@@ -403,13 +403,13 @@ bool j1EntityFactory::CleanUp()
 
 	return ret;
 }
-StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, iPoint size, const EntityInfo& entityInfo, j1Module* listener)
+StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener)
 {
 	switch (staticEntityType) {
 
 	case StaticEntityType_TownHall:
 	{
-		TownHall* townHall = new TownHall(pos, size, townHallInfo.townHallMaxLife, (const TownHallInfo&)entityInfo, listener);
+		TownHall* townHall = new TownHall(pos, { 128,128 }, townHallInfo.townHallMaxLife, (const TownHallInfo&)entityInfo, listener);
 		townHall->entityType = EntityType_StaticEntity;
 		townHall->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		townHall->staticEntityType = StaticEntityType_TownHall;
@@ -421,7 +421,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_ChickenFarm:
 	{
-		ChickenFarm* chickenFarm = new ChickenFarm(pos, size, chickenFarmInfo.maxLife, (const ChickenFarmInfo&)entityInfo, listener);
+		ChickenFarm* chickenFarm = new ChickenFarm(pos, { 64,64 }, chickenFarmInfo.maxLife, (const ChickenFarmInfo&)entityInfo, listener);
 		chickenFarm->entityType = EntityType_StaticEntity;
 		chickenFarm->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		chickenFarm->staticEntityType = StaticEntityType_ChickenFarm;
@@ -434,7 +434,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_Barracks:
 	{
-		Barracks* barracks = new Barracks(pos, size, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
+		Barracks* barracks = new Barracks(pos, { 128,128 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
 		barracks->entityType = EntityType_StaticEntity;
 		barracks->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		barracks->staticEntityType = StaticEntityType_Barracks;
@@ -446,7 +446,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_ElvenLumberMill:
 	{
-		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, size, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
+		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 128,128 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
 		elvenLumberMill->entityType = EntityType_StaticEntity;
 		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		elvenLumberMill->staticEntityType = StaticEntityType_Barracks;
@@ -458,7 +458,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_MageTower:
 	{
-		MageTower* mageTower = new MageTower(pos, size, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
+		MageTower* mageTower = new MageTower(pos, { 128,128 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
 		mageTower->entityType = EntityType_StaticEntity;
 		mageTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		mageTower->staticEntityType = StaticEntityType_MageTower;
@@ -470,7 +470,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_GryphonAviary:
 	{
-		GryphonAviary* gryphonAviary = new GryphonAviary(pos, size, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
+		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 128,128 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
 		gryphonAviary->entityType = EntityType_StaticEntity;
 		gryphonAviary->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		gryphonAviary->staticEntityType = StaticEntityType_GryphonAviary;
@@ -482,7 +482,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_Stables:
 	{
-		Stables* stables = new Stables(pos, size, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
+		Stables* stables = new Stables(pos, { 128,128 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
 		stables->entityType = EntityType_StaticEntity;
 		stables->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		stables->staticEntityType = StaticEntityType_Stables;
@@ -494,7 +494,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_ScoutTower:
 	{
-		ScoutTower* scoutTower = new ScoutTower(pos, size, scoutTowerInfo.maxLife, (const ScoutTowerInfo&)entityInfo, listener);
+		ScoutTower* scoutTower = new ScoutTower(pos, { 64,64 }, scoutTowerInfo.maxLife, (const ScoutTowerInfo&)entityInfo, listener);
 		scoutTower->entityType = EntityType_StaticEntity;
 		scoutTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		scoutTower->staticEntityType = StaticEntityType_ScoutTower;
@@ -506,7 +506,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_PlayerGuardTower:
 	{
-		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, size, 12, (const PlayerGuardTowerInfo&)entityInfo, listener);
+		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, { 64,64 }, 12, (const PlayerGuardTowerInfo&)entityInfo, listener);
 		playerGuardTower->entityType = EntityType_StaticEntity;
 		playerGuardTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		playerGuardTower->staticEntityType = StaticEntityType_PlayerGuardTower;
@@ -518,7 +518,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_PlayerCannonTower:
 	{
-		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, size, 12, (const PlayerCannonTowerInfo&)entityInfo, listener);
+		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, { 64,64 }, 12, (const PlayerCannonTowerInfo&)entityInfo, listener);
 		playerCannonTower->entityType = EntityType_StaticEntity;
 		playerCannonTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		playerCannonTower->staticEntityType = StaticEntityType_PlayerCannonTower;
@@ -530,7 +530,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_GoldMine:
 	{
-		GoldMine* goldMine = new GoldMine(pos, size, 12, (const GoldMineInfo&)entityInfo, listener);
+		GoldMine* goldMine = new GoldMine(pos, { 128,128 }, 12, (const GoldMineInfo&)entityInfo, listener);
 		goldMine->entityType = EntityType_StaticEntity;
 		goldMine->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		goldMine->staticEntityType = StaticEntityType_GoldMine;
@@ -542,7 +542,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_Runestone:
 	{
-		Runestone* runestone = new Runestone(pos, size, 12, (const RunestoneInfo&)entityInfo, listener);
+		Runestone* runestone = new Runestone(pos, { 64,64 }, 12, (const RunestoneInfo&)entityInfo, listener);
 		runestone->entityType = EntityType_StaticEntity;
 		runestone->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		runestone->staticEntityType = StaticEntityType_Runestone;
@@ -554,7 +554,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_WatchTower:
 	{
-		WatchTower* watchTower = new WatchTower(pos, size, 12, (const WatchTowerInfo&)entityInfo, listener);
+		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, 12, (const WatchTowerInfo&)entityInfo, listener);
 		watchTower->entityType = EntityType_StaticEntity;
 		watchTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		watchTower->staticEntityType = StaticEntityType_WatchTower;
@@ -566,7 +566,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_EnemyGuardTower:
 	{
-		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, size, 12, (const EnemyGuardTowerInfo&)entityInfo, listener);
+		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, 12, (const EnemyGuardTowerInfo&)entityInfo, listener);
 		enemyGuardTower->entityType = EntityType_StaticEntity;
 		enemyGuardTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyGuardTower->staticEntityType = StaticEntityType_EnemyGuardTower;
@@ -578,7 +578,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_EnemyCannonTower:
 	{
-		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, size, 12, (const EnemyCannonTowerInfo&)entityInfo, listener);
+		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, 12, (const EnemyCannonTowerInfo&)entityInfo, listener);
 		enemyCannonTower->entityType = EntityType_StaticEntity;
 		enemyCannonTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyCannonTower->staticEntityType = StaticEntityType_EnemyCannonTower;
