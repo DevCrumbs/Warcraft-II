@@ -77,6 +77,7 @@ public:
 
 	bool pause = false;
 
+	UIImage* entitiesStats;
 	StaticEntityType GetAlphaBuilding();
 	void SetAplphaBuilding(StaticEntityType alphaBuilding);
 
