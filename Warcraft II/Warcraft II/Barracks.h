@@ -20,7 +20,7 @@ class Barracks :public StaticEntity
 {
 public:
 
-	Barracks(fPoint pos, iPoint size, int life, const BarracksInfo& barracksInfo);
+	Barracks(fPoint pos, iPoint size, int life, const BarracksInfo& barracksInfo, j1Module* listener);
 	~Barracks() {};
 
 	void Move(float dt);

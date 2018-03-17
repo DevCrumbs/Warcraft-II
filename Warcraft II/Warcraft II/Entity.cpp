@@ -5,7 +5,7 @@
 #include "j1Render.h"
 #include "Entity.h"
 
-Entity::Entity(fPoint pos, iPoint size, int life) : pos(pos), size(size), life(life) {}
+Entity::Entity(fPoint pos, iPoint size, int life, j1Module* listener) : pos(pos), size(size), life(life), listener(listener) {}
 
 Entity::~Entity() {}
 

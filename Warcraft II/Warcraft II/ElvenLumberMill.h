@@ -12,7 +12,7 @@ struct ElvenLumberMillInfo
 class ElvenLumberMill : public StaticEntity
 {
 public:
-	ElvenLumberMill(fPoint pos, iPoint size, int life, const ElvenLumberMillInfo& elvenLumberMillInfo);
+	ElvenLumberMill(fPoint pos, iPoint size, int life, const ElvenLumberMillInfo& elvenLumberMillInfo, j1Module* listener);
 	~ElvenLumberMill() {};
 
 	void Move(float dt);
@@ -24,6 +24,8 @@ public:
 private:
 
 	ElvenLumberMillInfo elvenLumberMillInfo;
+
+	EntitiesEvent EntityEvent = EntitiesEvent_Created;
 };
 
 #endif

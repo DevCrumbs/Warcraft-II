@@ -5,7 +5,7 @@
 #include "j1Render.h"
 #include "DynamicEntity.h"
 
-DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int life, float speed) : Entity(pos, size, life), speed(speed) {}
+DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int life, float speed, j1Module* listener) : Entity(pos, size, life, listener), speed(speed) {}
 
 void DynamicEntity::Draw(SDL_Texture* sprites)
 {

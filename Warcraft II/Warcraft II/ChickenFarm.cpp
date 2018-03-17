@@ -1,13 +1,15 @@
 #include "ChickenFarm.h"
 
-ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int life, const ChickenFarmInfo& chickenFarmInfo) :StaticEntity(pos, size, life), chickenFarmInfo(chickenFarmInfo) 
+
+ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int life, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), chickenFarmInfo(chickenFarmInfo)
 {
 	texArea = &chickenFarmInfo.completeTexArea;
 }
 
 void ChickenFarm::Move(float dt)
 {
-
+	if (listener != nullptr)
+		HandleInput(EntityEvent);
 }
 
 // Animations

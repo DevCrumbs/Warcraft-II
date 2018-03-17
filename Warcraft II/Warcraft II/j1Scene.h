@@ -15,6 +15,7 @@ struct UILabel;
 struct UIButton;
 struct UIImage;
 struct UISlider;
+struct UICursor;
 class UIInputText;
 enum StaticEntityType;
 
@@ -85,6 +86,7 @@ private:
 	UIButton * buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
 	UILabel * buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
 	UIImage * buildingMenu;
+	UICursor* mouseText;
 
 	bool buildingMenuOn = false;
 

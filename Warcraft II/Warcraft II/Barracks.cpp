@@ -3,7 +3,7 @@
 
 #include "Barracks.h"
 
-Barracks::Barracks(fPoint pos, iPoint size, int life, const BarracksInfo& barracksInfo) :StaticEntity(pos, size, life), barracksInfo(barracksInfo) 
+Barracks::Barracks(fPoint pos, iPoint size, int life, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), barracksInfo(barracksInfo)
 {
 	texArea = &barracksInfo.barracksCompleteTexArea;
 }

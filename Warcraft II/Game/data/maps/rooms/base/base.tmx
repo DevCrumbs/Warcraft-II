@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="32" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" name="Wasteland" tilewidth="32" tileheight="32" spacing="1" tilecount="380" columns="19">
-  <image source="summerTiles.png" width="626" height="659"/>
+  <image source="SpriteSheet/SpriteSheet/Tiles/Wasteland Tiles/PC Computer - Warcraft 2 - Wasteland Tiles.png" width="626" height="659"/>
   <terraintypes>
    <terrain name="Ground" tile="-1"/>
    <terrain name="DarkGorund" tile="-1"/>

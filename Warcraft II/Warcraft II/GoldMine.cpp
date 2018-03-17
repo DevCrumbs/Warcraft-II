@@ -1,6 +1,6 @@
 #include "GoldMine.h"
 
-GoldMine::GoldMine(fPoint pos, iPoint size, int life, const GoldMineInfo& goldMineInfo) :StaticEntity(pos, size, life), goldMineInfo(goldMineInfo) 
+GoldMine::GoldMine(fPoint pos, iPoint size, int life, const GoldMineInfo& goldMineInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), goldMineInfo(goldMineInfo)
 {
 	texArea = &goldMineInfo.completeTexArea;
 }

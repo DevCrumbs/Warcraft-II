@@ -155,6 +155,100 @@ bool j1Player::Load(pugi::xml_node& save)
 	fx = save.child("gate").attribute("fx").as_bool();
 	}
 	*/
+	
 
 	return ret;
+
+}
+
+
+void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent) {
+
+	switch (entitiesEvent)
+	{
+	case EntitiesEvent_None:
+		break;
+	case EntitiesEvent_RightClick:
+		DeleteEntitiesMenu();
+		break;
+	case EntitiesEvent_LeftClick:
+		DeleteEntitiesMenu();
+		if (staticEntity == chickenFarm)
+			MakeEntitiesMenu("400/400", "Chicken Farm", { 241,34,50,41 });
+
+		else if (staticEntity == gryphonAviary)
+			MakeEntitiesMenu("500/500", "Gryphon Aviary", { 394,160,50,41 });
+
+		else if (staticEntity == mageTower)
+			MakeEntitiesMenu("500/500", "Magic Tower", { 394,202,50,41 });
+
+		else if (staticEntity == scoutTower)
+			MakeEntitiesMenu("150/150", "Scout Tower", { 394,34,50,41 });
+
+		else if (staticEntity == stables)
+			MakeEntitiesMenu("500/500", "Stables", { 241,160,50,41 });
+
+		else if (staticEntity == elvenLumberMill)
+			MakeEntitiesMenu("600/600", "Elven Lumber Mill", { 241,76,50,41 });
+	
+		break;
+	case EntitiesEvent_Hover:
+		break;
+	case EntitiesEvent_Leave:
+		break;
+	case EntitiesEvent_Created:
+		DeleteEntitiesMenu();
+		if (staticEntity == chickenFarm)
+			MakeEntitiesMenu("400/400", "Chicken Farm", { 241,34,50,41 });
+
+		else if (staticEntity == gryphonAviary)
+			MakeEntitiesMenu("500/500", "Gryphon Aviary", { 394,160,50,41 });
+
+		else if (staticEntity == mageTower)
+			MakeEntitiesMenu("500/500", "Magic Tower", { 394,202,50,41 });
+
+		else if (staticEntity == scoutTower)
+			MakeEntitiesMenu("150/150", "Scout Tower", { 394,34,50,41 });
+
+		else if (staticEntity == stables)
+			MakeEntitiesMenu("500/500", "Stables", { 241,160,50,41 });
+
+		else if (staticEntity == elvenLumberMill)
+			MakeEntitiesMenu("600/600", "Elven Lumber Mill", { 241,76,50,41 });
+
+
+		break;
+	default:
+		break;
+	}
+
+}
+
+void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim) {
+	
+
+	UILabel_Info HPinfo;
+	HPinfo.text = HP_text;
+	HPinfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+	HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, HPinfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+	UILabel_Info nameInfo;
+	nameInfo.text = entityName_text;
+	HPinfo.verticalOrientation = VERTICAL_POS_TOP;
+	entityName = App->gui->CreateUILabel({ 5,5 }, nameInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+	UIImage_Info iconInfo;
+	iconInfo.texArea = iconDim;
+	iconInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	iconInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h/2 }, iconInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+}
+
+void j1Player::DeleteEntitiesMenu() {
+
+	App->gui->DestroyElement(HP);
+	App->gui->DestroyElement(entityName);
+	App->gui->DestroyElement(entityIcon);
+
 }

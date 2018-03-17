@@ -1,6 +1,6 @@
 #include "WatchTower.h"
 
-WatchTower::WatchTower(fPoint pos, iPoint size, int life, const WatchTowerInfo& watchTowerInfo) :StaticEntity(pos, size, life), watchTowerInfo(watchTowerInfo) 
+WatchTower::WatchTower(fPoint pos, iPoint size, int life, const WatchTowerInfo& watchTowerInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), watchTowerInfo(watchTowerInfo)
 {
 	texArea = &watchTowerInfo.completeTexArea;
 }

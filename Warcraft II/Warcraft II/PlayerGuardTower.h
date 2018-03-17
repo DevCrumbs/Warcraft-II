@@ -13,7 +13,7 @@ class PlayerGuardTower :public StaticEntity
 {
 public:
 
-	PlayerGuardTower(fPoint pos, iPoint size, int life, const PlayerGuardTowerInfo& playerGuardTowerInfo);
+	PlayerGuardTower(fPoint pos, iPoint size, int life, const PlayerGuardTowerInfo& playerGuardTowerInfo, j1Module* listener);
 	~PlayerGuardTower() {};
 
 	void Move(float dt);
@@ -25,6 +25,9 @@ public:
 private:
 
 	PlayerGuardTowerInfo playerGuardTowerInfo;
+
+	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+
 };
 
 #endif //__PlayerGuardTower_H__

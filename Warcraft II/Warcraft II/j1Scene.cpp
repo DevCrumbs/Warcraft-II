@@ -166,7 +166,7 @@ bool j1Scene::Update(float dt)
 
 
 	// Draw
-	//App->map->Draw(); // map
+	App->map->Draw(); // map
 	App->entities->Draw(); // entities
 
 	// Debug pathfinding ------------------------------
@@ -179,14 +179,14 @@ bool j1Scene::Update(float dt)
 
 	App->render->Blit(debugTex, p.x, p.y);
 
-	const vector<iPoint>* path = App->pathfinding->GetLastPath();
+	//const vector<iPoint>* path = App->pathfinding->GetLastPath();
 
-	for (uint i = 0; i < path->size(); ++i)
+	/*for (uint i = 0; i < path->size(); ++i)
 	{
 		iPoint pos = App->map->MapToWorld(path->at(i).x, path->at(i).y);
 		App->render->Blit(debugTex, pos.x, pos.y);
 	}
-
+	*/
 
 	DebugKeys();
 	CheckCameraMovement(dt);
@@ -351,6 +351,16 @@ void j1Scene::LoadInGameUI()
 	buildingLabelInfo.normalColor = White_;
 	buildingLabelInfo.text = "Buildings";
 	buildingLabel = App->gui->CreateUILabel({ 27,12 }, buildingLabelInfo, this, buildingButton);
+
+
+	UIImage_Info entitiesInfo;
+	entitiesInfo.texArea = { 0, 565, 371, 82 };
+	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
+
+	UICursor_Info mouseInfo;
+	mouseInfo.default = { 243, 525, 28, 33 };
+	mouseInfo.onClick = { 243, 525, 28, 33 };
+	mouseText = App->gui->CreateUICursor(mouseInfo, this);
 
 }
 

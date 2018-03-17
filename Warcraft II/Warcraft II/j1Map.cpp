@@ -17,6 +17,8 @@
 #include "j1Map.h"
 #include "j1Window.h"
 #include "j1EntityFactory.h"
+#include "Entity.h"
+#include "StaticEntity.h"
 
 
 j1Map::j1Map() : j1Module(), isMapLoaded(false)
@@ -288,6 +290,7 @@ bool j1Map::CleanUp()
 	// Clean up the pugui tree
 	mapFile.reset();
 
+
 	return ret;
 }
 
@@ -366,6 +369,12 @@ bool j1Map::UnLoad()
 
 	collisionLayer = nullptr;
 	aboveLayer = nullptr;
+
+	for (list<StaticEntity*>::iterator iterator = App->entities->activeStaticEntities.begin(); iterator != App->entities->activeStaticEntities.end(); ++iterator)
+	{
+		delete (*iterator);
+	}
+	App->entities->activeStaticEntities.clear();
 
 	return ret;
 }
@@ -681,7 +690,8 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->width = node.attribute("width").as_uint();
 	layer->height = node.attribute("height").as_uint();
 	LoadProperties(node, layer->properties);
-	layer->data = new uint[layer->width * layer->height];
+	layer->sizeData = layer->width * layer->height;
+	layer->data = new uint[layer->sizeData];
 
 	memset(layer->data, 0, layer->width * layer->height);
 
@@ -1023,22 +1033,22 @@ bool j1Map::CreateCorridor(Room room, DIRECTION direction)
 	case DIRECTION_NORTH:
 		corridorX = roomX + (((tileNoX / 2) - CORRIDOR_WIDTH) * tileWidth);
 		corridorY = roomY - (CORRIDOR_HEIGHT * tileHeight);
-		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
+		ret = Load("data/maps/corridors/corridorV.tmx", corridorX, corridorY);
 		break;
 	case DIRECTION_EAST:
 		corridorX = roomX + (tileNoX * tileWidth);
 		corridorY = roomY + (((tileNoY / 2) - CORRIDOR_WIDTH) * tileWidth);
-		ret = Load("data/maps/corridors/corridorV.tmx", corridorX, corridorY);
+		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
 		break;
 	case DIRECTION_SOUTH:
 		corridorX = roomX + (((tileNoX / 2) - CORRIDOR_WIDTH) * tileWidth);
 		corridorY = roomY + (tileNoY * tileHeight);
-		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
+		ret = Load("data/maps/corridors/corridorV.tmx", corridorX, corridorY);
 		break;
 	case DIRECTION_WEST:
 		corridorX = roomX - (CORRIDOR_HEIGHT * tileWidth);
 		corridorY = roomY + (((tileNoY / 2) - CORRIDOR_WIDTH) * tileWidth);
-		ret = Load("data/maps/corridors/corridorV.tmx", corridorX, corridorY);
+		ret = Load("data/maps/corridors/corridorH.tmx", corridorX, corridorY);
 		break;
 	default:
 		break;
@@ -1069,6 +1079,12 @@ bool j1Map::LoadLogic()
 						int x = i % (*layerIterator)->width;
 						int y = i / (*layerIterator)->width;
 
+						iPoint auxPos = MapToWorld(x, y);
+						fPoint pos; 
+						pos.x = auxPos.x + (*iterator).x;
+						pos.y = auxPos.y + (*iterator).y;
+						/// Need to chanfe entity type
+						App->entities->AddStaticEntity((StaticEntityType)2, pos, { 10,10 }, 10, App->entities->GetBuildingInfo((StaticEntityType)2));
 //						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);
 					}
 				}
