@@ -1084,7 +1084,7 @@ bool j1Map::LoadLogic()
 						pos.x = auxPos.x + (*iterator).x;
 						pos.y = auxPos.y + (*iterator).y;
 						/// Need to chanfe entity type
-						App->entities->AddStaticEntity((StaticEntityType)2, pos, { 10,10 }, 10, App->entities->GetBuildingInfo((StaticEntityType)2));
+						App->entities->AddStaticEntity((StaticEntityType)2, pos, { 10,10 }, App->entities->GetBuildingInfo((StaticEntityType)2));
 //						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);
 					}
 				}

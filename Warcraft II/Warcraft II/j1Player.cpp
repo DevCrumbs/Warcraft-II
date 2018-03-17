@@ -119,31 +119,31 @@ void j1Player::CheckIfPlaceBuilding() {
 		switch (alphaBuilding) {
 
 		case StaticEntityType_ChickenFarm:
-			chickenFarm = App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 400, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm),this);
+			chickenFarm = App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm),this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			chickenFarm->SetStringLife(chickenFarm->GetCurrLife(), chickenFarm->GetMaxLife());
 			break;
 
 		case StaticEntityType_Stables:
-			stables = App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, { 128,128 }, 500, App->entities->GetBuildingInfo(StaticEntityType_Stables),this);
+			stables = App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, { 128,128 }, App->entities->GetBuildingInfo(StaticEntityType_Stables),this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
 			break;
 
 		case StaticEntityType_GryphonAviary:
-			gryphonAviary = App->entities->AddStaticEntity(StaticEntityType_GryphonAviary, buildingPos, { 128,128 }, 500, App->entities->GetBuildingInfo(StaticEntityType_GryphonAviary),this);
+			gryphonAviary = App->entities->AddStaticEntity(StaticEntityType_GryphonAviary, buildingPos, { 128,128 }, App->entities->GetBuildingInfo(StaticEntityType_GryphonAviary),this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
 			break;
 
 		case StaticEntityType_MageTower:
-			mageTower = App->entities->AddStaticEntity(StaticEntityType_MageTower, buildingPos, { 128,128 }, 500, App->entities->GetBuildingInfo(StaticEntityType_MageTower),this);
+			mageTower = App->entities->AddStaticEntity(StaticEntityType_MageTower, buildingPos, { 128,128 }, App->entities->GetBuildingInfo(StaticEntityType_MageTower),this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
 			break;
 
 		case StaticEntityType_ScoutTower:
-			scoutTower = App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, { 64,64 }, 150, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower),this);
+			scoutTower = App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, { 64,64 }, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower),this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			scoutTower->SetStringLife(scoutTower->GetCurrLife(), scoutTower->GetMaxLife());
 			break;

@@ -7,8 +7,8 @@
   </app>
 	
   <renderer>
-    <vsync value="false"/>
-    <CapFrames value="5500"/>
+    <vsync value="true"/>
+    <CapFrames value="60"/>
   </renderer>
 
   <window>
@@ -73,13 +73,15 @@
     <staticEntities>
       
       <townHall>
+        <maxLife value = "1200"/>
         <sprites>
           <complete x="265" y="5" w="128" h="128"/>
-          <inProgress x="265" y="133" w="128" h="128"/>  
+          <inProgress x="265" y="133" w="128" h="128"/>
       </sprites>
       </townHall>
       
       <keep>
+        <maxLife value = "1400"/>
         <sprites>
           <complete x="2" y="2" w="128" h="128"/>
           <inProgress x="2" y="130" w="128" h="128"/>  
@@ -87,6 +89,7 @@
       </keep>
       
       <castle>
+        <maxLife value = "1400"/>
         <sprites>
           <complete x="135" y="4" w="128" h="128"/>
           <inProgress x="135" y="132" w="128" h="128"/>  
@@ -94,6 +97,7 @@
       </castle>
       
       <chickenFarm>
+        <maxLife value = "400"/>
         <sprites>
           <complete x="398" y="4" w="64" h="64"/>
           <inProgress x="398" y="68" w="64" h="64"/>  
@@ -101,6 +105,7 @@
       </chickenFarm>
       
       <scoutTower>
+        <maxLife value = "150"/>
         <sprites>
           <complete x="465" y="4" w="64" h="64"/>
           <inProgress x="465" y="68" w="64" h="64"/>  
@@ -108,18 +113,21 @@
       </scoutTower>
     
       <barracks>
+        <maxLife value = "800"/>
         <sprites>
           <complete x="530" y="111" w="128" h="128"/>
         </sprites>
       </barracks>
        
       <barracks2>
+        <maxLife value = "1200"/>
         <sprites>
           <complete x="530" y="0" w="128" h="128"/>
         </sprites>
       </barracks2>
 
       <elvenLumberMill>
+        <maxLife value = "600"/>
         <sprites>
           <complete x="191" y="260" w="128" h="128"/>
           <inProgress x="191" y="405" w="128" h="128"/>
@@ -127,13 +135,15 @@
       </elvenLumberMill>
 
       <mageTower>
+        <maxLife value = "500"/>
         <sprites>
           <complete x="572" y="226" w="128" h="128"/>
           <inProgress x="572" y="340" w="128" h="128"/>
         </sprites>
       </mageTower>
-      
+
       <gryphonAviary>
+        <maxLife value = "500"/>
         <sprites>
           <complete x="196" y="523" w="128" h="128"/>
           <inProgress x="29" y="523" w="128" h="128"/>
@@ -141,6 +151,7 @@
       </gryphonAviary>
           
       <stables>
+        <maxLife value = "700"/>
         <sprites>
           <complete x="317" y="272" w="128" h="128"/>
           <inProgress x="317" y="407" w="128" h="128"/>

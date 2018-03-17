@@ -5,7 +5,6 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int maxLife, const ChickenFarm
 {
 	texArea = &chickenFarmInfo.completeTexArea;
 	currentLife = maxLife;
-
 }
 
 void ChickenFarm::Move(float dt)
