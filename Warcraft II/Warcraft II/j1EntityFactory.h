@@ -72,12 +72,12 @@ public:
 
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);
-	
-private:
 
 	list<Entity*> toSpawnEntities;
 	list<DynamicEntity*> activeDynamicEntities;
 	list<StaticEntity*> activeStaticEntities;
+
+private:
 
 	// Textures
 	/// Dynamic entities

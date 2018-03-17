@@ -8,6 +8,11 @@
 #include "j1App.h"
 #include "j1EntityFactory.h"
 #include "j1Scene.h"
+#include "j1Gui.h"
+
+#include "UILabel.h"
+#include "UIButton.h"
+#include "UIImage.h"
 
 j1Player::j1Player() : j1Module()
 {
