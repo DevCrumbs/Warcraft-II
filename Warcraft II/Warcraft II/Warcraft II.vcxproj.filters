@@ -256,7 +256,7 @@
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="ElvenLumberMill.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -429,7 +429,7 @@
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="ElvenLumberMill.cpp">
-      <Filter>Archivos de código fuente</Filter>
+      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

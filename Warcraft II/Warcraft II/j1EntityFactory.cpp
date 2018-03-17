@@ -223,6 +223,7 @@ void j1EntityFactory::Draw()
 		statEnt++;
 	}
 
+	//Checks if there needs to be drawn a building on alpha.
 	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
 
 }

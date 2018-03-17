@@ -54,7 +54,6 @@ iPoint j1Player::GetMousePos() {
 void j1Player::CheckIfPlaceBuilding() {
 
 	// Mouse position (world and map coords)
-
 	float auxX = (int)GetMousePos().x;
 	float auxY = (int)GetMousePos().y;
 	fPoint buildingPos = { auxX, auxY };
@@ -63,46 +62,42 @@ void j1Player::CheckIfPlaceBuilding() {
 
 	//Creates static entities (buildings)
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+
+		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+
 		switch (alphaBuilding) {
 
 		case StaticEntityType_ChickenFarm:
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 			App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm));
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			break;
 
 		case StaticEntityType_ElvenLumberMill:
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 			App->entities->AddStaticEntity(StaticEntityType_ElvenLumberMill, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ElvenLumberMill));
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			break;
 
 		case StaticEntityType_Stables:
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 			App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_Stables));
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			break;
 
 		case StaticEntityType_GryphonAviary:
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 			App->entities->AddStaticEntity(StaticEntityType_GryphonAviary, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_GryphonAviary));
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			break;
 
 		case StaticEntityType_MageTower:
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 			App->entities->AddStaticEntity(StaticEntityType_MageTower, buildingPos, { 128,128 }, 30, App->entities->GetBuildingInfo(StaticEntityType_MageTower));
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			break;
 
 		case StaticEntityType_ScoutTower:
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 			App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, { 64,64 }, 30, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower));
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 			break;
 
 		case StaticEntityType_NoType:
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 			break;
 
 		default:
@@ -111,11 +106,11 @@ void j1Player::CheckIfPlaceBuilding() {
 	}
 
 	//Vanish alpha building preview with mouse button right
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN) {
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		App->scene->SetAplphaBuilding(StaticEntityType_NoType);
-	}
 
-	if (alphaBuilding == StaticEntityType_NoType)
+	//This makes that buildings on the scene aren't printed on alpha
+	if (alphaBuilding != StaticEntityType_MaxTypes)
 		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 }
 
