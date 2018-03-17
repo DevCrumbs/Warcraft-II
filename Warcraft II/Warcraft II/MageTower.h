@@ -7,6 +7,7 @@ struct MageTowerInfo
 {
 	SDL_Rect completeTexArea = { 0,0,0,0 };
 	SDL_Rect inProgressTexArea = { 0,0,0,0 };
+	int maxLife = 0;
 };
 
 class MageTower :public StaticEntity
