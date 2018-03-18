@@ -181,6 +181,20 @@
             <inProgress x="317" y="407" w="128" h="128"/>
           </sprites>
         </stables>
+
+        <constructionPlanks>
+          
+          <bigTilePlanks>
+            <first x="376" y="529" w="128" h="128"/>
+            <second x="565" y="485" w="128" h="128"/>
+          </bigTilePlanks>
+
+          <smallTilePlanks>
+            <first x="405" y="561" w="64" h="64"/>
+            <second x="597" y="517" w="64" h="64"/>
+          </smallTilePlanks>
+          
+        </constructionPlanks>
         
       </humanBuildings>
 
