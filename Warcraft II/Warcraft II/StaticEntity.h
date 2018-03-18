@@ -50,6 +50,8 @@ enum StaticEntityCategory
 	StaticEntityCategory_MaxCategories
 };
 
+
+
 class StaticEntity :public Entity
 {
 public:
@@ -72,6 +74,9 @@ public:
 protected:
 
 	const SDL_Rect* texArea = nullptr;
+	j1Timer constructionTimer;
+	uint constructionTime = 0;
+	bool isBuilt = false;
 
 };
 

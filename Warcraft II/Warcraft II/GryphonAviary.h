@@ -7,6 +7,8 @@ struct GryphonAviaryInfo
 {
 	SDL_Rect completeTexArea = { 0,0,0,0 };
 	SDL_Rect inProgressTexArea = { 0,0,0,0 };
+	SDL_Rect constructionPlanks1 = { 0,0,0,0 };
+	SDL_Rect constructionPlanks2 = { 0,0,0,0 };
 	int maxLife = 0;
 };
 
@@ -26,7 +28,6 @@ public:
 private:
 
 	GryphonAviaryInfo gryphonAviaryInfo;
-
 	EntitiesEvent EntityEvent = EntitiesEvent_Created;
 };
 
