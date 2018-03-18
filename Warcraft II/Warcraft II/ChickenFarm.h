@@ -36,6 +36,8 @@ private:
 	StaticEntityType type = StaticEntityType_ChickenFarm;
 
 	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+
+	ConstructionBuildingInfo constructionPlanks;
 };
 
 #endif //__ChickenFarm_H__
