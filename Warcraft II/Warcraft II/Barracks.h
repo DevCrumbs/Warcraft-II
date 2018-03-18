@@ -14,6 +14,8 @@ struct BarracksInfo
 	BarracksType barracksType = BarracksType_Barracks;
 	SDL_Rect barracksCompleteTexArea = { 0,0,0,0 };
 	SDL_Rect barracks2CompleteTexArea = { 0,0,0,0 };
+	SDL_Rect constructionPlanks1 = { 0,0,0,0 };
+	SDL_Rect constructionPlanks2 = { 0,0,0,0 };
 	int barracks1MaxLife = 0;
 	int barracks2MaxLife = 0;
 };
@@ -34,7 +36,6 @@ public:
 private:
 
 	BarracksInfo barracksInfo;
-	ConstructionBuildingInfo constructionPlanks;
 };
 
 #endif //__Barracks_H__

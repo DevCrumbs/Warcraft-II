@@ -2,7 +2,7 @@
 
 ScoutTower::ScoutTower(fPoint pos, iPoint size, int maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), scoutTowerInfo(scoutTowerInfo)
 {
-	texArea = &constructionPlanks.constructionPlanksSmall1;
+	texArea = &scoutTowerInfo.constructionPlanks1;
 	currentLife = maxLife;
 	this->constructionTimer.Start();
 }
@@ -13,6 +13,9 @@ void ScoutTower::Move(float dt)
 		HandleInput(EntityEvent);
 
 	UpdateAnimations(dt);
+
+	if (constructionTimer.Read() >= (constructionTime * 1000))
+		isBuilt = true;
 }
 
 // Animations
@@ -23,7 +26,7 @@ void ScoutTower::LoadAnimationsSpeed()
 void ScoutTower::UpdateAnimations(float dt)
 {
 	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
-		texArea = &constructionPlanks.constructionPlanksSmall2;
+		texArea = &scoutTowerInfo.constructionPlanks2;
 
 	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
 		texArea = &scoutTowerInfo.inProgressTexArea;

@@ -41,14 +41,6 @@ enum StaticEntityType
 	StaticEntityType_MaxTypes
 };
 
-struct ConstructionBuildingInfo
-{
-	SDL_Rect constructionPlanksBig1 = { 376,529,128,128 };
-	SDL_Rect constructionPlanksBig2 = { 565,485,128,128 };
-	SDL_Rect constructionPlanksSmall1 = { 405,561,64,64 };
-	SDL_Rect constructionPlanksSmall2 = { 597,517,64,64 };
-};
-
 enum StaticEntityCategory
 {
 	StaticEntityCategory_NoCategory,
@@ -84,6 +76,7 @@ protected:
 	const SDL_Rect* texArea = nullptr;
 	j1Timer constructionTimer;
 	uint constructionTime = 0;
+	bool isBuilt = false;
 
 };
 

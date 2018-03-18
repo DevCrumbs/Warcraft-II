@@ -17,7 +17,6 @@ void StaticEntity::Draw(SDL_Texture* sprites)
 	App->render->Blit(sprites, pos.x, pos.y, texArea);
 }
 
-
 void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 {
 	iPoint mouse_pos;

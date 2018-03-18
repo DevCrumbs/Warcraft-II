@@ -2,7 +2,7 @@
 
 PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int maxLife, const PlayerCannonTowerInfo& playerCannonTowerInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), playerCannonTowerInfo(playerCannonTowerInfo)
 {
-	texArea = &constructionPlanks.constructionPlanksSmall2;
+	texArea = &playerCannonTowerInfo.constructionPlanks1;
 	currentLife = maxLife;
 	this->constructionTimer.Start();
 }
@@ -13,6 +13,9 @@ void PlayerCannonTower::Move(float dt)
 		HandleInput(EntityEvent);
 
 	UpdateAnimations(dt);
+
+	if (constructionTimer.Read() >= (constructionTime * 1000))
+		isBuilt = true;
 }
 
 // Animations
@@ -23,7 +26,7 @@ void PlayerCannonTower::LoadAnimationsSpeed()
 void PlayerCannonTower::UpdateAnimations(float dt)
 {
 	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
-		texArea = &constructionPlanks.constructionPlanksSmall2;
+		texArea = &playerCannonTowerInfo.constructionPlanks2;
 
 	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
 		texArea = &playerCannonTowerInfo.inProgressTexArea;
