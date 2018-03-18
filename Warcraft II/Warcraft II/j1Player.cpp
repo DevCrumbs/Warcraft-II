@@ -46,6 +46,7 @@ bool j1Player::Update(float dt) {
 		if (stables != nullptr) {
 			Entity* ent = (Entity*)stables;
 			ent->SetDamageLife(20);
+			CheckBuildingState(ent);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Stables")
 				HP->SetText(ent->GetStringLife());
@@ -55,6 +56,7 @@ bool j1Player::Update(float dt) {
 		if (mageTower != nullptr) {
 			Entity* ent = (Entity*)mageTower;
 			ent->SetDamageLife(20);
+			CheckBuildingState(ent);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Magic Tower")
 				HP->SetText(ent->GetStringLife());
@@ -63,7 +65,8 @@ bool j1Player::Update(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
 		if (scoutTower != nullptr) {
 			Entity* ent = (Entity*)scoutTower;
-			ent->SetDamageLife(20);
+			ent->SetDamageLife(20);			
+			CheckBuildingState(ent);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Scout Tower")
 				HP->SetText(ent->GetStringLife());
@@ -73,6 +76,7 @@ bool j1Player::Update(float dt) {
 		if (gryphonAviary != nullptr) {
 			Entity* ent = (Entity*)gryphonAviary;
 			ent->SetDamageLife(20);
+			CheckBuildingState(ent);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Gryphon Aviary")
 				HP->SetText(ent->GetStringLife());
@@ -82,6 +86,7 @@ bool j1Player::Update(float dt) {
 		if (chickenFarm != nullptr) {
 			Entity* ent = (Entity*)chickenFarm;
 			ent->SetDamageLife(20);
+			CheckBuildingState(ent);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Chicken Farm")
 				HP->SetText(ent->GetStringLife());
@@ -243,8 +248,18 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 	
 		break;
 	case EntitiesEvent_Hover:
+		if (staticEntity->staticEntityType == StaticEntityType_ScoutTower && ent->GetCurrLife() == ent->GetMaxLife())
+			hoverCheck = HoverCheck_Update;
+		else if (ent->GetCurrLife() < ent->GetMaxLife())
+			hoverCheck = HoverCheck_Repair;
+		else
+			hoverCheck = HoverCheck_None;
+
+		CreateHoverButton(hoverCheck, { (int)ent->GetPosition().x, (int)ent->GetPosition().y, ent->GetSize().x, ent->GetSize().y});
+
 		break;
 	case EntitiesEvent_Leave:
+		DestroyHoverButton();
 		break;
 	case EntitiesEvent_Created:
 		DeleteEntitiesMenu();
@@ -296,5 +311,70 @@ void j1Player::DeleteEntitiesMenu() {
 	App->gui->DestroyElement(HP);
 	App->gui->DestroyElement(entityName);
 	App->gui->DestroyElement(entityIcon);
+
+}
+
+void j1Player::CheckBuildingState(Entity* ent) {
+
+	if (ent->GetCurrLife() <= 0)
+		LOG("Destroyed");
+	else if (ent->GetCurrLife()  < ent->GetMaxLife() / 3)// less than 1/3 HP
+		LOG("Fuego 2");
+	else if (ent->GetCurrLife()  < 2 * ent->GetMaxLife() / 3)// less than 2/3 HP
+		LOG("Fuego 1");
+
+}
+
+void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos) {
+
+	UIButton_Info InfoButton;
+	if (hoverCheck == HoverCheck_Repair) {
+		InfoButton.normalTexArea  = { 579,34,49,41 };
+		InfoButton.hoverTexArea   = { 629,34,49,41 };
+		InfoButton.pressedTexArea = { 679,34,49,41 };
+	}
+	else if (hoverCheck == HoverCheck_Update) {
+		InfoButton.normalTexArea  = { 579,118,49,41 };
+		InfoButton.hoverTexArea   = { 629,118,49,41 };
+		InfoButton.pressedTexArea = { 679,118,49,41 };
+	}
+	InfoButton.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	InfoButton.verticalOrientation = VERTICAL_POS_CENTER;
+	InfoButton.isFixedInScreen = false;
+
+	if(hoverCheck != HoverCheck_None)
+		hoverButton = App->gui->CreateUIButton({pos.x + pos.w/2, pos.y + pos.h/2}, InfoButton, this);
+}
+
+void j1Player::DestroyHoverButton() {
+	if (hoverButton != nullptr)
+		App->gui->DestroyElement(hoverButton);
+}
+
+void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
+
+	switch (UIevent)
+	{
+	case UI_EVENT_NONE:
+		break;
+	case UI_EVENT_MOUSE_ENTER:
+		break;
+	case UI_EVENT_MOUSE_LEAVE:
+		break;
+	case UI_EVENT_MOUSE_RIGHT_CLICK:
+		break;
+	case UI_EVENT_MOUSE_LEFT_CLICK:
+		if (hoverCheck == HoverCheck_Repair)
+		break;
+	case UI_EVENT_MOUSE_RIGHT_UP:
+		break;
+	case UI_EVENT_MOUSE_LEFT_UP:
+		break;
+	case UI_EVENT_MAX_EVENTS:
+		break;
+	default:
+		break;
+	}
+
 
 }

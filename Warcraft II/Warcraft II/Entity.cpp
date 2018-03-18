@@ -19,6 +19,11 @@ fPoint Entity::GetPosition() const
 	return pos;
 }
 
+iPoint Entity::GetSize() const
+{
+	return size;
+}
+
 int Entity::GetCurrLife() const
 {
 	return currentLife;
@@ -42,5 +47,7 @@ void Entity::SetStringLife(int currentLife, int maxLife)
 void Entity::SetDamageLife(int dam)
 {
 	currentLife -= dam;
+	if (currentLife < 0)
+		currentLife = 0;
 }
 

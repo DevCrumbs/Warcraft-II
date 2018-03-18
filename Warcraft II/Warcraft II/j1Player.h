@@ -11,9 +11,18 @@
 #include <list>
 using namespace std;
 
+enum HoverCheck
+{
+	HoverCheck_None,
+	HoverCheck_Update,
+	HoverCheck_Repair
+};
+
 
 struct UILabel;
 struct UIImage;
+struct UIButton;
+class Entity;
 
 class StaticEntity;
 
@@ -49,15 +58,21 @@ public:
 	bool Load(pugi::xml_node&);
 
 	void OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent);
+	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
+
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim);
 	void DeleteEntitiesMenu();
+	void CheckBuildingState(Entity* ent);
+	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos);
+	void DestroyHoverButton();
 
 private:
 
 	int totalGold = 0; // total gold earned during the game
 	int currentGold = 0; // amount of gold that the player has at the current moment
 	double timer = 0.0f; // game time
+	HoverCheck hoverCheck = HoverCheck_None;
 	uint totalEnemiesKilled = 0;
 	uint totalUnitsDead = 0;
 
@@ -79,10 +94,11 @@ private:
 	uint maxUnits = 0; // max units that the player can have at the current moment (it depends on the Chicken Farms built)
 
 
-	UILabel* HP;
-	UILabel* entityName;
-	UIImage* entityIcon;
+	UILabel* HP = nullptr;
+	UILabel* entityName = nullptr;
+	UIImage* entityIcon = nullptr;
 
+	UIButton* hoverButton = nullptr;
 
 	StaticEntity* chickenFarm = nullptr;
 	StaticEntity* blacksmith = nullptr;

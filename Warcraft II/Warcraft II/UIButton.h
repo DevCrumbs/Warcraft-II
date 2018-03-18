@@ -14,6 +14,7 @@ struct UIButton_Info {
 	SDL_Rect hoverTexArea = { 0, 0, 0, 0 };
 	SDL_Rect pressedTexArea = { 0, 0, 0, 0 };
 
+	bool isFixedInScreen = true;
 	bool checkbox = false;
 	bool isChecked = false;
 	UIE_HORIZONTAL_POS horizontalOrientation = HORIZONTAL_POS_LEFT;
@@ -38,6 +39,8 @@ public:
 	SDL_Rect GetPressedSprite() const;
 	SDL_Rect GetNormalSprite() const;
 	UI_EVENT GetActualEvent() const;
+
+	void Draw() const;
 
 	bool SlideTransition(float dt, int endPosY, float speed = 10.0f, bool bounce = true, float bounceInterval = 1.0f, float bounceSpeed = 2.0f, bool down = true);
 	bool Bounce(float dt, float bounceInterval = 1.0f, float bounceSpeed = 2.0f, bool down = true);

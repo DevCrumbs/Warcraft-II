@@ -39,6 +39,7 @@ public:
 
 	void SetPosition(fPoint pos);
 	fPoint GetPosition() const;
+	iPoint GetSize() const;
 	int GetCurrLife() const;
 	int GetMaxLife() const;
 	string GetStringLife() const;

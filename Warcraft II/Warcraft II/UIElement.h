@@ -96,6 +96,7 @@ protected:
 
 	bool draggable = false;
 	bool interactive = true;
+	bool isFixedInScreen = true;
 	iPoint mouseClickPos = { 0,0 };
 
 	// Texture parameters
