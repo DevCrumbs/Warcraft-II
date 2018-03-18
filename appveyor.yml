@@ -18,7 +18,7 @@ deploy:
     release: Warcraft II The Stolen Artifacts v$(appveyor_build_version)
     artifact: "WarcraftII_The_Stolen_Artifacts.zip"
     auth_token:
-      secure: JcMPWRUJB+nle8Oj8XmkH2SckI3nFL6kMl1mpctsApIPoxscRoFyNtI5Gmoer62p
+      secure: 460c1d95cf531d7c6a3f019861854b1602e9423e
     draft: true
     prerelease: true
     on:
