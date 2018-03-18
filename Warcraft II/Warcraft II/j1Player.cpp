@@ -327,8 +327,6 @@ void j1Player::CheckBuildingState(Entity* ent) {
 
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos) {
 
-	//int x = (int)pos.x;
-	//int y = (int)pos.y;
 	UIButton_Info InfoButton;
 	if (hoverCheck == HoverCheck_Repair) {
 		InfoButton.normalTexArea  = { 579,34,49,41 };
