@@ -42,5 +42,7 @@ void Entity::SetStringLife(int currentLife, int maxLife)
 void Entity::SetDamageLife(int dam)
 {
 	currentLife -= dam;
+	if (currentLife < 0)
+		currentLife = 0;
 }
 

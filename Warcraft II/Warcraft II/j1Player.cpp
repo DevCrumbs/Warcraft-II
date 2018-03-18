@@ -46,6 +46,7 @@ bool j1Player::Update(float dt) {
 		if (stables != nullptr) {
 			Entity* ent = (Entity*)stables;
 			ent->SetDamageLife(20);
+			checkBuildingState(ent);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Stables")
 				HP->SetText(ent->GetStringLife());
@@ -55,6 +56,7 @@ bool j1Player::Update(float dt) {
 		if (mageTower != nullptr) {
 			Entity* ent = (Entity*)mageTower;
 			ent->SetDamageLife(20);
+			checkBuildingState(ent);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Magic Tower")
 				HP->SetText(ent->GetStringLife());
@@ -63,7 +65,8 @@ bool j1Player::Update(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
 		if (scoutTower != nullptr) {
 			Entity* ent = (Entity*)scoutTower;
-			ent->SetDamageLife(20);
+			ent->SetDamageLife(20);			
+			checkBuildingState(ent);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Scout Tower")
 				HP->SetText(ent->GetStringLife());
@@ -73,6 +76,7 @@ bool j1Player::Update(float dt) {
 		if (gryphonAviary != nullptr) {
 			Entity* ent = (Entity*)gryphonAviary;
 			ent->SetDamageLife(20);
+			checkBuildingState(ent);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Gryphon Aviary")
 				HP->SetText(ent->GetStringLife());
@@ -82,6 +86,7 @@ bool j1Player::Update(float dt) {
 		if (chickenFarm != nullptr) {
 			Entity* ent = (Entity*)chickenFarm;
 			ent->SetDamageLife(20);
+			checkBuildingState(ent);
 			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Chicken Farm")
 				HP->SetText(ent->GetStringLife());
@@ -296,5 +301,16 @@ void j1Player::DeleteEntitiesMenu() {
 	App->gui->DestroyElement(HP);
 	App->gui->DestroyElement(entityName);
 	App->gui->DestroyElement(entityIcon);
+
+}
+
+void j1Player::checkBuildingState(Entity* ent) {
+
+	if (ent->GetCurrLife() <= 0)
+		LOG("Destroyed");
+	else if (ent->GetCurrLife()  < ent->GetMaxLife() / 3)// less than 1/3 HP
+		LOG("Fuego 2");
+	else if (ent->GetCurrLife()  < 2 * ent->GetMaxLife() / 3)// less than 2/3 HP
+		LOG("Fuego 1");
 
 }

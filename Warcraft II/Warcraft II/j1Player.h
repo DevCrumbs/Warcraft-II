@@ -14,6 +14,7 @@ using namespace std;
 
 struct UILabel;
 struct UIImage;
+class Entity;
 
 class StaticEntity;
 
@@ -52,6 +53,7 @@ public:
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim);
 	void DeleteEntitiesMenu();
+	void checkBuildingState(Entity* ent);
 
 private:
 
