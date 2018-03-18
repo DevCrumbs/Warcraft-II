@@ -28,7 +28,7 @@ private:
 	PlayerCannonTowerInfo playerCannonTowerInfo;
 
 	EntitiesEvent EntityEvent = EntitiesEvent_Created;
-
+	ConstructionBuildingInfo constructionPlanks;
 };
 
 #endif //__PlayerCannonTower_H__

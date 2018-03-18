@@ -28,7 +28,7 @@ private:
 	ScoutTowerInfo scoutTowerInfo;
 
 	EntitiesEvent EntityEvent = EntitiesEvent_Created;
-
+	ConstructionBuildingInfo constructionPlanks;
 };
 
 #endif //__ScoutTower_H__

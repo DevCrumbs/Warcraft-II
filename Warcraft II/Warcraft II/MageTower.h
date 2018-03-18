@@ -27,6 +27,7 @@ private:
 
 	MageTowerInfo mageTowerInfo;
 	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+	ConstructionBuildingInfo constructionPlanks;
 };
 
 #endif //__MageTower_H__

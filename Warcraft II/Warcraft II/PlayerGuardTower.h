@@ -28,7 +28,7 @@ private:
 	PlayerGuardTowerInfo playerGuardTowerInfo;
 
 	EntitiesEvent EntityEvent = EntitiesEvent_Created;
-
+	ConstructionBuildingInfo constructionPlanks;
 };
 
 #endif //__PlayerGuardTower_H__

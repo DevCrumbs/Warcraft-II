@@ -34,6 +34,7 @@ public:
 private:
 
 	BarracksInfo barracksInfo;
+	ConstructionBuildingInfo constructionPlanks;
 };
 
 #endif //__Barracks_H__

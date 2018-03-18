@@ -27,6 +27,7 @@ private:
 	ElvenLumberMillInfo elvenLumberMillInfo;
 
 	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+	ConstructionBuildingInfo constructionPlanks;
 };
 
 #endif

@@ -26,8 +26,8 @@ public:
 private:
 
 	GryphonAviaryInfo gryphonAviaryInfo;
-
 	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+	ConstructionBuildingInfo constructionPlanks;
 };
 
 #endif //__GryphonAviary_H__

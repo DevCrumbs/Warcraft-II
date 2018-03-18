@@ -28,6 +28,7 @@ private:
 	StablesInfo stablesInfo;
 
 	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+	ConstructionBuildingInfo constructionPlanks;
 
 };
 
