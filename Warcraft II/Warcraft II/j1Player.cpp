@@ -340,6 +340,7 @@ void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos) {
 	}
 	InfoButton.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	InfoButton.verticalOrientation = VERTICAL_POS_CENTER;
+	InfoButton.isFixedInScreen = false;
 
 	if(hoverCheck != HoverCheck_None)
 		hoverButton = App->gui->CreateUIButton({pos.x + pos.w/2, pos.y + pos.h/2}, InfoButton, this);
@@ -363,8 +364,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
-		if(hoverCheck == HoverCheck_Repair)
-
+		if (hoverCheck == HoverCheck_Repair)
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;
