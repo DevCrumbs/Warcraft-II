@@ -34,7 +34,7 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 
 		if (!MouseHover()) {
 
-			EntityEvent = EntitiesEvent_None;
+			EntityEvent = EntitiesEvent_Leave;
 			break;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
@@ -43,6 +43,7 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
 			EntityEvent = EntitiesEvent_Hover;
 			break;
+
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
 
@@ -57,6 +58,12 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 
 		listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
 		EntityEvent = EntitiesEvent_None;
+		break;
+
+	case EntitiesEvent_Leave:
+		listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
+		EntityEvent = EntitiesEvent_None;
+
 		break;
 	}
 }

@@ -19,6 +19,11 @@ fPoint Entity::GetPosition() const
 	return pos;
 }
 
+iPoint Entity::GetSize() const
+{
+	return size;
+}
+
 int Entity::GetCurrLife() const
 {
 	return currentLife;

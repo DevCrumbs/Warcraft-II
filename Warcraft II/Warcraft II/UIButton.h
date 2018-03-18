@@ -8,6 +8,7 @@
 #include "j1App.h"
 #include "UIElement.h"
 #include "j1Gui.h"
+#include "Entity.h"
 
 struct UIButton_Info {
 	SDL_Rect normalTexArea = { 0, 0, 0, 0 };
@@ -21,6 +22,8 @@ struct UIButton_Info {
 
 	bool draggable = false;
 	bool interactive = true;
+	StaticEntity* staticEntity = nullptr;
+
 };
 
 // ---------------------------------------------------
