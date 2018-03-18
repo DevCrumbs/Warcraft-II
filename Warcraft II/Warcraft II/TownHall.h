@@ -19,6 +19,9 @@ struct TownHallInfo
 	SDL_Rect keepInProgressTexArea = { 0,0,0,0 };
 	SDL_Rect castleCompleteTexArea = { 0,0,0,0 };
 	SDL_Rect castleInProgressTexArea = { 0,0,0,0 };
+	int townHallMaxLife = 0;
+	int keepMaxLife = 0;
+	int castleMaxLife = 0;
 };
 
 class TownHall :public StaticEntity

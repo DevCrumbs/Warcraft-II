@@ -35,51 +35,86 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	// Spritesheets
 	pugi::xml_node spritesheets = config.child("spritesheets");
 	humanBuildingsTexName = spritesheets.child("humanBuildings").attribute("name").as_string();
+	neutralBuildingsTexName = spritesheets.child("neutralBuildings").attribute("name").as_string();
+	orcishBuildingsTexName = spritesheets.child("orcishBuildings").attribute("name").as_string();
 
 	// Static entities
 	pugi::xml_node staticEntities = config.child("staticEntities");
 
-	pugi::xml_node aux = staticEntities.child("townHall").child("sprites");
+	pugi::xml_node humanBuildings = staticEntities.child("humanBuildings");
+
+	townHallInfo.townHallMaxLife = { humanBuildings.child("townHall").child("maxLife").attribute("value").as_int() };
+	pugi::xml_node aux = humanBuildings.child("townHall").child("sprites");
 	townHallInfo.townHallCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	townHallInfo.townHallInProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	aux = staticEntities.child("keep").child("sprites");
+	townHallInfo.keepMaxLife = { humanBuildings.child("keep").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("keep").child("sprites");
 	townHallInfo.keepCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	townHallInfo.keepInProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	aux = staticEntities.child("castle").child("sprites");
+	townHallInfo.castleMaxLife = { humanBuildings.child("castle").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("castle").child("sprites");
 	townHallInfo.castleCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	townHallInfo.castleInProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	aux = staticEntities.child("chickenFarm").child("sprites");
+	chickenFarmInfo.maxLife = { humanBuildings.child("chickenFarm").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("chickenFarm").child("sprites");
 	chickenFarmInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	chickenFarmInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	aux = staticEntities.child("scoutTower").child("sprites");
+	scoutTowerInfo.maxLife = { humanBuildings.child("scoutTower").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("scoutTower").child("sprites");
 	scoutTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	scoutTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	aux = staticEntities.child("barracks").child("sprites");
+	playerGuardTowerInfo.maxLife = { humanBuildings.child("guardTower").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("guardTower").child("sprites");
+	playerGuardTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	playerGuardTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	playerCannonTowerInfo.maxLife = { humanBuildings.child("canonTower").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("canonTower").child("sprites");
+	playerCannonTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	playerCannonTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	barracksInfo.barracks1MaxLife = { humanBuildings.child("barracks").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("barracks").child("sprites");
 	barracksInfo.barracksCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 
-	aux = staticEntities.child("barracks2").child("sprites");
+	barracksInfo.barracks2MaxLife = { humanBuildings.child("barracks2").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("barracks2").child("sprites");
 	barracksInfo.barracks2CompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 
-	aux = staticEntities.child("elvenLumberMill").child("sprites");
+	elvenLumberMillInfo.maxLife= { humanBuildings.child("elvenLumberMill").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("elvenLumberMill").child("sprites");
 	elvenLumberMillInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	elvenLumberMillInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	aux = staticEntities.child("mageTower").child("sprites");
+	mageTowerInfo.maxLife = { humanBuildings.child("mageTower").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("mageTower").child("sprites");
 	mageTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	mageTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	aux = staticEntities.child("gryphonAviary").child("sprites");
+	gryphonAviaryInfo.maxLife = { humanBuildings.child("gryphonAviary").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("gryphonAviary").child("sprites");
 	gryphonAviaryInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	gryphonAviaryInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
-	aux = staticEntities.child("stables").child("sprites");
+	stablesInfo.maxLife = { humanBuildings.child("stables").child("maxLife").attribute("value").as_int() };
+	aux = humanBuildings.child("stables").child("sprites");
 	stablesInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	stablesInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
+
+	pugi::xml_node neutralBuildings = staticEntities.child("neutralBuildings");
+
+	goldMineInfo.maxLife = { neutralBuildings.child("goldMine").child("maxLife").attribute("value").as_int() };
+	aux = neutralBuildings.child("goldMine").child("sprites");
+	goldMineInfo.completeTexArea = { aux.child("active").attribute("x").as_int(), aux.child("active").attribute("y").as_int(), aux.child("active").attribute("w").as_int(), aux.child("active").attribute("h").as_int() };
+	goldMineInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
+
+	aux = neutralBuildings.child("runeStone").child("sprites");
+	runestoneInfo.completeTexArea = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 
 	return ret;
 }
@@ -91,6 +126,8 @@ bool j1EntityFactory::Start()
 	LOG("Loading entities textures");
 
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
+	neutralBuildingsTex = App->tex->Load(neutralBuildingsTexName.data());
+	orcishBuildingsTex = App->tex->Load(orcishBuildingsTexName.data());
 
 	return ret;
 }
@@ -392,13 +429,13 @@ bool j1EntityFactory::CleanUp()
 
 	return ret;
 }
-StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, iPoint size, uint life, const EntityInfo& entityInfo, j1Module* listener)
+StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener)
 {
 	switch (staticEntityType) {
 
 	case StaticEntityType_TownHall:
 	{
-		TownHall* townHall = new TownHall(pos, size, life, (const TownHallInfo&)entityInfo, listener);
+		TownHall* townHall = new TownHall(pos, { 128,128 }, townHallInfo.townHallMaxLife, (const TownHallInfo&)entityInfo, listener);
 		townHall->entityType = EntityType_StaticEntity;
 		townHall->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		townHall->staticEntityType = StaticEntityType_TownHall;
@@ -410,7 +447,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_ChickenFarm:
 	{
-		ChickenFarm* chickenFarm = new ChickenFarm(pos, size, life, (const ChickenFarmInfo&)entityInfo, listener);
+		ChickenFarm* chickenFarm = new ChickenFarm(pos, { 64,64 }, chickenFarmInfo.maxLife, (const ChickenFarmInfo&)entityInfo, listener);
 		chickenFarm->entityType = EntityType_StaticEntity;
 		chickenFarm->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		chickenFarm->staticEntityType = StaticEntityType_ChickenFarm;
@@ -423,7 +460,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_Barracks:
 	{
-		Barracks* barracks = new Barracks(pos, size, life, (const BarracksInfo&)entityInfo, listener);
+		Barracks* barracks = new Barracks(pos, { 128,128 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
 		barracks->entityType = EntityType_StaticEntity;
 		barracks->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		barracks->staticEntityType = StaticEntityType_Barracks;
@@ -435,7 +472,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_ElvenLumberMill:
 	{
-		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, size, life, (const ElvenLumberMillInfo&)entityInfo, listener);
+		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 128,128 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
 		elvenLumberMill->entityType = EntityType_StaticEntity;
 		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		elvenLumberMill->staticEntityType = StaticEntityType_Barracks;
@@ -447,7 +484,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_MageTower:
 	{
-		MageTower* mageTower = new MageTower(pos, size, life, (const MageTowerInfo&)entityInfo, listener);
+		MageTower* mageTower = new MageTower(pos, { 128,128 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
 		mageTower->entityType = EntityType_StaticEntity;
 		mageTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		mageTower->staticEntityType = StaticEntityType_MageTower;
@@ -459,7 +496,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_GryphonAviary:
 	{
-		GryphonAviary* gryphonAviary = new GryphonAviary(pos, size, life, (const GryphonAviaryInfo&)entityInfo, listener);
+		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 128,128 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
 		gryphonAviary->entityType = EntityType_StaticEntity;
 		gryphonAviary->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		gryphonAviary->staticEntityType = StaticEntityType_GryphonAviary;
@@ -471,7 +508,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_Stables:
 	{
-		Stables* stables = new Stables(pos, size, life, (const StablesInfo&)entityInfo, listener);
+		Stables* stables = new Stables(pos, { 128,128 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
 		stables->entityType = EntityType_StaticEntity;
 		stables->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		stables->staticEntityType = StaticEntityType_Stables;
@@ -483,7 +520,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_ScoutTower:
 	{
-		ScoutTower* scoutTower = new ScoutTower(pos, size, life, (const ScoutTowerInfo&)entityInfo, listener);
+		ScoutTower* scoutTower = new ScoutTower(pos, { 64,64 }, scoutTowerInfo.maxLife, (const ScoutTowerInfo&)entityInfo, listener);
 		scoutTower->entityType = EntityType_StaticEntity;
 		scoutTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		scoutTower->staticEntityType = StaticEntityType_ScoutTower;
@@ -495,7 +532,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_PlayerGuardTower:
 	{
-		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, size, life, (const PlayerGuardTowerInfo&)entityInfo, listener);
+		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, { 64,64 }, 12, (const PlayerGuardTowerInfo&)entityInfo, listener);
 		playerGuardTower->entityType = EntityType_StaticEntity;
 		playerGuardTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		playerGuardTower->staticEntityType = StaticEntityType_PlayerGuardTower;
@@ -507,7 +544,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_PlayerCannonTower:
 	{
-		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, size, life, (const PlayerCannonTowerInfo&)entityInfo, listener);
+		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, { 64,64 }, 12, (const PlayerCannonTowerInfo&)entityInfo, listener);
 		playerCannonTower->entityType = EntityType_StaticEntity;
 		playerCannonTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		playerCannonTower->staticEntityType = StaticEntityType_PlayerCannonTower;
@@ -519,7 +556,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_GoldMine:
 	{
-		GoldMine* goldMine = new GoldMine(pos, size, life, (const GoldMineInfo&)entityInfo, listener);
+		GoldMine* goldMine = new GoldMine(pos, { 128,128 }, goldMineInfo.maxLife, (const GoldMineInfo&)entityInfo, listener);
 		goldMine->entityType = EntityType_StaticEntity;
 		goldMine->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		goldMine->staticEntityType = StaticEntityType_GoldMine;
@@ -531,7 +568,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_Runestone:
 	{
-		Runestone* runestone = new Runestone(pos, size, life, (const RunestoneInfo&)entityInfo, listener);
+		Runestone* runestone = new Runestone(pos, { 64,64 }, 0, (const RunestoneInfo&)entityInfo, listener);
 		runestone->entityType = EntityType_StaticEntity;
 		runestone->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		runestone->staticEntityType = StaticEntityType_Runestone;
@@ -543,7 +580,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_WatchTower:
 	{
-		WatchTower* watchTower = new WatchTower(pos, size, life, (const WatchTowerInfo&)entityInfo, listener);
+		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, 12, (const WatchTowerInfo&)entityInfo, listener);
 		watchTower->entityType = EntityType_StaticEntity;
 		watchTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		watchTower->staticEntityType = StaticEntityType_WatchTower;
@@ -555,7 +592,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_EnemyGuardTower:
 	{
-		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, size, life, (const EnemyGuardTowerInfo&)entityInfo, listener);
+		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, 12, (const EnemyGuardTowerInfo&)entityInfo, listener);
 		enemyGuardTower->entityType = EntityType_StaticEntity;
 		enemyGuardTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyGuardTower->staticEntityType = StaticEntityType_EnemyGuardTower;
@@ -567,7 +604,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_EnemyCannonTower:
 	{
-		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, size, life, (const EnemyCannonTowerInfo&)entityInfo, listener);
+		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, 12, (const EnemyCannonTowerInfo&)entityInfo, listener);
 		enemyCannonTower->entityType = EntityType_StaticEntity;
 		enemyCannonTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyCannonTower->staticEntityType = StaticEntityType_EnemyCannonTower;

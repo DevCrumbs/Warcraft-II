@@ -7,8 +7,8 @@
   </app>
 	
   <renderer>
-    <vsync value="false"/>
-    <CapFrames value="5500"/>
+    <vsync value="true"/>
+    <CapFrames value="60"/>
   </renderer>
 
   <window>
@@ -68,85 +68,142 @@
   <entities>
     <spritesheets>
       <humanBuildings name="data/assets/textures/buildings/HumanBuildings.png"/>
+      <neutralBuildings name ="data/assets/textures/buildings/NeutralBuildings.png"/>
+      <orcishBuildings name ="data/assets/textures/buildings/OrcishBuildings.png"/>
     </spritesheets>
+
+    <dynamicEntities>
+      
+    </dynamicEntities>
     
     <staticEntities>
       
-      <townHall>
-        <sprites>
-          <complete x="265" y="5" w="128" h="128"/>
-          <inProgress x="265" y="133" w="128" h="128"/>  
-      </sprites>
-      </townHall>
-      
-      <keep>
-        <sprites>
-          <complete x="2" y="2" w="128" h="128"/>
-          <inProgress x="2" y="130" w="128" h="128"/>  
-      </sprites>
-      </keep>
-      
-      <castle>
-        <sprites>
-          <complete x="135" y="4" w="128" h="128"/>
-          <inProgress x="135" y="132" w="128" h="128"/>  
-      </sprites>
-      </castle>
-      
-      <chickenFarm>
-        <sprites>
-          <complete x="398" y="4" w="64" h="64"/>
-          <inProgress x="398" y="68" w="64" h="64"/>  
-        </sprites>
-      </chickenFarm>
-      
-      <scoutTower>
-        <sprites>
-          <complete x="465" y="4" w="64" h="64"/>
-          <inProgress x="465" y="68" w="64" h="64"/>  
-        </sprites>
-      </scoutTower>
-    
-      <barracks>
-        <sprites>
-          <complete x="530" y="111" w="128" h="128"/>
-        </sprites>
-      </barracks>
-       
-      <barracks2>
-        <sprites>
-          <complete x="530" y="0" w="128" h="128"/>
-        </sprites>
-      </barracks2>
-
-      <elvenLumberMill>
-        <sprites>
-          <complete x="191" y="260" w="128" h="128"/>
-          <inProgress x="191" y="405" w="128" h="128"/>
-        </sprites>
-      </elvenLumberMill>
-
-      <mageTower>
-        <sprites>
-          <complete x="572" y="226" w="128" h="128"/>
-          <inProgress x="572" y="340" w="128" h="128"/>
-        </sprites>
-      </mageTower>
-      
-      <gryphonAviary>
-        <sprites>
-          <complete x="196" y="523" w="128" h="128"/>
-          <inProgress x="29" y="523" w="128" h="128"/>
-        </sprites>
-      </gryphonAviary>
-          
-      <stables>
-        <sprites>
-          <complete x="317" y="272" w="128" h="128"/>
-          <inProgress x="317" y="407" w="128" h="128"/>
-        </sprites>
-      </stables>
+      <humanBuildings>
         
+        <townHall>
+          <maxLife value = "1200"/>
+          <sprites>
+            <complete x="265" y="5" w="128" h="128"/>
+            <inProgress x="265" y="133" w="128" h="128"/>
+          </sprites>
+        </townHall>
+
+        <keep>
+          <maxLife value = "1400"/>
+          <sprites>
+            <complete x="2" y="2" w="128" h="128"/>
+            <inProgress x="2" y="130" w="128" h="128"/>
+          </sprites>
+        </keep>
+
+        <castle>
+          <maxLife value = "1400"/>
+          <sprites>
+            <complete x="135" y="4" w="128" h="128"/>
+            <inProgress x="135" y="132" w="128" h="128"/>
+          </sprites>
+        </castle>
+
+        <chickenFarm>
+          <maxLife value = "400"/>
+          <sprites>
+            <complete x="398" y="4" w="64" h="64"/>
+            <inProgress x="398" y="68" w="64" h="64"/>
+          </sprites>
+        </chickenFarm>
+
+        <scoutTower>
+          <maxLife value = "150"/>
+          <sprites>
+            <complete x="465" y="4" w="64" h="64"/>
+            <inProgress x="465" y="68" w="64" h="64"/>
+          </sprites>
+        </scoutTower>
+
+        <guardTower>
+          <maxLife value = "175"/>
+          <sprites>
+            <complete x="399" y="134" w="64" h="64"/>
+            <inProgress x="399" y="198" w="64" h="64"/>
+          </sprites>
+        </guardTower>
+
+        <canonTower>
+          <maxLife value = "200"/>
+          <sprites>
+            <complete x="466" y="134" w="64" h="64"/>
+            <inProgress x="466" y="198" w="64" h="64"/>
+          </sprites>
+        </canonTower>
+
+        <barracks>
+          <maxLife value = "800"/>
+          <sprites>
+            <complete x="530" y="111" w="128" h="128"/>
+          </sprites>
+        </barracks>
+
+        <barracks2>
+          <maxLife value = "1200"/>
+          <sprites>
+            <complete x="530" y="0" w="128" h="128"/>
+          </sprites>
+        </barracks2>
+
+        <elvenLumberMill>
+          <maxLife value = "600"/>
+          <sprites>
+            <complete x="191" y="260" w="128" h="128"/>
+            <inProgress x="191" y="405" w="128" h="128"/>
+          </sprites>
+        </elvenLumberMill>
+
+        <mageTower>
+          <maxLife value = "500"/>
+          <sprites>
+            <complete x="572" y="226" w="128" h="128"/>
+            <inProgress x="572" y="340" w="128" h="128"/>
+          </sprites>
+        </mageTower>
+
+        <gryphonAviary>
+          <maxLife value = "500"/>
+          <sprites>
+            <complete x="196" y="523" w="128" h="128"/>
+            <inProgress x="29" y="523" w="128" h="128"/>
+          </sprites>
+        </gryphonAviary>
+
+        <stables>
+          <maxLife value = "700"/>
+          <sprites>
+            <complete x="317" y="272" w="128" h="128"/>
+            <inProgress x="317" y="407" w="128" h="128"/>
+          </sprites>
+        </stables>
+        
+      </humanBuildings>
+
+      <neutralBuildings>
+        <goldMine>
+          <maxLife value = "250"/>
+          <sprites>
+            <active x="0" y="118" w="128" h="128"/>
+            <inactive x="0" y="0" w="128" h="128"/>
+          </sprites>
+        </goldMine>
+        
+        <runeStone>
+          <sprites x="144" y="83" w="128" h="128" />
+        </runeStone>
+      
+    </neutralBuildings>
+
+    <orcishBuildings>
+        
+    </orcishBuildings>
+      
+      
     </staticEntities>    
   </entities>
   
