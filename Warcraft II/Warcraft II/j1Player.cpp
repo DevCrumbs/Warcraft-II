@@ -238,7 +238,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			MakeEntitiesMenu(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 });
 
 		else if (staticEntity->staticEntityType == StaticEntityType_MageTower)
-			MakeEntitiesMenu(ent->GetStringLife(), "Magic Tower", { 394,202,50,41 });
+			MakeEntitiesMenu(ent->GetStringLife(), "Mage Tower", { 394,202,50,41 });
 
 		else if (staticEntity->staticEntityType == StaticEntityType_ScoutTower)
 			MakeEntitiesMenu(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 });
@@ -264,19 +264,19 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 	case EntitiesEvent_Created:
 		DeleteEntitiesMenu();
 		if (staticEntity->staticEntityType == StaticEntityType_ChickenFarm)
-			MakeEntitiesMenu("NO_HP_TEXT", "Building...", { 241,34,50,41 });
+			MakeEntitiesMenu("NO_HP_TEXT", "Chicken Farm", { 241,34,50,41 });
 
 		else if (staticEntity->staticEntityType == StaticEntityType_GryphonAviary)
-			MakeEntitiesMenu("NO_HP_TEXT", "Building...", { 394,160,50,41 });
+			MakeEntitiesMenu("NO_HP_TEXT", "Gryphon Aviary", { 394,160,50,41 });
 
 		else if (staticEntity->staticEntityType == StaticEntityType_MageTower)
-			MakeEntitiesMenu("NO_HP_TEXT", "Building...", { 394,202,50,41 });
+			MakeEntitiesMenu("NO_HP_TEXT", "Mage Tower", { 394,202,50,41 });
 
 		else if (staticEntity->staticEntityType == StaticEntityType_ScoutTower)
-			MakeEntitiesMenu("NO_HP_TEXT", "Building...", { 394,34,50,41 });
+			MakeEntitiesMenu("NO_HP_TEXT", "Scout Tower", { 394,34,50,41 });
 
 		else if (staticEntity->staticEntityType == StaticEntityType_Stables)
-			MakeEntitiesMenu("NO_HP_TEXT", "Building...", { 241,160,50,41 });
+			MakeEntitiesMenu("NO_HP_TEXT", "Stables", { 241,160,50,41 });
 		break;
 	
 	default:
@@ -286,14 +286,19 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 }
 
 void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim) {
-	
-	UILabel_Info labelInfo;
 
-	if (HP_text != "NO_HP_TEXT") {
-		labelInfo.text = HP_text;
-		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+	UILabel_Info labelInfo;
+	labelInfo.text = HP_text;
+	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+
+	if (HP_text != "NO_HP_TEXT")
+		HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	
+	else if (HP_text == "NO_HP_TEXT") {
+		labelInfo.text = "Building...";
 		HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 	}
+
 
 	labelInfo.text = entityName_text;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
