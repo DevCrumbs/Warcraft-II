@@ -296,7 +296,7 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	
 	else if (HP_text == "NO_HP_TEXT") {
 		labelInfo.text = "Building...";
-		HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		HP = App->gui->CreateUILabel({ 70, App->scene->entitiesStats->GetLocalRect().h - 30 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 	}
 
 
