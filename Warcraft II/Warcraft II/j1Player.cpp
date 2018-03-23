@@ -47,7 +47,6 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)stables;
 			ent->SetDamageLife(20);
 			CheckBuildingState(ent);
-			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Stables")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -57,7 +56,6 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)mageTower;
 			ent->SetDamageLife(20);
 			CheckBuildingState(ent);
-			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Magic Tower")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -67,7 +65,6 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)scoutTower.back();
 			ent->SetDamageLife(20);			
 			CheckBuildingState(ent);
-			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Scout Tower")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -77,7 +74,6 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)gryphonAviary;
 			ent->SetDamageLife(20);
 			CheckBuildingState(ent);
-			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Gryphon Aviary")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -87,7 +83,6 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)chickenFarm.back();
 			ent->SetDamageLife(20);
 			CheckBuildingState(ent);
-			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Chicken Farm")
 				HP->SetText(ent->GetStringLife());
 		}
