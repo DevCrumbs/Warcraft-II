@@ -49,7 +49,7 @@ enum UI_EVENT {
 class UIElement
 {
 public:
-	UIElement(iPoint localPos, UIElement* parent, j1Module* listener);
+	UIElement(iPoint localPos, UIElement* parent, j1Module* listener, bool isInWorld);
 
 	virtual ~UIElement();
 
@@ -96,7 +96,7 @@ protected:
 
 	bool draggable = false;
 	bool interactive = true;
-	bool isFixedInScreen = true;
+	bool isInWorld = false;
 	iPoint mouseClickPos = { 0,0 };
 
 	// Texture parameters

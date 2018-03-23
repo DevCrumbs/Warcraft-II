@@ -4,7 +4,7 @@
 #include "j1Render.h"
 #include "j1Window.h"
 
-UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), button(info)
+UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener, bool isInWorld) : UIElement(localPos, parent, listener, isInWorld), button(info)
 {
 	type = UIE_TYPE::UIE_TYPE_BUTTON;
 
@@ -28,7 +28,7 @@ UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Mo
 	SetOrientation();
 }
 
-void UIButton::Draw() const {
+/*void UIButton::Draw() const {
 
 	iPoint blitPos;
 	int scale = App->win->GetScale();
@@ -41,7 +41,7 @@ void UIButton::Draw() const {
 	}
 
 	if (texArea.w != 0)
-		if(button.isFixedInScreen)
+		if(!isInWorld)
 		App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);
 		else
 			App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &texArea);
@@ -50,7 +50,7 @@ void UIButton::Draw() const {
 		DebugDraw(blitPos);
 
 	App->render->ResetViewPort();
-}
+}*/
 
 
 void UIButton::Update(float dt)

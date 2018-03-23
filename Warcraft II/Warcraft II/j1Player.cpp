@@ -344,11 +344,11 @@ void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEnti
 	}
 	InfoButton.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	InfoButton.verticalOrientation = VERTICAL_POS_CENTER;
-	InfoButton.isFixedInScreen = false;
+//	InfoButton.isFixedInScreen = false;
 
 
 	if (hoverCheck != HoverCheck_None) {
-		hoverButtonStruct.hoverButton = App->gui->CreateUIButton({ pos.x + pos.w / 2, pos.y + pos.h / 2 }, InfoButton, this);
+		hoverButtonStruct.hoverButton = App->gui->CreateUIButton({ pos.x + pos.w / 2, pos.y + pos.h / 2 }, InfoButton, this, nullptr, true);
 		hoverButtonStruct.Entity_Hover = staticEntity;
 	}
 }

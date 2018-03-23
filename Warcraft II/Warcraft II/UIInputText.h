@@ -13,7 +13,7 @@ private:
 
 public:
 
-	UIInputText(iPoint localPos, UIElement* parent, j1Module* listener);
+	UIInputText(iPoint localPos, UIElement* parent, j1Module* listener = nullptr, bool isInWorld = false);
 	~UIInputText() {}
 
 	void Update(float dt);

@@ -6,7 +6,7 @@
 #include "j1Window.h"
 #include "j1Textures.h"
 
-UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), label(info)
+UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener, bool isInWorld) : UIElement(localPos, parent, listener, isInWorld), label(info)
 {
 	type = UIE_TYPE::UIE_TYPE_LABEL;
 

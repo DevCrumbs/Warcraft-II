@@ -9,7 +9,7 @@
 #include "UIButton.h"
 
 
-UIInputText::UIInputText(iPoint localPos, UIElement* parent, j1Module* listener) : UIElement (localPos, parent, listener){
+UIInputText::UIInputText(iPoint localPos, UIElement* parent, j1Module* listener, bool isInWorld) : UIElement (localPos, parent, listener, isInWorld){
 
 	type = UIE_TYPE_INPUT_TEXT;
 	original_pos = localPos;
