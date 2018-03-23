@@ -6,6 +6,18 @@ Warcraft II: The Stolen Artifacts is an expansion that derives from the videogam
 
 The player must command this expedition in an RTS dungeon crawler game in which they must recover the remaints of that legendary expedition in order to defeat Ner’zhul. Every time the expedition enters Draenor the construction of the land, and the path they will have to take will be different, so the game will be different every run the player makes.
 
+# Inputs
+
+1: Create other random map
+2: Go to base
+
+C: -20 HP to last Chicken Farm created
+T: -20 HP to last Scout Torret created
+S: -20 HP to Stable
+G: -20 HP to Gryphon Aviary
+M: -20 HO to Mage Tower
+
+
 # The team: DevCrumbs
 
 DevCrumbs is an independent video game company based in Terrassa, Catalonia. Born from a university project, it is formed by a group of students from the second year of the Bachelor's degree in Video Game Design and Development (UPC). Although each member of the team has been involved in similar projects before, we are currently working on our first game together. The overall aim of the company is to create enjoyable gaming experiences, a unique kind of work that we are passionate about. If we are able to feed your imagination, our mission will be accomplished!
