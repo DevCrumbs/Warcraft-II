@@ -9,6 +9,7 @@
 #include "j1EntityFactory.h"
 #include "j1Scene.h"
 #include "j1Gui.h"
+#include "j1Particles.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
@@ -34,6 +35,9 @@ bool j1Player::Awake(pugi::xml_node& config)
 bool j1Player::Start()
 {
 	bool ret = true;
+
+	//fire.anim
+
 
 	return ret;
 }
@@ -247,8 +251,8 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 	
 		break;
 	case EntitiesEvent_Hover:
-		if (staticEntity->staticEntityType == StaticEntityType_ScoutTower && ent->GetCurrLife() == ent->GetMaxLife())
-			hoverCheck = HoverCheck_Update;
+		if ((staticEntity->staticEntityType == StaticEntityType_TownHall || staticEntity->staticEntityType == StaticEntityType_Barracks) && ent->GetCurrLife() == ent->GetMaxLife())
+			hoverCheck = HoverCheck_Upgrate;
 		else if (ent->GetCurrLife() < ent->GetMaxLife())
 			hoverCheck = HoverCheck_Repair;
 		else
@@ -332,14 +336,14 @@ void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEnti
 		InfoButton.hoverTexArea   = { 629,34,49,41 };
 		InfoButton.pressedTexArea = { 679,34,49,41 };
 	}
-	else if (hoverCheck == HoverCheck_Update) {
+	else if (hoverCheck == HoverCheck_Upgrate) {
 		InfoButton.normalTexArea  = { 579,118,49,41 };
 		InfoButton.hoverTexArea   = { 629,118,49,41 };
 		InfoButton.pressedTexArea = { 679,118,49,41 };
 	}
 	InfoButton.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	InfoButton.verticalOrientation = VERTICAL_POS_CENTER;
-//	InfoButton.isFixedInScreen = false;
+
 
 
 	if (hoverCheck != HoverCheck_None) {
@@ -371,6 +375,11 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		if (hoverCheck == HoverCheck_Repair) {
 			hoverButtonStruct.Entity_Hover->SetCurrLife(hoverButtonStruct.Entity_Hover->GetMaxLife());
 			HP->SetText(hoverButtonStruct.Entity_Hover->GetStringLife());
+		}
+		else if (hoverCheck == HoverCheck_Upgrate)
+		{
+			//Use hoverButtonStruct
+			//TODO JOAN
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:

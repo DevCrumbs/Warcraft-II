@@ -14,10 +14,11 @@ using namespace std;
 enum HoverCheck
 {
 	HoverCheck_None,
-	HoverCheck_Update,
+	HoverCheck_Upgrate,
 	HoverCheck_Repair
 };
 
+struct Particle;
 
 struct UILabel;
 struct UIImage;
@@ -118,6 +119,9 @@ private:
 
 
 	list<UIElement*> UIMenuInfoList;
+
+	Particle fire;
+	Particle hardFire;
 
 };
 
