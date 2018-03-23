@@ -26,6 +26,12 @@ class Entity;
 
 class StaticEntity;
 
+struct HoverButton
+{
+	UIButton* hoverButton = nullptr;
+	StaticEntity* Entity_Hover = nullptr;
+
+};
 
 class j1Player : public j1Module
 {
@@ -64,7 +70,7 @@ public:
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim);
 	void DeleteEntitiesMenu();
 	void CheckBuildingState(Entity* ent);
-	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos);
+	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton();
 
 private:
@@ -98,16 +104,16 @@ private:
 	UILabel* entityName = nullptr;
 	UIImage* entityIcon = nullptr;
 
-	UIButton* hoverButton = nullptr;
+	HoverButton hoverButtonStruct;
 
-	StaticEntity* chickenFarm = nullptr;
+	list<StaticEntity*> chickenFarm;
+	list<StaticEntity*> scoutTower;
 	StaticEntity* blacksmith = nullptr;
 	StaticEntity* stables = nullptr;
 	StaticEntity* church = nullptr;
 	StaticEntity* mageTower = nullptr;
 	StaticEntity* cannonTower = nullptr;
 	StaticEntity* guardTower = nullptr;
-	StaticEntity* scoutTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
 
 

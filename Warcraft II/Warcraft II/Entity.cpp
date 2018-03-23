@@ -51,3 +51,8 @@ void Entity::SetDamageLife(int dam)
 		currentLife = 0;
 }
 
+void Entity::SetCurrLife(int life) {
+	currentLife = life;
+	SetStringLife(currentLife, maxLife);
+}
+

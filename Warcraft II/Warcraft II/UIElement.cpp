@@ -142,8 +142,8 @@ iPoint UIElement::GetScreenPos() const
 		screen_pos.y = parent->GetScreenPos().y + localPos.y;
 	}
 	else {
-		screen_pos.x = localPos.x;
-		screen_pos.y = localPos.y;
+		screen_pos.x = localPos.x /*+ App->render->camera.x*/;
+		screen_pos.y = localPos.y /*+ App->render->camera.y*/;
 	}
 
 	return screen_pos;

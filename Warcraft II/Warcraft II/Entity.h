@@ -45,6 +45,8 @@ public:
 	string GetStringLife() const;
 	void SetStringLife(int currentLife, int maxLife);
 	void SetDamageLife(int dam);
+	void SetCurrLife(int life);
+
 
 
 
