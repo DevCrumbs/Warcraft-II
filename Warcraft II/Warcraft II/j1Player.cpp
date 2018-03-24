@@ -48,7 +48,8 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)stables;
 			ent->SetDamageLife(20);
 			stables->CheckBuildingState();
-			if (entityName->GetText() == "Stables")
+			if(entityName != nullptr)
+				if (entityName->GetText() == "Stables")
 				HP->SetText(ent->GetStringLife());
 		}
 
@@ -57,8 +58,9 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)mageTower;
 			ent->SetDamageLife(20);
 			mageTower->CheckBuildingState();
-			if (entityName->GetText() == "Magic Tower")
-				HP->SetText(ent->GetStringLife());
+			if (entityName != nullptr)
+				if (entityName->GetText() == "Magic Tower")
+					HP->SetText(ent->GetStringLife());
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
@@ -66,8 +68,9 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)scoutTower.back();
 			ent->SetDamageLife(20);			
 			scoutTower.back()->CheckBuildingState();
-			if (entityName->GetText() == "Scout Tower")
-				HP->SetText(ent->GetStringLife());
+			if (entityName != nullptr)
+				if (entityName->GetText() == "Scout Tower")
+					HP->SetText(ent->GetStringLife());
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
@@ -75,8 +78,9 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)gryphonAviary;
 			ent->SetDamageLife(20);
 			gryphonAviary->CheckBuildingState();
-			if (entityName->GetText() == "Gryphon Aviary")
-				HP->SetText(ent->GetStringLife());
+			if (entityName != nullptr)
+				if (entityName->GetText() == "Gryphon Aviary")
+					HP->SetText(ent->GetStringLife());
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
@@ -84,8 +88,9 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)chickenFarm.back();
 			ent->SetDamageLife(20);
 			chickenFarm.back()->CheckBuildingState();
-			if (entityName->GetText() == "Chicken Farm")
-				HP->SetText(ent->GetStringLife());
+			if (entityName != nullptr)
+				if (entityName->GetText() == "Chicken Farm")
+					HP->SetText(ent->GetStringLife());
 		}
 
 

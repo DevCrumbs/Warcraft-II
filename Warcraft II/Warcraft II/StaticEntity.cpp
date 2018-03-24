@@ -93,8 +93,8 @@ bool StaticEntity::MouseHover() const
 }
 
 
-void StaticEntity::CheckBuildingState() {
-
+bool StaticEntity::CheckBuildingState() {
+	bool ret = true;
 	BuildingState bs = buildingState;
 
 	if (this->GetCurrLife() <= 0)
@@ -126,8 +126,10 @@ void StaticEntity::CheckBuildingState() {
 			break;
 		case BuildingState_Destroyed:
 			fire->isDeleted = true;
+			ret = false;
 			break;
 		default:
 			break;
 		}
+	return ret;
 }

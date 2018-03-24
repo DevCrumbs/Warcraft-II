@@ -73,7 +73,7 @@ public:
 	
 	void HandleInput(EntitiesEvent &EntityEvent);
 	bool MouseHover() const;
-	void CheckBuildingState();
+	bool CheckBuildingState();
 
 public:
 
