@@ -125,6 +125,11 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = smallConstructionPlanks.child("second");
 	chickenFarmInfo.constructionPlanks2 = scoutTowerInfo.constructionPlanks2 = playerGuardTowerInfo.constructionPlanks2 = playerCannonTowerInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 
+	//Building preview tiles
+	pugi::xml_node previewTiles = humanBuildings.child("previewTiles");
+	buildingPreviewTiles.greenTile = { previewTiles.child("green").attribute("x").as_int(), previewTiles.child("green").attribute("y").as_int(), previewTiles.child("green").attribute("w").as_int(), previewTiles.child("green").attribute("h").as_int() };
+	buildingPreviewTiles.redTile = { previewTiles.child("red").attribute("x").as_int(), previewTiles.child("red").attribute("y").as_int(), previewTiles.child("red").attribute("w").as_int(), previewTiles.child("red").attribute("h").as_int() };
+
 	//Neutral buildings
 	pugi::xml_node neutralBuildings = staticEntities.child("neutralBuildings");
 
@@ -595,10 +600,53 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 	default:
 		break;
 	}
+	
+	HandleStaticEntityPreviewTiles(staticEntityType, mousePos);
+
 }
 
+void j1EntityFactory::HandleStaticEntityPreviewTiles(StaticEntityType staticEntityType, iPoint mousePos)
+{
+	SDL_SetTextureAlphaMod(humanBuildingsTex, 40);
 
-const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntityType) {
+	switch (staticEntityType) {
+
+	case StaticEntityType_ChickenFarm:
+	case StaticEntityType_ScoutTower:
+		
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		break;
+	case StaticEntityType_ElvenLumberMill:
+	case StaticEntityType_MageTower:
+	case StaticEntityType_GryphonAviary:
+	case StaticEntityType_Stables:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+		break;
+	default:
+		break;
+	}
+}
+
+const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntityType) 
+{
 	switch (staticEntityType) {
 	case StaticEntityType_ChickenFarm:
 		return (const EntityInfo&)chickenFarmInfo;

@@ -442,6 +442,11 @@
           </smallTilePlanks>
           
         </constructionPlanks>
+
+        <previewTiles>
+          <green x="505" y="625" w="32" h="32"/>
+          <red x="537" y="625" w="32" h="32"/>
+        </previewTiles>
         
       </humanBuildings>
 

@@ -50,7 +50,12 @@ enum StaticEntityCategory
 	StaticEntityCategory_MaxCategories
 };
 
+struct BuildingPreviewTiles {
 
+	SDL_Rect greenTile = { 0,0,0,0 };
+	SDL_Rect redTile = { 0,0,0,0 };
+
+};
 
 class StaticEntity :public Entity
 {

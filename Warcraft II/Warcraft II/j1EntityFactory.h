@@ -64,6 +64,8 @@ public:
 
 	void Draw();
 	void DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos);
+	void HandleStaticEntityPreviewTiles(StaticEntityType staticEntityType, iPoint mousePos);
+
 	const EntityInfo& GetBuildingInfo(StaticEntityType staticEntityType);
 	SDL_Texture* GetHumanBuildingTexture();
 	bool isEntityOnTile(iPoint tile, bool isBigBuilding) const;
@@ -145,6 +147,8 @@ private:
 	WatchTowerInfo watchTowerInfo;
 	EnemyGuardTowerInfo enemyGuardTowerInfo;
 	EnemyCannonTowerInfo enemyCannonTowerInfo;
+
+	BuildingPreviewTiles buildingPreviewTiles;
 
 	TownHall* townHall = nullptr;
 };
