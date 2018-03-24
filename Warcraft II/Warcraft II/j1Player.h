@@ -18,8 +18,6 @@ enum HoverCheck
 	HoverCheck_Repair
 };
 
-struct Particle;
-
 struct UILabel;
 struct UIImage;
 struct UIButton;
@@ -119,9 +117,6 @@ private:
 
 
 	list<UIElement*> UIMenuInfoList;
-
-	Particle fire;
-	Particle hardFire;
 
 };
 

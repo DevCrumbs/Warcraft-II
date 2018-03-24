@@ -41,7 +41,7 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 
 
 	//node = animations_node.child("sparkle");
-	for (node = node.child("frame"); node; node = node.next_sibling("frame")) {
+	/*for (node = node.child("frame"); node; node = node.next_sibling("frame")) {
 		sparkle.anim.PushBack({ node.attribute("x").as_int(), node.attribute("y").as_int(), node.attribute("w").as_int(), node.attribute("h").as_int() });
 	}
 	node = animations_node.child("sparkle");
@@ -52,7 +52,7 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	sparkle.collisionSize = { node.attribute("w").as_int(), node.attribute("h").as_int() };
 
 	LoadAnimationsSpeed();
-	
+	*/
 
 	return ret;
 }
