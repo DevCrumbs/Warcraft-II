@@ -47,7 +47,7 @@ bool j1Player::Update(float dt) {
 		if (stables != nullptr) {
 			Entity* ent = (Entity*)stables;
 			ent->SetDamageLife(20);
-			CheckBuildingState(ent);
+			stables->CheckBuildingState();
 			if (entityName->GetText() == "Stables")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -56,7 +56,7 @@ bool j1Player::Update(float dt) {
 		if (mageTower != nullptr) {
 			Entity* ent = (Entity*)mageTower;
 			ent->SetDamageLife(20);
-			CheckBuildingState(ent);
+			mageTower->CheckBuildingState();
 			if (entityName->GetText() == "Magic Tower")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -65,7 +65,7 @@ bool j1Player::Update(float dt) {
 		if (!scoutTower.empty()) {
 			Entity* ent = (Entity*)scoutTower.back();
 			ent->SetDamageLife(20);			
-			CheckBuildingState(ent);
+			scoutTower.back()->CheckBuildingState();
 			if (entityName->GetText() == "Scout Tower")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -74,7 +74,7 @@ bool j1Player::Update(float dt) {
 		if (gryphonAviary != nullptr) {
 			Entity* ent = (Entity*)gryphonAviary;
 			ent->SetDamageLife(20);
-			CheckBuildingState(ent);
+			gryphonAviary->CheckBuildingState();
 			if (entityName->GetText() == "Gryphon Aviary")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -83,7 +83,7 @@ bool j1Player::Update(float dt) {
 		if (!chickenFarm.empty()) {
 			Entity* ent = (Entity*)chickenFarm.back();
 			ent->SetDamageLife(20);
-			CheckBuildingState(ent);
+			chickenFarm.back()->CheckBuildingState();
 			if (entityName->GetText() == "Chicken Farm")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -320,20 +320,6 @@ void j1Player::DeleteEntitiesMenu() {
 
 }
 
-void j1Player::CheckBuildingState(Entity* ent) {
-
-	if (ent->GetCurrLife() <= 0)
-		LOG("Destroyed");
-	else if (ent->GetCurrLife() < ent->GetMaxLife() / 4) {// less than 1/4 HP
-		App->particles->lowFire.life = 0;
-		App->particles->AddParticle(App->particles->hardFire, ent->GetPosition().x + ent->GetSize().x / 4, ent->GetPosition().y + ent->GetSize().y / 4);
-
-	}
-	else if (ent->GetCurrLife() < 3 * ent->GetMaxLife() / 4)// less than 3/4 HP
-		App->particles->AddParticle(App->particles->lowFire, ent->GetPosition().x + ent->GetSize().x/3, ent->GetPosition().y + ent->GetSize().y/3);
-
-}
-
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
 
 	UIButton_Info InfoButton;
@@ -381,6 +367,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		if (hoverCheck == HoverCheck_Repair) {
 			hoverButtonStruct.Entity_Hover->SetCurrLife(hoverButtonStruct.Entity_Hover->GetMaxLife());
 			HP->SetText(hoverButtonStruct.Entity_Hover->GetStringLife());
+			hoverButtonStruct.Entity_Hover->CheckBuildingState();
 		}
 		else if (hoverCheck == HoverCheck_Upgrate)
 		{

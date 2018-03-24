@@ -29,6 +29,8 @@ struct Particle
 
 	bool left = true, right = true, up = true, down = true;
 
+	bool isDeleted = false;
+
 	Particle();
 	Particle(const Particle& p);
 	~Particle();
@@ -48,7 +50,7 @@ public:
 	bool Update(float dt);
 	bool CleanUp();
 
-	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType = COLLIDER_NONE, Uint32 delay = 0, fPoint speed = { 0,0 });
+	Particle* AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType = COLLIDER_NONE, Uint32 delay = 0, fPoint speed = { 0,0 });
 	void OnCollision(Collider* c1, Collider* c2);
 
 	void UpdateAnimations(const float dt);

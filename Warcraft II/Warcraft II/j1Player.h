@@ -68,7 +68,7 @@ public:
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim);
 	void DeleteEntitiesMenu();
-	void CheckBuildingState(Entity* ent);
+	//void CheckBuildingState(Entity* ent);
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton();
 

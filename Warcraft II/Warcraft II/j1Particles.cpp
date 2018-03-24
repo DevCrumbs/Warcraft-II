@@ -133,7 +133,7 @@ void j1Particles::UpdateAnimations(const float dt)
 	*/
 }
 
-void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType, Uint32 delay, fPoint speed)
+Particle* j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType, Uint32 delay, fPoint speed)
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
@@ -165,7 +165,8 @@ void j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_T
 			*/
 
 			active[i] = p;
-			break;
+
+			return p;
 		}
 	}
 }
@@ -220,7 +221,10 @@ bool Particle::Update(float dt)
 	if (life = 0)
 	{
 		//if ((SDL_GetTicks() - born) > life)
-			ret = false;
+		ret = false;
+	}
+	if (isDeleted) {
+		ret = false;
 	}
 
 		/*if (anim.Finished() || life == 0)
