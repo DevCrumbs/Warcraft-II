@@ -9,6 +9,7 @@
 #include "j1EntityFactory.h"
 #include "j1Scene.h"
 #include "j1Gui.h"
+#include "j1Particles.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
@@ -35,6 +36,9 @@ bool j1Player::Start()
 {
 	bool ret = true;
 
+	//fire.anim
+
+
 	return ret;
 }
 
@@ -47,7 +51,6 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)stables;
 			ent->SetDamageLife(20);
 			CheckBuildingState(ent);
-			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Stables")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -57,17 +60,15 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)mageTower;
 			ent->SetDamageLife(20);
 			CheckBuildingState(ent);
-			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Magic Tower")
 				HP->SetText(ent->GetStringLife());
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-		if (scoutTower != nullptr) {
-			Entity* ent = (Entity*)scoutTower;
+		if (!scoutTower.empty()) {
+			Entity* ent = (Entity*)scoutTower.back();
 			ent->SetDamageLife(20);			
 			CheckBuildingState(ent);
-			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Scout Tower")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -77,17 +78,15 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)gryphonAviary;
 			ent->SetDamageLife(20);
 			CheckBuildingState(ent);
-			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Gryphon Aviary")
 				HP->SetText(ent->GetStringLife());
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
-		if (chickenFarm != nullptr) {
-			Entity* ent = (Entity*)chickenFarm;
+		if (!chickenFarm.empty()) {
+			Entity* ent = (Entity*)chickenFarm.back();
 			ent->SetDamageLife(20);
 			CheckBuildingState(ent);
-			ent->SetStringLife(ent->GetCurrLife(), ent->GetMaxLife());
 			if (entityName->GetText() == "Chicken Farm")
 				HP->SetText(ent->GetStringLife());
 		}
@@ -124,9 +123,11 @@ void j1Player::CheckIfPlaceBuilding() {
 		switch (alphaBuilding) {
 
 		case StaticEntityType_ChickenFarm:
-			chickenFarm = App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm), this);
+			StaticEntity* c;
+			c = App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm), this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
-			chickenFarm->SetStringLife(chickenFarm->GetCurrLife(), chickenFarm->GetMaxLife());
+			c->SetStringLife(c->GetCurrLife(), c->GetMaxLife());
+			chickenFarm.push_back(c);
 			break;
 
 		case StaticEntityType_Stables:
@@ -148,9 +149,11 @@ void j1Player::CheckIfPlaceBuilding() {
 			break;
 
 		case StaticEntityType_ScoutTower:
-			scoutTower = App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower), this);
+			StaticEntity* s;
+			s = App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower), this);
 			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
-			scoutTower->SetStringLife(scoutTower->GetCurrLife(), scoutTower->GetMaxLife());
+			s->SetStringLife(s->GetCurrLife(), s->GetMaxLife());
+			scoutTower.push_back(s);
 			break;
 
 		case StaticEntityType_NoType:
@@ -248,14 +251,14 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 	
 		break;
 	case EntitiesEvent_Hover:
-		if (staticEntity->staticEntityType == StaticEntityType_ScoutTower && ent->GetCurrLife() == ent->GetMaxLife())
-			hoverCheck = HoverCheck_Update;
+		if ((staticEntity->staticEntityType == StaticEntityType_TownHall || staticEntity->staticEntityType == StaticEntityType_Barracks) && ent->GetCurrLife() == ent->GetMaxLife())
+			hoverCheck = HoverCheck_Upgrate;
 		else if (ent->GetCurrLife() < ent->GetMaxLife())
 			hoverCheck = HoverCheck_Repair;
 		else
 			hoverCheck = HoverCheck_None;
 
-		CreateHoverButton(hoverCheck, { (int)ent->GetPosition().x, (int)ent->GetPosition().y, ent->GetSize().x, ent->GetSize().y});
+		CreateHoverButton(hoverCheck, { (int)ent->GetPosition().x, (int)ent->GetPosition().y, ent->GetSize().x, ent->GetSize().y}, staticEntity);
 
 		break;
 	case EntitiesEvent_Leave:
@@ -331,7 +334,7 @@ void j1Player::CheckBuildingState(Entity* ent) {
 
 }
 
-void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos) {
+void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
 
 	UIButton_Info InfoButton;
 	if (hoverCheck == HoverCheck_Repair) {
@@ -339,22 +342,27 @@ void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos) {
 		InfoButton.hoverTexArea   = { 629,34,49,41 };
 		InfoButton.pressedTexArea = { 679,34,49,41 };
 	}
-	else if (hoverCheck == HoverCheck_Update) {
+	else if (hoverCheck == HoverCheck_Upgrate) {
 		InfoButton.normalTexArea  = { 579,118,49,41 };
 		InfoButton.hoverTexArea   = { 629,118,49,41 };
 		InfoButton.pressedTexArea = { 679,118,49,41 };
 	}
 	InfoButton.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	InfoButton.verticalOrientation = VERTICAL_POS_CENTER;
-	InfoButton.isFixedInScreen = false;
 
-	if(hoverCheck != HoverCheck_None)
-		hoverButton = App->gui->CreateUIButton({pos.x + pos.w/2, pos.y + pos.h/2}, InfoButton, this);
+
+
+	if (hoverCheck != HoverCheck_None) {
+		hoverButtonStruct.hoverButton = App->gui->CreateUIButton({ pos.x + pos.w / 2, pos.y + pos.h / 2 }, InfoButton, this, nullptr, true);
+		hoverButtonStruct.Entity_Hover = staticEntity;
+	}
 }
 
 void j1Player::DestroyHoverButton() {
-	if (hoverButton != nullptr)
-		App->gui->DestroyElement(hoverButton);
+	if (hoverButtonStruct.hoverButton != nullptr) {
+		App->gui->DestroyElement(hoverButtonStruct.hoverButton);
+		hoverButtonStruct.Entity_Hover = nullptr;
+	}
 }
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -370,7 +378,15 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
-		if (hoverCheck == HoverCheck_Repair)
+		if (hoverCheck == HoverCheck_Repair) {
+			hoverButtonStruct.Entity_Hover->SetCurrLife(hoverButtonStruct.Entity_Hover->GetMaxLife());
+			HP->SetText(hoverButtonStruct.Entity_Hover->GetStringLife());
+		}
+		else if (hoverCheck == HoverCheck_Upgrate)
+		{
+			//Use hoverButtonStruct
+			//TODO JOAN
+		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;

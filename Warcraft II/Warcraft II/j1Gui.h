@@ -75,7 +75,7 @@ public:
 	// Gui creation functions
 	UIImage* CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UILabel* CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
-	UIButton* CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
+	UIButton* CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr, bool isInWorld = false);
 	UIInputText* CreateUIInputText(iPoint localPos, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UICursor* CreateUICursor(UICursor_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 

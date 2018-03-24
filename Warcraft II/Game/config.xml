@@ -466,11 +466,19 @@
       
     </staticEntities>    
   </entities>
-  
+
   <particles>
-     <spritesheets>
-      <spritesheet name="Assets/Sprites/Textures/Sparkle.png"/>
+    <spritesheets>
+      <sprite name = "data/assets/textures/buildings/NeutralBuildings.png"/>
     </spritesheets>
+    
+    <fire>
+      <sprites x="144" y="83" w="128" h="128" />
+      <sprites x="144" y="83" w="128" h="128" />
+      <sprites x="144" y="83" w="128" h="128" />
+      <sprites x="144" y="83" w="128" h="128" />
+    </fire>
+    
   </particles>
 
 </config>

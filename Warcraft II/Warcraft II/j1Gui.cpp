@@ -188,9 +188,9 @@ UILabel* j1Gui::CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* lis
 	return label;
 }
 
-UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener, UIElement* parent)
+UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener, UIElement* parent, bool isInWorld)
 {
-	UIButton* button = new UIButton(localPos, parent, info, listener);
+	UIButton* button = new UIButton(localPos, parent, info, listener, isInWorld);
 
 	if (parent == nullptr)
 		parent = (UIElement*)App->win->window;

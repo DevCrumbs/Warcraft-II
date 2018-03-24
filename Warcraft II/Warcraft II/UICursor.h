@@ -18,7 +18,7 @@ struct UICursor_Info {
 class UICursor : public UIElement
 {
 public:
-	UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Module* listener = nullptr);
+	UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Module* listener = nullptr , bool isInWorld = false);
 	void Update(float dt);
 	void SetMousePosition();
 	void HandleInput();
