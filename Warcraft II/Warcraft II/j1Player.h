@@ -50,7 +50,7 @@ public:
 	bool Update(float dt);
 
 	void CheckIfPlaceBuilding();
-
+	iPoint GetMouseTilePos();
 	iPoint GetMousePos();
 
 	// Called before quitting

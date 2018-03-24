@@ -96,13 +96,19 @@ bool j1Player::Update(float dt) {
 	return true;
 }
 
-iPoint j1Player::GetMousePos() {
+iPoint j1Player::GetMouseTilePos() {
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
-	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+
+	return mouseTile;
+}
+
+iPoint j1Player::GetMousePos() {
+
+	iPoint mouseTilePos = App->map->MapToWorld(GetMouseTilePos().x, GetMouseTilePos().y);
 
 	return mouseTilePos;
 }
@@ -117,7 +123,8 @@ void j1Player::CheckIfPlaceBuilding() {
 	StaticEntityType alphaBuilding = App->scene->GetAlphaBuilding();
 
 	//Creates static entities (buildings)
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN && !App->entities->isEntityOnTile(GetMouseTilePos())) {
+
 		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 
 		switch (alphaBuilding) {

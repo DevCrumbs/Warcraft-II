@@ -640,6 +640,69 @@ SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
 	return humanBuildingsTex;
 }
 
+// Returns true if there is an entity on the tile
+bool j1EntityFactory::isEntityOnTile(iPoint tile) const
+{
+	//Dynamic entities
+	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+
+	while (activeDyn != activeDynamicEntities.end()) {
+	
+		iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPosition().x, (*activeDyn)->GetPosition().y);
+		if (tile.x == entityTile.x && tile.y == entityTile.y) 
+		return true;
+
+		activeDyn++;
+	}
+
+	//Static entities
+	list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
+
+	while (activeStatic != activeStaticEntities.end()) {
+
+			iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPosition().x, (*activeStatic)->GetPosition().y);
+			
+			//This checks all of the arround tiles of the static entity, as buildings are not in one only tile
+			if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+				for (uint i = 0; i < 3; i++) {
+					for (uint j = 0; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+						//if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
+							//return true;
+					}
+				}
+			}
+			else {
+				for (uint i = 0; i < 2; i++) {
+					for (uint j = 0; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+						//else if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
+							//return true;
+					}
+				}
+			}
+
+			activeStatic++;
+	}
+
+	// We do also need to check the toSpawn list (just in case)
+	list<Entity*>::const_iterator toSpawn = toSpawnEntities.begin();
+
+	while (toSpawn != toSpawnEntities.end()) {
+
+			iPoint entityTile = App->map->WorldToMap((*toSpawn)->GetPosition().x, (*toSpawn)->GetPosition().y);
+
+			if (tile.x == entityTile.x && tile.y == entityTile.y)
+				return true;
+
+		toSpawn++;
+	}
+
+	return false;
+}
+
 bool j1EntityFactory::PostUpdate()
 {
 	bool ret = true;
