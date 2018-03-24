@@ -641,7 +641,7 @@ SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
 }
 
 // Returns true if there is an entity on the tile
-bool j1EntityFactory::isEntityOnTile(iPoint tile) const
+bool j1EntityFactory::isEntityOnTile(iPoint tile, bool isBigBuilding) const
 {
 	//Dynamic entities
 	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
@@ -668,8 +668,6 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile) const
 					for (uint j = 0; j < 3; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
 							return true;
-						//if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
-							//return true;
 					}
 				}
 			}
@@ -678,8 +676,40 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile) const
 					for (uint j = 0; j < 2; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
 							return true;
-						//else if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
-							//return true;
+					}
+				}
+			}
+
+			//This returns the tiles upwards and left of the building, depending if the building is big or not
+			if (isBigBuilding) {
+				for (uint i = 0; i < 3; i++) {
+					for (uint j = 0; j < 3; j++) {
+						if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
+							return true;
+						else if (tile.x == entityTile.x + i && tile.y == entityTile.y - j)
+							return true;
+						else if (tile.x == entityTile.x - i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+			}
+			else if (!isBigBuilding) {
+				for (uint i = 0; i < 2; i++) {
+					for (uint j = 0; j < 2; j++) {
+						if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
+							return true;
+						else if (tile.x == entityTile.x + i && tile.y == entityTile.y - j)
+							return true;
+						else if (tile.x == entityTile.x - i && tile.y == entityTile.y + j)
+							return true;
+					}
+
+					//Chceks the third row of up and left tiles if the building that's already placed is a big building
+					if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+						if (tile.x == entityTile.x - 1 && tile.y == entityTile.y + 2)
+							return true;
+						else if (tile.x == entityTile.x + 2 && tile.y == entityTile.y - 1)
+							return true;
 					}
 				}
 			}
