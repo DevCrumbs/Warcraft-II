@@ -5,7 +5,11 @@
 
 struct FootmanInfo
 {
-
+	Animation up, down, left, right;
+	Animation upLeft, upRight, downLeft, downRight;
+	Animation attackUp, attackDown, attackLeft, attackRight;
+	Animation attackUpLeft, attackUpRight, attackDownLeft, attackDownRight;
+	Animation deathUp, deathDown;
 };
 
 class Footman :public DynamicEntity
