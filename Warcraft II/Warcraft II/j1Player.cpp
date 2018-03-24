@@ -96,13 +96,19 @@ bool j1Player::Update(float dt) {
 	return true;
 }
 
-iPoint j1Player::GetMousePos() {
+iPoint j1Player::GetMouseTilePos() {
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
-	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+
+	return mouseTile;
+}
+
+iPoint j1Player::GetMousePos() {
+
+	iPoint mouseTilePos = App->map->MapToWorld(GetMouseTilePos().x, GetMouseTilePos().y);
 
 	return mouseTilePos;
 }
@@ -118,42 +124,53 @@ void j1Player::CheckIfPlaceBuilding() {
 
 	//Creates static entities (buildings)
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+
 		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 
 		switch (alphaBuilding) {
 
 		case StaticEntityType_ChickenFarm:
-			StaticEntity* c;
-			c = App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm), this);
-			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
-			c->SetStringLife(c->GetCurrLife(), c->GetMaxLife());
-			chickenFarm.push_back(c);
+			if (!App->entities->isEntityOnTile(GetMouseTilePos(), false)) {
+				StaticEntity* c;
+				c = App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm), this);
+				App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+				c->SetStringLife(c->GetCurrLife(), c->GetMaxLife());
+				chickenFarm.push_back(c);
+			}
 			break;
 
 		case StaticEntityType_Stables:
-			stables = App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_Stables), this);
-			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
-			stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
+			if (!App->entities->isEntityOnTile(GetMouseTilePos(), true)) {
+				stables = App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_Stables), this);
+				App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+				stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
+			}
 			break;
 
 		case StaticEntityType_GryphonAviary:
-			gryphonAviary = App->entities->AddStaticEntity(StaticEntityType_GryphonAviary, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_GryphonAviary), this);
-			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
-			gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
+			if (!App->entities->isEntityOnTile(GetMouseTilePos(), true)) {
+				gryphonAviary = App->entities->AddStaticEntity(StaticEntityType_GryphonAviary, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_GryphonAviary), this);
+				App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+				gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
+			}
 			break;
 
 		case StaticEntityType_MageTower:
-			mageTower = App->entities->AddStaticEntity(StaticEntityType_MageTower, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_MageTower), this);
-			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
-			mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
+			if (!App->entities->isEntityOnTile(GetMouseTilePos(), true)) {
+				mageTower = App->entities->AddStaticEntity(StaticEntityType_MageTower, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_MageTower), this);
+				App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+				mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
+			}
 			break;
 
 		case StaticEntityType_ScoutTower:
-			StaticEntity* s;
-			s = App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower), this);
-			App->scene->SetAplphaBuilding(StaticEntityType_NoType);
-			s->SetStringLife(s->GetCurrLife(), s->GetMaxLife());
-			scoutTower.push_back(s);
+			if (!App->entities->isEntityOnTile(GetMouseTilePos(), false)) {
+				StaticEntity* s;
+				s = App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower), this);
+				App->scene->SetAplphaBuilding(StaticEntityType_NoType);
+				s->SetStringLife(s->GetCurrLife(), s->GetMaxLife());
+				scoutTower.push_back(s);
+			}
 			break;
 
 		case StaticEntityType_NoType:

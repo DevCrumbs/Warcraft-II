@@ -125,6 +125,11 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = smallConstructionPlanks.child("second");
 	chickenFarmInfo.constructionPlanks2 = scoutTowerInfo.constructionPlanks2 = playerGuardTowerInfo.constructionPlanks2 = playerCannonTowerInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 
+	//Building preview tiles
+	pugi::xml_node previewTiles = humanBuildings.child("previewTiles");
+	buildingPreviewTiles.greenTile = { previewTiles.child("green").attribute("x").as_int(), previewTiles.child("green").attribute("y").as_int(), previewTiles.child("green").attribute("w").as_int(), previewTiles.child("green").attribute("h").as_int() };
+	buildingPreviewTiles.redTile = { previewTiles.child("red").attribute("x").as_int(), previewTiles.child("red").attribute("y").as_int(), previewTiles.child("red").attribute("w").as_int(), previewTiles.child("red").attribute("h").as_int() };
+
 	//Neutral buildings
 	pugi::xml_node neutralBuildings = staticEntities.child("neutralBuildings");
 
@@ -595,10 +600,53 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 	default:
 		break;
 	}
+	
+	HandleStaticEntityPreviewTiles(staticEntityType, mousePos);
+
 }
 
+void j1EntityFactory::HandleStaticEntityPreviewTiles(StaticEntityType staticEntityType, iPoint mousePos)
+{
+	SDL_SetTextureAlphaMod(humanBuildingsTex, 40);
 
-const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntityType) {
+	switch (staticEntityType) {
+
+	case StaticEntityType_ChickenFarm:
+	case StaticEntityType_ScoutTower:
+		
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		break;
+	case StaticEntityType_ElvenLumberMill:
+	case StaticEntityType_MageTower:
+	case StaticEntityType_GryphonAviary:
+	case StaticEntityType_Stables:
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+		break;
+	default:
+		break;
+	}
+}
+
+const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntityType) 
+{
 	switch (staticEntityType) {
 	case StaticEntityType_ChickenFarm:
 		return (const EntityInfo&)chickenFarmInfo;
@@ -638,6 +686,99 @@ const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntity
 SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
 
 	return humanBuildingsTex;
+}
+
+// Returns true if there is an entity on the tile
+bool j1EntityFactory::isEntityOnTile(iPoint tile, bool isBigBuilding) const
+{
+	//Dynamic entities
+	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+
+	while (activeDyn != activeDynamicEntities.end()) {
+	
+		iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPosition().x, (*activeDyn)->GetPosition().y);
+		if (tile.x == entityTile.x && tile.y == entityTile.y) 
+		return true;
+
+		activeDyn++;
+	}
+
+	//Static entities
+	list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
+
+	while (activeStatic != activeStaticEntities.end()) {
+
+			iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPosition().x, (*activeStatic)->GetPosition().y);
+			
+			//This checks all of the arround tiles of the static entity, as buildings are not in one only tile
+			if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+				for (uint i = 0; i < 3; i++) {
+					for (uint j = 0; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+			}
+			else {
+				for (uint i = 0; i < 2; i++) {
+					for (uint j = 0; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+			}
+
+			//This returns the tiles upwards and left of the building, depending if the building is big or not
+			if (isBigBuilding) {
+				for (uint i = 0; i < 3; i++) {
+					for (uint j = 0; j < 3; j++) {
+						if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
+							return true;
+						else if (tile.x == entityTile.x + i && tile.y == entityTile.y - j)
+							return true;
+						else if (tile.x == entityTile.x - i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+			}
+			else if (!isBigBuilding) {
+				for (uint i = 0; i < 2; i++) {
+					for (uint j = 0; j < 2; j++) {
+						if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
+							return true;
+						else if (tile.x == entityTile.x + i && tile.y == entityTile.y - j)
+							return true;
+						else if (tile.x == entityTile.x - i && tile.y == entityTile.y + j)
+							return true;
+					}
+
+					//Chceks the third row of up and left tiles if the building that's already placed is a big building
+					if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+						if (tile.x == entityTile.x - 1 && tile.y == entityTile.y + 2)
+							return true;
+						else if (tile.x == entityTile.x + 2 && tile.y == entityTile.y - 1)
+							return true;
+					}
+				}
+			}
+
+			activeStatic++;
+	}
+
+	// We do also need to check the toSpawn list (just in case)
+	list<Entity*>::const_iterator toSpawn = toSpawnEntities.begin();
+
+	while (toSpawn != toSpawnEntities.end()) {
+
+			iPoint entityTile = App->map->WorldToMap((*toSpawn)->GetPosition().x, (*toSpawn)->GetPosition().y);
+
+			if (tile.x == entityTile.x && tile.y == entityTile.y)
+				return true;
+
+		toSpawn++;
+	}
+
+	return false;
 }
 
 bool j1EntityFactory::PostUpdate()
