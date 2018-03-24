@@ -37,6 +37,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	humanBuildingsTexName = spritesheets.child("humanBuildings").attribute("name").as_string();
 	neutralBuildingsTexName = spritesheets.child("neutralBuildings").attribute("name").as_string();
 	orcishBuildingsTexName = spritesheets.child("orcishBuildings").attribute("name").as_string();
+	footmanTexName = spritesheets.child("footmanAnimations").attribute("name").as_string();
+	gruntTexName = spritesheets.child("gruntAnimations").attribute("name").as_string();
 
 	// Static entities
 	pugi::xml_node staticEntities = config.child("staticEntities");
@@ -134,6 +136,275 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = neutralBuildings.child("runeStone").child("sprites");
 	runestoneInfo.completeTexArea = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 
+	//Dynamic entities
+	//Humans
+	pugi::xml_node humanEntities = config.child("dynamicEntities").child("humans");
+
+	//Footman animations
+	pugi::xml_node footmanAnimations = humanEntities.child("footman").child("animations");
+	pugi::xml_node currentAnimation;
+
+	//Up animation Footman
+	currentAnimation = footmanAnimations.child("up");
+	footmanInfo.up.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.up.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down animation Footman
+	currentAnimation = footmanAnimations.child("down");
+	footmanInfo.down.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.down.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Right animation Footman
+	currentAnimation = footmanAnimations.child("right");
+	footmanInfo.right.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.right.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Left animation Footman
+	currentAnimation = footmanAnimations.child("left");
+	footmanInfo.left.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.left.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Up Right animation Footman
+	currentAnimation = footmanAnimations.child("upRight");
+	footmanInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Up Left animation Footman
+	currentAnimation = footmanAnimations.child("upLeft");
+	footmanInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down Right animation Footman
+	currentAnimation = footmanAnimations.child("downRight");
+	footmanInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down Left animation Footman
+	currentAnimation = footmanAnimations.child("downLeft");
+	footmanInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up animation Footman
+	currentAnimation = footmanAnimations.child("attackUp");
+	footmanInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down animation Footman
+	currentAnimation = footmanAnimations.child("attackDown");
+	footmanInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Left animation Footman
+	currentAnimation = footmanAnimations.child("attackLeft");
+	footmanInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Right animation Footman
+	currentAnimation = footmanAnimations.child("attackRight");
+	footmanInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up Left animation Footman
+	currentAnimation = footmanAnimations.child("attackUpLeft");
+	footmanInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up Right animation Footman
+	currentAnimation = footmanAnimations.child("attackUpRight");
+	footmanInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down Left animation Footman
+	currentAnimation = footmanAnimations.child("attackDownLeft");
+	footmanInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down Right animation Footman
+	currentAnimation = footmanAnimations.child("attackDownRight");
+	footmanInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Death Up animation Footman
+	currentAnimation = footmanAnimations.child("deathUp");
+	footmanInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Death Down animation Footman
+	currentAnimation = footmanAnimations.child("deathDown");
+	footmanInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
+	//Orcs
+	pugi::xml_node orcEntities = config.child("dynamicEntities").child("orcs");
+
+	//Grunt animations
+	pugi::xml_node gruntAnimations = orcEntities.child("grunt").child("animations");
+	
+	//Up animation Grunt
+	currentAnimation = gruntAnimations.child("up");
+	gruntInfo.up.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.up.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down animation Grunt
+	currentAnimation = gruntAnimations.child("down");
+	gruntInfo.down.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.down.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Left animation Grunt
+	currentAnimation = gruntAnimations.child("left");
+	gruntInfo.left.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.left.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Right animation Grunt
+	currentAnimation = gruntAnimations.child("right");
+	gruntInfo.right.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.right.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Up Left animation Grunt
+	currentAnimation = gruntAnimations.child("upLeft");
+	gruntInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Up Right animation Grunt
+	currentAnimation = gruntAnimations.child("upRight");
+	gruntInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down Left animation Grunt
+	currentAnimation = gruntAnimations.child("downLeft");
+	gruntInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down Right animation Grunt
+	currentAnimation = gruntAnimations.child("downRight");
+	gruntInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up animation Grunt
+	currentAnimation = gruntAnimations.child("attackUp");
+	gruntInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down animation Grunt
+	currentAnimation = gruntAnimations.child("attackDown");
+	gruntInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Left animation Grunt
+	currentAnimation = gruntAnimations.child("attackLeft");
+	gruntInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Right animation Grunt
+	currentAnimation = gruntAnimations.child("attackRight");
+	gruntInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up Left animation Grunt
+	currentAnimation = gruntAnimations.child("attackUpLeft");
+	gruntInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up Right animation Grunt
+	currentAnimation = gruntAnimations.child("attackUpRight");
+	gruntInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down Left animation Grunt
+	currentAnimation = gruntAnimations.child("attackDownLeft");
+	gruntInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down Right animation Grunt
+	currentAnimation = gruntAnimations.child("attackDownRight");
+	gruntInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Death Up animation Grunt
+	currentAnimation = gruntAnimations.child("deathUp");
+	gruntInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Death Down animation Grunt
+	currentAnimation = gruntAnimations.child("deathDown");
+	gruntInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	
+
 	return ret;
 }
 
@@ -146,6 +417,8 @@ bool j1EntityFactory::Start()
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
 	neutralBuildingsTex = App->tex->Load(neutralBuildingsTexName.data());
 	orcishBuildingsTex = App->tex->Load(orcishBuildingsTexName.data());
+	footmanTex = App->tex->Load(footmanTexName.data());
+	gruntTex = App->tex->Load(gruntTexName.data());
 
 	return ret;
 }
