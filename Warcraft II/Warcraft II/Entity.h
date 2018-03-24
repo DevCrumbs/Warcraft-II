@@ -9,23 +9,71 @@ class j1Module;
 
 struct SDL_Texture;
 
-enum EntityType {
+enum ENTITY_CATEGORY {
 
-	EntityType_NoType,
-	EntityType_StaticEntity,
-	EntityType_DynamicEntity,
-	EntityType_MaxTypes
+	EntityCategory_NONE,
+	EntityCategory_STATIC_ENTITY,
+	EntityCategory_DYNAMIC_ENTITY,
+	EntityCategory_MAX
 };
 
 enum EntitiesEvent
 {
-	EntitiesEvent_None,
-	EntitiesEvent_RightClick,
-	EntitiesEvent_LeftClick,
-	EntitiesEvent_Hover,
-	EntitiesEvent_Leave,
-	EntitiesEvent_Created,
+	EntitiesEvent_NONE,
+	EntitiesEvent_RIGHT_CLICK,
+	EntitiesEvent_LEFT_CLICK,
+	EntitiesEvent_HOVER,
+	EntitiesEvent_LEAVE,
+	EntitiesEvent_CREATED,
 
+};
+
+enum ENTITY_TYPE
+{
+	EntityType_NONE,
+
+	// Player buildings
+	/// Production buildings
+	EntityType_TOWN_HALL,
+	EntityType_CHICKEN_FARM,
+	EntityType_BARRACKS,
+	EntityType_ELVEN_LUMBER_MILL,
+	EntityType_MAGE_TOWER,
+	EntityType_GRYPHON_AVIARY,
+	EntityType_STABLES,
+
+	/// Defense buildings
+	EntityType_SCOUT_TOWER,
+	EntityType_PLAYER_GUARD_TOWER,
+	EntityType_PLAYER_CANNON_TOWER,
+
+	// Neutral buildings
+	EntityType_GOLD_MINE,
+	EntityType_RUNESTONE,
+
+	// Enemy buildings
+	/// Defense buildings
+	EntityType_WATCH_TOWER,
+	EntityType_ENEMY_GUARD_TOWER,
+	EntityType_ENEMY_CANNON_TOWER,
+
+	// Player types
+	EntityType_FOOTMAN,
+	EntityType_ELVEN_ARCHER,
+	EntityType_GRYPHON_RIDER,
+	EntityType_MAGE,
+	EntityType_PALADIN,
+
+	EntityType_TURALYON,
+	EntityType_KHADGAR,
+	EntityType_ALLERIA,
+
+	// Enemy types
+	EntityType_GRUNT,
+	EntityType_TROLL_AXETHROWER,
+	EntityType_DRAGON,
+
+	EntityType_MAX
 };
 
 struct EntityInfo; // empty container
@@ -52,7 +100,7 @@ public:
 
 public:
 
-	EntityType entityType = EntityType_NoType;
+	ENTITY_CATEGORY entityType = EntityCategory_NONE;
 
 	bool remove = false;
 	//bool isSelected = false;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" name="Wasteland" tilewidth="32" tileheight="32" spacing="1" tilecount="380" columns="19">
-  <image source="SpriteSheet/SpriteSheet/Tiles/Wasteland Tiles/PC Computer - Warcraft 2 - Wasteland Tiles.png" width="626" height="659"/>
+  <image source="wastelandTiles.png" width="626" height="659"/>
   <terraintypes>
    <terrain name="Ground" tile="-1"/>
    <terrain name="DarkGorund" tile="-1"/>
@@ -235,7 +235,7 @@
  <tileset firstgid="381" name="logic" tilewidth="32" tileheight="32" tilecount="25" columns="5">
   <image source="logic.png" width="160" height="160"/>
  </tileset>
- <layer name="Capa de Patrones 1" width="50" height="50">
+ <layer name="Capa de Patrones 1" width="50" height="50" visible="0">
   <data>
    <tile gid="303"/>
    <tile gid="228"/>
@@ -2741,7 +2741,7 @@
  </layer>
  <layer name="logic" width="50" height="50" opacity="0.4">
   <data>
-   <tile gid="0"/>
+   <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>

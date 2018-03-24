@@ -1083,8 +1083,8 @@ bool j1Map::LoadLogic()
 						fPoint pos; 
 						pos.x = auxPos.x + (*iterator).x;
 						pos.y = auxPos.y + (*iterator).y;
-						/// Need to chanfe entity type
-						App->entities->AddStaticEntity((StaticEntityType)2, pos, App->entities->GetBuildingInfo((StaticEntityType)2));
+
+						App->entities->AddEntity((ENTITY_TYPE)((*layerIterator)->data[i]-381), pos, App->entities->GetBuildingInfo((ENTITY_TYPE)(*layerIterator)->data[i]));
 //						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);
 					}
 				}

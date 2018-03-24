@@ -9,37 +9,7 @@
 
 struct SDL_Texture;
 
-enum StaticEntityType
-{
-	StaticEntityType_NoType,
-
-	// Player buildings
-	/// Production buildings
-	StaticEntityType_TownHall,
-	StaticEntityType_ChickenFarm,
-	StaticEntityType_Barracks,
-	StaticEntityType_ElvenLumberMill,
-	StaticEntityType_MageTower,
-	StaticEntityType_GryphonAviary,
-	StaticEntityType_Stables,
-
-	/// Defense buildings
-	StaticEntityType_ScoutTower,
-	StaticEntityType_PlayerGuardTower,
-	StaticEntityType_PlayerCannonTower,
-
-	// Neutral buildings
-	StaticEntityType_GoldMine,
-	StaticEntityType_Runestone,
-
-	// Enemy buildings
-	/// Defense buildings
-	StaticEntityType_WatchTower,
-	StaticEntityType_EnemyGuardTower,
-	StaticEntityType_EnemyCannonTower,
-
-	StaticEntityType_MaxTypes
-};
+enum ENTITY_TYPE;
 
 enum StaticEntityCategory
 {
@@ -68,7 +38,7 @@ public:
 
 public:
 
-	StaticEntityType staticEntityType = StaticEntityType_NoType;
+	ENTITY_TYPE staticEntityType = EntityType_NONE;
 	StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
 
 protected:

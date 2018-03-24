@@ -18,6 +18,9 @@ struct BarracksInfo
 	SDL_Rect constructionPlanks2 = { 0,0,0,0 };
 	int barracks1MaxLife = 0;
 	int barracks2MaxLife = 0;
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class Barracks :public StaticEntity
