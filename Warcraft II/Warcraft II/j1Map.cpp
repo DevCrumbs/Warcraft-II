@@ -1083,8 +1083,11 @@ bool j1Map::LoadLogic()
 						fPoint pos; 
 						pos.x = auxPos.x + (*iterator).x;
 						pos.y = auxPos.y + (*iterator).y;
+						int firstGid = 379;
+						App->entities->AddEntity((ENTITY_TYPE)((*layerIterator)->data[i]- firstGid), pos, App->entities->GetBuildingInfo((ENTITY_TYPE)((*layerIterator)->data[i]- firstGid)));
 
-						App->entities->AddEntity((ENTITY_TYPE)((*layerIterator)->data[i]-381), pos, App->entities->GetBuildingInfo((ENTITY_TYPE)(*layerIterator)->data[i]));
+						//App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetBuildingInfo(EntityType_FOOTMAN));
+						
 //						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);
 					}
 				}
