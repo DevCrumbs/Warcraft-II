@@ -36,9 +36,6 @@ bool j1Player::Start()
 {
 	bool ret = true;
 
-	//fire.anim
-
-
 	return ret;
 }
 
@@ -327,10 +324,13 @@ void j1Player::CheckBuildingState(Entity* ent) {
 
 	if (ent->GetCurrLife() <= 0)
 		LOG("Destroyed");
-	else if (ent->GetCurrLife()  < ent->GetMaxLife() / 3)// less than 1/3 HP
-		LOG("Fuego 2");
-	else if (ent->GetCurrLife()  < 2 * ent->GetMaxLife() / 3)// less than 2/3 HP
-		LOG("Fuego 1");
+	else if (ent->GetCurrLife() < ent->GetMaxLife() / 4) {// less than 1/4 HP
+		App->particles->lowFire.life = 0;
+		App->particles->AddParticle(App->particles->hardFire, ent->GetPosition().x + ent->GetSize().x / 4, ent->GetPosition().y + ent->GetSize().y / 4);
+
+	}
+	else if (ent->GetCurrLife() < 3 * ent->GetMaxLife() / 4)// less than 3/4 HP
+		App->particles->AddParticle(App->particles->lowFire, ent->GetPosition().x + ent->GetSize().x/3, ent->GetPosition().y + ent->GetSize().y/3);
 
 }
 

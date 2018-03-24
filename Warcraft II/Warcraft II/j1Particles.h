@@ -6,6 +6,7 @@
 #include "Defs.h"
 #include "p2Point.h"
 #include "Animation.h"
+#include "j1Collision.h"
 
 #define MAX_ACTIVE_PARTICLES 100
 
@@ -47,7 +48,7 @@ public:
 	bool Update(float dt);
 	bool CleanUp();
 
-	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType, Uint32 delay, fPoint speed);
+	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType = COLLIDER_NONE, Uint32 delay = 0, fPoint speed = { 0,0 });
 	void OnCollision(Collider* c1, Collider* c2);
 
 	void UpdateAnimations(const float dt);
@@ -62,7 +63,9 @@ private:
 	uint lastParticle = 0;
 
 public:
-	Particle arrowRight;
+	Particle lowFire;
+	Particle hardFire;
+
 };
 
 #endif //__j1PARTICLES_H__

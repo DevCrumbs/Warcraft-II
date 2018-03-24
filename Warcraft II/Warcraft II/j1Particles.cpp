@@ -37,22 +37,27 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	fireTexName = spritesheets.child("sprite").attribute("name").as_string();
 
 
-	spritesheets = config.child("fire");
+	//spritesheets = config.child("fire");
 
+	//Footman animations
+	pugi::xml_node fire1Animation = config.child("fire")/*.child("animations")*/;
+	pugi::xml_node currentAnimation;
 
-	node = animations_node.child("sparkle");
-	for (node = node.child("frame"); node; node = node.next_sibling("frame")) {
-		sparkle.anim.PushBack({ node.attribute("x").as_int(), node.attribute("y").as_int(), node.attribute("w").as_int(), node.attribute("h").as_int() });
+	//Up animation Footman
+	currentAnimation = fire1Animation.child("low");
+	lowFire.anim.speed = currentAnimation.attribute("speed").as_float();
+	lowFire.anim.loop = currentAnimation.attribute("loop").as_bool();
+	lowFire.life = currentAnimation.attribute("life").as_int();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		lowFire.anim.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	node = animations_node.child("sparkle");
-	sparkle.life = node.attribute("life").as_uint();
-	sparkle.anim.speed = node.attribute("speed").as_float();
-	sparkle.anim.loop = node.attribute("loop").as_bool();
-	node = node.child("frame");
-	sparkle.collisionSize = { node.attribute("w").as_int(), node.attribute("h").as_int() };
-
-	LoadAnimationsSpeed();
-	
+	currentAnimation = fire1Animation.child("hard");
+	hardFire.anim.speed = currentAnimation.attribute("speed").as_float();
+	hardFire.anim.loop = currentAnimation.attribute("loop").as_bool();
+	hardFire.life = currentAnimation.attribute("life").as_int();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		hardFire.anim.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
 
 	return ret;
 }
@@ -113,14 +118,8 @@ bool j1Particles::Update(float dt)
 		}
 		else if (SDL_GetTicks() >= p->born)
 		{
-			/*
-			if (p->collider->type == COLLIDER_TYPE::COLLIDER_CATPEASANT_SHOT)
-				App->render->Blit(App->entities->CatPeasantTex, p->position.x, p->position.y, &(p->anim.GetCurrentFrame()));
-			else if (p->collider->type == COLLIDER_TYPE::COLLIDER_IMP_BOMB || p->collider->type == COLLIDER_TYPE::COLLIDER_IMP_BOMB_EXPLOSION)
-				App->render->Blit(App->entities->ImpTex, p->position.x, p->position.y, &(p->anim.GetCurrentFrame()));
-			else
-				App->render->Blit(App->entities->PlayerTex, p->position.x, p->position.y, &(p->anim.GetCurrentFrame()));
-			*/
+			App->render->Blit(fireText, p->position.x, p->position.y, &(p->anim.GetCurrentFrame()));
+			
 		}
 	}
 
@@ -218,14 +217,14 @@ bool Particle::Update(float dt)
 {
 	bool ret = true;
 
-	if (life > 0)
+	if (life = 0)
 	{
-		if ((SDL_GetTicks() - born) > life)
+		//if ((SDL_GetTicks() - born) > life)
 			ret = false;
 	}
-	else
-		if (anim.Finished() || life == 0)
-			ret = false;
+
+		/*if (anim.Finished() || life == 0)
+			ret = false;*/
 
 	/*
 	if (collider->type == COLLIDER_ARROW) {
