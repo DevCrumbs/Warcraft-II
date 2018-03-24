@@ -34,14 +34,14 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	
 	//Fire
 	pugi::xml_node spritesheets = config.child("spritesheets");
-	//humanBuildingsTexName = spritesheets.child("sprite").attribute("name").as_string();
+	fireTexName = spritesheets.child("sprite").attribute("name").as_string();
 
 
 	spritesheets = config.child("fire");
 
 
-	//node = animations_node.child("sparkle");
-	/*for (node = node.child("frame"); node; node = node.next_sibling("frame")) {
+	node = animations_node.child("sparkle");
+	for (node = node.child("frame"); node; node = node.next_sibling("frame")) {
 		sparkle.anim.PushBack({ node.attribute("x").as_int(), node.attribute("y").as_int(), node.attribute("w").as_int(), node.attribute("h").as_int() });
 	}
 	node = animations_node.child("sparkle");
@@ -52,7 +52,7 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	sparkle.collisionSize = { node.attribute("w").as_int(), node.attribute("h").as_int() };
 
 	LoadAnimationsSpeed();
-	*/
+	
 
 	return ret;
 }
@@ -69,6 +69,7 @@ bool j1Particles::Start()
 {
 	bool ret = true;
 
+	fireText = App->tex->Load(fireTexName.data());
 	LOG("Loading particles");
 
 	return ret;

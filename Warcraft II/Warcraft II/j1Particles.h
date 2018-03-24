@@ -54,6 +54,10 @@ public:
 	void LoadAnimationsSpeed();
 
 private:
+
+	std::string fireTexName;
+	SDL_Texture* fireText = nullptr;
+
 	Particle* active[MAX_ACTIVE_PARTICLES];
 	uint lastParticle = 0;
 
