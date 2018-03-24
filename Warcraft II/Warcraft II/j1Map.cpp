@@ -484,10 +484,6 @@ bool j1Map::Load(const char* fileName, int x, int y)
 	delete newRoom;
 
 	bool ret = true;
-//	string tmp = folder.data();
-//	tmp += fileName;
-
-//	pugi::xml_parse_result result = mapFile.loadFile(tmp.data());
 
 	pugi::xml_parse_result result = mapFile.loadFile(fileName);
 
@@ -926,6 +922,78 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 		}
 		roomsInfo.push_back(newRoom);
 	}
+
+
+
+	pugi::xml_node& node = mapInfoDocument.child("map").child("layer");
+
+	int width = node.attribute("width").as_uint();
+	int height = node.attribute("height").as_uint();
+
+	int sizeData = width * height;
+	uint* data = new uint[sizeData];
+
+	memset(data, 0, width * height);
+
+	int i = 0;
+
+	for (pugi::xml_node tileGid = node.child("data").child("tile"); tileGid; tileGid = tileGid.next_sibling("tile")) {
+		data[i++] = tileGid.attribute("gid").as_uint();
+	}
+
+
+	for (i = 0; i < sizeData; ++i)
+	{
+		RoomInfo newRoom;
+
+		if (data[i] > 0)
+		{
+			if (i < sizeData - 1)
+				if (data[i + 1] > 0)
+					newRoom.doors.push_back(DIRECTION_EAST);
+
+			if (i + width < sizeData)
+				if (data[i + width] > 0)
+					newRoom.doors.push_back(DIRECTION_SOUTH);
+
+
+			switch (data[i])
+			{
+				// Player base
+			case 1:
+
+				newRoom.type = -1;
+						
+				break;
+				// Enemy base
+			case 2:
+				newRoom.type = -2;
+				break;
+				// Little room N
+			case 3:
+				newRoom.type = -3;
+				break;
+				// Little room E
+			case 4:
+				newRoom.type = -3;
+				break;
+				// Little room S	
+			case 5:
+				newRoom.type = -3;
+				break;
+				// Little room W
+			case 6:
+				newRoom.type = -3;
+				break;
+
+			default:
+				newRoom.type = data[i] - 7;
+				break;
+			}
+		}
+
+	}
+
 	return ret;
 }
 
