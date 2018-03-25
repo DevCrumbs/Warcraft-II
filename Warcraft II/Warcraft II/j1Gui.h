@@ -35,10 +35,12 @@ struct UIImage_Info;
 struct UILabel_Info;
 struct UIButton_Info;
 struct UICursor_Info;
-struct UIImage;
-struct UILabel;
-struct UIButton;
-struct UICursor;
+struct UILifeBar_Info;
+class UIImage;
+class UILabel;
+class UIButton;
+class UICursor;
+class UILifeBar;
 class UIInputText;
 
 // ---------------------------------------------------
@@ -76,6 +78,7 @@ public:
 	UIImage* CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UILabel* CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UIButton* CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr, bool isInWorld = false);
+	UILifeBar* CreateUILifeBar(iPoint localPos, UILifeBar_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr, bool isInWorld = false);
 	UIInputText* CreateUIInputText(iPoint localPos, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UICursor* CreateUICursor(UICursor_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 

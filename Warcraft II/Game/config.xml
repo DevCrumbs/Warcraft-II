@@ -483,29 +483,31 @@
     <spritesheets>
       <sprite name = "data/assets/textures/buildings/fire.png"/>
     </spritesheets>
-    
-    <fire1 speed = "4" loop = "1">
-      <frame x="  0" y="4" w="33" h="27" />
-      <frame x=" 34" y="4" w="33" h="27" />
-      <frame x=" 68" y="4" w="33" h="27" />
-      <frame x="102" y="4" w="33" h="27" />
-      <frame x=" 68" y="4" w="33" h="27" />
-      <frame x="102" y="4" w="33" h="27" />
-    </fire1>
-    
-      <fire2 speed = "4" loop = "1">
-      <frame x="  0" y="38" w="50" h="50" />
-      <frame x=" 55" y="38" w="50" h="50" />
-      <frame x="112" y="38" w="50" h="50" />
-      <frame x="167" y="38" w="50" h="50" />
-      <frame x="221" y="38" w="50" h="50" />
-      <frame x="  1" y="93" w="50" h="50" />
-      <frame x=" 57" y="93" w="50" h="50" />
-      <frame x="114" y="93" w="50" h="50" />
-      <frame x="167" y="93" w="50" h="50" />
-      <frame x="221" y="92" w="50" h="50" />
-    </fire2>
-    
+
+    <fire>
+        <low speed = "0.3" loop = "1" life = "1">
+           <frame x="  2" y="3" w="30" h="30" />
+           <frame x=" 34" y="3" w="30" h="30" />
+           <frame x=" 66" y="3" w="30" h="30" />
+           <frame x=" 99" y="3" w="30" h="30" />
+           <frame x="130" y="3" w="30" h="30" />
+           <frame x="163" y="3" w="30" h="30" />
+       </low>
+         
+       <hard speed = "0.3" loop = "1" life = "1">
+         <frame x="  0" y="38" w="50" h="50" />
+         <frame x=" 55" y="38" w="50" h="50" />
+         <frame x="112" y="38" w="50" h="50" />
+         <frame x="167" y="38" w="50" h="50" />
+         <frame x="221" y="38" w="50" h="50" />
+         <frame x="  1" y="93" w="50" h="50" />
+         <frame x=" 57" y="93" w="50" h="50" />
+         <frame x="114" y="93" w="50" h="50" />
+         <frame x="167" y="93" w="50" h="50" />
+         <frame x="221" y="92" w="50" h="50" />
+       </hard>
+  
+    </fire> 
   </particles>
 
 </config>

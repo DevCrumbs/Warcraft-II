@@ -8,6 +8,7 @@
 #include "j1Window.h"
 
 struct SDL_Texture;
+struct Particle;
 
 enum StaticEntityType
 {
@@ -50,6 +51,14 @@ enum StaticEntityCategory
 	StaticEntityCategory_MaxCategories
 };
 
+enum BuildingState
+{
+	BuildingState_Normal,
+	BuildingState_LowFire,
+	BuildingState_HardFire,
+	BuildingState_Destroyed
+};
+
 enum StaticEntitySize
 {
 	None,
@@ -78,14 +87,17 @@ public:
 	
 	void HandleInput(EntitiesEvent &EntityEvent);
 	bool MouseHover() const;
+	bool CheckBuildingState();
 
 public:
 
 	StaticEntityType staticEntityType = StaticEntityType_NoType;
 	StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
+	BuildingState buildingState = BuildingState_Normal;
 
 protected:
 
+	Particle* fire;
 	const SDL_Rect* texArea = nullptr;
 	j1Timer constructionTimer;
 	uint constructionTime = 0;

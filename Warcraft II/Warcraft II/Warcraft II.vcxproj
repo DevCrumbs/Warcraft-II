@@ -179,6 +179,7 @@
     <ClInclude Include="UIImage.h" />
     <ClInclude Include="UIInputText.h" />
     <ClInclude Include="UILabel.h" />
+    <ClInclude Include="UILifeBar.h" />
     <ClInclude Include="WatchTower.h" />
   </ItemGroup>
   <ItemGroup>
@@ -238,6 +239,7 @@
     <ClCompile Include="UIImage.cpp" />
     <ClCompile Include="UIInputText.cpp" />
     <ClCompile Include="UILabel.cpp" />
+    <ClCompile Include="UILifeBar.cpp" />
     <ClCompile Include="WatchTower.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
