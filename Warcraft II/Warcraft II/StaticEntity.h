@@ -57,6 +57,12 @@ enum BuildingState
 	BuildingState_LowFire,
 	BuildingState_HardFire,
 	BuildingState_Destroyed
+};
+
+struct BuildingPreviewTiles {
+
+	SDL_Rect greenTile = { 0,0,0,0 };
+	SDL_Rect redTile = { 0,0,0,0 };
 
 };
 
