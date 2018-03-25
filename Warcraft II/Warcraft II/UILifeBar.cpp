@@ -10,8 +10,7 @@ UILifeBar::UILifeBar(iPoint local_pos, UIElement* parent, UILifeBar_Info& info, 
 
 	bar = App->gui->GetRectFromAtlas(life_bar.bar);
 	background = App->gui->GetRectFromAtlas(life_bar.background);
-
-	local_pos = life_bar.life_bar_position;
+	
 }
 
 void UILifeBar::Update(float dt)
@@ -26,11 +25,22 @@ void UILifeBar::Draw() const
 {
 	iPoint blit_pos;
 	int scale = App->win->GetScale();
-	blit_pos.x = (GetScreenPos().x - App->render->camera.x) / scale;
-	blit_pos.y = (GetScreenPos().y - App->render->camera.y) / scale;
+	blit_pos.x = (GetLocalPos().x - App->render->camera.x) / scale;
+	blit_pos.y = (GetLocalPos().y - App->render->camera.y) / scale;
 
-	App->render->Blit(App->gui->GetAtlas(), blit_pos.x + life_bar.life_bar_position.x, blit_pos.y + life_bar.life_bar_position.y, &background);
-	App->render->Blit(App->gui->GetAtlas(), blit_pos.x + life_bar.life_bar_position.x, blit_pos.y + life_bar.life_bar_position.y, &bar);
+	if (GetParent() != nullptr) {
+		SDL_Rect daddy = GetParent()->GetScreenRect();
+		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
+	}
+	
+	if (!isInWorld) {
+		App->render->Blit(App->gui->GetAtlas(), blit_pos.x + life_bar.lifeBarPosition.x, blit_pos.y + life_bar.lifeBarPosition.y, &bar);
+		App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &background);
+	}
+	//else
+	//	App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &texArea);
+	if (GetParent() != nullptr)
+		App->render->ResetViewPort();
 }
 
 void UILifeBar::DebugDraw(iPoint blit_pos) const
@@ -54,7 +64,7 @@ void UILifeBar::IncreaseLife(const int life)
 		life_bar.life = background.w;
 }
 
-void UILifeBar::DecreaseLifeProgress(const int life)
+void UILifeBar::DecreaseLife(const int life)
 {
 	life_bar.life -= life;
 	if (life_bar.life < 0)

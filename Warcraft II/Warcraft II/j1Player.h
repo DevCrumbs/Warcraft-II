@@ -21,6 +21,7 @@ enum HoverCheck
 struct UILabel;
 struct UIImage;
 struct UIButton;
+struct UILifeBar;
 class Entity;
 
 class StaticEntity;
@@ -37,7 +38,7 @@ struct EntitySelectedStats
 	UILabel* HP = nullptr;
 	UILabel* entityName = nullptr;
 	UIImage* entityIcon = nullptr;
-	UIImage* lifeBar = nullptr;
+	UILifeBar* lifeBar = nullptr;
 	Entity* entitySelected = nullptr;
 };
 

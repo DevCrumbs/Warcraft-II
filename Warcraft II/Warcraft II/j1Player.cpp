@@ -14,6 +14,7 @@
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UIImage.h"
+#include "UILifeBar.h"
 
 j1Player::j1Player() : j1Module()
 {
@@ -48,8 +49,10 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)stables;
 			ent->SetDamageLife(20);
 			stables->CheckBuildingState();
-			if(entitySelectedStats.entitySelected == ent)
+			if (entitySelectedStats.entitySelected == ent) {
 				entitySelectedStats.HP->SetText(ent->GetStringLife());
+				entitySelectedStats.lifeBar->DecreaseLife(20);
+			}
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
@@ -57,8 +60,10 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)mageTower;
 			ent->SetDamageLife(20);
 			mageTower->CheckBuildingState();
-			if (entitySelectedStats.entitySelected == ent)
+			if (entitySelectedStats.entitySelected == ent) {
 				entitySelectedStats.HP->SetText(ent->GetStringLife());
+				entitySelectedStats.lifeBar->DecreaseLife(20);
+			}
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
@@ -66,8 +71,10 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)scoutTower.back();
 			ent->SetDamageLife(20);			
 			scoutTower.back()->CheckBuildingState();
-			if (entitySelectedStats.entitySelected == ent)
+			if (entitySelectedStats.entitySelected == ent) {
 				entitySelectedStats.HP->SetText(ent->GetStringLife());
+				entitySelectedStats.lifeBar->DecreaseLife(20);
+			}
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
@@ -75,8 +82,10 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)gryphonAviary;
 			ent->SetDamageLife(20);
 			gryphonAviary->CheckBuildingState();
-			if (entitySelectedStats.entitySelected == ent)
+			if (entitySelectedStats.entitySelected == ent) {
 				entitySelectedStats.HP->SetText(ent->GetStringLife());
+				entitySelectedStats.lifeBar->DecreaseLife(20);
+			}
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
@@ -84,8 +93,10 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)chickenFarm.back();
 			ent->SetDamageLife(20);
 			chickenFarm.back()->CheckBuildingState();
-			if (entitySelectedStats.entitySelected == ent)
+			if (entitySelectedStats.entitySelected == ent) {
 				entitySelectedStats.HP->SetText(ent->GetStringLife());
+				entitySelectedStats.lifeBar->DecreaseLife(20);
+			}
 		}
 
 
@@ -327,9 +338,15 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h/2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-	imageInfo.texArea = { 289,346,145,23 };
-	imageInfo.verticalOrientation = VERTICAL_POS_TOP;
-	entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 60, 50}, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	UILifeBar_Info lifeInfo;
+	lifeInfo.background = { 289,346,145,23 };
+	lifeInfo.bar = { 300,373,128,8 };
+	lifeInfo.maxLife = currentEntity->GetMaxLife();
+	lifeInfo.life = currentEntity->GetCurrLife();
+	lifeInfo.maxWidth = lifeInfo.bar.w;
+	lifeInfo.lifeBarPosition = { 12, 10 };
+
+	entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 60, 50}, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 
 
@@ -341,6 +358,7 @@ void j1Player::DeleteEntitiesMenu() {
 	App->gui->DestroyElement(entitySelectedStats.HP);
 	App->gui->DestroyElement(entitySelectedStats.entityName);
 	App->gui->DestroyElement(entitySelectedStats.entityIcon);
+	App->gui->DestroyElement(entitySelectedStats.lifeBar);
 	entitySelectedStats.entitySelected = nullptr;
 }
 
@@ -390,8 +408,10 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (hoverCheck == HoverCheck_Repair) {
 			hoverButtonStruct.Entity_Hover->SetCurrLife(hoverButtonStruct.Entity_Hover->GetMaxLife());
-			entitySelectedStats.HP->SetText(hoverButtonStruct.Entity_Hover->GetStringLife());
 			hoverButtonStruct.Entity_Hover->CheckBuildingState();
+			entitySelectedStats.HP->SetText(hoverButtonStruct.Entity_Hover->GetStringLife());
+			entitySelectedStats.lifeBar->SetLife(hoverButtonStruct.Entity_Hover->GetMaxLife());
+
 		}
 		else if (hoverCheck == HoverCheck_Upgrate)
 		{

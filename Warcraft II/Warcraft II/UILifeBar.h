@@ -17,7 +17,8 @@ struct UILifeBar_Info {
 	int life = 0;
 	int maxLife = 0;
 	int maxWidth = 0;
-	iPoint life_bar_position = { 0,0 };
+	iPoint lifeBarPosition = { 0,0 };
+	iPoint bgPosition = { 0,0 };
 
 };
 
@@ -34,7 +35,7 @@ public:
 
 	void SetLife(const int life);
 	void IncreaseLife(const int life);
-	void DecreaseLifeProgress(const int life);
+	void DecreaseLife(const int life);
 	int GetLife() const;
 
 private:
