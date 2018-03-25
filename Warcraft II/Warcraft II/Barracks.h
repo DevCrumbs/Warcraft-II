@@ -39,6 +39,8 @@ public:
 private:
 
 	BarracksInfo barracksInfo;
+
+	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
 };
 
 #endif //__Barracks_H__

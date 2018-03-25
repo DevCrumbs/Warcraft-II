@@ -330,8 +330,8 @@
         <townHall>
           <maxLife value = "1200"/>
           <sprites>
-            <complete x="265" y="5" w="128" h="128"/>
-            <inProgress x="265" y="133" w="128" h="128"/>
+            <complete x="274" y="17" w="128" h="128"/>
+            <inProgress x="274" y="17" w="128" h="128"/>
           </sprites>
         </townHall>
 

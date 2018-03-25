@@ -5,17 +5,22 @@
 
 Barracks::Barracks(fPoint pos, iPoint size, int maxLife, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), barracksInfo(barracksInfo)
 {
-	texArea = &barracksInfo.constructionPlanks1;
+	texArea = &barracksInfo.barracksCompleteTexArea;
 	currentLife = maxLife;
-	this->constructionTimer.Start();
+	isBuilt = true;
+	//this->constructionTimer.Start();
 }
 
 void Barracks::Move(float dt)
 {
-	UpdateAnimations(dt);
+	if (listener != nullptr)
+		HandleInput(EntityEvent);
 
-	if (constructionTimer.Read() >= (constructionTime * 1000))
-		isBuilt = true;
+	//UpdateAnimations(dt);
+
+	//if (constructionTimer.Read() >= (constructionTime * 1000))
+	//	isBuilt = true;
+	
 }
 
 // Animations

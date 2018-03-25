@@ -1084,10 +1084,10 @@ bool j1Map::LoadLogic()
 						pos.x = auxPos.x + (*iterator).x;
 						pos.y = auxPos.y + (*iterator).y;
 						int firstGid = 381;
-
-
-						App->entities->AddEntity((ENTITY_TYPE)((*layerIterator)->data[i]), pos, App->entities->GetBuildingInfo((ENTITY_TYPE)((*layerIterator)->data[i])));
-
+						
+						App->entities->AddEntity((ENTITY_TYPE)((*layerIterator)->data[i]), pos, App->entities->GetBuildingInfo((ENTITY_TYPE)((*layerIterator)->data[i])), (j1Module*)App->player);
+						
+						
 						//App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetBuildingInfo(EntityType_FOOTMAN));
 
 //						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);

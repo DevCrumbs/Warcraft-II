@@ -36,8 +36,6 @@ bool j1Player::Start()
 {
 	bool ret = true;
 
-	//fire.anim
-
 
 	return ret;
 }
@@ -248,6 +246,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		else if (staticEntity->staticEntityType == EntityType_STABLES)
 			MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 });
+
+		else if (staticEntity->staticEntityType == EntityType_BARRACKS)
+			MakeEntitiesMenu(ent->GetStringLife(), "Barracks", { 241,160,50,41 });
+
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL)
+			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 241,160,50,41 });
 	
 		break;
 	case EntitiesEvent_HOVER:
