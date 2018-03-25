@@ -317,9 +317,13 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) {
 
 	UILabel_Info labelInfo;
-	labelInfo.text = HP_text;
-	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+	labelInfo.text = entityName_text;
+	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+	entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
+	labelInfo.text = HP_text;
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
 	if (HP_text != "NO_HP_TEXT")
 		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 	
@@ -328,9 +332,9 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 		entitySelectedStats.HP = App->gui->CreateUILabel({ 80, App->scene->entitiesStats->GetLocalRect().h - 30 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 	}
 
-	labelInfo.text = entityName_text;
-	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
-	entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+
+
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = iconDim;

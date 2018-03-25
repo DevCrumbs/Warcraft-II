@@ -366,130 +366,103 @@ void j1Scene::LoadInGameUI()
 
 void j1Scene::LoadBuildingMenu()
 {
-	UIImage_Info buildingMenuInfo;
-	buildingMenuInfo.texArea = { 0,33,240,529 };
-	buildingMenu = App->gui->CreateUIImage({ -112, 0 }, buildingMenuInfo, this, buildingButton);
+	UIButton_Info buttonInfo;
+	UILabel_Info labelInfo;
+
+	UIImage_Info imageInfo;
+	imageInfo.texArea = { 0,33,240,529 };
+	buildingMenu = App->gui->CreateUIImage({ -112, 0 }, imageInfo, this, buildingButton);
 	buildingMenuOn = true;
 
-	UIButton_Info chickenFarmInfo;
-	chickenFarmInfo.normalTexArea = { 241,34,50,41 };
-	chickenFarmInfo.hoverTexArea = { 292,34,50,41 };
-	chickenFarmInfo.pressedTexArea = { 343,34,50,41 };
-	chickenFarmButton = App->gui->CreateUIButton({ 15, 55 }, chickenFarmInfo, this, buildingMenu);
+	buttonInfo.normalTexArea = { 241,34,50,41 };
+	buttonInfo.hoverTexArea = { 292,34,50,41 };
+	buttonInfo.pressedTexArea = { 343,34,50,41 };
+	chickenFarmButton = App->gui->CreateUIButton({ 15, 55 }, buttonInfo, this, buildingMenu);
+	
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.text = "Chicken Farm";
+	chickenFarmLabel = App->gui->CreateUILabel({ 75, 65 }, labelInfo, this, buildingMenu);
 
-	UILabel_Info chickenFarmLabelInfo;
-	chickenFarmLabelInfo.fontName = FONT_NAME_WARCRAFT;
-	chickenFarmLabelInfo.normalColor = White_;
-	chickenFarmLabelInfo.text = "Chicken Farm";
-	chickenFarmLabel = App->gui->CreateUILabel({ 75, 65 }, chickenFarmLabelInfo, this, buildingMenu);
+	buttonInfo.normalTexArea = { 241,76,50,41 };
+	buttonInfo.hoverTexArea = { 292,76,50,41 };
+	buttonInfo.pressedTexArea = { 343,76,50,41 };
+	elvenLumberButton = App->gui->CreateUIButton({ 15, 100 }, buttonInfo, this, buildingMenu);
 
-	UIButton_Info elvenLumberInfo;
-	elvenLumberInfo.normalTexArea = { 241,76,50,41 };
-	elvenLumberInfo.hoverTexArea = { 292,76,50,41 };
-	elvenLumberInfo.pressedTexArea = { 343,76,50,41 };
-	elvenLumberButton = App->gui->CreateUIButton({ 15, 100 }, elvenLumberInfo, this, buildingMenu);
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Elven Lumber Mill";
+	elvenLumberLabel = App->gui->CreateUILabel({ 75, 110}, labelInfo, this, buildingMenu);
 
-	UILabel_Info elvenLumberLabelInfo;
-	elvenLumberLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	elvenLumberLabelInfo.normalColor = White_;
-	elvenLumberLabelInfo.text = "Elven Lumber Mill";
-	elvenLumberLabel = App->gui->CreateUILabel({ 75, 110}, elvenLumberLabelInfo, this, buildingMenu);
+	buttonInfo.normalTexArea = { 241,118,50,41 };
+	buttonInfo.hoverTexArea = { 292,118,50,41 };
+	buttonInfo.pressedTexArea = { 343,118,50,41 };
+	blackSmithButton = App->gui->CreateUIButton({ 15, 145 }, buttonInfo, this, buildingMenu);
 
-	UIButton_Info blackSmithInfo;
-	blackSmithInfo.normalTexArea = { 241,118,50,41 };
-	blackSmithInfo.hoverTexArea = { 292,118,50,41 };
-	blackSmithInfo.pressedTexArea = { 343,118,50,41 };
-	blackSmithButton = App->gui->CreateUIButton({ 15, 145 }, blackSmithInfo, this, buildingMenu);
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Blacksmith";
+	blackSmithLabel = App->gui->CreateUILabel({ 75, 155 }, labelInfo, this, buildingMenu);
 
-	UILabel_Info blackSmithLabelInfo;
-	blackSmithLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	blackSmithLabelInfo.normalColor = White_;
-	blackSmithLabelInfo.text = "Blacksmith";
-	blackSmithLabel = App->gui->CreateUILabel({ 75, 155 }, blackSmithLabelInfo, this, buildingMenu);
+	buttonInfo.normalTexArea = { 241,160,50,41 };
+	buttonInfo.hoverTexArea = { 292,160,50,41 };
+	buttonInfo.pressedTexArea = { 343,160,50,41 };
+	stablesButton = App->gui->CreateUIButton({ 15, 190 }, buttonInfo, this, buildingMenu);
 
-	UIButton_Info stablesInfo;
-	stablesInfo.normalTexArea = { 241,160,50,41 };
-	stablesInfo.hoverTexArea = { 292,160,50,41 };
-	stablesInfo.pressedTexArea = { 343,160,50,41 };
-	stablesButton = App->gui->CreateUIButton({ 15, 190 }, stablesInfo, this, buildingMenu);
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Stables";
+	stablesLabel = App->gui->CreateUILabel({ 75, 200 }, labelInfo, this, buildingMenu);
 
-	UILabel_Info stablesLabelInfo;
-	stablesLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	stablesLabelInfo.normalColor = White_;
-	stablesLabelInfo.text = "Stables";
-	stablesLabel = App->gui->CreateUILabel({ 75, 200 }, stablesLabelInfo, this, buildingMenu);
+	buttonInfo.normalTexArea = { 241,202,50,41 };
+	buttonInfo.hoverTexArea = { 292,202,50,41 };
+	buttonInfo.pressedTexArea = { 343,202,50,41 };
+	churchButton = App->gui->CreateUIButton({ 15, 235 }, buttonInfo, this, buildingMenu);
 
-	UIButton_Info churchInfo;
-	churchInfo.normalTexArea = { 241,202,50,41 };
-	churchInfo.hoverTexArea = { 292,202,50,41 };
-	churchInfo.pressedTexArea = { 343,202,50,41 };
-	churchButton = App->gui->CreateUIButton({ 15, 235 }, churchInfo, this, buildingMenu);
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Church";
+	churchLabel = App->gui->CreateUILabel({ 75, 245 }, labelInfo, this, buildingMenu);
 
-	UILabel_Info churchLabelInfo;
-	churchLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	churchLabelInfo.normalColor = White_;
-	churchLabelInfo.text = "Church";
-	churchLabel = App->gui->CreateUILabel({ 75, 245 }, churchLabelInfo, this, buildingMenu);
+	buttonInfo.normalTexArea = { 394,160,50,41 };
+	buttonInfo.hoverTexArea = { 445,160,50,41 };
+	buttonInfo.pressedTexArea = { 496,160,50,41 };
+	gryphonAviaryButton = App->gui->CreateUIButton({ 15, 280 }, buttonInfo, this, buildingMenu);
 
-	UIButton_Info gryphonAviaryInfo;
-	gryphonAviaryInfo.normalTexArea = { 394,160,50,41 };
-	gryphonAviaryInfo.hoverTexArea = { 445,160,50,41 };
-	gryphonAviaryInfo.pressedTexArea = { 496,160,50,41 };
-	gryphonAviaryButton = App->gui->CreateUIButton({ 15, 280 }, gryphonAviaryInfo, this, buildingMenu);
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Gryphon Aviary";
+	gryphonAviaryLabel = App->gui->CreateUILabel({ 75, 290 }, labelInfo, this, buildingMenu);
 
-	UILabel_Info gryphonAviaryLabelInfo;
-	gryphonAviaryLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	gryphonAviaryLabelInfo.normalColor = White_;
-	gryphonAviaryLabelInfo.text = "Gryphon Aviary";
-	gryphonAviaryLabel = App->gui->CreateUILabel({ 75, 290 }, gryphonAviaryLabelInfo, this, buildingMenu);
+	buttonInfo.normalTexArea = { 394,202,50,41 };
+	buttonInfo.hoverTexArea = { 445,202,50,41 };	
+	buttonInfo.pressedTexArea = { 496,202,50,41 };
+	mageTowerButton = App->gui->CreateUIButton({ 15, 325 }, buttonInfo, this, buildingMenu);
 
-	UIButton_Info mageTowerInfo;
-	mageTowerInfo.normalTexArea = { 394,202,50,41 };
-	mageTowerInfo.hoverTexArea = { 445,202,50,41 };
-	mageTowerInfo.pressedTexArea = { 496,202,50,41 };
-	mageTowerButton = App->gui->CreateUIButton({ 15, 325 }, mageTowerInfo, this, buildingMenu);
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Mage Tower";
+	mageTowerLabel = App->gui->CreateUILabel({ 75, 335 }, labelInfo, this, buildingMenu);
 
-	UILabel_Info mageTowerLabelInfo;
-	mageTowerLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	mageTowerLabelInfo.normalColor = White_;
-	mageTowerLabelInfo.text = "Mage Tower";
-	mageTowerLabel = App->gui->CreateUILabel({ 75, 335 }, mageTowerLabelInfo, this, buildingMenu);
+	buttonInfo.normalTexArea = { 394,34,50,41 };
+	buttonInfo.hoverTexArea = { 445,34,50,41 };
+	buttonInfo.pressedTexArea = { 496,34,50,41 };
+	scoutTowerButton = App->gui->CreateUIButton({ 15, 370 }, buttonInfo, this, buildingMenu);
 
-	UIButton_Info scoutTowerInfo;
-	scoutTowerInfo.normalTexArea = { 394,34,50,41 };
-	scoutTowerInfo.hoverTexArea = { 445,34,50,41 };
-	scoutTowerInfo.pressedTexArea = { 496,34,50,41 };
-	scoutTowerButton = App->gui->CreateUIButton({ 15, 370 }, scoutTowerInfo, this, buildingMenu);
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Scout Tower";
+	scoutTowerLabel = App->gui->CreateUILabel({ 75, 380 }, labelInfo, this, buildingMenu);
 
-	UILabel_Info scoutTowerLabelInfo;
-	scoutTowerLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	scoutTowerLabelInfo.normalColor = White_;
-	scoutTowerLabelInfo.text = "Scout Tower";
-	scoutTowerLabel = App->gui->CreateUILabel({ 75, 380 }, scoutTowerLabelInfo, this, buildingMenu);
+	buttonInfo.normalTexArea = { 394,76,50,41 };
+	buttonInfo.hoverTexArea = { 445,76,50,41 };
+	buttonInfo.pressedTexArea = { 496,76,50,41 };
+	guardTowerButton = App->gui->CreateUIButton({ 15, 415 }, buttonInfo, this, buildingMenu);
 
-	UIButton_Info guardTowerInfo;
-	guardTowerInfo.normalTexArea = { 394,76,50,41 };
-	guardTowerInfo.hoverTexArea = { 445,76,50,41 };
-	guardTowerInfo.pressedTexArea = { 496,76,50,41 };
-	guardTowerButton = App->gui->CreateUIButton({ 15, 415 }, guardTowerInfo, this, buildingMenu);
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Guard Tower";
+	guardTowerLabel = App->gui->CreateUILabel({ 75, 425 }, labelInfo, this, buildingMenu);
 
-	UILabel_Info guardTowerLabelInfo;
-	guardTowerLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	guardTowerLabelInfo.normalColor = White_;
-	guardTowerLabelInfo.text = "Guard Tower";
-	guardTowerLabel = App->gui->CreateUILabel({ 75, 425 }, guardTowerLabelInfo, this, buildingMenu);
+	buttonInfo.normalTexArea = { 394,118,50,41 };
+	buttonInfo.hoverTexArea = { 445,118,50,41 };
+	buttonInfo.pressedTexArea = { 496,118,50,41 };
+	cannonTowerButton = App->gui->CreateUIButton({ 15, 460 }, buttonInfo, this, buildingMenu);
 
-	UIButton_Info cannonTowerInfo;
-	cannonTowerInfo.normalTexArea = { 394,118,50,41 };
-	cannonTowerInfo.hoverTexArea = { 445,118,50,41 };
-	cannonTowerInfo.pressedTexArea = { 496,118,50,41 };
-	cannonTowerButton = App->gui->CreateUIButton({ 15, 460 }, cannonTowerInfo, this, buildingMenu);
-
-	UILabel_Info cannonTowerLabelInfo;
-	cannonTowerLabelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	cannonTowerLabelInfo.normalColor = White_;
-	cannonTowerLabelInfo.text = "Cannon Tower";
-	cannonTowerLabel = App->gui->CreateUILabel({ 75, 470 }, cannonTowerLabelInfo, this, buildingMenu);
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Cannon Tower";
+	cannonTowerLabel = App->gui->CreateUILabel({ 75, 470 }, labelInfo, this, buildingMenu);
 }
 
 void j1Scene::UnLoadBuildingMenu()
