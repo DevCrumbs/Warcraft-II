@@ -4,7 +4,7 @@ build:
   verbosity: minimal
   
 after_build:
-- 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\Warcraft II\Debug\Warcraft II.exe"
+- 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\Warcraft II\Release\Warcraft II.exe"
 - 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\Warcraft II\Game\data"
 - 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\Warcraft II\Game\*xml"
 - 7z a WarcraftII_The_Stolen_Artifacts.zip "%APPVEYOR_BUILD_FOLDER%\Warcraft II\Game\*.dll"
