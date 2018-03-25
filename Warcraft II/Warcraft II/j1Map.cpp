@@ -41,7 +41,11 @@ bool j1Map::Awake(pugi::xml_node& config)
 	blitOffset = config.child("general").child("blit").attribute("offset").as_int();
 	cameraBlit = config.child("general").child("cameraBlit").attribute("value").as_bool();
 	culingOffset = config.child("general").child("culing").attribute("value").as_int();
-
+	///
+	defaultRoomSize = 50;
+	playerBaseSize = 40;
+	defaultTileSize = 32;
+	defaultHallSize = 20;
 	mapTypesNo = config.child("general").child("mapTypesNo").attribute("number").as_int();
 	for (pugi::xml_node iterator = config.child("general").child("roomPullNo"); iterator; iterator = iterator.next_sibling("roomPullNo"))
 	{
@@ -843,10 +847,11 @@ bool j1Map::CreateNewMap()
 	if (ret)
 	{
 		static char typePath[50];
-		sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
+		///sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
+		sprintf_s(typePath, 50, "data/maps/mapTypes/test.tmx", mapType);
 		mapInfoDocument.loadFile(typePath);
 
-		pugi::xml_node mapInfo = mapInfoDocument.child("map");
+		pugi::xml_node mapInfo = mapInfoDocument;
 		ret = LoadMapInfo(mapInfo);
 
 		if (!ret)
@@ -880,9 +885,6 @@ bool j1Map::CreateNewMap()
 		ret = LoadTilesetImage(imageInfo);
 	}
 
-
-
-
 	return ret;
 }
 
@@ -892,6 +894,7 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 
 	DIRECTION direction = DIRECTION_NONE;
 
+	/*
 
 	for (pugi::xml_node iterator = mapInfoDocument.child("rooms").child("room"); iterator; iterator = iterator.next_sibling("room"))
 	{
@@ -923,7 +926,7 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 		roomsInfo.push_back(newRoom);
 	}
 
-
+	*/
 
 	pugi::xml_node& node = mapInfoDocument.child("map").child("layer");
 
@@ -933,7 +936,7 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 	int sizeData = width * height;
 	uint* data = new uint[sizeData];
 
-	memset(data, 0, width * height);
+	memset(data, 0, width * height);	
 
 	int i = 0;
 
@@ -956,18 +959,28 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 				if (data[i + width] > 0)
 					newRoom.doors.push_back(DIRECTION_SOUTH);
 
+			int x = i % width;
+			int y = i / width;
+			iPoint pos = MapToWorld(x, y);
 
 			switch (data[i])
 			{
 				// Player base
 			case 1:
-
 				newRoom.type = -1;
+				
+				newRoom.x = ((pos.x * defaultRoomSize)  + (pos.x * defaultHallSize) + ((defaultRoomSize - playerBaseSize) / 2)) * defaultTileSize;
+				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
+				
 						
-				break;
+				break;	
 				// Enemy base
 			case 2:
 				newRoom.type = -2;
+
+				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize)) * defaultTileSize;
+				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
+
 				break;
 				// Little room N
 			case 3:
@@ -988,8 +1001,13 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 
 			default:
 				newRoom.type = data[i] - 7;
+
+				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize)) * defaultTileSize;
+				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
+
 				break;
 			}
+			roomsInfo.push_back(newRoom);
 		}
 
 	}
