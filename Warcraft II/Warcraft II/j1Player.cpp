@@ -48,9 +48,8 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)stables;
 			ent->SetDamageLife(20);
 			stables->CheckBuildingState();
-			if(entityName != nullptr)
-				if (entityName->GetText() == "Stables")
-				HP->SetText(ent->GetStringLife());
+			if(entitySelectedStats.entitySelected == ent)
+				entitySelectedStats.HP->SetText(ent->GetStringLife());
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
@@ -58,9 +57,8 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)mageTower;
 			ent->SetDamageLife(20);
 			mageTower->CheckBuildingState();
-			if (entityName != nullptr)
-				if (entityName->GetText() == "Magic Tower")
-					HP->SetText(ent->GetStringLife());
+			if (entitySelectedStats.entitySelected == ent)
+				entitySelectedStats.HP->SetText(ent->GetStringLife());
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
@@ -68,9 +66,8 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)scoutTower.back();
 			ent->SetDamageLife(20);			
 			scoutTower.back()->CheckBuildingState();
-			if (entityName != nullptr)
-				if (entityName->GetText() == "Scout Tower")
-					HP->SetText(ent->GetStringLife());
+			if (entitySelectedStats.entitySelected == ent)
+				entitySelectedStats.HP->SetText(ent->GetStringLife());
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
@@ -78,9 +75,8 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)gryphonAviary;
 			ent->SetDamageLife(20);
 			gryphonAviary->CheckBuildingState();
-			if (entityName != nullptr)
-				if (entityName->GetText() == "Gryphon Aviary")
-					HP->SetText(ent->GetStringLife());
+			if (entitySelectedStats.entitySelected == ent)
+				entitySelectedStats.HP->SetText(ent->GetStringLife());
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
@@ -88,9 +84,8 @@ bool j1Player::Update(float dt) {
 			Entity* ent = (Entity*)chickenFarm.back();
 			ent->SetDamageLife(20);
 			chickenFarm.back()->CheckBuildingState();
-			if (entityName != nullptr)
-				if (entityName->GetText() == "Chicken Farm")
-					HP->SetText(ent->GetStringLife());
+			if (entitySelectedStats.entitySelected == ent)
+				entitySelectedStats.HP->SetText(ent->GetStringLife());
 		}
 
 
@@ -254,19 +249,19 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 	case EntitiesEvent_LeftClick:
 		DeleteEntitiesMenu();
 		if (staticEntity->staticEntityType == StaticEntityType_ChickenFarm)
-			MakeEntitiesMenu(ent->GetStringLife(), "Chicken Farm", { 241,34,50,41 });
+			MakeEntitiesMenu(ent->GetStringLife(), "Chicken Farm", { 241,34,50,41 }, ent);
 
 		else if (staticEntity->staticEntityType == StaticEntityType_GryphonAviary)
-			MakeEntitiesMenu(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 });
+			MakeEntitiesMenu(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 }, ent);
 
 		else if (staticEntity->staticEntityType == StaticEntityType_MageTower)
-			MakeEntitiesMenu(ent->GetStringLife(), "Mage Tower", { 394,202,50,41 });
+			MakeEntitiesMenu(ent->GetStringLife(), "Mage Tower", { 394,202,50,41 }, ent);
 
 		else if (staticEntity->staticEntityType == StaticEntityType_ScoutTower)
-			MakeEntitiesMenu(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 });
+			MakeEntitiesMenu(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 }, ent);
 
 		else if (staticEntity->staticEntityType == StaticEntityType_Stables)
-			MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 });
+			MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 	
 		break;
 	case EntitiesEvent_Hover:
@@ -286,19 +281,20 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 	case EntitiesEvent_Created:
 		DeleteEntitiesMenu();
 		if (staticEntity->staticEntityType == StaticEntityType_ChickenFarm)
-			MakeEntitiesMenu("NO_HP_TEXT", "Chicken Farm", { 241,34,50,41 });
+			MakeEntitiesMenu("NO_HP_TEXT", "Chicken Farm", { 241,34,50,41 }, ent);
 
 		else if (staticEntity->staticEntityType == StaticEntityType_GryphonAviary)
-			MakeEntitiesMenu("NO_HP_TEXT", "Gryphon Aviary", { 394,160,50,41 });
+			MakeEntitiesMenu("NO_HP_TEXT", "Gryphon Aviary", { 394,160,50,41 }, ent);
 
 		else if (staticEntity->staticEntityType == StaticEntityType_MageTower)
-			MakeEntitiesMenu("NO_HP_TEXT", "Mage Tower", { 394,202,50,41 });
+			MakeEntitiesMenu("NO_HP_TEXT", "Mage Tower", { 394,202,50,41 }, ent);
 
 		else if (staticEntity->staticEntityType == StaticEntityType_ScoutTower)
-			MakeEntitiesMenu("NO_HP_TEXT", "Scout Tower", { 394,34,50,41 });
+			MakeEntitiesMenu("NO_HP_TEXT", "Scout Tower", { 394,34,50,41 }, ent);
 
 		else if (staticEntity->staticEntityType == StaticEntityType_Stables)
-			MakeEntitiesMenu("NO_HP_TEXT", "Stables", { 241,160,50,41 });
+			MakeEntitiesMenu("NO_HP_TEXT", "Stables", { 241,160,50,41 }, ent);
+
 		break;
 	
 	default:
@@ -307,39 +303,45 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 }
 
-void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim) {
+void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) {
 
 	UILabel_Info labelInfo;
 	labelInfo.text = HP_text;
 	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
 
 	if (HP_text != "NO_HP_TEXT")
-		HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 	
 	else if (HP_text == "NO_HP_TEXT") {
 		labelInfo.text = "Building...";
-		HP = App->gui->CreateUILabel({ 80, App->scene->entitiesStats->GetLocalRect().h - 30 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		entitySelectedStats.HP = App->gui->CreateUILabel({ 80, App->scene->entitiesStats->GetLocalRect().h - 30 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 	}
-
 
 	labelInfo.text = entityName_text;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
-	entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-	UIImage_Info iconInfo;
-	iconInfo.texArea = iconDim;
-	iconInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
-	iconInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h/2 }, iconInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	UIImage_Info imageInfo;
+	imageInfo.texArea = iconDim;
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h/2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
+	imageInfo.texArea = { 289,346,145,23 };
+	imageInfo.verticalOrientation = VERTICAL_POS_TOP;
+	entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 60, 50}, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+
+
+	entitySelectedStats.entitySelected = currentEntity;
 }
 
 void j1Player::DeleteEntitiesMenu() {
 
-	App->gui->DestroyElement(HP);
-	App->gui->DestroyElement(entityName);
-	App->gui->DestroyElement(entityIcon);
-
+	App->gui->DestroyElement(entitySelectedStats.HP);
+	App->gui->DestroyElement(entitySelectedStats.entityName);
+	App->gui->DestroyElement(entitySelectedStats.entityIcon);
+	entitySelectedStats.entitySelected = nullptr;
 }
 
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
@@ -388,7 +390,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (hoverCheck == HoverCheck_Repair) {
 			hoverButtonStruct.Entity_Hover->SetCurrLife(hoverButtonStruct.Entity_Hover->GetMaxLife());
-			HP->SetText(hoverButtonStruct.Entity_Hover->GetStringLife());
+			entitySelectedStats.HP->SetText(hoverButtonStruct.Entity_Hover->GetStringLife());
 			hoverButtonStruct.Entity_Hover->CheckBuildingState();
 		}
 		else if (hoverCheck == HoverCheck_Upgrate)

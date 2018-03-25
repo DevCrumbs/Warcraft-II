@@ -32,6 +32,15 @@ struct HoverButton
 
 };
 
+struct EntitySelectedStats
+{
+	UILabel* HP = nullptr;
+	UILabel* entityName = nullptr;
+	UIImage* entityIcon = nullptr;
+	UIImage* lifeBar = nullptr;
+	Entity* entitySelected = nullptr;
+};
+
 class j1Player : public j1Module
 {
 public:
@@ -66,7 +75,7 @@ public:
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 
-	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim);
+	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void DeleteEntitiesMenu();
 	//void CheckBuildingState(Entity* ent);
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
@@ -99,11 +108,9 @@ private:
 	uint maxUnits = 0; // max units that the player can have at the current moment (it depends on the Chicken Farms built)
 
 
-	UILabel* HP = nullptr;
-	UILabel* entityName = nullptr;
-	UIImage* entityIcon = nullptr;
-
 	HoverButton hoverButtonStruct;
+
+	EntitySelectedStats entitySelectedStats;
 
 	list<StaticEntity*> chickenFarm;
 	list<StaticEntity*> scoutTower;
