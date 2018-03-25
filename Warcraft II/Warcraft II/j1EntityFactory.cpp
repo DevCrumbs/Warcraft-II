@@ -111,19 +111,20 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	//Construction planks for the human buildings
 
-	pugi::xml_node bigConstructionPlanks = humanBuildings.child("constructionPlanks").child("bigTilePlanks");
-	aux = bigConstructionPlanks.child("first");
-	barracksInfo.constructionPlanks1 = elvenLumberMillInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-	mageTowerInfo.constructionPlanks1 = gryphonAviaryInfo.constructionPlanks1 = stablesInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-	aux = bigConstructionPlanks.child("second");
-	barracksInfo.constructionPlanks2 = elvenLumberMillInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-	mageTowerInfo.constructionPlanks2 = gryphonAviaryInfo.constructionPlanks2 = stablesInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-
 	pugi::xml_node smallConstructionPlanks = humanBuildings.child("constructionPlanks").child("smallTilePlanks");
 	aux = smallConstructionPlanks.child("first");
 	chickenFarmInfo.constructionPlanks1 = scoutTowerInfo.constructionPlanks1 = playerGuardTowerInfo.constructionPlanks1 = playerCannonTowerInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 	aux = smallConstructionPlanks.child("second");
 	chickenFarmInfo.constructionPlanks2 = scoutTowerInfo.constructionPlanks2 = playerGuardTowerInfo.constructionPlanks2 = playerCannonTowerInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+
+	pugi::xml_node mediumConstructionPlanks = humanBuildings.child("constructionPlanks").child("mediumTilePlanks");
+	aux = mediumConstructionPlanks.child("first");
+	barracksInfo.constructionPlanks1 = elvenLumberMillInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+	mageTowerInfo.constructionPlanks1 = gryphonAviaryInfo.constructionPlanks1 = stablesInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+	aux = mediumConstructionPlanks.child("second");
+	barracksInfo.constructionPlanks2 = elvenLumberMillInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+	mageTowerInfo.constructionPlanks2 = gryphonAviaryInfo.constructionPlanks2 = stablesInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+
 
 	//Building preview tiles
 	pugi::xml_node previewTiles = humanBuildings.child("previewTiles");
@@ -564,35 +565,35 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 	switch (staticEntityType) {
 
 	case StaticEntityType_ChickenFarm:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
 		break;
 	case StaticEntityType_ElvenLumberMill:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &elvenLumberMillInfo.completeTexArea);
 		break;
 	case StaticEntityType_MageTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_GryphonAviary:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
 		break;
 	case StaticEntityType_Stables:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
 		break;
 	case StaticEntityType_ScoutTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_PlayerGuardTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_PlayerCannonTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_NoType:
@@ -632,13 +633,6 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(StaticEntityType staticEnti
 		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
 		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.greenTile);
 		break;
 	default:
 		break;
@@ -711,7 +705,7 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile, bool isBigBuilding) const
 			iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPosition().x, (*activeStatic)->GetPosition().y);
 			
 			//This checks all of the arround tiles of the static entity, as buildings are not in one only tile
-			if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+			if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
 				for (uint i = 0; i < 3; i++) {
 					for (uint j = 0; j < 3; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -753,7 +747,7 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile, bool isBigBuilding) const
 					}
 
 					//Chceks the third row of up and left tiles if the building that's already placed is a big building
-					if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+					if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
 						if (tile.x == entityTile.x - 1 && tile.y == entityTile.y + 2)
 							return true;
 						else if (tile.x == entityTile.x + 2 && tile.y == entityTile.y - 1)
@@ -892,7 +886,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_Barracks:
 	{
-		Barracks* barracks = new Barracks(pos, { 128,128 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
+		Barracks* barracks = new Barracks(pos, { 96,96 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
 		barracks->entityType = EntityType_StaticEntity;
 		barracks->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		barracks->staticEntityType = StaticEntityType_Barracks;
@@ -904,7 +898,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_ElvenLumberMill:
 	{
-		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 128,128 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
+		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 96,96 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
 		elvenLumberMill->entityType = EntityType_StaticEntity;
 		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		elvenLumberMill->staticEntityType = StaticEntityType_Barracks;
@@ -916,7 +910,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_MageTower:
 	{
-		MageTower* mageTower = new MageTower(pos, { 128,128 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
+		MageTower* mageTower = new MageTower(pos, { 96,96 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
 		mageTower->entityType = EntityType_StaticEntity;
 		mageTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		mageTower->staticEntityType = StaticEntityType_MageTower;
@@ -928,7 +922,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_GryphonAviary:
 	{
-		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 128,128 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
+		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 96,96 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
 		gryphonAviary->entityType = EntityType_StaticEntity;
 		gryphonAviary->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		gryphonAviary->staticEntityType = StaticEntityType_GryphonAviary;
@@ -940,7 +934,7 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 
 	case StaticEntityType_Stables:
 	{
-		Stables* stables = new Stables(pos, { 128,128 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
+		Stables* stables = new Stables(pos, { 96,96 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
 		stables->entityType = EntityType_StaticEntity;
 		stables->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		stables->staticEntityType = StaticEntityType_Stables;

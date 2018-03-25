@@ -386,61 +386,66 @@
         <barracks>
           <maxLife value = "800"/>
           <sprites>
-            <complete x="530" y="111" w="128" h="128"/>
+            <complete x="546" y="15" w="96" h="96"/>
           </sprites>
         </barracks>
 
         <barracks2>
           <maxLife value = "1200"/>
           <sprites>
-            <complete x="530" y="0" w="128" h="128"/>
+            <complete x="546" y="15" w="96" h="96"/>
           </sprites>
         </barracks2>
 
         <elvenLumberMill>
           <maxLife value = "600"/>
           <sprites>
-            <complete x="191" y="260" w="128" h="128"/>
-            <inProgress x="191" y="405" w="128" h="128"/>
+            <complete x="207" y="274" w="96" h="96"/>
+            <inProgress x="207" y="419" w="96" h="96"/>
           </sprites>
         </elvenLumberMill>
 
         <mageTower>
           <maxLife value = "500"/>
           <sprites>
-            <complete x="572" y="226" w="128" h="128"/>
-            <inProgress x="572" y="340" w="128" h="128"/>
+            <complete x="588" y="242" w="96" h="96"/>
+            <inProgress x="588" y="357" w="96" h="96"/>
           </sprites>
         </mageTower>
 
         <gryphonAviary>
           <maxLife value = "500"/>
           <sprites>
-            <complete x="196" y="523" w="128" h="128"/>
-            <inProgress x="29" y="523" w="128" h="128"/>
+            <complete x="212" y="539" w="96" h="96"/>
+            <inProgress x="43" y="539" w="96" h="96"/>
           </sprites>
         </gryphonAviary>
 
         <stables>
           <maxLife value = "700"/>
           <sprites>
-            <complete x="317" y="272" w="128" h="128"/>
-            <inProgress x="317" y="407" w="128" h="128"/>
+            <complete x="334" y="288" w="96" h="96"/>
+            <inProgress x="334" y="422" w="96" h="96"/>
           </sprites>
         </stables>
 
         <constructionPlanks>
+
+          <smallTilePlanks>
+            <first x="405" y="561" w="64" h="64"/>
+            <second x="597" y="517" w="64" h="64"/>
+          </smallTilePlanks>
+
+          <mediumTilePlanks>
+            <first x="390" y="545" w="96" h="96"/>
+            <second x="580" y="501" w="96" h="96"/>
+          </mediumTilePlanks>
           
           <bigTilePlanks>
             <first x="376" y="529" w="128" h="128"/>
             <second x="565" y="485" w="128" h="128"/>
           </bigTilePlanks>
 
-          <smallTilePlanks>
-            <first x="405" y="561" w="64" h="64"/>
-            <second x="597" y="517" w="64" h="64"/>
-          </smallTilePlanks>
-          
         </constructionPlanks>
 
         <previewTiles>
