@@ -74,6 +74,8 @@
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/grunt.png"/>
     </spritesheets>
 
+    <previewTexturesProperties buildingPlaceOpacity ="190" tileBuildingPlaceOpacity ="100"/>
+
     <dynamicEntities>
       <humans>
         <footman>
@@ -449,8 +451,8 @@
         </constructionPlanks>
 
         <previewTiles>
-          <green x="505" y="625" w="32" h="32"/>
-          <red x="537" y="625" w="32" h="32"/>
+          <green x="15" y="227" w="32" h="32"/>
+          <red x="47" y="227" w="32" h="32"/>
         </previewTiles>
         
       </humanBuildings>
@@ -459,13 +461,13 @@
         <goldMine>
           <maxLife value = "250"/>
           <sprites>
-            <active x="0" y="118" w="128" h="128"/>
-            <inactive x="0" y="0" w="128" h="128"/>
+            <active x="16" y="115" w="96" h="96"/>
+            <inactive x="16" y="16" w="96" h="96"/>
           </sprites>
         </goldMine>
         
         <runeStone>
-          <sprites x="144" y="83" w="128" h="128" />
+          <sprites x="144" y="83" w="64" h="64" />
         </runeStone>
       
     </neutralBuildings>

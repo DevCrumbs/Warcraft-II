@@ -40,6 +40,10 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	footmanTexName = spritesheets.child("footmanAnimations").attribute("name").as_string();
 	gruntTexName = spritesheets.child("gruntAnimations").attribute("name").as_string();
 
+	//Debug Textures Properties
+	buildingPreviewTiles.opacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
+	previewBuildingOpacity = config.child("previewTexturesProperties").attribute("buildingPlaceOpacity").as_uint();
+
 	// Static entities
 	pugi::xml_node staticEntities = config.child("staticEntities");
 
@@ -565,35 +569,35 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 	switch (staticEntityType) {
 
 	case StaticEntityType_ChickenFarm:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
 		break;
 	case StaticEntityType_ElvenLumberMill:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &elvenLumberMillInfo.completeTexArea);
 		break;
 	case StaticEntityType_MageTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_GryphonAviary:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
 		break;
 	case StaticEntityType_Stables:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
 		break;
 	case StaticEntityType_ScoutTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_PlayerGuardTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_PlayerCannonTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 120);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
 		break;
 	case StaticEntityType_NoType:
@@ -608,31 +612,48 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 
 void j1EntityFactory::HandleStaticEntityPreviewTiles(StaticEntityType staticEntityType, iPoint mousePos)
 {
-	SDL_SetTextureAlphaMod(humanBuildingsTex, 40);
+	SDL_SetTextureAlphaMod(neutralBuildingsTex, buildingPreviewTiles.opacity);
+
 
 	switch (staticEntityType) {
 
 	case StaticEntityType_ChickenFarm:
 	case StaticEntityType_ScoutTower:
-		
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		if (isEntityOnTile(App->player->GetMouseTilePos(), false)) {
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
+		}
 		break;
 	case StaticEntityType_ElvenLumberMill:
 	case StaticEntityType_MageTower:
 	case StaticEntityType_GryphonAviary:
 	case StaticEntityType_Stables:
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-		App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		if (isEntityOnTile(App->player->GetMouseTilePos(), true)) {
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile);
+		}
 		break;
 	default:
 		break;
@@ -680,6 +701,11 @@ const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntity
 SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
 
 	return humanBuildingsTex;
+}
+
+SDL_Texture* j1EntityFactory::GetNeutralBuildingTexture() {
+
+	return neutralBuildingsTex;
 }
 
 // Returns true if there is an entity on the tile

@@ -186,8 +186,10 @@ void j1Player::CheckIfPlaceBuilding() {
 		App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 
 	//This makes that buildings on the scene aren't printed on alpha
-	if (alphaBuilding != StaticEntityType_MaxTypes)
+	if (alphaBuilding != StaticEntityType_MaxTypes) {
 		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+		SDL_SetTextureAlphaMod(App->entities->GetNeutralBuildingTexture(), 255);
+	}
 }
 
 // Called before quitting

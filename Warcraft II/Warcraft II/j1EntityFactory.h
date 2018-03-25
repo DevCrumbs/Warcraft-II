@@ -68,6 +68,8 @@ public:
 
 	const EntityInfo& GetBuildingInfo(StaticEntityType staticEntityType);
 	SDL_Texture* GetHumanBuildingTexture();
+	SDL_Texture* GetNeutralBuildingTexture();
+
 	bool isEntityOnTile(iPoint tile, bool isBigBuilding) const;
 
 	StaticEntity* AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener = nullptr);
@@ -148,7 +150,9 @@ private:
 	EnemyGuardTowerInfo enemyGuardTowerInfo;
 	EnemyCannonTowerInfo enemyCannonTowerInfo;
 
+	//Preview tiles
 	BuildingPreviewTiles buildingPreviewTiles;
+	uint previewBuildingOpacity;
 
 	TownHall* townHall = nullptr;
 };
