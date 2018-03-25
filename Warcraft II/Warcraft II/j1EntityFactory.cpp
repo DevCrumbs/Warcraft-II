@@ -797,66 +797,99 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile, StaticEntitySize buildingSize)
 
 			iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPosition().x, (*activeStatic)->GetPosition().y);
 			
-			//This checks all of the tiles that conform of the static entity, as buildings are not in one only tile
+			//This checks all of the tiles that conform of the static entity and their sorrounding tiles
 			if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
-				for (uint i = 0; i < 2; i++) {
-					for (uint j = 0; j < 2; j++) {
-						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-							return true;
-					}
-				}
-			}
-			else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
-				for (uint i = 0; i < 3; i++) {
-					for (uint j = 0; j < 3; j++) {
-						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-							return true;
-					}
-				}
-			}
-			else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
-				for (uint i = 0; i < 4; i++) {
-					for (uint j = 0; j < 4; j++) {
-						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-							return true;
-					}
-				}
-			}
-
-			//This returns the tiles upwards and left of the building the player wants to place, depending if the building is big or not
-			switch (buildingSize) 
-			{
-			case Small:
-				for (uint i = 0; i < 2; i++) {
-					for (uint j = 0; j < 2; j++) {
-						if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
-							return true;
-						else if (tile.x == entityTile.x + i && tile.y == entityTile.y - j)
-							return true;
-						else if (tile.x == entityTile.x - i && tile.y == entityTile.y + j)
-							return true;
-					}
-				}
-				break;
-			case Medium:
-				for (uint i = 0; i < 3; i++) {
-					for (uint j = 0; j < 3; j++) {
-						if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
-							return true;
-						else if (tile.x == entityTile.x + i && tile.y == entityTile.y - j)
-							return true;
-						if ((*activeStatic)->GetSize().x != 64 && (*activeStatic)->GetSize().y != 64) {
-							if (tile.x == entityTile.x - i && tile.y == entityTile.y + j)
+				switch (buildingSize)
+				{
+				case Small:
+					for (int i = -1; i < 2; i++) {
+						for (int j = -1; j < 2; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+							}
+						}
+					break;
+				case Medium:
+					for (int i = -2; i < 2; i++) {
+						for (int j = -2; j < 2; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
 								return true;
 						}
 					}
+					break;
+				case Big:
+					for (int i = -3; i < 2; i++) {
+						for (int j = -3; j < 2; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				default:
+					break;
 				}
-				break;
-
-			case Big:
-				break;
-			default:
-				break;
+			}
+			else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
+				switch (buildingSize)
+				{
+				case Small:
+					for (int i = -1; i < 3; i++) {
+						for (int j = -1; j < 3; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				case Medium:
+					for (int i = -2; i < 3; i++) {
+						for (int j = -2; j < 3; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				case Big:
+					for (int i = -3; i < 3; i++) {
+						for (int j = -3; j < 3; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+				switch (buildingSize)
+				{
+				case Small:
+					for (int i = -1; i < 4; i++) {
+						for (int j = -1; j < 4; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				case Medium:
+					for (int i = -2; i < 4; i++) {
+						for (int j = -2; j < 4; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				case Big:
+					for (int i = -3; i < 4; i++) {
+						for (int j = -3; j < 4; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				default:
+					break;
+				}
 			}
 
 			activeStatic++;
