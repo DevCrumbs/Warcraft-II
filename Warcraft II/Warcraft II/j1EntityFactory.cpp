@@ -610,6 +610,7 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 
 }
 
+//Handles when to return green or red tiles 
 void j1EntityFactory::HandleStaticEntityPreviewTiles(StaticEntityType staticEntityType, iPoint mousePos)
 {
 	SDL_SetTextureAlphaMod(neutralBuildingsTex, buildingPreviewTiles.opacity);
@@ -619,31 +620,56 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(StaticEntityType staticEnti
 
 	case StaticEntityType_ChickenFarm:
 	case StaticEntityType_ScoutTower:
-		App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		if (isEntityOnTile(App->player->GetMouseTilePos(), false)) {
-			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
+		DrawStaticEntityPreviewTiles(true, Small, mousePos);
+		if (isEntityOnTile(App->player->GetMouseTilePos(), Small)) {
+			DrawStaticEntityPreviewTiles(false, Small, mousePos);
 		}
 		break;
 	case StaticEntityType_ElvenLumberMill:
 	case StaticEntityType_MageTower:
 	case StaticEntityType_GryphonAviary:
 	case StaticEntityType_Stables:
-		App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-		App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-		if (isEntityOnTile(App->player->GetMouseTilePos(), true)) {
+		DrawStaticEntityPreviewTiles(true, Medium, mousePos);
+		if (isEntityOnTile(App->player->GetMouseTilePos(), Medium)) {
+			DrawStaticEntityPreviewTiles(false, Medium, mousePos);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+//Returns green or red tiles depending on the size of the building
+void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntitySize buildingSize, iPoint mousePos)
+{
+	switch (buildingSize) {
+	case Small:
+		if (isPlaceable) {
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		}
+		else if (!isPlaceable) {
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
+		}
+		break;
+	case Medium:
+		if (isPlaceable) {
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		}
+		else if (!isPlaceable) {
 			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
 			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
 			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
@@ -655,9 +681,50 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(StaticEntityType staticEnti
 			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile);
 		}
 		break;
+	case Big:
+		if (isPlaceable) {
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+		}
+		else if (!isPlaceable) {
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.redTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.redTile);
+		}
+		break;
+	case None:
+		break;
 	default:
 		break;
 	}
+
 }
 
 const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntityType) 
@@ -709,7 +776,7 @@ SDL_Texture* j1EntityFactory::GetNeutralBuildingTexture() {
 }
 
 // Returns true if there is an entity on the tile
-bool j1EntityFactory::isEntityOnTile(iPoint tile, bool isBigBuilding) const
+bool j1EntityFactory::isEntityOnTile(iPoint tile, StaticEntitySize buildingSize) const
 {
 	//Dynamic entities
 	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
@@ -730,16 +797,8 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile, bool isBigBuilding) const
 
 			iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPosition().x, (*activeStatic)->GetPosition().y);
 			
-			//This checks all of the arround tiles of the static entity, as buildings are not in one only tile
-			if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
-				for (uint i = 0; i < 3; i++) {
-					for (uint j = 0; j < 3; j++) {
-						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-							return true;
-					}
-				}
-			}
-			else {
+			//This checks all of the tiles that conform of the static entity, as buildings are not in one only tile
+			if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
 				for (uint i = 0; i < 2; i++) {
 					for (uint j = 0; j < 2; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -747,11 +806,29 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile, bool isBigBuilding) const
 					}
 				}
 			}
-
-			//This returns the tiles upwards and left of the building, depending if the building is big or not
-			if (isBigBuilding) {
+			else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
 				for (uint i = 0; i < 3; i++) {
 					for (uint j = 0; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+			}
+			else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+				for (uint i = 0; i < 4; i++) {
+					for (uint j = 0; j < 4; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+			}
+
+			//This returns the tiles upwards and left of the building the player wants to place, depending if the building is big or not
+			switch (buildingSize) 
+			{
+			case Small:
+				for (uint i = 0; i < 2; i++) {
+					for (uint j = 0; j < 2; j++) {
 						if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
 							return true;
 						else if (tile.x == entityTile.x + i && tile.y == entityTile.y - j)
@@ -760,26 +837,26 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile, bool isBigBuilding) const
 							return true;
 					}
 				}
-			}
-			else if (!isBigBuilding) {
-				for (uint i = 0; i < 2; i++) {
-					for (uint j = 0; j < 2; j++) {
+				break;
+			case Medium:
+				for (uint i = 0; i < 3; i++) {
+					for (uint j = 0; j < 3; j++) {
 						if (tile.x == entityTile.x - i && tile.y == entityTile.y - j)
 							return true;
 						else if (tile.x == entityTile.x + i && tile.y == entityTile.y - j)
 							return true;
-						else if (tile.x == entityTile.x - i && tile.y == entityTile.y + j)
-							return true;
-					}
-
-					//Chceks the third row of up and left tiles if the building that's already placed is a big building
-					if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
-						if (tile.x == entityTile.x - 1 && tile.y == entityTile.y + 2)
-							return true;
-						else if (tile.x == entityTile.x + 2 && tile.y == entityTile.y - 1)
-							return true;
+						if ((*activeStatic)->GetSize().x != 64 && (*activeStatic)->GetSize().y != 64) {
+							if (tile.x == entityTile.x - i && tile.y == entityTile.y + j)
+								return true;
+						}
 					}
 				}
+				break;
+
+			case Big:
+				break;
+			default:
+				break;
 			}
 
 			activeStatic++;

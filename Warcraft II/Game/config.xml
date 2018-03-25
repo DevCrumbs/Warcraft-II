@@ -74,7 +74,7 @@
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/grunt.png"/>
     </spritesheets>
 
-    <previewTexturesProperties buildingPlaceOpacity ="190" tileBuildingPlaceOpacity ="100"/>
+    <previewTexturesProperties buildingPlaceOpacity ="190" tileBuildingPlaceOpacity ="70"/>
 
     <dynamicEntities>
       <humans>

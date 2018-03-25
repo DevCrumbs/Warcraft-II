@@ -130,7 +130,7 @@ void j1Player::CheckIfPlaceBuilding() {
 		switch (alphaBuilding) {
 
 		case StaticEntityType_ChickenFarm:
-			if (!App->entities->isEntityOnTile(GetMouseTilePos(), false)) {
+			if (!App->entities->isEntityOnTile(GetMouseTilePos(), Small)) {
 				StaticEntity* c;
 				c = App->entities->AddStaticEntity(StaticEntityType_ChickenFarm, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_ChickenFarm), this);
 				App->scene->SetAplphaBuilding(StaticEntityType_NoType);
@@ -140,7 +140,7 @@ void j1Player::CheckIfPlaceBuilding() {
 			break;
 
 		case StaticEntityType_Stables:
-			if (!App->entities->isEntityOnTile(GetMouseTilePos(), true)) {
+			if (!App->entities->isEntityOnTile(GetMouseTilePos(), Medium)) {
 				stables = App->entities->AddStaticEntity(StaticEntityType_Stables, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_Stables), this);
 				App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 				stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
@@ -148,7 +148,7 @@ void j1Player::CheckIfPlaceBuilding() {
 			break;
 
 		case StaticEntityType_GryphonAviary:
-			if (!App->entities->isEntityOnTile(GetMouseTilePos(), true)) {
+			if (!App->entities->isEntityOnTile(GetMouseTilePos(), Medium)) {
 				gryphonAviary = App->entities->AddStaticEntity(StaticEntityType_GryphonAviary, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_GryphonAviary), this);
 				App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 				gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
@@ -156,7 +156,7 @@ void j1Player::CheckIfPlaceBuilding() {
 			break;
 
 		case StaticEntityType_MageTower:
-			if (!App->entities->isEntityOnTile(GetMouseTilePos(), true)) {
+			if (!App->entities->isEntityOnTile(GetMouseTilePos(), Medium)) {
 				mageTower = App->entities->AddStaticEntity(StaticEntityType_MageTower, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_MageTower), this);
 				App->scene->SetAplphaBuilding(StaticEntityType_NoType);
 				mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
@@ -164,7 +164,7 @@ void j1Player::CheckIfPlaceBuilding() {
 			break;
 
 		case StaticEntityType_ScoutTower:
-			if (!App->entities->isEntityOnTile(GetMouseTilePos(), false)) {
+			if (!App->entities->isEntityOnTile(GetMouseTilePos(), Small)) {
 				StaticEntity* s;
 				s = App->entities->AddStaticEntity(StaticEntityType_ScoutTower, buildingPos, App->entities->GetBuildingInfo(StaticEntityType_ScoutTower), this);
 				App->scene->SetAplphaBuilding(StaticEntityType_NoType);
