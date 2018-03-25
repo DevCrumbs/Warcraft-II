@@ -88,6 +88,10 @@ public:
 	void HandleInput(EntitiesEvent &EntityEvent);
 	bool MouseHover() const;
 	bool CheckBuildingState();
+	uint GetConstructionTimer() const;
+	uint GetConstructionTime() const;
+	bool GetIsFinishedBuilt() const;
+
 
 public:
 

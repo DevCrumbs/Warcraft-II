@@ -39,6 +39,7 @@ struct EntitySelectedStats
 	UILabel* entityName = nullptr;
 	UIImage* entityIcon = nullptr;
 	UILifeBar* lifeBar = nullptr;
+
 	Entity* entitySelected = nullptr;
 };
 

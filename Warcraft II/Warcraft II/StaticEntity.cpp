@@ -8,7 +8,7 @@
 #include "j1Particles.h"
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int maxLife, j1Module* listener) :Entity(pos, size, maxLife, listener) {
-	constructionTime = 15;
+	constructionTime = 10;
 }
 
 StaticEntity::~StaticEntity() {}
@@ -132,4 +132,19 @@ bool StaticEntity::CheckBuildingState() {
 			break;
 		}
 	return ret;
+}
+
+uint StaticEntity::GetConstructionTimer() const
+{
+	return constructionTimer.ReadSec();
+}
+
+uint StaticEntity::GetConstructionTime() const
+{
+	return constructionTime;
+}
+
+bool StaticEntity::GetIsFinishedBuilt() const
+{
+	return isBuilt;
 }

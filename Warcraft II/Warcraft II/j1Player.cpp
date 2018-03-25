@@ -46,59 +46,79 @@ bool j1Player::Update(float dt) {
 
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		if (stables != nullptr) {
-			Entity* ent = (Entity*)stables;
-			ent->SetDamageLife(20);
-			stables->CheckBuildingState();
-			if (entitySelectedStats.entitySelected == ent) {
-				entitySelectedStats.HP->SetText(ent->GetStringLife());
-				entitySelectedStats.lifeBar->DecreaseLife(20);
+			if (stables->GetIsFinishedBuilt()) {
+				Entity* ent = (Entity*)stables;
+				ent->SetDamageLife(20);
+				stables->CheckBuildingState();
+				if (entitySelectedStats.entitySelected == ent) {
+					entitySelectedStats.HP->SetText(ent->GetStringLife());
+					entitySelectedStats.lifeBar->DecreaseLife(20);
+				}
 			}
 		}
 
 	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
-		if (mageTower != nullptr) {
-			Entity* ent = (Entity*)mageTower;
-			ent->SetDamageLife(20);
-			mageTower->CheckBuildingState();
-			if (entitySelectedStats.entitySelected == ent) {
-				entitySelectedStats.HP->SetText(ent->GetStringLife());
-				entitySelectedStats.lifeBar->DecreaseLife(20);
+		if (mageTower != nullptr)
+			if (mageTower->GetIsFinishedBuilt()) {
+				Entity* ent = (Entity*)mageTower;
+				ent->SetDamageLife(20);
+				mageTower->CheckBuildingState();
+				if (entitySelectedStats.entitySelected == ent) {
+					entitySelectedStats.HP->SetText(ent->GetStringLife());
+					entitySelectedStats.lifeBar->DecreaseLife(20);
+				}
 			}
-		}
+	
 
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-		if (!scoutTower.empty()) {
-			Entity* ent = (Entity*)scoutTower.back();
-			ent->SetDamageLife(20);			
-			scoutTower.back()->CheckBuildingState();
-			if (entitySelectedStats.entitySelected == ent) {
-				entitySelectedStats.HP->SetText(ent->GetStringLife());
-				entitySelectedStats.lifeBar->DecreaseLife(20);
+		if (!scoutTower.empty())
+			if (scoutTower.back()->GetIsFinishedBuilt()) {
+				Entity* ent = (Entity*)scoutTower.back();
+				ent->SetDamageLife(20);
+				scoutTower.back()->CheckBuildingState();
+				if (entitySelectedStats.entitySelected == ent) {
+					entitySelectedStats.HP->SetText(ent->GetStringLife());
+					entitySelectedStats.lifeBar->DecreaseLife(20);
+				}
 			}
-		}
+	
 
 	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
-		if (gryphonAviary != nullptr) {
-			Entity* ent = (Entity*)gryphonAviary;
-			ent->SetDamageLife(20);
-			gryphonAviary->CheckBuildingState();
-			if (entitySelectedStats.entitySelected == ent) {
-				entitySelectedStats.HP->SetText(ent->GetStringLife());
-				entitySelectedStats.lifeBar->DecreaseLife(20);
+		if (gryphonAviary != nullptr)
+			if (gryphonAviary->GetIsFinishedBuilt()) {
+				Entity* ent = (Entity*)gryphonAviary;
+				ent->SetDamageLife(20);
+				gryphonAviary->CheckBuildingState();
+				if (entitySelectedStats.entitySelected == ent) {
+					entitySelectedStats.HP->SetText(ent->GetStringLife());
+					entitySelectedStats.lifeBar->DecreaseLife(20);
+				}
 			}
-		}
-
+		
 	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
-		if (!chickenFarm.empty()) {
-			Entity* ent = (Entity*)chickenFarm.back();
-			ent->SetDamageLife(20);
-			chickenFarm.back()->CheckBuildingState();
-			if (entitySelectedStats.entitySelected == ent) {
-				entitySelectedStats.HP->SetText(ent->GetStringLife());
-				entitySelectedStats.lifeBar->DecreaseLife(20);
+		if (!chickenFarm.empty()) 
+			if (chickenFarm.back()->GetIsFinishedBuilt()) {
+				Entity* ent = (Entity*)chickenFarm.back();
+				ent->SetDamageLife(20);
+				chickenFarm.back()->CheckBuildingState();
+				if (entitySelectedStats.entitySelected == ent) {
+					entitySelectedStats.HP->SetText(ent->GetStringLife());
+					entitySelectedStats.lifeBar->DecreaseLife(20);
+				}
 			}
-		}
+		
 
+	//Life Bar on building 
+	if (entitySelectedStats.entitySelected != nullptr) {
+		if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
+			entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+		}
+		else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
+			entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+			entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17});
+		}
+	}
 
 
 	return true;
@@ -278,15 +298,16 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 	
 		break;
 	case EntitiesEvent_Hover:
-		if ((staticEntity->staticEntityType == StaticEntityType_TownHall || staticEntity->staticEntityType == StaticEntityType_Barracks) && ent->GetCurrLife() == ent->GetMaxLife())
-			hoverCheck = HoverCheck_Upgrate;
-		else if (ent->GetCurrLife() < ent->GetMaxLife())
-			hoverCheck = HoverCheck_Repair;
-		else
-			hoverCheck = HoverCheck_None;
+		if (staticEntity->GetIsFinishedBuilt()) {
+			if ((staticEntity->staticEntityType == StaticEntityType_TownHall || staticEntity->staticEntityType == StaticEntityType_Barracks) && ent->GetCurrLife() == ent->GetMaxLife())
+				hoverCheck = HoverCheck_Upgrate;
+			else if (ent->GetCurrLife() < ent->GetMaxLife())
+				hoverCheck = HoverCheck_Repair;
+			else
+				hoverCheck = HoverCheck_None;
 
-		CreateHoverButton(hoverCheck, { (int)ent->GetPosition().x, (int)ent->GetPosition().y, ent->GetSize().x, ent->GetSize().y}, staticEntity);
-
+			CreateHoverButton(hoverCheck, { (int)ent->GetPosition().x, (int)ent->GetPosition().y, ent->GetSize().x, ent->GetSize().y }, staticEntity);
+		}
 		break;
 	case EntitiesEvent_Leave:
 		DestroyHoverButton();
@@ -334,27 +355,24 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 		entitySelectedStats.HP = App->gui->CreateUILabel({ 80, App->scene->entitiesStats->GetLocalRect().h - 30 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 	}
 
-
-
-
-
 	UIImage_Info imageInfo;
 	imageInfo.texArea = iconDim;
 	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
 	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h/2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
+
 	UILifeBar_Info lifeInfo;
 	lifeInfo.background = { 289,346,145,23 };
 	lifeInfo.bar = { 300,373,128,8 };
 	lifeInfo.maxLife = currentEntity->GetMaxLife();
-	lifeInfo.life = currentEntity->GetCurrLife();
+	lifeInfo.life = ((StaticEntity*)currentEntity)->GetConstructionTimer() * currentEntity->GetMaxLife() / 10;
+	if (lifeInfo.life > currentEntity->GetMaxLife())
+		lifeInfo.life = currentEntity->GetCurrLife();
 	lifeInfo.maxWidth = lifeInfo.bar.w;
 	lifeInfo.lifeBarPosition = { 12, 10 };
 
 	entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 60, 50}, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
-
-
 
 	entitySelectedStats.entitySelected = currentEntity;
 }
