@@ -12,7 +12,7 @@
   </renderer>
 
   <window>
-    <resolution width="1024" height="768" scale="1"/>
+    <resolution width="704" height="512" scale="1"/>
     <fullscreen value="false"/>
     <borderless value="false"/>
     <resizable value="true"/>
@@ -332,8 +332,8 @@
         <townHall>
           <maxLife value = "1200"/>
           <sprites>
-            <complete x="265" y="5" w="128" h="128"/>
-            <inProgress x="265" y="133" w="128" h="128"/>
+            <complete x="274" y="17" w="128" h="128"/>
+            <inProgress x="274" y="17" w="128" h="128"/>
           </sprites>
         </townHall>
 

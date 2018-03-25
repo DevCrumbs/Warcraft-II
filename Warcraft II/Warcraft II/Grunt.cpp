@@ -1,8 +1,8 @@
 #include "Grunt.h"
 
-Grunt::Grunt(fPoint pos, iPoint size, int maxLife, float speed, const GruntInfo& gruntInfo, j1Module* listener) :DynamicEntity(pos, size, maxLife, speed, listener), gruntInfo(gruntInfo)
+Grunt::Grunt(fPoint pos, const GruntInfo& gruntInfo, j1Module* listener) :DynamicEntity(pos, gruntInfo.size, gruntInfo.life, gruntInfo.speed, listener), gruntInfo(gruntInfo)
 {
-	currentLife = maxLife;
+	currentLife = gruntInfo.life;
 
 }
 

@@ -6,8 +6,8 @@
 TownHall::TownHall(fPoint pos, iPoint size, int maxLife, const TownHallInfo& townHallInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), townHallInfo(townHallInfo)
 {
 	texArea = &townHallInfo.townHallCompleteTexArea;
-
 	currentLife = maxLife;
+	isBuilt = true;
 }
 
 void TownHall::Move(float dt)

@@ -64,6 +64,11 @@ void j1Map::Draw()
 	if (!isMapLoaded)
 		return;
 
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		App->render->camera.x = 0;
+		App->render->camera.y = 0;
+	}
 	// TODO 5: Prepare the loop to draw all tilesets + Blit
 
 	list<Room>::iterator roomIterator = playableMap.rooms.begin();
@@ -223,12 +228,13 @@ iPoint j1Map::WorldToMap(int x, int y) const
 
 SDL_Rect TileSet::GetTileRect(int id) const
 {
-	int relativeId = id - firstgid;
+	/// Heeeelp
+	int relativeId = id - 1 /*firstgid*/;
 	SDL_Rect rect;
 	rect.w = tileWidth;
 	rect.h = tileHeight;
-	rect.x = margin + ((rect.w + spacing) * (relativeId % numTilesWidth));
-	rect.y = margin + ((rect.h + spacing) * (relativeId / numTilesWidth));
+	rect.x = margin + ((rect.w + 1/*spacing*/) * (relativeId % numTilesWidth));
+	rect.y = margin + ((rect.h + 1/*spacing*/) * (relativeId / numTilesWidth));
 	
 	return rect;
 }
@@ -1071,7 +1077,7 @@ bool j1Map::LoadRooms()
 		roomIterator++;
 
 	}
-	return ret;
+return ret;
 }
 
 bool j1Map::LoadCorridors()
@@ -1083,7 +1089,7 @@ bool j1Map::LoadCorridors()
 	while (roomIterator != roomsInfo.end() && mapIterator != playableMap.rooms.end())
 	{
 		list<DIRECTION>::iterator doorIterator = (*roomIterator).doors.begin();
-		
+
 		while (doorIterator != (*roomIterator).doors.end())
 		{
 			CreateCorridor((*mapIterator), (*doorIterator));
@@ -1166,11 +1172,16 @@ bool j1Map::LoadLogic()
 						int y = i / (*layerIterator)->width;
 
 						iPoint auxPos = MapToWorld(x, y);
-						fPoint pos; 
+						fPoint pos;
 						pos.x = auxPos.x + (*iterator).x;
 						pos.y = auxPos.y + (*iterator).y;
-						/// Need to chanfe entity type
-						App->entities->AddStaticEntity((StaticEntityType)2, pos, App->entities->GetBuildingInfo((StaticEntityType)2));
+						
+						
+						App->entities->AddEntity((ENTITY_TYPE)((*layerIterator)->data[i]), pos, App->entities->GetBuildingInfo((ENTITY_TYPE)((*layerIterator)->data[i])), (j1Module*)App->player);
+						
+						
+						//App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetBuildingInfo(EntityType_FOOTMAN));
+
 //						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);
 					}
 				}
@@ -1178,7 +1189,7 @@ bool j1Map::LoadLogic()
 			}
 		}
 	}
-	
+
 
 
 	return ret;

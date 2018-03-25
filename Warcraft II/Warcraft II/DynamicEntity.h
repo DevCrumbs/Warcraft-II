@@ -7,28 +7,7 @@
 
 struct SDL_Texture;
 
-enum DynamicEntityType
-{
-	DynamicEntityType_NoType,
-
-	// Player types
-	DynamicEntityType_Footman,
-	DynamicEntityType_ElvenArcher,
-	DynamicEntityType_GryphonRider,
-	DynamicEntityType_Mage,
-	DynamicEntityType_Paladin,
-
-	DynamicEntityType_Turalyon,
-	DynamicEntityType_Khadgar,
-	DynamicEntityType_Alleria,
-
-	// Enemy types
-	DynamicEntityType_Grunt,
-	DynamicEntityType_TrollAxethrower,
-	DynamicEntityType_Dragon,
-
-	DynamicEntityType_MaxTypes
-};
+enum ENTITY_TYPE;
 
 class DynamicEntity :public Entity
 {
@@ -47,7 +26,7 @@ public:
 
 public:
 
-	DynamicEntityType dynamicEntityType = DynamicEntityType_NoType;
+	ENTITY_TYPE dynamicEntityType = EntityType_NONE;
 
 protected:
 

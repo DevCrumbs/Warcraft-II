@@ -5,14 +5,16 @@
 
 struct MageInfo
 {
-
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class Mage :public DynamicEntity
 {
 public:
 
-	Mage(fPoint pos, iPoint size, int maxLife, float speed, const MageInfo& mageInfo, j1Module* listener);
+	Mage(fPoint pos, const MageInfo& mageInfo, j1Module* listener);
 	~Mage() {};
 
 	void Move(float dt);

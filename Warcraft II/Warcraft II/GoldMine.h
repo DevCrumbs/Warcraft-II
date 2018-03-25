@@ -8,6 +8,9 @@ struct GoldMineInfo
 	SDL_Rect completeTexArea = { 0,0,0,0 };
 	SDL_Rect inProgressTexArea = { 0,0,0,0 };
 	int maxLife = 0;
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class GoldMine :public StaticEntity
