@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="32" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" name="Wasteland" tilewidth="32" tileheight="32" spacing="1" tilecount="380" columns="19">
   <image source="../../W2Maps/SpriteSheet/SpriteSheet/Tiles/Wasteland Tiles/PC Computer - Warcraft 2 - Wasteland Tiles.png" width="626" height="659"/>
   <terraintypes>
@@ -238,10 +238,7 @@
   <tile id="360" terrain="0,0,0,0"/>
   <tile id="362" terrain="6,6,6,6"/>
  </tileset>
- <tileset firstgid="381" name="PC Computer - Warcraft 2 - Human Buildings Summer-Recuperado" tilewidth="32" tileheight="32" tilecount="380" columns="19">
-  <image source="wastelandTiles.png" width="626" height="659"/>
- </tileset>
- <tileset firstgid="761" name="logic" tilewidth="32" tileheight="32" tilecount="25" columns="5">
+ <tileset firstgid="381" name="logic" tilewidth="32" tileheight="32" tilecount="25" columns="5">
   <image source="../logic.png" width="160" height="160"/>
  </tileset>
  <layer name="Capa de Patrones 1" width="40" height="40">
@@ -2783,7 +2780,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="394"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -3605,7 +3602,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="780"/>
+   <tile gid="400"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -3905,7 +3902,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="785"/>
+   <tile gid="405"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -4032,7 +4029,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="784"/>
+   <tile gid="404"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -4192,7 +4189,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="783"/>
+   <tile gid="403"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -4305,7 +4302,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="785"/>
+   <tile gid="405"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
