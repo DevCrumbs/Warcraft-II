@@ -116,7 +116,7 @@ bool j1Scene::Start()
 	//Calculate camera movement in pixels through the percentatge given
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
 
-	alphaBuilding = StaticEntityType_NoType;
+	alphaBuilding = EntityType_NONE;
 
 	return ret;
 }
@@ -514,27 +514,27 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		}
 		if (UIelem == chickenFarmButton) {
 			UnLoadBuildingMenu();
-			alphaBuilding = StaticEntityType_ChickenFarm;
+			alphaBuilding = EntityType_CHICKEN_FARM;
 		}
 		
 		if (UIelem == stablesButton) {
 			UnLoadBuildingMenu();
-			alphaBuilding = StaticEntityType_Stables;
+			alphaBuilding = EntityType_STABLES;
 		}
 		
 		if (UIelem == gryphonAviaryButton) {
 			UnLoadBuildingMenu();
-			alphaBuilding = StaticEntityType_GryphonAviary;
+			alphaBuilding = EntityType_GRYPHON_AVIARY;
 		}
 
 		if (UIelem == mageTowerButton) {
 			UnLoadBuildingMenu();
-			alphaBuilding = StaticEntityType_MageTower;
+			alphaBuilding = EntityType_MAGE_TOWER;
 		}
 
 		if (UIelem == scoutTowerButton) {
 			UnLoadBuildingMenu();
-			alphaBuilding = StaticEntityType_ScoutTower;
+			alphaBuilding = EntityType_SCOUT_TOWER;
 		}
 		break;
 
@@ -543,11 +543,11 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 	}
 }
 
-StaticEntityType j1Scene::GetAlphaBuilding() {
+ENTITY_TYPE j1Scene::GetAlphaBuilding() {
 	return alphaBuilding;
 }
 
-void j1Scene::SetAplphaBuilding(StaticEntityType alphaBuilding) {
+void j1Scene::SetAplphaBuilding(ENTITY_TYPE alphaBuilding) {
 	this->alphaBuilding = alphaBuilding;
 }
 

@@ -10,13 +10,17 @@ struct FootmanInfo
 	Animation attackUp, attackDown, attackLeft, attackRight;
 	Animation attackUpLeft, attackUpRight, attackDownLeft, attackDownRight;
 	Animation deathUp, deathDown;
+
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class Footman :public DynamicEntity
 {
 public:
 
-	Footman(fPoint pos, iPoint size, int maxLife, float speed, const FootmanInfo& footmanInfo, j1Module* listener);
+	Footman(fPoint pos, const FootmanInfo& footmanInfo, j1Module* listener);
 	~Footman() {};
 
 	void Move(float dt);

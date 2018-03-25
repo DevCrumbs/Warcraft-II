@@ -448,12 +448,12 @@ bool j1EntityFactory::PreUpdate()
 		App->map->WorldToMap(x, y);
 
 		// Move the entity from the waiting list to the active list
-		if ((*it)->entityType == EntityType_DynamicEntity) {
+		if ((*it)->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 			activeDynamicEntities.push_back((DynamicEntity*)(*it));
 			LOG("Spawning dynamic entity at tile %d,%d", x, y);
 		}
-		else if ((*it)->entityType == EntityType_StaticEntity) {
+		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) {
 
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
@@ -493,40 +493,40 @@ void j1EntityFactory::Draw()
 		switch ((*dynEnt)->dynamicEntityType) {
 
 			// Player
-		case DynamicEntityType_Footman:
+		case EntityType_FOOTMAN:
 			(*dynEnt)->Draw(footmanTex);
 			break;
-		case DynamicEntityType_ElvenArcher:
+		case EntityType_ELVEN_ARCHER:
 			(*dynEnt)->Draw(elvenArcherTex);
 			break;
-		case DynamicEntityType_GryphonRider:
+		case EntityType_GRYPHON_RIDER:
 			(*dynEnt)->Draw(gryphonRiderTex);
 			break;
-		case DynamicEntityType_Mage:
+		case EntityType_MAGE:
 			(*dynEnt)->Draw(mageTex);
 			break;
-		case DynamicEntityType_Paladin:
+		case EntityType_PALADIN:
 			(*dynEnt)->Draw(paladinTex);
 			break;
 
-		case DynamicEntityType_Turalyon:
+		case EntityType_TURALYON:
 			(*dynEnt)->Draw(turalyonTex);
 			break;
-		case DynamicEntityType_Khadgar:
+		case EntityType_KHADGAR:
 			(*dynEnt)->Draw(khadgarTex);
 			break;
-		case DynamicEntityType_Alleria:
+		case EntityType_ALLERIA:
 			(*dynEnt)->Draw(alleriaTex);
 			break;
 
 			// Enemy
-		case DynamicEntityType_Grunt:
+		case EntityType_GRUNT:
 			(*dynEnt)->Draw(gruntTex);
 			break;
-		case DynamicEntityType_TrollAxethrower:
+		case EntityType_TROLL_AXETHROWER:
 			(*dynEnt)->Draw(trollAxethrowerTex);
 			break;
-		case DynamicEntityType_Dragon:
+		case EntityType_DRAGON:
 			(*dynEnt)->Draw(dragonTex);
 			break;
 
@@ -564,43 +564,43 @@ void j1EntityFactory::Draw()
 	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
 }
 
-void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos)
+void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos)
 {
 	switch (staticEntityType) {
 
-	case StaticEntityType_ChickenFarm:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+	case EntityType_CHICKEN_FARM:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
 		break;
-	case StaticEntityType_ElvenLumberMill:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+	case EntityType_ELVEN_LUMBER_MILL:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &elvenLumberMillInfo.completeTexArea);
 		break;
-	case StaticEntityType_MageTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+	case EntityType_MAGE_TOWER:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
 		break;
-	case StaticEntityType_GryphonAviary:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+	case EntityType_GRYPHON_AVIARY:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
 		break;
-	case StaticEntityType_Stables:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+	case EntityType_STABLES:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
 		break;
-	case StaticEntityType_ScoutTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+	case EntityType_SCOUT_TOWER:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
 		break;
-	case StaticEntityType_PlayerGuardTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+	case EntityType_PLAYER_GUARD_TOWER:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
 		break;
-	case StaticEntityType_PlayerCannonTower:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+	case EntityType_PLAYER_CANNON_TOWER:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
 		break;
-	case StaticEntityType_NoType:
+	case EntityCategory_NONE:
 		break;
 	default:
 		break;
@@ -611,24 +611,24 @@ void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType,
 }
 
 //Handles when to return green or red tiles 
-void j1EntityFactory::HandleStaticEntityPreviewTiles(StaticEntityType staticEntityType, iPoint mousePos)
+void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityType, iPoint mousePos)
 {
 	SDL_SetTextureAlphaMod(neutralBuildingsTex, buildingPreviewTiles.opacity);
 
 
 	switch (staticEntityType) {
 
-	case StaticEntityType_ChickenFarm:
-	case StaticEntityType_ScoutTower:
+	case EntityType_CHICKEN_FARM:
+	case EntityType_SCOUT_TOWER:
 		DrawStaticEntityPreviewTiles(true, Small, mousePos);
 		if (isEntityOnTile(App->player->GetMouseTilePos(), Small)) {
 			DrawStaticEntityPreviewTiles(false, Small, mousePos);
 		}
 		break;
-	case StaticEntityType_ElvenLumberMill:
-	case StaticEntityType_MageTower:
-	case StaticEntityType_GryphonAviary:
-	case StaticEntityType_Stables:
+	case EntityType_ELVEN_LUMBER_MILL:
+	case EntityType_MAGE_TOWER:
+	case EntityType_GRYPHON_AVIARY:
+	case EntityType_STABLES:
 		DrawStaticEntityPreviewTiles(true, Medium, mousePos);
 		if (isEntityOnTile(App->player->GetMouseTilePos(), Medium)) {
 			DrawStaticEntityPreviewTiles(false, Medium, mousePos);
@@ -727,34 +727,35 @@ void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntit
 
 }
 
-const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntityType) 
+
+const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
 {
 	switch (staticEntityType) {
-	case StaticEntityType_ChickenFarm:
+	case EntityType_CHICKEN_FARM:
 		return (const EntityInfo&)chickenFarmInfo;
 		break;
-	case StaticEntityType_Barracks:
+	case EntityType_BARRACKS:
 		return (const EntityInfo&)barracksInfo;
 		break;
-	case StaticEntityType_ElvenLumberMill:
+	case EntityType_ELVEN_LUMBER_MILL:
 		return (const EntityInfo&)elvenLumberMillInfo;
 		break;
-	case StaticEntityType_MageTower:
+	case EntityType_MAGE_TOWER:
 		return(const EntityInfo&)mageTowerInfo;
 		break;
-	case StaticEntityType_GryphonAviary:
+	case EntityType_GRYPHON_AVIARY:
 		return(const EntityInfo&)gryphonAviaryInfo;
 		break;
-	case StaticEntityType_Stables:
+	case EntityType_STABLES:
 		return(const EntityInfo&)stablesInfo;
 		break;
-	case StaticEntityType_ScoutTower:
+	case EntityType_SCOUT_TOWER:
 		return(const EntityInfo&)scoutTowerInfo;
 		break;
-	case StaticEntityType_PlayerGuardTower:
+	case EntityType_PLAYER_GUARD_TOWER:
 		return(const EntityInfo&)playerGuardTowerInfo;
 		break;
-	case StaticEntityType_PlayerCannonTower:
+	case EntityType_PLAYER_CANNON_TOWER:
 		return(const EntityInfo&)playerCannonTowerInfo;
 		break;
 	default:
@@ -991,28 +992,30 @@ bool j1EntityFactory::CleanUp()
 
 	return ret;
 }
-StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener)
-{
-	switch (staticEntityType) {
 
-	case StaticEntityType_TownHall:
+
+Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener)
+{
+	switch (entityType) {
+
+	case EntityType_TOWN_HALL:
 	{
 		TownHall* townHall = new TownHall(pos, { 128,128 }, townHallInfo.townHallMaxLife, (const TownHallInfo&)entityInfo, listener);
-		townHall->entityType = EntityType_StaticEntity;
+		townHall->entityType = EntityCategory_STATIC_ENTITY;
 		townHall->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		townHall->staticEntityType = StaticEntityType_TownHall;
+		townHall->staticEntityType = EntityType_TOWN_HALL;
 
 		toSpawnEntities.push_back((Entity*)townHall);
 		return (StaticEntity*)townHall;
 	}
 	break;
 
-	case StaticEntityType_ChickenFarm:
+	case EntityType_CHICKEN_FARM:
 	{
 		ChickenFarm* chickenFarm = new ChickenFarm(pos, { 64,64 }, chickenFarmInfo.maxLife, (const ChickenFarmInfo&)entityInfo, listener);
-		chickenFarm->entityType = EntityType_StaticEntity;
+		chickenFarm->entityType = EntityCategory_STATIC_ENTITY;
 		chickenFarm->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		chickenFarm->staticEntityType = StaticEntityType_ChickenFarm;
+		chickenFarm->staticEntityType = EntityType_CHICKEN_FARM;
 
 
 		toSpawnEntities.push_back((Entity*)chickenFarm);
@@ -1020,287 +1023,288 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 	}
 	break;
 
-	case StaticEntityType_Barracks:
+	case EntityType_BARRACKS:
 	{
-		Barracks* barracks = new Barracks(pos, { 96,96 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
-		barracks->entityType = EntityType_StaticEntity;
+
+		Barracks* barracks = new Barracks(pos, { 128,128 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
+		barracks->entityType = EntityCategory_STATIC_ENTITY;
+
 		barracks->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		barracks->staticEntityType = StaticEntityType_Barracks;
+		barracks->staticEntityType = EntityType_BARRACKS;
 
 		toSpawnEntities.push_back((Entity*)barracks);
 		return (StaticEntity*)barracks;
 	}
 	break;
 
-	case StaticEntityType_ElvenLumberMill:
+	case EntityType_ELVEN_LUMBER_MILL:
 	{
-		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 96,96 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
-		elvenLumberMill->entityType = EntityType_StaticEntity;
+
+		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 128,128 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
+		elvenLumberMill->entityType = EntityCategory_STATIC_ENTITY;
+
 		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		elvenLumberMill->staticEntityType = StaticEntityType_Barracks;
+		elvenLumberMill->staticEntityType = EntityType_BARRACKS;
 
 		toSpawnEntities.push_back((Entity*)elvenLumberMill);
 		return (StaticEntity*)elvenLumberMill;
 	}
 	break;
 
-	case StaticEntityType_MageTower:
+	case EntityType_MAGE_TOWER:
 	{
-		MageTower* mageTower = new MageTower(pos, { 96,96 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
-		mageTower->entityType = EntityType_StaticEntity;
+
+		MageTower* mageTower = new MageTower(pos, { 128,128 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
+		mageTower->entityType = EntityCategory_STATIC_ENTITY;
+
 		mageTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		mageTower->staticEntityType = StaticEntityType_MageTower;
+		mageTower->staticEntityType = EntityType_MAGE_TOWER;
 
 		toSpawnEntities.push_back((Entity*)mageTower);
 		return (StaticEntity*)mageTower;
 	}
 	break;
 
-	case StaticEntityType_GryphonAviary:
+	case EntityType_GRYPHON_AVIARY:
 	{
-		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 96,96 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
-		gryphonAviary->entityType = EntityType_StaticEntity;
+
+		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 128,128 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
+		gryphonAviary->entityType = EntityCategory_STATIC_ENTITY;
+
 		gryphonAviary->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		gryphonAviary->staticEntityType = StaticEntityType_GryphonAviary;
+		gryphonAviary->staticEntityType = EntityType_GRYPHON_AVIARY;
 
 		toSpawnEntities.push_back((Entity*)gryphonAviary);
 		return (StaticEntity*)gryphonAviary;
 	}
 	break;
 
-	case StaticEntityType_Stables:
+	case EntityType_STABLES:
 	{
-		Stables* stables = new Stables(pos, { 96,96 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
-		stables->entityType = EntityType_StaticEntity;
+
+		Stables* stables = new Stables(pos, { 128,128 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
+		stables->entityType = EntityCategory_STATIC_ENTITY;
+
 		stables->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		stables->staticEntityType = StaticEntityType_Stables;
+		stables->staticEntityType = EntityType_STABLES;
 
 		toSpawnEntities.push_back((Entity*)stables);
 		return (StaticEntity*)stables;
 	}
 	break;
 
-	case StaticEntityType_ScoutTower:
+	case EntityType_SCOUT_TOWER:
 	{
 		ScoutTower* scoutTower = new ScoutTower(pos, { 64,64 }, scoutTowerInfo.maxLife, (const ScoutTowerInfo&)entityInfo, listener);
-		scoutTower->entityType = EntityType_StaticEntity;
+		scoutTower->entityType = EntityCategory_STATIC_ENTITY;
 		scoutTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		scoutTower->staticEntityType = StaticEntityType_ScoutTower;
+		scoutTower->staticEntityType = EntityType_SCOUT_TOWER;
 
 		toSpawnEntities.push_back((Entity*)scoutTower);
 		return (StaticEntity*)scoutTower;
 	}
 	break;
 
-	case StaticEntityType_PlayerGuardTower:
+	case EntityType_PLAYER_GUARD_TOWER:
 	{
 		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, { 64,64 }, 12, (const PlayerGuardTowerInfo&)entityInfo, listener);
-		playerGuardTower->entityType = EntityType_StaticEntity;
+		playerGuardTower->entityType = EntityCategory_STATIC_ENTITY;
 		playerGuardTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		playerGuardTower->staticEntityType = StaticEntityType_PlayerGuardTower;
+		playerGuardTower->staticEntityType = EntityType_PLAYER_GUARD_TOWER;
 
 		toSpawnEntities.push_back((Entity*)playerGuardTower);
 		return (StaticEntity*)playerGuardTower;
 	}
 	break;
 
-	case StaticEntityType_PlayerCannonTower:
+	case EntityType_PLAYER_CANNON_TOWER:
 	{
 		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, { 64,64 }, 12, (const PlayerCannonTowerInfo&)entityInfo, listener);
-		playerCannonTower->entityType = EntityType_StaticEntity;
+		playerCannonTower->entityType = EntityCategory_STATIC_ENTITY;
 		playerCannonTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		playerCannonTower->staticEntityType = StaticEntityType_PlayerCannonTower;
+		playerCannonTower->staticEntityType = EntityType_PLAYER_CANNON_TOWER;
 
 		toSpawnEntities.push_back((Entity*)playerCannonTower);
 		return (StaticEntity*)playerCannonTower;
 	}
 	break;
 
-	case StaticEntityType_GoldMine:
+	case EntityType_GOLD_MINE:
 	{
 		GoldMine* goldMine = new GoldMine(pos, { 128,128 }, goldMineInfo.maxLife, (const GoldMineInfo&)entityInfo, listener);
-		goldMine->entityType = EntityType_StaticEntity;
+		goldMine->entityType = EntityCategory_STATIC_ENTITY;
 		goldMine->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
-		goldMine->staticEntityType = StaticEntityType_GoldMine;
+		goldMine->staticEntityType = EntityType_GOLD_MINE;
 
 		toSpawnEntities.push_back((Entity*)goldMine);
 		return (StaticEntity*)goldMine;
 	}
 	break;
 
-	case StaticEntityType_Runestone:
+	case EntityType_RUNESTONE:
 	{
 		Runestone* runestone = new Runestone(pos, { 64,64 }, 0, (const RunestoneInfo&)entityInfo, listener);
-		runestone->entityType = EntityType_StaticEntity;
+		runestone->entityType = EntityCategory_STATIC_ENTITY;
 		runestone->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
-		runestone->staticEntityType = StaticEntityType_Runestone;
+		runestone->staticEntityType = EntityType_RUNESTONE;
 
 		toSpawnEntities.push_back((Entity*)runestone);
 		return (StaticEntity*)runestone;
 	}
 	break;
 
-	case StaticEntityType_WatchTower:
+	case EntityType_WATCH_TOWER:
 	{
 		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, 12, (const WatchTowerInfo&)entityInfo, listener);
-		watchTower->entityType = EntityType_StaticEntity;
+		watchTower->entityType = EntityCategory_STATIC_ENTITY;
 		watchTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		watchTower->staticEntityType = StaticEntityType_WatchTower;
+		watchTower->staticEntityType = EntityType_WATCH_TOWER;
 
 		toSpawnEntities.push_back((Entity*)watchTower);
 		return (StaticEntity*)watchTower;
 	}
 	break;
 
-	case StaticEntityType_EnemyGuardTower:
+	case EntityType_ENEMY_GUARD_TOWER:
 	{
 		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, 12, (const EnemyGuardTowerInfo&)entityInfo, listener);
-		enemyGuardTower->entityType = EntityType_StaticEntity;
+		enemyGuardTower->entityType = EntityCategory_STATIC_ENTITY;
 		enemyGuardTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		enemyGuardTower->staticEntityType = StaticEntityType_EnemyGuardTower;
+		enemyGuardTower->staticEntityType = EntityType_ENEMY_GUARD_TOWER;
 
 		toSpawnEntities.push_back((Entity*)enemyGuardTower);
 		return (StaticEntity*)enemyGuardTower;
 	}
 	break;
 
-	case StaticEntityType_EnemyCannonTower:
+	case EntityType_ENEMY_CANNON_TOWER:
 	{
 		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, 12, (const EnemyCannonTowerInfo&)entityInfo, listener);
-		enemyCannonTower->entityType = EntityType_StaticEntity;
+		enemyCannonTower->entityType = EntityCategory_STATIC_ENTITY;
 		enemyCannonTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		enemyCannonTower->staticEntityType = StaticEntityType_EnemyCannonTower;
+		enemyCannonTower->staticEntityType = EntityType_ENEMY_CANNON_TOWER;
 
 		toSpawnEntities.push_back((Entity*)enemyCannonTower);
 		return (StaticEntity*)enemyCannonTower;
 	}
 	break;
-
-	default:
-
-		return nullptr;
-	}
-}
-
-DynamicEntity* j1EntityFactory::AddDynamicEntity(DynamicEntityType dynamicEntityType, fPoint pos, iPoint size, uint life, float speed, const EntityInfo& entityInfo, j1Module* listener)
-{
-	switch (dynamicEntityType) {
-
-	case DynamicEntityType_Footman:
+	
+	case EntityType_FOOTMAN:
 	{
-		Footman* footman = new Footman(pos, size, life, speed, (const FootmanInfo&)entityInfo, listener);
-		footman->entityType = EntityType_DynamicEntity;
-		footman->dynamicEntityType = DynamicEntityType_Footman;
+		Footman* footman = new Footman(pos, (const FootmanInfo&)entityInfo, listener);
+		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
+		footman->dynamicEntityType = EntityType_FOOTMAN;
 
 		toSpawnEntities.push_back((Entity*)footman);
 		return (DynamicEntity*)footman;
 	}
 	break;
 
-	case DynamicEntityType_ElvenArcher:
+	case EntityType_ELVEN_ARCHER:
 	{
-		ElvenArcher* elvenArcher = new ElvenArcher(pos, size, life, speed, (const ElvenArcherInfo&)entityInfo, listener);
-		elvenArcher->entityType = EntityType_DynamicEntity;
-		elvenArcher->dynamicEntityType = DynamicEntityType_ElvenArcher;
+
+		ElvenArcher* elvenArcher = new ElvenArcher(pos, (const ElvenArcherInfo&)entityInfo, listener);
+		elvenArcher->entityType = EntityCategory_DYNAMIC_ENTITY;
+		elvenArcher->dynamicEntityType = EntityType_ELVEN_ARCHER;
 
 		toSpawnEntities.push_back((Entity*)elvenArcher);
 		return (DynamicEntity*)elvenArcher;
 	}
 	break;
 
-	case DynamicEntityType_GryphonRider:
+	case EntityType_GRYPHON_RIDER:
 	{
-		GryphonRider* gryphonRider = new GryphonRider(pos, size, life, speed, (const GryphonRiderInfo&)entityInfo, listener);
-		gryphonRider->entityType = EntityType_DynamicEntity;
-		gryphonRider->dynamicEntityType = DynamicEntityType_GryphonRider;
+		GryphonRider* gryphonRider = new GryphonRider(pos, (const GryphonRiderInfo&)entityInfo, listener);
+		gryphonRider->entityType = EntityCategory_DYNAMIC_ENTITY;
+		gryphonRider->dynamicEntityType = EntityType_GRYPHON_RIDER;
 
 		toSpawnEntities.push_back((Entity*)gryphonRider);
 		return (DynamicEntity*)gryphonRider;
 	}
 	break;
 
-	case DynamicEntityType_Mage:
+	case EntityType_MAGE:
 	{
-		Mage* mage = new Mage(pos, size, life, speed, (const MageInfo&)entityInfo, listener);
-		mage->entityType = EntityType_DynamicEntity;
-		mage->dynamicEntityType = DynamicEntityType_Mage;
+		Mage* mage = new Mage(pos, (const MageInfo&)entityInfo, listener);
+		mage->entityType = EntityCategory_DYNAMIC_ENTITY;
+		mage->dynamicEntityType = EntityType_MAGE;
 
 		toSpawnEntities.push_back((Entity*)mage);
 		return (DynamicEntity*)mage;
 	}
 	break;
 
-	case DynamicEntityType_Paladin:
+	case EntityType_PALADIN:
 	{
-		Paladin* paladin = new Paladin(pos, size, life, speed, (const PaladinInfo&)entityInfo, listener);
-		paladin->entityType = EntityType_DynamicEntity;
-		paladin->dynamicEntityType = DynamicEntityType_Paladin;
+		Paladin* paladin = new Paladin(pos, (const PaladinInfo&)entityInfo, listener);
+		paladin->entityType = EntityCategory_DYNAMIC_ENTITY;
+		paladin->dynamicEntityType = EntityType_PALADIN;
 
 		toSpawnEntities.push_back((Entity*)paladin);
 		return (DynamicEntity*)paladin;
 	}
 	break;
 
-	case DynamicEntityType_Turalyon:
+	case EntityType_TURALYON:
 	{
-		Turalyon* turalyon = new Turalyon(pos, size, life, speed, (const TuralyonInfo&)entityInfo, listener);
-		turalyon->entityType = EntityType_DynamicEntity;
-		turalyon->dynamicEntityType = DynamicEntityType_Turalyon;
+		Turalyon* turalyon = new Turalyon(pos, (const TuralyonInfo&)entityInfo, listener);
+		turalyon->entityType = EntityCategory_DYNAMIC_ENTITY;
+		turalyon->dynamicEntityType = EntityType_TURALYON;
 
 		toSpawnEntities.push_back((Entity*)turalyon);
 		return (DynamicEntity*)turalyon;
 	}
 	break;
 
-	case DynamicEntityType_Khadgar:
+	case EntityType_KHADGAR:
 	{
-		Khadgar* khadgar = new Khadgar(pos, size, life, speed, (const KhadgarInfo&)entityInfo, listener);
-		khadgar->entityType = EntityType_DynamicEntity;
-		khadgar->dynamicEntityType = DynamicEntityType_Khadgar;
+		Khadgar* khadgar = new Khadgar(pos, (const KhadgarInfo&)entityInfo, listener);
+		khadgar->entityType = EntityCategory_DYNAMIC_ENTITY;
+		khadgar->dynamicEntityType = EntityType_KHADGAR;
 
 		toSpawnEntities.push_back((Entity*)khadgar);
 		return (DynamicEntity*)khadgar;
 	}
 	break;
 
-	case DynamicEntityType_Alleria:
+	case EntityType_ALLERIA:
 	{
-		Alleria* alleria = new Alleria(pos, size, life, speed, (const AlleriaInfo&)entityInfo, listener);
-		alleria->entityType = EntityType_DynamicEntity;
-		alleria->dynamicEntityType = DynamicEntityType_Alleria;
+		Alleria* alleria = new Alleria(pos, (const AlleriaInfo&)entityInfo, listener);
+		alleria->entityType = EntityCategory_DYNAMIC_ENTITY;
+		alleria->dynamicEntityType = EntityType_ALLERIA;
 
 		toSpawnEntities.push_back((Entity*)alleria);
 		return (DynamicEntity*)alleria;
 	}
 	break;
 
-	case DynamicEntityType_Grunt:
+	case EntityType_GRUNT:
 	{
-		Grunt* grunt = new Grunt(pos, size, life, speed, (const GruntInfo&)entityInfo, listener);
-		grunt->entityType = EntityType_DynamicEntity;
-		grunt->dynamicEntityType = DynamicEntityType_Grunt;
+		Grunt* grunt = new Grunt(pos, (const GruntInfo&)entityInfo, listener);
+		grunt->entityType = EntityCategory_DYNAMIC_ENTITY;
+		grunt->dynamicEntityType = EntityType_GRUNT;
 
 		toSpawnEntities.push_back((Entity*)grunt);
 		return (DynamicEntity*)grunt;
 	}
 	break;
 
-	case DynamicEntityType_TrollAxethrower:
+	case EntityType_TROLL_AXETHROWER:
 	{
-		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, size, life, speed, (const TrollAxethrowerInfo&)entityInfo, listener);
-		trollAxethrower->entityType = EntityType_DynamicEntity;
-		trollAxethrower->dynamicEntityType = DynamicEntityType_TrollAxethrower;
+		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, (const TrollAxethrowerInfo&)entityInfo, listener);
+		trollAxethrower->entityType = EntityCategory_DYNAMIC_ENTITY;
+		trollAxethrower->dynamicEntityType = EntityType_TROLL_AXETHROWER;
 
 		toSpawnEntities.push_back((Entity*)trollAxethrower);
 		return (DynamicEntity*)trollAxethrower;
 	}
 	break;
 
-	case DynamicEntityType_Dragon:
+	case EntityType_DRAGON:
 	{
-		Dragon* dragon = new Dragon(pos, size, life, speed, (const DragonInfo&)entityInfo, listener);
-		dragon->entityType = EntityType_DynamicEntity;
-		dragon->dynamicEntityType = DynamicEntityType_Dragon;
+		Dragon* dragon = new Dragon(pos, (const DragonInfo&)entityInfo, listener);
+		dragon->entityType = EntityCategory_DYNAMIC_ENTITY;
+		dragon->dynamicEntityType = EntityType_DRAGON;
 
 		toSpawnEntities.push_back((Entity*)dragon);
 		return (DynamicEntity*)dragon;
@@ -1311,6 +1315,7 @@ DynamicEntity* j1EntityFactory::AddDynamicEntity(DynamicEntityType dynamicEntity
 
 		return nullptr;
 	}
+
 }
 
 // -------------------------------------------------------------

@@ -5,14 +5,16 @@
 
 struct AlleriaInfo
 {
-
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class Alleria :public DynamicEntity
 {
 public:
 
-	Alleria(fPoint pos, iPoint size, int maxLife, float speed, const AlleriaInfo& alleriaInfo, j1Module* listener);
+	Alleria(fPoint pos, const AlleriaInfo& alleriaInfo, j1Module* listener);
 	~Alleria() {};
 
 	void Move(float dt);

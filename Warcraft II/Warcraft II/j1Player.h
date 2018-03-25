@@ -83,6 +83,7 @@ public:
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton();
 
+	
 private:
 
 	int totalGold = 0; // total gold earned during the game
@@ -116,6 +117,8 @@ private:
 
 	list<StaticEntity*> chickenFarm;
 	list<StaticEntity*> scoutTower;
+	StaticEntity* barracks = nullptr;
+	StaticEntity* townHall = nullptr;
 	StaticEntity* blacksmith = nullptr;
 	StaticEntity* stables = nullptr;
 	StaticEntity* church = nullptr;
