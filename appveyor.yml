@@ -4,11 +4,10 @@ build:
   verbosity: minimal
   
 after_build:
-
-- cmd: move %APPVEYOR_BUILD_FOLDER%\Warcraft II\Release\Warcraft II.exe %APPVEYOR_BUILD_FOLDER%\Warcraft II\Game
-- cmd: move %APPVEYOR_BUILD_FOLDER%\README.md %APPVEYOR_BUILD_FOLDER%\Warcraft II\Game
-- cmd: move %APPVEYOR_BUILD_FOLDER%\LICENSE %APPVEYOR_BUILD_FOLDER%\Warcraft II\Game
-- 7z a WarcraftII_The_Stolen_Artifacts.zip %APPVEYOR_BUILD_FOLDER%\Warcraft II\Game
+  - cmd: copy "%APPVEYOR_BUILD_FOLDER%\Warcraft II\Release\Warcraft II.exe" %APPVEYOR_BUILD_FOLDER%\Warcraft II\Game
+  - cmd: copy "%APPVEYOR_BUILD_FOLDER%\README.md" %APPVEYOR_BUILD_FOLDER%\Warcraft II\Game 
+  - cmd: copy "%APPVEYOR_BUILD_FOLDER%\LICENSE" %APPVEYOR_BUILD_FOLDER%\Warcraft II\Game
+  - 7z a WarcraftII_The_Stolen_Artifacts.zip %APPVEYOR_BUILD_FOLDER%\Warcraft II\Game
 
 artifacts:
   - path: WarcraftII_The_Stolen_Artifacts.zip
