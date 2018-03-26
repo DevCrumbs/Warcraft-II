@@ -49,6 +49,7 @@ bool j1Gui::Start()
 
 	// Load fonts
 	mapFonts[FONT_NAME_WARCRAFT] = App->font->Load("data/fonts/warcraft.ttf", 16);
+	mapFonts[FONT_NAME_WARCRAFT14] = App->font->Load("data/fonts/warcraft.ttf", 14);
 
 
 	return ret;
