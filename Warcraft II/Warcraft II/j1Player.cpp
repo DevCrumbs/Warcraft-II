@@ -378,13 +378,16 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h/2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-
 	UILifeBar_Info lifeInfo;
 	lifeInfo.background = { 289,346,145,23 };
 	lifeInfo.bar = { 300,373,128,8 };
 	lifeInfo.maxLife = currentEntity->GetMaxLife();
 	lifeInfo.life = ((StaticEntity*)currentEntity)->GetConstructionTimer() * currentEntity->GetMaxLife() / 10;
-	if (lifeInfo.life > currentEntity->GetMaxLife() || ((StaticEntity*)currentEntity)->staticEntityType == EntityType_TOWN_HALL || ((StaticEntity*)currentEntity)->staticEntityType == EntityType_BARRACKS)
+
+	//Show the complete bar in certain circumstances
+	if (lifeInfo.life > currentEntity->GetMaxLife() || ((StaticEntity*)currentEntity)->GetIsFinishedBuilt())
+		lifeInfo.life = currentEntity->GetCurrLife();
+	if(((StaticEntity*)currentEntity)->staticEntityType == EntityType_TOWN_HALL || ((StaticEntity*)currentEntity)->staticEntityType == EntityType_BARRACKS)
 		lifeInfo.life = currentEntity->GetCurrLife();
 
 	lifeInfo.maxWidth = lifeInfo.bar.w;
