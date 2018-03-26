@@ -49,7 +49,9 @@ bool j1Player::Update(float dt) {
 			if (stables->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)stables;
 				ent->SetDamageLife(20);
-				stables->CheckBuildingState();
+				if (!stables->CheckBuildingState()) {
+					DeleteStaticEntity(stables);
+				}
 				if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
 					entitySelectedStats.lifeBar->DecreaseLife(20);
@@ -62,7 +64,9 @@ bool j1Player::Update(float dt) {
 			if (mageTower->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)mageTower;
 				ent->SetDamageLife(20);
-				mageTower->CheckBuildingState();
+				if (!mageTower->CheckBuildingState()) {
+					DeleteStaticEntity(mageTower);
+				}
 				if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
 					entitySelectedStats.lifeBar->DecreaseLife(20);
@@ -75,7 +79,10 @@ bool j1Player::Update(float dt) {
 			if (scoutTower.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)scoutTower.back();
 				ent->SetDamageLife(20);
-				scoutTower.back()->CheckBuildingState();
+				if (!scoutTower.back()->CheckBuildingState()) {
+					DeleteStaticEntity(scoutTower.back());
+					scoutTower.pop_back();
+				}
 				if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
 					entitySelectedStats.lifeBar->DecreaseLife(20);
@@ -88,8 +95,10 @@ bool j1Player::Update(float dt) {
 			if (gryphonAviary->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)gryphonAviary;
 				ent->SetDamageLife(20);
-				gryphonAviary->CheckBuildingState();
-				if (entitySelectedStats.entitySelected == ent) {
+				if (!gryphonAviary->CheckBuildingState()) {
+					DeleteStaticEntity(gryphonAviary);
+				}
+				else if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
@@ -100,8 +109,11 @@ bool j1Player::Update(float dt) {
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)chickenFarm.back();
 				ent->SetDamageLife(20);
-				chickenFarm.back()->CheckBuildingState();
-				if (entitySelectedStats.entitySelected == ent) {
+				if (!chickenFarm.back()->CheckBuildingState()) {
+					DeleteStaticEntity(chickenFarm.back());
+					chickenFarm.pop_back();
+				}
+				else if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
@@ -314,8 +326,10 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		break;
 	case EntitiesEvent_LEAVE:
 		DestroyHoverButton();
+
 		break;
 	case EntitiesEvent_CREATED:
+		DeleteEntitiesMenu();
 		if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM)
 			MakeEntitiesMenu("NO_HP_TEXT", "Chicken Farm", { 241,34,50,41 }, ent);
 
@@ -380,13 +394,14 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 
 void j1Player::DeleteEntitiesMenu() {
 
-	App->gui->DestroyElement(entitySelectedStats.HP);
-	App->gui->DestroyElement(entitySelectedStats.entityName);
-	App->gui->DestroyElement(entitySelectedStats.entityIcon);
-	App->gui->DestroyElement(entitySelectedStats.lifeBar);
-	entitySelectedStats.entitySelected = nullptr;
+	if (entitySelectedStats.entitySelected != nullptr) {
+		App->gui->DestroyElement(entitySelectedStats.HP);
+		App->gui->DestroyElement(entitySelectedStats.entityName);
+		App->gui->DestroyElement(entitySelectedStats.entityIcon);
+		App->gui->DestroyElement(entitySelectedStats.lifeBar);
+		entitySelectedStats.entitySelected = nullptr;
+	}
 }
-
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
 
 	UIButton_Info InfoButton;
@@ -453,6 +468,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	default:
 		break;
 	}
+}
 
+void j1Player::DeleteStaticEntity(StaticEntity* &staticEntity) {
+
+	if (entitySelectedStats.entitySelected == staticEntity)
+		DeleteEntitiesMenu();
+	App->entities->DestroyEntity(staticEntity);
+		staticEntity = nullptr;
 
 }

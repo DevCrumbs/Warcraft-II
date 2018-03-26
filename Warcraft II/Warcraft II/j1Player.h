@@ -83,6 +83,9 @@ public:
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton();
 
+	void DeleteStaticEntity(StaticEntity* &staticEntity);
+
+
 	
 private:
 

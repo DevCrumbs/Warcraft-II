@@ -1366,3 +1366,8 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 	return ret;
 }
+
+void j1EntityFactory::DestroyEntity(StaticEntity* elem)
+{
+	activeStaticEntities.remove(elem);
+}
