@@ -12,7 +12,16 @@ class UILabel;
 class UIButton;
 //class Window;
 //class InputText;
-//class Slider;
+class UISlider;
+
+enum MenuActions
+{
+	MenuActions_NONE,
+	MenuActions_EXIT,
+	MenuActions_PLAY,
+	MenuActions_SETTINGS,
+	MenuActions_RETURN
+};
 
 class j1Menu : public j1Module
 {
@@ -44,19 +53,35 @@ public:
 	void CreateMenu();
 	void CreateSettings();
 	//void CreateCredits();
-	void CleanUI();
+	void DeleteSettings();
 	void CreateLoading();
+	void DeteleMenu();
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 
 private:
 
+	//Main Menu
 	UIButton* PlayButt = nullptr;
 	UILabel*  PlayLabel = nullptr;
 	UIButton* ExitButt = nullptr;
 	UILabel*  ExitLabel = nullptr;
+	UIButton* SettingsButt = nullptr;
+	UILabel*  SettingsLabel = nullptr;
 
+	//Settings
+	UISlider* FPSString = nullptr;
+	UILabel*  FPSLabel = nullptr;
+	UIButton* AudioFXButt = nullptr;
+	UILabel*  AudioFXLabel = nullptr;
+	UIButton* AudioMusicButt = nullptr;
+	UILabel*  AudioMusicLabel = nullptr;
+	UIButton* ReturnButt = nullptr;
+	UILabel*  ReturnLabel = nullptr;
+
+
+	MenuActions menuActions;
 
 public:
 	uint tab_button = 0;
