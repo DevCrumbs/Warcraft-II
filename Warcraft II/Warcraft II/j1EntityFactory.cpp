@@ -763,6 +763,9 @@ void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntit
 const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
 {
 	switch (staticEntityType) {
+	case EntityType_TOWN_HALL:
+		return (const EntityInfo&)townHallInfo;
+		break;
 	case EntityType_CHICKEN_FARM:
 		return (const EntityInfo&)chickenFarmInfo;
 		break;
