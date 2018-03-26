@@ -136,6 +136,23 @@ bool j1Player::Update(float dt) {
 	return true;
 }
 
+bool j1Player::PostUpdate() {
+
+	if (hoverButtonStruct.isCreated) {
+		SDL_Rect r;
+		r.x = (int)hoverButtonStruct.nextEntity->GetPosition().x;
+		r.y = (int)hoverButtonStruct.nextEntity->GetPosition().y;
+		r.w = hoverButtonStruct.nextEntity->GetSize().x;
+		r.h = hoverButtonStruct.nextEntity->GetSize().y;
+
+		CreateHoverButton(hoverCheck, r, (StaticEntity*)hoverButtonStruct.nextEntity);
+		hoverButtonStruct.isCreated = false;                                              
+	}
+
+
+	return true;
+}
+
 iPoint j1Player::GetMouseTilePos() {
 
 	int x, y;
@@ -322,12 +339,15 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		else
 			hoverCheck = HoverCheck_None;
 
-		CreateHoverButton(hoverCheck, { (int)ent->GetPosition().x, (int)ent->GetPosition().y, ent->GetSize().x, ent->GetSize().y}, staticEntity);
+		hoverButtonStruct.isCreated = true;
+		hoverButtonStruct.prevEntity = hoverButtonStruct.currentEntity;
+		hoverButtonStruct.nextEntity = staticEntity;
 
+		DestroyHoverButton(ent);
 
 		break;
 	case EntitiesEvent_LEAVE:
-		DestroyHoverButton();
+		DestroyHoverButton(ent);
 
 		break;
 	case EntitiesEvent_CREATED:
@@ -432,14 +452,14 @@ void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEnti
 
 	if (hoverCheck != HoverCheck_None) {
 		hoverButtonStruct.hoverButton = App->gui->CreateUIButton({ pos.x + pos.w / 2, pos.y + pos.h / 2 }, InfoButton, this, nullptr, true);
-		hoverButtonStruct.Entity_Hover = staticEntity;
+		hoverButtonStruct.currentEntity = staticEntity;
 	}
 }
 
-void j1Player::DestroyHoverButton() {
-	if (hoverButtonStruct.hoverButton != nullptr) {
+void j1Player::DestroyHoverButton(Entity* ent) {
+	if (hoverButtonStruct.currentEntity == ent || hoverButtonStruct.prevEntity == ent) {
 		App->gui->DestroyElement(hoverButtonStruct.hoverButton);
-		hoverButtonStruct.Entity_Hover = nullptr;
+		hoverButtonStruct.currentEntity = nullptr;
 	}
 }
 
@@ -478,10 +498,10 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (hoverCheck == HoverCheck_Repair) {
-			hoverButtonStruct.Entity_Hover->SetCurrLife(hoverButtonStruct.Entity_Hover->GetMaxLife());
-			hoverButtonStruct.Entity_Hover->CheckBuildingState();
-			entitySelectedStats.HP->SetText(hoverButtonStruct.Entity_Hover->GetStringLife());
-			entitySelectedStats.lifeBar->SetLife(hoverButtonStruct.Entity_Hover->GetMaxLife());
+			hoverButtonStruct.currentEntity->SetCurrLife(hoverButtonStruct.currentEntity->GetMaxLife());
+			hoverButtonStruct.currentEntity->CheckBuildingState();
+			entitySelectedStats.HP->SetText(hoverButtonStruct.currentEntity->GetStringLife());
+			entitySelectedStats.lifeBar->SetLife(hoverButtonStruct.currentEntity->GetMaxLife());
 
 		}
 		else if (hoverCheck == HoverCheck_Upgrate)

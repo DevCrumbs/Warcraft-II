@@ -29,7 +29,11 @@ class StaticEntity;
 struct HoverButton
 {
 	UIButton* hoverButton = nullptr;
-	StaticEntity* Entity_Hover = nullptr;
+	StaticEntity* currentEntity = nullptr;
+	StaticEntity* nextEntity = nullptr;
+	StaticEntity* prevEntity = nullptr;
+
+	bool isCreated = false;
 
 };
 
@@ -59,6 +63,7 @@ public:
 	bool Start();
 
 	bool Update(float dt);
+	bool PostUpdate();
 
 	void CheckIfPlaceBuilding();
 	iPoint GetMouseTilePos();
@@ -81,7 +86,7 @@ public:
 	void DeleteEntitiesMenu();
 	//void CheckBuildingState(Entity* ent);
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
-	void DestroyHoverButton();
+	void DestroyHoverButton(Entity* ent);
 	void CreateBarracksButtons();
 	void DestroyBarracksButtons();
 
@@ -133,7 +138,7 @@ private:
 	EntitySelectedStats entitySelectedStats;
 
 	UIButton *produceFootmanButton, *produceElvenArcherButton;
-
+	
 	list<UIElement*> UIMenuInfoList;
 
 };
