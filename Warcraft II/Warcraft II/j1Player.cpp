@@ -172,37 +172,47 @@ void j1Player::CheckIfPlaceBuilding()
 		switch (alphaBuilding) 
 		{
 		case EntityType_CHICKEN_FARM:
-			StaticEntity* c;
-			c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), this);
-			App->scene->SetAplphaBuilding(EntityType_NONE);
-			c->SetStringLife(c->GetCurrLife(), c->GetMaxLife());
-			chickenFarm.push_back(c);
+			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+				StaticEntity* c;
+				c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), this);
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				c->SetStringLife(c->GetCurrLife(), c->GetMaxLife());
+				chickenFarm.push_back(c);
+			}
 			break;
 
 		case EntityType_STABLES:
-			stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), this);
-			App->scene->SetAplphaBuilding(EntityType_NONE);
-			stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
+			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
+				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), this);
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
+			}
 			break;
 
 		case EntityType_GRYPHON_AVIARY:
-			gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), this);
-			App->scene->SetAplphaBuilding(EntityType_NONE);
-			gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
+			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
+				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), this);
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
+			}
 			break;
 
 		case EntityType_MAGE_TOWER:
-			mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), this);
-			App->scene->SetAplphaBuilding(EntityType_NONE);
-			mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
+			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
+				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), this);
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
+			}
 			break;
 
 		case EntityType_SCOUT_TOWER:
-			StaticEntity* s;
-			s = (StaticEntity*)App->entities->AddEntity(EntityType_SCOUT_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_SCOUT_TOWER), this);
-			App->scene->SetAplphaBuilding(EntityType_NONE);
-			s->SetStringLife(s->GetCurrLife(), s->GetMaxLife());
-			scoutTower.push_back(s);
+			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+				StaticEntity* s;
+				s = (StaticEntity*)App->entities->AddEntity(EntityType_SCOUT_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_SCOUT_TOWER), this);
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				s->SetStringLife(s->GetCurrLife(), s->GetMaxLife());
+				scoutTower.push_back(s);
+			}
 			break;
 
 		case EntityCategory_NONE:

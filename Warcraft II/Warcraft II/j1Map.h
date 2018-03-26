@@ -269,6 +269,7 @@ public:
 	int					mapTypesNo = 0;
 	int					defaultRoomSize = 0;
 	int					playerBaseSize = 0;
+	int					defaultLittleRoomSize = 0;
 	int					defaultTileSize = 0;
 	int					defaultHallSize = 0;
 

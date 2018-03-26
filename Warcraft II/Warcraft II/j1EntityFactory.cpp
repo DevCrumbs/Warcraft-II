@@ -1141,7 +1141,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_BARRACKS:
 	{
 
-		Barracks* barracks = new Barracks(pos, { 128,128 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
+		Barracks* barracks = new Barracks(pos, { 96,96 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
 		barracks->entityType = EntityCategory_STATIC_ENTITY;
 
 		barracks->staticEntityCategory = StaticEntityCategory_HumanBuilding;
@@ -1155,7 +1155,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_ELVEN_LUMBER_MILL:
 	{
 
-		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 128,128 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
+		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 96,96 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
 		elvenLumberMill->entityType = EntityCategory_STATIC_ENTITY;
 
 		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
@@ -1169,7 +1169,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_MAGE_TOWER:
 	{
 
-		MageTower* mageTower = new MageTower(pos, { 128,128 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
+		MageTower* mageTower = new MageTower(pos, { 96,96 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
 		mageTower->entityType = EntityCategory_STATIC_ENTITY;
 
 		mageTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
@@ -1183,7 +1183,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_GRYPHON_AVIARY:
 	{
 
-		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 128,128 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
+		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 96,96 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
 		gryphonAviary->entityType = EntityCategory_STATIC_ENTITY;
 
 		gryphonAviary->staticEntityCategory = StaticEntityCategory_HumanBuilding;
@@ -1197,7 +1197,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_STABLES:
 	{
 
-		Stables* stables = new Stables(pos, { 128,128 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
+		Stables* stables = new Stables(pos, { 96,96 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
 		stables->entityType = EntityCategory_STATIC_ENTITY;
 
 		stables->staticEntityCategory = StaticEntityCategory_HumanBuilding;
@@ -1246,7 +1246,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GOLD_MINE:
 	{
-		GoldMine* goldMine = new GoldMine(pos, { 128,128 }, goldMineInfo.maxLife, (const GoldMineInfo&)entityInfo, listener);
+		GoldMine* goldMine = new GoldMine(pos, { 96,96 }, goldMineInfo.maxLife, (const GoldMineInfo&)entityInfo, listener);
 		goldMine->entityType = EntityCategory_STATIC_ENTITY;
 		goldMine->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		goldMine->staticEntityType = EntityType_GOLD_MINE;
