@@ -9,37 +9,7 @@
 
 struct SDL_Texture;
 
-enum StaticEntityType
-{
-	StaticEntityType_NoType,
-
-	// Player buildings
-	/// Production buildings
-	StaticEntityType_TownHall,
-	StaticEntityType_ChickenFarm,
-	StaticEntityType_Barracks,
-	StaticEntityType_ElvenLumberMill,
-	StaticEntityType_MageTower,
-	StaticEntityType_GryphonAviary,
-	StaticEntityType_Stables,
-
-	/// Defense buildings
-	StaticEntityType_ScoutTower,
-	StaticEntityType_PlayerGuardTower,
-	StaticEntityType_PlayerCannonTower,
-
-	// Neutral buildings
-	StaticEntityType_GoldMine,
-	StaticEntityType_Runestone,
-
-	// Enemy buildings
-	/// Defense buildings
-	StaticEntityType_WatchTower,
-	StaticEntityType_EnemyGuardTower,
-	StaticEntityType_EnemyCannonTower,
-
-	StaticEntityType_MaxTypes
-};
+enum ENTITY_TYPE;
 
 enum StaticEntityCategory
 {
@@ -50,7 +20,20 @@ enum StaticEntityCategory
 	StaticEntityCategory_MaxCategories
 };
 
+enum StaticEntitySize
+{
+	None,
+	Small,
+	Medium,
+	Big
+};
 
+struct BuildingPreviewTiles 
+{
+	SDL_Rect greenTile = { 0,0,0,0 };
+	SDL_Rect redTile = { 0,0,0,0 };
+	uint opacity = 0;
+};
 
 class StaticEntity :public Entity
 {
@@ -68,7 +51,7 @@ public:
 
 public:
 
-	StaticEntityType staticEntityType = StaticEntityType_NoType;
+	ENTITY_TYPE staticEntityType = EntityType_NONE;
 	StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
 
 protected:

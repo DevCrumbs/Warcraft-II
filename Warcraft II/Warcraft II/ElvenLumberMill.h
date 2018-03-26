@@ -10,6 +10,9 @@ struct ElvenLumberMillInfo
 	SDL_Rect constructionPlanks1 = { 0,0,0,0 };
 	SDL_Rect constructionPlanks2 = { 0,0,0,0 };
 	int maxLife = 0;
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class ElvenLumberMill : public StaticEntity
@@ -28,7 +31,7 @@ private:
 
 	ElvenLumberMillInfo elvenLumberMillInfo;
 
-	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
 };
 
 #endif

@@ -14,10 +14,9 @@ using namespace std;
 enum HoverCheck
 {
 	HoverCheck_None,
-	HoverCheck_Update,
+	HoverCheck_Upgrate,
 	HoverCheck_Repair
 };
-
 
 struct UILabel;
 struct UIImage;
@@ -26,6 +25,12 @@ class Entity;
 
 class StaticEntity;
 
+struct HoverButton
+{
+	UIButton* hoverButton = nullptr;
+	StaticEntity* Entity_Hover = nullptr;
+
+};
 
 class j1Player : public j1Module
 {
@@ -45,7 +50,7 @@ public:
 	bool Update(float dt);
 
 	void CheckIfPlaceBuilding();
-
+	iPoint GetMouseTilePos();
 	iPoint GetMousePos();
 
 	// Called before quitting
@@ -64,9 +69,10 @@ public:
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim);
 	void DeleteEntitiesMenu();
 	void CheckBuildingState(Entity* ent);
-	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos);
+	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton();
 
+	
 private:
 
 	int totalGold = 0; // total gold earned during the game
@@ -98,16 +104,18 @@ private:
 	UILabel* entityName = nullptr;
 	UIImage* entityIcon = nullptr;
 
-	UIButton* hoverButton = nullptr;
+	HoverButton hoverButtonStruct;
 
-	StaticEntity* chickenFarm = nullptr;
+	list<StaticEntity*> chickenFarm;
+	list<StaticEntity*> scoutTower;
+	StaticEntity* barracks = nullptr;
+	StaticEntity* townHall = nullptr;
 	StaticEntity* blacksmith = nullptr;
 	StaticEntity* stables = nullptr;
 	StaticEntity* church = nullptr;
 	StaticEntity* mageTower = nullptr;
 	StaticEntity* cannonTower = nullptr;
 	StaticEntity* guardTower = nullptr;
-	StaticEntity* scoutTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
 
 

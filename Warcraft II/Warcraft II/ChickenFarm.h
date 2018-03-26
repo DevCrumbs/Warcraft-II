@@ -15,6 +15,9 @@ struct ChickenFarmInfo
 	SDL_Rect constructionPlanks1 = { 0,0,0,0 };
 	SDL_Rect constructionPlanks2 = { 0,0,0,0 };
 	int maxLife = 0;
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class ChickenFarm :public StaticEntity
@@ -35,9 +38,9 @@ public:
 private:
 
 	ChickenFarmInfo chickenFarmInfo;
-	StaticEntityType type = StaticEntityType_ChickenFarm;
+	ENTITY_TYPE type = EntityType_CHICKEN_FARM;
 
-	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
 };
 
 #endif //__ChickenFarm_H__

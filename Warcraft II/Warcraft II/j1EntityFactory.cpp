@@ -40,6 +40,10 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	footmanTexName = spritesheets.child("footmanAnimations").attribute("name").as_string();
 	gruntTexName = spritesheets.child("gruntAnimations").attribute("name").as_string();
 
+	//Debug Textures Properties
+	buildingPreviewTiles.opacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
+	previewBuildingOpacity = config.child("previewTexturesProperties").attribute("buildingPlaceOpacity").as_uint();
+
 	// Static entities
 	pugi::xml_node staticEntities = config.child("staticEntities");
 
@@ -111,19 +115,25 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	//Construction planks for the human buildings
 
-	pugi::xml_node bigConstructionPlanks = humanBuildings.child("constructionPlanks").child("bigTilePlanks");
-	aux = bigConstructionPlanks.child("first");
-	barracksInfo.constructionPlanks1 = elvenLumberMillInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-	mageTowerInfo.constructionPlanks1 = gryphonAviaryInfo.constructionPlanks1 = stablesInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-	aux = bigConstructionPlanks.child("second");
-	barracksInfo.constructionPlanks2 = elvenLumberMillInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-	mageTowerInfo.constructionPlanks2 = gryphonAviaryInfo.constructionPlanks2 = stablesInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-
 	pugi::xml_node smallConstructionPlanks = humanBuildings.child("constructionPlanks").child("smallTilePlanks");
 	aux = smallConstructionPlanks.child("first");
 	chickenFarmInfo.constructionPlanks1 = scoutTowerInfo.constructionPlanks1 = playerGuardTowerInfo.constructionPlanks1 = playerCannonTowerInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 	aux = smallConstructionPlanks.child("second");
 	chickenFarmInfo.constructionPlanks2 = scoutTowerInfo.constructionPlanks2 = playerGuardTowerInfo.constructionPlanks2 = playerCannonTowerInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+
+	pugi::xml_node mediumConstructionPlanks = humanBuildings.child("constructionPlanks").child("mediumTilePlanks");
+	aux = mediumConstructionPlanks.child("first");
+	barracksInfo.constructionPlanks1 = elvenLumberMillInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+	mageTowerInfo.constructionPlanks1 = gryphonAviaryInfo.constructionPlanks1 = stablesInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+	aux = mediumConstructionPlanks.child("second");
+	barracksInfo.constructionPlanks2 = elvenLumberMillInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+	mageTowerInfo.constructionPlanks2 = gryphonAviaryInfo.constructionPlanks2 = stablesInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+
+
+	//Building preview tiles
+	pugi::xml_node previewTiles = humanBuildings.child("previewTiles");
+	buildingPreviewTiles.greenTile = { previewTiles.child("green").attribute("x").as_int(), previewTiles.child("green").attribute("y").as_int(), previewTiles.child("green").attribute("w").as_int(), previewTiles.child("green").attribute("h").as_int() };
+	buildingPreviewTiles.redTile = { previewTiles.child("red").attribute("x").as_int(), previewTiles.child("red").attribute("y").as_int(), previewTiles.child("red").attribute("w").as_int(), previewTiles.child("red").attribute("h").as_int() };
 
 	//Neutral buildings
 	pugi::xml_node neutralBuildings = staticEntities.child("neutralBuildings");
@@ -438,12 +448,12 @@ bool j1EntityFactory::PreUpdate()
 		App->map->WorldToMap(x, y);
 
 		// Move the entity from the waiting list to the active list
-		if ((*it)->entityType == EntityType_DynamicEntity) {
+		if ((*it)->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 			activeDynamicEntities.push_back((DynamicEntity*)(*it));
 			LOG("Spawning dynamic entity at tile %d,%d", x, y);
 		}
-		else if ((*it)->entityType == EntityType_StaticEntity) {
+		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) {
 
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
@@ -483,40 +493,40 @@ void j1EntityFactory::Draw()
 		switch ((*dynEnt)->dynamicEntityType) {
 
 			// Player
-		case DynamicEntityType_Footman:
+		case EntityType_FOOTMAN:
 			(*dynEnt)->Draw(footmanTex);
 			break;
-		case DynamicEntityType_ElvenArcher:
+		case EntityType_ELVEN_ARCHER:
 			(*dynEnt)->Draw(elvenArcherTex);
 			break;
-		case DynamicEntityType_GryphonRider:
+		case EntityType_GRYPHON_RIDER:
 			(*dynEnt)->Draw(gryphonRiderTex);
 			break;
-		case DynamicEntityType_Mage:
+		case EntityType_MAGE:
 			(*dynEnt)->Draw(mageTex);
 			break;
-		case DynamicEntityType_Paladin:
+		case EntityType_PALADIN:
 			(*dynEnt)->Draw(paladinTex);
 			break;
 
-		case DynamicEntityType_Turalyon:
+		case EntityType_TURALYON:
 			(*dynEnt)->Draw(turalyonTex);
 			break;
-		case DynamicEntityType_Khadgar:
+		case EntityType_KHADGAR:
 			(*dynEnt)->Draw(khadgarTex);
 			break;
-		case DynamicEntityType_Alleria:
+		case EntityType_ALLERIA:
 			(*dynEnt)->Draw(alleriaTex);
 			break;
 
 			// Enemy
-		case DynamicEntityType_Grunt:
+		case EntityType_GRUNT:
 			(*dynEnt)->Draw(gruntTex);
 			break;
-		case DynamicEntityType_TrollAxethrower:
+		case EntityType_TROLL_AXETHROWER:
 			(*dynEnt)->Draw(trollAxethrowerTex);
 			break;
-		case DynamicEntityType_Dragon:
+		case EntityType_DRAGON:
 			(*dynEnt)->Draw(dragonTex);
 			break;
 
@@ -554,77 +564,230 @@ void j1EntityFactory::Draw()
 	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
 }
 
-void j1EntityFactory::DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos)
+void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos)
 {
 	switch (staticEntityType) {
 
-	case StaticEntityType_ChickenFarm:
+	case EntityType_CHICKEN_FARM:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
 		break;
-	case StaticEntityType_ElvenLumberMill:
+	case EntityType_ELVEN_LUMBER_MILL:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &elvenLumberMillInfo.completeTexArea);
 		break;
-	case StaticEntityType_MageTower:
+	case EntityType_MAGE_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
 		break;
-	case StaticEntityType_GryphonAviary:
+	case EntityType_GRYPHON_AVIARY:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
 		break;
-	case StaticEntityType_Stables:
+	case EntityType_STABLES:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
 		break;
-	case StaticEntityType_ScoutTower:
+	case EntityType_SCOUT_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
 		break;
-	case StaticEntityType_PlayerGuardTower:
+	case EntityType_PLAYER_GUARD_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
 		break;
-	case StaticEntityType_PlayerCannonTower:
+	case EntityType_PLAYER_CANNON_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
 		break;
-	case StaticEntityType_NoType:
+	case EntityCategory_NONE:
 		break;
+	default:
+		break;
+	}
+	
+	HandleStaticEntityPreviewTiles(staticEntityType, mousePos);
+
+}
+
+//Handles when to return green or red tiles 
+void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityType, iPoint mousePos)
+{
+	switch (staticEntityType) {
+
+	case EntityType_CHICKEN_FARM:
+	case EntityType_SCOUT_TOWER:
+		DrawStaticEntityPreviewTiles(true, Small, mousePos);
+
+		if (isPreviewBuildingOnEntity(App->player->GetMouseTilePos(), Small)) 
+			DrawStaticEntityPreviewTiles(false, Small, mousePos);
+
+		break;
+	case EntityType_ELVEN_LUMBER_MILL:
+	case EntityType_MAGE_TOWER:
+	case EntityType_GRYPHON_AVIARY:
+	case EntityType_STABLES:
+		DrawStaticEntityPreviewTiles(true, Medium, mousePos);
+
+		if (isPreviewBuildingOnEntity(App->player->GetMouseTilePos(), Medium)) 
+			DrawStaticEntityPreviewTiles(false, Medium, mousePos);
+
+		break;
+
 	default:
 		break;
 	}
 }
 
+//Draws green or red tiles on the preview depending on if there's a building on the ground and the preview building size
+void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntitySize buildingSize, iPoint mousePos)
+{
+	SDL_SetTextureAlphaMod(neutralBuildingsTex, buildingPreviewTiles.opacity);
+	iPoint mouseTilePos = App->player->GetMouseTilePos();
 
-const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntityType) {
+	switch (buildingSize) {
+	case Small:
+		if (isPlaceable) {
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+		}
+		else if (!isPlaceable) {
+			if(isEntityOnTile(mouseTilePos)) //0,0
+				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 1, mouseTilePos.y})) //32,0
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x, mouseTilePos.y + 1 })) //0,32
+				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) //32,32
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
+		}
+		break;
+	case Medium:
+		if (isPlaceable) {
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+		}
+		else if (!isPlaceable) {
+			if (isEntityOnTile(mouseTilePos)) //0,0
+				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 1, mouseTilePos.y })) //32,0
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x, mouseTilePos.y + 1 })) //0,32
+				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) //32,32
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 1, mouseTilePos.y + 2 })) //32,64
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 2, mouseTilePos.y + 1 })) //64,32
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 2, mouseTilePos.y})) //64,0
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x , mouseTilePos.y + 2 })) //0,64
+				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 2, mouseTilePos.y + 2 })) //64,64
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile);
+		}
+		break;
+	case Big:
+		if (isPlaceable) {
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.greenTile);
+		}
+		else if (!isPlaceable) {
+			if (isEntityOnTile(mouseTilePos)) //0,0
+				App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 1, mouseTilePos.y })) //32,0
+				App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x, mouseTilePos.y + 1 })) //0,32
+				App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) //32,32
+				App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 1, mouseTilePos.y + 2 })) //32,64
+				App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 2, mouseTilePos.y + 1 })) //64,32
+				App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 2, mouseTilePos.y })) //64,0
+				App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x, mouseTilePos.y + 2 })) //0,64
+				App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 2, mouseTilePos.y + 2})) //64,64
+				App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 1, mouseTilePos.y + 3 })) //32,96
+				App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 2, mouseTilePos.y + 3 })) //64,96
+				App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 3, mouseTilePos.y + 1 })) //96,32
+				App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 3, mouseTilePos.y + 2 })) //96,32
+				App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 3, mouseTilePos.y })) //96,0
+				App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x, mouseTilePos.y + 3 })) //0,96
+				App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.redTile);
+			if (isEntityOnTile({ mouseTilePos.x + 3, mouseTilePos.y + 3 })) //96,96
+				App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.redTile);
+		}
+		break;
+	case None:
+		break;
+	default:
+		break;
+	}
+
+}
+
+
+const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
+{
 	switch (staticEntityType) {
-	case StaticEntityType_ChickenFarm:
+	case EntityType_CHICKEN_FARM:
 		return (const EntityInfo&)chickenFarmInfo;
 		break;
-	case StaticEntityType_Barracks:
+	case EntityType_BARRACKS:
 		return (const EntityInfo&)barracksInfo;
 		break;
-	case StaticEntityType_ElvenLumberMill:
+	case EntityType_ELVEN_LUMBER_MILL:
 		return (const EntityInfo&)elvenLumberMillInfo;
 		break;
-	case StaticEntityType_MageTower:
+	case EntityType_MAGE_TOWER:
 		return(const EntityInfo&)mageTowerInfo;
 		break;
-	case StaticEntityType_GryphonAviary:
+	case EntityType_GRYPHON_AVIARY:
 		return(const EntityInfo&)gryphonAviaryInfo;
 		break;
-	case StaticEntityType_Stables:
+	case EntityType_STABLES:
 		return(const EntityInfo&)stablesInfo;
 		break;
-	case StaticEntityType_ScoutTower:
+	case EntityType_SCOUT_TOWER:
 		return(const EntityInfo&)scoutTowerInfo;
 		break;
-	case StaticEntityType_PlayerGuardTower:
+	case EntityType_PLAYER_GUARD_TOWER:
 		return(const EntityInfo&)playerGuardTowerInfo;
 		break;
-	case StaticEntityType_PlayerCannonTower:
+	case EntityType_PLAYER_CANNON_TOWER:
 		return(const EntityInfo&)playerCannonTowerInfo;
 		break;
 	default:
@@ -638,6 +801,230 @@ const EntityInfo& j1EntityFactory::GetBuildingInfo(StaticEntityType staticEntity
 SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
 
 	return humanBuildingsTex;
+}
+
+SDL_Texture* j1EntityFactory::GetNeutralBuildingTexture() {
+
+	return neutralBuildingsTex;
+}
+
+//It returns true if there's an entity in the tile
+bool j1EntityFactory::isEntityOnTile(iPoint tile) const 
+{
+	//Dynamic entities
+	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+
+	while (activeDyn != activeDynamicEntities.end()) {
+
+		iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPosition().x, (*activeDyn)->GetPosition().y);
+		if (tile.x == entityTile.x && tile.y == entityTile.y)
+			return true;
+
+		activeDyn++;
+	}
+
+	//Static entities
+	list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
+
+	while (activeStatic != activeStaticEntities.end()) {
+
+		iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPosition().x, (*activeStatic)->GetPosition().y);
+
+		if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 2; j++) {
+					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+				}
+			}
+		}
+		else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 3; j++) {
+					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+				}
+			}
+
+		}
+		else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 4; j++) {
+					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+				}
+			}
+		}
+
+		activeStatic++;
+	}
+
+	// We do also need to check the toSpawn list (just in case)
+	list<Entity*>::const_iterator toSpawn = toSpawnEntities.begin();
+	while (toSpawn != toSpawnEntities.end()) {
+
+		iPoint entityTile = App->map->WorldToMap((*toSpawn)->GetPosition().x, (*toSpawn)->GetPosition().y);
+
+		if (tile.x == entityTile.x && tile.y == entityTile.y)
+			return true;
+
+		toSpawn++;
+	}
+
+	return false;
+}
+
+// Returns true if a building can NOT be built in that spot
+bool j1EntityFactory::isPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const
+{
+	//Dynamic entities
+	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+
+	while (activeDyn != activeDynamicEntities.end()) {
+	
+		iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPosition().x, (*activeDyn)->GetPosition().y);
+
+		//This checks the tile of the dynamic entity and its surroundings
+		switch (buildingSize)
+		{
+		case Small:
+			for (int i = -1; i < 1; i++) {
+				for (int j = -1; j < 1; j++) {
+					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+				}
+			}
+			break;
+		case Medium:
+			for (int i = -2; i < 1; i++) {
+				for (int j = -2; j < 1; j++) {
+					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+				}
+			}
+			break;
+		case Big:
+			for (int i = -3; i < 1; i++) {
+				for (int j = -3; j < 1; j++) {
+					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+
+		activeDyn++;
+	}
+
+	//Static entities
+	list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
+
+	while (activeStatic != activeStaticEntities.end()) {
+
+			iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPosition().x, (*activeStatic)->GetPosition().y);
+			
+			//This checks all of the tiles that conform of the static entity and their surrounding tiles
+			if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
+				switch (buildingSize)
+				{
+				case Small:
+					for (int i = -1; i < 2; i++) {
+						for (int j = -1; j < 2; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+							}
+						}
+					break;
+				case Medium:
+					for (int i = -2; i < 2; i++) {
+						for (int j = -2; j < 2; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				case Big:
+					for (int i = -3; i < 2; i++) {
+						for (int j = -3; j < 2; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
+				switch (buildingSize)
+				{
+				case Small:
+					for (int i = -1; i < 3; i++) {
+						for (int j = -1; j < 3; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				case Medium:
+					for (int i = -2; i < 3; i++) {
+						for (int j = -2; j < 3; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				case Big:
+					for (int i = -3; i < 3; i++) {
+						for (int j = -3; j < 3; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+				switch (buildingSize)
+				{
+				case Small:
+					for (int i = -1; i < 4; i++) {
+						for (int j = -1; j < 4; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				case Medium:
+					for (int i = -2; i < 4; i++) {
+						for (int j = -2; j < 4; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				case Big:
+					for (int i = -3; i < 4; i++) {
+						for (int j = -3; j < 4; j++) {
+							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+								return true;
+						}
+					}
+					break;
+				default:
+					break;
+				}
+			}
+
+			activeStatic++;
+	}
+
+	return false;
 }
 
 bool j1EntityFactory::PostUpdate()
@@ -720,28 +1107,30 @@ bool j1EntityFactory::CleanUp()
 
 	return ret;
 }
-StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener)
-{
-	switch (staticEntityType) {
 
-	case StaticEntityType_TownHall:
+
+Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener)
+{
+	switch (entityType) {
+
+	case EntityType_TOWN_HALL:
 	{
 		TownHall* townHall = new TownHall(pos, { 128,128 }, townHallInfo.townHallMaxLife, (const TownHallInfo&)entityInfo, listener);
-		townHall->entityType = EntityType_StaticEntity;
+		townHall->entityType = EntityCategory_STATIC_ENTITY;
 		townHall->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		townHall->staticEntityType = StaticEntityType_TownHall;
+		townHall->staticEntityType = EntityType_TOWN_HALL;
 
 		toSpawnEntities.push_back((Entity*)townHall);
 		return (StaticEntity*)townHall;
 	}
 	break;
 
-	case StaticEntityType_ChickenFarm:
+	case EntityType_CHICKEN_FARM:
 	{
 		ChickenFarm* chickenFarm = new ChickenFarm(pos, { 64,64 }, chickenFarmInfo.maxLife, (const ChickenFarmInfo&)entityInfo, listener);
-		chickenFarm->entityType = EntityType_StaticEntity;
+		chickenFarm->entityType = EntityCategory_STATIC_ENTITY;
 		chickenFarm->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		chickenFarm->staticEntityType = StaticEntityType_ChickenFarm;
+		chickenFarm->staticEntityType = EntityType_CHICKEN_FARM;
 
 
 		toSpawnEntities.push_back((Entity*)chickenFarm);
@@ -749,287 +1138,288 @@ StaticEntity* j1EntityFactory::AddStaticEntity(StaticEntityType staticEntityType
 	}
 	break;
 
-	case StaticEntityType_Barracks:
+	case EntityType_BARRACKS:
 	{
-		Barracks* barracks = new Barracks(pos, { 128,128 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
-		barracks->entityType = EntityType_StaticEntity;
+
+		Barracks* barracks = new Barracks(pos, { 96,96 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
+		barracks->entityType = EntityCategory_STATIC_ENTITY;
+
 		barracks->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		barracks->staticEntityType = StaticEntityType_Barracks;
+		barracks->staticEntityType = EntityType_BARRACKS;
 
 		toSpawnEntities.push_back((Entity*)barracks);
 		return (StaticEntity*)barracks;
 	}
 	break;
 
-	case StaticEntityType_ElvenLumberMill:
+	case EntityType_ELVEN_LUMBER_MILL:
 	{
-		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 128,128 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
-		elvenLumberMill->entityType = EntityType_StaticEntity;
+
+		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 96,96 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
+		elvenLumberMill->entityType = EntityCategory_STATIC_ENTITY;
+
 		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		elvenLumberMill->staticEntityType = StaticEntityType_Barracks;
+		elvenLumberMill->staticEntityType = EntityType_BARRACKS;
 
 		toSpawnEntities.push_back((Entity*)elvenLumberMill);
 		return (StaticEntity*)elvenLumberMill;
 	}
 	break;
 
-	case StaticEntityType_MageTower:
+	case EntityType_MAGE_TOWER:
 	{
-		MageTower* mageTower = new MageTower(pos, { 128,128 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
-		mageTower->entityType = EntityType_StaticEntity;
+
+		MageTower* mageTower = new MageTower(pos, { 96,96 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
+		mageTower->entityType = EntityCategory_STATIC_ENTITY;
+
 		mageTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		mageTower->staticEntityType = StaticEntityType_MageTower;
+		mageTower->staticEntityType = EntityType_MAGE_TOWER;
 
 		toSpawnEntities.push_back((Entity*)mageTower);
 		return (StaticEntity*)mageTower;
 	}
 	break;
 
-	case StaticEntityType_GryphonAviary:
+	case EntityType_GRYPHON_AVIARY:
 	{
-		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 128,128 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
-		gryphonAviary->entityType = EntityType_StaticEntity;
+
+		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 96,96 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
+		gryphonAviary->entityType = EntityCategory_STATIC_ENTITY;
+
 		gryphonAviary->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		gryphonAviary->staticEntityType = StaticEntityType_GryphonAviary;
+		gryphonAviary->staticEntityType = EntityType_GRYPHON_AVIARY;
 
 		toSpawnEntities.push_back((Entity*)gryphonAviary);
 		return (StaticEntity*)gryphonAviary;
 	}
 	break;
 
-	case StaticEntityType_Stables:
+	case EntityType_STABLES:
 	{
-		Stables* stables = new Stables(pos, { 128,128 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
-		stables->entityType = EntityType_StaticEntity;
+
+		Stables* stables = new Stables(pos, { 96,96 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
+		stables->entityType = EntityCategory_STATIC_ENTITY;
+
 		stables->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		stables->staticEntityType = StaticEntityType_Stables;
+		stables->staticEntityType = EntityType_STABLES;
 
 		toSpawnEntities.push_back((Entity*)stables);
 		return (StaticEntity*)stables;
 	}
 	break;
 
-	case StaticEntityType_ScoutTower:
+	case EntityType_SCOUT_TOWER:
 	{
 		ScoutTower* scoutTower = new ScoutTower(pos, { 64,64 }, scoutTowerInfo.maxLife, (const ScoutTowerInfo&)entityInfo, listener);
-		scoutTower->entityType = EntityType_StaticEntity;
+		scoutTower->entityType = EntityCategory_STATIC_ENTITY;
 		scoutTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		scoutTower->staticEntityType = StaticEntityType_ScoutTower;
+		scoutTower->staticEntityType = EntityType_SCOUT_TOWER;
 
 		toSpawnEntities.push_back((Entity*)scoutTower);
 		return (StaticEntity*)scoutTower;
 	}
 	break;
 
-	case StaticEntityType_PlayerGuardTower:
+	case EntityType_PLAYER_GUARD_TOWER:
 	{
 		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, { 64,64 }, 12, (const PlayerGuardTowerInfo&)entityInfo, listener);
-		playerGuardTower->entityType = EntityType_StaticEntity;
+		playerGuardTower->entityType = EntityCategory_STATIC_ENTITY;
 		playerGuardTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		playerGuardTower->staticEntityType = StaticEntityType_PlayerGuardTower;
+		playerGuardTower->staticEntityType = EntityType_PLAYER_GUARD_TOWER;
 
 		toSpawnEntities.push_back((Entity*)playerGuardTower);
 		return (StaticEntity*)playerGuardTower;
 	}
 	break;
 
-	case StaticEntityType_PlayerCannonTower:
+	case EntityType_PLAYER_CANNON_TOWER:
 	{
 		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, { 64,64 }, 12, (const PlayerCannonTowerInfo&)entityInfo, listener);
-		playerCannonTower->entityType = EntityType_StaticEntity;
+		playerCannonTower->entityType = EntityCategory_STATIC_ENTITY;
 		playerCannonTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		playerCannonTower->staticEntityType = StaticEntityType_PlayerCannonTower;
+		playerCannonTower->staticEntityType = EntityType_PLAYER_CANNON_TOWER;
 
 		toSpawnEntities.push_back((Entity*)playerCannonTower);
 		return (StaticEntity*)playerCannonTower;
 	}
 	break;
 
-	case StaticEntityType_GoldMine:
+	case EntityType_GOLD_MINE:
 	{
-		GoldMine* goldMine = new GoldMine(pos, { 128,128 }, goldMineInfo.maxLife, (const GoldMineInfo&)entityInfo, listener);
-		goldMine->entityType = EntityType_StaticEntity;
+		GoldMine* goldMine = new GoldMine(pos, { 96,96 }, goldMineInfo.maxLife, (const GoldMineInfo&)entityInfo, listener);
+		goldMine->entityType = EntityCategory_STATIC_ENTITY;
 		goldMine->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
-		goldMine->staticEntityType = StaticEntityType_GoldMine;
+		goldMine->staticEntityType = EntityType_GOLD_MINE;
 
 		toSpawnEntities.push_back((Entity*)goldMine);
 		return (StaticEntity*)goldMine;
 	}
 	break;
 
-	case StaticEntityType_Runestone:
+	case EntityType_RUNESTONE:
 	{
 		Runestone* runestone = new Runestone(pos, { 64,64 }, 0, (const RunestoneInfo&)entityInfo, listener);
-		runestone->entityType = EntityType_StaticEntity;
+		runestone->entityType = EntityCategory_STATIC_ENTITY;
 		runestone->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
-		runestone->staticEntityType = StaticEntityType_Runestone;
+		runestone->staticEntityType = EntityType_RUNESTONE;
 
 		toSpawnEntities.push_back((Entity*)runestone);
 		return (StaticEntity*)runestone;
 	}
 	break;
 
-	case StaticEntityType_WatchTower:
+	case EntityType_WATCH_TOWER:
 	{
 		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, 12, (const WatchTowerInfo&)entityInfo, listener);
-		watchTower->entityType = EntityType_StaticEntity;
+		watchTower->entityType = EntityCategory_STATIC_ENTITY;
 		watchTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		watchTower->staticEntityType = StaticEntityType_WatchTower;
+		watchTower->staticEntityType = EntityType_WATCH_TOWER;
 
 		toSpawnEntities.push_back((Entity*)watchTower);
 		return (StaticEntity*)watchTower;
 	}
 	break;
 
-	case StaticEntityType_EnemyGuardTower:
+	case EntityType_ENEMY_GUARD_TOWER:
 	{
 		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, 12, (const EnemyGuardTowerInfo&)entityInfo, listener);
-		enemyGuardTower->entityType = EntityType_StaticEntity;
+		enemyGuardTower->entityType = EntityCategory_STATIC_ENTITY;
 		enemyGuardTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		enemyGuardTower->staticEntityType = StaticEntityType_EnemyGuardTower;
+		enemyGuardTower->staticEntityType = EntityType_ENEMY_GUARD_TOWER;
 
 		toSpawnEntities.push_back((Entity*)enemyGuardTower);
 		return (StaticEntity*)enemyGuardTower;
 	}
 	break;
 
-	case StaticEntityType_EnemyCannonTower:
+	case EntityType_ENEMY_CANNON_TOWER:
 	{
 		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, 12, (const EnemyCannonTowerInfo&)entityInfo, listener);
-		enemyCannonTower->entityType = EntityType_StaticEntity;
+		enemyCannonTower->entityType = EntityCategory_STATIC_ENTITY;
 		enemyCannonTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		enemyCannonTower->staticEntityType = StaticEntityType_EnemyCannonTower;
+		enemyCannonTower->staticEntityType = EntityType_ENEMY_CANNON_TOWER;
 
 		toSpawnEntities.push_back((Entity*)enemyCannonTower);
 		return (StaticEntity*)enemyCannonTower;
 	}
 	break;
-
-	default:
-
-		return nullptr;
-	}
-}
-
-DynamicEntity* j1EntityFactory::AddDynamicEntity(DynamicEntityType dynamicEntityType, fPoint pos, iPoint size, uint life, float speed, const EntityInfo& entityInfo, j1Module* listener)
-{
-	switch (dynamicEntityType) {
-
-	case DynamicEntityType_Footman:
+	
+	case EntityType_FOOTMAN:
 	{
-		Footman* footman = new Footman(pos, size, life, speed, (const FootmanInfo&)entityInfo, listener);
-		footman->entityType = EntityType_DynamicEntity;
-		footman->dynamicEntityType = DynamicEntityType_Footman;
+		Footman* footman = new Footman(pos, (const FootmanInfo&)entityInfo, listener);
+		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
+		footman->dynamicEntityType = EntityType_FOOTMAN;
 
 		toSpawnEntities.push_back((Entity*)footman);
 		return (DynamicEntity*)footman;
 	}
 	break;
 
-	case DynamicEntityType_ElvenArcher:
+	case EntityType_ELVEN_ARCHER:
 	{
-		ElvenArcher* elvenArcher = new ElvenArcher(pos, size, life, speed, (const ElvenArcherInfo&)entityInfo, listener);
-		elvenArcher->entityType = EntityType_DynamicEntity;
-		elvenArcher->dynamicEntityType = DynamicEntityType_ElvenArcher;
+
+		ElvenArcher* elvenArcher = new ElvenArcher(pos, (const ElvenArcherInfo&)entityInfo, listener);
+		elvenArcher->entityType = EntityCategory_DYNAMIC_ENTITY;
+		elvenArcher->dynamicEntityType = EntityType_ELVEN_ARCHER;
 
 		toSpawnEntities.push_back((Entity*)elvenArcher);
 		return (DynamicEntity*)elvenArcher;
 	}
 	break;
 
-	case DynamicEntityType_GryphonRider:
+	case EntityType_GRYPHON_RIDER:
 	{
-		GryphonRider* gryphonRider = new GryphonRider(pos, size, life, speed, (const GryphonRiderInfo&)entityInfo, listener);
-		gryphonRider->entityType = EntityType_DynamicEntity;
-		gryphonRider->dynamicEntityType = DynamicEntityType_GryphonRider;
+		GryphonRider* gryphonRider = new GryphonRider(pos, (const GryphonRiderInfo&)entityInfo, listener);
+		gryphonRider->entityType = EntityCategory_DYNAMIC_ENTITY;
+		gryphonRider->dynamicEntityType = EntityType_GRYPHON_RIDER;
 
 		toSpawnEntities.push_back((Entity*)gryphonRider);
 		return (DynamicEntity*)gryphonRider;
 	}
 	break;
 
-	case DynamicEntityType_Mage:
+	case EntityType_MAGE:
 	{
-		Mage* mage = new Mage(pos, size, life, speed, (const MageInfo&)entityInfo, listener);
-		mage->entityType = EntityType_DynamicEntity;
-		mage->dynamicEntityType = DynamicEntityType_Mage;
+		Mage* mage = new Mage(pos, (const MageInfo&)entityInfo, listener);
+		mage->entityType = EntityCategory_DYNAMIC_ENTITY;
+		mage->dynamicEntityType = EntityType_MAGE;
 
 		toSpawnEntities.push_back((Entity*)mage);
 		return (DynamicEntity*)mage;
 	}
 	break;
 
-	case DynamicEntityType_Paladin:
+	case EntityType_PALADIN:
 	{
-		Paladin* paladin = new Paladin(pos, size, life, speed, (const PaladinInfo&)entityInfo, listener);
-		paladin->entityType = EntityType_DynamicEntity;
-		paladin->dynamicEntityType = DynamicEntityType_Paladin;
+		Paladin* paladin = new Paladin(pos, (const PaladinInfo&)entityInfo, listener);
+		paladin->entityType = EntityCategory_DYNAMIC_ENTITY;
+		paladin->dynamicEntityType = EntityType_PALADIN;
 
 		toSpawnEntities.push_back((Entity*)paladin);
 		return (DynamicEntity*)paladin;
 	}
 	break;
 
-	case DynamicEntityType_Turalyon:
+	case EntityType_TURALYON:
 	{
-		Turalyon* turalyon = new Turalyon(pos, size, life, speed, (const TuralyonInfo&)entityInfo, listener);
-		turalyon->entityType = EntityType_DynamicEntity;
-		turalyon->dynamicEntityType = DynamicEntityType_Turalyon;
+		Turalyon* turalyon = new Turalyon(pos, (const TuralyonInfo&)entityInfo, listener);
+		turalyon->entityType = EntityCategory_DYNAMIC_ENTITY;
+		turalyon->dynamicEntityType = EntityType_TURALYON;
 
 		toSpawnEntities.push_back((Entity*)turalyon);
 		return (DynamicEntity*)turalyon;
 	}
 	break;
 
-	case DynamicEntityType_Khadgar:
+	case EntityType_KHADGAR:
 	{
-		Khadgar* khadgar = new Khadgar(pos, size, life, speed, (const KhadgarInfo&)entityInfo, listener);
-		khadgar->entityType = EntityType_DynamicEntity;
-		khadgar->dynamicEntityType = DynamicEntityType_Khadgar;
+		Khadgar* khadgar = new Khadgar(pos, (const KhadgarInfo&)entityInfo, listener);
+		khadgar->entityType = EntityCategory_DYNAMIC_ENTITY;
+		khadgar->dynamicEntityType = EntityType_KHADGAR;
 
 		toSpawnEntities.push_back((Entity*)khadgar);
 		return (DynamicEntity*)khadgar;
 	}
 	break;
 
-	case DynamicEntityType_Alleria:
+	case EntityType_ALLERIA:
 	{
-		Alleria* alleria = new Alleria(pos, size, life, speed, (const AlleriaInfo&)entityInfo, listener);
-		alleria->entityType = EntityType_DynamicEntity;
-		alleria->dynamicEntityType = DynamicEntityType_Alleria;
+		Alleria* alleria = new Alleria(pos, (const AlleriaInfo&)entityInfo, listener);
+		alleria->entityType = EntityCategory_DYNAMIC_ENTITY;
+		alleria->dynamicEntityType = EntityType_ALLERIA;
 
 		toSpawnEntities.push_back((Entity*)alleria);
 		return (DynamicEntity*)alleria;
 	}
 	break;
 
-	case DynamicEntityType_Grunt:
+	case EntityType_GRUNT:
 	{
-		Grunt* grunt = new Grunt(pos, size, life, speed, (const GruntInfo&)entityInfo, listener);
-		grunt->entityType = EntityType_DynamicEntity;
-		grunt->dynamicEntityType = DynamicEntityType_Grunt;
+		Grunt* grunt = new Grunt(pos, (const GruntInfo&)entityInfo, listener);
+		grunt->entityType = EntityCategory_DYNAMIC_ENTITY;
+		grunt->dynamicEntityType = EntityType_GRUNT;
 
 		toSpawnEntities.push_back((Entity*)grunt);
 		return (DynamicEntity*)grunt;
 	}
 	break;
 
-	case DynamicEntityType_TrollAxethrower:
+	case EntityType_TROLL_AXETHROWER:
 	{
-		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, size, life, speed, (const TrollAxethrowerInfo&)entityInfo, listener);
-		trollAxethrower->entityType = EntityType_DynamicEntity;
-		trollAxethrower->dynamicEntityType = DynamicEntityType_TrollAxethrower;
+		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, (const TrollAxethrowerInfo&)entityInfo, listener);
+		trollAxethrower->entityType = EntityCategory_DYNAMIC_ENTITY;
+		trollAxethrower->dynamicEntityType = EntityType_TROLL_AXETHROWER;
 
 		toSpawnEntities.push_back((Entity*)trollAxethrower);
 		return (DynamicEntity*)trollAxethrower;
 	}
 	break;
 
-	case DynamicEntityType_Dragon:
+	case EntityType_DRAGON:
 	{
-		Dragon* dragon = new Dragon(pos, size, life, speed, (const DragonInfo&)entityInfo, listener);
-		dragon->entityType = EntityType_DynamicEntity;
-		dragon->dynamicEntityType = DynamicEntityType_Dragon;
+		Dragon* dragon = new Dragon(pos, (const DragonInfo&)entityInfo, listener);
+		dragon->entityType = EntityCategory_DYNAMIC_ENTITY;
+		dragon->dynamicEntityType = EntityType_DRAGON;
 
 		toSpawnEntities.push_back((Entity*)dragon);
 		return (DynamicEntity*)dragon;
@@ -1040,6 +1430,7 @@ DynamicEntity* j1EntityFactory::AddDynamicEntity(DynamicEntityType dynamicEntity
 
 		return nullptr;
 	}
+
 }
 
 // -------------------------------------------------------------

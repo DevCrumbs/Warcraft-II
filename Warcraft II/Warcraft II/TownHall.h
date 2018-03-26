@@ -22,6 +22,9 @@ struct TownHallInfo
 	int townHallMaxLife = 0;
 	int keepMaxLife = 0;
 	int castleMaxLife = 0;
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class TownHall :public StaticEntity
@@ -41,7 +44,7 @@ private:
 
 	TownHallInfo townHallInfo;
 
-	EntitiesEvent EntityEvent = EntitiesEvent_Created;
+	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
 
 };
 

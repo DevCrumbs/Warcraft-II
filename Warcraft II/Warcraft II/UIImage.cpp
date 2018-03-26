@@ -2,7 +2,7 @@
 #include "j1Render.h"
 #include "j1Window.h"
 
-UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), image(info)
+UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener, bool isInWorld) : UIElement(localPos, parent, listener, isInWorld), image(info)
 {
 	type = UIE_TYPE_IMAGE;
 

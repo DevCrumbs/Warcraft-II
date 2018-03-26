@@ -10,7 +10,7 @@
 #include "j1Map.h"
 #include "j1Window.h"
 
-UIElement::UIElement(iPoint localPos, UIElement* parent, j1Module* listener) : localPos(localPos), parent(parent), listener(listener)
+UIElement::UIElement(iPoint localPos, UIElement* parent, j1Module* listener, bool isInWorld) : localPos(localPos), parent(parent), listener(listener), isInWorld(isInWorld)
 {
 	uint width = 0, height = 0, scale = 0;
 
@@ -57,7 +57,12 @@ void UIElement::Draw() const
 	}
 
 	if (texArea.w != 0)
-		App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);
+	{
+		if (!isInWorld)
+			App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);
+		else
+			App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &texArea);
+	}
 
 	if (App->gui->isDebug)
 		DebugDraw(blitPos);
@@ -141,9 +146,13 @@ iPoint UIElement::GetScreenPos() const
 		screen_pos.x = parent->GetScreenPos().x + localPos.x;
 		screen_pos.y = parent->GetScreenPos().y + localPos.y;
 	}
-	else {
+	else if (!isInWorld){
 		screen_pos.x = localPos.x;
 		screen_pos.y = localPos.y;
+	}
+	else {
+		screen_pos.x = localPos.x + App->render->camera.x;
+		screen_pos.y = localPos.y + App->render->camera.y;
 	}
 
 	return screen_pos;

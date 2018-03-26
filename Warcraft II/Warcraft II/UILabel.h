@@ -35,7 +35,7 @@ struct UILabel_Info {
 class UILabel : public UIElement
 {
 public:
-	UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener = nullptr);
+	UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener = nullptr, bool isInWorld = false);
 	~UILabel();
 	void Update(float dt);
 	void HandleInput();

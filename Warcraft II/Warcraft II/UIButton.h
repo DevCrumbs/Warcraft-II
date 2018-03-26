@@ -14,7 +14,6 @@ struct UIButton_Info {
 	SDL_Rect hoverTexArea = { 0, 0, 0, 0 };
 	SDL_Rect pressedTexArea = { 0, 0, 0, 0 };
 
-	bool isFixedInScreen = true;
 	bool checkbox = false;
 	bool isChecked = false;
 	UIE_HORIZONTAL_POS horizontalOrientation = HORIZONTAL_POS_LEFT;
@@ -29,7 +28,7 @@ struct UIButton_Info {
 class UIButton : public UIElement
 {
 public:
-	UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener = nullptr);
+	UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener = nullptr, bool isInWolrd = false);
 	void Update(float dt);
 	void HandleInput();
 	void DebugDraw(iPoint blitPos) const;
@@ -40,7 +39,7 @@ public:
 	SDL_Rect GetNormalSprite() const;
 	UI_EVENT GetActualEvent() const;
 
-	void Draw() const;
+	//void Draw() const;
 
 	bool SlideTransition(float dt, int endPosY, float speed = 10.0f, bool bounce = true, float bounceInterval = 1.0f, float bounceSpeed = 2.0f, bool down = true);
 	bool Bounce(float dt, float bounceInterval = 1.0f, float bounceSpeed = 2.0f, bool down = true);
@@ -58,6 +57,7 @@ public:
 	bool startBouncing = false;
 
 private:
+	bool isInWorld = false;
 	UIButton_Info button;
 	UI_EVENT UIevent = UI_EVENT_NONE;
 

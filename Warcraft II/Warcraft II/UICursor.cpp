@@ -3,7 +3,7 @@
 #include "j1Render.h"
 #include "j1Window.h"
 
-UICursor::UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), cursor(info)
+UICursor::UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Module* listener, bool isInWorld) : UIElement(localPos, parent, listener, isInWorld), cursor(info)
 {
 	type = UIE_TYPE::UIE_TYPE_CURSOR;
 
