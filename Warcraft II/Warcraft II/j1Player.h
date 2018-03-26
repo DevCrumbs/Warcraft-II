@@ -88,7 +88,11 @@ public:
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
 	void CreateBarracksButtons();
+	void CreateGryphonAviaryButtons();
+	void CreateMageTowerButtons();
 	void DestroyBarracksButtons();
+	void DestroyGryphonAviaryButtons();
+	void DestroyMageTowerButtons();
 
 	void DeleteStaticEntity(StaticEntity* &staticEntity);
 
@@ -114,6 +118,9 @@ private:
 	HoverCheck hoverCheck = HoverCheck_None;
 	uint totalEnemiesKilled = 0;
 	uint totalUnitsDead = 0;
+	bool deleteBarracksButtons = false;
+	bool deleteMageButtons = false;
+	bool deleteGryphonAviaryButtons = false;
 
 	// Buildings
 	uint nTownHall = 1;
@@ -137,7 +144,7 @@ private:
 
 	EntitySelectedStats entitySelectedStats;
 
-	UIButton *produceFootmanButton, *produceElvenArcherButton;
+	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton;
 	
 	list<UIElement*> UIMenuInfoList;
 

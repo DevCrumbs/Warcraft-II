@@ -415,6 +415,13 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	if (entityName_text == "Barracks") {
 		CreateBarracksButtons();
 	}
+	if (entityName_text == "Gryphon Aviary") {
+		CreateGryphonAviaryButtons();
+	}
+	if (entityName_text == "Mage Tower") {
+		CreateMageTowerButtons();
+	}
+
 
 	entitySelectedStats.entitySelected = currentEntity;
 }
@@ -427,8 +434,19 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement(entitySelectedStats.entityIcon);
 		App->gui->DestroyElement(entitySelectedStats.lifeBar);
 		entitySelectedStats.entitySelected = nullptr;
-		if(entitySelectedStats.entitySelected == barracks)
+		if (deleteBarracksButtons) {
 			DestroyBarracksButtons();
+			deleteBarracksButtons = false;
+		}
+		if (deleteMageButtons) {
+			DestroyMageTowerButtons();
+			deleteMageButtons = false;
+		}
+		if (deleteGryphonAviaryButtons) {
+			DestroyGryphonAviaryButtons();
+			deleteGryphonAviaryButtons = false;
+		}
+	
 	}
 }
 
@@ -476,12 +494,45 @@ void j1Player::CreateBarracksButtons()
 	produceElvenArcherButtonInfo.hoverTexArea = { 547,244,50,41 };
 	produceElvenArcherButtonInfo.pressedTexArea = { 802,244,50,41 };
 	produceElvenArcherButton = App->gui->CreateUIButton({ 269, 2 }, produceElvenArcherButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+
+	deleteBarracksButtons = true;
+}
+
+void j1Player::CreateGryphonAviaryButtons()
+{
+	UIButton_Info produceGryphonRiderButtonInfo;
+	produceGryphonRiderButtonInfo.normalTexArea = { 648,286,50,41 };
+	produceGryphonRiderButtonInfo.hoverTexArea = { 699,286,50,41 };
+	produceGryphonRiderButtonInfo.pressedTexArea = { 750,286,50,41 };
+	produceGryphonRiderButton = App->gui->CreateUIButton({ 217, 2 }, produceGryphonRiderButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+	deleteGryphonAviaryButtons = true;
+}
+
+void j1Player::CreateMageTowerButtons()
+{
+	UIButton_Info produceMageButtonInfo;
+	produceMageButtonInfo.normalTexArea = { 342,244,50,41 };
+	produceMageButtonInfo.hoverTexArea = { 597,244,50,41 };
+	produceMageButtonInfo.pressedTexArea = { 852,244,50,41 };
+	produceMageButton = App->gui->CreateUIButton({ 217, 2 }, produceMageButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+
+	deleteMageButtons = true;
 }
 
 void j1Player::DestroyBarracksButtons()
 {
 	App->gui->DestroyElement(produceFootmanButton);
 	App->gui->DestroyElement(produceElvenArcherButton);
+}
+
+void j1Player::DestroyGryphonAviaryButtons()
+{
+	App->gui->DestroyElement(produceGryphonRiderButton);
+}
+
+void j1Player::DestroyMageTowerButtons()
+{
+	App->gui->DestroyElement(produceMageButton);
 }
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -514,6 +565,9 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		}
 		if (UIelem == produceElvenArcherButton) {
 			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { 100, 100 }, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), this);
+		}
+		if (UIelem == produceMageButton) {
+			App->entities->AddEntity(EntityType_MAGE, { 100, 100 }, App->entities->GetUnitInfo(EntityType_MAGE), this);
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
