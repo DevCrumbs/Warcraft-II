@@ -19,6 +19,7 @@
 #include "j1EntityFactory.h"
 #include "Entity.h"
 #include "StaticEntity.h"
+#include "j1Player.h"
 
 
 j1Map::j1Map() : j1Module(), isMapLoaded(false)
@@ -1209,8 +1210,22 @@ bool j1Map::LoadLogic()
 						pos.x = auxPos.x + (*iterator).x;
 						pos.y = auxPos.y + (*iterator).y;
 						
-						
-						App->entities->AddEntity((ENTITY_TYPE)((*layerIterator)->data[i]), pos, App->entities->GetBuildingInfo((ENTITY_TYPE)((*layerIterator)->data[i])), (j1Module*)App->player);
+						ENTITY_TYPE entityType = (ENTITY_TYPE)((*layerIterator)->data[i]);
+						switch (entityType)
+						{
+						case EntityType_TOWN_HALL:
+							App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), (j1Module*)App->player);
+							break;
+						case EntityType_CHICKEN_FARM:
+							App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), (j1Module*)App->player));
+							break;
+						case EntityType_BARRACKS:
+							App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), (j1Module*)App->player);
+							break;
+						default:
+							App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType));
+							break;
+						}
 						
 						
 						//App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetBuildingInfo(EntityType_FOOTMAN));

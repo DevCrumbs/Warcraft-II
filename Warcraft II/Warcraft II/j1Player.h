@@ -29,7 +29,11 @@ class StaticEntity;
 struct HoverButton
 {
 	UIButton* hoverButton = nullptr;
-	StaticEntity* Entity_Hover = nullptr;
+	StaticEntity* currentEntity = nullptr;
+	StaticEntity* nextEntity = nullptr;
+	StaticEntity* prevEntity = nullptr;
+
+	bool isCreated = false;
 
 };
 
@@ -59,6 +63,7 @@ public:
 	bool Start();
 
 	bool Update(float dt);
+	bool PostUpdate();
 
 	void CheckIfPlaceBuilding();
 	iPoint GetMouseTilePos();
@@ -81,13 +86,25 @@ public:
 	void DeleteEntitiesMenu();
 	//void CheckBuildingState(Entity* ent);
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
-	void DestroyHoverButton();
+	void DestroyHoverButton(Entity* ent);
 	void CreateBarracksButtons();
 	void DestroyBarracksButtons();
 
 	void DeleteStaticEntity(StaticEntity* &staticEntity);
 
+public:
 
+	list<StaticEntity*> chickenFarm;
+	list<StaticEntity*> scoutTower;
+	StaticEntity* barracks = nullptr;
+	StaticEntity* townHall = nullptr;
+	StaticEntity* blacksmith = nullptr;
+	StaticEntity* stables = nullptr;
+	StaticEntity* church = nullptr;
+	StaticEntity* mageTower = nullptr;
+	StaticEntity* cannonTower = nullptr;
+	StaticEntity* guardTower = nullptr;
+	StaticEntity* gryphonAviary = nullptr;
 	
 private:
 
@@ -121,20 +138,7 @@ private:
 	EntitySelectedStats entitySelectedStats;
 
 	UIButton *produceFootmanButton, *produceElvenArcherButton;
-
-	list<StaticEntity*> chickenFarm;
-	list<StaticEntity*> scoutTower;
-	StaticEntity* barracks = nullptr;
-	StaticEntity* townHall = nullptr;
-	StaticEntity* blacksmith = nullptr;
-	StaticEntity* stables = nullptr;
-	StaticEntity* church = nullptr;
-	StaticEntity* mageTower = nullptr;
-	StaticEntity* cannonTower = nullptr;
-	StaticEntity* guardTower = nullptr;
-	StaticEntity* gryphonAviary = nullptr;
-
-
+	
 	list<UIElement*> UIMenuInfoList;
 
 };
