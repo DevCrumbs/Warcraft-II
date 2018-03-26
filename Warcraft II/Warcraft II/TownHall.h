@@ -44,7 +44,7 @@ private:
 
 	TownHallInfo townHallInfo;
 
-	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
+	EntitiesEvent EntityEvent = EntitiesEvent_NONE;
 
 };
 

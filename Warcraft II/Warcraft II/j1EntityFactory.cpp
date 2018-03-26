@@ -1134,6 +1134,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		townHall->entityType = EntityCategory_STATIC_ENTITY;
 		townHall->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		townHall->staticEntityType = EntityType_TOWN_HALL;
+		townHall->SetStringLife(townHall->GetCurrLife(), townHall->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)townHall);
 		return (StaticEntity*)townHall;
@@ -1146,7 +1147,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		chickenFarm->entityType = EntityCategory_STATIC_ENTITY;
 		chickenFarm->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		chickenFarm->staticEntityType = EntityType_CHICKEN_FARM;
-
+		chickenFarm->SetStringLife(chickenFarm->GetCurrLife(), chickenFarm->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)chickenFarm);
 		return (StaticEntity*)chickenFarm;
@@ -1158,9 +1159,9 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 		Barracks* barracks = new Barracks(pos, { 96,96 }, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
 		barracks->entityType = EntityCategory_STATIC_ENTITY;
-
 		barracks->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		barracks->staticEntityType = EntityType_BARRACKS;
+		barracks->SetStringLife(barracks->GetCurrLife(), barracks->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)barracks);
 		return (StaticEntity*)barracks;
@@ -1172,9 +1173,9 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 96,96 }, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
 		elvenLumberMill->entityType = EntityCategory_STATIC_ENTITY;
-
 		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		elvenLumberMill->staticEntityType = EntityType_BARRACKS;
+		elvenLumberMill->SetStringLife(elvenLumberMill->GetCurrLife(), elvenLumberMill->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)elvenLumberMill);
 		return (StaticEntity*)elvenLumberMill;
@@ -1186,9 +1187,9 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 		MageTower* mageTower = new MageTower(pos, { 96,96 }, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
 		mageTower->entityType = EntityCategory_STATIC_ENTITY;
-
 		mageTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		mageTower->staticEntityType = EntityType_MAGE_TOWER;
+		mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)mageTower);
 		return (StaticEntity*)mageTower;
@@ -1200,9 +1201,9 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 96,96 }, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
 		gryphonAviary->entityType = EntityCategory_STATIC_ENTITY;
-
 		gryphonAviary->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		gryphonAviary->staticEntityType = EntityType_GRYPHON_AVIARY;
+		gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)gryphonAviary);
 		return (StaticEntity*)gryphonAviary;
@@ -1214,9 +1215,9 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 		Stables* stables = new Stables(pos, { 96,96 }, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
 		stables->entityType = EntityCategory_STATIC_ENTITY;
-
 		stables->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		stables->staticEntityType = EntityType_STABLES;
+		stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)stables);
 		return (StaticEntity*)stables;
@@ -1229,6 +1230,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		scoutTower->entityType = EntityCategory_STATIC_ENTITY;
 		scoutTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		scoutTower->staticEntityType = EntityType_SCOUT_TOWER;
+		scoutTower->SetStringLife(scoutTower->GetCurrLife(), scoutTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)scoutTower);
 		return (StaticEntity*)scoutTower;
@@ -1241,6 +1243,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		playerGuardTower->entityType = EntityCategory_STATIC_ENTITY;
 		playerGuardTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		playerGuardTower->staticEntityType = EntityType_PLAYER_GUARD_TOWER;
+		playerGuardTower->SetStringLife(playerGuardTower->GetCurrLife(), playerGuardTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)playerGuardTower);
 		return (StaticEntity*)playerGuardTower;
@@ -1253,6 +1256,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		playerCannonTower->entityType = EntityCategory_STATIC_ENTITY;
 		playerCannonTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		playerCannonTower->staticEntityType = EntityType_PLAYER_CANNON_TOWER;
+		playerCannonTower->SetStringLife(playerCannonTower->GetCurrLife(), playerCannonTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)playerCannonTower);
 		return (StaticEntity*)playerCannonTower;
@@ -1324,6 +1328,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		Footman* footman = new Footman(pos, (const FootmanInfo&)entityInfo, listener);
 		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
 		footman->dynamicEntityType = EntityType_FOOTMAN;
+		footman->SetStringLife(footman->GetCurrLife(), footman->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)footman);
 		return (DynamicEntity*)footman;
@@ -1336,6 +1341,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		ElvenArcher* elvenArcher = new ElvenArcher(pos, (const ElvenArcherInfo&)entityInfo, listener);
 		elvenArcher->entityType = EntityCategory_DYNAMIC_ENTITY;
 		elvenArcher->dynamicEntityType = EntityType_ELVEN_ARCHER;
+		elvenArcher->SetStringLife(elvenArcher->GetCurrLife(), elvenArcher->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)elvenArcher);
 		return (DynamicEntity*)elvenArcher;
@@ -1347,6 +1353,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		GryphonRider* gryphonRider = new GryphonRider(pos, (const GryphonRiderInfo&)entityInfo, listener);
 		gryphonRider->entityType = EntityCategory_DYNAMIC_ENTITY;
 		gryphonRider->dynamicEntityType = EntityType_GRYPHON_RIDER;
+		gryphonRider->SetStringLife(gryphonRider->GetCurrLife(), gryphonRider->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)gryphonRider);
 		return (DynamicEntity*)gryphonRider;
@@ -1358,6 +1365,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		Mage* mage = new Mage(pos, (const MageInfo&)entityInfo, listener);
 		mage->entityType = EntityCategory_DYNAMIC_ENTITY;
 		mage->dynamicEntityType = EntityType_MAGE;
+		mage->SetStringLife(mage->GetCurrLife(), mage->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)mage);
 		return (DynamicEntity*)mage;
@@ -1369,6 +1377,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		Paladin* paladin = new Paladin(pos, (const PaladinInfo&)entityInfo, listener);
 		paladin->entityType = EntityCategory_DYNAMIC_ENTITY;
 		paladin->dynamicEntityType = EntityType_PALADIN;
+		paladin->SetStringLife(paladin->GetCurrLife(), paladin->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)paladin);
 		return (DynamicEntity*)paladin;
@@ -1380,6 +1389,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		Turalyon* turalyon = new Turalyon(pos, (const TuralyonInfo&)entityInfo, listener);
 		turalyon->entityType = EntityCategory_DYNAMIC_ENTITY;
 		turalyon->dynamicEntityType = EntityType_TURALYON;
+		turalyon->SetStringLife(turalyon->GetCurrLife(), turalyon->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)turalyon);
 		return (DynamicEntity*)turalyon;
@@ -1391,6 +1401,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		Khadgar* khadgar = new Khadgar(pos, (const KhadgarInfo&)entityInfo, listener);
 		khadgar->entityType = EntityCategory_DYNAMIC_ENTITY;
 		khadgar->dynamicEntityType = EntityType_KHADGAR;
+		khadgar->SetStringLife(khadgar->GetCurrLife(), khadgar->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)khadgar);
 		return (DynamicEntity*)khadgar;
@@ -1402,6 +1413,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		Alleria* alleria = new Alleria(pos, (const AlleriaInfo&)entityInfo, listener);
 		alleria->entityType = EntityCategory_DYNAMIC_ENTITY;
 		alleria->dynamicEntityType = EntityType_ALLERIA;
+		alleria->SetStringLife(alleria->GetCurrLife(), alleria->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)alleria);
 		return (DynamicEntity*)alleria;
