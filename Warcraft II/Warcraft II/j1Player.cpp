@@ -176,7 +176,6 @@ void j1Player::CheckIfPlaceBuilding()
 				StaticEntity* c;
 				c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				c->SetStringLife(c->GetCurrLife(), c->GetMaxLife());
 				chickenFarm.push_back(c);
 			}
 			break;
@@ -185,7 +184,6 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
 				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
 			}
 			break;
 
@@ -193,7 +191,6 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
 				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
 			}
 			break;
 
@@ -201,7 +198,6 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
 				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
 			}
 			break;
 
@@ -210,7 +206,6 @@ void j1Player::CheckIfPlaceBuilding()
 				StaticEntity* s;
 				s = (StaticEntity*)App->entities->AddEntity(EntityType_SCOUT_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_SCOUT_TOWER), this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				s->SetStringLife(s->GetCurrLife(), s->GetMaxLife());
 				scoutTower.push_back(s);
 			}
 			break;
@@ -395,7 +390,7 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	lifeInfo.maxWidth = lifeInfo.bar.w;
 	lifeInfo.lifeBarPosition = { 12, 10 };
 
-	entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 60, 50}, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50}, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 	if (entityName_text == "Barracks") {
 		CreateBarracksButtons();
