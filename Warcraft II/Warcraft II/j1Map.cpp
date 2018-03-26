@@ -44,6 +44,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 	///
 	defaultRoomSize = 50;
 	playerBaseSize = 40;
+	defaultLittleRoomSize = 30;
 	defaultTileSize = 32;
 	defaultHallSize = 20;
 	mapTypesNo = config.child("general").child("mapTypesNo").attribute("number").as_int();
@@ -848,7 +849,7 @@ bool j1Map::CreateNewMap()
 	{
 		static char typePath[50];
 		///sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
-		sprintf_s(typePath, 50, "data/maps/mapTypes/test.tmx", mapType);
+		sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure%i.tmx", mapType);
 		mapInfoDocument.loadFile(typePath);
 
 		pugi::xml_node mapInfo = mapInfoDocument;
@@ -951,14 +952,16 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 
 		if (data[i] > 0)
 		{
-			if (i < sizeData - 1)
-				if (data[i + 1] > 0)
-					newRoom.doors.push_back(DIRECTION_EAST);
+			if (data[i] != 3 && data[i] != 4 && data[i] != 5 && data[i] != 6)
+			{
+				if (i < sizeData - 1)
+					if (data[i + 1] > 0)
+						newRoom.doors.push_back(DIRECTION_EAST);
 
-			if (i + width < sizeData)
-				if (data[i + width] > 0)
-					newRoom.doors.push_back(DIRECTION_SOUTH);
-
+				if (i + width < sizeData)
+					if (data[i + width] > 0)
+						newRoom.doors.push_back(DIRECTION_SOUTH);
+			}
 			int x = i % width;
 			int y = i / width;
 			iPoint pos = MapToWorld(x, y);
@@ -985,18 +988,37 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 				// Little room N
 			case 3:
 				newRoom.type = -3;
+
+				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize) + (defaultRoomSize - defaultLittleRoomSize)) * defaultTileSize;
+
+				newRoom.doors.push_back(DIRECTION_SOUTH);
+
 				break;
 				// Little room E
 			case 4:
 				newRoom.type = -3;
+
+				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize)) * defaultTileSize;
+				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+
 				break;
 				// Little room S	
 			case 5:
 				newRoom.type = -3;
+
+				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
+
 				break;
 				// Little room W
 			case 6:
 				newRoom.type = -3;
+
+				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize) + (defaultRoomSize - defaultLittleRoomSize)) * defaultTileSize;
+				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+
+				newRoom.doors.push_back(DIRECTION_EAST);
 				break;
 
 			default:
@@ -1029,6 +1051,10 @@ bool j1Map::SelectRooms()
 			(*roomIterator).pullRoomNo = room;
 		}
 		else if ((*roomIterator).type == -1 || (*roomIterator).type == -2)
+		{
+			(*roomIterator).pullRoomNo = (*roomIterator).type;
+		}
+		else if ((*roomIterator).type == -3)
 		{
 			(*roomIterator).pullRoomNo = (*roomIterator).type;
 		}
@@ -1065,6 +1091,10 @@ bool j1Map::LoadRooms()
 		{
 			ret = Load("data/maps/rooms/boss/boss.tmx", (*roomIterator).x, (*roomIterator).y);
 		}
+		else if ((*roomIterator).type == -3)
+		{
+			ret = Load("data/maps/rooms/littleroom/littleRoom0.tmx", (*roomIterator).x, (*roomIterator).y);
+		}
 		if (!ret)
 			break;
 
@@ -1083,14 +1113,14 @@ bool j1Map::LoadCorridors()
 	while (roomIterator != roomsInfo.end() && mapIterator != playableMap.rooms.end())
 	{
 		list<DIRECTION>::iterator doorIterator = (*roomIterator).doors.begin();
-		
+
 		while (doorIterator != (*roomIterator).doors.end())
 		{
 			CreateCorridor((*mapIterator), (*doorIterator));
+
 			doorIterator++;
+
 		}
-
-
 		roomIterator++;
 		mapIterator++;
 	}
@@ -1100,6 +1130,8 @@ bool j1Map::LoadCorridors()
 bool j1Map::CreateCorridor(Room room, DIRECTION direction)
 {
 	bool ret = true;
+
+
 	int roomX = room.x;
 	int roomY = room.y;
 	int tileNoX = room.width;
@@ -1139,6 +1171,7 @@ bool j1Map::CreateCorridor(Room room, DIRECTION direction)
 	default:
 		break;
 	}
+
 	return true;
 }
 
