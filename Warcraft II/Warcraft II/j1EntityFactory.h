@@ -71,7 +71,8 @@ public:
 	SDL_Texture* GetHumanBuildingTexture();
 	SDL_Texture* GetNeutralBuildingTexture();
 
-	bool isEntityOnTile(iPoint tile, StaticEntitySize buildingSize) const;
+	bool isPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const;
+	bool isEntityOnTile(iPoint tile) const;
 
 	StaticEntity* AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener = nullptr);
 	DynamicEntity* AddDynamicEntity(DynamicEntityType dynamicEntityType, fPoint pos, iPoint size, uint life, float speed, const EntityInfo& entityInfo, j1Module* listener = nullptr);
