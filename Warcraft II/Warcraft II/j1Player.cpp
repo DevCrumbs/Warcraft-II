@@ -171,8 +171,6 @@ void j1Player::CheckIfPlaceBuilding()
 
 		switch (alphaBuilding) 
 		{
-
-
 		case EntityType_CHICKEN_FARM:
 			StaticEntity* c;
 			c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), this);
@@ -205,7 +203,6 @@ void j1Player::CheckIfPlaceBuilding()
 			App->scene->SetAplphaBuilding(EntityType_NONE);
 			s->SetStringLife(s->GetCurrLife(), s->GetMaxLife());
 			scoutTower.push_back(s);
-
 			break;
 
 		case EntityCategory_NONE:

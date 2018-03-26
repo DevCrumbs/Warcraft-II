@@ -76,7 +76,8 @@ public:
 	SDL_Texture* GetHumanBuildingTexture();
 	SDL_Texture* GetNeutralBuildingTexture();
 
-	bool isEntityOnTile(iPoint tile, StaticEntitySize buildingSize) const;
+	bool isPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const;
+	bool isEntityOnTile(iPoint tile) const;
 
 	Entity* AddEntity(ENTITY_TYPE staticEntityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener = nullptr);
 
