@@ -63,6 +63,8 @@ public:
 	void SaveGame() const;
 	void GetSaveGames(list<string>& list_to_fill) const;
 
+	uint32 GetSecondsSinceAppStartUp();
+
 private:
 
 	// Load config file

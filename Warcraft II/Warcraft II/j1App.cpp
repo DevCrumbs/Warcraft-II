@@ -245,7 +245,6 @@ void j1App::FinishUpdate()
 	else
 		capOnOff = "off";
 
-
 	string vSyncOnOff;
 	if (App->render->vsync)
 		vSyncOnOff = "on";
@@ -357,6 +356,12 @@ bool j1App::CleanUp()
 	}
 
 	return ret;
+}
+
+
+// ---------------------------------------
+uint32 j1App::GetSecondsSinceAppStartUp() {
+	return clock.Read();
 }
 
 // ---------------------------------------
