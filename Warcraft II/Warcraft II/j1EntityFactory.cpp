@@ -561,6 +561,7 @@ void j1EntityFactory::Draw()
 		statEnt++;
 	}
 
+	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
 	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
 }
 
@@ -599,8 +600,6 @@ void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoi
 	case EntityType_PLAYER_CANNON_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
 		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
-		break;
-	case EntityCategory_NONE:
 		break;
 	default:
 		break;
@@ -845,7 +844,7 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile) const
 
 		iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPosition().x, (*activeStatic)->GetPosition().y);
 
-		if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
+		if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) { //Small
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 2; j++) {
 					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -853,7 +852,7 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile) const
 				}
 			}
 		}
-		else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
+		else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) { //Medium
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3; j++) {
 					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -862,7 +861,7 @@ bool j1EntityFactory::isEntityOnTile(iPoint tile) const
 			}
 
 		}
-		else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+		else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) { //Big
 
 			for (int i = 0; i < 4; i++) {
 				for (int j = 0; j < 4; j++) {

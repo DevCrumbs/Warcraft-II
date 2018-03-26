@@ -8,6 +8,10 @@
 #include "j1Particles.h"
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int maxLife, j1Module* listener) :Entity(pos, size, maxLife, listener) {
+	
+	if (App->GetSecondsSinceAppStartUp() < 700) //Checks for static entities built since startup
+		isBuilt = true;
+	
 	constructionTime = 10;
 }
 
