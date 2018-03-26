@@ -10,13 +10,17 @@ struct GruntInfo
 	Animation attackUp, attackDown, attackLeft, attackRight;
 	Animation attackUpLeft, attackUpRight, attackDownLeft, attackDownRight;
 	Animation deathUp, deathDown;
+
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class Grunt :public DynamicEntity
 {
 public:
 
-	Grunt(fPoint pos, iPoint size, int maxLife, float speed, const GruntInfo& gruntInfo, j1Module* listener);
+	Grunt(fPoint pos, const GruntInfo& gruntInfo, j1Module* listener);
 	~Grunt() {};
 
 	void Move(float dt);

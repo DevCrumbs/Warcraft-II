@@ -1,6 +1,8 @@
 #ifndef __j1ENTITY_FACTORY_H__
 #define __j1ENTITY_FACTORY_H__
 
+#include <algorithm>
+
 #include "j1Module.h"
 #include "p2Point.h"
 
@@ -34,7 +36,7 @@
 #include "TownHall.h"
 #include "ElvenLumberMill.h"
 
-#include <algorithm>
+
 using namespace std;
 
 #define MAX_ENTITIES_SELECTED 8
@@ -46,8 +48,8 @@ class Entity;
 class StaticEntity;
 class DynamicEntity;
 struct EntityInfo;
-enum StaticEntityType;
-enum DynamicEntityType;
+enum ENTITY_TYPE;
+enum ENTITY_TYPE;
 
 class j1EntityFactory : public j1Module
 {
@@ -63,19 +65,21 @@ public:
 	bool CleanUp();
 
 	void Draw();
-	void DrawStaticEntityPreview(StaticEntityType staticEntityType, iPoint mousePos);
-	void HandleStaticEntityPreviewTiles(StaticEntityType staticEntityType, iPoint mousePos);
+
+	void DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos);
 	void DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntitySize buildingSize, iPoint mousePos);
 
-	const EntityInfo& GetBuildingInfo(StaticEntityType staticEntityType);
+	void HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityType, iPoint mousePos);
+	
+	const EntityInfo& GetBuildingInfo(ENTITY_TYPE staticEntityType);
+
 	SDL_Texture* GetHumanBuildingTexture();
 	SDL_Texture* GetNeutralBuildingTexture();
 
 	bool isPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const;
 	bool isEntityOnTile(iPoint tile) const;
 
-	StaticEntity* AddStaticEntity(StaticEntityType staticEntityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener = nullptr);
-	DynamicEntity* AddDynamicEntity(DynamicEntityType dynamicEntityType, fPoint pos, iPoint size, uint life, float speed, const EntityInfo& entityInfo, j1Module* listener = nullptr);
+	Entity* AddEntity(ENTITY_TYPE staticEntityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener = nullptr);
 
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);

@@ -1,8 +1,8 @@
 #include "Paladin.h"
 
-Paladin::Paladin(fPoint pos, iPoint size, int maxLife, float speed, const PaladinInfo& paladinInfo, j1Module* listener) :DynamicEntity(pos, size, maxLife, speed, listener), paladinInfo(paladinInfo)
+Paladin::Paladin(fPoint pos, const PaladinInfo& paladinInfo, j1Module* listener) :DynamicEntity(pos, paladinInfo.size, paladinInfo.life, paladinInfo.speed, listener), paladinInfo(paladinInfo)
 {
-	currentLife = maxLife;
+	currentLife = paladinInfo.life;
 
 }
 

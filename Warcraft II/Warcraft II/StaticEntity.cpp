@@ -24,54 +24,54 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 
 	switch (EntityEvent) {
 
-	case EntitiesEvent_None:
+	case EntitiesEvent_NONE:
 		if (MouseHover()) {
-			EntityEvent = EntitiesEvent_Hover;
+			EntityEvent = EntitiesEvent_HOVER;
 			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
 			break;
 		}
 		break;
-	case EntitiesEvent_Hover:
+	case EntitiesEvent_HOVER:
 
 		if (!MouseHover()) {
 
-			EntityEvent = EntitiesEvent_Leave;
+			EntityEvent = EntitiesEvent_LEAVE;
 			break;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED && !(StaticEntity*)this->isBuilt) {
-			EntityEvent = EntitiesEvent_Created;
+			EntityEvent = EntitiesEvent_CREATED;
 			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
-			EntityEvent = EntitiesEvent_Hover;
+			EntityEvent = EntitiesEvent_HOVER;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
 
-			EntityEvent = EntitiesEvent_LeftClick;
+			EntityEvent = EntitiesEvent_LEFT_CLICK;
 			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
-			EntityEvent = EntitiesEvent_Hover;
+			EntityEvent = EntitiesEvent_HOVER;
 			break;
 
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
 
-			EntityEvent = EntitiesEvent_RightClick;
+			EntityEvent = EntitiesEvent_RIGHT_CLICK;
 			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
-			EntityEvent = EntitiesEvent_Hover;
+			EntityEvent = EntitiesEvent_HOVER;
 			break;
 
 		}
 		break;
-	case EntitiesEvent_Created:
+	case EntitiesEvent_CREATED:
 
 		if (MouseHover()) {
-			EntityEvent = EntitiesEvent_Hover;
+			EntityEvent = EntitiesEvent_HOVER;
 			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
 			break;
 		}
 		break;
 
-	case EntitiesEvent_Leave:
+	case EntitiesEvent_LEAVE:
 		listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
-		EntityEvent = EntitiesEvent_None;
+		EntityEvent = EntitiesEvent_NONE;
 
 		break;
 	}
