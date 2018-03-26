@@ -362,7 +362,7 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 	labelInfo.text = HP_text;
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
 	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
 	if (HP_text != "NO_HP_TEXT")
 		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
