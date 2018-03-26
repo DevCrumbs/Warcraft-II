@@ -396,7 +396,10 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 
 	entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 60, 50}, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-	entitySelectedStats.entitySelected = currentEntity;
+	if (entityName_text == "Barracks") {
+		CreateBarracksButtons();
+	}
+
 }
 
 void j1Player::DeleteEntitiesMenu() {
@@ -409,6 +412,7 @@ void j1Player::DeleteEntitiesMenu() {
 		entitySelectedStats.entitySelected = nullptr;
 	}
 }
+
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
 
 	UIButton_Info InfoButton;
@@ -440,6 +444,27 @@ void j1Player::DestroyHoverButton() {
 	}
 }
 
+void j1Player::CreateBarracksButtons()
+{
+	UIButton_Info produceFootmanButtonInfo;
+	produceFootmanButtonInfo.normalTexArea = { 241,244,50,41 };
+	produceFootmanButtonInfo.hoverTexArea = { 496,244,50,41 };
+	produceFootmanButtonInfo.pressedTexArea = { 751,244,50,41 };
+	produceFootmanButton = App->gui->CreateUIButton({ 217, 2 }, produceFootmanButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+
+	UIButton_Info produceElvenArcherButtonInfo;
+	produceElvenArcherButtonInfo.normalTexArea = { 292,244,50,41 };
+	produceElvenArcherButtonInfo.hoverTexArea = { 547,244,50,41 };
+	produceElvenArcherButtonInfo.pressedTexArea = { 802,244,50,41 };
+	produceElvenArcherButton = App->gui->CreateUIButton({ 269, 2 }, produceElvenArcherButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+}
+
+void j1Player::DestroyBarracksButtons()
+{
+	App->gui->DestroyElement(produceFootmanButton);
+	App->gui->DestroyElement(produceElvenArcherButton);
+}
+
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 	switch (UIevent)
@@ -464,6 +489,12 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		{
 			//Use hoverButtonStruct
 			//TODO JOAN
+		}
+		if (UIelem = produceFootmanButton) {			
+			App->entities->AddEntity(ENTITY_TYPE::EntityType_FOOTMAN, { 100, 100 }, App->entities->GetUnitInfo(EntityType_FOOTMAN), this);
+		}
+		if (UIelem = produceElvenArcherButton) {
+			App->entities->AddEntity(ENTITY_TYPE::EntityType_ELVEN_ARCHER, { 100, 100 }, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), this);
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:

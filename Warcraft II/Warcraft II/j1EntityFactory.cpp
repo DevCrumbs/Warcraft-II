@@ -798,6 +798,18 @@ const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
 	//return ret;
 }
 
+const EntityInfo & j1EntityFactory::GetUnitInfo(ENTITY_TYPE dynamicEntityType)
+{
+	switch (dynamicEntityType) {
+	case EntityType_CHICKEN_FARM:
+		return (const EntityInfo&)footmanInfo;
+		break;
+	default:
+		return (const EntityInfo&)footmanInfo;
+		break;
+	}
+}
+
 SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
 
 	return humanBuildingsTex;
