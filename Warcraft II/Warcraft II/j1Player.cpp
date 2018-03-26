@@ -227,7 +227,7 @@ void j1Player::CheckIfPlaceBuilding()
 			}
 			break;
 
-		case EntityCategory_NONE:
+		case EntityType_NONE:
 			break;
 
 		default:
