@@ -389,8 +389,9 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	lifeInfo.bar = { 300,373,128,8 };
 	lifeInfo.maxLife = currentEntity->GetMaxLife();
 	lifeInfo.life = ((StaticEntity*)currentEntity)->GetConstructionTimer() * currentEntity->GetMaxLife() / 10;
-	if (lifeInfo.life > currentEntity->GetMaxLife())
+	if (lifeInfo.life > currentEntity->GetMaxLife() || ((StaticEntity*)currentEntity)->staticEntityType == EntityType_TOWN_HALL || ((StaticEntity*)currentEntity)->staticEntityType == EntityType_BARRACKS)
 		lifeInfo.life = currentEntity->GetCurrLife();
+
 	lifeInfo.maxWidth = lifeInfo.bar.w;
 	lifeInfo.lifeBarPosition = { 12, 10 };
 
@@ -400,6 +401,7 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 		CreateBarracksButtons();
 	}
 
+	entitySelectedStats.entitySelected = currentEntity;
 }
 
 void j1Player::DeleteEntitiesMenu() {

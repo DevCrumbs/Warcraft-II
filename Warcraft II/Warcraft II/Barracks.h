@@ -40,7 +40,7 @@ private:
 
 	BarracksInfo barracksInfo;
 
-	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
+	EntitiesEvent EntityEvent = EntitiesEvent_NONE;
 };
 
 #endif //__Barracks_H__
