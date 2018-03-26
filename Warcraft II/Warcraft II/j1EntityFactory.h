@@ -83,6 +83,9 @@ public:
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);
 
+	void DestroyEntity(StaticEntity* elem);
+
+
 	list<Entity*> toSpawnEntities;
 	list<DynamicEntity*> activeDynamicEntities;
 	list<StaticEntity*> activeStaticEntities;

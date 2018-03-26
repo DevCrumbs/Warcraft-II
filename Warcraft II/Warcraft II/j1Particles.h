@@ -6,6 +6,7 @@
 #include "Defs.h"
 #include "p2Point.h"
 #include "Animation.h"
+#include "j1Collision.h"
 
 #define MAX_ACTIVE_PARTICLES 100
 
@@ -28,6 +29,8 @@ struct Particle
 
 	bool left = true, right = true, up = true, down = true;
 
+	bool isDeleted = false;
+
 	Particle();
 	Particle(const Particle& p);
 	~Particle();
@@ -47,18 +50,24 @@ public:
 	bool Update(float dt);
 	bool CleanUp();
 
-	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType, Uint32 delay, fPoint speed);
+	Particle* AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType = COLLIDER_NONE, Uint32 delay = 0, fPoint speed = { 0,0 });
 	void OnCollision(Collider* c1, Collider* c2);
 
 	void UpdateAnimations(const float dt);
 	void LoadAnimationsSpeed();
 
 private:
+
+	std::string fireTexName;
+	SDL_Texture* fireText = nullptr;
+
 	Particle* active[MAX_ACTIVE_PARTICLES];
 	uint lastParticle = 0;
 
 public:
-	Particle arrowRight;
+	Particle lowFire;
+	Particle hardFire;
+
 };
 
 #endif //__j1PARTICLES_H__

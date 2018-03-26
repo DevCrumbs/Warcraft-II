@@ -28,31 +28,6 @@ UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Mo
 	SetOrientation();
 }
 
-/*void UIButton::Draw() const {
-
-	iPoint blitPos;
-	int scale = App->win->GetScale();
-	blitPos.x = (GetLocalPos().x - App->render->camera.x) / scale;
-	blitPos.y = (GetLocalPos().y - App->render->camera.y) / scale;
-
-	if (GetParent()!= nullptr) {
-		SDL_Rect daddy = GetParent()->GetScreenRect();
-		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
-	}
-
-	if (texArea.w != 0)
-		if(!isInWorld)
-		App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);
-		else
-			App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &texArea);
-
-	if (App->gui->isDebug)
-		DebugDraw(blitPos);
-
-	App->render->ResetViewPort();
-}*/
-
-
 void UIButton::Update(float dt)
 {
 	if (listener != nullptr && interactive)

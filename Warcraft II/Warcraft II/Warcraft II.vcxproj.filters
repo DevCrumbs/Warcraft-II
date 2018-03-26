@@ -258,6 +258,9 @@
     <ClInclude Include="Paladin.h">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
     </ClInclude>
+    <ClInclude Include="UILifeBar.h">
+      <Filter>Modules\UIElements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -430,6 +433,9 @@
     </ClCompile>
     <ClCompile Include="ElvenLumberMill.cpp">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="UILifeBar.cpp">
+      <Filter>Modules\UIElements</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

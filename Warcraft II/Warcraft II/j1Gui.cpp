@@ -17,6 +17,7 @@
 #include "UIButton.h"
 #include "UICursor.h"
 #include "UIInputText.h"
+#include "UILifeBar.h"
 
 j1Gui::j1Gui() : j1Module()
 {
@@ -199,6 +200,19 @@ UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* 
 
 
 	return button;
+}
+
+UILifeBar* j1Gui::CreateUILifeBar(iPoint localPos, UILifeBar_Info& info, j1Module* listener, UIElement* parent, bool isInWorld)
+{
+	UILifeBar* lifeBar = new UILifeBar(localPos, parent, info, listener, isInWorld);
+
+	if (parent == nullptr)
+		parent = (UIElement*)App->win->window;
+
+	addedElementUI.push_back((UIElement*)lifeBar);
+
+
+	return lifeBar;
 }
 
 UIInputText* j1Gui::CreateUIInputText(iPoint localPos, j1Module* listener, UIElement* parent)
