@@ -19,6 +19,7 @@
 #include "j1Gui.h"
 #include "j1Player.h"
 #include "j1Console.h"
+#include "j1Menu.h"
 
 #include "j1App.h"
 #include "Brofiler\Brofiler.h"
@@ -45,6 +46,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	gui = new j1Gui();
 	player = new j1Player();
 	console = new j1Console();
+	menu = new j1Menu();
+
+
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -59,6 +63,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(collision);
 	AddModule(font);
 
+	AddModule(menu);
 	AddModule(player);
 	AddModule(scene);
 	AddModule(particles);
@@ -69,6 +74,13 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	// render last to swap buffer
 	AddModule(render);
+
+	map->active = false;
+	scene->active = false;
+	player->active = false;
+	entities->active = false;
+	collision->active = false;
+	pathfinding->active = false;
 }
 
 // Destructor
