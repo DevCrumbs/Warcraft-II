@@ -72,6 +72,7 @@ public:
 	void HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityType, iPoint mousePos);
 	
 	const EntityInfo& GetBuildingInfo(ENTITY_TYPE staticEntityType);
+	const EntityInfo& GetUnitInfo(ENTITY_TYPE dynamicEntityType);
 
 	SDL_Texture* GetHumanBuildingTexture();
 	SDL_Texture* GetNeutralBuildingTexture();

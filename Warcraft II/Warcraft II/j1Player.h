@@ -71,6 +71,8 @@ public:
 	void CheckBuildingState(Entity* ent);
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton();
+	void CreateBarracksButtons();
+	void DestroyBarracksButtons();
 
 	
 private:
@@ -105,6 +107,9 @@ private:
 	UIImage* entityIcon = nullptr;
 
 	HoverButton hoverButtonStruct;
+
+	//Barracks buttons
+	UIButton* produceFootmanButton, *produceElvenArcherButton;
 
 	list<StaticEntity*> chickenFarm;
 	list<StaticEntity*> scoutTower;
