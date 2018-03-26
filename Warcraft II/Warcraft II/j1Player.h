@@ -87,7 +87,19 @@ public:
 
 	void DeleteStaticEntity(StaticEntity* &staticEntity);
 
+public:
 
+	list<StaticEntity*> chickenFarm;
+	list<StaticEntity*> scoutTower;
+	StaticEntity* barracks = nullptr;
+	StaticEntity* townHall = nullptr;
+	StaticEntity* blacksmith = nullptr;
+	StaticEntity* stables = nullptr;
+	StaticEntity* church = nullptr;
+	StaticEntity* mageTower = nullptr;
+	StaticEntity* cannonTower = nullptr;
+	StaticEntity* guardTower = nullptr;
+	StaticEntity* gryphonAviary = nullptr;
 	
 private:
 
@@ -121,19 +133,6 @@ private:
 	EntitySelectedStats entitySelectedStats;
 
 	UIButton *produceFootmanButton, *produceElvenArcherButton;
-
-	list<StaticEntity*> chickenFarm;
-	list<StaticEntity*> scoutTower;
-	StaticEntity* barracks = nullptr;
-	StaticEntity* townHall = nullptr;
-	StaticEntity* blacksmith = nullptr;
-	StaticEntity* stables = nullptr;
-	StaticEntity* church = nullptr;
-	StaticEntity* mageTower = nullptr;
-	StaticEntity* cannonTower = nullptr;
-	StaticEntity* guardTower = nullptr;
-	StaticEntity* gryphonAviary = nullptr;
-
 
 	list<UIElement*> UIMenuInfoList;
 

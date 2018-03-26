@@ -407,6 +407,8 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement(entitySelectedStats.entityIcon);
 		App->gui->DestroyElement(entitySelectedStats.lifeBar);
 		entitySelectedStats.entitySelected = nullptr;
+		if(entitySelectedStats.entitySelected == barracks)
+			DestroyBarracksButtons();
 	}
 }
 
@@ -487,11 +489,11 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			//Use hoverButtonStruct
 			//TODO JOAN
 		}
-		if (UIelem = produceFootmanButton) {			
-			App->entities->AddEntity(ENTITY_TYPE::EntityType_FOOTMAN, { 100, 100 }, App->entities->GetUnitInfo(EntityType_FOOTMAN), this);
+		if (UIelem == produceFootmanButton) {			
+			App->entities->AddEntity(EntityType_FOOTMAN, { 100, 100 }, App->entities->GetUnitInfo(EntityType_FOOTMAN), this);
 		}
-		if (UIelem = produceElvenArcherButton) {
-			App->entities->AddEntity(ENTITY_TYPE::EntityType_ELVEN_ARCHER, { 100, 100 }, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), this);
+		if (UIelem == produceElvenArcherButton) {
+			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { 100, 100 }, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), this);
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
