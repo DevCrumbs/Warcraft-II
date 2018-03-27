@@ -1,9 +1,8 @@
 #include "ScoutTower.h"
 
-ScoutTower::ScoutTower(fPoint pos, iPoint size, int maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), scoutTowerInfo(scoutTowerInfo)
+ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), scoutTowerInfo(scoutTowerInfo)
 {
 	texArea = &scoutTowerInfo.constructionPlanks1;
-	currentLife = maxLife;
 	this->constructionTimer.Start();
 }
 

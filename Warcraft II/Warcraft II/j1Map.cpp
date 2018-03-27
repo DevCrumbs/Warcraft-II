@@ -752,7 +752,7 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 
 bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 {
-	bool ret = true;
+	bool ret = false;
 
 	list<MapLayer*>::const_iterator item;
 	item = data.layers.begin();
@@ -1209,21 +1209,23 @@ bool j1Map::LoadLogic()
 						fPoint pos;
 						pos.x = auxPos.x + (*iterator).x;
 						pos.y = auxPos.y + (*iterator).y;
+
+						UnitInfo unitInfo;
 						
 						ENTITY_TYPE entityType = (ENTITY_TYPE)((*layerIterator)->data[i]);
 						switch (entityType)
 						{
 						case EntityType_TOWN_HALL:
-							App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), (j1Module*)App->player);
+							App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 							break;
 						case EntityType_CHICKEN_FARM:
-							App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), (j1Module*)App->player));
+							App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
 							break;
 						case EntityType_BARRACKS:
-							App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), (j1Module*)App->player);
+							App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 							break;
 						default:
-							App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType));
+							App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
 							break;
 						}
 						
@@ -1233,7 +1235,6 @@ bool j1Map::LoadLogic()
 //						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);
 					}
 				}
-
 			}
 		}
 	}

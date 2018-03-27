@@ -2,10 +2,9 @@
 
 #include "Stables.h"
 
-Stables::Stables(fPoint pos, iPoint size, int maxLife, const StablesInfo& stablesInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), stablesInfo(stablesInfo)
+Stables::Stables(fPoint pos, iPoint size, int currLife, uint maxLife, const StablesInfo& stablesInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), stablesInfo(stablesInfo)
 {
 	texArea = &stablesInfo.constructionPlanks1;
-	currentLife = maxLife;
 	this->constructionTimer.Start();
 }
 

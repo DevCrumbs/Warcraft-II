@@ -2,10 +2,9 @@
 
 #include "MageTower.h"
 
-MageTower::MageTower(fPoint pos, iPoint size, int maxLife, const MageTowerInfo& mageTowerInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), mageTowerInfo(mageTowerInfo)
+MageTower::MageTower(fPoint pos, iPoint size, int currLife, uint maxLife, const MageTowerInfo& mageTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), mageTowerInfo(mageTowerInfo)
 {
 	texArea = &mageTowerInfo.constructionPlanks1;
-	currentLife = maxLife;
 	this->constructionTimer.Start();
 }
 

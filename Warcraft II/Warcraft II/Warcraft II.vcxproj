@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{ECCF88E5-2C26-4595-ADF0-7C9D47359E90}</ProjectGuid>
     <RootNamespace>WarcraftII</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -145,8 +145,10 @@
     <ClInclude Include="j1Input.h" />
     <ClInclude Include="j1Map.h" />
     <ClInclude Include="j1Module.h" />
+    <ClInclude Include="j1Movement.h" />
     <ClInclude Include="j1Particles.h" />
     <ClInclude Include="j1Pathfinding.h" />
+    <ClInclude Include="j1PathManager.h" />
     <ClInclude Include="j1PerfTimer.h" />
     <ClInclude Include="j1Player.h" />
     <ClInclude Include="j1Render.h" />
@@ -209,8 +211,10 @@
     <ClCompile Include="j1Input.cpp" />
     <ClCompile Include="j1Main.cpp" />
     <ClCompile Include="j1Map.cpp" />
+    <ClCompile Include="j1Movement.cpp" />
     <ClCompile Include="j1Particles.cpp" />
     <ClCompile Include="j1Pathfinding.cpp" />
+    <ClCompile Include="j1PathManager.cpp" />
     <ClCompile Include="j1PerfTimer.cpp" />
     <ClCompile Include="j1Player.cpp" />
     <ClCompile Include="j1Render.cpp" />

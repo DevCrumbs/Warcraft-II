@@ -19,7 +19,7 @@ class Stables :public StaticEntity
 {
 public:
 
-	Stables(fPoint pos, iPoint size, int maxLife, const StablesInfo& stablesInfo, j1Module* listener);
+	Stables(fPoint pos, iPoint size, int currLife, uint maxLife, const StablesInfo& stablesInfo, j1Module* listener);
 	~Stables() {};
 
 	void Move(float dt);

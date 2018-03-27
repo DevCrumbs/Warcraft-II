@@ -7,7 +7,7 @@
 #include "StaticEntity.h"
 #include "j1Particles.h"
 
-StaticEntity::StaticEntity(fPoint pos, iPoint size, int maxLife, j1Module* listener) :Entity(pos, size, maxLife, listener) {
+StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) {
 	
 	if (App->GetSecondsSinceAppStartUp() < 700) //Checks for static entities built since startup
 		isBuilt = true;
@@ -120,12 +120,12 @@ bool StaticEntity::CheckBuildingState() {
 			fire->isDeleted = true;
 			break;
 		case BuildingState_LowFire:
-			fire = App->particles->AddParticle(App->particles->lowFire, this->GetPosition().x + this->GetSize().x / 3, this->GetPosition().y + this->GetSize().y / 3);
+			fire = App->particles->AddParticle(App->particles->lowFire, this->GetPos().x + this->GetSize().x / 3, this->GetPos().y + this->GetSize().y / 3);
 			break;
 
 		case BuildingState_HardFire:
 			fire->isDeleted = true;
-			fire = App->particles->AddParticle(App->particles->hardFire, this->GetPosition().x + this->GetSize().x / 5, this->GetPosition().y + this->GetSize().y / 5);
+			fire = App->particles->AddParticle(App->particles->hardFire, this->GetPos().x + this->GetSize().x / 5, this->GetPos().y + this->GetSize().y / 5);
 
 			break;
 		case BuildingState_Destroyed:
