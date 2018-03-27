@@ -7,6 +7,7 @@ Stables::Stables(fPoint pos, iPoint size, int maxLife, const StablesInfo& stable
 	texArea = &stablesInfo.constructionPlanks1;
 	currentLife = maxLife;
 	this->constructionTimer.Start();
+	buildingState = BuildingState_Building;
 }
 
 void Stables::Move(float dt)
@@ -33,6 +34,8 @@ void Stables::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
 		texArea = &stablesInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000)
+	if (constructionTimer.Read() >= constructionTime * 1000) {
 		texArea = &stablesInfo.completeTexArea;
+		buildingState = BuildingState_Normal;
+	}
 }

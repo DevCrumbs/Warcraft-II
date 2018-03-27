@@ -7,6 +7,7 @@ MageTower::MageTower(fPoint pos, iPoint size, int maxLife, const MageTowerInfo& 
 	texArea = &mageTowerInfo.constructionPlanks1;
 	currentLife = maxLife;
 	this->constructionTimer.Start();
+	buildingState = BuildingState_Building;
 }
 
 void MageTower::Move(float dt)
@@ -27,12 +28,15 @@ void MageTower::LoadAnimationsSpeed()
 }
 void MageTower::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer.Read() >= (constructionTime / 3) * 1000) {
 		texArea = &mageTowerInfo.constructionPlanks2;
+	}
 
 	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
 		texArea = &mageTowerInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000)
+	if (constructionTimer.Read() >= constructionTime * 1000) {
 		texArea = &mageTowerInfo.completeTexArea;
+		buildingState = BuildingState_Normal;
+	}
 }

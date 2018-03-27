@@ -46,6 +46,7 @@ private:
 
 	EntitiesEvent EntityEvent = EntitiesEvent_NONE;
 
+	bool startTimer = true;
 };
 
 #endif //__TownHall_H__

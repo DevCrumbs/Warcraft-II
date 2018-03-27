@@ -110,6 +110,8 @@ public:
 	StaticEntity* guardTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
 	
+	bool barracksUpgrade = false;
+	bool townHallUpgrade = false;
 private:
 
 	int totalGold = 0; // total gold earned during the game
@@ -144,7 +146,7 @@ private:
 
 	EntitySelectedStats entitySelectedStats;
 
-	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton;
+	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton;
 	
 	list<UIElement*> UIMenuInfoList;
 

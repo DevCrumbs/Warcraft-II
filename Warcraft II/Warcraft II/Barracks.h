@@ -41,6 +41,8 @@ private:
 	BarracksInfo barracksInfo;
 
 	EntitiesEvent EntityEvent = EntitiesEvent_NONE;
+
+	bool startTimer = true;
 };
 
 #endif //__Barracks_H__
