@@ -754,51 +754,54 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 {
 	bool ret = false;
 
-	list<MapLayer*>::const_iterator item;
-	item = data.layers.begin();
 
-	for (item; item != data.layers.end(); ++item)
+
+	for (list<Room>::const_iterator iterator = playableMap.rooms.begin(); iterator != playableMap.rooms.end(); ++iterator)
 	{
-		MapLayer* layer = *item;
-
-		if (!layer->properties.GetProperty("Navigation", false))
-			continue;
-
-		uchar* map = new uchar[layer->width*layer->height];
-		memset(map, 1, layer->width*layer->height);
-
-		for (int y = 0; y < data.height; ++y)
+		list<MapLayer*>::const_iterator item;
+		item = (*iterator).layers.begin();
+		for (item; item != (*iterator).layers.end(); ++item)
 		{
-			for (int x = 0; x < data.width; ++x)
+			MapLayer* layer = *item;
+			///	if (!layer->properties.GetProperty("Navigation", false))
+			if (!layer->properties.GetProperty("Navigation", true))
+				continue;
+
+			uchar* map = new uchar[layer->width*layer->height];
+			memset(map, 1, layer->width*layer->height);
+
+			for (int y = 0; y < (*iterator).height; ++y)
 			{
-				int i = (y*layer->width) + x;
-
-				int tile_id = layer->Get(x, y);
-				TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
-
-				if (tileset != NULL)
+				for (int x = 0; x < (*iterator).width; ++x)
 				{
-					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
-					/*TileType* ts = tileset->GetTileType(tileId);
-					if(ts != NULL)
+					int i = (y*layer->width) + x;
+
+					int tile_id = layer->Get(x, y);
+					TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
+
+					if (tileset != NULL)
 					{
-					map[i] = ts->properties.Get("walkable", 1);
-					}*/
+						map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
+						/*TileType* ts = tileset->GetTileType(tileId);
+						if(ts != NULL)
+						{
+						map[i] = ts->properties.Get("walkable", 1);
+						}*/
+					}
 				}
 			}
+
+			*buffer = map;
+			width = (*iterator).width;
+			height = (*iterator).height;
+			ret = true;
+
+			break;
 		}
-
-		*buffer = map;
-		width = data.width;
-		height = data.height;
-		ret = true;
-
-		break;
 	}
-
 	return ret;
-}
 
+}
 bool Properties::GetProperty(const char* value, bool default_value) const
 {
 	list<Property*>::const_iterator item = properties.begin();
