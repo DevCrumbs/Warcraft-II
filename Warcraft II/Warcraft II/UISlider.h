@@ -14,7 +14,7 @@ struct UISlider_Info {
 	UIE_HORIZONTAL_POS horizontal_orientation = HORIZONTAL_POS_LEFT;
 	UIE_VERTICAL_POS vertical_orientation = VERTICAL_POS_TOP;
 	SDL_Color color = { 0,0,0,255 };
-	iPoint slider_button_pos = { 0,0 };
+	iPoint sliderButtonPos = { 0,0 };
 	int offset = 0;
 	int buggy_offset = 0;
 
@@ -34,6 +34,8 @@ public:
 	SDL_Rect GetRect();
 	uint GetPercent();
 
+	float GetRelativePosition();
+	void SetRelativePos(float x);
 private:
 	UISlider_Info slider;
 
@@ -45,14 +47,11 @@ private:
 
 
 public:
-	bool lets_move = false;
 
 	// Bounce parameters
-	float bounce_value = 0.0f;
 	iPoint start_pos = { 0,0 };
-	bool first_bounce = true;
 	bool reset = true;
-	bool start_bouncing = false;
+
 };
 
 #endif // __UISlider_H__

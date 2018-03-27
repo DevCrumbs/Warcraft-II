@@ -23,6 +23,13 @@ enum MenuActions
 	MenuActions_RETURN
 };
 
+struct SliderStruct
+{
+	UISlider* slider = nullptr;
+	UILabel*  name = nullptr;
+	UILabel*  value = nullptr;
+};
+
 class j1Menu : public j1Module
 {
 public:
@@ -59,6 +66,7 @@ public:
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
+	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, uint numberValue);
 
 private:
 
@@ -71,12 +79,9 @@ private:
 	UILabel*  SettingsLabel = nullptr;
 
 	//Settings
-	UISlider* FPSString = nullptr;
-	UILabel*  FPSLabel = nullptr;
-	UIButton* AudioFXButt = nullptr;
-	UILabel*  AudioFXLabel = nullptr;
-	UIButton* AudioMusicButt = nullptr;
-	UILabel*  AudioMusicLabel = nullptr;
+	SliderStruct FPS;
+	SliderStruct AudioFX;
+	SliderStruct AudioMusic;
 	UIButton* ReturnButt = nullptr;
 	UILabel*  ReturnLabel = nullptr;
 

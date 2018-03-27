@@ -11,6 +11,9 @@ UISlider::UISlider(iPoint local_pos, UIElement* parent, UISlider_Info& info, j1M
 	tex_area = App->gui->GetRectFromAtlas(slider.tex_area);
 	button_slider_area = App->gui->GetRectFromAtlas(slider.button_slider_area);
 
+	width = tex_area.w;
+	height = tex_area.h;
+	start_pos = local_pos;
 
 
 	SetOrientation();
@@ -24,14 +27,13 @@ void UISlider::Update(float dt)
 		int mouseY = 0;
 		App->input->GetMousePosition(mouseX, mouseY);
 
-		if (App->input->GetMouseButtonDown((SDL_BUTTON_LEFT) == KEY_DOWN) && mouseX > GetScreenPos().x / scale + slider.offset && mouseX < (GetScreenPos().x / scale + tex_area.w - button_slider_area.w - slider.offset) && mouseY >  GetScreenPos().y / scale && mouseY < GetScreenPos().y / scale + tex_area.h)
-			lets_move = true;
-		else if (App->input->GetMouseButtonDown((SDL_BUTTON_LEFT) == KEY_UP))
-			lets_move = false;
+		if (App->input->GetMouseButtonDown((SDL_BUTTON_LEFT) == KEY_DOWN) 
+			&& mouseX > GetScreenPos().x / scale + slider.offset 
+			&& mouseX < (GetScreenPos().x / scale + tex_area.w - button_slider_area.w - slider.offset) 
+			&& mouseY >  GetScreenPos().y / scale && mouseY < GetScreenPos().y / scale + tex_area.h)
 
-		if (lets_move) {
-			slider.slider_button_pos.x = mouseX - GetScreenPos().x / scale;
-		}
+			slider.sliderButtonPos.x = mouseX - GetScreenPos().x / scale;
+
 
 		if (listener != nullptr)
 			HandleInput();
@@ -46,7 +48,7 @@ void UISlider::Draw() const
 	blit_pos.y = (GetScreenPos().y - App->render->camera.y) / scale;
 
 	App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &tex_area);
-	App->render->Blit(App->gui->GetAtlas(), blit_pos.x + slider.slider_button_pos.x, blit_pos.y, &button_slider_area);
+	App->render->Blit(App->gui->GetAtlas(), blit_pos.x + slider.sliderButtonPos.x, blit_pos.y, &button_slider_area);
 
 }
 
@@ -138,9 +140,33 @@ void UISlider::HandleInput()
 		listener->OnUIEvent((UIElement*)this, UIevent);
 		UIevent = UI_EVENT_NONE;
 		break;
+	default:
+		UIevent = UI_EVENT_MOUSE_LEFT_CLICK;
+		listener->OnUIEvent((UIElement*)this, UIevent);
+
+		break;
 	}
+
 }
 
+
+float UISlider::GetRelativePosition() {
+	float ret = 0;
+
+	int relative_x = slider.sliderButtonPos.x - start_pos.x;
+
+	ret = (float)relative_x /*/ (tex_area.w - button_slider_area.w)*/;
+
+	return ret;
+}
+
+void UISlider::SetRelativePos(float x) {
+
+	float new_x = x + (start_pos.x / (tex_area.w - slider.button_slider_area.w));
+	//new_x *= (tex_area.w - slider.button_slider_area.w);
+
+	slider.sliderButtonPos.x = new_x;
+}
 //---------------------------------------------------------------
 
 void UISlider::SetNewRect(SDL_Rect& new_rect)
@@ -155,5 +181,5 @@ SDL_Rect UISlider::GetRect()
 
 uint UISlider::GetPercent()
 {
-	return 100 * (slider.slider_button_pos.x + slider.buggy_offset - slider.offset) / (tex_area.w - slider.offset);
+	return 100 * (slider.sliderButtonPos.x + slider.buggy_offset - slider.offset) / (tex_area.w - slider.offset);
 }

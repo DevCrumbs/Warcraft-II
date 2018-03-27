@@ -24,6 +24,7 @@
 #include "j1Menu.h"
 
 
+
 #include <time.h>
 #include <chrono>
 #include <ctime>
@@ -150,10 +151,6 @@ void j1Menu::CreateMenu() {
 	labelInfo.text = "Settings";
 	SettingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, SettingsButt);
 
-	UISlider_Info sliderInfo;
-	sliderInfo.button_slider_area = { 0,0,30,30 };
-	sliderInfo.tex_area = { 0,130,400,30 };
-	FPSString = App->gui->CreateUISlider({ 50,50 }, sliderInfo, this);
 }
 
 void j1Menu::CreateSettings() {
@@ -170,18 +167,25 @@ void j1Menu::CreateSettings() {
 	labelInfo.text = "Return";
 	ReturnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, ReturnButt);
 
+	AddSlider(FPS, { 50,100 }, "FPS", 60);
+	AddSlider(AudioFX, { 50,200 }, "Audio FX", App->audio->fxVolume);
+	AddSlider(AudioMusic, { 50,300 }, "Audio Music", App->audio->musicVolume);
+
 }
 
 void j1Menu::DeleteSettings() {
 
 	App->gui->DestroyElement(ReturnButt);
 	App->gui->DestroyElement(ReturnLabel);
-	App->gui->DestroyElement(AudioFXButt);
-	App->gui->DestroyElement(AudioFXLabel);
-	App->gui->DestroyElement(AudioMusicButt);
-	App->gui->DestroyElement(AudioMusicLabel);
-	App->gui->DestroyElement(FPSString);
-	App->gui->DestroyElement(FPSLabel);
+	App->gui->DestroyElement(AudioFX.name);
+	App->gui->DestroyElement(AudioFX.value);
+	App->gui->DestroyElement(AudioFX.slider);
+	App->gui->DestroyElement(AudioMusic.name);
+	App->gui->DestroyElement(AudioMusic.value);
+	App->gui->DestroyElement(AudioMusic.slider);
+	App->gui->DestroyElement(FPS.name);
+	App->gui->DestroyElement(FPS.value);
+	App->gui->DestroyElement(FPS.slider);
 }
 
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -210,14 +214,33 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if(UIelem == ReturnButt)
 			menuActions = MenuActions_RETURN;
 
+		else if (UIelem == AudioFX.slider) {
+			float volume = AudioFX.slider->GetRelativePosition();
+			App->audio->SetFxVolume(volume);
+			static char vol_text[4];
+			sprintf_s(vol_text, 4, "%.0f", volume);
+			AudioFX.value->SetText(vol_text);
+			LOG("%f", volume);
+		}
+		else if (UIelem == AudioMusic.slider) {
+			float volume = AudioMusic.slider->GetRelativePosition();
+			App->audio->SetMusicVolume(volume);
+			static char vol_text[4];
+			sprintf_s(vol_text, 4, "%.0f", volume);
+			AudioMusic.value->SetText(vol_text);
+			LOG("%f", volume);
+		}
+
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;
 	case UI_EVENT_MOUSE_LEFT_UP:
 		break;
 	case UI_EVENT_MAX_EVENTS:
+
 		break;
 	default:
+
 		break;
 	}
 
@@ -231,4 +254,34 @@ void j1Menu::DeteleMenu() {
 	App->gui->DestroyElement(SettingsButt);
 	App->gui->DestroyElement(SettingsLabel);
 	
+}
+
+
+void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, uint numberValue) {
+
+	UILabel_Info labelInfo;
+
+	UISlider_Info sliderInfo;
+	sliderInfo.button_slider_area = { 0,0,30,30 };
+	sliderInfo.tex_area = { 0,130,400,30 };
+	sliderStruct.slider = App->gui->CreateUISlider(pos, sliderInfo, this);
+	sliderStruct.slider->SetRelativePos(numberValue);
+
+	labelInfo.text = nameText;
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+	int x = (sliderInfo.tex_area.w / 2) + sliderStruct.slider->GetLocalPos().x;
+	int y = sliderStruct.slider->GetLocalPos().y;
+	sliderStruct.name = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+
+	static char fpsText[5];
+	sprintf_s(fpsText, 5, "%i", numberValue);
+	labelInfo.text = fpsText;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	x = sliderInfo.tex_area.w + sliderStruct.slider->GetLocalPos().x + 10;
+	y = sliderStruct.slider->GetLocalPos().y + (sliderInfo.tex_area.h / 2);
+	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+
+
 }
