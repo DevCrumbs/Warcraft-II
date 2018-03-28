@@ -325,10 +325,10 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 
 		else if (staticEntity->staticEntityType == EntityType_BARRACKS)
-			MakeEntitiesMenu(ent->GetStringLife(), "Barracks", { 241,160,50,41 }, ent);
+			MakeEntitiesMenu(ent->GetStringLife(), "Barracks", { 546,160,50,41 }, ent);
 
 		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL)
-			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 241,160,50,41 }, ent);
+			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
 	
 		break;
 	case EntitiesEvent_HOVER:
