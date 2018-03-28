@@ -1048,24 +1048,35 @@ bool j1EntityFactory::PostUpdate()
 
 	// Remove active entities
 	/// Remove dynamic entities
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
+	// Remove entities
+	list<DynamicEntity*>::iterator dynEnt = activeDynamicEntities.begin();
 
 	while (dynEnt != activeDynamicEntities.end()) {
+
 		if ((*dynEnt)->remove) {
+
 			delete *dynEnt;
-			activeDynamicEntities.remove(*dynEnt);
+			activeDynamicEntities.erase(dynEnt);
+
+			dynEnt = activeDynamicEntities.begin();
+			continue;
 		}
 
 		dynEnt++;
 	}
 
-	/// Remove static entities
-	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
+	// Remove entities
+	list<StaticEntity*>::iterator statEnt = activeStaticEntities.begin();
 
 	while (statEnt != activeStaticEntities.end()) {
+
 		if ((*statEnt)->remove) {
+
 			delete *statEnt;
-			activeStaticEntities.remove(*statEnt);
+			activeStaticEntities.erase(statEnt);
+
+			statEnt = activeStaticEntities.begin();
+			continue;
 		}
 
 		statEnt++;
