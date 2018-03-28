@@ -1,8 +1,6 @@
 #ifndef __j1ENTITY_FACTORY_H__
 #define __j1ENTITY_FACTORY_H__
 
-#include <algorithm>
-
 #include "j1Module.h"
 #include "p2Point.h"
 
@@ -36,10 +34,11 @@
 #include "TownHall.h"
 #include "ElvenLumberMill.h"
 
-
+#include <list>
+#include <algorithm>
 using namespace std;
 
-#define MAX_ENTITIES_SELECTED 8
+#define MAX_UNITS_SELECTED 10
 
 struct SDL_Texture;
 struct SDL_Rect;
@@ -48,7 +47,6 @@ class Entity;
 class StaticEntity;
 class DynamicEntity;
 struct EntityInfo;
-enum ENTITY_TYPE;
 enum ENTITY_TYPE;
 
 class j1EntityFactory : public j1Module
@@ -63,7 +61,6 @@ public:
 	bool Update(float dt);
 	bool PostUpdate();
 	bool CleanUp();
-
 	void Draw();
 
 	void DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos);
@@ -77,20 +74,44 @@ public:
 	SDL_Texture* GetHumanBuildingTexture();
 	SDL_Texture* GetNeutralBuildingTexture();
 
-	bool isPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const;
-	bool isEntityOnTile(iPoint tile) const;
+	bool IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const;
+	bool IsEntityOnTileBySize(iPoint tile) const;
 
-	Entity* AddEntity(ENTITY_TYPE staticEntityType, fPoint pos, const EntityInfo& entityInfo, j1Module* listener = nullptr);
+	Entity* AddEntity(ENTITY_TYPE entityType, fPoint pos, const EntityInfo& entityInfo, const UnitInfo& unitInfo, j1Module* listener = nullptr);
+	void DestroyStaticEntity(StaticEntity* staticEntity);
+
+	/// SANDRA
+	// Returns a pointer to the Entity that is on the tile or nullptr
+	Entity* IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide) const;
+
+	// Selects an Entity
+	bool SelectEntity(Entity* entity);
+
+	// Selects the entities within a rectangle
+	void SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, EntitySide entitySide = EntitySide_NoSide);
+
+	// Unselects all entities
+	void UnselectAllEntities();
+
+	// Returns a pointer to the DynamicEntity of an Entity
+	DynamicEntity* GetDynamicEntityByEntity(Entity* entity) const;
+
+	// Returns a list with the last selected units (unitsSelected list)
+	list<DynamicEntity*> GetLastUnitsSelected() const;
+
+	// Updates the selection color of all entities
+	void SetUnitsSelectedColor();
+	///_SANDRA
 
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);
 
-	void DestroyEntity(StaticEntity* elem);
-
+public:
 
 	list<Entity*> toSpawnEntities;
 	list<DynamicEntity*> activeDynamicEntities;
 	list<StaticEntity*> activeStaticEntities;
+	list<DynamicEntity*> unitsSelected;
 
 private:
 

@@ -1,9 +1,7 @@
 #include "GryphonRider.h"
 
-GryphonRider::GryphonRider(fPoint pos, const GryphonRiderInfo& gryphonRiderInfo, j1Module* listener) :DynamicEntity(pos, gryphonRiderInfo.size, gryphonRiderInfo.life, gryphonRiderInfo.speed, listener), gryphonRiderInfo(gryphonRiderInfo)
+GryphonRider::GryphonRider(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GryphonRiderInfo& gryphonRiderInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), gryphonRiderInfo(gryphonRiderInfo)
 {
-	currentLife = gryphonRiderInfo.life;
-
 }
 
 void GryphonRider::Move(float dt)

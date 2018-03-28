@@ -3,10 +3,9 @@
 
 #include "TownHall.h"
 
-TownHall::TownHall(fPoint pos, iPoint size, int maxLife, const TownHallInfo& townHallInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), townHallInfo(townHallInfo)
+TownHall::TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const TownHallInfo& townHallInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), townHallInfo(townHallInfo)
 {
 	texArea = &townHallInfo.townHallCompleteTexArea;
-	currentLife = maxLife;
 	isBuilt = true;
 }
 

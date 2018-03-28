@@ -5,16 +5,15 @@
 
 struct PaladinInfo
 {
-	iPoint size{ 0,0 };
-	uint life = 0u;
-	float speed = 0.0f;
+	int currLife = 0;
+	uint maxLife = 0;
 };
 
 class Paladin :public DynamicEntity
 {
 public:
 
-	Paladin(fPoint pos, const PaladinInfo& paladinInfo, j1Module* listener);
+	Paladin(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const PaladinInfo& paladinInfo, j1Module* listener);
 	~Paladin() {};
 
 	void Move(float dt);

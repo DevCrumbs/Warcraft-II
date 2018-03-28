@@ -1,9 +1,7 @@
 #include "TrollAxethrower.h"
 
-TrollAxethrower::TrollAxethrower(fPoint pos, const TrollAxethrowerInfo& trollAxethrowerInfo, j1Module* listener) :DynamicEntity(pos, trollAxethrowerInfo.size, trollAxethrowerInfo.life, trollAxethrowerInfo.speed, listener), trollAxethrowerInfo(trollAxethrowerInfo)
+TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TrollAxethrowerInfo& trollAxethrowerInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), trollAxethrowerInfo(trollAxethrowerInfo)
 {
-	currentLife = trollAxethrowerInfo.life;
-
 }
 
 void TrollAxethrower::Move(float dt)

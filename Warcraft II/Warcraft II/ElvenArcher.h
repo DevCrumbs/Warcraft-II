@@ -5,16 +5,15 @@
 
 struct ElvenArcherInfo
 {
-	iPoint size{ 0,0 };
-	uint life = 0u;
-	float speed = 0.0f;
+	int currLife = 0;
+	uint maxLife = 0;
 };
 
 class ElvenArcher :public DynamicEntity
 {
 public:
 
-	ElvenArcher(fPoint pos, const ElvenArcherInfo& elvenArcherInfo, j1Module* listener);
+	ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const ElvenArcherInfo& elvenArcherInfo, j1Module* listener);
 	~ElvenArcher() {};
 
 	void Move(float dt);

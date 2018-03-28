@@ -5,16 +5,15 @@
 
 struct TuralyonInfo
 {
-	iPoint size{ 0,0 };
-	uint life = 0u;
-	float speed = 0.0f;
+	int currLife = 0;
+	uint maxLife = 0;
 };
 
 class Turalyon :public DynamicEntity
 {
 public:
 
-	Turalyon(fPoint pos, const TuralyonInfo& turalyonInfo, j1Module* listener);
+	Turalyon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TuralyonInfo& khadgarInfo, j1Module* listener);
 	~Turalyon() {};
 
 	void Move(float dt);
