@@ -48,7 +48,7 @@ class StaticEntity :public Entity
 {
 public:
 
-	StaticEntity(fPoint pos, iPoint size, int maxLife, j1Module* listener);
+	StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener);
 	virtual ~StaticEntity();
 	virtual void Draw(SDL_Texture* sprites);
 	virtual void Move(float dt) {}

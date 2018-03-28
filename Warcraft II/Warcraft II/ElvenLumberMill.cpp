@@ -1,6 +1,6 @@
 #include "ElvenLumberMill.h"
 
-ElvenLumberMill::ElvenLumberMill(fPoint pos, iPoint size, int life, const ElvenLumberMillInfo& elvenLumberMillInfo, j1Module* listener) :StaticEntity(pos, size, life, listener), elvenLumberMillInfo(elvenLumberMillInfo)
+ElvenLumberMill::ElvenLumberMill(fPoint pos, iPoint size, int currLife, uint maxLife, const ElvenLumberMillInfo& elvenLumberMillInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), elvenLumberMillInfo(elvenLumberMillInfo)
 {
 	texArea = &elvenLumberMillInfo.constructionPlanks1;
 	this->constructionTimer.Start();

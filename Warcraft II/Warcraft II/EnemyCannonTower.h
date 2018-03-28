@@ -16,7 +16,7 @@ class EnemyCannonTower :public StaticEntity
 {
 public:
 
-	EnemyCannonTower(fPoint pos, iPoint size, int maxLife, const EnemyCannonTowerInfo& enemyCannonTowerInfo, j1Module* listener);
+	EnemyCannonTower(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyCannonTowerInfo& enemyCannonTowerInfo, j1Module* listener);
 	~EnemyCannonTower() {};
 
 	void Move(float dt);

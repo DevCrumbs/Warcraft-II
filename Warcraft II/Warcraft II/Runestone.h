@@ -16,7 +16,7 @@ class Runestone :public StaticEntity
 {
 public:
 
-	Runestone(fPoint pos, iPoint size, int maxLife, const RunestoneInfo& runestoneInfo, j1Module* listener);
+	Runestone(fPoint pos, iPoint size, int currLife, uint maxLife, const RunestoneInfo& runestoneInfo, j1Module* listener);
 	~Runestone() {};
 
 	void Move(float dt);

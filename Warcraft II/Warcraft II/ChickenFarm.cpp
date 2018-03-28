@@ -1,11 +1,9 @@
 #include "ChickenFarm.h"
 
 
-ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
+ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
-	currentLife = maxLife;
-
-	if(isBuilt)
+	if (isBuilt)
 		texArea = &chickenFarmInfo.completeTexArea;
 	else if (!isBuilt) {
 		texArea = &chickenFarmInfo.constructionPlanks1;

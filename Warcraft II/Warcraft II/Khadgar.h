@@ -5,16 +5,15 @@
 
 struct KhadgarInfo
 {
-	iPoint size{ 0,0 };
-	uint life = 0u;
-	float speed = 0.0f;
+	int currLife = 0;
+	uint maxLife = 0;
 };
 
 class Khadgar :public DynamicEntity
 {
 public:
 
-	Khadgar(fPoint pos, const KhadgarInfo& khadgarInfo, j1Module* listener);
+	Khadgar(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const KhadgarInfo& khadgarInfo, j1Module* listener);
 	~Khadgar() {};
 
 	void Move(float dt);

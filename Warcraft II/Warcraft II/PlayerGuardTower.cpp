@@ -1,9 +1,8 @@
 #include "PlayerGuardTower.h"
 
-PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int maxLife, const PlayerGuardTowerInfo& playerGuardTowerInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), playerGuardTowerInfo(playerGuardTowerInfo)
+PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint maxLife, const PlayerGuardTowerInfo& playerGuardTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), playerGuardTowerInfo(playerGuardTowerInfo)
 {
 	texArea = &playerGuardTowerInfo.constructionPlanks1;
-	currentLife = maxLife;
 	this->constructionTimer.Start();
 }
 
