@@ -25,7 +25,6 @@ enum EntitiesEvent
 	EntitiesEvent_HOVER,
 	EntitiesEvent_LEAVE,
 	EntitiesEvent_CREATED,
-
 };
 
 enum ENTITY_TYPE
@@ -94,6 +93,7 @@ public:
 	void SetStringLife(int currentLife, int maxLife);
 	void SetDamageLife(int dam);
 	void SetCurrLife(int life);
+	void SetMaxLife(int life);
 
 
 

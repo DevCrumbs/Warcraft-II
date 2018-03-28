@@ -16,7 +16,7 @@ Barracks::Barracks(fPoint pos, iPoint size, int maxLife, const BarracksInfo& bar
 void Barracks::Move(float dt)
 {
 	if (listener != nullptr)
-		HandleInput(EntityEvent);
+		HandleInput(entityEvent);
 
 	if (App->player->barracksUpgrade) {
 		if (startTimer) {
@@ -45,6 +45,9 @@ void Barracks::UpdateAnimations(float dt)
 		if (barracksInfo.barracksType == BarracksType_Barracks2) {
 			texArea = &barracksInfo.barracks2CompleteTexArea;
 			buildingState = BuildingState_Normal;
+			SetMaxLife(1200);
+			SetCurrLife(1200);
+			entityEvent = EntitiesEvent_LEFT_CLICK;
 		}
 	}
 	else {

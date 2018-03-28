@@ -40,7 +40,7 @@ private:
 
 	BarracksInfo barracksInfo;
 
-	EntitiesEvent EntityEvent = EntitiesEvent_NONE;
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	bool startTimer = true;
 };

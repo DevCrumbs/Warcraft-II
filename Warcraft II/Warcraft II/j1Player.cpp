@@ -129,6 +129,15 @@ bool j1Player::Update(float dt) {
 			entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
 			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
 			entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17});
+			if (entitySelectedStats.entitySelected == barracks) {
+				if (barracksUpgrade && stables != nullptr) {
+					UIButton_Info produceButtonInfo;
+					produceButtonInfo.normalTexArea = { 444,244,50,41 };
+					produceButtonInfo.hoverTexArea = { 699,244,50,41 };
+					produceButtonInfo.pressedTexArea = { 954,244,50,41 };
+					producePaladinButton = App->gui->CreateUIButton({ 319, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+				}
+			}
 		}
 	}
 
@@ -366,6 +375,9 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		else if (staticEntity->staticEntityType == EntityType_STABLES)
 			MakeEntitiesMenu("NO_HP_TEXT", "Stables", { 241,160,50,41 },ent);
+
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade)
+			MakeEntitiesMenu(ent->GetStringLife(), "Keep", { 597,202,50,41 }, ent);
 		break;
 	
 	default:
@@ -483,24 +495,22 @@ void j1Player::DestroyHoverButton(Entity* ent) {
 
 void j1Player::CreateBarracksButtons()
 {
-	UIButton_Info produceFootmanButtonInfo;
-	produceFootmanButtonInfo.normalTexArea = { 241,244,50,41 };
-	produceFootmanButtonInfo.hoverTexArea = { 496,244,50,41 };
-	produceFootmanButtonInfo.pressedTexArea = { 751,244,50,41 };
-	produceFootmanButton = App->gui->CreateUIButton({ 217, 2 }, produceFootmanButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+	UIButton_Info produceButtonInfo;
+	produceButtonInfo.normalTexArea = { 241,244,50,41 };
+	produceButtonInfo.hoverTexArea = { 496,244,50,41 };
+	produceButtonInfo.pressedTexArea = { 751,244,50,41 };
+	produceFootmanButton = App->gui->CreateUIButton({ 217, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
 
-	UIButton_Info produceElvenArcherButtonInfo;
-	produceElvenArcherButtonInfo.normalTexArea = { 292,244,50,41 };
-	produceElvenArcherButtonInfo.hoverTexArea = { 547,244,50,41 };
-	produceElvenArcherButtonInfo.pressedTexArea = { 802,244,50,41 };
-	produceElvenArcherButton = App->gui->CreateUIButton({ 268, 2 }, produceElvenArcherButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+	produceButtonInfo.normalTexArea = { 292,244,50,41 };
+	produceButtonInfo.hoverTexArea = { 547,244,50,41 };
+	produceButtonInfo.pressedTexArea = { 802,244,50,41 };
+	produceElvenArcherButton = App->gui->CreateUIButton({ 268, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
 
 	if (barracksUpgrade && stables != nullptr && stables->buildingState == BuildingState_Normal) {
-		UIButton_Info producePaladinButtonInfo;
-		producePaladinButtonInfo.normalTexArea = { 444,244,50,41 };
-		producePaladinButtonInfo.hoverTexArea = { 699,244,50,41 };
-		producePaladinButtonInfo.pressedTexArea = { 954,244,50,41 };
-		producePaladinButton = App->gui->CreateUIButton({ 319, 2 }, producePaladinButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+		produceButtonInfo.normalTexArea = { 444,244,50,41 };
+		produceButtonInfo.hoverTexArea = { 699,244,50,41 };
+		produceButtonInfo.pressedTexArea = { 954,244,50,41 };
+		producePaladinButton = App->gui->CreateUIButton({ 319, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
 	}
 
 	deleteBarracksButtons = true;
@@ -508,21 +518,21 @@ void j1Player::CreateBarracksButtons()
 
 void j1Player::CreateGryphonAviaryButtons()
 {
-	UIButton_Info produceGryphonRiderButtonInfo;
-	produceGryphonRiderButtonInfo.normalTexArea = { 648,286,50,41 };
-	produceGryphonRiderButtonInfo.hoverTexArea = { 699,286,50,41 };
-	produceGryphonRiderButtonInfo.pressedTexArea = { 750,286,50,41 };
-	produceGryphonRiderButton = App->gui->CreateUIButton({ 217, 2 }, produceGryphonRiderButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+	UIButton_Info produceButtonInfo;
+	produceButtonInfo.normalTexArea = { 648,286,50,41 };
+	produceButtonInfo.hoverTexArea = { 699,286,50,41 };
+	produceButtonInfo.pressedTexArea = { 750,286,50,41 };
+	produceGryphonRiderButton = App->gui->CreateUIButton({ 217, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
 	deleteGryphonAviaryButtons = true;
 }
 
 void j1Player::CreateMageTowerButtons()
 {
-	UIButton_Info produceMageButtonInfo;
-	produceMageButtonInfo.normalTexArea = { 342,244,50,41 };
-	produceMageButtonInfo.hoverTexArea = { 597,244,50,41 };
-	produceMageButtonInfo.pressedTexArea = { 852,244,50,41 };
-	produceMageButton = App->gui->CreateUIButton({ 217, 2 }, produceMageButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+	UIButton_Info produceButtonInfo;
+	produceButtonInfo.normalTexArea = { 342,244,50,41 };
+	produceButtonInfo.hoverTexArea = { 597,244,50,41 };
+	produceButtonInfo.pressedTexArea = { 852,244,50,41 };
+	produceMageButton = App->gui->CreateUIButton({ 217, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
 
 	deleteMageButtons = true;
 }

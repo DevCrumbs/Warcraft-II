@@ -14,7 +14,7 @@ TownHall::TownHall(fPoint pos, iPoint size, int maxLife, const TownHallInfo& tow
 void TownHall::Move(float dt)
 {
 	if (listener != nullptr)
-		HandleInput(EntityEvent);
+		HandleInput(entityEvent);
 
 	if (App->player->townHallUpgrade) {
 		if (startTimer) {
@@ -38,6 +38,9 @@ void TownHall::UpdateAnimations(float dt)
 		if (townHallInfo.townHallType == TownHallType_Keep) {
 			texArea = &townHallInfo.keepCompleteTexArea;
 			buildingState = BuildingState_Normal;
+			SetMaxLife(1400);
+			SetCurrLife(1400);
+			entityEvent = EntitiesEvent_CREATED;
 		}
 	}
 	else {

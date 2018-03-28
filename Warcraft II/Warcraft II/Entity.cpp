@@ -57,3 +57,8 @@ void Entity::SetCurrLife(int life) {
 	SetStringLife(currentLife, maxLife);
 }
 
+void Entity::SetMaxLife(int life) {
+	maxLife = life;
+	SetStringLife(currentLife, maxLife);
+}
+

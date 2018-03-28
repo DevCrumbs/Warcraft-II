@@ -64,10 +64,10 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 	case EntitiesEvent_CREATED:
 
 		if (MouseHover()) {
-			EntityEvent = EntitiesEvent_HOVER;
-			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
-			break;
-		}
+		EntityEvent = EntitiesEvent_HOVER;
+		listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
+		break;
+		
 		break;
 
 	case EntitiesEvent_LEAVE:
