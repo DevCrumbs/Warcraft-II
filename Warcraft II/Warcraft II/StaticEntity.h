@@ -26,7 +26,6 @@ enum BuildingState
 	BuildingState_Normal,
 	BuildingState_LowFire,
 	BuildingState_HardFire,
-	BuildingState_Destroyed,
 	BuildingState_Building
 };
 
@@ -58,7 +57,7 @@ public:
 	
 	void HandleInput(EntitiesEvent &EntityEvent);
 	bool MouseHover() const;
-	bool CheckBuildingState();
+	void CheckBuildingState();
 	uint GetConstructionTimer() const;
 	uint GetConstructionTime() const;
 	bool GetIsFinishedBuilt() const;

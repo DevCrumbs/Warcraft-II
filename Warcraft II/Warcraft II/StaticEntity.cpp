@@ -64,9 +64,10 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 	case EntitiesEvent_CREATED:
 
 		if (MouseHover()) {
-		EntityEvent = EntitiesEvent_HOVER;
-		listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
-		break;
+			EntityEvent = EntitiesEvent_HOVER;
+			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
+			break;
+		}
 		
 		break;
 
@@ -76,6 +77,7 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 
 		break;
 	}
+
 }
 
 
@@ -93,12 +95,13 @@ bool StaticEntity::MouseHover() const
 }
 
 
-bool StaticEntity::CheckBuildingState() {
-	bool ret = true;
+void StaticEntity::CheckBuildingState() {
 	BuildingState bs = buildingState;
 
-	if (this->GetCurrLife() <= 0)
-		buildingState = BuildingState_Destroyed;
+	if (this->GetCurrLife() <= 0) {
+		fire->isDeleted = true;
+		remove = true;
+	}
 	else if (this->GetCurrLife() <= this->GetMaxLife() / 4) {// less than 1/4 HP
 			buildingState = BuildingState_HardFire;
 	}
@@ -124,14 +127,9 @@ bool StaticEntity::CheckBuildingState() {
 			fire = App->particles->AddParticle(App->particles->hardFire, this->GetPosition().x + this->GetSize().x / 5, this->GetPosition().y + this->GetSize().y / 5);
 
 			break;
-		case BuildingState_Destroyed:
-			fire->isDeleted = true;
-			ret = false;
-			break;
 		default:
 			break;
 		}
-	return ret;
 }
 
 uint StaticEntity::GetConstructionTimer() const
