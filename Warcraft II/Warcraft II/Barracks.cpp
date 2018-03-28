@@ -47,7 +47,7 @@ void Barracks::UpdateAnimations(float dt)
 			buildingState = BuildingState_Normal;
 			SetMaxLife(1200);
 			SetCurrLife(1200);
-			entityEvent = EntitiesEvent_LEFT_CLICK;
+			//entityEvent = EntitiesEvent_CREATED;
 		}
 	}
 	else {

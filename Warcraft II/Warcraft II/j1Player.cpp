@@ -549,7 +549,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			if (hoverButtonStruct.currentEntity == townHall && townHallUpgrade) {
 				keepUpgrade = true;
 			}
-			if (hoverButtonStruct.currentEntity == townHall && !townHallUpgrade) {
+			if (hoverButtonStruct.currentEntity == townHall) {
 				townHallUpgrade = true;
 			}
 		}
