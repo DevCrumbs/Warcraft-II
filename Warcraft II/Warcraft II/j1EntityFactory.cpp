@@ -154,6 +154,13 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	pugi::xml_node footmanAnimations = humanEntities.child("footman").child("animations");
 	pugi::xml_node currentAnimation;
 
+	//Idle animation Footman
+	currentAnimation = footmanAnimations.child("idle");
+	footmanInfo.idle.speed = currentAnimation.attribute("speed").as_float();
+	footmanInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		footmanInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
 	//Up animation Footman
 	currentAnimation = footmanAnimations.child("up");
 	footmanInfo.up.speed = currentAnimation.attribute("speed").as_float();
@@ -287,6 +294,13 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	//Grunt animations
 	pugi::xml_node gruntAnimations = orcEntities.child("grunt").child("animations");
 	
+	//Idle animation Grunt
+	currentAnimation = gruntAnimations.child("idle");
+	gruntInfo.idle.speed = currentAnimation.attribute("speed").as_float();
+	gruntInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gruntInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
 	//Up animation Grunt
 	currentAnimation = gruntAnimations.child("up");
 	gruntInfo.up.speed = currentAnimation.attribute("speed").as_float();
@@ -469,12 +483,21 @@ bool j1EntityFactory::PreUpdate()
 bool j1EntityFactory::Update(float dt)
 {
 	bool ret = true;
-	// Update active dynamic entities
-	list<StaticEntity*>::const_iterator it = activeStaticEntities.begin();
 
-	while (it != activeStaticEntities.end()) {
-		(*it)->Move(dt);
-		it++;
+	// Update active static entities
+	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
+
+	while (statEnt != activeStaticEntities.end()) {
+		(*statEnt)->Move(dt);
+		statEnt++;
+	}
+
+	// Update active dynamic entities
+	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
+
+	while (dynEnt != activeDynamicEntities.end()) {
+		(*dynEnt)->Move(dt);
+		dynEnt++;
 	}
 
 	return ret;
