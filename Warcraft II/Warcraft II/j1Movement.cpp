@@ -1228,6 +1228,7 @@ bool UnitGroup::SetGoal(iPoint goal)
 	if (App->pathfinding->IsWalkable(goal)) {
 
 		this->goal = goal;
+		isShapedGoal = false;
 
 		// Update the goal of all units
 		list<SingleUnit*>::const_iterator it = units.begin();
@@ -1274,7 +1275,7 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile)
 
 					if (it != shapedGoal.end())
 
-						// Remove the goal tiles until reaching mouseTile						
+						// Remove the goal tiles until reaching mouseTile
 						shapedGoal.erase(it, shapedGoal.end());
 
 					else if (it == shapedGoal.end())
@@ -1284,20 +1285,20 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile)
 							shapedGoal.push_back(mouseTile);
 				}
 				else {
-				
+
 					// Draw the invalid goal
 					SDL_Color col = ColorRed;
 
 					iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-					const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->defaultTileSize, App->map->defaultTileSize };
-					App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);			
+					const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+					App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
 				}
 			}
 			else if (find(shapedGoal.begin(), shapedGoal.end(), mouseTile) != shapedGoal.end()
 				&& shapedGoal.back() != mouseTile) {
-			
+
 				// Remove the goal tiles until reaching mouseTile						
-				shapedGoal.erase(find(shapedGoal.begin(), shapedGoal.end(), mouseTile), shapedGoal.end());			
+				shapedGoal.erase(find(shapedGoal.begin(), shapedGoal.end(), mouseTile), shapedGoal.end());
 			}
 		}
 		else {
@@ -1313,20 +1314,23 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile)
 		ret = true;
 	}
 
-	// Draw the goals
-	SDL_Color col;
+	if (shapedGoal.size() > 1) {
 
-	if (!ret)
-		/// Goals are not ready: ORANGE
-		col = ColorOrange;
-	else
-		/// Goals are ready: GREEN
-		col = ColorGreen;
+		// Draw the goals
+		SDL_Color col;
 
-	for (uint i = 0; i < shapedGoal.size(); ++i) {
-		iPoint goalTilePos = App->map->MapToWorld(shapedGoal[i].x, shapedGoal[i].y);
-		const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->defaultTileSize, App->map->defaultTileSize };
-		App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+		if (!ret)
+			/// Goals are not ready: ORANGE
+			col = ColorOrange;
+		else
+			/// Goals are ready: GREEN
+			col = ColorGreen;
+
+		for (uint i = 0; i < shapedGoal.size(); ++i) {
+			iPoint goalTilePos = App->map->MapToWorld(shapedGoal[i].x, shapedGoal[i].y);
+			const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+			App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+		}
 	}
 
 	return ret;
@@ -1337,8 +1341,26 @@ bool UnitGroup::SetShapedGoal()
 	bool ret = false;
 
 	if (shapedGoal.size() == units.size()) {
-	
+
+		this->goal = shapedGoal.front();
+		isShapedGoal = true;
+
 		// Assign the different goals to the units
+		list<SingleUnit*>::const_iterator it = units.begin();
+		vector<iPoint>::const_iterator goal = shapedGoal.begin();
+		uint i = 0;
+
+		while (it != units.end() && i < shapedGoal.size()) {
+
+			(*it)->goal = goal[i];
+			(*it)->shapedGoal = (*it)->goal;
+
+			// Warn units that the goal has been changed
+			(*it)->isGoalChanged = true;
+
+			i++;
+			it++;
+		}
 
 		shapedGoal.clear();
 		ret = true;
