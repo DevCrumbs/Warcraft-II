@@ -109,6 +109,7 @@ public:
 	
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
+	bool keepUpgrade = false;
 private:
 
 	int totalGold = 0; // total gold earned during the game

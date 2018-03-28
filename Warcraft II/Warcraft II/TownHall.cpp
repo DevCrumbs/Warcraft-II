@@ -22,7 +22,10 @@ void TownHall::Move(float dt)
 			startTimer = false;
 		}
 		UpdateAnimations(dt);
-		townHallInfo.townHallType = TownHallType_Keep;
+		if (App->player->keepUpgrade)
+			townHallInfo.townHallType = TownHallType_Castle;
+		else
+			townHallInfo.townHallType = TownHallType_Keep;
 	}
 }
 
@@ -37,6 +40,13 @@ void TownHall::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= constructionTime * 1000) {
 		if (townHallInfo.townHallType == TownHallType_Keep) {
 			texArea = &townHallInfo.keepCompleteTexArea;
+			buildingState = BuildingState_Normal;
+			SetMaxLife(1400);
+			SetCurrLife(1400);
+			entityEvent = EntitiesEvent_CREATED;
+		}
+		else if (townHallInfo.townHallType == TownHallType_Castle) {
+			texArea = &townHallInfo.castleCompleteTexArea;
 			buildingState = BuildingState_Normal;
 			SetMaxLife(1400);
 			SetCurrLife(1400);

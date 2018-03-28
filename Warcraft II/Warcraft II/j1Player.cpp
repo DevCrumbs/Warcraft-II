@@ -364,8 +364,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		else if (staticEntity->staticEntityType == EntityType_STABLES)
 			MakeEntitiesMenu("NO_HP_TEXT", "Stables", { 241,160,50,41 },ent);
 
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade)
+			MakeEntitiesMenu(ent->GetStringLife(), "Castle", { 546,202,50,41 }, ent);
+
 		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade)
 			MakeEntitiesMenu(ent->GetStringLife(), "Keep", { 597,202,50,41 }, ent);
+
 		break;
 	
 	default:
@@ -542,7 +546,10 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			if (hoverButtonStruct.currentEntity == barracks) {
 				barracksUpgrade = true;
 			}
-			if (hoverButtonStruct.currentEntity == townHall) {
+			if (hoverButtonStruct.currentEntity == townHall && townHallUpgrade) {
+				keepUpgrade = true;
+			}
+			if (hoverButtonStruct.currentEntity == townHall && !townHallUpgrade) {
 				townHallUpgrade = true;
 			}
 		}
