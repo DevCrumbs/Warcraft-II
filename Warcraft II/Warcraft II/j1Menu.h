@@ -4,6 +4,8 @@
 #include "j1Module.h"
 #include "p2List.h"
 
+#define MAX_AUDIO_VOLUM 128
+
 struct SDL_Texture;
 //class GuiImage;
 //class GuiText;
@@ -66,7 +68,7 @@ public:
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
-	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, uint numberValue);
+	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue);
 
 private:
 

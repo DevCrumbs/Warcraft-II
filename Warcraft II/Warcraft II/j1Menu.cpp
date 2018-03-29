@@ -168,8 +168,8 @@ void j1Menu::CreateSettings() {
 	ReturnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, ReturnButt);
 
 	AddSlider(FPS, { 50,100 }, "FPS", 60);
-	AddSlider(AudioFX, { 50,200 }, "Audio FX", App->audio->fxVolume);
-	AddSlider(AudioMusic, { 50,300 }, "Audio Music", App->audio->musicVolume);
+	AddSlider(AudioFX, { 50,200 }, "Audio FX", (float)App->audio->fxVolume / MAX_AUDIO_VOLUM);
+	AddSlider(AudioMusic, { 50,300 }, "Audio Music", (float)App->audio->musicVolume / MAX_AUDIO_VOLUM);
 
 }
 
@@ -215,20 +215,20 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			menuActions = MenuActions_RETURN;
 
 		else if (UIelem == AudioFX.slider) {
-			/*float volume = AudioFX.slider->GetRelativePosition();
-			App->audio->SetFxVolume(volume);
+			float volume = AudioFX.slider->GetRelativePosition();
+			App->audio->SetFxVolume(volume * MAX_AUDIO_VOLUM);
 			static char vol_text[4];
-			sprintf_s(vol_text, 4, "%.0f", volume);
+			sprintf_s(vol_text, 4, "%.0f", volume*100);
 			AudioFX.value->SetText(vol_text);
-			LOG("%f", volume);*/
+			LOG("%f", volume);
 		}
 		else if (UIelem == AudioMusic.slider) {
-			/*float volume = AudioMusic.slider->GetRelativePosition();
-			App->audio->SetMusicVolume(volume);
+			float volume = AudioMusic.slider->GetRelativePosition();
+			App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
 			static char vol_text[4];
-			sprintf_s(vol_text, 4, "%.0f", volume);
+			sprintf_s(vol_text, 4, "%.0f", volume * 100);
 			AudioMusic.value->SetText(vol_text);
-			LOG("%f", volume);*/
+			LOG("%f", volume);
 		}
 
 		break;
@@ -257,15 +257,14 @@ void j1Menu::DeteleMenu() {
 }
 
 
-void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, uint numberValue) {
+void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue) {
 	
 	UILabel_Info labelInfo;
-	//int x, y;
 	UISlider_Info sliderInfo;
 	sliderInfo.button_slider_area = { 0,0,30,30 };
 	sliderInfo.tex_area = { 0,130,400,30 };
 	sliderStruct.slider = App->gui->CreateUISlider(pos, sliderInfo, this);
-	sliderStruct.slider->SetRelativePos(numberValue);
+	sliderStruct.slider->SetRelativePos(relativeNumberValue);
 
 	labelInfo.text = nameText;
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
@@ -275,7 +274,7 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 	sliderStruct.name = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
 	static char fpsText[5];
-	sprintf_s(fpsText, 5, "%i", numberValue);
+	sprintf_s(fpsText, 5, "%.0f", relativeNumberValue * 100);
 	labelInfo.text = fpsText;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;

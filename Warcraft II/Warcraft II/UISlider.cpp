@@ -13,7 +13,7 @@ UISlider::UISlider(iPoint local_pos, UIElement* parent, UISlider_Info& info, j1M
 
 	width = tex_area.w;
 	height = tex_area.h;
-	start_pos = local_pos;
+	start_pos = slider.sliderButtonPos;
 
 
 	SetOrientation();
@@ -153,7 +153,7 @@ void UISlider::HandleInput()
 float UISlider::GetRelativePosition() {
 	float ret = 0;
 
-	int relative_x = slider.sliderButtonPos.x - start_pos.x;
+	int relative_x = slider.sliderButtonPos.x /*- start_pos.x*/;
 
 	ret = (float)relative_x / (tex_area.w - button_slider_area.w);
 
@@ -162,8 +162,7 @@ float UISlider::GetRelativePosition() {
 
 void UISlider::SetRelativePos(float x) {
 
-	float new_x = x + (start_pos.x / (tex_area.w - slider.button_slider_area.w));
-	new_x /= (tex_area.w - slider.button_slider_area.w);
+	float new_x = x * (tex_area.w - slider.button_slider_area.w);
 
 	slider.sliderButtonPos.x = new_x;
 }
