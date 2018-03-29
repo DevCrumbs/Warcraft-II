@@ -155,7 +155,7 @@ float UISlider::GetRelativePosition() {
 
 	int relative_x = slider.sliderButtonPos.x - start_pos.x;
 
-	ret = (float)relative_x /*/ (tex_area.w - button_slider_area.w)*/;
+	ret = (float)relative_x / (tex_area.w - button_slider_area.w);
 
 	return ret;
 }
@@ -163,7 +163,7 @@ float UISlider::GetRelativePosition() {
 void UISlider::SetRelativePos(float x) {
 
 	float new_x = x + (start_pos.x / (tex_area.w - slider.button_slider_area.w));
-	//new_x *= (tex_area.w - slider.button_slider_area.w);
+	new_x /= (tex_area.w - slider.button_slider_area.w);
 
 	slider.sliderButtonPos.x = new_x;
 }

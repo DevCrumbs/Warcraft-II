@@ -215,20 +215,20 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			menuActions = MenuActions_RETURN;
 
 		else if (UIelem == AudioFX.slider) {
-			float volume = AudioFX.slider->GetRelativePosition();
+			/*float volume = AudioFX.slider->GetRelativePosition();
 			App->audio->SetFxVolume(volume);
 			static char vol_text[4];
 			sprintf_s(vol_text, 4, "%.0f", volume);
 			AudioFX.value->SetText(vol_text);
-			LOG("%f", volume);
+			LOG("%f", volume);*/
 		}
 		else if (UIelem == AudioMusic.slider) {
-			float volume = AudioMusic.slider->GetRelativePosition();
+			/*float volume = AudioMusic.slider->GetRelativePosition();
 			App->audio->SetMusicVolume(volume);
 			static char vol_text[4];
 			sprintf_s(vol_text, 4, "%.0f", volume);
 			AudioMusic.value->SetText(vol_text);
-			LOG("%f", volume);
+			LOG("%f", volume);*/
 		}
 
 		break;
@@ -258,9 +258,9 @@ void j1Menu::DeteleMenu() {
 
 
 void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, uint numberValue) {
-
+	
 	UILabel_Info labelInfo;
-
+	//int x, y;
 	UISlider_Info sliderInfo;
 	sliderInfo.button_slider_area = { 0,0,30,30 };
 	sliderInfo.tex_area = { 0,130,400,30 };
@@ -283,5 +283,5 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 	y = sliderStruct.slider->GetLocalPos().y + (sliderInfo.tex_area.h / 2);
 	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
-
+	
 }
