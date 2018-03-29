@@ -118,7 +118,7 @@ bool j1Player::Update(float dt) {
 			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
 			entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17});
 			if (entitySelectedStats.entitySelected == barracks) {
-				if (barracksUpgrade && stables != nullptr) {
+				if (barracksUpgrade && stables != nullptr && producePaladinButton == nullptr) {
 					UIButton_Info produceButtonInfo;
 					produceButtonInfo.normalTexArea = { 444,244,50,41 };
 					produceButtonInfo.hoverTexArea = { 699,244,50,41 };
@@ -126,6 +126,7 @@ bool j1Player::Update(float dt) {
 					producePaladinButton = App->gui->CreateUIButton({ 319, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
 				}
 			}
+			
 		}
 	}
 
@@ -324,6 +325,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		else if (staticEntity->staticEntityType == EntityType_BARRACKS)
 			MakeEntitiesMenu(ent->GetStringLife(), "Barracks", { 546,160,50,41 }, ent);
 
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade) 
+			MakeEntitiesMenu(ent->GetStringLife(), "Castle", { 546,202,50,41 }, ent);
+
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade)
+			MakeEntitiesMenu(ent->GetStringLife(), "Keep", { 597,202,50,41 }, ent);
+
 		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL)
 			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
 	
@@ -363,12 +370,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		else if (staticEntity->staticEntityType == EntityType_STABLES)
 			MakeEntitiesMenu("NO_HP_TEXT", "Stables", { 241,160,50,41 },ent);
-
-		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade)
-			MakeEntitiesMenu(ent->GetStringLife(), "Castle", { 546,202,50,41 }, ent);
-
-		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade)
-			MakeEntitiesMenu(ent->GetStringLife(), "Keep", { 597,202,50,41 }, ent);
 
 		break;
 	
@@ -485,7 +486,6 @@ void j1Player::DestroyHoverButton(Entity* ent) {
 
 void j1Player::CreateBarracksButtons()
 {
-
 	CreateSimpleButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 217, 2 },produceFootmanButton);
 	CreateSimpleButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 268, 2 }, produceElvenArcherButton);
 	if (barracksUpgrade && stables != nullptr && stables->buildingState == BuildingState_Normal)

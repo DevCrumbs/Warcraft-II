@@ -21,6 +21,7 @@ void Barracks::Move(float dt)
 	if (App->player->barracksUpgrade) {
 		if (startTimer) {
 			this->constructionTimer.Start();
+			App->player->DeleteEntitiesMenu();
 			startTimer = false;
 		}
 		UpdateAnimations(dt);
@@ -47,7 +48,6 @@ void Barracks::UpdateAnimations(float dt)
 			buildingState = BuildingState_Normal;
 			SetMaxLife(1200);
 			SetCurrLife(1200);
-			//entityEvent = EntitiesEvent_CREATED;
 		}
 	}
 	else {
