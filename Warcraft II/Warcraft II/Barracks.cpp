@@ -3,10 +3,9 @@
 
 #include "Barracks.h"
 
-Barracks::Barracks(fPoint pos, iPoint size, int maxLife, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), barracksInfo(barracksInfo)
+Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), barracksInfo(barracksInfo)
 {
 	texArea = &barracksInfo.barracksCompleteTexArea;
-	currentLife = maxLife;
 	isBuilt = true;
 	//this->constructionTimer.Start();
 }

@@ -19,7 +19,7 @@ class MageTower :public StaticEntity
 {
 public:
 
-	MageTower(fPoint pos, iPoint size, int maxLife, const MageTowerInfo& mageTowerInfo, j1Module* listener);
+	MageTower(fPoint pos, iPoint size, int currLife, uint maxLife, const MageTowerInfo& mageTowerInfo, j1Module* listener);
 	~MageTower() {};
 
 	void Move(float dt);

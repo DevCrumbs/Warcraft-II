@@ -10,6 +10,8 @@
 #include <string>
 using namespace std;
 
+#define MS_PATHFINDING 2.0
+
 // Modules
 class j1Window;
 class j1Input;
@@ -28,6 +30,8 @@ class j1Gui;
 class j1Player;
 class j1Console;
 class j1Menu;
+class j1Movement;
+class j1PathManager;
 
 class j1App
 {
@@ -115,6 +119,8 @@ public:
 	j1Player*					player = nullptr;
 	j1Console*					console = nullptr;
 	j1Menu*						menu = nullptr;
+	j1Movement*					movement = nullptr;
+	j1PathManager*				pathmanager = nullptr;
 
 private:
 

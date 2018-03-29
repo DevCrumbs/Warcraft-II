@@ -1,10 +1,8 @@
 #include "Runestone.h"
 
-Runestone::Runestone(fPoint pos, iPoint size, int maxLife, const RunestoneInfo& runestoneInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), runestoneInfo(runestoneInfo)
+Runestone::Runestone(fPoint pos, iPoint size, int currLife, uint maxLife, const RunestoneInfo& runestoneInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), runestoneInfo(runestoneInfo)
 {
 	texArea = &runestoneInfo.completeTexArea;
-	currentLife = maxLife;
-
 }
 
 void Runestone::Move(float dt)

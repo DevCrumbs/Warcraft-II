@@ -48,7 +48,7 @@ bool j1Player::Update(float dt) {
 		if (stables != nullptr) {
 			if (stables->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)stables;
-				ent->SetDamageLife(20);
+				ent->ApplyDamage(20);
 				if (!stables->CheckBuildingState()) {
 					DeleteStaticEntity(stables);
 				}
@@ -63,7 +63,7 @@ bool j1Player::Update(float dt) {
 		if (mageTower != nullptr)
 			if (mageTower->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)mageTower;
-				ent->SetDamageLife(20);
+				ent->ApplyDamage(20);
 				if (!mageTower->CheckBuildingState()) {
 					DeleteStaticEntity(mageTower);
 				}
@@ -78,7 +78,7 @@ bool j1Player::Update(float dt) {
 		if (!scoutTower.empty())
 			if (scoutTower.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)scoutTower.back();
-				ent->SetDamageLife(20);
+				ent->ApplyDamage(20);
 				if (!scoutTower.back()->CheckBuildingState()) {
 					DeleteStaticEntity(scoutTower.back());
 					scoutTower.pop_back();
@@ -94,7 +94,7 @@ bool j1Player::Update(float dt) {
 		if (gryphonAviary != nullptr)
 			if (gryphonAviary->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)gryphonAviary;
-				ent->SetDamageLife(20);
+				ent->ApplyDamage(20);
 				if (!gryphonAviary->CheckBuildingState()) {
 					DeleteStaticEntity(gryphonAviary);
 				}
@@ -108,7 +108,7 @@ bool j1Player::Update(float dt) {
 		if (!chickenFarm.empty()) 
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)chickenFarm.back();
-				ent->SetDamageLife(20);
+				ent->ApplyDamage(20);
 				if (!chickenFarm.back()->CheckBuildingState()) {
 					DeleteStaticEntity(chickenFarm.back());
 					chickenFarm.pop_back();
@@ -140,8 +140,8 @@ bool j1Player::PostUpdate() {
 
 	if (hoverButtonStruct.isCreated) {
 		SDL_Rect r;
-		r.x = (int)hoverButtonStruct.nextEntity->GetPosition().x;
-		r.y = (int)hoverButtonStruct.nextEntity->GetPosition().y;
+		r.x = (int)hoverButtonStruct.nextEntity->GetPos().x;
+		r.y = (int)hoverButtonStruct.nextEntity->GetPos().y;
 		r.w = hoverButtonStruct.nextEntity->GetSize().x;
 		r.h = hoverButtonStruct.nextEntity->GetSize().y;
 
@@ -183,51 +183,52 @@ void j1Player::CheckIfPlaceBuilding()
 	//Creates static entities (buildings)
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) 
 	{
-
 		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+
+		UnitInfo unitInfo;
 
 		switch (alphaBuilding) 
 		{
 		case EntityType_CHICKEN_FARM:
-			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
 				StaticEntity* c;
-				c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), this);
+				c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				chickenFarm.push_back(c);
 			}
 			break;
 
 		case EntityType_STABLES:
-			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
-				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), this);
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
+				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 			}
 			break;
 
 		case EntityType_GRYPHON_AVIARY:
-			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
-				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), this);
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
+				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 			}
 			break;
 
 		case EntityType_MAGE_TOWER:
-			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
-				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), this);
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
+				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 			}
 			break;
 
 		case EntityType_SCOUT_TOWER:
-			if (!App->entities->isPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
 				StaticEntity* s;
-				s = (StaticEntity*)App->entities->AddEntity(EntityType_SCOUT_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_SCOUT_TOWER), this);
+				s = (StaticEntity*)App->entities->AddEntity(EntityType_SCOUT_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_SCOUT_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				scoutTower.push_back(s);
 			}
 			break;
 
-		case EntityCategory_NONE:
+		case EntityType_NONE:
 			break;
 
 		default:
@@ -487,7 +488,9 @@ void j1Player::DestroyBarracksButtons()
 	App->gui->DestroyElement(produceElvenArcherButton);
 }
 
-void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
+void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
+{
+	UnitInfo unitInfo;
 
 	switch (UIevent)
 	{
@@ -500,6 +503,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
+
 		if (hoverCheck == HoverCheck_Repair) {
 			hoverButtonStruct.currentEntity->SetCurrLife(hoverButtonStruct.currentEntity->GetMaxLife());
 			hoverButtonStruct.currentEntity->CheckBuildingState();
@@ -513,10 +517,10 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			//TODO JOAN
 		}
 		if (UIelem == produceFootmanButton) {			
-			App->entities->AddEntity(EntityType_FOOTMAN, { 100, 100 }, App->entities->GetUnitInfo(EntityType_FOOTMAN), this);
+			App->entities->AddEntity(EntityType_FOOTMAN, { 100, 100 }, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
 		}
 		if (UIelem == produceElvenArcherButton) {
-			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { 100, 100 }, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), this);
+			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { 100, 100 }, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
@@ -534,7 +538,6 @@ void j1Player::DeleteStaticEntity(StaticEntity* &staticEntity) {
 
 	if (entitySelectedStats.entitySelected == staticEntity)
 		DeleteEntitiesMenu();
-	App->entities->DestroyEntity(staticEntity);
+	App->entities->DestroyStaticEntity(staticEntity);
 		staticEntity = nullptr;
-
 }

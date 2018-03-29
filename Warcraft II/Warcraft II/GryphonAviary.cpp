@@ -2,10 +2,9 @@
 
 #include "GryphonAviary.h"
 
-GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int maxLife, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), gryphonAviaryInfo(gryphonAviaryInfo)
+GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), gryphonAviaryInfo(gryphonAviaryInfo)
 {
 	texArea = &gryphonAviaryInfo.constructionPlanks1;
-	currentLife = maxLife;
 	this->constructionTimer.Start();
 }
 
