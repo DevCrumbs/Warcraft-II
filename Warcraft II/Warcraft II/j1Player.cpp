@@ -322,16 +322,16 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		else if (staticEntity->staticEntityType == EntityType_STABLES)
 			MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 
-		else if (staticEntity->staticEntityType == EntityType_BARRACKS)
+		else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->buildingState == BuildingState_Normal)
 			MakeEntitiesMenu(ent->GetStringLife(), "Barracks", { 546,160,50,41 }, ent);
 
-		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade) 
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade && staticEntity->buildingState == BuildingState_Normal)
 			MakeEntitiesMenu(ent->GetStringLife(), "Castle", { 546,202,50,41 }, ent);
 
-		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade)
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade && staticEntity->buildingState == BuildingState_Normal)
 			MakeEntitiesMenu(ent->GetStringLife(), "Keep", { 597,202,50,41 }, ent);
 
-		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL)
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal)
 			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
 	
 		break;
