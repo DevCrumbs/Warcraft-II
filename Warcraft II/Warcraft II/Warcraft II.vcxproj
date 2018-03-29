@@ -144,11 +144,12 @@
     <ClInclude Include="j1Gui.h" />
     <ClInclude Include="j1Input.h" />
     <ClInclude Include="j1Map.h" />
+    <ClInclude Include="j1Menu.h" />
     <ClInclude Include="j1Module.h" />
     <ClInclude Include="j1Movement.h" />
     <ClInclude Include="j1Particles.h" />
     <ClInclude Include="j1Pathfinding.h" />
-    <ClInclude Include="j1PathManager.h" />
+    <ClInclude Include="j1Pathmanager.h" />
     <ClInclude Include="j1PerfTimer.h" />
     <ClInclude Include="j1Player.h" />
     <ClInclude Include="j1Render.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="UIInputText.h" />
     <ClInclude Include="UILabel.h" />
     <ClInclude Include="UILifeBar.h" />
+    <ClInclude Include="UISlider.h" />
     <ClInclude Include="WatchTower.h" />
   </ItemGroup>
   <ItemGroup>
@@ -211,10 +213,11 @@
     <ClCompile Include="j1Input.cpp" />
     <ClCompile Include="j1Main.cpp" />
     <ClCompile Include="j1Map.cpp" />
+    <ClCompile Include="j1Menu.cpp" />
     <ClCompile Include="j1Movement.cpp" />
     <ClCompile Include="j1Particles.cpp" />
     <ClCompile Include="j1Pathfinding.cpp" />
-    <ClCompile Include="j1PathManager.cpp" />
+    <ClCompile Include="j1Pathmanager.cpp" />
     <ClCompile Include="j1PerfTimer.cpp" />
     <ClCompile Include="j1Player.cpp" />
     <ClCompile Include="j1Render.cpp" />
@@ -244,6 +247,7 @@
     <ClCompile Include="UIInputText.cpp" />
     <ClCompile Include="UILabel.cpp" />
     <ClCompile Include="UILifeBar.cpp" />
+    <ClCompile Include="UISlider.cpp" />
     <ClCompile Include="WatchTower.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

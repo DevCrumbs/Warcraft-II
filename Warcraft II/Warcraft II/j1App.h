@@ -29,6 +29,7 @@ class j1Fonts;
 class j1Gui;
 class j1Player;
 class j1Console;
+class j1Menu;
 class j1Movement;
 class j1PathManager;
 
@@ -117,6 +118,7 @@ public:
 	j1Gui*						gui = nullptr;
 	j1Player*					player = nullptr;
 	j1Console*					console = nullptr;
+	j1Menu*						menu = nullptr;
 	j1Movement*					movement = nullptr;
 	j1PathManager*				pathmanager = nullptr;
 
