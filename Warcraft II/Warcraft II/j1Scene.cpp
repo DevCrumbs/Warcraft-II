@@ -168,6 +168,15 @@ bool j1Scene::Update(float dt)
 	// Draw
 	App->map->Draw(); // map
 	App->entities->Draw(); // entities
+<<<<<<< HEAD
+=======
+	App->collision->DebugDraw();
+	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
+
+	// Movement															 // Select units by mouse click
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+		startRectangle = mousePos;
+>>>>>>> Develompent
 
 	// Debug pathfinding ------------------------------
 

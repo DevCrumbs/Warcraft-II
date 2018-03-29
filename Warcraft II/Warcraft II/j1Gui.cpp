@@ -18,6 +18,7 @@
 #include "UICursor.h"
 #include "UIInputText.h"
 #include "UILifeBar.h"
+#include "UISlider.h"
 
 j1Gui::j1Gui() : j1Module()
 {
@@ -48,8 +49,8 @@ bool j1Gui::Start()
 	atlas = App->tex->Load(atlasFileName.data());
 
 	// Load fonts
-	mapFonts[FONT_NAME_WARCRAFT] = App->font->Load("data/fonts/warcraft.ttf", 16);
-	mapFonts[FONT_NAME_WARCRAFT14] = App->font->Load("data/fonts/warcraft.ttf", 14);
+
+
 
 
 	return ret;
@@ -83,8 +84,7 @@ bool j1Gui::Update(float dt)
 
 		/*
 		if (iterator->data->drag && update_drag)
-			iterator->data->UpdateDragging(dt);
-		*/
+			(*UI_elem_it)->UpdateDragging(dt);*/
 
 		UI_elem_it++;
 	}
@@ -188,6 +188,19 @@ UILabel* j1Gui::CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* lis
 	
 
 	return label;
+}
+
+UISlider* j1Gui::CreateUISlider(iPoint localPos, UISlider_Info& info, j1Module* listener, UIElement* parent)
+{
+	UISlider* slider = new UISlider(localPos, parent, info, listener);
+
+	if (parent == nullptr)
+		parent = (UIElement*)App->win->window;
+
+	addedElementUI.push_back((UIElement*)slider);
+
+
+	return slider;
 }
 
 UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener, UIElement* parent, bool isInWorld)
@@ -299,11 +312,6 @@ bool j1Gui::ClearMapTextures()
 	App->tex->UnLoad((SDL_Texture*)atlas);
 
 	return ret;
-}
-
-_TTF_Font* j1Gui::GetFont(FONT_NAME fontName)
-{
-	return mapFonts[fontName];
 }
 
 const SDL_Texture* j1Gui::GetAtlas() const

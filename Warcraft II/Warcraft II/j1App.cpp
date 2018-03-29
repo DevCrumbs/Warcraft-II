@@ -19,6 +19,12 @@
 #include "j1Gui.h"
 #include "j1Player.h"
 #include "j1Console.h"
+<<<<<<< HEAD
+=======
+#include "j1Menu.h"
+#include "j1Movement.h"
+#include "j1PathManager.h"
+>>>>>>> Develompent
 
 #include "j1App.h"
 #include "Brofiler\Brofiler.h"
@@ -45,6 +51,12 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	gui = new j1Gui();
 	player = new j1Player();
 	console = new j1Console();
+<<<<<<< HEAD
+=======
+	menu = new j1Menu();
+	movement = new j1Movement();
+	pathmanager = new j1PathManager(MS_PATHFINDING);
+>>>>>>> Develompent
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -58,6 +70,11 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	AddModule(collision);
 	AddModule(font);
+<<<<<<< HEAD
+=======
+	AddModule(menu);
+	AddModule(player);
+>>>>>>> Develompent
 
 	AddModule(player);
 	AddModule(scene);
@@ -69,6 +86,13 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	// render last to swap buffer
 	AddModule(render);
+
+	map->active = false;
+	scene->active = false;
+	player->active = false;
+	entities->active = false;
+	collision->active = false;
+	pathfinding->active = false;
 }
 
 // Destructor
