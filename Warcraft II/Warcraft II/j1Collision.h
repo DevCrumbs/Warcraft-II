@@ -65,7 +65,6 @@ public:
 private:
 
 	list<ColliderGroup*> colliderGroups;
-	bool isDebug = false;
 };
 
 // ---------------------------------------------------------------------

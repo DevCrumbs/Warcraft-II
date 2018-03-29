@@ -45,13 +45,6 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	this->gruntInfo.deathDown = info.deathDown;
 
 	LoadAnimationsSpeed();
-
-	// Collisions
-	CreateEntityCollider(EntitySide_Enemy);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, unitInfo.sightRadius);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, unitInfo.attackRadius);
-	sightRadiusCollider->isTrigger = true;
-	attackRadiusCollider->isTrigger = true;
 }
 
 void Grunt::Move(float dt)
@@ -62,6 +55,21 @@ void Grunt::Move(float dt)
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+
+	// Create colliders
+	if (!isSpawned) {
+
+		// Collisions
+		CreateEntityCollider(EntitySide_Enemy);
+		sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, unitInfo.sightRadius);
+		attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, unitInfo.attackRadius);
+
+		entityCollider->isTrigger = true;
+		sightRadiusCollider->isTrigger = true;
+		attackRadiusCollider->isTrigger = true;
+
+		isSpawned = true;
+	}
 
 	// ---------------------------------------------------------------------
 
