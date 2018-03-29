@@ -25,20 +25,24 @@ using namespace std;
 
 struct _TTF_Font;
 
+enum FONT_NAME {
+	FONT_NAME_DEFAULT,
+	FONT_NAME_WARCRAFT,
+	FONT_NAME_WARCRAFT14,
+	FONT_NAME_MAX_FONTS
+};
 
 struct UIImage_Info;
 struct UILabel_Info;
 struct UIButton_Info;
 struct UICursor_Info;
 struct UILifeBar_Info;
-struct UISlider_Info;
 class UIImage;
 class UILabel;
 class UIButton;
 class UICursor;
 class UILifeBar;
 class UIInputText;
-class UISlider;
 
 // ---------------------------------------------------
 
@@ -74,7 +78,6 @@ public:
 	// Gui creation functions
 	UIImage* CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UILabel* CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
-	UISlider* CreateUISlider(iPoint localPos, UISlider_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UIButton* CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr, bool isInWorld = false);
 	UILifeBar* CreateUILifeBar(iPoint localPos, UILifeBar_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr, bool isInWorld = false);
 	UIInputText* CreateUIInputText(iPoint localPos, j1Module* listener = nullptr, UIElement* parent = nullptr);
@@ -87,6 +90,7 @@ public:
 	void SetUpDraggingChildren(UIElement* elem, bool dragging);
 	void SetUpDraggingNode(bool drag);
 
+	_TTF_Font* GetFont(FONT_NAME fontName);
 
 	const SDL_Texture* GetAtlas() const;
 	SDL_Rect GetRectFromAtlas(SDL_Rect rect);
@@ -101,6 +105,7 @@ private:
 	const SDL_Texture* atlas = nullptr;
 
 	list<UIElement*> UIElementsList;
+	map<FONT_NAME, _TTF_Font*> mapFonts;
 
 	// Alpha parameters
 	float totalTime = 0.0f;

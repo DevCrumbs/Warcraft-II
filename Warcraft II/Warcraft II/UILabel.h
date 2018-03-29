@@ -8,7 +8,6 @@
 #include "j1App.h"
 #include "UIElement.h"
 #include "j1Gui.h"
-#include "j1Fonts.h"
 
 struct _TTF_Font;
 struct SDL_Color;

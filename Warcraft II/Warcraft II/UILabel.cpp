@@ -14,7 +14,7 @@ UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Modul
 	interactive = label.interactive;
 	horizontal = label.horizontalOrientation;
 	vertical = label.verticalOrientation;
-	font = App->font->GetFont(label.fontName);
+	font = App->gui->GetFont(label.fontName);
 	color = label.normalColor;
 
 	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.textWrapLength);
