@@ -133,7 +133,7 @@ void j1Particles::UpdateAnimations(const float dt)
 	*/
 }
 
-Particle* j1Particles::AddParticle(const Particle& particle, int x, int y, ColliderType colliderType, Uint32 delay, fPoint speed)
+Particle* j1Particles::AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType, Uint32 delay, fPoint speed)
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
@@ -171,7 +171,7 @@ Particle* j1Particles::AddParticle(const Particle& particle, int x, int y, Colli
 	}
 }
 
-void j1Particles::OnCollision(Collider* c1, Collider* c2, CollisionState collisionState)
+void j1Particles::OnCollision(Collider* c1, Collider* c2)
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
@@ -210,11 +210,8 @@ Particle::Particle(const Particle& p) :
 
 Particle::~Particle()
 {
-	// TODO (Sandra): delete the colliders
-	/*
 	if (collider != nullptr)
 		collider->toDelete = true;
-	*/
 }
 
 bool Particle::Update(float dt)

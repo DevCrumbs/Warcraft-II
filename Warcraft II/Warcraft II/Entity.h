@@ -3,17 +3,11 @@
 
 #include "p2Point.h"
 #include "Animation.h"
-
 #include "j1App.h"
 
 class j1Module;
 
 struct SDL_Texture;
-
-struct Collider;
-struct ColliderGroup;
-
-enum CollisionState;
 
 enum ENTITY_CATEGORY {
 
@@ -21,14 +15,6 @@ enum ENTITY_CATEGORY {
 	EntityCategory_STATIC_ENTITY,
 	EntityCategory_DYNAMIC_ENTITY,
 	EntityCategory_MAX
-};
-
-enum EntitySide
-{
-	EntitySide_NoSide,
-	EntitySide_Player,
-	EntitySide_Enemy,
-	EntitySide_MaxSides
 };
 
 enum EntitiesEvent
@@ -39,7 +25,6 @@ enum EntitiesEvent
 	EntitiesEvent_HOVER,
 	EntitiesEvent_LEAVE,
 	EntitiesEvent_CREATED,
-
 };
 
 enum ENTITY_TYPE
@@ -96,53 +81,39 @@ class Entity
 {
 public:
 
-	Entity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener);
+	Entity(fPoint pos, iPoint size, int maxLife, j1Module* listener);
 	virtual ~Entity();
-	virtual void Draw(SDL_Texture* sprites);
-	virtual void DebugDrawSelected();
-	virtual void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
 
-	// Position and size
-	void SetPos(fPoint pos);
-	void AddToPos(fPoint pos);
-	fPoint GetPos() const;
+	void SetPosition(fPoint pos);
+	fPoint GetPosition() const;
 	iPoint GetSize() const;
-
-	// Life and damage
-	int GetMaxLife() const;
-	void SetCurrLife(int currLife);
 	int GetCurrLife() const;
-	void ApplyDamage(int damage);
-
+	int GetMaxLife() const;
 	string GetStringLife() const;
 	void SetStringLife(int currentLife, int maxLife);
+	void SetDamageLife(int dam);
+	void SetCurrLife(int life);
+	void SetMaxLife(int life);
 
-	// Collision
-	ColliderGroup* GetEntityCollider() const;
-	bool CreateEntityCollider(EntitySide entitySide);
-	void UpdateEntityColliderPos();
+
+
 
 public:
 
 	ENTITY_CATEGORY entityType = EntityCategory_NONE;
-	EntitySide entitySide = EntitySide_NoSide;
 
-	bool isRemove = false;
-	bool isSelected = false;
+	bool remove = false;
+	//bool isSelected = false;
+
 
 protected:
 
 	fPoint pos = { 0.0f,0.0f };
 	iPoint size = { 0,0 };
-
-	int currLife = 0;
-	uint maxLife = 0;
-	string lifeString;
-
+	int currentLife = 0;
+	int maxLife = 0;
 	j1Module* listener = nullptr;
-
-	// Collision
-	ColliderGroup* entityCollider = nullptr;
+	string lifeString;
 };
 
 #endif //__Entity_H__

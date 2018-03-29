@@ -3,30 +3,6 @@
 
 #include <stdio.h>
 
-// SDL colors
-#define ColorBlack { 0,0,0,255 }
-#define ColorWhite { 255,255,255,255 }
-#define ColorRed { 255,0,0,255 }
-#define ColorGreen { 0,255,0,255 }
-#define ColorBlue { 0,0,255,255 }
-
-/// Units (max units)
-#define ColorYellow { 255,255,0,255 }
-#define ColorDarkGreen { 0,102,0,255 }
-#define ColorBrightBlue { 0,255,255,255 }
-#define ColorOrange { 255,128,0,255 }
-#define ColorPink { 255,0,127,255 }
-#define ColorPurple { 127,0,255,255 }
-#define ColorGrey { 128,128,128,255 }
-#define ColorOlive { 102,204,0,255 }
-#define ColorViolet { 178,102,255,255 }
-
-/// Colliders
-#define ColorDarkBlue { 0,0,153,255 }
-#define ColorLightBlue { 102,178,255,255 }
-#define ColorDarkRed { 153,0,0,255 }
-#define ColorLightRed { 255,102,102,255 }
-
 //  NULL just in case ----------------------
 
 #ifdef NULL

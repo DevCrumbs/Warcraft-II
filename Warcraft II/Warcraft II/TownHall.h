@@ -31,7 +31,7 @@ class TownHall :public StaticEntity
 {
 public:
 
-	TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const TownHallInfo& townHallInfo, j1Module* listener);
+	TownHall(fPoint pos, iPoint size, int maxLife, const TownHallInfo& townHallInfo, j1Module* listener);
 	~TownHall() {};
 
 	void Move(float dt);
@@ -44,8 +44,9 @@ private:
 
 	TownHallInfo townHallInfo;
 
-	EntitiesEvent EntityEvent = EntitiesEvent_NONE;
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
+	bool startTimer = true;
 };
 
 #endif //__TownHall_H__

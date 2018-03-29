@@ -17,7 +17,7 @@ class EnemyGuardTower :public StaticEntity
 {
 public:
 
-	EnemyGuardTower(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyGuardTowerInfo& enemyGuardTowerInfo, j1Module* listener);
+	EnemyGuardTower(fPoint pos, iPoint size, int maxLife, const EnemyGuardTowerInfo& enemyGuardTowerInfo, j1Module* listener);
 	~EnemyGuardTower() {};
 
 	void Move(float dt);

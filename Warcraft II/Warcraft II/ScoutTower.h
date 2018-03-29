@@ -19,7 +19,7 @@ class ScoutTower :public StaticEntity
 {
 public:
 
-	ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener);
+	ScoutTower(fPoint pos, iPoint size, int maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener);
 	~ScoutTower() {};
 
 	void Move(float dt);

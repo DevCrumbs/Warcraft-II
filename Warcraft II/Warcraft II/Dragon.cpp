@@ -1,7 +1,9 @@
 #include "Dragon.h"
 
-Dragon::Dragon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const DragonInfo& dragonInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), dragonInfo(dragonInfo)
+Dragon::Dragon(fPoint pos, const DragonInfo& dragonInfo, j1Module* listener) :DynamicEntity(pos, dragonInfo.size, dragonInfo.life, dragonInfo.speed, listener), dragonInfo(dragonInfo)
 {
+	currentLife = dragonInfo.life;
+
 }
 
 void Dragon::Move(float dt) 

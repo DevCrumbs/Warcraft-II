@@ -19,12 +19,10 @@
 #include "j1Gui.h"
 #include "j1Player.h"
 #include "j1Console.h"
-#include "j1Menu.h"
-#include "j1Movement.h"
-#include "j1PathManager.h"
 
 #include "j1App.h"
 #include "Brofiler\Brofiler.h"
+
 
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
@@ -47,9 +45,6 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	gui = new j1Gui();
 	player = new j1Player();
 	console = new j1Console();
-	menu = new j1Menu();
-	movement = new j1Movement();
-	pathmanager = new j1PathManager(MS_PATHFINDING);
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -60,29 +55,20 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(map);
 	AddModule(pathfinding);
 	AddModule(entities);
-	AddModule(pathmanager);
-	AddModule(font);
-	AddModule(menu);
-	AddModule(player);
 
-	AddModule(scene);
-
-	AddModule(movement);
 	AddModule(collision);
+	AddModule(font);
+
+	AddModule(player);
+	AddModule(scene);
 	AddModule(particles);
 	AddModule(console);
 	AddModule(gui);
 	AddModule(fade);
 
+
 	// render last to swap buffer
 	AddModule(render);
-
-	map->active = false;
-	scene->active = false;
-	player->active = false;
-	entities->active = false;
-	collision->active = false;
-	pathfinding->active = false;
 }
 
 // Destructor
@@ -259,6 +245,7 @@ void j1App::FinishUpdate()
 	else
 		capOnOff = "off";
 
+
 	string vSyncOnOff;
 	if (App->render->vsync)
 		vSyncOnOff = "on";
@@ -370,12 +357,6 @@ bool j1App::CleanUp()
 	}
 
 	return ret;
-}
-
-
-// ---------------------------------------
-uint32 j1App::GetSecondsSinceAppStartUp() {
-	return clock.Read();
 }
 
 // ---------------------------------------

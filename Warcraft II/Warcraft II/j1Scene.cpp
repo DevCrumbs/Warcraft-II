@@ -17,13 +17,13 @@
 #include "j1Scene.h"
 #include "j1EntityFactory.h"
 #include "j1Pathfinding.h"
-#include "j1Movement.h"
 #include "j1Gui.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UIImage.h"
 #include "UICursor.h"
+
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -95,6 +95,7 @@ bool j1Scene::Start()
 	}
 	else if (warcraftActive) {
 		ret = App->map->CreateNewMap();
+
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
@@ -125,50 +126,34 @@ bool j1Scene::PreUpdate()
 {
 	bool ret = true;
 
-	// Save mouse position (world and map coords)
+	// debug pathfing ------------------
+	static iPoint origin;
+	static bool isSelected = false;
+
 	int x, y;
 	App->input->GetMousePosition(x, y);
-	iPoint mousePos = App->render->ScreenToWorld(x, y);
-	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
-	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+	iPoint p = App->render->ScreenToWorld(x, y);
+	p = App->map->WorldToMap(p.x, p.y);
 
-	// ---------------------------------------------------------------------
-
-	// Entities info
-	/// Entity
-	fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
-	iPoint size = { 32,32 };
-	uint maxLife = 10;
-	int currLife = (int)maxLife;
-
-	/// DynamicEntity
-	UnitInfo unitInfo;
-	unitInfo.maxSpeed = 50.0f;
-	unitInfo.damage = 2;
-
-	/// Footman
-	FootmanInfo footmanInfo;
-
-	/// Grunt
-	GruntInfo gruntInfo;
-
-	// Entities creation
-	if (App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY) == nullptr && App->pathfinding->IsWalkable(mouseTile)) {
-
-		// 1: spawn a Footman with priority 1
-		unitInfo.sightRadius = 6;
-		unitInfo.attackRadius = 3;
-
-		if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
-			App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo);
-
-		// 2: spawn a Grunt with priority 1
-		unitInfo.sightRadius = 3;
-		unitInfo.attackRadius = 2;
-
-		if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
-			App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo);
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		if (isSelected)
+		{
+			App->pathfinding->CreatePath(origin, p, DISTANCE_TO);
+			isSelected = false;
+		}
+		else
+		{
+			origin = p;
+			isSelected = true;
+		}
 	}
+
+	// Player start position
+	/*
+	App->entities->playerData->startPos = App->map->data.GetObjectPosition("Player", "StartPos");
+	App->entities->playerData->position = App->entities->playerData->startPos;
+	*/
 
 	return ret;
 }
@@ -178,78 +163,30 @@ bool j1Scene::Update(float dt)
 {
 	bool ret = true;
 
-	// Save mouse position (world and map coords)
-	int x, y;
-	App->input->GetMousePosition(x, y);
-	iPoint mousePos = App->render->ScreenToWorld(x, y);
-	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
-	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
-	// ---------------------------------------------------------------------
 
 	// Draw
 	App->map->Draw(); // map
 	App->entities->Draw(); // entities
-	App->collision->DebugDraw();
-	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 
-	// Movement															 // Select units by mouse click
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
-		startRectangle = mousePos;
+	// Debug pathfinding ------------------------------
 
-		Entity* entity = App->entities->IsEntityOnTile(mouseTile);
+	int x = 0, y = 0;
+	App->input->GetMousePosition(x, y);
+	iPoint p = App->render->ScreenToWorld(x, y);
+	p = App->map->WorldToMap(p.x, p.y);
+	p = App->map->MapToWorld(p.x, p.y);
 
-		if (entity != nullptr)
-			App->entities->SelectEntity(entity);
-		else
-			App->entities->UnselectAllEntities();
+	App->render->Blit(debugTex, p.x, p.y);
+
+	//const vector<iPoint>* path = App->pathfinding->GetLastPath();
+
+	/*for (uint i = 0; i < path->size(); ++i)
+	{
+		iPoint pos = App->map->MapToWorld(path->at(i).x, path->at(i).y);
+		App->render->Blit(debugTex, pos.x, pos.y);
 	}
-
-	int width = mousePos.x - startRectangle.x;
-	int height = mousePos.y - startRectangle.y;
-
-	// Select units by rectangle drawing
-	if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
-
-		// Draw the rectangle
-		SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
-		App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
-
-		// Select units within the rectangle
-		if (width < 0) {
-			mouseRect.x = mousePos.x;
-			mouseRect.w *= -1;
-		}
-		if (height < 0) {
-			mouseRect.y = mousePos.y;
-			mouseRect.h *= -1;
-		}
-
-		App->entities->SelectEntitiesWithinRectangle(mouseRect);
-	}
-
-	// Select a new goal for the selected units (single click or drag)
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
-
-		if (App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected()) == nullptr)
-
-			// Selected units will now behave as a group
-			App->movement->CreateGroupFromUnits(App->entities->GetLastUnitsSelected());
-
-		App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected())->DrawShapedGoal(mouseTile);
-	}
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
-
-		if (App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected()) == nullptr)
-
-			// Selected units will now behave as a group
-			App->movement->CreateGroupFromUnits(App->entities->GetLastUnitsSelected());
-
-		UnitGroup* group = App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected());
-
-		if (!group->SetShapedGoal())
-			group->SetGoal(mouseTile);
-	}
+	*/
 
 	DebugKeys();
 	CheckCameraMovement(dt);
@@ -265,6 +202,8 @@ bool j1Scene::Update(float dt)
 
 //	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
 //		App->win->scale -= 0.05f;
+
+
 
 	return ret;
 }
@@ -299,21 +238,6 @@ bool j1Scene::CleanUp()
 // Debug keys
 void j1Scene::DebugKeys()
 {
-	// Movement
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN)
-		isFrameByFrame = !isFrameByFrame;
-
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-		debugDrawMovement = !debugDrawMovement;
-
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
-		debugDrawPath = !debugDrawPath;
-
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
-		debugDrawMap = !debugDrawMap;
-	*/
-
 	// F1: start from the beginning of the first level
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
 		/*

@@ -8,8 +8,6 @@
 #include <string>
 using namespace std;
 
-#define RECTANGLE_MIN_AREA 5
-
 struct SDL_Texture;
 struct UILifeBar;
 struct UIWindow;
@@ -68,7 +66,6 @@ public:
 	bool LoadKeys(pugi::xml_node&);
 
 public:
-
 	// Camera
 	float up = false, down = false, left = false, right = false;
 	uint width = 0;
@@ -84,17 +81,7 @@ public:
 	ENTITY_TYPE GetAlphaBuilding();
 	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
 
-	// Movement
-	bool debugDrawMovement = true;
-	bool debugDrawPath = false;
-	bool debugDrawMap = false;
-
-	bool isFrameByFrame = false;
-
 private:
-
-	// Draw rectangle
-	iPoint startRectangle = { 0,0 };
 
 	//UI
 	UIButton * buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;

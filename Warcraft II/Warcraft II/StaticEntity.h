@@ -26,7 +26,7 @@ enum BuildingState
 	BuildingState_Normal,
 	BuildingState_LowFire,
 	BuildingState_HardFire,
-	BuildingState_Destroyed
+	BuildingState_Building
 };
 
 enum StaticEntitySize
@@ -48,7 +48,7 @@ class StaticEntity :public Entity
 {
 public:
 
-	StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener);
+	StaticEntity(fPoint pos, iPoint size, int maxLife, j1Module* listener);
 	virtual ~StaticEntity();
 	virtual void Draw(SDL_Texture* sprites);
 	virtual void Move(float dt) {}
@@ -57,7 +57,7 @@ public:
 	
 	void HandleInput(EntitiesEvent &EntityEvent);
 	bool MouseHover() const;
-	bool CheckBuildingState();
+	void CheckBuildingState();
 	uint GetConstructionTimer() const;
 	uint GetConstructionTime() const;
 	bool GetIsFinishedBuilt() const;

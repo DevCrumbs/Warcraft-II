@@ -5,15 +5,16 @@
 
 struct TrollAxethrowerInfo
 {
-	int currLife = 0;
-	uint maxLife = 0;
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class TrollAxethrower :public DynamicEntity
 {
 public:
 
-	TrollAxethrower(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TrollAxethrowerInfo& trollAxethrowerInfo, j1Module* listener);
+	TrollAxethrower(fPoint pos, const TrollAxethrowerInfo& trollAxethrowerInfo, j1Module* listener);
 	~TrollAxethrower() {};
 
 	void Move(float dt);

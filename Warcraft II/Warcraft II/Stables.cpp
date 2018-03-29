@@ -2,10 +2,12 @@
 
 #include "Stables.h"
 
-Stables::Stables(fPoint pos, iPoint size, int currLife, uint maxLife, const StablesInfo& stablesInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), stablesInfo(stablesInfo)
+Stables::Stables(fPoint pos, iPoint size, int maxLife, const StablesInfo& stablesInfo, j1Module* listener) :StaticEntity(pos, size, maxLife, listener), stablesInfo(stablesInfo)
 {
 	texArea = &stablesInfo.constructionPlanks1;
+	currentLife = maxLife;
 	this->constructionTimer.Start();
+	buildingState = BuildingState_Building;
 }
 
 void Stables::Move(float dt)
@@ -32,6 +34,8 @@ void Stables::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
 		texArea = &stablesInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000)
+	if (constructionTimer.Read() >= constructionTime * 1000) {
 		texArea = &stablesInfo.completeTexArea;
+		buildingState = BuildingState_Normal;
+	}
 }

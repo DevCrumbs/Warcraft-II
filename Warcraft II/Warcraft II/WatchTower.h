@@ -16,7 +16,7 @@ class WatchTower :public StaticEntity
 {
 public:
 
-	WatchTower(fPoint pos, iPoint size, int currLife, uint maxLife, const WatchTowerInfo& watchTowerInfo, j1Module* listener);
+	WatchTower(fPoint pos, iPoint size, int maxLife, const WatchTowerInfo& watchTowerInfo, j1Module* listener);
 	~WatchTower() {};
 
 	void Move(float dt);

@@ -11,10 +11,8 @@
 #define MAX_ACTIVE_PARTICLES 100
 
 struct SDL_Texture;
-
 struct Collider;
-struct ColliderGroup;
-enum ColliderType;
+enum COLLIDER_TYPE;
 
 struct Particle
 {
@@ -52,8 +50,8 @@ public:
 	bool Update(float dt);
 	bool CleanUp();
 
-	Particle* AddParticle(const Particle& particle, int x, int y, ColliderType colliderType = ColliderType_NoType, Uint32 delay = 0, fPoint speed = { 0,0 });
-	void OnCollision(Collider* c1, Collider* c2, CollisionState collisionState);
+	Particle* AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType = COLLIDER_NONE, Uint32 delay = 0, fPoint speed = { 0,0 });
+	void OnCollision(Collider* c1, Collider* c2);
 
 	void UpdateAnimations(const float dt);
 	void LoadAnimationsSpeed();

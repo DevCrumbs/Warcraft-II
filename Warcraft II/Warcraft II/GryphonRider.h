@@ -5,15 +5,16 @@
 
 struct GryphonRiderInfo
 {
-	int currLife = 0;
-	uint maxLife = 0;
+	iPoint size{ 0,0 };
+	uint life = 0u;
+	float speed = 0.0f;
 };
 
 class GryphonRider :public DynamicEntity
 {
 public:
 
-	GryphonRider(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GryphonRiderInfo& gryphonRiderInfo, j1Module* listener);
+	GryphonRider(fPoint pos, const GryphonRiderInfo& gryphonRiderInfo, j1Module* listener);
 	~GryphonRider() {};
 
 	void Move(float dt);
