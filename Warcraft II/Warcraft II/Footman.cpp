@@ -34,7 +34,10 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 =======
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 	this->footmanInfo.attackUp = info.attackUp;
@@ -51,7 +54,10 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 	LoadAnimationsSpeed();
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> Develompent
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 =======
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 }
@@ -60,7 +66,10 @@ void Footman::Move(float dt)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 =======
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 	// Save mouse position (world and map coords)
@@ -87,8 +96,11 @@ void Footman::Move(float dt)
 
 	// ---------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> Develompent
 =======
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 
 	// Is the unit dead?
 	if (currLife <= 0) {
@@ -264,6 +276,9 @@ void Footman::UnitStateMachine(float dt)
 	// The unit stops attacking this unit if:
 	// a) The sight distance is no longer satisfied
 	// b) The other unit is killed
+<<<<<<< HEAD
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
+=======
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 
 	break;

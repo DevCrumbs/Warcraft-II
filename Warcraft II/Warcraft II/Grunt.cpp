@@ -34,10 +34,13 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	LoadAnimationsSpeed();
 >>>>>>> Develompent
 =======
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 	this->gruntInfo.attackUp = info.attackUp;
 	this->gruntInfo.attackDown = info.attackDown;
 	this->gruntInfo.attackLeft = info.attackLeft;
@@ -51,6 +54,9 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	this->gruntInfo.deathDown = info.deathDown;
 
 	LoadAnimationsSpeed();
+<<<<<<< HEAD
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
+=======
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 }
 
@@ -58,7 +64,10 @@ void Grunt::Move(float dt)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 =======
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 	// Save mouse position (world and map coords)
@@ -92,6 +101,7 @@ void Grunt::Move(float dt)
 	if (singleUnit != nullptr)
 		if ((isSelected && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN) || singleUnit->wakeUp)
 			unitState = UnitState_Walk;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	UnitStateMachine(dt);
@@ -127,6 +137,31 @@ void Grunt::DebugDrawSelected()
 		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
 		App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
 	}
+=======
+
+	UnitStateMachine(dt);
+
+	// Update animations
+	UpdateAnimationsSpeed(dt);
+	ChangeAnimation();
+
+	// Update colliders
+	UpdateEntityColliderPos();
+	UpdateRhombusColliderPos(sightRadiusCollider, unitInfo.sightRadius);
+	UpdateRhombusColliderPos(attackRadiusCollider, unitInfo.attackRadius);
+}
+
+void Grunt::Draw(SDL_Texture* sprites)
+{
+	if (animation != nullptr) {
+	
+		fPoint offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
+	}
+
+	if (isSelected)
+		DebugDrawSelected();
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 }
 >>>>>>> Develompent
 =======
@@ -207,6 +242,57 @@ void Grunt::UnitStateMachine(float dt)
 
 // -------------------------------------------------------------
 
+void Grunt::DebugDrawSelected()
+{
+	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
+	App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+
+	for (uint i = 0; i < unitInfo.priority; ++i) {
+		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
+		App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	}
+}
+
+void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
+{
+	// An player is within the sight of this enemy unit
+	if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) {
+		//LOG("ATTACK THE ALLIANCE!");
+	}
+}
+
+// State machine
+void Grunt::UnitStateMachine(float dt)
+{
+	switch (unitState) {
+
+	case UnitState_Idle:
+
+		break;
+
+	case UnitState_Walk:
+
+		if (App->scene->isFrameByFrame) {
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+				App->movement->MoveUnit(this, dt);
+		}
+		else
+			App->movement->MoveUnit(this, dt);
+
+		break;
+
+	case UnitState_Die:
+
+		// Remove the corpse when a certain time is reached
+		if (deadTimer.ReadSec() >= 5.0f)
+			isRemove = true;
+
+		break;
+	}
+}
+
+// -------------------------------------------------------------
+
 // Animations
 void Grunt::LoadAnimationsSpeed()
 {
@@ -228,6 +314,7 @@ void Grunt::LoadAnimationsSpeed()
 	attackUpRightSpeed = gruntInfo.attackUpRight.speed;
 	attackDownLeftSpeed = gruntInfo.attackDownLeft.speed;
 	attackDownRightSpeed = gruntInfo.attackDownRight.speed;
+<<<<<<< HEAD
 
 	deathUpSpeed = gruntInfo.deathUp.speed;
 	deathDownSpeed = gruntInfo.deathDown.speed;
@@ -260,6 +347,40 @@ void Grunt::UpdateAnimationsSpeed(float dt)
 
 bool Grunt::ChangeAnimation()
 {
+=======
+
+	deathUpSpeed = gruntInfo.deathUp.speed;
+	deathDownSpeed = gruntInfo.deathDown.speed;
+}
+
+void Grunt::UpdateAnimationsSpeed(float dt)
+{
+	gruntInfo.idle.speed = idleSpeed * dt;
+	gruntInfo.up.speed = upSpeed * dt;
+	gruntInfo.down.speed = downSpeed * dt;
+	gruntInfo.left.speed = leftSpeed * dt;
+	gruntInfo.right.speed = rightSpeed * dt;
+	gruntInfo.upLeft.speed = upLeftSpeed * dt;
+	gruntInfo.upRight.speed = upRightSpeed * dt;
+	gruntInfo.downLeft.speed = downLeftSpeed * dt;
+	gruntInfo.downRight.speed = downRightSpeed * dt;
+
+	gruntInfo.attackUp.speed = attackUpSpeed * dt;
+	gruntInfo.attackDown.speed = attackDownSpeed * dt;
+	gruntInfo.attackLeft.speed = attackLeftSpeed * dt;
+	gruntInfo.attackRight.speed = attackRightSpeed * dt;
+	gruntInfo.attackUpLeft.speed = attackUpLeftSpeed * dt;
+	gruntInfo.attackUpRight.speed = attackUpRightSpeed * dt;
+	gruntInfo.attackDownLeft.speed = attackDownLeftSpeed * dt;
+	gruntInfo.attackDownRight.speed = attackDownRightSpeed * dt;
+
+	gruntInfo.deathUp.speed = deathUpSpeed * dt;
+	gruntInfo.deathDown.speed = deathDownSpeed * dt;
+}
+
+bool Grunt::ChangeAnimation()
+{
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 	bool ret = false;
 
 	// The unit is dead

@@ -263,7 +263,10 @@
     </ClInclude>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 =======
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
     <ClInclude Include="j1Menu.h">
@@ -273,7 +276,10 @@
       <Filter>Modules\UIElements</Filter>
     </ClInclude>
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> Develompent
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 =======
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
   </ItemGroup>
@@ -454,7 +460,10 @@
     </ClCompile>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 =======
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
     <ClCompile Include="j1Menu.cpp">
@@ -464,7 +473,10 @@
       <Filter>Modules\UIElements</Filter>
     </ClCompile>
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> Develompent
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 =======
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
   </ItemGroup>

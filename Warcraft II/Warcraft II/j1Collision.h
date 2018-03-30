@@ -66,11 +66,15 @@ private:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Collider* colliders[MAX_COLLIDERS];
 	bool debug = false;
 =======
 	list<ColliderGroup*> colliderGroups;
 >>>>>>> Develompent
+=======
+	list<ColliderGroup*> colliderGroups;
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 =======
 	list<ColliderGroup*> colliderGroups;
 >>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
