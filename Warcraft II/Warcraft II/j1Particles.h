@@ -29,8 +29,6 @@ struct Particle
 	iPoint collisionSize = { 0,0 };
 	fPoint destination = { 0,0 };
 
-	bool left = true, right = true, up = true, down = true;
-
 	bool isDeleted = false;
 
 	Particle();
@@ -60,7 +58,7 @@ public:
 
 private:
 
-	std::string fireTexName;
+	std::string particlesTexName;
 	SDL_Texture* fireText = nullptr;
 
 	Particle* active[MAX_ACTIVE_PARTICLES];
@@ -69,7 +67,7 @@ private:
 public:
 	Particle lowFire;
 	Particle hardFire;
-
+	Particle parchmentAnimation;
 };
 
 #endif //__j1PARTICLES_H__

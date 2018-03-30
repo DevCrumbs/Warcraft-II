@@ -80,7 +80,7 @@ public:
 	UIInputText* CreateUIInputText(iPoint localPos, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UICursor* CreateUICursor(UICursor_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 
-	bool DestroyElement(UIElement* elem);
+	bool DestroyElement(UIElement** elem);
 	bool ClearAllUI();
 	bool ClearMapTextures();
 

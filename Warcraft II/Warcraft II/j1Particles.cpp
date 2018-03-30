@@ -34,29 +34,35 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	
 	//Fire
 	pugi::xml_node spritesheets = config.child("spritesheets");
-	fireTexName = spritesheets.child("sprite").attribute("name").as_string();
+	particlesTexName = spritesheets.child("sprite").attribute("name").as_string();
 
 
 	//spritesheets = config.child("fire");
 
 	//Footman animations
-	pugi::xml_node fire1Animation = config.child("fire")/*.child("animations")*/;
+	pugi::xml_node fireAnimation = config.child("fire");
 	pugi::xml_node currentAnimation;
 
-	//Up animation Footman
-	currentAnimation = fire1Animation.child("low");
+	//Buildings Fire
+	currentAnimation = fireAnimation.child("low");
 	lowFire.anim.speed = currentAnimation.attribute("speed").as_float();
 	lowFire.anim.loop = currentAnimation.attribute("loop").as_bool();
-	lowFire.life = currentAnimation.attribute("life").as_int();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		lowFire.anim.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	currentAnimation = fire1Animation.child("hard");
+	currentAnimation = fireAnimation.child("hard");
 	hardFire.anim.speed = currentAnimation.attribute("speed").as_float();
 	hardFire.anim.loop = currentAnimation.attribute("loop").as_bool();
-	hardFire.life = currentAnimation.attribute("life").as_int();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		hardFire.anim.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
+	//parchment
+	pugi::xml_node parchmentAnim = config.child("parchment");
+	parchmentAnimation.anim.speed = parchmentAnim.attribute("speed").as_float();
+	parchmentAnimation.anim.loop = parchmentAnim.attribute("loop").as_bool();
+	for (parchmentAnim = parchmentAnim.child("frame"); parchmentAnim; parchmentAnim = parchmentAnim.next_sibling("frame")) {
+		parchmentAnimation.anim.PushBack({ parchmentAnim.attribute("x").as_int(), parchmentAnim.attribute("y").as_int(), parchmentAnim.attribute("w").as_int(), parchmentAnim.attribute("h").as_int() });
 	}
 
 	return ret;
@@ -74,7 +80,7 @@ bool j1Particles::Start()
 {
 	bool ret = true;
 
-	fireText = App->tex->Load(fireTexName.data());
+	fireText = App->tex->Load(particlesTexName.data());
 	LOG("Loading particles");
 
 	return ret;

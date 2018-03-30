@@ -15,6 +15,7 @@ class UIButton;
 //class Window;
 //class InputText;
 class UISlider;
+struct Particle;
 
 enum MenuActions
 {
@@ -73,6 +74,7 @@ public:
 
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue);
 	void UpdateSlider(SliderStruct &sliderStruct);
+
 private:
 
 	//Main Menu
@@ -89,6 +91,7 @@ private:
 	UIButton* ReturnButt = nullptr;
 	UILabel*  ReturnLabel = nullptr;
 
+	Particle* parchment;
 
 	MenuActions menuActions;
 

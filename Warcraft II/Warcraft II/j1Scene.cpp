@@ -542,28 +542,28 @@ void j1Scene::LoadBuildingMenu()
 
 void j1Scene::UnLoadBuildingMenu()
 {
-	App->gui->DestroyElement(buildingMenu);
-	App->gui->DestroyElement(chickenFarmButton);
-	App->gui->DestroyElement(chickenFarmLabel);
-	App->gui->DestroyElement(elvenLumberButton);
-	App->gui->DestroyElement(elvenLumberLabel);
-	App->gui->DestroyElement(blackSmithButton);
-	App->gui->DestroyElement(blackSmithLabel);
-	App->gui->DestroyElement(stablesButton);
-	App->gui->DestroyElement(stablesLabel);
-	App->gui->DestroyElement(churchButton);
-	App->gui->DestroyElement(churchLabel);
-	App->gui->DestroyElement(gryphonAviaryButton);
-	App->gui->DestroyElement(gryphonAviaryLabel);
-	App->gui->DestroyElement(mageTowerButton);
-	App->gui->DestroyElement(mageTowerLabel);
-	App->gui->DestroyElement(scoutTowerButton);
-	App->gui->DestroyElement(scoutTowerLabel);
-	App->gui->DestroyElement(guardTowerButton);
-	App->gui->DestroyElement(guardTowerLabel);
-	App->gui->DestroyElement(cannonTowerButton);
-	App->gui->DestroyElement(cannonTowerLabel);
-	buildingMenuOn = false;
+	App->gui->DestroyElement((UIElement**)&buildingMenu);
+	App->gui->DestroyElement((UIElement**)&chickenFarmButton);
+	App->gui->DestroyElement((UIElement**)&chickenFarmLabel);
+	App->gui->DestroyElement((UIElement**)&elvenLumberButton);
+	App->gui->DestroyElement((UIElement**)&elvenLumberLabel);
+	App->gui->DestroyElement((UIElement**)&blackSmithButton);
+	App->gui->DestroyElement((UIElement**)&blackSmithLabel);
+	App->gui->DestroyElement((UIElement**)&stablesButton);
+	App->gui->DestroyElement((UIElement**)&stablesLabel);
+	App->gui->DestroyElement((UIElement**)&churchButton);
+	App->gui->DestroyElement((UIElement**)&churchLabel);
+	App->gui->DestroyElement((UIElement**)&gryphonAviaryButton);
+	App->gui->DestroyElement((UIElement**)&gryphonAviaryLabel);
+	App->gui->DestroyElement((UIElement**)&mageTowerButton);
+	App->gui->DestroyElement((UIElement**)&mageTowerLabel);
+	App->gui->DestroyElement((UIElement**)&scoutTowerButton);
+	App->gui->DestroyElement((UIElement**)&scoutTowerLabel);
+	App->gui->DestroyElement((UIElement**)&guardTowerButton);
+	App->gui->DestroyElement((UIElement**)&guardTowerLabel);
+	App->gui->DestroyElement((UIElement**)&cannonTowerButton);
+	App->gui->DestroyElement((UIElement**)&cannonTowerLabel);
+	buildingMenuOn = false;	 
 
 }
 

@@ -257,11 +257,12 @@ UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIEleme
 	return cursor;
 }
 
-bool j1Gui::DestroyElement(UIElement* elem)
+bool j1Gui::DestroyElement(UIElement** elem)
 {
 	bool ret = false;
 
-	addedElementUI.remove(elem);
+	addedElementUI.remove(*elem);
+	*elem = nullptr;
 
 	return ret;
 }

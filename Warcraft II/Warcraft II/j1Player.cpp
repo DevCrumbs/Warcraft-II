@@ -132,6 +132,18 @@ bool j1Player::Update(float dt) {
 		}
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
+		parchment = App->particles->AddParticle(App->particles->parchmentAnimation, App->render->GetMidCameraPos().x - 100, App->render->GetMidCameraPos().y - 125);
+	
+	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
+		if (parchment != nullptr) {
+			parchment->isDeleted = true;
+			parchment = nullptr;
+		}
+	}
+
+
+	parchment->anim.Finished();
 
 	return true;
 }
@@ -426,10 +438,10 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 void j1Player::DeleteEntitiesMenu() {
 
 	if (entitySelectedStats.entitySelected != nullptr) {
-		App->gui->DestroyElement(entitySelectedStats.HP);
-		App->gui->DestroyElement(entitySelectedStats.entityName);
-		App->gui->DestroyElement(entitySelectedStats.entityIcon);
-		App->gui->DestroyElement(entitySelectedStats.lifeBar);
+		App->gui->DestroyElement((UIElement**)&entitySelectedStats.HP);
+		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityName);
+		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityIcon);
+		App->gui->DestroyElement((UIElement**)&entitySelectedStats.lifeBar);
 		entitySelectedStats.entitySelected = nullptr;
 		if(entitySelectedStats.entitySelected == barracks)
 			DestroyBarracksButtons();
@@ -462,7 +474,7 @@ void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEnti
 
 void j1Player::DestroyHoverButton(Entity* ent) {
 	if (hoverButtonStruct.currentEntity == ent || hoverButtonStruct.prevEntity == ent) {
-		App->gui->DestroyElement(hoverButtonStruct.hoverButton);
+		App->gui->DestroyElement((UIElement**)&hoverButtonStruct.hoverButton);
 		hoverButtonStruct.currentEntity = nullptr;
 	}
 }
@@ -484,8 +496,8 @@ void j1Player::CreateBarracksButtons()
 
 void j1Player::DestroyBarracksButtons()
 {
-	App->gui->DestroyElement(produceFootmanButton);
-	App->gui->DestroyElement(produceElvenArcherButton);
+	App->gui->DestroyElement((UIElement**)&produceFootmanButton);
+	App->gui->DestroyElement((UIElement**)&produceElvenArcherButton);
 }
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 

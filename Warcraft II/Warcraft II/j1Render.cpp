@@ -146,6 +146,10 @@ iPoint j1Render::ScreenToWorld(int x, int y) const
 	return ret;
 }
 
+fPoint j1Render::GetMidCameraPos() const {
+	return { (camera.w / 2) - camera.x, (camera.h / 2) - camera.y };
+}
+
 // Blit to screen
 bool j1Render::Blit(const SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle, int pivot_x, int pivot_y) const
 {

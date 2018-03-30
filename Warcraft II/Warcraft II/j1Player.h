@@ -25,7 +25,7 @@ struct UILifeBar;
 class Entity;
 
 class StaticEntity;
-
+struct Particle;
 struct HoverButton
 {
 	UIButton* hoverButton = nullptr;
@@ -140,6 +140,8 @@ private:
 	UIButton *produceFootmanButton, *produceElvenArcherButton;
 	
 	list<UIElement*> UIMenuInfoList;
+
+	Particle* parchment;
 
 };
 

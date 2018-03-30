@@ -14,6 +14,7 @@
 #include "j1Collision.h"
 #include "j1Gui.h"
 #include "j1Fonts.h"
+#include "j1Particles.h"
 
 #include "j1Gui.h"
 #include "UIImage.h"
@@ -70,7 +71,16 @@ bool j1Menu::PreUpdate()
 bool j1Menu::Update(float dt)
 {
 	App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 100, 100, 100, 255);
-
+	
+	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
+		parchment = App->particles->AddParticle(App->particles->parchmentAnimation, (App->render->camera.w / 2) - 100, (App->render->camera.h / 2) - 125);
+	
+	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
+		if (parchment != nullptr) {
+			parchment->isDeleted = true;
+			parchment = nullptr;
+		}
+	}
 	return true;
 }
 
@@ -178,16 +188,41 @@ void j1Menu::CreateSettings() {
 
 }
 
-void j1Menu::DeleteSettings() {
+void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue) {
 
-	App->gui->DestroyElement(ReturnButt);
-	App->gui->DestroyElement(ReturnLabel);
-	App->gui->DestroyElement(AudioFX.name);
-	App->gui->DestroyElement(AudioFX.value);
-	App->gui->DestroyElement(AudioFX.slider);
-	App->gui->DestroyElement(AudioMusic.name);
-	App->gui->DestroyElement(AudioMusic.value);
-	App->gui->DestroyElement(AudioMusic.slider);
+	UILabel_Info labelInfo;
+	UISlider_Info sliderInfo;
+	sliderInfo.button_slider_area = { 0,0,30,30 };
+	sliderInfo.tex_area = { 0,130,400,30 };
+	sliderStruct.slider = App->gui->CreateUISlider(pos, sliderInfo, this);
+	sliderStruct.slider->SetRelativePos(relativeNumberValue);
+
+	labelInfo.text = nameText;
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+	int x = (sliderInfo.tex_area.w / 2) + sliderStruct.slider->GetLocalPos().x;
+	int y = sliderStruct.slider->GetLocalPos().y;
+	sliderStruct.name = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+
+	static char fpsText[5];
+	sprintf_s(fpsText, 5, "%.0f", relativeNumberValue * 100);
+	labelInfo.text = fpsText;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	x = sliderInfo.tex_area.w + sliderStruct.slider->GetLocalPos().x + 10;
+	y = sliderStruct.slider->GetLocalPos().y + (sliderInfo.tex_area.h / 2);
+	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+
+
+}
+
+void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
+	float volume = sliderStruct.slider->GetRelativePosition();
+	App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
+	static char vol_text[4];
+	sprintf_s(vol_text, 4, "%.0f", volume * 100);
+	sliderStruct.value->SetText(vol_text);
+	LOG("%f", volume);
 }
 
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -240,49 +275,24 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 }
 void j1Menu::DeteleMenu() {
 
-	App->gui->DestroyElement(PlayButt);
-	App->gui->DestroyElement(PlayLabel);
-	App->gui->DestroyElement(ExitButt);
-	App->gui->DestroyElement(ExitLabel);
-	App->gui->DestroyElement(SettingsButt);
-	App->gui->DestroyElement(SettingsLabel);
+	App->gui->DestroyElement((UIElement**)&PlayButt);
+	App->gui->DestroyElement((UIElement**)&PlayLabel);
+	App->gui->DestroyElement((UIElement**)&ExitButt);
+	App->gui->DestroyElement((UIElement**)&ExitLabel);
+	App->gui->DestroyElement((UIElement**)&SettingsButt);
+	App->gui->DestroyElement((UIElement**)&SettingsLabel);
 	
 }
 
+void j1Menu::DeleteSettings() {
 
-void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue) {
-	
-	UILabel_Info labelInfo;
-	UISlider_Info sliderInfo;
-	sliderInfo.button_slider_area = { 0,0,30,30 };
-	sliderInfo.tex_area = { 0,130,400,30 };
-	sliderStruct.slider = App->gui->CreateUISlider(pos, sliderInfo, this);
-	sliderStruct.slider->SetRelativePos(relativeNumberValue);
-
-	labelInfo.text = nameText;
-	labelInfo.fontName = FONT_NAME_WARCRAFT20;
-	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
-	int x = (sliderInfo.tex_area.w / 2) + sliderStruct.slider->GetLocalPos().x;
-	int y = sliderStruct.slider->GetLocalPos().y;
-	sliderStruct.name = App->gui->CreateUILabel({ x, y }, labelInfo, this);
-
-	static char fpsText[5];
-	sprintf_s(fpsText, 5, "%.0f", relativeNumberValue * 100);
-	labelInfo.text = fpsText;
-	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
-	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	x = sliderInfo.tex_area.w + sliderStruct.slider->GetLocalPos().x + 10;
-	y = sliderStruct.slider->GetLocalPos().y + (sliderInfo.tex_area.h / 2);
-	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, this);
-
-	
+	App->gui->DestroyElement((UIElement**)&ReturnButt);
+	App->gui->DestroyElement((UIElement**)&ReturnLabel);
+	App->gui->DestroyElement((UIElement**)&AudioFX.name);
+	App->gui->DestroyElement((UIElement**)&AudioFX.value);
+	App->gui->DestroyElement((UIElement**)&AudioFX.slider);
+	App->gui->DestroyElement((UIElement**)&AudioMusic.name);
+	App->gui->DestroyElement((UIElement**)&AudioMusic.value);
+	App->gui->DestroyElement((UIElement**)&AudioMusic.slider);
 }
 
-void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
-	float volume = sliderStruct.slider->GetRelativePosition();
-	App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
-	static char vol_text[4];
-	sprintf_s(vol_text, 4, "%.0f", volume * 100);
-	sliderStruct.value->SetText(vol_text);
-	LOG("%f", volume);
-}
