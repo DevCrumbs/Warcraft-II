@@ -61,8 +61,12 @@ public:
 
 private:
 
+<<<<<<< HEAD
 	Collider* colliders[MAX_COLLIDERS];
 	bool debug = false;
+=======
+	list<ColliderGroup*> colliderGroups;
+>>>>>>> Develompent
 };
 
 #endif //__j1COLLISION_H__

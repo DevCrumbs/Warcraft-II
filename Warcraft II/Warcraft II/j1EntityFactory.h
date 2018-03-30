@@ -61,6 +61,7 @@ public:
 	bool Start();
 	bool PreUpdate();
 	bool Update(float dt);
+	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
 	bool PostUpdate();
 	bool CleanUp();
 

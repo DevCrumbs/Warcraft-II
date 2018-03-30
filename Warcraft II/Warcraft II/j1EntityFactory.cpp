@@ -481,6 +481,26 @@ bool j1EntityFactory::Update(float dt)
 	return ret;
 }
 
+void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
+{
+	// Check for collisions
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	while (it != activeDynamicEntities.end()) {
+
+		// - SightRadiusCollider and AttackRadiusCollider call their owner as the c1 Collider
+		if ((*it)->GetSightRadiusCollider() == c1 || (*it)->GetAttackRadiusCollider() == c1) {
+
+			(*it)->OnCollision(c1, c2, collisionState);
+			break;
+		}
+
+		it++;
+	}
+
+	// Do the same for staticEntities
+}
+
 void j1EntityFactory::Draw()
 {
 	// Blit active entities

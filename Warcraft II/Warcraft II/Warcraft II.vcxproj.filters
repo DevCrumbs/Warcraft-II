@@ -261,6 +261,15 @@
     <ClInclude Include="UILifeBar.h">
       <Filter>Modules\UIElements</Filter>
     </ClInclude>
+<<<<<<< HEAD
+=======
+    <ClInclude Include="j1Menu.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="UISlider.h">
+      <Filter>Modules\UIElements</Filter>
+    </ClInclude>
+>>>>>>> Develompent
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -437,5 +446,14 @@
     <ClCompile Include="UILifeBar.cpp">
       <Filter>Modules\UIElements</Filter>
     </ClCompile>
+<<<<<<< HEAD
+=======
+    <ClCompile Include="j1Menu.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="UISlider.cpp">
+      <Filter>Modules\UIElements</Filter>
+    </ClCompile>
+>>>>>>> Develompent
   </ItemGroup>
 </Project>
