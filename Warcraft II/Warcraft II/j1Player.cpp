@@ -129,6 +129,15 @@ bool j1Player::Update(float dt) {
 			entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
 			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
 			entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17});
+			if (entitySelectedStats.entitySelected == barracks) {
+				if (barracksUpgrade && stables != nullptr && producePaladinButton == nullptr) {
+					UIButton_Info produceButtonInfo;
+					produceButtonInfo.normalTexArea = { 444,244,50,41 };
+					produceButtonInfo.hoverTexArea = { 699,244,50,41 };
+					produceButtonInfo.pressedTexArea = { 954,244,50,41 };
+					producePaladinButton = App->gui->CreateUIButton({ 319, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+				}
+			}
 		}
 	}
 
@@ -325,11 +334,17 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		else if (staticEntity->staticEntityType == EntityType_STABLES)
 			MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 
-		else if (staticEntity->staticEntityType == EntityType_BARRACKS)
-			MakeEntitiesMenu(ent->GetStringLife(), "Barracks", { 241,160,50,41 }, ent);
+		else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->buildingState == BuildingState_Normal)
+			MakeEntitiesMenu(ent->GetStringLife(), "Barracks", { 546,160,50,41 }, ent);
 
-		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL)
-			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 241,160,50,41 }, ent);
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade && staticEntity->buildingState == BuildingState_Normal)
+			MakeEntitiesMenu(ent->GetStringLife(), "Castle", { 546,202,50,41 }, ent);
+
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade && staticEntity->buildingState == BuildingState_Normal)
+			MakeEntitiesMenu(ent->GetStringLife(), "Keep", { 597,202,50,41 }, ent);
+
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal)
+			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
 	
 		break;
 	case EntitiesEvent_HOVER:
@@ -419,11 +434,28 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	if (entityName_text == "Barracks") {
 		CreateBarracksButtons();
 	}
+	if (entityName_text == "Gryphon Aviary" && gryphonAviary->buildingState == BuildingState_Normal) {
+		CreateGryphonAviaryButtons();
+	}
+	if (entityName_text == "Mage Tower" && mageTower->buildingState == BuildingState_Normal) {
+		CreateMageTowerButtons();
+	}
 
 	entitySelectedStats.entitySelected = currentEntity;
 }
 
 void j1Player::DeleteEntitiesMenu() {
+
+	if (entitySelectedStats.entitySelected == barracks) {
+		DestroyUIElem(produceElvenArcherButton);
+		DestroyUIElem(produceFootmanButton);
+		DestroyUIElem(producePaladinButton);
+	}
+
+	else if (entitySelectedStats.entitySelected == gryphonAviary)
+		DestroyUIElem(produceGryphonRiderButton);
+	else if (entitySelectedStats.entitySelected == mageTower)
+		DestroyUIElem(produceMageButton);
 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		App->gui->DestroyElement(entitySelectedStats.HP);
@@ -431,8 +463,6 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement(entitySelectedStats.entityIcon);
 		App->gui->DestroyElement(entitySelectedStats.lifeBar);
 		entitySelectedStats.entitySelected = nullptr;
-		if(entitySelectedStats.entitySelected == barracks)
-			DestroyBarracksButtons();
 	}
 }
 
@@ -469,28 +499,52 @@ void j1Player::DestroyHoverButton(Entity* ent) {
 
 void j1Player::CreateBarracksButtons()
 {
-	UIButton_Info produceFootmanButtonInfo;
-	produceFootmanButtonInfo.normalTexArea = { 241,244,50,41 };
-	produceFootmanButtonInfo.hoverTexArea = { 496,244,50,41 };
-	produceFootmanButtonInfo.pressedTexArea = { 751,244,50,41 };
-	produceFootmanButton = App->gui->CreateUIButton({ 217, 2 }, produceFootmanButtonInfo, this, (UIElement*)App->scene->entitiesStats);
-
-	UIButton_Info produceElvenArcherButtonInfo;
-	produceElvenArcherButtonInfo.normalTexArea = { 292,244,50,41 };
-	produceElvenArcherButtonInfo.hoverTexArea = { 547,244,50,41 };
-	produceElvenArcherButtonInfo.pressedTexArea = { 802,244,50,41 };
-	produceElvenArcherButton = App->gui->CreateUIButton({ 269, 2 }, produceElvenArcherButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+	CreateSimpleButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 217, 2 }, produceFootmanButton);
+	CreateSimpleButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 268, 2 }, produceElvenArcherButton);
+	if (barracksUpgrade && stables != nullptr && stables->buildingState == BuildingState_Normal)
+		CreateSimpleButton({ 444,244,50,41 }, { 699, 244, 50, 41 }, { 954,244,50,41 }, { 319, 2 }, producePaladinButton);
 }
 
-void j1Player::DestroyBarracksButtons()
+void j1Player::CreateGryphonAviaryButtons()
 {
-	App->gui->DestroyElement(produceFootmanButton);
-	App->gui->DestroyElement(produceElvenArcherButton);
+	CreateSimpleButton({ 648,286,50,41 }, { 699, 286, 50, 41 }, { 750,286,50,41 }, { 217, 2 }, produceGryphonRiderButton);
+}
+
+void j1Player::CreateMageTowerButtons()
+{
+	CreateSimpleButton({ 342,244,50,41 }, { 597, 244, 50, 41 }, { 852,244,50,41 }, { 217, 2 }, produceMageButton);
+}
+
+void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) {
+
+	UIButton_Info infoButton;
+
+	infoButton.normalTexArea = normal;
+	infoButton.hoverTexArea = hover;
+	infoButton.pressedTexArea = pressed;
+	button = App->gui->CreateUIButton(pos, infoButton, this, (UIElement*)App->scene->entitiesStats);
+
+}
+
+void j1Player::DestroyUIElem(UIElement* elem) {
+	if (elem != nullptr) {
+		App->gui->DestroyElement(elem);
+		elem = nullptr;
+	}
 }
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
 {
 	UnitInfo unitInfo;
+	FootmanInfo footmanInfo;
+	ElvenArcherInfo elvenArcherInfo;
+	MageInfo mageInfo;
+	PaladinInfo paladinInfo;
+	fPoint barracksPos = barracks->GetPos();
+	fPoint mageTowerPos = { 0.0,0.0 };
+	if (mageTower != nullptr) {
+		mageTowerPos = mageTower->GetPos();
+	}
 
 	switch (UIevent)
 	{
@@ -513,14 +567,27 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		}
 		else if (hoverCheck == HoverCheck_Upgrate)
 		{
-			//Use hoverButtonStruct
-			//TODO JOAN
+			if (hoverButtonStruct.currentEntity == barracks) {
+				barracksUpgrade = true;
+			}
+			if (hoverButtonStruct.currentEntity == townHall && townHallUpgrade) {
+				keepUpgrade = true;
+			}
+			if (hoverButtonStruct.currentEntity == townHall) {
+				townHallUpgrade = true;
+			}
 		}
-		if (UIelem == produceFootmanButton) {			
-			App->entities->AddEntity(EntityType_FOOTMAN, { 100, 100 }, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
+		if (UIelem == produceFootmanButton) {
+			App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)footmanInfo, unitInfo);
 		}
 		if (UIelem == produceElvenArcherButton) {
-			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { 100, 100 }, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
+			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)elvenArcherInfo, unitInfo);
+		}
+		if (UIelem == produceMageButton && mageTower != nullptr) {
+			App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)mageInfo, unitInfo);
+		}
+		if (UIelem == producePaladinButton) {
+			App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)paladinInfo, unitInfo);
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:

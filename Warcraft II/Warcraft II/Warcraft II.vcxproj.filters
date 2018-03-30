@@ -267,6 +267,12 @@
     <ClInclude Include="UISlider.h">
       <Filter>Modules\UIElements</Filter>
     </ClInclude>
+    <ClInclude Include="j1Movement.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Pathmanager.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -448,6 +454,12 @@
     </ClCompile>
     <ClCompile Include="UISlider.cpp">
       <Filter>Modules\UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Movement.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Pathmanager.cpp">
+      <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
