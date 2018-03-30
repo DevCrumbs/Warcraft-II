@@ -190,56 +190,6 @@ bool j1Scene::Update(float dt)
 	// Draw
 	App->map->Draw(); // map
 	App->entities->Draw(); // entities
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-	App->collision->DebugDraw();
-	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
-
-	// Movement															 // Select units by mouse click
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
-		startRectangle = mousePos;
->>>>>>> Develompent
-=======
-	App->collision->DebugDraw();
-	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
-
-	// Movement															 // Select units by mouse click
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
-		startRectangle = mousePos;
-
-		Entity* entity = App->entities->IsEntityOnTile(mouseTile);
-
-		if (entity != nullptr)
-			App->entities->SelectEntity(entity);
-		else
-			App->entities->UnselectAllEntities();
-	}
-
-	int width = mousePos.x - startRectangle.x;
-	int height = mousePos.y - startRectangle.y;
-
-	// Select units by rectangle drawing
-	if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
-
-		// Draw the rectangle
-		SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
-		App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
-
-		// Select units within the rectangle
-		if (width < 0) {
-			mouseRect.x = mousePos.x;
-			mouseRect.w *= -1;
-		}
-		if (height < 0) {
-			mouseRect.y = mousePos.y;
-			mouseRect.h *= -1;
-		}
-
-=======
-	App->collision->DebugDraw();
 	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 
 	// Movement															 // Select units by mouse click
@@ -274,7 +224,6 @@ bool j1Scene::Update(float dt)
 			mouseRect.h *= -1;
 		}
 
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 		App->entities->SelectEntitiesWithinRectangle(mouseRect);
 	}
 

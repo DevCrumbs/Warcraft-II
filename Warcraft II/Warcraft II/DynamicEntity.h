@@ -108,7 +108,6 @@ public:
 public:
 
 	ENTITY_TYPE dynamicEntityType = EntityType_NONE;
-	bool isSpawned = false;
 
 protected:
 

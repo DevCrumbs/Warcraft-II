@@ -7,8 +7,8 @@
   </app>
 	
   <renderer>
-    <vsync value="true"/>
-    <CapFrames value="60"/>
+    <vsync value="false"/>
+    <CapFrames value="6000"/>
   </renderer>
 
   <window>

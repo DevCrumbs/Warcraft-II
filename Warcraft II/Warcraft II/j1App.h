@@ -29,24 +29,9 @@ class j1Fonts;
 class j1Gui;
 class j1Player;
 class j1Console;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 class j1Menu;
 class j1Movement;
 class j1PathManager;
->>>>>>> Develompent
-=======
-class j1Menu;
-class j1Movement;
-class j1PathManager;
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
-=======
-class j1Menu;
-class j1Movement;
-class j1PathManager;
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 
 class j1App
 {
@@ -133,24 +118,9 @@ public:
 	j1Gui*						gui = nullptr;
 	j1Player*					player = nullptr;
 	j1Console*					console = nullptr;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 	j1Menu*						menu = nullptr;
 	j1Movement*					movement = nullptr;
 	j1PathManager*				pathmanager = nullptr;
->>>>>>> Develompent
-=======
-	j1Menu*						menu = nullptr;
-	j1Movement*					movement = nullptr;
-	j1PathManager*				pathmanager = nullptr;
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
-=======
-	j1Menu*						menu = nullptr;
-	j1Movement*					movement = nullptr;
-	j1PathManager*				pathmanager = nullptr;
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 
 private:
 

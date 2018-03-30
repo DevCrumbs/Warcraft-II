@@ -149,18 +149,7 @@
     <ClInclude Include="j1Movement.h" />
     <ClInclude Include="j1Particles.h" />
     <ClInclude Include="j1Pathfinding.h" />
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     <ClInclude Include="j1Pathmanager.h" />
->>>>>>> Develompent
-=======
-    <ClInclude Include="j1Pathmanager.h" />
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
-=======
-    <ClInclude Include="j1Pathmanager.h" />
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
     <ClInclude Include="j1PerfTimer.h" />
     <ClInclude Include="j1Player.h" />
     <ClInclude Include="j1Render.h" />
@@ -224,32 +213,11 @@
     <ClCompile Include="j1Input.cpp" />
     <ClCompile Include="j1Main.cpp" />
     <ClCompile Include="j1Map.cpp" />
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <ClCompile Include="j1Particles.cpp" />
-    <ClCompile Include="j1Pathfinding.cpp" />
-=======
     <ClCompile Include="j1Menu.cpp" />
     <ClCompile Include="j1Movement.cpp" />
     <ClCompile Include="j1Particles.cpp" />
     <ClCompile Include="j1Pathfinding.cpp" />
     <ClCompile Include="j1Pathmanager.cpp" />
->>>>>>> Develompent
-=======
-    <ClCompile Include="j1Menu.cpp" />
-    <ClCompile Include="j1Movement.cpp" />
-    <ClCompile Include="j1Particles.cpp" />
-    <ClCompile Include="j1Pathfinding.cpp" />
-    <ClCompile Include="j1Pathmanager.cpp" />
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
-=======
-    <ClCompile Include="j1Menu.cpp" />
-    <ClCompile Include="j1Movement.cpp" />
-    <ClCompile Include="j1Particles.cpp" />
-    <ClCompile Include="j1Pathfinding.cpp" />
-    <ClCompile Include="j1Pathmanager.cpp" />
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
     <ClCompile Include="j1PerfTimer.cpp" />
     <ClCompile Include="j1Player.cpp" />
     <ClCompile Include="j1Render.cpp" />

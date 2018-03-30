@@ -32,14 +32,6 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	this->footmanInfo.downLeft = info.downLeft;
 	this->footmanInfo.downRight = info.downRight;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
-=======
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 	this->footmanInfo.attackUp = info.attackUp;
 	this->footmanInfo.attackDown = info.attackDown;
 	this->footmanInfo.attackLeft = info.attackLeft;
@@ -53,25 +45,17 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	this->footmanInfo.deathDown = info.deathDown;
 
 	LoadAnimationsSpeed();
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> Develompent
-=======
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
-=======
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
+
+	// Collisions
+	CreateEntityCollider(EntitySide_Player);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, unitInfo.sightRadius);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, unitInfo.attackRadius);
+	sightRadiusCollider->isTrigger = true;
+	attackRadiusCollider->isTrigger = true;
 }
 
 void Footman::Move(float dt)
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
-=======
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 	// Save mouse position (world and map coords)
 	int x, y;
 	App->input->GetMousePosition(x, y);
@@ -79,28 +63,7 @@ void Footman::Move(float dt)
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
-	// Create colliders
-	if (!isSpawned) {
-
-		// Collisions
-		CreateEntityCollider(EntitySide_Player);
-		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, unitInfo.sightRadius);
-		attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, unitInfo.attackRadius);
-
-		entityCollider->isTrigger = true;
-		sightRadiusCollider->isTrigger = true;
-		attackRadiusCollider->isTrigger = true;
-
-		isSpawned = true;
-	}
-
 	// ---------------------------------------------------------------------
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> Develompent
-=======
-=======
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 
 	// Is the unit dead?
 	if (currLife <= 0) {
@@ -276,10 +239,6 @@ void Footman::UnitStateMachine(float dt)
 	// The unit stops attacking this unit if:
 	// a) The sight distance is no longer satisfied
 	// b) The other unit is killed
-<<<<<<< HEAD
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
-=======
->>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 
 	break;
 
