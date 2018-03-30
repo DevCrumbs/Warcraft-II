@@ -109,6 +109,7 @@ public:
 	iPoint GetSize() const;
 
 	// Life and damage
+	void SetMaxLife(int life);
 	int GetMaxLife() const;
 	void SetCurrLife(int currLife);
 	int GetCurrLife() const;

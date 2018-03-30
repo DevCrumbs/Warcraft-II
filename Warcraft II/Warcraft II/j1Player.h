@@ -87,8 +87,11 @@ public:
 	//void CheckBuildingState(Entity* ent);
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
+	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
+	void DestroyUIElem(UIElement* elem);
 	void CreateBarracksButtons();
-	void DestroyBarracksButtons();
+	void CreateGryphonAviaryButtons();
+	void CreateMageTowerButtons();
 
 	void DeleteStaticEntity(StaticEntity* &staticEntity);
 
@@ -105,7 +108,10 @@ public:
 	StaticEntity* cannonTower = nullptr;
 	StaticEntity* guardTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
-	
+
+	bool barracksUpgrade = false;
+	bool townHallUpgrade = false;
+	bool keepUpgrade = false;
 private:
 
 	int totalGold = 0; // total gold earned during the game
@@ -137,8 +143,8 @@ private:
 
 	EntitySelectedStats entitySelectedStats;
 
-	UIButton *produceFootmanButton, *produceElvenArcherButton;
-	
+	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton;
+
 	list<UIElement*> UIMenuInfoList;
 
 };

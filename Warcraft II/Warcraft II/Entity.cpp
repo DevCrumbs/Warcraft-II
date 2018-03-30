@@ -58,6 +58,12 @@ iPoint Entity::GetSize() const
 	return size;
 }
 
+void Entity::SetMaxLife(int life)
+{
+	maxLife = life;
+	SetStringLife(currLife, maxLife);
+}
+
 // Life and damage
 int Entity::GetMaxLife() const
 {
