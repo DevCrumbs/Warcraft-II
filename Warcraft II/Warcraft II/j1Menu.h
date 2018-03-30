@@ -22,7 +22,9 @@ enum MenuActions
 	MenuActions_EXIT,
 	MenuActions_PLAY,
 	MenuActions_SETTINGS,
-	MenuActions_RETURN
+	MenuActions_RETURN,
+	MenuActions_SLIDERFX,
+	MenuActions_SLIDERMUSIC
 };
 
 struct SliderStruct
@@ -66,10 +68,11 @@ public:
 	void CreateLoading();
 	void DeteleMenu();
 
+
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue);
-
+	void UpdateSlider(SliderStruct &sliderStruct);
 private:
 
 	//Main Menu
@@ -81,7 +84,6 @@ private:
 	UILabel*  SettingsLabel = nullptr;
 
 	//Settings
-	SliderStruct FPS;
 	SliderStruct AudioFX;
 	SliderStruct AudioMusic;
 	UIButton* ReturnButt = nullptr;

@@ -100,6 +100,12 @@ bool j1Menu::PostUpdate()
 		CreateMenu();
 		menuActions = MenuActions_NONE;
 		break;
+	case MenuActions_SLIDERFX:
+		UpdateSlider(AudioFX);
+		break;
+	case MenuActions_SLIDERMUSIC:
+		UpdateSlider(AudioMusic);
+		break;
 	default:
 		break;
 	}
@@ -167,9 +173,8 @@ void j1Menu::CreateSettings() {
 	labelInfo.text = "Return";
 	ReturnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, ReturnButt);
 
-	AddSlider(FPS, { 50,100 }, "FPS", 60);
-	AddSlider(AudioFX, { 50,200 }, "Audio FX", (float)App->audio->fxVolume / MAX_AUDIO_VOLUM);
-	AddSlider(AudioMusic, { 50,300 }, "Audio Music", (float)App->audio->musicVolume / MAX_AUDIO_VOLUM);
+	AddSlider(AudioFX, { 50,100 }, "Audio FX", (float)App->audio->fxVolume / MAX_AUDIO_VOLUM);
+	AddSlider(AudioMusic, { 50,200 }, "Audio Music", (float)App->audio->musicVolume / MAX_AUDIO_VOLUM);
 
 }
 
@@ -183,9 +188,6 @@ void j1Menu::DeleteSettings() {
 	App->gui->DestroyElement(AudioMusic.name);
 	App->gui->DestroyElement(AudioMusic.value);
 	App->gui->DestroyElement(AudioMusic.slider);
-	App->gui->DestroyElement(FPS.name);
-	App->gui->DestroyElement(FPS.value);
-	App->gui->DestroyElement(FPS.slider);
 }
 
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -214,27 +216,18 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if(UIelem == ReturnButt)
 			menuActions = MenuActions_RETURN;
 
-		else if (UIelem == AudioFX.slider) {
-			float volume = AudioFX.slider->GetRelativePosition();
-			App->audio->SetFxVolume(volume * MAX_AUDIO_VOLUM);
-			static char vol_text[4];
-			sprintf_s(vol_text, 4, "%.0f", volume*100);
-			AudioFX.value->SetText(vol_text);
-			LOG("%f", volume);
-		}
-		else if (UIelem == AudioMusic.slider) {
-			float volume = AudioMusic.slider->GetRelativePosition();
-			App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
-			static char vol_text[4];
-			sprintf_s(vol_text, 4, "%.0f", volume * 100);
-			AudioMusic.value->SetText(vol_text);
-			LOG("%f", volume);
-		}
+		else if (UIelem == AudioFX.slider) 
+			menuActions = MenuActions_SLIDERFX;
+		
+		else if (UIelem == AudioMusic.slider) 
+			menuActions = MenuActions_SLIDERMUSIC;
 
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;
 	case UI_EVENT_MOUSE_LEFT_UP:
+		if (UIelem == AudioFX.slider || UIelem == AudioMusic.slider)
+			menuActions = MenuActions_NONE;
 		break;
 	case UI_EVENT_MAX_EVENTS:
 
@@ -283,4 +276,13 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
 	
+}
+
+void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
+	float volume = sliderStruct.slider->GetRelativePosition();
+	App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
+	static char vol_text[4];
+	sprintf_s(vol_text, 4, "%.0f", volume * 100);
+	sliderStruct.value->SetText(vol_text);
+	LOG("%f", volume);
 }
