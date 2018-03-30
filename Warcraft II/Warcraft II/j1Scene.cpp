@@ -265,6 +265,23 @@ bool j1Scene::Update(float dt)
 //	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
 //		App->win->scale -= 0.05f;
 
+	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
+		if (parchment == nullptr)
+			parchment = App->particles->AddParticle(App->particles->parchmentAnimation, App->render->GetMidCameraPos().x - 100, App->render->GetMidCameraPos().y - 125);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
+		if (parchment != nullptr) {
+			parchment->isDeleted = true;
+			parchment = nullptr;
+		}
+	}
+
+
+	if (parchment->anim.Finished()) {
+		CreatePauseMenu();
+	}
+
 	return ret;
 }
 
@@ -564,6 +581,16 @@ void j1Scene::UnLoadBuildingMenu()
 	App->gui->DestroyElement((UIElement**)&cannonTowerButton);
 	App->gui->DestroyElement((UIElement**)&cannonTowerLabel);
 	buildingMenuOn = false;	 
+
+}
+
+void j1Scene::CreatePauseMenu() {
+
+
+}
+
+void j1Scene::DestroyPauseMenu() {
+
 
 }
 

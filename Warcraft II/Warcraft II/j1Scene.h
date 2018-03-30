@@ -19,7 +19,11 @@ struct UIImage;
 struct UISlider;
 struct UICursor;
 class UIInputText;
+
 enum ENTITY_TYPE;
+
+struct Particle;	
+
 
 class j1Scene : public j1Module
 {
@@ -64,6 +68,11 @@ public:
 	void LoadInGameUI();
 	void LoadBuildingMenu();
 	void UnLoadBuildingMenu();
+	void CreatePauseMenu();
+    void DestroyPauseMenu();
+
+
+
 
 	bool LoadKeys(pugi::xml_node&);
 
@@ -129,6 +138,7 @@ private:
 
 	ENTITY_TYPE alphaBuilding;
 
+	Particle* parchment;
 };
 
 #endif //__j1SCENE1_H__

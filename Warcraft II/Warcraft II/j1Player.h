@@ -25,7 +25,7 @@ struct UILifeBar;
 class Entity;
 
 class StaticEntity;
-struct Particle;
+
 struct HoverButton
 {
 	UIButton* hoverButton = nullptr;
@@ -85,6 +85,7 @@ public:
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void DeleteEntitiesMenu();
 	//void CheckBuildingState(Entity* ent);
+
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
 	void CreateBarracksButtons();
@@ -140,8 +141,6 @@ private:
 	UIButton *produceFootmanButton, *produceElvenArcherButton;
 	
 	list<UIElement*> UIMenuInfoList;
-
-	Particle* parchment;
 
 };
 

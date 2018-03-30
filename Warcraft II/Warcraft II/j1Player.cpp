@@ -132,18 +132,7 @@ bool j1Player::Update(float dt) {
 		}
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
-		parchment = App->particles->AddParticle(App->particles->parchmentAnimation, App->render->GetMidCameraPos().x - 100, App->render->GetMidCameraPos().y - 125);
-	
-	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
-		if (parchment != nullptr) {
-			parchment->isDeleted = true;
-			parchment = nullptr;
-		}
-	}
 
-
-	parchment->anim.Finished();
 
 	return true;
 }
@@ -499,6 +488,7 @@ void j1Player::DestroyBarracksButtons()
 	App->gui->DestroyElement((UIElement**)&produceFootmanButton);
 	App->gui->DestroyElement((UIElement**)&produceElvenArcherButton);
 }
+
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
 {
