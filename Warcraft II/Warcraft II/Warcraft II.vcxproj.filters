@@ -262,14 +262,20 @@
       <Filter>Modules\UIElements</Filter>
     </ClInclude>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
     <ClInclude Include="j1Menu.h">
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="UISlider.h">
       <Filter>Modules\UIElements</Filter>
     </ClInclude>
+<<<<<<< HEAD
 >>>>>>> Develompent
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -447,13 +453,19 @@
       <Filter>Modules\UIElements</Filter>
     </ClCompile>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
     <ClCompile Include="j1Menu.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="UISlider.cpp">
       <Filter>Modules\UIElements</Filter>
     </ClCompile>
+<<<<<<< HEAD
 >>>>>>> Develompent
+=======
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
   </ItemGroup>
 </Project>

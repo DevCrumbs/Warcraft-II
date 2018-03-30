@@ -27,7 +27,7 @@ class Barracks :public StaticEntity
 {
 public:
 
-	Barracks(fPoint pos, iPoint size, int maxLife, const BarracksInfo& barracksInfo, j1Module* listener);
+	Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const BarracksInfo& barracksInfo, j1Module* listener);
 	~Barracks() {};
 
 	void Move(float dt);
@@ -40,9 +40,7 @@ private:
 
 	BarracksInfo barracksInfo;
 
-	EntitiesEvent entityEvent = EntitiesEvent_NONE;
-
-	bool startTimer = true;
+	EntitiesEvent EntityEvent = EntitiesEvent_NONE;
 };
 
 #endif //__Barracks_H__

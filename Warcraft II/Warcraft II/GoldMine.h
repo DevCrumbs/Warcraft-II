@@ -17,7 +17,7 @@ class GoldMine :public StaticEntity
 {
 public:
 
-	GoldMine(fPoint pos, iPoint size, int maxLife, const GoldMineInfo& goldMineInfo, j1Module* listener);
+	GoldMine(fPoint pos, iPoint size, int currLife, uint maxLife, const GoldMineInfo& goldMineInfo, j1Module* listener);
 	~GoldMine() {};
 
 	void Move(float dt);

@@ -1,4 +1,4 @@
-### Welcome, travellers!
+﻿### Welcome, travellers!
 
 # Warcraft II: The Stolen Artifacts
 
@@ -10,6 +10,9 @@ The player must command this expedition in an RTS dungeon crawler game in which 
 
 1: Create other random map
 2: Go to base
+
+5: Spawn an ally unit at mouse pos
+6: Spawn an enemy unit at mouse pos
 
 C: -20 HP to last Chicken Farm created
 T: -20 HP to last Scout Torret created

@@ -20,15 +20,20 @@
 #include "j1Player.h"
 #include "j1Console.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "j1Menu.h"
 #include "j1Movement.h"
 #include "j1PathManager.h"
 >>>>>>> Develompent
+=======
+#include "j1Menu.h"
+#include "j1Movement.h"
+#include "j1PathManager.h"
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 
 #include "j1App.h"
 #include "Brofiler\Brofiler.h"
-
 
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
@@ -52,11 +57,17 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	player = new j1Player();
 	console = new j1Console();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	menu = new j1Menu();
 	movement = new j1Movement();
 	pathmanager = new j1PathManager(MS_PATHFINDING);
 >>>>>>> Develompent
+=======
+	menu = new j1Menu();
+	movement = new j1Movement();
+	pathmanager = new j1PathManager(MS_PATHFINDING);
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -67,22 +78,28 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(map);
 	AddModule(pathfinding);
 	AddModule(entities);
-
-	AddModule(collision);
+	AddModule(pathmanager);
 	AddModule(font);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	AddModule(menu);
 	AddModule(player);
 >>>>>>> Develompent
 
+=======
+	AddModule(menu);
+>>>>>>> parent of d9438a7... Merge pull request #43 from DevCrumbs/Units-from-buildings
 	AddModule(player);
+
 	AddModule(scene);
+
+	AddModule(movement);
+	AddModule(collision);
 	AddModule(particles);
 	AddModule(console);
 	AddModule(gui);
 	AddModule(fade);
-
 
 	// render last to swap buffer
 	AddModule(render);
@@ -269,7 +286,6 @@ void j1App::FinishUpdate()
 	else
 		capOnOff = "off";
 
-
 	string vSyncOnOff;
 	if (App->render->vsync)
 		vSyncOnOff = "on";
@@ -381,6 +397,12 @@ bool j1App::CleanUp()
 	}
 
 	return ret;
+}
+
+
+// ---------------------------------------
+uint32 j1App::GetSecondsSinceAppStartUp() {
+	return clock.Read();
 }
 
 // ---------------------------------------
