@@ -97,6 +97,7 @@ public:
 
 public:
 
+	//Player
 	list<StaticEntity*> chickenFarm;
 	list<StaticEntity*> scoutTower;
 	StaticEntity* barracks = nullptr;
@@ -108,6 +109,9 @@ public:
 	StaticEntity* cannonTower = nullptr;
 	StaticEntity* guardTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
+
+	//Neutral
+	list<StaticEntity*> goldMine;
 
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
@@ -125,6 +129,7 @@ private:
 	uint nTownHall = 1;
 	uint nBarracks = 1;
 	uint nChickenFarm = 2;
+	uint nGoldMine = 10;
 
 	uint nStables = 0;
 	uint nGryphonAviary = 0;

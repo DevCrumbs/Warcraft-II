@@ -853,6 +853,9 @@ const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
 	case EntityType_PLAYER_CANNON_TOWER:
 		return(const EntityInfo&)playerCannonTowerInfo;
 		break;
+	case EntityType_GOLD_MINE:
+		return (const EntityInfo&)goldMineInfo;
+		break;
 	default:
 		return (const EntityInfo&)chickenFarmInfo;
 		break;
