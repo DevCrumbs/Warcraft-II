@@ -345,6 +345,22 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal)
 			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
+
+		else if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
+			int random = rand() % 4;
+			if(random == 1)
+				currentGold += 1500;
+			if (random == 2)
+				currentGold += 2000;
+			if (random == 3)
+				currentGold += 2500;
+			else
+				currentGold += 3000;
+
+		}
+
+		else if (staticEntity->staticEntityType == EntityType_RUNESTONE)
+			//Heals 25-50% all your units
 	
 		break;
 	case EntitiesEvent_HOVER:

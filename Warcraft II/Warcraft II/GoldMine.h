@@ -29,6 +29,8 @@ public:
 private:
 
 	GoldMineInfo goldMineInfo;
+
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 };
 
 #endif //__GoldMine_H__
