@@ -261,9 +261,10 @@ bool j1Gui::DestroyElement(UIElement** elem)
 {
 	bool ret = false;
 
-	addedElementUI.remove(*elem);
-	*elem = nullptr;
-
+	if (*elem != nullptr) {
+		addedElementUI.remove(*elem);
+		*elem = nullptr;
+	}
 	return ret;
 }
 

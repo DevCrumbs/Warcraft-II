@@ -24,7 +24,15 @@ enum ENTITY_TYPE;
 
 struct Particle;	
 
+enum PauseMenuActions {
+	PauseMenuActions_NOT_EXIST,
+	PauseMenuActions_NONE,
+	PauseMenuActions_CREATED,
+	PauseMenuActions_DESTROY,
+	PauseMenuActions_RETURN_MENU,
+	PauseMenuActions_SETTINGS_MENU
 
+};
 class j1Scene : public j1Module
 {
 public:
@@ -70,6 +78,9 @@ public:
 	void UnLoadBuildingMenu();
 	void CreatePauseMenu();
     void DestroyPauseMenu();
+	void CreateSettingsMenu();
+	void DestroySettingsMenu();
+	void DestroyAllUI();
 
 
 
@@ -89,6 +100,7 @@ public:
 
 	bool pause = false;
 
+
 	UIImage* entitiesStats;
 	ENTITY_TYPE GetAlphaBuilding();
 	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
@@ -107,9 +119,12 @@ private:
 
 	//UI
 	UIButton * buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
-	UILabel * buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
+	UILabel *  buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
 	UIImage * buildingMenu;
 	UICursor* mouseText;
+
+	UIButton* pauseMenuButt, *settingsButt, *continueButt, *ReturnMenuButt;
+	UILabel* pauseMenuLabel, *settingsLabel, *continueLabel, *ReturnMenuLabel;
 
 	bool buildingMenuOn = false;
 
@@ -139,6 +154,7 @@ private:
 	ENTITY_TYPE alphaBuilding;
 
 	Particle* parchment;
+	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
 };
 
 #endif //__j1SCENE1_H__

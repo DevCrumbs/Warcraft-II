@@ -19,6 +19,8 @@
 #include "j1Pathfinding.h"
 #include "j1Movement.h"
 #include "j1Gui.h"
+#include "j1Menu.h"
+#include "j1Player.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
@@ -116,6 +118,7 @@ bool j1Scene::Start()
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
 
 	alphaBuilding = EntityType_NONE;
+	pauseMenuActions = PauseMenuActions_NOT_EXIST;
 
 	return ret;
 }
@@ -266,21 +269,15 @@ bool j1Scene::Update(float dt)
 //		App->win->scale -= 0.05f;
 
 	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
-		if (parchment == nullptr)
-			parchment = App->particles->AddParticle(App->particles->parchmentAnimation, App->render->GetMidCameraPos().x - 100, App->render->GetMidCameraPos().y - 125);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
-		if (parchment != nullptr) {
-			parchment->isDeleted = true;
-			parchment = nullptr;
+	}
+
+	if(parchment != nullptr)
+		if (parchment->anim.Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
+			pauseMenuActions = PauseMenuActions_CREATED;
 		}
-	}
-
-
-	if (parchment->anim.Finished()) {
-		CreatePauseMenu();
-	}
 
 	return ret;
 }
@@ -290,6 +287,34 @@ bool j1Scene::PostUpdate()
 {
 	bool ret = true;
 
+	switch (pauseMenuActions)
+	{
+	case PauseMenuActions_NONE:
+		break;
+	case PauseMenuActions_CREATED:
+		CreatePauseMenu();
+		pauseMenuActions = PauseMenuActions_NONE;
+		break;
+	case PauseMenuActions_DESTROY:
+		if (parchment != nullptr) {
+			parchment->isDeleted = true;
+			parchment = nullptr;
+		}
+		DestroyPauseMenu();
+		pauseMenuActions = PauseMenuActions_NOT_EXIST;
+		break;
+	case PauseMenuActions_RETURN_MENU:
+		pauseMenuActions = PauseMenuActions_NONE;
+		App->fade->FadeToBlack(this, App->menu);
+			break;
+	case PauseMenuActions_SETTINGS_MENU:
+		DestroyPauseMenu();
+		CreateSettingsMenu();
+		
+		break;
+	default:
+		break;
+	}
 	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN)
 		ret = false;
 
@@ -307,7 +332,25 @@ bool j1Scene::CleanUp()
 	App->map->UnLoad();
 	App->tex->UnLoad(debugTex);
 
+
+	DestroyAllUI();
+
+
 	// Set to nullptr the pointers to the UI elements
+	App->menu->active = true;
+	App->map->active = false;
+	App->player->active = false;
+	App->entities->active = false;
+	App->collision->active = false;
+	App->pathfinding->active = false;
+
+	App->map->CleanUp();
+	App->player->CleanUp();
+	App->entities->CleanUp();
+	App->collision->CleanUp();
+	App->pathfinding->CleanUp();
+
+	active = false;
 
 	return ret;
 }
@@ -432,17 +475,25 @@ void j1Scene::CheckCameraMovement(float dt) {
 
 void j1Scene::LoadInGameUI()
 {
-	UIButton_Info buildingButtonInfo;
-	buildingButtonInfo.normalTexArea = {0, 0, 129, 33};
-	buildingButtonInfo.hoverTexArea = { 129, 0, 129, 33 };
-	buildingButtonInfo.pressedTexArea = { 257, 0, 129, 33 };
-	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buildingButtonInfo.normalTexArea.w, 0 }, buildingButtonInfo, this, nullptr);
+	//Buiding options
+	UIButton_Info buttonInfo;
+	buttonInfo.normalTexArea = {0, 0, 129, 33};
+	buttonInfo.hoverTexArea = { 129, 0, 129, 33 };
+	buttonInfo.pressedTexArea = { 257, 0, 129, 33 };
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w, 0 }, buttonInfo, this, nullptr);
 
-	UILabel_Info buildingLabelInfo;
-	buildingLabelInfo.fontName = FONT_NAME_WARCRAFT;
-	buildingLabelInfo.normalColor = White_;
-	buildingLabelInfo.text = "Buildings";
-	buildingLabel = App->gui->CreateUILabel({ 27,12 }, buildingLabelInfo, this, buildingButton);
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.text = "Buildings";
+	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 12 }, labelInfo, this, buildingButton);
+
+
+	//Pause menu 
+	pauseMenuButt = App->gui->CreateUIButton({ 0,0 }, buttonInfo, this);
+
+	labelInfo.text = "Menu";
+	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w/2, 12 }, labelInfo, this, pauseMenuButt);
 
 
 	UIImage_Info entitiesInfo;
@@ -580,18 +631,83 @@ void j1Scene::UnLoadBuildingMenu()
 	App->gui->DestroyElement((UIElement**)&guardTowerLabel);
 	App->gui->DestroyElement((UIElement**)&cannonTowerButton);
 	App->gui->DestroyElement((UIElement**)&cannonTowerLabel);
+
 	buildingMenuOn = false;	 
 
 }
 
 void j1Scene::CreatePauseMenu() {
 
+	UIButton_Info buttonInfo;
+	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
+	/*buttonInfo.hoverTexArea = { 129, 0, 129, 33 };
+	buttonInfo.pressedTexArea = { 257, 0, 129, 33 };*/
+	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	int x = parchment->position.x + 100 + App->render->camera.x;
+	int y = parchment->position.y + 60 + App->render->camera.y;
+	settingsButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
+
+	y = parchment->position.y + 110 + App->render->camera.y;
+	continueButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
+
+	y = parchment->position.y + 160 + App->render->camera.y;
+	ReturnMenuButt = App->gui->CreateUIButton({ x, y}, buttonInfo, this);
+
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.normalColor = Black_;
+	labelInfo.text = "Settings";
+	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, settingsButt);
+
+	labelInfo.text = "Continue";
+	continueLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, continueButt);
+
+	labelInfo.text = "Return Menu";
+	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
 
 }
 
 void j1Scene::DestroyPauseMenu() {
 
+	App->gui->DestroyElement((UIElement**)&settingsButt);
+	App->gui->DestroyElement((UIElement**)&ReturnMenuButt);
+	App->gui->DestroyElement((UIElement**)&continueButt);
+	App->gui->DestroyElement((UIElement**)&settingsLabel);
+	App->gui->DestroyElement((UIElement**)&continueLabel);
+	App->gui->DestroyElement((UIElement**)&ReturnMenuLabel);
 
+}
+
+void j1Scene::CreateSettingsMenu() {
+	UIButton_Info buttonInfo;
+	UILabel_Info labelInfo;
+
+
+
+
+}
+
+void j1Scene::DestroySettingsMenu() {
+
+
+}
+
+void j1Scene::DestroyAllUI() {
+	if (parchment != nullptr) {
+		parchment->isDeleted = true;
+		parchment = nullptr;
+	}
+	if (pauseMenuActions == PauseMenuActions_CREATED)
+		DestroyPauseMenu();
+	else if (pauseMenuActions == PauseMenuActions_SETTINGS_MENU)
+		DestroySettingsMenu();
+	UnLoadBuildingMenu();
+	App->gui->DestroyElement((UIElement**)&pauseMenuButt);
+	App->gui->DestroyElement((UIElement**)&pauseMenuLabel);
+	App->gui->DestroyElement((UIElement**)&entitiesStats);
+	App->gui->DestroyElement((UIElement**)&buildingButton);
+	App->gui->DestroyElement((UIElement**)&buildingLabel);
 }
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
@@ -614,29 +730,54 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			else
 				UnLoadBuildingMenu();
 		}
-		if (UIelem == chickenFarmButton) {
+		else if (UIelem == chickenFarmButton) {
 			UnLoadBuildingMenu();
 			alphaBuilding = EntityType_CHICKEN_FARM;
 		}
 		
-		if (UIelem == stablesButton) {
+		else if (UIelem == stablesButton) {
 			UnLoadBuildingMenu();
 			alphaBuilding = EntityType_STABLES;
 		}
 		
-		if (UIelem == gryphonAviaryButton) {
+		else if (UIelem == gryphonAviaryButton) {
 			UnLoadBuildingMenu();
 			alphaBuilding = EntityType_GRYPHON_AVIARY;
 		}
 
-		if (UIelem == mageTowerButton) {
+		else if (UIelem == mageTowerButton) {
 			UnLoadBuildingMenu();
 			alphaBuilding = EntityType_MAGE_TOWER;
 		}
 
-		if (UIelem == scoutTowerButton) {
+		else if (UIelem == scoutTowerButton) {
 			UnLoadBuildingMenu();
 			alphaBuilding = EntityType_SCOUT_TOWER;
+		}
+
+		else if (UIelem == pauseMenuButt) {
+			if (parchment == nullptr)
+				parchment = App->particles->AddParticle(App->particles->parchmentAnimation, App->render->GetMidCameraPos().x - 100, App->render->GetMidCameraPos().y - 125);
+			else {
+				pauseMenuActions = PauseMenuActions_NOT_EXIST;
+				if (parchment != nullptr) {
+					parchment->isDeleted = true;
+					parchment = nullptr;
+				}
+				DestroyPauseMenu();
+			}
+		}
+
+		else if (UIelem == continueButt) {
+			pauseMenuActions = PauseMenuActions_DESTROY;
+		}
+
+		else if (UIelem == ReturnMenuButt) {
+			pauseMenuActions = PauseMenuActions_RETURN_MENU;
+		}
+
+		else if (UIelem == settingsButt) {
+			pauseMenuActions = PauseMenuActions_SETTINGS_MENU;
 		}
 		break;
 
