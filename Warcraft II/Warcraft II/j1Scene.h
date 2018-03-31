@@ -3,6 +3,7 @@
 
 #include "j1Module.h"
 #include "Animation.h"
+#include "j1Menu.h"
 
 #include <vector>
 #include <string>
@@ -17,12 +18,15 @@ struct UILabel;
 struct UIButton;
 struct UIImage;
 struct UISlider;
+class UISlider_Info;
 struct UICursor;
 class UIInputText;
 
 enum ENTITY_TYPE;
 
 struct Particle;	
+
+struct SliderStruct;
 
 enum PauseMenuActions {
 	PauseMenuActions_NOT_EXIST,
@@ -82,6 +86,8 @@ public:
 	void DestroySettingsMenu();
 	void DestroyAllUI();
 
+	//void AddPauseSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue);
+	//void UpdatePauseSlider(SliderStruct &sliderStruct);
 
 
 
@@ -122,9 +128,15 @@ private:
 	UILabel *  buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
 	UIImage * buildingMenu;
 	UICursor* mouseText;
-
+	//Pause Menu
 	UIButton* pauseMenuButt, *settingsButt, *continueButt, *ReturnMenuButt;
 	UILabel* pauseMenuLabel, *settingsLabel, *continueLabel, *ReturnMenuLabel;
+	//Settings Menu
+	UIButton* returnButt;
+	UILabel*  returnLabel;
+	SliderStruct AudioFXPause;
+	//SliderStruct AudioMusic;
+
 
 	bool buildingMenuOn = false;
 
