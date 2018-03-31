@@ -81,6 +81,8 @@ public:
 	Entity* AddEntity(ENTITY_TYPE entityType, fPoint pos, const EntityInfo& entityInfo, const UnitInfo& unitInfo, j1Module* listener = nullptr);
 	void DestroyStaticEntity(StaticEntity* staticEntity);
 
+	uint CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEGORY entityCategory);
+
 	/// SANDRA
 	// Returns a pointer to the Entity that is on the tile or nullptr
 	Entity* IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide) const;

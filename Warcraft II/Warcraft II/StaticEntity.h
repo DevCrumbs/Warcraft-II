@@ -11,6 +11,7 @@ struct SDL_Texture;
 struct Particle;
 
 enum ENTITY_TYPE;
+enum ColliderType;
 
 enum StaticEntityCategory
 {
@@ -39,6 +40,13 @@ enum StaticEntitySize
 	Big
 };
 
+enum TowerState
+{
+	TowerState_Idle,
+	TowerState_Attack,
+	TowerState_Die
+};
+
 struct BuildingPreviewTiles 
 {
 	SDL_Rect greenTile = { 0,0,0,0 };
@@ -64,6 +72,10 @@ public:
 	uint GetConstructionTime() const;
 	bool GetIsFinishedBuilt() const;
 
+	//Colliders
+	ColliderGroup * StaticEntity::CreateRhombusCollider(ColliderType colliderType, uint radius);
+	ColliderGroup* GetSightRadiusCollider() const;
+
 
 public:
 
@@ -78,6 +90,8 @@ protected:
 	j1Timer constructionTimer;
 	uint constructionTime = 0;
 	bool isBuilt = false;
+
+	ColliderGroup* sightRadiusCollider = nullptr;
 
 };
 

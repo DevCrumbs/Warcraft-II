@@ -191,9 +191,10 @@ bool j1Scene::Update(float dt)
 	App->map->Draw(); // map
 	App->entities->Draw(); // entities
 	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
+	App->collision->DebugDraw();
 
 	// Movement															 // Select units by mouse click
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+	/*if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 		startRectangle = mousePos;
 
 		Entity* entity = App->entities->IsEntityOnTile(mouseTile);
@@ -225,7 +226,7 @@ bool j1Scene::Update(float dt)
 		}
 
 		App->entities->SelectEntitiesWithinRectangle(mouseRect);
-	}
+	}*/
 
 	// Select a new goal for the selected units (single click or drag)
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
