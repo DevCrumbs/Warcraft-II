@@ -112,6 +112,7 @@ public:
 
 	//Neutral
 	list<StaticEntity*> goldMine;
+	list<StaticEntity*> runestone;
 
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;

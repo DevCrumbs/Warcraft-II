@@ -1230,6 +1230,9 @@ bool j1Map::LoadLogic()
 						case EntityType_GOLD_MINE:
 							App->player->goldMine.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
 							break;
+						case EntityType_RUNESTONE:
+							App->player->runestone.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
+							break;
 						default:
 							App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
 							break;

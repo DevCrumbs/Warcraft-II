@@ -856,6 +856,9 @@ const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
 	case EntityType_GOLD_MINE:
 		return (const EntityInfo&)goldMineInfo;
 		break;
+	case EntityType_RUNESTONE:
+		return (const EntityInfo&)runestoneInfo;
+		break;
 	default:
 		return (const EntityInfo&)chickenFarmInfo;
 		break;
