@@ -2,6 +2,7 @@
 #define __ScoutTower_H__
 
 #include "StaticEntity.h"
+struct ColliderGroup;
 
 struct ScoutTowerInfo
 {
@@ -13,6 +14,10 @@ struct ScoutTowerInfo
 	iPoint size{ 0,0 };
 	uint life = 0u;
 	float speed = 0.0f;
+
+	uint sightRadius = 0;
+	uint damage = 0;
+	uint attackWaitTime = 0;
 };
 
 class ScoutTower :public StaticEntity
@@ -23,6 +28,10 @@ public:
 	~ScoutTower() {};
 
 	void Move(float dt);
+	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
+
+	// State machine
+	void TowerStateMachine(float dt);
 
 	// Animations
 	void LoadAnimationsSpeed();
@@ -31,8 +40,13 @@ public:
 private:
 
 	ScoutTowerInfo scoutTowerInfo;
-
 	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
+	TowerState towerState = TowerState_Idle;
+
+	//Attack
+	bool isSightSatisfied = false;
+	Entity* attackingTarget = nullptr;
+	j1Timer attackTimer;
 };
 
 #endif //__ScoutTower_H__

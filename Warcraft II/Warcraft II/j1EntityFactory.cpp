@@ -70,7 +70,13 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	chickenFarmInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	chickenFarmInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
+	//Scout Tower attributes
+	scoutTowerInfo.sightRadius = { humanBuildings.child("scoutTower").child("attack").attribute("sightRadius").as_uint() };
+	scoutTowerInfo.damage = { humanBuildings.child("scoutTower").child("attack").attribute("damage").as_uint() };
+	scoutTowerInfo.attackWaitTime = { humanBuildings.child("scoutTower").child("attack").attribute("attackWaitTime").as_uint() };
 	scoutTowerInfo.maxLife = { humanBuildings.child("scoutTower").child("maxLife").attribute("value").as_int() };
+	
+	//Scout Tower animations
 	aux = humanBuildings.child("scoutTower").child("sprites");
 	scoutTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	scoutTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
@@ -506,19 +512,34 @@ bool j1EntityFactory::Update(float dt)
 void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
 {
 	// Check for collisions
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+	list<DynamicEntity*>::const_iterator dynEntity = activeDynamicEntities.begin();
 
-	while (it != activeDynamicEntities.end()) {
+	while (dynEntity != activeDynamicEntities.end()) {
 
 		// - SightRadiusCollider and AttackRadiusCollider call their owner as the c1 Collider
-		if ((*it)->GetSightRadiusCollider() == c1 || (*it)->GetAttackRadiusCollider() == c1) {
+		if ((*dynEntity)->GetSightRadiusCollider() == c1 || (*dynEntity)->GetAttackRadiusCollider() == c1) {
 
-			(*it)->OnCollision(c1, c2, collisionState);
+			(*dynEntity)->OnCollision(c1, c2, collisionState);
 			break;
 		}
 
-		it++;
+		dynEntity++;
 	}
+
+	list<StaticEntity*>::const_iterator statEntity = activeStaticEntities.begin();
+
+	while (statEntity != activeStaticEntities.end()) {
+
+		// - SightRadiusCollider and AttackRadiusCollider call their owner as the c1 Collider
+		if ((*statEntity)->GetSightRadiusCollider() == c1) {
+
+			(*statEntity)->OnCollision(c1, c2, collisionState);
+			break;
+		}
+
+		statEntity++;
+	}
+
 }
 
 void j1EntityFactory::Draw()
@@ -1083,28 +1104,38 @@ bool j1EntityFactory::PostUpdate()
 	bool ret = true;
 
 	// Remove active entities
-	/// Remove dynamic entities
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
+	// Remove dynamic entities
+	list<DynamicEntity*>::iterator dynEnt = activeDynamicEntities.begin();
 
 	while (dynEnt != activeDynamicEntities.end()) {
+
 		if ((*dynEnt)->isRemove) {
+
 			delete *dynEnt;
-			activeDynamicEntities.remove(*dynEnt);
+			activeDynamicEntities.erase(dynEnt);
+
+			dynEnt = activeDynamicEntities.begin();
+			continue;
 		}
 
 		dynEnt++;
 	}
 
 	/// Remove static entities
-	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
+	list<StaticEntity*>::iterator statEntity = activeStaticEntities.begin();
 
-	while (statEnt != activeStaticEntities.end()) {
-		if ((*statEnt)->isRemove) {
-			delete *statEnt;
-			activeStaticEntities.remove(*statEnt);
+	while (statEntity != activeStaticEntities.end()) {
+
+		if ((*statEntity)->isRemove) {
+
+			delete *statEntity;
+			activeStaticEntities.erase(statEntity);
+
+			statEntity = activeStaticEntities.begin();
+			continue;
 		}
 
-		statEnt++;
+		statEntity++;
 	}
 
 	return ret;
@@ -1449,6 +1480,38 @@ void j1EntityFactory::DestroyStaticEntity(StaticEntity* staticEntity)
 	activeStaticEntities.remove(staticEntity);
 
 	// TODO: if you want to destroy the entity, the remove method is not enough!
+}
+
+//Checks the number of active units on the game 
+uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEGORY entityCategory)
+{
+	uint numOfEntities = 0;
+
+	if (entityCategory == EntityCategory_DYNAMIC_ENTITY) {
+		list<DynamicEntity*>::const_iterator activeDynamic = activeDynamicEntities.begin();
+
+		while (activeDynamic != activeDynamicEntities.end()) {
+			if ((*activeDynamic)->dynamicEntityType == entityType)
+				numOfEntities++;
+
+			activeDynamic++;
+		}
+	}
+
+	else if (entityCategory == EntityCategory_STATIC_ENTITY) {
+		list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
+
+		while (activeStatic != activeStaticEntities.end()) {
+			if ((*activeStatic)->staticEntityType == entityType)
+				numOfEntities++;
+
+			activeStatic++;
+		}
+	}
+	else
+		numOfEntities = 0;
+
+	return  numOfEntities;
 }
 
 /// SANDRA
