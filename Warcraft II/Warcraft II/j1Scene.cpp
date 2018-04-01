@@ -705,7 +705,7 @@ void j1Scene::CreateSettingsMenu() {
 	labelInfo.text = "Fullscreen";
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	labelInfo.normalColor = Black_;
+	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
 	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
 
 

@@ -204,7 +204,7 @@ void j1Menu::CreateSettings() {
 	labelInfo.text = "Fullscreen";
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
 
-	labelInfo.normalColor = Black_;
+	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
 	fullScreenLabel = App->gui->CreateUILabel({ 100, 300 }, labelInfo, this);
 }
 
