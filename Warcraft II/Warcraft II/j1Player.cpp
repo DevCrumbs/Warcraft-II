@@ -540,10 +540,15 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 	ElvenArcherInfo elvenArcherInfo;
 	MageInfo mageInfo;
 	PaladinInfo paladinInfo;
+	GryphonRiderInfo gryphonRiderInfo;
 	fPoint barracksPos = barracks->GetPos();
 	fPoint mageTowerPos = { 0.0,0.0 };
+	fPoint gryphonAviaryPos = { 0.0,0.0 };
 	if (mageTower != nullptr) {
 		mageTowerPos = mageTower->GetPos();
+	}
+	if (gryphonAviary != nullptr) {
+		gryphonAviaryPos = gryphonAviary->GetPos();
 	}
 
 	switch (UIevent)
@@ -551,6 +556,18 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 	case UI_EVENT_NONE:
 		break;
 	case UI_EVENT_MOUSE_ENTER:
+		if (UIelem == produceFootmanButton) {
+			//Info image with cost on a label
+		}
+		if (UIelem == produceElvenArcherButton) {
+			//Info image with cost on a label
+		}
+		if (UIelem == produceMageButton && mageTower != nullptr) {
+			//Info image with cost on a label
+		}
+		if (UIelem == producePaladinButton) {
+			//Info image with cost on a label
+		}
 		break;
 	case UI_EVENT_MOUSE_LEAVE:
 		break;
@@ -577,17 +594,25 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				townHallUpgrade = true;
 			}
 		}
-		if (UIelem == produceFootmanButton) {
+		if (UIelem == produceFootmanButton && currentGold >= 500) {
 			App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)footmanInfo, unitInfo);
+			currentGold -= 500;
 		}
-		if (UIelem == produceElvenArcherButton) {
+		if (UIelem == produceElvenArcherButton && currentGold >= 400) {
 			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)elvenArcherInfo, unitInfo);
+			currentGold -= 400;
 		}
-		if (UIelem == produceMageButton && mageTower != nullptr) {
+		if (UIelem == produceMageButton && mageTower != nullptr && currentGold >= 1200) {
 			App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)mageInfo, unitInfo);
+			currentGold -= 1200;
 		}
-		if (UIelem == producePaladinButton) {
+		if (UIelem == producePaladinButton && currentGold >= 800) {
 			App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)paladinInfo, unitInfo);
+			currentGold -= 800;
+		}
+		if (UIelem == produceGryphonRiderButton && currentGold >= 2500) {
+			App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviaryPos.x + 30, gryphonAviaryPos.y - 50 }, (EntityInfo&)gryphonRiderInfo, unitInfo);
+			currentGold -= 2500;
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
