@@ -34,7 +34,9 @@ enum PauseMenuActions {
 	PauseMenuActions_CREATED,
 	PauseMenuActions_DESTROY,
 	PauseMenuActions_RETURN_MENU,
-	PauseMenuActions_SETTINGS_MENU
+	PauseMenuActions_SETTINGS_MENU,
+	PauseMenuActions_SLIDERFX,
+	PauseMenuActions_SLIDERMUSIC
 
 };
 class j1Scene : public j1Module
@@ -86,10 +88,6 @@ public:
 	void DestroySettingsMenu();
 	void DestroyAllUI();
 
-	//void AddPauseSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue);
-	//void UpdatePauseSlider(SliderStruct &sliderStruct);
-
-
 
 	bool LoadKeys(pugi::xml_node&);
 
@@ -129,13 +127,13 @@ private:
 	UIImage * buildingMenu;
 	UICursor* mouseText;
 	//Pause Menu
-	UIButton* pauseMenuButt, *settingsButt, *continueButt, *ReturnMenuButt;
-	UILabel* pauseMenuLabel, *settingsLabel, *continueLabel, *ReturnMenuLabel;
+	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
+	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;
 	//Settings Menu
-	UIButton* returnButt;
-	UILabel*  returnLabel;
+	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 	SliderStruct AudioFXPause;
-	//SliderStruct AudioMusic;
+	SliderStruct AudioMusicPause;
 
 
 	bool buildingMenuOn = false;

@@ -312,11 +312,21 @@ bool j1Scene::PostUpdate()
 		CreateSettingsMenu();
 		pauseMenuActions = PauseMenuActions_NONE;		
 		break;
+	case PauseMenuActions_SLIDERFX:
+		App->menu->UpdateSlider(AudioFXPause);
+		break;
+	case PauseMenuActions_SLIDERMUSIC:
+		App->menu->UpdateSlider(AudioMusicPause);
 	default:
 		break;
 	}
-	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN)
+	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
 		ret = false;
+		if (parchment != nullptr) {
+			parchment->isDeleted = true;
+			parchment = nullptr;
+		}
+	}
 
 	return ret;
 }
@@ -640,8 +650,6 @@ void j1Scene::CreatePauseMenu() {
 
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
-	/*buttonInfo.hoverTexArea = { 129, 0, 129, 33 };
-	buttonInfo.pressedTexArea = { 257, 0, 129, 33 };*/
 	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	int x = parchment->position.x + 100 + App->render->camera.x;
 	int y = parchment->position.y + 60 + App->render->camera.y;
@@ -660,10 +668,11 @@ void j1Scene::CreatePauseMenu() {
 	labelInfo.text = "Settings";
 	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, settingsButt);
 
-	labelInfo.text = "Continue";
+	labelInfo.text = "Resume Game";
 	continueLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, continueButt);
 
-	labelInfo.text = "Return Menu";
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.text = "Return Main Menu";
 	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
 
 }
@@ -682,30 +691,60 @@ void j1Scene::DestroyPauseMenu() {
 void j1Scene::CreateSettingsMenu() {
 	UIButton_Info buttonInfo;
 	UILabel_Info labelInfo;
+	
+	//Fullscreen
+	buttonInfo.normalTexArea = { 0, 0, 20, 20 };
+	buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
+	buttonInfo.pressedTexArea = { 257, 0, 20, 20 };
+	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	int x = parchment->position.x + 130 + App->render->camera.x;
+	int y = parchment->position.y + 150 + App->render->camera.y;
+	fullScreenButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
+
+	x -= 100;
+	labelInfo.text = "Fullscreen";
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	labelInfo.normalColor = Black_;
+	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
+
+
+	//Sliders
+	x = parchment->position.x + 30 + App->render->camera.x;
+	y = parchment->position.y + 60 + App->render->camera.y;
+	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
+	SDL_Rect butText = { 0,0,10,10 };
+	SDL_Rect bgText = { 0,130,130,10 };
+	App->menu->AddSlider(AudioFXPause, {x,y}, "Audio FX", relativeVol, butText, bgText, this);
+	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
+	y += 50;
+	App->menu->AddSlider(AudioMusicPause, { x,y }, "Audio Music", relativeVol, butText, bgText, this);
 
 	buttonInfo.normalTexArea = { 1000, 0, 30, 20 };
-	int x = parchment->position.x + 30 + App->render->camera.x;
-	int y = parchment->position.y + 185 + App->render->camera.y;
+	buttonInfo.hoverTexArea = { 0, 0, 0, 0 };
+	buttonInfo.pressedTexArea = { 0, 0, 0, 0 };
+	x = parchment->position.x + 30 + App->render->camera.x;
+	y = parchment->position.y + 185 + App->render->camera.y;
 	returnButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
 
-	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	labelInfo.normalColor = Black_;
+	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
 	labelInfo.text = "<--";
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
-
-	x = parchment->position.x + 50 + App->render->camera.x;
-	y = parchment->position.y + 30 + App->render->camera.y;
-
-	//AddPauseSlider(AudioFXPause, {x,y}, "Audio FX", (float)App->audio->fxVolume / MAX_AUDIO_VOLUM);
-
-
 }
 
 void j1Scene::DestroySettingsMenu() {
 
 	App->gui->DestroyElement((UIElement**)&returnButt);
 	App->gui->DestroyElement((UIElement**)&returnLabel);
+	App->gui->DestroyElement((UIElement**)&fullScreenButt);
+	App->gui->DestroyElement((UIElement**)&fullScreenLabel);
+	App->gui->DestroyElement((UIElement**)&AudioFXPause.slider);
+	App->gui->DestroyElement((UIElement**)&AudioFXPause.name);
+	App->gui->DestroyElement((UIElement**)&AudioFXPause.value);
+	App->gui->DestroyElement((UIElement**)&AudioMusicPause.slider);
+	App->gui->DestroyElement((UIElement**)&AudioMusicPause.name);
+	App->gui->DestroyElement((UIElement**)&AudioMusicPause.value);
 
 }
 
@@ -799,50 +838,33 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			pauseMenuActions = PauseMenuActions_CREATED;
 		}
 
+		else if (UIelem == (UIElement*)AudioFXPause.slider)
+			pauseMenuActions = PauseMenuActions_SLIDERFX;
+
+		else if (UIelem == (UIElement*)AudioMusicPause.slider)
+			pauseMenuActions = PauseMenuActions_SLIDERMUSIC;
+
+		else if (UIelem == fullScreenButt)
+		{
+			if (App->win->fullscreen) {
+				App->win->fullscreen = false;
+				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
+				break;
+			}
+			else {
+				App->win->fullscreen = true;
+				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+				break;
+			}
+		}
 		break;
 
 	case UI_EVENT_MOUSE_LEFT_UP:
+		if (UIelem == (UIElement*)AudioFXPause.slider || UIelem == (UIElement*)AudioMusicPause.slider)
+			pauseMenuActions = PauseMenuActions_NONE;
 		break;
 	}
 }
-
-/*void j1Scene::AddPauseSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue) {
-
-	UILabel_Info labelInfo;
-	UISlider_Info sliderInfo;
-	sliderInfo.button_slider_area = { 0,0,30,30 };
-	sliderInfo.tex_area = { 0,130,400,30 };
-	sliderStruct.slider = App->gui->CreateUISlider(pos, sliderInfo, this);
-	sliderStruct.slider->SetRelativePos(relativeNumberValue);
-
-	labelInfo.text = nameText;
-	labelInfo.fontName = FONT_NAME_WARCRAFT20;
-	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
-	int x = (sliderInfo.tex_area.w / 2) + sliderStruct.slider->GetLocalPos().x;
-	int y = sliderStruct.slider->GetLocalPos().y;
-	sliderStruct.name = App->gui->CreateUILabel({ x, y }, labelInfo, this);
-
-	static char fpsText[5];
-	sprintf_s(fpsText, 5, "%.0f", relativeNumberValue * 100);
-	labelInfo.text = fpsText;
-	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
-	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	x = sliderInfo.tex_area.w + sliderStruct.slider->GetLocalPos().x + 10;
-	y = sliderStruct.slider->GetLocalPos().y + (sliderInfo.tex_area.h / 2);
-	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, this);
-
-
-}
-
-void j1Scene::UpdatePauseSlider(SliderStruct &sliderStruct) {
-	float volume = sliderStruct.slider->GetRelativePosition();
-	App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
-	static char vol_text[4];
-	sprintf_s(vol_text, 4, "%.0f", volume * 100);
-	sliderStruct.value->SetText(vol_text);
-	LOG("%f", volume);
-}
-*/
 
 ENTITY_TYPE j1Scene::GetAlphaBuilding() {
 	return alphaBuilding;

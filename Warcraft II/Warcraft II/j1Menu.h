@@ -4,7 +4,6 @@
 #include "j1Module.h"
 #include "p2List.h"
 
-#define MAX_AUDIO_VOLUM 128
 
 struct SDL_Texture;
 //class GuiImage;
@@ -32,7 +31,7 @@ struct SliderStruct
 {
 	UISlider* slider = nullptr;
 	UILabel*  name = nullptr;
-	UILabel*  value = nullptr;
+	UILabel*  value = nullptr; 
 };
 
 class j1Menu : public j1Module
@@ -72,24 +71,24 @@ public:
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
-	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue);
+	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
 	void UpdateSlider(SliderStruct &sliderStruct);
 
 private:
 
 	//Main Menu
-	UIButton* PlayButt = nullptr;
-	UILabel*  PlayLabel = nullptr;
-	UIButton* ExitButt = nullptr;
-	UILabel*  ExitLabel = nullptr;
-	UIButton* SettingsButt = nullptr;
-	UILabel*  SettingsLabel = nullptr;
+	UIButton* playButt = nullptr;
+	UILabel*  playLabel = nullptr;
+	UIButton* exitButt = nullptr;
+	UILabel*  exitLabel = nullptr;
+	UIButton* settingsButt = nullptr;
+	UILabel*  settingsLabel = nullptr;
 
 	//Settings
-	SliderStruct AudioFX;
-	SliderStruct AudioMusic;
-	UIButton* ReturnButt = nullptr;
-	UILabel*  ReturnLabel = nullptr;
+	SliderStruct audioFX;
+	SliderStruct audioMusic;
+	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 
 	Particle* parchment;
 

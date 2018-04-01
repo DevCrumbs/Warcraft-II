@@ -111,10 +111,10 @@ bool j1Menu::PostUpdate()
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_SLIDERFX:
-		UpdateSlider(AudioFX);
+		UpdateSlider(audioFX);
 		break;
 	case MenuActions_SLIDERMUSIC:
-		UpdateSlider(AudioMusic);
+		UpdateSlider(audioMusic);
 		break;
 	default:
 		break;
@@ -150,22 +150,23 @@ void j1Menu::CreateMenu() {
 
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
-	PlayButt = App->gui->CreateUIButton({ 500, 275 }, buttonInfo, this, nullptr);
-	SettingsButt = App->gui->CreateUIButton({ 500, 350 }, buttonInfo, this, nullptr);
-	ExitButt = App->gui->CreateUIButton({ 500, 425 }, buttonInfo, this, nullptr);
+	playButt = App->gui->CreateUIButton({ 500, 275 }, buttonInfo, this, nullptr);
+	settingsButt = App->gui->CreateUIButton({ 500, 350 }, buttonInfo, this, nullptr);
+	exitButt = App->gui->CreateUIButton({ 500, 425 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	labelInfo.normalColor = Black_;
 	labelInfo.text = "Play";
-	PlayLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w/2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, PlayButt);
+	playLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w/2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, playButt);
 
 	labelInfo.text = "Exit";
-	ExitLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, ExitButt);
+	exitLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, exitButt);
 
 	labelInfo.text = "Settings";
-	SettingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, SettingsButt);
+	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, settingsButt);
 
 }
 
@@ -173,45 +174,69 @@ void j1Menu::CreateSettings() {
 
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
-	ReturnButt = App->gui->CreateUIButton({ 500, 425 }, buttonInfo, this, nullptr);
+	returnButt = App->gui->CreateUIButton({ 500, 425 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	labelInfo.normalColor = Black_;
 
 	labelInfo.text = "Return";
-	ReturnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, ReturnButt);
+	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
 
-	AddSlider(AudioFX, { 50,100 }, "Audio FX", (float)App->audio->fxVolume / MAX_AUDIO_VOLUM);
-	AddSlider(AudioMusic, { 50,200 }, "Audio Music", (float)App->audio->musicVolume / MAX_AUDIO_VOLUM);
+	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
+	SDL_Rect butText = { 0,0,30,30 };
+	SDL_Rect bgText = { 0,130,400,30 };
+	AddSlider(audioFX, { 50,100 }, "Audio FX", relativeVol, butText, bgText, this);
 
+	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
+	AddSlider(audioMusic, { 50,200 }, "Audio Music", relativeVol, butText, bgText, this);
+
+
+	//Fullscreen
+	buttonInfo.normalTexArea = { 0, 0, 20, 20 };
+	buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
+	buttonInfo.pressedTexArea = { 257, 0, 20, 20 };
+	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	fullScreenButt = App->gui->CreateUIButton({ 300, 300 }, buttonInfo, this);
+
+	labelInfo.text = "Fullscreen";
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+
+	labelInfo.normalColor = Black_;
+	fullScreenLabel = App->gui->CreateUILabel({ 100, 300 }, labelInfo, this);
 }
 
-void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue) {
+void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
 
 	UILabel_Info labelInfo;
 	UISlider_Info sliderInfo;
-	sliderInfo.button_slider_area = { 0,0,30,30 };
-	sliderInfo.tex_area = { 0,130,400,30 };
-	sliderStruct.slider = App->gui->CreateUISlider(pos, sliderInfo, this);
+	sliderInfo.button_slider_area = buttText;
+	sliderInfo.tex_area = bgText;
+	sliderStruct.slider = App->gui->CreateUISlider(pos, sliderInfo, listener);
 	sliderStruct.slider->SetRelativePos(relativeNumberValue);
 
 	labelInfo.text = nameText;
-	labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	if(active)
+		labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	else
+		labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.hoverColor = labelInfo.normalColor = labelInfo.pressedColor = Black_;
 	labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	int x = (sliderInfo.tex_area.w / 2) + sliderStruct.slider->GetLocalPos().x;
 	int y = sliderStruct.slider->GetLocalPos().y;
-	sliderStruct.name = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+	sliderStruct.name = App->gui->CreateUILabel({ x, y }, labelInfo, listener);
 
 	static char fpsText[5];
 	sprintf_s(fpsText, 5, "%.0f", relativeNumberValue * 100);
 	labelInfo.text = fpsText;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	x = sliderInfo.tex_area.w + sliderStruct.slider->GetLocalPos().x + 10;
+	x = sliderInfo.tex_area.w + sliderStruct.slider->GetLocalPos().x + 5;
 	y = sliderStruct.slider->GetLocalPos().y + (sliderInfo.tex_area.h / 2);
-	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, listener);
 
 
 }
@@ -239,29 +264,42 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
-		if (UIelem == PlayButt) 
+		if (UIelem == playButt) 
 			menuActions = MenuActions_PLAY;
 		
-		else if (UIelem == ExitButt) 
+		else if (UIelem == exitButt) 
 			menuActions = MenuActions_EXIT;
 		
-		else if (UIelem == SettingsButt) 
+		else if (UIelem == settingsButt) 
 			menuActions = MenuActions_SETTINGS;
 
-		else if(UIelem == ReturnButt)
+		else if(UIelem == returnButt)
 			menuActions = MenuActions_RETURN;
 
-		else if (UIelem == AudioFX.slider) 
+		else if (UIelem == audioFX.slider) 
 			menuActions = MenuActions_SLIDERFX;
 		
-		else if (UIelem == AudioMusic.slider) 
+		else if (UIelem == audioMusic.slider) 
 			menuActions = MenuActions_SLIDERMUSIC;
 
+		else if (UIelem == fullScreenButt)
+		{
+			if (App->win->fullscreen) {
+				App->win->fullscreen = false;
+				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
+				break;
+			}
+			else {
+				App->win->fullscreen = true;
+				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+				break;
+			}
+		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;
 	case UI_EVENT_MOUSE_LEFT_UP:
-		if (UIelem == AudioFX.slider || UIelem == AudioMusic.slider)
+		if (UIelem == audioFX.slider || UIelem == audioMusic.slider)
 			menuActions = MenuActions_NONE;
 		break;
 	case UI_EVENT_MAX_EVENTS:
@@ -275,24 +313,26 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 }
 void j1Menu::DeteleMenu() {
 
-	App->gui->DestroyElement((UIElement**)&PlayButt);
-	App->gui->DestroyElement((UIElement**)&PlayLabel);
-	App->gui->DestroyElement((UIElement**)&ExitButt);
-	App->gui->DestroyElement((UIElement**)&ExitLabel);
-	App->gui->DestroyElement((UIElement**)&SettingsButt);
-	App->gui->DestroyElement((UIElement**)&SettingsLabel);
+	App->gui->DestroyElement((UIElement**)&playButt);
+	App->gui->DestroyElement((UIElement**)&playLabel);
+	App->gui->DestroyElement((UIElement**)&exitButt);
+	App->gui->DestroyElement((UIElement**)&exitLabel);
+	App->gui->DestroyElement((UIElement**)&settingsButt);
+	App->gui->DestroyElement((UIElement**)&settingsLabel);
 	
 }
 
 void j1Menu::DeleteSettings() {
 
-	App->gui->DestroyElement((UIElement**)&ReturnButt);
-	App->gui->DestroyElement((UIElement**)&ReturnLabel);
-	App->gui->DestroyElement((UIElement**)&AudioFX.name);
-	App->gui->DestroyElement((UIElement**)&AudioFX.value);
-	App->gui->DestroyElement((UIElement**)&AudioFX.slider);
-	App->gui->DestroyElement((UIElement**)&AudioMusic.name);
-	App->gui->DestroyElement((UIElement**)&AudioMusic.value);
-	App->gui->DestroyElement((UIElement**)&AudioMusic.slider);
+	App->gui->DestroyElement((UIElement**)&returnButt);
+	App->gui->DestroyElement((UIElement**)&returnLabel);
+	App->gui->DestroyElement((UIElement**)&fullScreenButt);
+	App->gui->DestroyElement((UIElement**)&fullScreenLabel);
+	App->gui->DestroyElement((UIElement**)&audioFX.name);
+	App->gui->DestroyElement((UIElement**)&audioFX.value);
+	App->gui->DestroyElement((UIElement**)&audioFX.slider);
+	App->gui->DestroyElement((UIElement**)&audioMusic.name);
+	App->gui->DestroyElement((UIElement**)&audioMusic.value);
+	App->gui->DestroyElement((UIElement**)&audioMusic.slider);
 }
 
