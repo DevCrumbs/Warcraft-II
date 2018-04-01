@@ -64,6 +64,11 @@ struct PathNode
 	bool diagonal = false;
 };
 
+struct WalkabilityMap
+{
+	uchar* map = nullptr;
+	int width = 0, height = 0;
+};
 // ---------------------------------------------------------------------
 // Helper struct to include a list of path nodes
 // ---------------------------------------------------------------------
@@ -100,7 +105,7 @@ public:
 	bool CleanUp();
 
 	// Sets up the walkability map
-	void SetMap(uint width, uint height, uchar* data);
+	void SetMap(WalkabilityMap hiMap, list<WalkabilityMap> lowMap);
 
 	// Main function to request a path from A to B
 	int CreatePath(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
@@ -137,9 +142,8 @@ public:
 
 private:
 
-	uint width = 0; // size of the map (w)
-	uint height = 0; // size of the map (h)
-	uchar* walkabilityMap = nullptr; // all map walkability values [0..255]
+	WalkabilityMap			hiLevelWalkabilityMap;
+	list<WalkabilityMap>	lowLevelWalkabilityMap;
 	DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan; // distance heuristic of choice
 
 	PathList open; // open list of PathNodes
@@ -153,6 +157,8 @@ private:
 	// Dijkstra
 	FindActiveTrigger* trigger = nullptr;
 	bool isPathRequested = false;
+
+
 };
 
 #endif //__j1PATHFINDING_H__

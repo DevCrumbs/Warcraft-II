@@ -27,8 +27,8 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 	App->movement->CreateGroupFromUnit(this);
 
 	/// Walkability map
-	navgraph = new Navgraph();
-	navgraph->CreateNavgraph();
+	//navgraph = new Navgraph();
+	//navgraph->CreateNavgraph();
 
 	/// PathPlanner
 	pathPlanner = new PathPlanner(this, *navgraph);

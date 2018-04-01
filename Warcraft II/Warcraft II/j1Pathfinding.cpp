@@ -9,7 +9,7 @@
 
 #include "Brofiler\Brofiler.h"
 
-j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), height(0)
+j1PathFinding::j1PathFinding() : j1Module()
 {
 	name.assign("pathfinding");
 }
@@ -17,7 +17,7 @@ j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), hei
 // Destructor
 j1PathFinding::~j1PathFinding()
 {
-	RELEASE_ARRAY(walkabilityMap);
+	RELEASE_ARRAY(hiLevelWalkabilityMap.map);
 }
 
 // Called before quitting
@@ -26,26 +26,22 @@ bool j1PathFinding::CleanUp()
 	LOG("Freeing pathfinding library");
 
 	last_path.clear();
-	RELEASE_ARRAY(walkabilityMap);
+	RELEASE_ARRAY(hiLevelWalkabilityMap.map);
 	return true;
 }
 
 // Sets up the walkability map
-void j1PathFinding::SetMap(uint width, uint height, uchar* data)
+void j1PathFinding::SetMap(WalkabilityMap hiMap, list<WalkabilityMap> lowMap)
 {
-	this->width = width;
-	this->height = height;
-
-	RELEASE_ARRAY(walkabilityMap);
-	walkabilityMap = new uchar[width*height];
-	memcpy(walkabilityMap, data, width*height);
+	hiLevelWalkabilityMap = hiMap;
+	lowLevelWalkabilityMap = lowMap;
 }
 
 // Utility: return true if pos is inside the map boundaries
 bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 {
-	return (pos.x >= 0 && pos.x <= (int)width &&
-		pos.y >= 0 && pos.y <= (int)height);
+	return (pos.x >= 0 && pos.x <= (int)hiLevelWalkabilityMap.width &&
+		pos.y >= 0 && pos.y <= (int)hiLevelWalkabilityMap.height);
 }
 
 // Utility: returns true is the tile is walkable
@@ -59,7 +55,7 @@ bool j1PathFinding::IsWalkable(const iPoint& pos) const
 int j1PathFinding::GetTileAt(const iPoint& pos) const
 {
 	if (CheckBoundaries(pos))
-		return walkabilityMap[(pos.y*width) + pos.x];
+		return hiLevelWalkabilityMap.map[(pos.y*hiLevelWalkabilityMap.width) + pos.x];
 
 	return INVALID_WALK_CODE;
 }

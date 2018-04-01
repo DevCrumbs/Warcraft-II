@@ -101,10 +101,12 @@ bool j1Scene::Start()
 	// Create walkability map
 	if (ret)
 	{
-		int w, h;
+		int w = 0, h = 0;
 		uchar* data = NULL;
-		if (App->map->CreateWalkabilityMap(w, h, &data))
-			App->pathfinding->SetMap(w, h, data);
+
+		if (App->map->CreateWalkabilityMap())
+
+			App->pathfinding->SetMap(App->map->hiLevelWalkabilityMap, App->map->lowLevelWalkabilityMap);
 
 		RELEASE_ARRAY(data);
 	}

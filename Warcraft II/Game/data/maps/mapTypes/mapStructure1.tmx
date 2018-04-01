@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="5" height="4" tilewidth="32" tileheight="32" nextobjectid="1">
+  <image source="wastelandTiles.png" width="626" height="659"/>
+ <tileset firstgid="1" name="mapStructure" tilewidth="32" tileheight="32" tilecount="8" columns="4">
+  <image source="mapStructure.png" width="128" height="64"/>
+ </tileset>
+ <layer name="Capa de Patrones 1" width="5" height="4">
+  <data>
+   <tile gid="7"/>
+   <tile gid="7"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+  </data>
+ </layer>
+</map>

@@ -117,8 +117,8 @@ bool PathPlanner::RequestAStar(iPoint origin, iPoint destination)
 	currentSearch = new j1PathFinding();
 
 	// Set the walkability map
-	ret = navgraph.SetNavgraph(currentSearch);
-
+//	ret = navgraph.SetNavgraph(currentSearch);
+	ret = true;
 	// Invalidate if origin or destination are non-walkable
 	if (ret)
 		ret = currentSearch->InitializeAStar(origin, destination);
@@ -286,7 +286,7 @@ void PathPlanner::SetCheckingGoalTile(bool isCheckingGoalTile)
 
 bool Navgraph::CreateNavgraph()
 {
-	return App->map->CreateWalkabilityMap(w, h, &data);
+	return true; // App->map->CreateWalkabilityMap(hiW, hiH, &hiW, lowW , lowH, &lowData);
 }
 
 bool Navgraph::SetNavgraph(j1PathFinding* currentSearch) const
@@ -294,7 +294,15 @@ bool Navgraph::SetNavgraph(j1PathFinding* currentSearch) const
 	if (currentSearch == nullptr)
 		return false;
 
-	currentSearch->SetMap(w, h, data);
+	//currentSearch->SetMap(hiLevelWalkabilityMap, lowLevelWalkabilityMap);
+
+	return true; 
+}
+
+bool Navgraph::GetNavgraph()
+{
+	hiLevelWalkabilityMap = App->map->hiLevelWalkabilityMap;
+	lowLevelWalkabilityMap = App->map->lowLevelWalkabilityMap;
 
 	return true;
 }

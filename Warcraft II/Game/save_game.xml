@@ -9,12 +9,16 @@
 	<map />
 	<pathfinding />
 	<entities />
-	<particles />
-	<collision />
+	<pathmanager />
 	<fonts />
+	<menu />
+	<scene />
+	<scene />
+	<:anonymous />
+	<collision />
+	<particles />
+	<:anonymous />
 	<gui />
-	<scene />
-	<scene />
 	<fade />
 	<renderer>
 		<camera x="0" y="0" />

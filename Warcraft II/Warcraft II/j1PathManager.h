@@ -35,10 +35,12 @@ public:
 
 	bool SetNavgraph(j1PathFinding* currentSearch) const;
 
+	bool GetNavgraph();
+
 public:
 
-	int w = 0, h = 0;
-	uchar* data = nullptr;
+	WalkabilityMap			hiLevelWalkabilityMap;
+	list<WalkabilityMap>	lowLevelWalkabilityMap;
 };
 
 // ---------------------------------------------------------------------

@@ -14,6 +14,9 @@
 #include "j1App.h"
 #include "j1Textures.h"
 
+#include "j1Pathfinding.h"
+
+
 using namespace std;
 
 struct Object {
@@ -232,7 +235,12 @@ public:
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 
-	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
+	bool CreateWalkabilityMap();
+
+	bool SetWalkabilityMap(int & hiWidth, int & hiHieight, uchar ** hiBuffer, int & lowWidth, int & lowHeight, uchar ** lowBuffer) const;
+
+	list<WalkabilityMap> CreateLowLevelWalkabilityMap() const;
+	WalkabilityMap CreateHiLevelWalkabilityMap();
 
 	bool CreateNewMap();
 	bool LoadMapInfo(pugi::xml_node& mapInfoDocument);
@@ -257,35 +265,48 @@ private:
 
 	TileSet* GetTilesetFromTileId(int id) const;
 
+	uint* mapDistribution = nullptr;
+	uint mapSize = 0;
+	uint mapWidth = 0;
+	uint mapHeight = 0;
+
+	uint* hiLevelMap = nullptr;
+	uint hiLevelMapSize = 0;
+	uint hiLevelMapWidth = 0;
+	uint hiLevelMapHeight = 0;
 public:
 
-	Room				data;
-	MapLayer*			collisionLayer = nullptr;
+	Room					data;
+	MapLayer*				collisionLayer = nullptr;
 
-	int					culingOffset = 0;
-	int					blitOffset = 0;
-	bool				cameraBlit = false;
+	int						culingOffset = 0;
+	int						blitOffset = 0;
+	bool					cameraBlit = false;
 
-	int					mapTypesNo = 0;
-	int					defaultRoomSize = 0;
-	int					playerBaseSize = 0;
-	int					defaultLittleRoomSize = 0;
-	int					defaultTileSize = 0;
-	int					defaultHallSize = 0;
+	int						mapTypesNo = 0;
+	int						defaultRoomSize = 0;
+	int						playerBaseSize = 0;
+	int						defaultLittleRoomSize = 0;
+	int						defaultTileSize = 0;
+	int						defaultHallSize = 0;
+
+	WalkabilityMap			hiLevelWalkabilityMap;
+	list<WalkabilityMap>	lowLevelWalkabilityMap;
 
 private:
 
-	pugi::xml_document	mapFile;
-	pugi::xml_document  mapInfoDocument;
+	pugi::xml_document		mapFile;
+	pugi::xml_document		mapInfoDocument;
+	pugi::xml_document      hiLevelWalkabilityMapDocument;
 
-	string				folder;
-	bool				isMapLoaded = false;
+	string					folder;
+	bool					isMapLoaded = false;
 
-	MapLayer*			aboveLayer = nullptr;
+	MapLayer*				aboveLayer = nullptr;
 
-	RoomMap				playableMap;
-	list<RoomInfo>		roomsInfo;
-	vector<int>			noPullRoom;
+	RoomMap					playableMap;
+	list<RoomInfo>			roomsInfo;
+	vector<int>				noPullRoom;
 
 };
 

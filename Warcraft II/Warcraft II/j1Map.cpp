@@ -20,6 +20,7 @@
 #include "Entity.h"
 #include "StaticEntity.h"
 #include "j1Player.h"
+#include "j1Pathfinding.h"
 
 
 j1Map::j1Map() : j1Module(), isMapLoaded(false)
@@ -654,7 +655,7 @@ bool j1Map::LoadTilesetImage(pugi::xml_node imageInfo)
 
 				(*setIterator)->texWidth = imageInfo.attribute("width").as_int();
 
-				if ((*setIterator)->texWidth <= 0)
+			if ((*setIterator)->texWidth <= 0)
 				{
 					(*setIterator)->texWidth = w;
 				}
@@ -750,11 +751,70 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 	return ret;
 }
 
-bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
+bool j1Map::CreateWalkabilityMap()
 {
-	bool ret = false;
+	bool ret = true;
+
+	hiLevelWalkabilityMap = CreateHiLevelWalkabilityMap();
+
+	lowLevelWalkabilityMap = CreateLowLevelWalkabilityMap();
+
+	hiLevelWalkabilityMap = (lowLevelWalkabilityMap.back());
+
+	return ret;
+}
+
+bool j1Map::SetWalkabilityMap(int& hiWidth, int& hiHieight, uchar** hiBuffer, int& lowWidth, int& lowHeight, uchar** lowBuffer) const
+{
+	return true;
+}
+
+WalkabilityMap j1Map::CreateHiLevelWalkabilityMap()
+{
+	WalkabilityMap hiLevel;
+
+	pugi::xml_node hiLevelWalkMap = hiLevelWalkabilityMapDocument;
+	pugi::xml_node& node = hiLevelWalkMap.child("map").child("layer");
+
+	int width = node.attribute("width").as_uint();
+	int height = node.attribute("height").as_uint();
 
 
+	hiLevelMapWidth = width;
+	hiLevelMapHeight = height;
+	hiLevelMapSize = hiLevelMapWidth * hiLevelMapHeight;
+
+	hiLevelMap = new uint[hiLevelMapSize];
+	memset(hiLevelMap, 0, hiLevelMapSize);
+
+	int i = 0;
+	for (pugi::xml_node tileGid = node.child("data").child("tile"); tileGid; tileGid = tileGid.next_sibling("tile")) {
+		hiLevelMap[i++] = tileGid.attribute("gid").as_uint();
+	}
+
+	if (hiLevelMapSize > 0)
+	{
+		uchar* map = new uchar[hiLevelMapSize];
+		memset(map, 1, hiLevelMapSize);
+
+		for (int i = 0; i < hiLevelMapSize; ++i)
+		{
+			map[i] = (hiLevelMap[i]) > 0 ? 0 : 1;
+		}
+
+		hiLevel.map = map;
+		hiLevel.width = hiLevelMapWidth;
+		hiLevel.height = hiLevelMapHeight;
+	}
+	else
+		LOG("No map loaded");
+
+	return hiLevel;
+}
+
+list<WalkabilityMap> j1Map::CreateLowLevelWalkabilityMap() const
+{
+	list<WalkabilityMap> lowLevel;
 
 	for (list<Room>::const_iterator iterator = playableMap.rooms.begin(); iterator != playableMap.rooms.end(); ++iterator)
 	{
@@ -764,7 +824,7 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 		{
 			MapLayer* layer = *item;
 			///	if (!layer->properties.GetProperty("Navigation", false))
-			if (!layer->properties.GetProperty("Navigation", true))
+			if (!layer->properties.GetProperty("navigation", false))
 				continue;
 
 			uchar* map = new uchar[layer->width*layer->height];
@@ -790,18 +850,19 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 					}
 				}
 			}
-
-			*buffer = map;
-			width = (*iterator).width;
-			height = (*iterator).height;
-			ret = true;
-
+			WalkabilityMap temp;
+			temp.map = map;
+			temp.width = (*iterator).width;
+			temp.height = (*iterator).height;
+			
+			lowLevel.push_back(temp);
 			break;
 		}
 	}
-	return ret;
+	return lowLevel;
 
 }
+
 bool Properties::GetProperty(const char* value, bool default_value) const
 {
 	list<Property*>::const_iterator item = properties.begin();
@@ -859,7 +920,8 @@ bool j1Map::CreateNewMap()
 	{
 		static char typePath[50];
 		///sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
-		sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure%i.tmx", mapType);
+		//sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure%i.tmx", mapType);
+		sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure1.tmx");
 		mapInfoDocument.loadFile(typePath);
 
 		pugi::xml_node mapInfo = mapInfoDocument;
@@ -867,6 +929,15 @@ bool j1Map::CreateNewMap()
 
 		if (!ret)
 			LOG("Could not load rooms");
+
+		else
+		{
+			static char mapPath[50];
+			///sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
+			//sprintf_s(typePath, 50, "data/maps/mapTypes/hiLevelWalkabilityMap%i.tmx", mapType);
+			sprintf_s(mapPath, 50, "data/maps/mapTypes/hiLevelWalkabilityMap1.tmx");
+			hiLevelWalkabilityMapDocument.loadFile(mapPath);	
+		}
 
 
 	}
@@ -944,39 +1015,40 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 	int width = node.attribute("width").as_uint();
 	int height = node.attribute("height").as_uint();
 
-	int sizeData = width * height;
-	uint* data = new uint[sizeData];
+	mapWidth = width;
+	mapHeight = height;
+	mapSize = mapWidth * mapHeight;
 
-	memset(data, 0, width * height);	
+	mapDistribution = new uint[mapSize];
+	memset(mapDistribution, 0, mapSize);
 
 	int i = 0;
-
 	for (pugi::xml_node tileGid = node.child("data").child("tile"); tileGid; tileGid = tileGid.next_sibling("tile")) {
-		data[i++] = tileGid.attribute("gid").as_uint();
+		mapDistribution[i++] = tileGid.attribute("gid").as_uint();
 	}
 
 
-	for (i = 0; i < sizeData; ++i)
+	for (i = 0; i < mapSize; ++i)
 	{
 		RoomInfo newRoom;
 
-		if (data[i] > 0)
+		if (mapDistribution[i] > 0)
 		{
-			if (data[i] != 3 && data[i] != 4 && data[i] != 5 && data[i] != 6)
+			if (mapDistribution[i] != 3 && mapDistribution[i] != 4 && mapDistribution[i] != 5 && mapDistribution[i] != 6)
 			{
-				if (i < sizeData - 1)
-					if (data[i + 1] > 0)
+				if (i < mapSize - 1)
+					if (mapDistribution[i + 1] > 0)
 						newRoom.doors.push_back(DIRECTION_EAST);
 
-				if (i + width < sizeData)
-					if (data[i + width] > 0)
+				if (i + width < mapSize)
+					if (mapDistribution[i + width] > 0)
 						newRoom.doors.push_back(DIRECTION_SOUTH);
 			}
 			int x = i % width;
 			int y = i / width;
 			iPoint pos = MapToWorld(x, y);
 
-			switch (data[i])
+			switch (mapDistribution[i])
 			{
 				// Player base
 			case 1:
@@ -1032,7 +1104,7 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 				break;
 
 			default:
-				newRoom.type = data[i] - 7;
+				newRoom.type = mapDistribution[i] - 7;
 
 				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize)) * defaultTileSize;
 				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
@@ -1090,7 +1162,8 @@ bool j1Map::LoadRooms()
 		if ((*roomIterator).type >= 0 && (*roomIterator).pullRoomNo >= 0)
 		{
 			static char roomPath[50];
-			sprintf_s(roomPath, 50, "data/maps/rooms/pull%i/room%i.tmx", (*roomIterator).type, (*roomIterator).pullRoomNo);
+			///sprintf_s(roomPath, 50, "data/maps/rooms/pull%i/room%i.tmx", (*roomIterator).type, (*roomIterator).pullRoomNo);
+			sprintf_s(roomPath, 50, "data/maps/rooms/pull0/room7.tmx");
 			ret = Load(roomPath, (*roomIterator).x, (*roomIterator).y);
 		}
 		else if ((*roomIterator).type == -1)

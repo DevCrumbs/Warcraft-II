@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="3" height="1" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="mapStructure" tilewidth="32" tileheight="32" tilecount="8" columns="4">
+  <image source="mapStructure.png" width="128" height="64"/>
+ </tileset>
+ <layer name="Capa de Patrones 1" width="3" height="1">
+  <data>
+   <tile gid="7"/>
+   <tile gid="4"/>
+   <tile gid="7"/>
+  </data>
+ </layer>
+</map>
