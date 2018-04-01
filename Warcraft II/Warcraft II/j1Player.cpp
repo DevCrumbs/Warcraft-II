@@ -594,23 +594,23 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				townHallUpgrade = true;
 			}
 		}
-		if (UIelem == produceFootmanButton && currentGold >= 500) {
+		if (UIelem == produceFootmanButton && currentGold >= footmanCost) {
 			App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)footmanInfo, unitInfo);
 			currentGold -= 500;
 		}
-		if (UIelem == produceElvenArcherButton && currentGold >= 400) {
+		if (UIelem == produceElvenArcherButton && currentGold >= elvenArcherCost) {
 			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)elvenArcherInfo, unitInfo);
 			currentGold -= 400;
 		}
-		if (UIelem == produceMageButton && mageTower != nullptr && currentGold >= 1200) {
+		if (UIelem == produceMageButton && mageTower != nullptr && currentGold >= mageCost) {
 			App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)mageInfo, unitInfo);
 			currentGold -= 1200;
 		}
-		if (UIelem == producePaladinButton && currentGold >= 800) {
+		if (UIelem == producePaladinButton && currentGold >= paladinCost) {
 			App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)paladinInfo, unitInfo);
 			currentGold -= 800;
 		}
-		if (UIelem == produceGryphonRiderButton && currentGold >= 2500) {
+		if (UIelem == produceGryphonRiderButton && currentGold >= gryphonRiderCost) {
 			App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviaryPos.x + 30, gryphonAviaryPos.y - 50 }, (EntityInfo&)gryphonRiderInfo, unitInfo);
 			currentGold -= 2500;
 		}

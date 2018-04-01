@@ -112,10 +112,19 @@ public:
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
 	bool keepUpgrade = false;
-private:
 
 	int totalGold = 0; // total gold earned during the game
 	int currentGold = 0; // amount of gold that the player has at the current moment
+	//Units costs
+	int footmanCost = 500;
+	int elvenArcherCost = 400;
+	int paladinCost = 800;
+	int ballistaCost = 900;
+	int mageCost = 1200;
+	int gryphonRiderCost = 2500;
+
+private:
+
 	double timer = 0.0f; // game time
 	HoverCheck hoverCheck = HoverCheck_None;
 	uint totalEnemiesKilled = 0;

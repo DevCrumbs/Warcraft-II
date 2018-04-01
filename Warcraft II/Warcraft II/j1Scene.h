@@ -69,6 +69,21 @@ public:
 
 public:
 
+	//Building costs
+	int keepCost = 500;
+	int castleCost = 1500;
+	int barracks2Cost = 1000;
+	int chickenFarmCost = 500;
+	int stablesCost = 900;
+	int gryphonAviaryCost = 400;
+	int mageTowerCost = 1000;
+	int churchCost = 900;
+	int blacksmithCost = 800;
+	int elvenLumberCost = 600;
+	int scoutTowerCost = 400;
+	int guardTowerCost = 600;
+	int cannonTowerCost = 800;
+
 	// Camera
 	float up = false, down = false, left = false, right = false;
 	uint width = 0;
@@ -97,9 +112,12 @@ private:
 	iPoint startRectangle = { 0,0 };
 
 	//UI
-	UIButton * buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
-	UILabel * buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
-	UIImage * buildingMenu;
+	UIButton *buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
+	UILabel *buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
+	//Building costs
+	UILabel *chickenFarmCostLabel, *elvenLumberCostLabel, *blackSmithCostLabel, *stablesCostLabel, *gryphonAviaryCostLabel, *mageTowerCostLabel, *churchCostLabel, *scoutTowerCostLabel, *guardTowerCostLabel, *cannonTowerCostLabel;
+
+	UIImage *buildingMenu;
 	UICursor* mouseText;
 
 	bool buildingMenuOn = false;
