@@ -2,6 +2,7 @@
 #define __j1PLAYER_H__
 
 #include "j1Module.h"
+#include "j1Timer.h"
 #include "Defs.h"
 
 #include "p2Point.h"
@@ -68,6 +69,9 @@ public:
 	void CheckIfPlaceBuilding();
 	iPoint GetMouseTilePos();
 	iPoint GetMousePos();
+
+	void AddGold(int sumGold);
+	int GetCurrentGold();
 
 	// Called before quitting
 	bool CleanUp();
@@ -143,7 +147,6 @@ private:
 	uint totalUnits = 0; // total units created during the game
 	uint activeUnits = 0; // units that the player has at the current moment
 	uint maxUnits = 0; // max units that the player can have at the current moment (it depends on the Chicken Farms built)
-
 
 	HoverButton hoverButtonStruct;
 

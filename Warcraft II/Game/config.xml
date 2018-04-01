@@ -472,7 +472,10 @@
         </goldMine>
         
         <runeStone>
-          <sprites x="144" y="83" w="64" h="64" />
+          <sprites>
+            <active  x="144" y="83" w="64" h="64"/>
+            <inactive x="144" y="14" w="64" h="64"/>
+          </sprites>
         </runeStone>
       
     </neutralBuildings>

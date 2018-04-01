@@ -103,6 +103,16 @@ uint DynamicEntity::GetPriority() const
 	return unitInfo.priority;
 }
 
+void DynamicEntity::SetBlitState(bool blitting) const
+{
+	blitting = isBlitting; 
+}
+
+bool DynamicEntity::GetBlitState() const
+{
+	return isBlitting;
+}
+
 // Animations
 void DynamicEntity::LoadAnimationsSpeed() {}
 

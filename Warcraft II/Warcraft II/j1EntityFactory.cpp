@@ -150,8 +150,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	goldMineInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
 
 	aux = neutralBuildings.child("runeStone").child("sprites");
-	runestoneInfo.completeTexArea = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-
+	runestoneInfo.completeTexArea = { aux.child("active").attribute("x").as_int(), aux.child("active").attribute("y").as_int(), aux.child("active").attribute("w").as_int(), aux.child("active").attribute("h").as_int() };
+	runestoneInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
 	//Dynamic entities
 	//Humans
 	pugi::xml_node humanEntities = config.child("dynamicEntities").child("humans");
