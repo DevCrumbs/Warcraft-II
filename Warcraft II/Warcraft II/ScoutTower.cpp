@@ -1,5 +1,6 @@
 #include "ScoutTower.h"
 #include "j1Collision.h"
+#include <utility> 
 
 ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), scoutTowerInfo(scoutTowerInfo)
 {
@@ -22,7 +23,7 @@ void ScoutTower::Move(float dt)
 
 	//Check if tower has to attack
 	if (isBuilt) {
-		if (isSightSatisfied)
+		if (!enemyAttackQueue.empty())
 			towerState = TowerState_Attack;
 		else
 			towerState = TowerState_Idle;
@@ -43,21 +44,41 @@ void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 
 	case CollisionState_OnEnter:
 
-		//FIX THIS
-		if (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit) {
-			isSightSatisfied = true;
-			attackingTarget = c2->entity;
-			//attackTimer.Start();
+		//Every time a enemy enters range it is added to the attack queue
+		if (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit
+			|| c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding) {
+			
+			enemyAttackQueue.push (c2->entity);
+			
+			if (attackingTarget == nullptr) {
+				attackingTarget = enemyAttackQueue.back();
+				attackTimer.Start();
+			}
 		}
 		
 		break;
 
 
 	case CollisionState_OnExit:
-		if (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit) {
 
-			isSightSatisfied = false;
-			attackingTarget = nullptr;
+		//Every time the enemy dies or exits sight this enemy is deleted from the atack queue
+		if (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit
+			|| c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding) {
+			
+			if (c2->entity == attackingTarget) {
+				attackingTarget = nullptr;
+				enemyAttackQueue.pop();
+			}
+			else if (c2->entity != enemyAttackQueue.back()) {
+				Entity* aux = c2->entity;
+				std::swap(enemyAttackQueue.back(), aux); //I don't know if this will work. Have to try it
+				enemyAttackQueue.pop();
+			}
+			
+			if (!enemyAttackQueue.empty() && attackingTarget == nullptr) {
+				attackingTarget = enemyAttackQueue.back();
+				attackTimer.Start();
+			}
 		}
 		
 		break;
@@ -75,13 +96,11 @@ void ScoutTower::TowerStateMachine(float dt)
 
 	case TowerState_Attack:
 	{
-		if (isSightSatisfied) {
+		if (attackingTarget != nullptr) {
 			if(attackTimer.Read() % (scoutTowerInfo.attackWaitTime * 1000) == 0)
 			attackingTarget->ApplyDamage(scoutTowerInfo.damage);
 		}
-
 	}
-
 		break;
 	case TowerState_Die:
 		
