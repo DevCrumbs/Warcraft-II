@@ -18,6 +18,8 @@ j1Collision::j1Collision()
 	/// PlayerUnit
 	matrix[ColliderType_PlayerUnit][ColliderType_PlayerUnit] = false;
 	matrix[ColliderType_PlayerUnit][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_EnemyBuilding] = false;
 	matrix[ColliderType_PlayerUnit][ColliderType_PlayerSightRadius] = false;
 	matrix[ColliderType_PlayerUnit][ColliderType_EnemySightRadius] = true;
 	matrix[ColliderType_PlayerUnit][ColliderType_PlayerAttackRadius] = false;
@@ -26,16 +28,40 @@ j1Collision::j1Collision()
 	/// EnemyUnit
 	matrix[ColliderType_EnemyUnit][ColliderType_EnemyUnit] = false;
 	matrix[ColliderType_EnemyUnit][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_EnemyBuilding] = false;
 	matrix[ColliderType_EnemyUnit][ColliderType_EnemySightRadius] = false;
 	matrix[ColliderType_EnemyUnit][ColliderType_PlayerSightRadius] = true;
 	matrix[ColliderType_EnemyUnit][ColliderType_EnemyAttackRadius] = false;
 	matrix[ColliderType_EnemyUnit][ColliderType_PlayerAttackRadius] = true;
+
+	//PlayerBuilding
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemySightRadius] = true;
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemyAttackRadius] = true;
+
+	//EnemyBuilding
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_EnemyBuilding ][ColliderType_PlayerSightRadius] = true;
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerAttackRadius] = true;
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyAttackRadius] = false;
 
 	/// PlayerSightRadius
 	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerSightRadius] = false;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemySightRadius] = false;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerUnit] = false;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyUnit] = true;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyBuilding] = true;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerAttackRadius] = false;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyAttackRadius] = false;
 
@@ -44,6 +70,8 @@ j1Collision::j1Collision()
 	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerSightRadius] = false;
 	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyUnit] = false;
 	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerUnit] = true;
+	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerBuilding] = true;
+	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyBuilding] = false;
 	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyAttackRadius] = false;
 	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerAttackRadius] = false;
 
@@ -54,6 +82,8 @@ j1Collision::j1Collision()
 	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemySightRadius] = false;
 	matrix[ColliderType_PlayerAttackRadius][ColliderType_PlayerUnit] = false;
 	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemyUnit] = true;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemyBuilding] = true;
 
 	/// EnemyAttackRadius
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyAttackRadius] = false;
@@ -62,10 +92,14 @@ j1Collision::j1Collision()
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerSightRadius] = false;
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyUnit] = false;
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerUnit] = true;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerBuilding] = true;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyBuilding] = false;
 
 	// DEBUG COLORS
 	debugColors[ColliderType_PlayerUnit] = ColorDarkBlue;
 	debugColors[ColliderType_EnemyUnit] = ColorDarkRed;
+	debugColors[ColliderType_PlayerBuilding] = ColorDarkBlue;
+	debugColors[ColliderType_EnemyBuilding] = ColorDarkRed;
 	debugColors[ColliderType_PlayerSightRadius] = ColorLightBlue;
 	debugColors[ColliderType_EnemySightRadius] = ColorLightRed;
 	debugColors[ColliderType_PlayerAttackRadius] = ColorLightBlue;
