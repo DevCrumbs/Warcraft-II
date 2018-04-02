@@ -20,6 +20,19 @@ struct ScoutTowerInfo
 	uint sightRadius = 0;
 	uint damage = 0;
 	uint attackWaitTime = 0;
+	uint arrowSpeed = 0;
+};
+
+enum ArrowDirection {
+	NO_DIRECTION,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	UP_LEFT,
+	UP_RIGHT,
+	DOWN_LEFT,
+	DOWN_RIGHT
 };
 
 class ScoutTower :public StaticEntity
@@ -35,6 +48,14 @@ public:
 	// State machine
 	void TowerStateMachine(float dt);
 
+	//Arrows
+	void DetermineArrowDirection();
+	void CreateArrow();
+	void CheckArrowMovement(float dt);
+	void MoveArrowTowardsTarget(float dt);
+	void InflictDamageAndDestroyArrow();
+	
+
 	// Animations
 	void LoadAnimationsSpeed();
 	void UpdateAnimations(float dt);
@@ -49,6 +70,10 @@ private:
 	Entity* attackingTarget = nullptr;
 	j1Timer attackTimer;
 	std::queue<Entity*> enemyAttackQueue;
+
+	//Arrow
+	Particle* arrowParticle = nullptr;
+	ArrowDirection arrowDirection = NO_DIRECTION;
 };
 
 #endif //__ScoutTower_H__

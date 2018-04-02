@@ -34,7 +34,7 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	
 	//Fire
 	pugi::xml_node spritesheets = config.child("spritesheets");
-	fireTexName = spritesheets.child("sprite").attribute("name").as_string();
+	atlasTexName = spritesheets.child("atlas").attribute("name").as_string();
 
 
 	//spritesheets = config.child("fire");
@@ -59,6 +59,17 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 		hardFire.anim.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
+	//Tower arrows
+	pugi::xml_node towerArrows = config.child("towerArrows");
+	towerArrowParticles.up.anim.PushBack({ towerArrows.child("up").attribute("x").as_int(), towerArrows.child("up").attribute("y").as_int(), towerArrows.child("up").attribute("w").as_int(), towerArrows.child("up").attribute("h").as_int() });
+	towerArrowParticles.down.anim.PushBack({ towerArrows.child("down").attribute("x").as_int(), towerArrows.child("down").attribute("y").as_int(), towerArrows.child("down").attribute("w").as_int(), towerArrows.child("down").attribute("h").as_int() });
+	towerArrowParticles.left.anim.PushBack({ towerArrows.child("left").attribute("x").as_int(), towerArrows.child("left").attribute("y").as_int(), towerArrows.child("left").attribute("w").as_int(), towerArrows.child("left").attribute("h").as_int() });
+	towerArrowParticles.right.anim.PushBack({ towerArrows.child("right").attribute("x").as_int(), towerArrows.child("right").attribute("y").as_int(), towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() });
+	towerArrowParticles.upLeft.anim.PushBack({ towerArrows.child("upLeft").attribute("x").as_int(), towerArrows.child("upLeft").attribute("y").as_int(), towerArrows.child("upLeft").attribute("w").as_int(), towerArrows.child("upLeft").attribute("h").as_int() });
+	towerArrowParticles.upRight.anim.PushBack({ towerArrows.child("upRight").attribute("x").as_int(), towerArrows.child("upRight").attribute("y").as_int(), towerArrows.child("upRight").attribute("w").as_int(), towerArrows.child("upRight").attribute("h").as_int() });
+	towerArrowParticles.downLeft.anim.PushBack({ towerArrows.child("downLeft").attribute("x").as_int(), towerArrows.child("downLeft").attribute("y").as_int(), towerArrows.child("downLeft").attribute("w").as_int(), towerArrows.child("downLeft").attribute("h").as_int() });
+	towerArrowParticles.downRight.anim.PushBack({ towerArrows.child("downRight").attribute("x").as_int(), towerArrows.child("downRight").attribute("y").as_int(), towerArrows.child("downRight").attribute("w").as_int(), towerArrows.child("downRight").attribute("h").as_int() });
+
 	return ret;
 }
 
@@ -74,7 +85,7 @@ bool j1Particles::Start()
 {
 	bool ret = true;
 
-	fireText = App->tex->Load(fireTexName.data());
+	atlasTex = App->tex->Load(atlasTexName.data());
 	LOG("Loading particles");
 
 	return ret;
@@ -118,7 +129,7 @@ bool j1Particles::Update(float dt)
 		}
 		else if (SDL_GetTicks() >= p->born)
 		{
-			App->render->Blit(fireText, p->position.x, p->position.y, &(p->anim.GetCurrentFrame()));
+			App->render->Blit(atlasTex, p->position.x, p->position.y, &(p->anim.GetCurrentFrame()));
 			
 		}
 	}
