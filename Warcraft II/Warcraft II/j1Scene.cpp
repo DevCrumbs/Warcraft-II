@@ -191,7 +191,7 @@ bool j1Scene::Update(float dt)
 	App->map->Draw(); // map
 	App->entities->Draw(); // entities
 	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
-	App->collision->DebugDraw();
+	//App->collision->DebugDraw();
 
 	// Movement															 // Select units by mouse click
 	/*if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {

@@ -1,5 +1,7 @@
 #include "ScoutTower.h"
 #include "j1Collision.h"
+#include "j1Particles.h"
+#include "j1Map.h"
 #include <utility> 
 
 ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), scoutTowerInfo(scoutTowerInfo)
@@ -36,6 +38,9 @@ void ScoutTower::Move(float dt)
 
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
 		isBuilt = true;
+
+	if (arrowParticle != nullptr)
+		CheckArrowMovement(dt);
 }
 
 void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionState collisionState)
@@ -78,6 +83,7 @@ void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 			if (!enemyAttackQueue.empty() && attackingTarget == nullptr) {
 				attackingTarget = enemyAttackQueue.back();
 				attackTimer.Start();
+
 			}
 		}
 		
@@ -97,8 +103,16 @@ void ScoutTower::TowerStateMachine(float dt)
 	case TowerState_Attack:
 	{
 		if (attackingTarget != nullptr) {
-			if(attackTimer.Read() % (scoutTowerInfo.attackWaitTime * 1000) == 0)
-			attackingTarget->ApplyDamage(scoutTowerInfo.damage);
+			if (attackTimer.Read() >= (scoutTowerInfo.attackWaitTime * 1000)) {
+				attackTimer.Start();
+
+				attackingTarget->ApplyDamage(scoutTowerInfo.damage);
+				DetermineArrowDirection();
+
+				float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->position.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->position.y, 2.0f));
+				arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->position.x) / m;
+				arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->position.y) / m;
+			}
 		}
 	}
 		break;
@@ -106,6 +120,63 @@ void ScoutTower::TowerStateMachine(float dt)
 		
 		break;
 	}
+}
+
+//Arrows
+void ScoutTower::CheckArrowMovement(float dt)
+{
+	if (arrowParticle->position != arrowParticle->destination) {
+		arrowParticle->position.x += arrowParticle->destination.x * dt * scoutTowerInfo.arrowSpeed;
+		arrowParticle->position.y += arrowParticle->destination.y * dt * scoutTowerInfo.arrowSpeed;
+	}
+	else if (arrowParticle->position == arrowParticle->destination) {
+		arrowParticle->position.x == arrowParticle->destination.x;
+		arrowParticle->position.y == arrowParticle->destination.y;
+	}
+}
+
+void ScoutTower::DetermineArrowDirection()
+{
+	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
+	iPoint towerTilePos = App->map->WorldToMap((int)this->GetPos().x, (int)this->GetPos().y);
+
+	//Up
+	if (targetTilePos.x == towerTilePos.x  && targetTilePos.y < towerTilePos.y
+		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y < towerTilePos.y)
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.up, this->GetPos().x + 16, this->GetPos().y + 16);
+	
+	//Down
+	else if (targetTilePos.x == towerTilePos.x  && targetTilePos.y > towerTilePos.y
+		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y > towerTilePos.y)
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.down, this->GetPos().x + 16, this->GetPos().y + 16);
+
+	//Left
+	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y
+		|| targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y + 1)
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.left, this->GetPos().x + 16, this->GetPos().y + 16);
+	
+	//Right
+	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y
+		|| targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y + 1)
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.right, this->GetPos().x + 16, this->GetPos().y + 16);
+	
+	//Up Left
+	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y < towerTilePos.y)
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, this->GetPos().x + 16, this->GetPos().y + 16);
+
+	//Up Right
+	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y < towerTilePos.y)
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upRight, this->GetPos().x + 16, this->GetPos().y + 16);
+
+	//Down Left
+	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y > towerTilePos.y)
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downLeft, this->GetPos().x + 16, this->GetPos().y + 16);
+
+	//Down Right
+	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y > towerTilePos.y)
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, this->GetPos().x + 16, this->GetPos().y + 16);
+	//else
+		//arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.up, this->GetPos().x + 16, this->GetPos().y + 16);
 }
 
 // Animations

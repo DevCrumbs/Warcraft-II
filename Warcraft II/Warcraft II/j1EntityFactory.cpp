@@ -74,8 +74,9 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	scoutTowerInfo.sightRadius = { humanBuildings.child("scoutTower").child("attack").attribute("sightRadius").as_uint() };
 	scoutTowerInfo.damage = { humanBuildings.child("scoutTower").child("attack").attribute("damage").as_uint() };
 	scoutTowerInfo.attackWaitTime = { humanBuildings.child("scoutTower").child("attack").attribute("attackWaitTime").as_uint() };
+	scoutTowerInfo.arrowSpeed = { humanBuildings.child("scoutTower").child("attack").attribute("arrowSpeed").as_uint() };
 	scoutTowerInfo.maxLife = { humanBuildings.child("scoutTower").child("maxLife").attribute("value").as_int() };
-	
+
 	//Scout Tower animations
 	aux = humanBuildings.child("scoutTower").child("sprites");
 	scoutTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
