@@ -153,6 +153,8 @@ struct Room
 	int					tileWidth = 0;
 	int					tileHeight = 0;
 
+	int					roomType = 0;
+
 	fPoint				roomPos{ 0, 0 };
 	SDL_Color			backgroundColor;
 	ROOM_TYPE			type = ROOMTYPE_UNKNOWN;
@@ -162,6 +164,11 @@ struct Room
 	list<MapLayer*>		layers;
 
 	list<ObjectGroup*>	objectGroups;
+
+	iPoint exitPointN{ 0,0 };
+	iPoint exitPointE{ 0,0 };
+	iPoint exitPointS{ 0,0 };
+	iPoint exitPointW{ 0,0 };
 
 	fPoint GetObjectPosition(string groupObject, string object);
 	fPoint GetObjectSize(string groupObject, string object);
@@ -226,7 +233,7 @@ public:
 	bool CleanUp();
 
 	// Load new map
-	bool Load(const char* path, int x = 0, int y = 0);
+	bool Load(const char* path, int x = 0, int y = 0, int type = 0);
 
 	// Unload map
 	bool UnLoad();
@@ -274,6 +281,7 @@ private:
 	uint hiLevelMapSize = 0;
 	uint hiLevelMapWidth = 0;
 	uint hiLevelMapHeight = 0;
+
 public:
 
 	Room					data;

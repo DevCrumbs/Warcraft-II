@@ -77,6 +77,7 @@ void j1Map::Draw()
 	list<Room>::iterator roomIterator = playableMap.rooms.begin();
 	while (roomIterator != playableMap.rooms.end())
 	{
+		SDL_Texture* tex = nullptr;
 		for (list<MapLayer*>::const_iterator layer = (*roomIterator).layers.begin(); layer != (*roomIterator).layers.end(); ++layer)
 		{
 			//			if (!(*layer)->properties.GetProperty("Draw", false))
@@ -102,7 +103,8 @@ void j1Map::Draw()
 						if (tileId > 0) {
 
 							TileSet* tileset = GetTilesetFromTileId(tileId);
-
+							if(tex == nullptr)
+							tex = tileset->texture;
 							SDL_Rect rect = tileset->GetTileRect(tileId);
 
 							SDL_Rect* section = &rect;
@@ -114,10 +116,16 @@ void j1Map::Draw()
 					}//for
 				}//for
 
+				SDL_Rect section = { 32,32,32,32 };
 
+				App->render->Blit(tex, (*roomIterator).exitPointN.x, (*roomIterator).exitPointN.y, &section);
+				App->render->Blit(tex, (*roomIterator).exitPointE.x, (*roomIterator).exitPointE.y, &section);
+				App->render->Blit(tex, (*roomIterator).exitPointS.x, (*roomIterator).exitPointS.y, &section);
+				App->render->Blit(tex, (*roomIterator).exitPointW.x, (*roomIterator).exitPointW.y, &section);
 			}
 		}
 		roomIterator++;
+
 	}
 
 
@@ -488,7 +496,7 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set)
 }
 
 // Load new room
-bool j1Map::Load(const char* fileName, int x, int y)
+bool j1Map::Load(const char* fileName, int x, int y, int type)
 {
 	Room* newRoom = new Room;
 	newRoom->x = x;
@@ -497,6 +505,8 @@ bool j1Map::Load(const char* fileName, int x, int y)
 	delete newRoom;
 
 	bool ret = true;
+
+	data.roomType = type;
 
 	pugi::xml_parse_result result = mapFile.loadFile(fileName);
 
@@ -1168,15 +1178,15 @@ bool j1Map::LoadRooms()
 		}
 		else if ((*roomIterator).type == -1)
 		{
-			ret = Load("data/maps/rooms/base/base.tmx", (*roomIterator).x, (*roomIterator).y);
+			ret = Load("data/maps/rooms/base/base.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
 		}
 		else if ((*roomIterator).type == -2)
 		{
-			ret = Load("data/maps/rooms/boss/boss.tmx", (*roomIterator).x, (*roomIterator).y);
+			ret = Load("data/maps/rooms/boss/boss.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
 		}
 		else if ((*roomIterator).type == -3)
 		{
-			ret = Load("data/maps/rooms/littleroom/littleRoom0.tmx", (*roomIterator).x, (*roomIterator).y);
+			ret = Load("data/maps/rooms/littleroom/littleRoom0.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
 		}
 		if (!ret)
 			break;
@@ -1287,7 +1297,7 @@ bool j1Map::LoadLogic()
 						pos.y = auxPos.y + (*iterator).y;
 
 						UnitInfo unitInfo;
-						
+
 						ENTITY_TYPE entityType = (ENTITY_TYPE)((*layerIterator)->data[i]);
 						switch (entityType)
 						{
@@ -1304,14 +1314,44 @@ bool j1Map::LoadLogic()
 							App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
 							break;
 						}
-						
-						
+
+
 						//App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetBuildingInfo(EntityType_FOOTMAN));
 
 //						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);
 					}
 				}
 			}
+		}
+
+		int x = (*iterator).x;
+		int y = (*iterator).y;
+
+		int tileWidth = (*iterator).tileWidth;
+		int tileHeight = (*iterator).tileHeight;
+
+		int width = (*iterator).width * tileWidth;
+		int height = (*iterator).height * tileHeight;
+
+		switch ((*iterator).roomType)
+		{
+		case -1:
+
+			break;
+		case -2:
+
+			break;
+		case -3:
+
+			break;
+		default:
+
+			(*iterator).exitPointN = { x + (width / 2),			y - tileHeight };
+			(*iterator).exitPointE = { x + width,				y + (height / 2) };
+			(*iterator).exitPointS = { x + (width / 2),			y + height};
+			(*iterator).exitPointW = { x - tileWidth,			y + (height / 2) };
+
+			break;
 		}
 	}
 
