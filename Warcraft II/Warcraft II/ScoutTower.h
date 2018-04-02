@@ -23,6 +23,18 @@ struct ScoutTowerInfo
 	uint arrowSpeed = 0;
 };
 
+enum ArrowDirection {
+	NO_DIRECTION,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	UP_LEFT,
+	UP_RIGHT,
+	DOWN_LEFT,
+	DOWN_RIGHT
+};
+
 class ScoutTower :public StaticEntity
 {
 public:
@@ -37,8 +49,10 @@ public:
 	void TowerStateMachine(float dt);
 
 	//Arrows
-	void CheckArrowMovement(float dt);
 	void DetermineArrowDirection();
+	void CheckArrowMovement(float dt);
+	void MoveArrowTowardsTarget(float dt);
+	
 
 	// Animations
 	void LoadAnimationsSpeed();

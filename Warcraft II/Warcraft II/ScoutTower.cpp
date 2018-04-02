@@ -109,9 +109,7 @@ void ScoutTower::TowerStateMachine(float dt)
 				attackingTarget->ApplyDamage(scoutTowerInfo.damage);
 				DetermineArrowDirection();
 
-				float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->position.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->position.y, 2.0f));
-				arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->position.x) / m;
-				arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->position.y) / m;
+				
 			}
 		}
 	}
@@ -123,18 +121,6 @@ void ScoutTower::TowerStateMachine(float dt)
 }
 
 //Arrows
-void ScoutTower::CheckArrowMovement(float dt)
-{
-	if (arrowParticle->position != arrowParticle->destination) {
-		arrowParticle->position.x += arrowParticle->destination.x * dt * scoutTowerInfo.arrowSpeed;
-		arrowParticle->position.y += arrowParticle->destination.y * dt * scoutTowerInfo.arrowSpeed;
-	}
-	else if (arrowParticle->position == arrowParticle->destination) {
-		arrowParticle->position.x == arrowParticle->destination.x;
-		arrowParticle->position.y == arrowParticle->destination.y;
-	}
-}
-
 void ScoutTower::DetermineArrowDirection()
 {
 	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
@@ -144,7 +130,7 @@ void ScoutTower::DetermineArrowDirection()
 	if (targetTilePos.x == towerTilePos.x  && targetTilePos.y < towerTilePos.y
 		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y < towerTilePos.y)
 		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.up, this->GetPos().x + 16, this->GetPos().y + 16);
-	
+
 	//Down
 	else if (targetTilePos.x == towerTilePos.x  && targetTilePos.y > towerTilePos.y
 		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y > towerTilePos.y)
@@ -154,12 +140,12 @@ void ScoutTower::DetermineArrowDirection()
 	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y
 		|| targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y + 1)
 		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.left, this->GetPos().x + 16, this->GetPos().y + 16);
-	
+
 	//Right
 	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y
 		|| targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y + 1)
 		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.right, this->GetPos().x + 16, this->GetPos().y + 16);
-	
+
 	//Up Left
 	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y < towerTilePos.y)
 		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, this->GetPos().x + 16, this->GetPos().y + 16);
@@ -175,9 +161,108 @@ void ScoutTower::DetermineArrowDirection()
 	//Down Right
 	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y > towerTilePos.y)
 		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, this->GetPos().x + 16, this->GetPos().y + 16);
-	//else
-		//arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.up, this->GetPos().x + 16, this->GetPos().y + 16);
+	
+
+	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->position.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->position.y, 2.0f));
+	arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->position.x) / m;
+	arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->position.y) / m;
 }
+
+
+void ScoutTower::CheckArrowMovement(float dt)
+{
+	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
+	iPoint towerTilePos = App->map->WorldToMap((int)this->GetPos().x, (int)this->GetPos().y);
+	iPoint arrowTilePos = App->map->WorldToMap((int)arrowParticle->position.x, (int)arrowParticle->position.y);
+
+	//Up
+	if (targetTilePos.x == towerTilePos.x  && targetTilePos.y < towerTilePos.y
+		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y < towerTilePos.y) {
+		if (arrowTilePos.y > targetTilePos.y)
+			MoveArrowTowardsTarget(dt);
+
+		else if (arrowTilePos.y <= targetTilePos.y)
+			arrowParticle->isDeleted = true;
+	}
+	//Down
+	else if (targetTilePos.x == towerTilePos.x  && targetTilePos.y > towerTilePos.y
+		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y > towerTilePos.y) {
+		if (arrowTilePos.y < targetTilePos.y)
+			MoveArrowTowardsTarget(dt);
+
+		else if (arrowTilePos.y >= targetTilePos.y)
+			arrowParticle->isDeleted = true;
+	}
+	//Left
+	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y
+		|| targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y + 1) {
+		if (arrowTilePos.x > targetTilePos.x)
+			MoveArrowTowardsTarget(dt);
+
+		else if (arrowTilePos.x <= targetTilePos.x)
+			arrowParticle->isDeleted = true;
+
+	}
+	//Right
+	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y
+		|| targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y + 1) {
+		if (arrowTilePos.x < targetTilePos.x)
+			MoveArrowTowardsTarget(dt);
+
+		else if (arrowTilePos.x >= targetTilePos.x)
+			arrowParticle->isDeleted = true;
+
+	}
+	//Up Left
+	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y < towerTilePos.y) {
+		if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y > targetTilePos.y)
+			MoveArrowTowardsTarget(dt);
+
+		else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
+			arrowParticle->isDeleted = true;
+
+	}
+
+	//Up Right
+	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y < towerTilePos.y) {
+		if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y > targetTilePos.y)
+			MoveArrowTowardsTarget(dt);
+
+		else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
+			arrowParticle->isDeleted = true;
+
+	}
+
+	//Down Left
+	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y > towerTilePos.y) {
+		if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y < targetTilePos.y)
+			MoveArrowTowardsTarget(dt);
+
+		else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
+			arrowParticle->isDeleted = true;
+
+	}
+
+	//Down Right
+	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y > towerTilePos.y) {
+		if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y < targetTilePos.y)
+			MoveArrowTowardsTarget(dt);
+
+		else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
+			arrowParticle->isDeleted = true;
+
+	}
+
+		
+}
+
+void ScoutTower::MoveArrowTowardsTarget(float dt)
+{
+	arrowParticle->position.x += arrowParticle->destination.x * dt * scoutTowerInfo.arrowSpeed;
+	arrowParticle->position.y += arrowParticle->destination.y * dt * scoutTowerInfo.arrowSpeed;
+}
+
+
 
 // Animations
 void ScoutTower::LoadAnimationsSpeed()
