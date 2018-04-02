@@ -38,6 +38,13 @@ struct HoverButton
 
 };
 
+struct HoverInfo
+{
+	UILabel* cost = nullptr;
+	UILabel* info = nullptr;
+	UIImage* background = nullptr;
+};
+
 struct EntitySelectedStats
 {
 	UILabel* HP = nullptr;
@@ -88,6 +95,7 @@ public:
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void DeleteEntitiesMenu();
+	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
@@ -121,10 +129,19 @@ public:
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
 	bool keepUpgrade = false;
-private:
 
 	int totalGold = 0; // total gold earned during the game
 	int currentGold = 0; // amount of gold that the player has at the current moment
+	//Units costs
+	int footmanCost = 500;
+	int elvenArcherCost = 400;
+	int paladinCost = 800;
+	int ballistaCost = 900;
+	int mageCost = 1200;
+	int gryphonRiderCost = 2500;
+
+private:
+
 	double timer = 0.0f; // game time
 	HoverCheck hoverCheck = HoverCheck_None;
 	uint totalEnemiesKilled = 0;
@@ -149,6 +166,8 @@ private:
 	uint maxUnits = 0; // max units that the player can have at the current moment (it depends on the Chicken Farms built)
 
 	HoverButton hoverButtonStruct;
+
+	HoverInfo hoverInfo;
 
 	EntitySelectedStats entitySelectedStats;
 
