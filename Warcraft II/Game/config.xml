@@ -367,7 +367,7 @@
 
         <scoutTower>
           <maxLife value = "150"/>
-          <attack sightRadius = "5" damage= "400" attackWaitTime= "1"/>
+          <attack sightRadius = "5" damage= "5" attackWaitTime= "2" arrowSpeed ="1000"/>
           <sprites>
             <complete x="465" y="4" w="64" h="64"/>
             <inProgress x="465" y="68" w="64" h="64"/>
@@ -489,9 +489,20 @@
 
   <particles>
     <spritesheets>
-      <sprite name = "data/assets/textures/buildings/fire.png"/>
+      <atlas name = "data/assets/textures/particles/atlas.png"/>
     </spritesheets>
 
+    <towerArrows>
+      <up x="272" y="8" w="30" h="30" />
+      <upRight x="312" y="9" w="30" h="30" />
+      <right x="353" y="9" w="30" h="30" />
+      <downRight x="392" y="8" w="30" h="30" />
+      <down x="432" y="8" w="30" h="30" />
+      <downLeft x="470" y="8" w="30" h="30" />
+      <left x="509" y="9" w="30" h="30" />
+      <upLeft x="550" y="9" w="30" h="30" />
+    </towerArrows>
+    
     <fire>
         <low speed = "0.3" loop = "1" life = "1">
            <frame x="  2" y="3" w="30" h="30" />
