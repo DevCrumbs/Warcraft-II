@@ -38,6 +38,13 @@ struct HoverButton
 
 };
 
+struct HoverInfo
+{
+	UILabel* cost = nullptr;
+	UILabel* info = nullptr;
+	UIImage* background = nullptr;
+};
+
 struct EntitySelectedStats
 {
 	UILabel* HP = nullptr;
@@ -88,6 +95,7 @@ public:
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void DeleteEntitiesMenu();
+	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
@@ -158,6 +166,8 @@ private:
 	uint maxUnits = 0; // max units that the player can have at the current moment (it depends on the Chicken Farms built)
 
 	HoverButton hoverButtonStruct;
+
+	HoverInfo hoverInfo;
 
 	EntitySelectedStats entitySelectedStats;
 

@@ -743,26 +743,31 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == chickenFarmButton && App->player->currentGold >= chickenFarmCost) {
 			UnLoadBuildingMenu();
 			alphaBuilding = EntityType_CHICKEN_FARM;
+			App->player->AddGold(-chickenFarmCost);
 		}
 		
 		if (UIelem == stablesButton && App->player->currentGold >= stablesCost) {
 			UnLoadBuildingMenu();
 			alphaBuilding = EntityType_STABLES;
+			App->player->AddGold(-stablesCost);
 		}
 		
 		if (UIelem == gryphonAviaryButton && App->player->currentGold >= gryphonAviaryCost) {
 			UnLoadBuildingMenu();
 			alphaBuilding = EntityType_GRYPHON_AVIARY;
+			App->player->AddGold(-gryphonAviaryCost);
 		}
 
 		if (UIelem == mageTowerButton && App->player->currentGold >= mageTowerCost) {
 			UnLoadBuildingMenu();
 			alphaBuilding = EntityType_MAGE_TOWER;
+			App->player->AddGold(-mageTowerCost);
 		}
 
 		if (UIelem == scoutTowerButton && App->player->currentGold >= scoutTowerCost) {
 			UnLoadBuildingMenu();
 			alphaBuilding = EntityType_SCOUT_TOWER;
+			App->player->AddGold(-scoutTowerCost);
 		}
 		break;
 
