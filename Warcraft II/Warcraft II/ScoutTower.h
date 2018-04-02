@@ -50,8 +50,10 @@ public:
 
 	//Arrows
 	void DetermineArrowDirection();
+	void CreateArrow();
 	void CheckArrowMovement(float dt);
 	void MoveArrowTowardsTarget(float dt);
+	void InflictDamageAndDestroyArrow();
 	
 
 	// Animations
@@ -69,7 +71,9 @@ private:
 	j1Timer attackTimer;
 	std::queue<Entity*> enemyAttackQueue;
 
+	//Arrow
 	Particle* arrowParticle = nullptr;
+	ArrowDirection arrowDirection = NO_DIRECTION;
 };
 
 #endif //__ScoutTower_H__
