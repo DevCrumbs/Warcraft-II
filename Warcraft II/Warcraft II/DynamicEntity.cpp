@@ -17,6 +17,8 @@
 
 DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, j1Module* listener) : Entity(pos, size, currLife, maxLife, listener), unitInfo(unitInfo)
 {
+	this->entityType = EntityCategory_DYNAMIC_ENTITY;
+
 	// Movement
 	/// UnitInfo
 	if (this->unitInfo.currSpeed == 0.0f)

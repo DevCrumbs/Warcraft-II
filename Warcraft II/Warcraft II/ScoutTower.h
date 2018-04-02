@@ -2,6 +2,8 @@
 #define __ScoutTower_H__
 
 #include "StaticEntity.h"
+#include <queue>
+
 struct ColliderGroup;
 
 struct ScoutTowerInfo
@@ -44,9 +46,9 @@ private:
 	TowerState towerState = TowerState_Idle;
 
 	//Attack
-	bool isSightSatisfied = false;
 	Entity* attackingTarget = nullptr;
 	j1Timer attackTimer;
+	std::queue<Entity*> enemyAttackQueue;
 };
 
 #endif //__ScoutTower_H__

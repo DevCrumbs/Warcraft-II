@@ -10,7 +10,8 @@
 #include "j1EntityFactory.h"
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) {
-	
+	this->entityType = EntityCategory_STATIC_ENTITY;
+
 	if (App->GetSecondsSinceAppStartUp() < 700) //Checks for static entities built since startup
 		isBuilt = true;
 	
@@ -158,9 +159,8 @@ bool StaticEntity::GetIsFinishedBuilt() const
 ColliderGroup * StaticEntity::CreateRhombusCollider(ColliderType colliderType, uint radius)
 {
 	vector<Collider*> colliders;
-	iPoint currTilePos = { (int)this->pos.x + 16, (int)this->pos.y + 16 };
+	iPoint currTilePos = { (int)this->pos.x, (int)this->pos.y };
 
-	//Fix this
 	int sign = 1;
 	for (int y = -(int)radius + 1; y < (int)radius; ++y) {
 
@@ -168,8 +168,14 @@ ColliderGroup * StaticEntity::CreateRhombusCollider(ColliderType colliderType, u
 			sign *= -1;
 
 		for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
-
+			//Valdivia: Idk if this is the correct way of doing it but it works
 			SDL_Rect rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			colliders.push_back(App->collision->CreateCollider(rect));
+			rect = { currTilePos.x + 32 + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			colliders.push_back(App->collision->CreateCollider(rect));
+			rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + 32 + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			colliders.push_back(App->collision->CreateCollider(rect));
+			rect = { currTilePos.x + 32 + x * App->map->defaultTileSize, currTilePos.y + 32 + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
 			colliders.push_back(App->collision->CreateCollider(rect));
 		}
 	}
