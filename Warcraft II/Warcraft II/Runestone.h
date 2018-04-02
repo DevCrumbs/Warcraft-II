@@ -28,6 +28,8 @@ public:
 private:
 
 	RunestoneInfo runestoneInfo;
+
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 };
 
 #endif //__Runestone_H__

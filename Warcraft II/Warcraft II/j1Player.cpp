@@ -141,7 +141,6 @@ bool j1Player::Update(float dt) {
 		}
 	}
 
-
 	return true;
 }
 
@@ -177,6 +176,16 @@ iPoint j1Player::GetMousePos() {
 	iPoint mouseTilePos = App->map->MapToWorld(GetMouseTilePos().x, GetMouseTilePos().y);
 
 	return mouseTilePos;
+}
+
+void j1Player::AddGold(int sumGold)
+{
+	currentGold += sumGold;
+}
+
+int j1Player::GetCurrentGold()
+{
+	return currentGold;
 }
 
 void j1Player::CheckIfPlaceBuilding()
@@ -345,6 +354,17 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal)
 			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
+
+		else if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
+			list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
+			if (pene.size() != 0) {
+					pene.front()->SetBlitState(false);
+				}
+			staticEntity->buildingState = BuildingState_Destroyed;
+		}
+
+		else if (staticEntity->staticEntityType == EntityType_RUNESTONE)
+			staticEntity->buildingState = BuildingState_Destroyed;
 	
 		break;
 	case EntitiesEvent_HOVER:
@@ -578,16 +598,16 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 		}
 		if (UIelem == produceFootmanButton) {
-			App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)footmanInfo, unitInfo);
+			App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 32, barracksPos.y - 64 }, (EntityInfo&)footmanInfo, unitInfo);
 		}
 		if (UIelem == produceElvenArcherButton) {
-			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)elvenArcherInfo, unitInfo);
+			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 32, barracksPos.y - 64 }, (EntityInfo&)elvenArcherInfo, unitInfo);
 		}
 		if (UIelem == produceMageButton && mageTower != nullptr) {
-			App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)mageInfo, unitInfo);
+			App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 32, mageTowerPos.y - 64 }, (EntityInfo&)mageInfo, unitInfo);
 		}
 		if (UIelem == producePaladinButton) {
-			App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)paladinInfo, unitInfo);
+			App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 32, barracksPos.y - 64 }, (EntityInfo&)paladinInfo, unitInfo);
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
