@@ -141,7 +141,6 @@ bool j1Player::Update(float dt) {
 		}
 	}
 
-
 	return true;
 }
 
@@ -177,6 +176,16 @@ iPoint j1Player::GetMousePos() {
 	iPoint mouseTilePos = App->map->MapToWorld(GetMouseTilePos().x, GetMouseTilePos().y);
 
 	return mouseTilePos;
+}
+
+void j1Player::AddGold(int sumGold)
+{
+	currentGold += sumGold;
+}
+
+int j1Player::GetCurrentGold()
+{
+	return currentGold;
 }
 
 void j1Player::CheckIfPlaceBuilding()
@@ -345,6 +354,17 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal)
 			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
+
+		else if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
+			list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
+			if (pene.size() != 0) {
+					pene.front()->SetBlitState(false);
+				}
+			staticEntity->buildingState = BuildingState_Destroyed;
+		}
+
+		else if (staticEntity->staticEntityType == EntityType_RUNESTONE)
+			staticEntity->buildingState = BuildingState_Destroyed;
 	
 		break;
 	case EntitiesEvent_HOVER:
@@ -594,6 +614,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				townHallUpgrade = true;
 			}
 		}
+
 		if (UIelem == produceFootmanButton && currentGold >= footmanCost) {
 			App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)footmanInfo, unitInfo);
 			currentGold -= 500;

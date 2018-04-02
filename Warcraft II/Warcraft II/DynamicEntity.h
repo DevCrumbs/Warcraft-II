@@ -81,6 +81,10 @@ public:
 	float GetSpeed() const;
 	uint GetPriority() const;
 
+	//Blit
+	void SetBlitState(bool isBlitting) const;
+	bool GetBlitState() const;
+
 	// Animations
 	virtual void LoadAnimationsSpeed();
 	virtual void UpdateAnimationsSpeed(float dt);
@@ -135,6 +139,9 @@ protected:
 	// Death
 	bool isDead = false;
 	j1Timer deadTimer;
+
+	//Blit
+	bool isBlitting = false;
 
 	// Selection color
 	SDL_Color color = ColorWhite;
