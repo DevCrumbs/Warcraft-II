@@ -119,6 +119,8 @@ bool j1Menu::PostUpdate()
 	default:
 		break;
 	}
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+		ret = false;
 
 	return ret;
 }
@@ -159,6 +161,7 @@ void j1Menu::CreateMenu() {
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	labelInfo.normalColor = Black_;
+	labelInfo.hoverColor = ColorGreen;
 	labelInfo.text = "Play";
 	playLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w/2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, playButt);
 
@@ -181,13 +184,14 @@ void j1Menu::CreateSettings() {
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	labelInfo.normalColor = Black_;
+	labelInfo.hoverColor = ColorGreen;
 
 	labelInfo.text = "Return";
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
 
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
-	SDL_Rect butText = { 0,0,30,30 };
-	SDL_Rect bgText = { 0,130,400,30 };
+	SDL_Rect butText = { 972,176,26,30 };
+	SDL_Rect bgText = { 572,176,400,30 };
 	AddSlider(audioFX, { 50,100 }, "Audio FX", relativeVol, butText, bgText, this);
 
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
@@ -195,9 +199,14 @@ void j1Menu::CreateSettings() {
 
 
 	//Fullscreen
-	buttonInfo.normalTexArea = { 0, 0, 20, 20 };
-	buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
-	buttonInfo.pressedTexArea = { 257, 0, 20, 20 };
+	if (!App->win->fullscreen) {
+		buttonInfo.normalTexArea = { 572, 240, 30, 30 };
+		//buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
+	}
+	else {
+		buttonInfo.normalTexArea = { 604, 240, 30, 30 };
+		//buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
+	}
 	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	fullScreenButt = App->gui->CreateUIButton({ 300, 300 }, buttonInfo, this);
 

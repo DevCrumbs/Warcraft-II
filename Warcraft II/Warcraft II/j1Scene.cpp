@@ -665,6 +665,7 @@ void j1Scene::CreatePauseMenu() {
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.normalColor = Black_;
+	labelInfo.hoverColor = ColorGreen;
 	labelInfo.text = "Settings";
 	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, settingsButt);
 
@@ -693,9 +694,14 @@ void j1Scene::CreateSettingsMenu() {
 	UILabel_Info labelInfo;
 	
 	//Fullscreen
-	buttonInfo.normalTexArea = { 0, 0, 20, 20 };
-	buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
-	buttonInfo.pressedTexArea = { 257, 0, 20, 20 };
+	if (!App->win->fullscreen) {
+		buttonInfo.normalTexArea = { 635, 240, 20, 20 };
+		//buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
+	}
+	else {
+		buttonInfo.normalTexArea = { 658, 240, 20, 20 };
+		//buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
+	}
 	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	int x = parchment->position.x + 130 + App->render->camera.x;
 	int y = parchment->position.y + 150 + App->render->camera.y;
@@ -713,8 +719,8 @@ void j1Scene::CreateSettingsMenu() {
 	x = parchment->position.x + 30 + App->render->camera.x;
 	y = parchment->position.y + 60 + App->render->camera.y;
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
-	SDL_Rect butText = { 0,0,10,10 };
-	SDL_Rect bgText = { 0,130,130,10 };
+	SDL_Rect butText = { 703, 224 , 8, 10 };
+	SDL_Rect bgText = { 572, 224, 130, 10 };
 	App->menu->AddSlider(AudioFXPause, {x,y}, "Audio FX", relativeVol, butText, bgText, this);
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
 	y += 50;
@@ -729,6 +735,8 @@ void j1Scene::CreateSettingsMenu() {
 
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+	labelInfo.hoverColor = ColorGreen;
+	labelInfo.pressedColor = White_;
 	labelInfo.text = "<--";
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
 }
