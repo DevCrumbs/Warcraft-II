@@ -33,6 +33,18 @@
 #include "Stables.h"
 #include "TownHall.h"
 #include "ElvenLumberMill.h"
+#include "GreatHall.h"
+#include "Stronghold.h"
+#include "Fortress.h"
+#include "EnemyBarracks.h"
+#include "PigFarm.h"
+#include "TrollLumberMill.h"
+#include "AltarOfStorms.h"
+#include "DragonRoost.h"
+#include "TempleOfTheDamned.h"
+#include "OgreMound.h"
+#include "EnemyBlacksmith.h"
+
 
 #include <list>
 #include <algorithm>
@@ -168,7 +180,10 @@ private:
 	DragonInfo dragonInfo;
 
 	/// Static entities
+	//Player buildings
 	TownHallInfo townHallInfo;
+	StrongholdInfo strongholdInfo;
+
 	BarracksInfo barracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
 	ElvenLumberMillInfo elvenLumberMillInfo;
@@ -178,11 +193,26 @@ private:
 	ScoutTowerInfo scoutTowerInfo;
 	PlayerGuardTowerInfo playerGuardTowerInfo; // TODO
 	PlayerCannonTowerInfo playerCannonTowerInfo; // TODO
+
+	//Neutral buildings
 	GoldMineInfo goldMineInfo;
 	RunestoneInfo runestoneInfo;
+
+	//Enemy buildings
+	GreatHallInfo greatHallInfo;
+	EnemyBarracksInfo enemyBarracksInfo;
+	PigFarmInfo pigFarmInfo;
+	TrollLumberMillInfo trollLumberMillInfo;
+	FortressInfo fortressInfo;
+	AltarOfStormsInfo altarOfStormsInfo;
+	DragonRoostInfo dragonRoostInfo;
+	TempleOfTheDamnedInfo templeOfTheDamnedInfo;
+	OgreMoundInfo ogreMoundInfo;
+	EnemyBlacksmithInfo enemyBlacksmithInfo;
 	WatchTowerInfo watchTowerInfo;
 	EnemyGuardTowerInfo enemyGuardTowerInfo;
 	EnemyCannonTowerInfo enemyCannonTowerInfo;
+
 
 	//Preview tiles
 	BuildingPreviewTiles buildingPreviewTiles;

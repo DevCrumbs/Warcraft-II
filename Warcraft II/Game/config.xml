@@ -481,7 +481,77 @@
     </neutralBuildings>
 
     <orcishBuildings>
-        
+
+      <greatHall>
+        <maxLife value ="1200"/>
+        <sprite x="140" y="594" w="128" h="128"/>
+      </greatHall>
+
+      <stronghold>
+        <maxLife value ="1400"/>
+        <sprite x="141" y="14" w="128" h="128"/>
+      </stronghold>
+
+      <fortress>
+        <maxLife value ="1400"/>
+        <sprite x="398" y="14" w="128" h="128"/>
+      </fortress>
+
+      <barracks>
+        <maxLife value ="1200"/>
+        <sprite x="146" y="272" w="96" h="96"/>
+      </barracks>
+
+      <pigFarm>
+        <maxLife value ="400"/>
+        <sprite x="15" y="516" w="64" h="64"/>
+      </pigFarm>
+
+      <trollLumberMill>
+        <maxLife value ="600"/>
+        <sprite x="423" y="515" w="96" h="96"/>
+      </trollLumberMill>
+
+      <altarOfStorms>
+        <maxLife value ="500"/>
+        <sprite x="461" y="272" w="96" h="96"/>
+      </altarOfStorms>
+
+      <dragonRoost>
+        <maxLife value ="500"/>
+        <sprite x="444" y="162" w="96" h="96"/>
+      </dragonRoost>
+
+      <templeOfTheDamned>
+        <maxLife value ="700"/>
+        <sprite x="143" y="162" w="96" h="96"/>
+      </templeOfTheDamned>
+
+      <ogreMound>
+        <maxLife value ="500"/>
+        <sprite x="416" y="394" w="96" h="96"/>
+      </ogreMound>
+
+      <blacksmith>
+        <maxLife value ="775"/>
+        <sprite x="139" y="394" w="96" h="96"/>
+      </blacksmith>
+      
+      <watchTower>
+        <maxLife value ="150"/>
+        <sprite x="548" y="405" w="64" h="64"/>
+      </watchTower>
+
+      <guardTower>
+        <maxLife value ="175"/>
+        <sprite x="548" y="613" w="64" h="64"/>
+      </guardTower>
+
+      <cannonTower>
+        <maxLife value ="200"/>
+        <sprite x="548" y="542" w="64" h="64"/>
+      </cannonTower>
+      
     </orcishBuildings>
       
     </staticEntities>    

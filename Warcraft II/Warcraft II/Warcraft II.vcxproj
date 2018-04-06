@@ -118,19 +118,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Alleria.h" />
+    <ClInclude Include="AltarOfStorms.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Barracks.h" />
     <ClInclude Include="ChickenFarm.h" />
     <ClInclude Include="Defs.h" />
     <ClInclude Include="Dragon.h" />
+    <ClInclude Include="DragonRoost.h" />
     <ClInclude Include="DynamicEntity.h" />
     <ClInclude Include="ElvenArcher.h" />
     <ClInclude Include="ElvenLumberMill.h" />
+    <ClInclude Include="EnemyBarracks.h" />
+    <ClInclude Include="EnemyBlacksmith.h" />
     <ClInclude Include="EnemyCannonTower.h" />
     <ClInclude Include="EnemyGuardTower.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Footman.h" />
+    <ClInclude Include="Fortress.h" />
     <ClInclude Include="GoldMine.h" />
+    <ClInclude Include="GreatHall.h" />
     <ClInclude Include="Grunt.h" />
     <ClInclude Include="GryphonAviary.h" />
     <ClInclude Include="GryphonRider.h" />
@@ -161,10 +167,12 @@
     <ClInclude Include="Mage.h" />
     <ClInclude Include="MageTower.h" />
     <ClInclude Include="NTree.h" />
+    <ClInclude Include="OgreMound.h" />
     <ClInclude Include="p2List.h" />
     <ClInclude Include="p2Log.h" />
     <ClInclude Include="p2Point.h" />
     <ClInclude Include="Paladin.h" />
+    <ClInclude Include="PigFarm.h" />
     <ClInclude Include="PlayerCannonTower.h" />
     <ClInclude Include="PlayerGuardTower.h" />
     <ClInclude Include="PugiXml\src\pugiconfig.hpp" />
@@ -173,8 +181,11 @@
     <ClInclude Include="ScoutTower.h" />
     <ClInclude Include="Stables.h" />
     <ClInclude Include="StaticEntity.h" />
+    <ClInclude Include="Stronghold.h" />
+    <ClInclude Include="TempleOfTheDamned.h" />
     <ClInclude Include="TownHall.h" />
     <ClInclude Include="TrollAxethrower.h" />
+    <ClInclude Include="TrollLumberMill.h" />
     <ClInclude Include="Turalyon.h" />
     <ClInclude Include="UIButton.h" />
     <ClInclude Include="UICursor.h" />
@@ -188,17 +199,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alleria.cpp" />
+    <ClCompile Include="AltarOfStorms.cpp" />
     <ClCompile Include="Barracks.cpp" />
     <ClCompile Include="ChickenFarm.cpp" />
     <ClCompile Include="Dragon.cpp" />
+    <ClCompile Include="DragonRoost.cpp" />
     <ClCompile Include="DynamicEntity.cpp" />
     <ClCompile Include="ElvenArcher.cpp" />
     <ClCompile Include="ElvenLumberMill.cpp" />
+    <ClCompile Include="EnemyBarracks.cpp" />
+    <ClCompile Include="EnemyBlacksmith.cpp" />
     <ClCompile Include="EnemyCannonTower.cpp" />
     <ClCompile Include="EnemyGuardTower.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Footman.cpp" />
+    <ClCompile Include="Fortress.cpp" />
     <ClCompile Include="GoldMine.cpp" />
+    <ClCompile Include="GreatHall.cpp" />
     <ClCompile Include="Grunt.cpp" />
     <ClCompile Include="GryphonAviary.cpp" />
     <ClCompile Include="GryphonRider.cpp" />
@@ -228,8 +245,10 @@
     <ClCompile Include="Khadgar.cpp" />
     <ClCompile Include="Mage.cpp" />
     <ClCompile Include="MageTower.cpp" />
+    <ClCompile Include="OgreMound.cpp" />
     <ClCompile Include="p2Log.cpp" />
     <ClCompile Include="Paladin.cpp" />
+    <ClCompile Include="PigFarm.cpp" />
     <ClCompile Include="PlayerCannonTower.cpp" />
     <ClCompile Include="PlayerGuardTower.cpp" />
     <ClCompile Include="PugiXml\src\pugixml.cpp" />
@@ -237,8 +256,11 @@
     <ClCompile Include="ScoutTower.cpp" />
     <ClCompile Include="Stables.cpp" />
     <ClCompile Include="StaticEntity.cpp" />
+    <ClCompile Include="Stronghold.cpp" />
+    <ClCompile Include="TempleOfTheDamned.cpp" />
     <ClCompile Include="TownHall.cpp" />
     <ClCompile Include="TrollAxethrower.cpp" />
+    <ClCompile Include="TrollLumberMill.cpp" />
     <ClCompile Include="Turalyon.cpp" />
     <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="UICursor.cpp" />
