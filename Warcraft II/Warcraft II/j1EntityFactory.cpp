@@ -153,6 +153,52 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = neutralBuildings.child("runeStone").child("sprites");
 	runestoneInfo.completeTexArea = { aux.child("active").attribute("x").as_int(), aux.child("active").attribute("y").as_int(), aux.child("active").attribute("w").as_int(), aux.child("active").attribute("h").as_int() };
 	runestoneInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
+	
+	//Enemy buildings
+	pugi::xml_node orcishBuildings = staticEntities.child("orcishBuildings");
+
+	greatHallInfo.life = { orcishBuildings.child("greatHall").child("maxLife").attribute("value").as_uint() };
+	greatHallInfo.completeTexArea = { orcishBuildings.child("greatHall").child("sprite").attribute("x").as_int(), orcishBuildings.child("greatHall").child("sprite").attribute("y").as_int(), orcishBuildings.child("greatHall").child("sprite").attribute("w").as_int(), orcishBuildings.child("greatHall").child("sprite").attribute("h").as_int() };
+
+	strongholdInfo.life = { orcishBuildings.child("stronghold").child("maxLife").attribute("value").as_uint() };
+	strongholdInfo.completeTexArea = { orcishBuildings.child("stronghold").child("sprite").attribute("x").as_int(), orcishBuildings.child("stronghold").child("sprite").attribute("y").as_int(), orcishBuildings.child("stronghold").child("sprite").attribute("w").as_int(), orcishBuildings.child("stronghold").child("sprite").attribute("h").as_int() };
+
+    fortressInfo.life = { orcishBuildings.child("fortress").child("maxLife").attribute("value").as_uint() };
+	fortressInfo.completeTexArea = { orcishBuildings.child("fortress").child("sprite").attribute("x").as_int(), orcishBuildings.child("fortress").child("sprite").attribute("y").as_int(), orcishBuildings.child("fortress").child("sprite").attribute("w").as_int(), orcishBuildings.child("fortress").child("sprite").attribute("h").as_int() };
+
+	enemyBarracksInfo.life = { orcishBuildings.child("barracks").child("maxLife").attribute("value").as_uint() };
+	enemyBarracksInfo.completeTexArea = { orcishBuildings.child("barracks").child("sprite").attribute("x").as_int(), orcishBuildings.child("barracks").child("sprite").attribute("y").as_int(), orcishBuildings.child("barracks").child("sprite").attribute("w").as_int(), orcishBuildings.child("barracks").child("sprite").attribute("h").as_int() };
+
+	pigFarmInfo.life = { orcishBuildings.child("pigFarm").child("maxLife").attribute("value").as_uint() };
+	pigFarmInfo.completeTexArea = { orcishBuildings.child("pigFarm").child("sprite").attribute("x").as_int(), orcishBuildings.child("pigFarm").child("sprite").attribute("y").as_int(), orcishBuildings.child("pigFarm").child("sprite").attribute("w").as_int(), orcishBuildings.child("pigFarm").child("sprite").attribute("h").as_int() };
+
+	trollLumberMillInfo.life = { orcishBuildings.child("trollLumberMill").child("maxLife").attribute("value").as_uint() };
+	trollLumberMillInfo.completeTexArea = { orcishBuildings.child("trollLumberMill").child("sprite").attribute("x").as_int(), orcishBuildings.child("trollLumberMill").child("sprite").attribute("y").as_int(), orcishBuildings.child("trollLumberMill").child("sprite").attribute("w").as_int(), orcishBuildings.child("trollLumberMill").child("sprite").attribute("h").as_int() };
+	
+	altarOfStormsInfo.life = { orcishBuildings.child("altarOfStorms").child("maxLife").attribute("value").as_uint() };
+	altarOfStormsInfo.completeTexArea = { orcishBuildings.child("altarOfStorms").child("sprite").attribute("x").as_int(), orcishBuildings.child("altarOfStorms").child("sprite").attribute("y").as_int(), orcishBuildings.child("altarOfStorms").child("sprite").attribute("w").as_int(), orcishBuildings.child("altarOfStorms").child("sprite").attribute("h").as_int() };
+
+	dragonRoostInfo.life = { orcishBuildings.child("dragonRoost").child("maxLife").attribute("value").as_uint() };
+	dragonRoostInfo.completeTexArea = { orcishBuildings.child("dragonRoost").child("sprite").attribute("x").as_int(), orcishBuildings.child("dragonRoost").child("sprite").attribute("y").as_int(), orcishBuildings.child("dragonRoost").child("sprite").attribute("w").as_int(), orcishBuildings.child("dragonRoost").child("sprite").attribute("h").as_int() };
+	
+	templeOfTheDamnedInfo.life = { orcishBuildings.child("templeOfTheDamned").child("maxLife").attribute("value").as_uint() };
+	templeOfTheDamnedInfo.completeTexArea = { orcishBuildings.child("templeOfTheDamned").child("sprite").attribute("x").as_int(), orcishBuildings.child("templeOfTheDamned").child("sprite").attribute("y").as_int(), orcishBuildings.child("templeOfTheDamned").child("sprite").attribute("w").as_int(), orcishBuildings.child("templeOfTheDamned").child("sprite").attribute("h").as_int() };
+
+	ogreMoundInfo.life = { orcishBuildings.child("ogreMound").child("maxLife").attribute("value").as_uint() };
+	ogreMoundInfo.completeTexArea = { orcishBuildings.child("ogreMound").child("sprite").attribute("x").as_int(), orcishBuildings.child("ogreMound").child("sprite").attribute("y").as_int(), orcishBuildings.child("ogreMound").child("sprite").attribute("w").as_int(), orcishBuildings.child("ogreMound").child("sprite").attribute("h").as_int() };
+
+	enemyBlacksmithInfo.life = { orcishBuildings.child("blacksmith").child("maxLife").attribute("value").as_uint() };
+	enemyBlacksmithInfo.completeTexArea = { orcishBuildings.child("blacksmith").child("sprite").attribute("x").as_int(), orcishBuildings.child("blacksmith").child("sprite").attribute("y").as_int(), orcishBuildings.child("blacksmith").child("sprite").attribute("w").as_int(), orcishBuildings.child("blacksmith").child("sprite").attribute("h").as_int() };
+
+	watchTowerInfo.life = { orcishBuildings.child("watchTower").child("maxLife").attribute("value").as_uint() };
+	watchTowerInfo.completeTexArea = { orcishBuildings.child("watchTower").child("sprite").attribute("x").as_int(), orcishBuildings.child("watchTower").child("sprite").attribute("y").as_int(), orcishBuildings.child("watchTower").child("sprite").attribute("w").as_int(), orcishBuildings.child("watchTower").child("sprite").attribute("h").as_int() };
+	
+	enemyGuardTowerInfo.life = { orcishBuildings.child("guardTower").child("maxLife").attribute("value").as_uint() };
+	enemyGuardTowerInfo.completeTexArea = { orcishBuildings.child("guardTower").child("sprite").attribute("x").as_int(), orcishBuildings.child("guardTower").child("sprite").attribute("y").as_int(), orcishBuildings.child("guardTower").child("sprite").attribute("w").as_int(), orcishBuildings.child("guardTower").child("sprite").attribute("h").as_int() };
+
+	enemyCannonTowerInfo.life = { orcishBuildings.child("cannonTower").child("maxLife").attribute("value").as_uint() };
+	enemyCannonTowerInfo.completeTexArea = { orcishBuildings.child("cannonTower").child("sprite").attribute("x").as_int(), orcishBuildings.child("cannonTower").child("sprite").attribute("y").as_int(), orcishBuildings.child("cannonTower").child("sprite").attribute("w").as_int(), orcishBuildings.child("cannonTower").child("sprite").attribute("h").as_int() };
+
 	//Dynamic entities
 	//Humans
 	pugi::xml_node humanEntities = config.child("dynamicEntities").child("humans");
@@ -824,7 +870,8 @@ void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntit
 const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
 {
 	switch (staticEntityType) {
-	case EntityType_TOWN_HALL:
+		//Human buildings
+	case EntityType_TOWN_HALL: 
 		return (const EntityInfo&)townHallInfo;
 		break;
 	case EntityType_CHICKEN_FARM:
@@ -854,11 +901,55 @@ const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
 	case EntityType_PLAYER_CANNON_TOWER:
 		return(const EntityInfo&)playerCannonTowerInfo;
 		break;
-	case EntityType_GOLD_MINE:
+		//Neutral buildings
+	case EntityType_GOLD_MINE: 
 		return (const EntityInfo&)goldMineInfo;
 		break;
 	case EntityType_RUNESTONE:
 		return (const EntityInfo&)runestoneInfo;
+		break;
+		//Enemy buildings
+	case EntityType_GREAT_HALL: 
+		return (const EntityInfo&)greatHallInfo;
+		break;
+	case EntityType_STRONGHOLD:
+		return (const EntityInfo&)strongholdInfo;
+		break;
+	case EntityType_FORTRESS:
+		return (const EntityInfo&)fortressInfo;
+		break;
+	case EntityType_ENEMY_BARRACKS:
+		return (const EntityInfo&)enemyBarracksInfo;
+		break;
+	case EntityType_PIG_FARM:
+		return (const EntityInfo&)pigFarmInfo;
+		break;
+	case EntityType_TROLL_LUMBER_MILL:
+		return (const EntityInfo&)trollLumberMillInfo;
+		break;
+	case EntityType_ALTAR_OF_STORMS:
+		return (const EntityInfo&)altarOfStormsInfo;
+		break;
+	case EntityType_DRAGON_ROOST:
+		return (const EntityInfo&)dragonRoostInfo;
+		break;
+	case EntityType_TEMPLE_OF_THE_DAMNED:
+		return (const EntityInfo&)templeOfTheDamnedInfo;
+		break;
+	case EntityType_OGRE_MOUND:
+		return (const EntityInfo&)ogreMoundInfo;
+		break;
+	case EntityType_ENEMY_BLACKSMITH:
+		return (const EntityInfo&)enemyBlacksmithInfo;
+		break;
+	case EntityType_WATCH_TOWER: 
+		return (const EntityInfo&)watchTowerInfo;
+		break;
+	case EntityType_ENEMY_GUARD_TOWER:
+		return (const EntityInfo&)enemyGuardTowerInfo;
+		break;
+	case EntityType_ENEMY_CANNON_TOWER:
+		return (const EntityInfo&)enemyCannonTowerInfo;
 		break;
 	default:
 		return (const EntityInfo&)chickenFarmInfo;
@@ -1362,9 +1453,143 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	}
 	break;
 
+	//Enemy Static Entities
+
+	case EntityType_GREAT_HALL:
+	{
+		GreatHall* greatHall = new GreatHall(pos, { 128, 128 }, greatHallInfo.life, greatHallInfo.life, (const GreatHallInfo&)entityInfo, listener);
+		greatHall->entityType = EntityCategory_STATIC_ENTITY;
+		greatHall->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		greatHall->staticEntityType = EntityType_GREAT_HALL;
+
+		toSpawnEntities.push_back((Entity*)greatHall);
+		return (StaticEntity*)greatHall;
+	}
+	break;
+
+	case EntityType_STRONGHOLD:
+	{
+		Stronghold* stronghold = new Stronghold(pos, { 128, 128 }, strongholdInfo.life, strongholdInfo.life, (const StrongholdInfo&)entityInfo, listener);
+		stronghold->entityType = EntityCategory_STATIC_ENTITY;
+		stronghold->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		stronghold->staticEntityType = EntityType_STRONGHOLD;
+
+		toSpawnEntities.push_back((Entity*)stronghold);
+		return (StaticEntity*)stronghold;
+	}
+	break;
+
+	case EntityType_FORTRESS:
+	{
+		Fortress* fortress = new Fortress(pos, { 128, 128 }, fortressInfo.life, fortressInfo.life, (const FortressInfo&)entityInfo, listener);
+		fortress->entityType = EntityCategory_STATIC_ENTITY;
+		fortress->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		fortress->staticEntityType = EntityType_FORTRESS;
+
+		toSpawnEntities.push_back((Entity*)fortress);
+		return (StaticEntity*)fortress;
+	}
+	break;
+
+	case EntityType_ENEMY_BARRACKS:
+	{
+		EnemyBarracks* enemyBarracks = new EnemyBarracks(pos, { 96, 96 }, enemyBarracksInfo.life, enemyBarracksInfo.life, (const EnemyBarracksInfo&)entityInfo, listener);
+		enemyBarracks->entityType = EntityCategory_STATIC_ENTITY;
+		enemyBarracks->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		enemyBarracks->staticEntityType = EntityType_ENEMY_BARRACKS;
+
+		toSpawnEntities.push_back((Entity*)enemyBarracks);
+		return (StaticEntity*)enemyBarracks;
+	}
+	break;
+
+	case EntityType_PIG_FARM:
+	{
+		PigFarm* pigFarm = new PigFarm(pos, { 64, 64 }, pigFarmInfo.life, pigFarmInfo.life, (const PigFarmInfo&)entityInfo, listener);
+		pigFarm->entityType = EntityCategory_STATIC_ENTITY;
+		pigFarm->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		pigFarm->staticEntityType = EntityType_PIG_FARM;
+
+		toSpawnEntities.push_back((Entity*)pigFarm);
+		return (StaticEntity*)pigFarm;
+	}
+	break;
+
+	case EntityType_TROLL_LUMBER_MILL:
+	{
+		TrollLumberMill* trollLumberMill = new TrollLumberMill(pos, { 96, 96 }, trollLumberMillInfo.life, trollLumberMillInfo.life, (const TrollLumberMillInfo&)entityInfo, listener);
+		trollLumberMill->entityType = EntityCategory_STATIC_ENTITY;
+		trollLumberMill->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		trollLumberMill->staticEntityType = EntityType_TROLL_LUMBER_MILL;
+
+		toSpawnEntities.push_back((Entity*)trollLumberMill);
+		return (StaticEntity*)trollLumberMill;
+	}
+	break;
+
+	case EntityType_ALTAR_OF_STORMS:
+	{
+		AltarOfStorms* altarOfStorms = new AltarOfStorms(pos, { 96, 96 }, altarOfStormsInfo.life, altarOfStormsInfo.life, (const AltarOfStormsInfo&)entityInfo, listener);
+		altarOfStorms->entityType = EntityCategory_STATIC_ENTITY;
+		altarOfStorms->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		altarOfStorms->staticEntityType = EntityType_ALTAR_OF_STORMS;
+
+		toSpawnEntities.push_back((Entity*)altarOfStorms);
+		return (StaticEntity*)altarOfStorms;
+	}
+	break;
+
+	case EntityType_DRAGON_ROOST:
+	{
+		DragonRoost* dragonRoost = new DragonRoost(pos, { 96, 96 }, dragonRoostInfo.life, dragonRoostInfo.life, (const DragonRoostInfo&)entityInfo, listener);
+		dragonRoost->entityType = EntityCategory_STATIC_ENTITY;
+		dragonRoost->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		dragonRoost->staticEntityType = EntityType_DRAGON_ROOST;
+
+		toSpawnEntities.push_back((Entity*)dragonRoost);
+		return (StaticEntity*)dragonRoost;
+	}
+	break;
+
+	case EntityType_TEMPLE_OF_THE_DAMNED:
+	{
+		TempleOfTheDamned* templeOfTheDamned = new TempleOfTheDamned(pos, { 96, 96 }, templeOfTheDamnedInfo.life, templeOfTheDamnedInfo.life, (const TempleOfTheDamnedInfo&)entityInfo, listener);
+		templeOfTheDamned->entityType = EntityCategory_STATIC_ENTITY;
+		templeOfTheDamned->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		templeOfTheDamned->staticEntityType = EntityType_TEMPLE_OF_THE_DAMNED;
+
+		toSpawnEntities.push_back((Entity*)templeOfTheDamned);
+		return (StaticEntity*)templeOfTheDamned;
+	}
+	break;
+
+	case EntityType_OGRE_MOUND:
+	{
+		OgreMound* ogreMound = new OgreMound(pos, { 96, 96 }, ogreMoundInfo.life, ogreMoundInfo.life, (const OgreMoundInfo&)entityInfo, listener);
+		ogreMound->entityType = EntityCategory_STATIC_ENTITY;
+		ogreMound->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		ogreMound->staticEntityType = EntityType_OGRE_MOUND;
+
+		toSpawnEntities.push_back((Entity*)ogreMound);
+		return (StaticEntity*)ogreMound;
+	}
+	break;
+
+	case EntityType_ENEMY_BLACKSMITH:
+	{
+		EnemyBlacksmith* enemyBlacksmith = new EnemyBlacksmith(pos, { 96, 96 }, enemyBlacksmithInfo.life, enemyBlacksmithInfo.life, (const EnemyBlacksmithInfo&)entityInfo, listener);
+		enemyBlacksmith->entityType = EntityCategory_STATIC_ENTITY;
+		enemyBlacksmith->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+		enemyBlacksmith->staticEntityType = EntityType_ENEMY_BLACKSMITH;
+
+		toSpawnEntities.push_back((Entity*)enemyBlacksmith);
+		return (StaticEntity*)enemyBlacksmith;
+	}
+	break;
+
 	case EntityType_WATCH_TOWER:
 	{
-		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, 12, 12, (const WatchTowerInfo&)entityInfo, listener);
+		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, watchTowerInfo.life, watchTowerInfo.life, (const WatchTowerInfo&)entityInfo, listener);
 		watchTower->entityType = EntityCategory_STATIC_ENTITY;
 		watchTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		watchTower->staticEntityType = EntityType_WATCH_TOWER;
@@ -1376,7 +1601,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ENEMY_GUARD_TOWER:
 	{
-		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, 12, 12, (const EnemyGuardTowerInfo&)entityInfo, listener);
+		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, enemyGuardTowerInfo.life, enemyGuardTowerInfo.life, (const EnemyGuardTowerInfo&)entityInfo, listener);
 		enemyGuardTower->entityType = EntityCategory_STATIC_ENTITY;
 		enemyGuardTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyGuardTower->staticEntityType = EntityType_ENEMY_GUARD_TOWER;
@@ -1388,7 +1613,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ENEMY_CANNON_TOWER:
 	{
-		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, 12, 12, (const EnemyCannonTowerInfo&)entityInfo, listener);
+		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, enemyCannonTowerInfo.life, enemyCannonTowerInfo.life, (const EnemyCannonTowerInfo&)entityInfo, listener);
 		enemyCannonTower->entityType = EntityCategory_STATIC_ENTITY;
 		enemyCannonTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyCannonTower->staticEntityType = EntityType_ENEMY_CANNON_TOWER;
