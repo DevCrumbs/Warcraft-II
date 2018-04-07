@@ -960,8 +960,23 @@ const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
 const EntityInfo& j1EntityFactory::GetUnitInfo(ENTITY_TYPE dynamicEntityType)
 {
 	switch (dynamicEntityType) {
-	case EntityType_CHICKEN_FARM:
+	case EntityType_FOOTMAN:
 		return (const EntityInfo&)footmanInfo;
+		break;
+	case EntityType_GRUNT:
+		return (const EntityInfo&)gruntInfo;
+		break;
+	case EntityType_ELVEN_ARCHER:
+		return (const EntityInfo&)elvenArcherInfo;
+		break;
+	case EntityType_TROLL_AXETHROWER:
+		return (const EntityInfo&)trollAxethrowerInfo;
+		break;
+	case EntityType_GRYPHON_RIDER:
+		return (const EntityInfo&)gryphonRiderInfo;
+		break;
+	case EntityType_DRAGON:
+		return (const EntityInfo&)dragonInfo;
 		break;
 	default:
 		return (const EntityInfo&)footmanInfo;
