@@ -228,7 +228,7 @@ bool j1Scene::Update(float dt)
 		}
 
 		App->entities->SelectEntitiesWithinRectangle(mouseRect);
-	}*/
+	}
 
 	// Select a new goal for the selected units (single click or drag)
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
@@ -251,7 +251,7 @@ bool j1Scene::Update(float dt)
 
 		if (!group->SetShapedGoal())
 			group->SetGoal(mouseTile);
-	}
+	}*/
 
 	DebugKeys();
 	CheckCameraMovement(dt);

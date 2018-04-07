@@ -12,6 +12,8 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 
+#include "UILifeBar.h"
+
 #include "j1Scene.h" // isFrameByFrame
 #include "j1Input.h" // isFrameByFrame
 
@@ -66,7 +68,7 @@ void Grunt::Move(float dt)
 	// ---------------------------------------------------------------------
 
 	// Is the unit dead?
-	if (currLife <= 0)
+	if (currLife <= 0) 
 		isDead = true;
 
 	if (singleUnit != nullptr)
@@ -83,6 +85,12 @@ void Grunt::Move(float dt)
 	UpdateEntityColliderPos();
 	UpdateRhombusColliderPos(sightRadiusCollider, unitInfo.sightRadius);
 	UpdateRhombusColliderPos(attackRadiusCollider, unitInfo.attackRadius);
+
+	//Update Unit LifeBar
+	if (lifeBar != nullptr) {
+		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
+		lifeBar->SetLife(currLife);
+	}
 }
 
 void Grunt::Draw(SDL_Texture* sprites)
