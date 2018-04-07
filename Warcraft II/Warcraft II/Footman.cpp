@@ -12,6 +12,8 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 
+#include "UILifeBar.h"
+
 #include "j1Scene.h" // isFrameByFrame
 #include "j1Input.h" // isFrameByFrame
 
@@ -97,6 +99,12 @@ void Footman::Move(float dt)
 		UpdateEntityColliderPos();
 		UpdateRhombusColliderPos(sightRadiusCollider, unitInfo.sightRadius);
 		UpdateRhombusColliderPos(attackRadiusCollider, unitInfo.attackRadius);
+	}
+
+	//Update Unit LifeBar
+	if (lifeBar != nullptr) {
+		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
+		lifeBar->SetLife(currLife);
 	}
 }
 

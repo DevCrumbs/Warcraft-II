@@ -785,7 +785,7 @@
 
         <scoutTower>
           <maxLife value = "150"/>
-          <attack sightRadius = "5" damage= "5" attackWaitTime= "2" arrowSpeed ="1000"/>
+          <attack sightRadius = "5" damage= "5" attackWaitTime= "2" arrowSpeed ="400"/>
           <sprites>
             <complete x="465" y="4" w="64" h="64"/>
             <inProgress x="465" y="68" w="64" h="64"/>

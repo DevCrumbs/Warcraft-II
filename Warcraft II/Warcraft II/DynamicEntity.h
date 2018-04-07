@@ -20,6 +20,7 @@ struct SingleUnit;
 
 class PathPlanner;
 class Navgraph;
+class UILifeBar;
 
 enum ColliderType;
 enum CollisionState;
@@ -146,6 +147,11 @@ protected:
 	// Selection color
 	SDL_Color color = ColorWhite;
 	string colorName = "White";
+
+	//LifeBar
+	UILifeBar* lifeBar = nullptr;
+	int lifeBarMarginX = 0;
+	int lifeBarMarginY = 0;
 };
 
 #endif //__DynamicEntity_H__
