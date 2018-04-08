@@ -177,6 +177,7 @@
     <ClInclude Include="PlayerGuardTower.h" />
     <ClInclude Include="PugiXml\src\pugiconfig.hpp" />
     <ClInclude Include="PugiXml\src\pugixml.hpp" />
+    <ClInclude Include="Quadtree.h" />
     <ClInclude Include="Runestone.h" />
     <ClInclude Include="ScoutTower.h" />
     <ClInclude Include="Stables.h" />
@@ -252,6 +253,7 @@
     <ClCompile Include="PlayerCannonTower.cpp" />
     <ClCompile Include="PlayerGuardTower.cpp" />
     <ClCompile Include="PugiXml\src\pugixml.cpp" />
+    <ClCompile Include="Quadtree.cpp" />
     <ClCompile Include="Runestone.cpp" />
     <ClCompile Include="ScoutTower.cpp" />
     <ClCompile Include="Stables.cpp" />

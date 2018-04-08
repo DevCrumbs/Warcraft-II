@@ -312,6 +312,9 @@
     <ClInclude Include="EnemyBlacksmith.h">
       <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
     </ClInclude>
+    <ClInclude Include="Quadtree.h">
+      <Filter>Modules\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -532,6 +535,9 @@
     </ClCompile>
     <ClCompile Include="EnemyBlacksmith.cpp">
       <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="Quadtree.cpp">
+      <Filter>Modules\Tools</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

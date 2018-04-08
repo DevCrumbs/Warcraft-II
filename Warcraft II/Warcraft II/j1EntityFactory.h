@@ -3,6 +3,7 @@
 
 #include "j1Module.h"
 #include "p2Point.h"
+#include "Quadtree.h"
 
 // Units
 #include "Dragon.h"
@@ -218,7 +219,10 @@ private:
 	BuildingPreviewTiles buildingPreviewTiles;
 	uint previewBuildingOpacity;
 
-	TownHall* townHall = nullptr;
+	//TownHall* townHall = nullptr;
+	Quadtree*	layer_quadtree = nullptr;
+	std::vector< iPoint* > POINS;
+
 };
 
 #endif //__j1ENTITY_FACTORY_H__

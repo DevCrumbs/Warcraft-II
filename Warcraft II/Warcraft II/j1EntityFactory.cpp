@@ -496,6 +496,8 @@ bool j1EntityFactory::Start()
 	footmanTex = App->tex->Load(footmanTexName.data());
 	gruntTex = App->tex->Load(gruntTexName.data());
 
+	SDL_Rect r = {0, 0, 10560, 10560 };
+	layer_quadtree = new Quadtree(r);
 	return ret;
 }
 
@@ -536,7 +538,9 @@ bool j1EntityFactory::PreUpdate()
 bool j1EntityFactory::Update(float dt)
 {
 	bool ret = true;
-
+	POINS.clear();
+	layer_quadtree->CollectCandidates(POINS, { (int)-App->render->camera.x, (int)-App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h });
+	LOG("Quadtree Points in Range = %i", POINS.size());
 	// Update active static entities
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
 
@@ -1306,6 +1310,8 @@ bool j1EntityFactory::CleanUp()
 
 Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const EntityInfo& entityInfo, const UnitInfo& unitInfo, j1Module* listener)
 {
+	iPoint position = { (int)pos.x, (int)pos.y };
+	layer_quadtree->Insert(&position);
 	switch (entityType) {
 
 	// Static entities
