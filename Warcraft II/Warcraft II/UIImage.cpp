@@ -113,6 +113,11 @@ bool UIImage::FromAlphaToAlphaFade(float from, float to, float seconds)
 	return ret;
 }
 
+Animation * UIImage::GetAnimation()
+{
+	return anim;
+}
+
 void UIImage::ResetFade()
 {
 	reset = true;

@@ -7,6 +7,7 @@
 #include "j1Module.h"
 #include "UIElement.h"
 #include "NTree.h"
+#include "Animation.h"
 
 using namespace std;
 
@@ -95,6 +96,15 @@ public:
 	float IncreaseDecreaseAlpha(float from, float to, float seconds);
 	void ResetAlpha();
 
+
+public:
+	std::list<UIElement*> addedElementUI;
+
+	//NTree<UIElement*>* UIElementsTree; Don't delete yet
+	bool isDebug = false;
+	Animation parchmentAnim;
+	SDL_Rect parchmentArea;
+
 private:
 
 	string atlasFileName;
@@ -107,11 +117,6 @@ private:
 	float startTime = 0.0f;
 	bool reset = true;
 
-public:
-	std::list<UIElement*> addedElementUI;
-
-	//NTree<UIElement*>* UIElementsTree; Don't delete yet
-	bool isDebug = false;
 };
 
 #endif //__j1GUI_H__

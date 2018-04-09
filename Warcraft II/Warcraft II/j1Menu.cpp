@@ -56,7 +56,7 @@ bool j1Menu::Awake(pugi::xml_node& config)
 // Called before the first frame
 bool j1Menu::Start()
 {
-
+	App->render->camera.x = App->render->camera.y = 0;
 	CreateMenu();
 	return true;
 }
@@ -72,8 +72,8 @@ bool j1Menu::Update(float dt)
 {
 	App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 100, 100, 100, 255);
 	
-	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
-		parchment = App->particles->AddParticle(App->particles->parchmentAnimation, (App->render->camera.w / 2) - 100, (App->render->camera.h / 2) - 125);
+	//if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
+		//parchment = App->particles->AddParticle(App->particles->parchmentAnimation, (App->render->camera.w / 2) - 100, (App->render->camera.h / 2) - 125);
 	
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 		if (parchment != nullptr) {

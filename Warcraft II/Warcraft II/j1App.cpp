@@ -170,6 +170,9 @@ bool j1App::Update()
 	bool ret = true;
 	PrepareUpdate();
 
+	if (scene->GetPauseMenuActions() != PauseMenuActions_NOT_EXIST)
+		dt = 0;
+
 	if (input->GetWindowEvent(WE_QUIT) || quitGame)
 		ret = false;
 

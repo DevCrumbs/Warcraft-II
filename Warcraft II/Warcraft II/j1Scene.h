@@ -87,7 +87,7 @@ public:
 	void CreateSettingsMenu();
 	void DestroySettingsMenu();
 	void DestroyAllUI();
-
+	PauseMenuActions GetPauseMenuActions();
 
 	bool LoadKeys(pugi::xml_node&);
 
@@ -129,6 +129,7 @@ private:
 	//Pause Menu
 	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
 	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;
+	UIImage* parchmentImg = nullptr;
 	//Settings Menu
 	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
@@ -163,7 +164,6 @@ private:
 
 	ENTITY_TYPE alphaBuilding;
 
-	Particle* parchment;
 	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
 };
 

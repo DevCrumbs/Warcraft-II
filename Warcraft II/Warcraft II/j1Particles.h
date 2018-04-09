@@ -67,7 +67,6 @@ private:
 public:
 	Particle lowFire;
 	Particle hardFire;
-	Particle parchmentAnimation;
 };
 
 #endif //__j1PARTICLES_H__

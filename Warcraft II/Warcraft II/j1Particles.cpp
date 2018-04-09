@@ -57,14 +57,6 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 		hardFire.anim.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//parchment
-	pugi::xml_node parchmentAnim = config.child("parchment");
-	parchmentAnimation.anim.speed = parchmentAnim.attribute("speed").as_float();
-	parchmentAnimation.anim.loop = parchmentAnim.attribute("loop").as_bool();
-	for (parchmentAnim = parchmentAnim.child("frame"); parchmentAnim; parchmentAnim = parchmentAnim.next_sibling("frame")) {
-		parchmentAnimation.anim.PushBack({ parchmentAnim.attribute("x").as_int(), parchmentAnim.attribute("y").as_int(), parchmentAnim.attribute("w").as_int(), parchmentAnim.attribute("h").as_int() });
-	}
-
 	return ret;
 }
 

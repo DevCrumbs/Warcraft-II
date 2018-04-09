@@ -274,10 +274,9 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 	}
 
-	if(parchment != nullptr)
-		if (parchment->anim.Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
+	if(parchmentImg != nullptr)
+		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) 
 			pauseMenuActions = PauseMenuActions_CREATED;
-		}
 
 	return ret;
 }
@@ -296,11 +295,11 @@ bool j1Scene::PostUpdate()
 		pauseMenuActions = PauseMenuActions_NONE;
 		break;
 	case PauseMenuActions_DESTROY:
-		if (parchment != nullptr) {
-			parchment->isDeleted = true;
-			parchment = nullptr;
+		if (parchmentImg != nullptr) {
+			App->gui->DestroyElement((UIElement**)&parchmentImg);
 		}
 		DestroyPauseMenu();
+		DestroySettingsMenu();
 		pauseMenuActions = PauseMenuActions_NOT_EXIST;
 		break;
 	case PauseMenuActions_RETURN_MENU:
@@ -322,9 +321,8 @@ bool j1Scene::PostUpdate()
 	}
 	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
 		ret = false;
-		if (parchment != nullptr) {
-			parchment->isDeleted = true;
-			parchment = nullptr;
+		if (parchmentImg != nullptr) {
+			App->gui->DestroyElement((UIElement**)&parchmentImg);
 		}
 	}
 
@@ -651,14 +649,14 @@ void j1Scene::CreatePauseMenu() {
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
 	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	int x = parchment->position.x + 100 + App->render->camera.x;
-	int y = parchment->position.y + 60 + App->render->camera.y;
+	int x = parchmentImg->GetLocalPos().x + 100;
+	int y = parchmentImg->GetLocalPos().y + 60;
 	settingsButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
 
-	y = parchment->position.y + 110 + App->render->camera.y;
+	y = parchmentImg->GetLocalPos().y + 110;
 	continueButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
 
-	y = parchment->position.y + 160 + App->render->camera.y;
+	y = parchmentImg->GetLocalPos().y + 160;
 	ReturnMenuButt = App->gui->CreateUIButton({ x, y}, buttonInfo, this);
 
 	UILabel_Info labelInfo;
@@ -703,8 +701,8 @@ void j1Scene::CreateSettingsMenu() {
 		//buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
 	}
 	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	int x = parchment->position.x + 130 + App->render->camera.x;
-	int y = parchment->position.y + 150 + App->render->camera.y;
+	int x = parchmentImg->GetLocalPos().x + 130;
+	int y = parchmentImg->GetLocalPos().y + 150;
 	fullScreenButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
 
 	x -= 100;
@@ -716,8 +714,8 @@ void j1Scene::CreateSettingsMenu() {
 
 
 	//Sliders
-	x = parchment->position.x + 30 + App->render->camera.x;
-	y = parchment->position.y + 60 + App->render->camera.y;
+	x = parchmentImg->GetLocalPos().x + 30;
+	y = parchmentImg->GetLocalPos().y + 60;
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
 	SDL_Rect butText = { 703, 224 , 8, 10 };
 	SDL_Rect bgText = { 572, 224, 130, 10 };
@@ -729,8 +727,8 @@ void j1Scene::CreateSettingsMenu() {
 	buttonInfo.normalTexArea = { 1000, 0, 30, 20 };
 	buttonInfo.hoverTexArea = { 0, 0, 0, 0 };
 	buttonInfo.pressedTexArea = { 0, 0, 0, 0 };
-	x = parchment->position.x + 30 + App->render->camera.x;
-	y = parchment->position.y + 185 + App->render->camera.y;
+	x = parchmentImg->GetLocalPos().x + 30;
+	y = parchmentImg->GetLocalPos().y + 185;
 	returnButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
 
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
@@ -757,9 +755,9 @@ void j1Scene::DestroySettingsMenu() {
 }
 
 void j1Scene::DestroyAllUI() {
-	if (parchment != nullptr) {
-		parchment->isDeleted = true;
-		parchment = nullptr;
+	if (parchmentImg != nullptr) {
+		//parchment->isDeleted = true;
+		App->gui->DestroyElement((UIElement**)&parchmentImg);
 	}
 	DestroyPauseMenu();
 	DestroySettingsMenu();
@@ -770,6 +768,12 @@ void j1Scene::DestroyAllUI() {
 	App->gui->DestroyElement((UIElement**)&buildingButton);
 	App->gui->DestroyElement((UIElement**)&buildingLabel);
 }
+
+PauseMenuActions j1Scene::GetPauseMenuActions()
+{
+	return pauseMenuActions;
+}
+
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 {
@@ -817,15 +821,14 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		}
 
 		else if (UIelem == pauseMenuButt) {
-			if (parchment == nullptr)
-				parchment = App->particles->AddParticle(App->particles->parchmentAnimation, App->render->GetMidCameraPos().x - 100, App->render->GetMidCameraPos().y - 125);
+			if (parchmentImg == nullptr) {
+				UIImage_Info parchmentInfo;
+				parchmentInfo.texArea = App->gui->parchmentArea;
+				parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
+				parchmentImg->StartAnimation(App->gui->parchmentAnim);
+			}
 			else {
-				pauseMenuActions = PauseMenuActions_NOT_EXIST;
-				if (parchment != nullptr) {
-					parchment->isDeleted = true;
-					parchment = nullptr;
-				}
-				DestroyPauseMenu();
+				pauseMenuActions = PauseMenuActions_DESTROY;
 			}
 		}
 

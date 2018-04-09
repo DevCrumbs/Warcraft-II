@@ -37,6 +37,14 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 
 	atlasFileName = conf.child("atlas").attribute("file").as_string("");
 
+	pugi::xml_node parchment = conf.child("parchment");
+	parchmentAnim.speed = parchment.attribute("speed").as_float();
+	parchmentAnim.loop = parchment.attribute("loop").as_bool();
+	for (parchment = parchment.child("frame"); parchment; parchment = parchment.next_sibling("frame")) {
+		parchmentAnim.PushBack({ parchment.attribute("x").as_int(), parchment.attribute("y").as_int(), parchment.attribute("w").as_int(), parchment.attribute("h").as_int() });
+		parchmentArea = { parchment.attribute("x").as_int(), parchment.attribute("y").as_int(), parchment.attribute("w").as_int(), parchment.attribute("h").as_int() };
+	}
+
 	return ret;
 }
 
