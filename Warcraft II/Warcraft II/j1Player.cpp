@@ -411,35 +411,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 }
 
-void j1Player::OnDynamicEntitiesEvent(DynamicEntity * dynamicEntity, EntitiesEvent entitiesEvent)
-{
-	Entity* ent = (Entity*)dynamicEntity;
-
-	switch (entitiesEvent)
-	{
-	case EntitiesEvent_NONE:
-		break;
-	case EntitiesEvent_RIGHT_CLICK:
-		DeleteEntitiesMenu();
-		break;
-	case EntitiesEvent_LEFT_CLICK:
-		DeleteEntitiesMenu();
-
-		if (dynamicEntity->dynamicEntityType == EntityType_FOOTMAN)
-			MakeEntitiesMenu(ent->GetStringLife(), "Chicken Farm", { 241,34,50,41 }, ent);
-
-		else if (dynamicEntity->dynamicEntityType == EntityType_ELVEN_ARCHER)
-			MakeEntitiesMenu(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 }, ent);
-
-	default:
-		break;
-	}
-}
 
 void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) {
 
 	UILabel_Info labelInfo;
 	labelInfo.text = entityName_text;
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
 	entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
@@ -490,6 +467,98 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	entitySelectedStats.entitySelected = currentEntity;
 }
 
+void j1Player::MakeUnitMenu(Entity* entity)
+{
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_FOOTMAN) {
+		UIImage_Info imageInfo;
+		imageInfo.texArea = { 240,244, 50, 41 };
+		imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+		imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+		entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h / 2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		UILifeBar_Info lifeInfo;
+		lifeInfo.background = { 289,346,145,23 };
+		lifeInfo.bar = { 300,373,128,8 };
+		lifeInfo.maxLife = entity->GetMaxLife();
+		lifeInfo.maxWidth = lifeInfo.bar.w;
+		lifeInfo.lifeBarPosition = { 12, 10 };
+		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		UILabel_Info labelInfo;
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
+		labelInfo.text = "Footman";
+		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+		entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "60/60";
+		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT9;
+		labelInfo.text = "Damage: 6";
+		entitySelectedStats.entityDamage = App->gui->CreateUILabel({ 75, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Mana: -";
+		entitySelectedStats.entityMana = App->gui->CreateUILabel({ 145, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Sight: 4";
+		entitySelectedStats.entitySight = App->gui->CreateUILabel({ 75, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Range: 9";
+		entitySelectedStats.entityRange = App->gui->CreateUILabel({ 145, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Movement Speed: 10";
+		entitySelectedStats.entityMovementSpeed = App->gui->CreateUILabel({ 75, 50 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	}
+
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+		UIImage_Info imageInfo;
+		imageInfo.texArea = { 291,244, 50, 41 };
+		imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+		imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+		entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h / 2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		UILifeBar_Info lifeInfo;
+		lifeInfo.background = { 289,346,145,23 };
+		lifeInfo.bar = { 300,373,128,8 };
+		lifeInfo.maxLife = entity->GetMaxLife();
+		lifeInfo.maxWidth = lifeInfo.bar.w;
+		lifeInfo.lifeBarPosition = { 12, 10 };
+		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		UILabel_Info labelInfo;
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
+		labelInfo.text = "Elven Archer";
+		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+		entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "50/50";
+		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT9;
+		labelInfo.text = "Damage: 5";
+		entitySelectedStats.entityDamage = App->gui->CreateUILabel({ 75, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Mana: -";
+		entitySelectedStats.entityMana = App->gui->CreateUILabel({ 145, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Sight: 9";
+		entitySelectedStats.entitySight = App->gui->CreateUILabel({ 75, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Range: 4";
+		entitySelectedStats.entityRange = App->gui->CreateUILabel({ 145, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Movement Speed: 10";
+		entitySelectedStats.entityMovementSpeed = App->gui->CreateUILabel({ 75, 50 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	}
+
+	
+
+	entitySelectedStats.entitySelected = entity;
+	
+}
+
 void j1Player::DeleteEntitiesMenu() {
 
 	if (entitySelectedStats.entitySelected == barracks) {
@@ -508,8 +577,14 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement(entitySelectedStats.entityName);
 		App->gui->DestroyElement(entitySelectedStats.entityIcon);
 		App->gui->DestroyElement(entitySelectedStats.lifeBar);
+		App->gui->DestroyElement(entitySelectedStats.entityDamage);
+		App->gui->DestroyElement(entitySelectedStats.entityMana);
+		App->gui->DestroyElement(entitySelectedStats.entityMovementSpeed);
+		App->gui->DestroyElement(entitySelectedStats.entityRange);
+		App->gui->DestroyElement(entitySelectedStats.entitySight);
 		entitySelectedStats.entitySelected = nullptr;
 	}
+	
 }
 
 void j1Player::DeleteHoverInfoMenu()

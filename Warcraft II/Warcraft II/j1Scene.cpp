@@ -195,14 +195,17 @@ bool j1Scene::Update(float dt)
 	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 	//App->collision->DebugDraw();
 
-	// Movement															 // Select units by mouse click
-	/*if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+	// Movement															// Select units by mouse click
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 		startRectangle = mousePos;
 
 		Entity* entity = App->entities->IsEntityOnTile(mouseTile);
 
-		if (entity != nullptr)
+		if (entity != nullptr) {
 			App->entities->SelectEntity(entity);
+			App->player->DeleteEntitiesMenu();
+			App->player->MakeUnitMenu(entity);
+		}
 		else
 			App->entities->UnselectAllEntities();
 	}
@@ -210,6 +213,7 @@ bool j1Scene::Update(float dt)
 	int width = mousePos.x - startRectangle.x;
 	int height = mousePos.y - startRectangle.y;
 
+	/// SELECT UNITS
 	// Select units by rectangle drawing
 	if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
@@ -230,28 +234,45 @@ bool j1Scene::Update(float dt)
 		App->entities->SelectEntitiesWithinRectangle(mouseRect);
 	}
 
-	// Select a new goal for the selected units (single click or drag)
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
+	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
-		if (App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected()) == nullptr)
+	if (units.size() > 0) {
+
+		UnitGroup* group = App->movement->GetGroupByUnits(units);
+
+		if (group == nullptr)
 
 			// Selected units will now behave as a group
-			App->movement->CreateGroupFromUnits(App->entities->GetLastUnitsSelected());
+			group = App->movement->CreateGroupFromUnits(units);
 
-		App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected())->DrawShapedGoal(mouseTile);
+		if (group != nullptr) {
+
+			/// SET GOAL
+			// Draw a shaped goal
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+
+				group->DrawShapedGoal(mouseTile);
+
+			// Set a normal or shaped goal
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
+
+				if (!group->SetShapedGoal()) /// shaped goal
+					group->SetGoal(mouseTile); /// normal goal
+			}
+
+			/// COMMAND PATROL
+			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN) {
+
+				//App->entities->CommandToUnits(units, UnitCommand_Patrol);
+			}
+
+			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
+			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
+
+				//App->entities->CommandToUnits(units, UnitCommand_Stop);
+			}
+		}
 	}
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
-
-		if (App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected()) == nullptr)
-
-			// Selected units will now behave as a group
-			App->movement->CreateGroupFromUnits(App->entities->GetLastUnitsSelected());
-
-		UnitGroup* group = App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected());
-
-		if (!group->SetShapedGoal())
-			group->SetGoal(mouseTile);
-	}*/
 
 	DebugKeys();
 	CheckCameraMovement(dt);

@@ -49,6 +49,11 @@ struct EntitySelectedStats
 {
 	UILabel* HP = nullptr;
 	UILabel* entityName = nullptr;
+	UILabel* entitySight = nullptr;
+	UILabel* entityRange = nullptr;
+	UILabel* entityDamage = nullptr;
+	UILabel* entityMana = nullptr;
+	UILabel* entityMovementSpeed = nullptr;
 	UIImage* entityIcon = nullptr;
 	UILifeBar* lifeBar = nullptr;
 
@@ -90,11 +95,11 @@ public:
 	bool Load(pugi::xml_node&);
 
 	void OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent);
-	void OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
+	void MakeUnitMenu(Entity* entity);
 	void DeleteEntitiesMenu();
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
