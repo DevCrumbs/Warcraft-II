@@ -411,6 +411,31 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 }
 
+void j1Player::OnDynamicEntitiesEvent(DynamicEntity * dynamicEntity, EntitiesEvent entitiesEvent)
+{
+	Entity* ent = (Entity*)dynamicEntity;
+
+	switch (entitiesEvent)
+	{
+	case EntitiesEvent_NONE:
+		break;
+	case EntitiesEvent_RIGHT_CLICK:
+		DeleteEntitiesMenu();
+		break;
+	case EntitiesEvent_LEFT_CLICK:
+		DeleteEntitiesMenu();
+
+		if (dynamicEntity->dynamicEntityType == EntityType_FOOTMAN)
+			MakeEntitiesMenu(ent->GetStringLife(), "Chicken Farm", { 241,34,50,41 }, ent);
+
+		else if (dynamicEntity->dynamicEntityType == EntityType_ELVEN_ARCHER)
+			MakeEntitiesMenu(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 }, ent);
+
+	default:
+		break;
+	}
+}
+
 void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) {
 
 	UILabel_Info labelInfo;

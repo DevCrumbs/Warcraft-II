@@ -162,14 +162,14 @@ bool j1Scene::PreUpdate()
 		unitInfo.attackRadius = 3;
 
 		if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
-			App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo);
+			App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo, App->player);
 
 		// 2: spawn a Grunt with priority 1
 		unitInfo.sightRadius = 3;
 		unitInfo.attackRadius = 2;
 
 		if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
-			App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo);
+			App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, App->player);
 	}
 
 	return ret;
