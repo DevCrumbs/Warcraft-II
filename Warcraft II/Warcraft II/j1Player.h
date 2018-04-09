@@ -45,6 +45,27 @@ struct HoverInfo
 	UIImage* background = nullptr;
 };
 
+struct GroupSelectedStats
+{
+	UIImage* entity1Icon = nullptr;
+	UIImage* entity2Icon = nullptr;
+	UIImage* entity3Icon = nullptr;
+	UIImage* entity4Icon = nullptr;
+	UIImage* entity5Icon = nullptr;
+	UIImage* entity6Icon = nullptr;
+	UIImage* entity7Icon = nullptr;
+	UIImage* entity8Icon = nullptr;
+	UILifeBar* lifeBar1 = nullptr;
+	UILifeBar* lifeBar2 = nullptr;
+	UILifeBar* lifeBar3 = nullptr;
+	UILifeBar* lifeBar4 = nullptr;
+	UILifeBar* lifeBar5 = nullptr;
+	UILifeBar* lifeBar6 = nullptr;
+	UILifeBar* lifeBar7 = nullptr;
+	UILifeBar* lifeBar8 = nullptr;
+};
+
+
 struct EntitySelectedStats
 {
 	UILabel* HP = nullptr;
@@ -100,6 +121,7 @@ public:
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void MakeUnitMenu(Entity* entity);
+	void MakeUnitsMenu(list<DynamicEntity*> units);
 	void DeleteEntitiesMenu();
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
@@ -176,6 +198,8 @@ private:
 	HoverInfo hoverInfo;
 
 	EntitySelectedStats entitySelectedStats;
+
+	GroupSelectedStats groupSelectedStats;
 
 	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton;
 

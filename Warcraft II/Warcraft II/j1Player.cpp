@@ -559,6 +559,24 @@ void j1Player::MakeUnitMenu(Entity* entity)
 	
 }
 
+void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
+{	
+
+	list<DynamicEntity*>::iterator it;
+	it = units.begin();
+	while (it != units.end()) {
+		if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+			UIImage_Info imageInfo;
+			imageInfo.texArea = { 240,244, 50, 41 };
+			imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;		
+			imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+			groupSelectedStats.entity1Icon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h / 2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		}
+
+		it++;
+	}
+}
+
 void j1Player::DeleteEntitiesMenu() {
 
 	if (entitySelectedStats.entitySelected == barracks) {

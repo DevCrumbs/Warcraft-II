@@ -235,6 +235,7 @@ bool j1Scene::Update(float dt)
 	}
 
 	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+	App->player->MakeUnitsMenu(units);
 
 	if (units.size() > 0) {
 
