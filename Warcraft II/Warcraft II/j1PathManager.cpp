@@ -68,6 +68,7 @@ void j1PathManager::UpdateSearches()
 	}
 }
 
+
 void j1PathManager::Register(PathPlanner* pathPlanner) 
 {
 	list<PathPlanner*>::const_iterator it = find(searchRequests.begin(), searchRequests.end(), pathPlanner);
@@ -99,6 +100,10 @@ PathPlanner::~PathPlanner()
 		delete trigger;
 	trigger = nullptr;
 
+	if (hiLevelSearch != nullptr)
+		delete 	hiLevelSearch;
+	hiLevelSearch = nullptr;
+
 	entity = nullptr;
 }
 
@@ -109,10 +114,20 @@ bool PathPlanner::RequestAStar(iPoint origin, iPoint destination)
 	if (isSearchRequested)
 		return false;
 
+	if (!isHiLevelSearched)
+	{
+		LoadHiLevelSearch();
+		isHiLevelSearched = true;
+	}
+
 	App->pathmanager->UnRegister(this);
 	GetReadyForNewSearch();
 
 	pathfindingAlgorithmType = PathfindingAlgorithmType_AStar;
+
+	if (currentSearch != nullptr)
+		delete currentSearch;
+	currentSearch = nullptr;
 
 	currentSearch = new j1PathFinding();
 
@@ -195,7 +210,10 @@ void PathPlanner::GetReadyForNewSearch()
 
 PathfindingStatus PathPlanner::CycleOnce()
 {
-	PathfindingStatus result;
+	PathfindingStatus result = PathfindingStatus_PathNotFound;
+
+	if (UpdateNavgraph())
+		App->pathfinding->SetMap(currentLowLevelMap, App->map->lowLevelWalkabilityMap);
 
 	switch (pathfindingAlgorithmType) {
 
@@ -233,6 +251,125 @@ PathfindingStatus PathPlanner::CycleOnce()
 	return result;
 }
 
+bool PathPlanner::UpdateNavgraph()
+{
+	bool ret = false;
+	fPoint pos = entity->GetPos();
+
+	//navgraph.lowLevelWalkabilityMap = App->map->lowLevelWalkabilityMap;
+	list<WalkabilityMap>::iterator iterator = App->map->lowLevelWalkabilityMap.begin();
+
+	if (iterator != App->map->lowLevelWalkabilityMap.end())
+		LOG("Hehe");
+
+	for (; iterator != App->map->lowLevelWalkabilityMap.end(); ++iterator)
+	{
+		if ((*iterator).map != currentLowLevelMap.map)
+		{
+			SDL_Rect roomRect = { (*iterator).position.x, (*iterator).position.y, (*iterator).width * 32, (*iterator).height * 32 };
+			SDL_Rect entityRect = { pos.x,pos.y,32,32 };
+			SDL_Rect result{ 0,0,0,0 };
+			if (SDL_IntersectRect(&roomRect, &entityRect, &result))
+			{
+				currentLowLevelMap = (*iterator);
+				ret = true;
+			}
+		}
+		if (ret)
+			break;
+	}
+
+	if (ret)
+	{
+		DynamicEntity* tempEnt = (DynamicEntity*)entity;
+		SingleUnit* singleUnit = tempEnt->GetSingleUnit();
+
+		RequestAStar(singleUnit->currTile, singleUnit->goal);
+	}
+	return ret;
+}
+
+
+bool PathPlanner::HilevelUpdate()
+{
+	bool ret = false;
+
+
+	nextRoom = hiLevelPath.front();
+
+	iPoint direction{ 0,0 };
+
+	direction.x = currRoom.x - nextRoom.x;
+	direction.y = currRoom.y - nextRoom.y;
+
+	if (direction.x == 1)
+	{
+
+	}
+
+	else if (direction.x == -1)
+	{
+
+	}
+
+	else if (direction.y == 1)
+	{
+
+	}
+
+	else if (direction.y == -1)
+	{
+
+	}
+
+
+
+
+	return ret;
+}
+
+
+
+void PathPlanner::LoadHiLevelSearch()
+{
+	if (hiLevelSearch == nullptr)
+		hiLevelSearch = new j1PathFinding();
+
+	hiLevelSearch->SetMap(App->map->hiLevelWalkabilityMap);
+
+	fPoint pos = entity->GetPos();
+	RoomMap* map = App->map->GetMap();
+	SDL_Rect entityRect = { pos.x,pos.y,32,32 };
+	SDL_Rect result{ 0,0,0,0 };
+
+	iPoint originRoom{ 0,0 };
+
+	DynamicEntity* tempEnt = (DynamicEntity*)entity;
+	SingleUnit* singleUnit = tempEnt->GetSingleUnit();
+
+	SDL_Rect goalRect{ singleUnit->goal.x,  singleUnit->goal.y, 32,32 };
+	iPoint goalPoint{ 0,0 };
+
+	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
+	{
+		if (SDL_IntersectRect(&(*iterator).collider, &entityRect, &result))
+		{
+			originRoom = { (*iterator).x, (*iterator).y };
+		}
+		if (SDL_IntersectRect(&goalRect, &entityRect, &result))
+		{
+			goalPoint = { (*iterator).x, (*iterator).y };
+		}
+	}
+
+	hiLevelSearch->CreatePath(originRoom, goalPoint);
+
+	hiLevelPath = *(hiLevelSearch->GetLastPath());
+}
+
+
+
+
 vector<iPoint> PathPlanner::GetPath() const
 {
 	if (isSearchCompleted)
@@ -245,7 +382,6 @@ vector<iPoint> PathPlanner::GetPath() const
 iPoint PathPlanner::GetTile() const
 {
 	if (isSearchCompleted)
-
 		return currentSearch->GetLastTile();
 }
 

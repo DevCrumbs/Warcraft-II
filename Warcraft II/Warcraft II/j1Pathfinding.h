@@ -66,6 +66,7 @@ struct PathNode
 
 struct WalkabilityMap
 {
+	iPoint position{ 0,0 };
 	uchar* map = nullptr;
 	int width = 0, height = 0;
 };
@@ -106,6 +107,8 @@ public:
 
 	// Sets up the walkability map
 	void SetMap(WalkabilityMap hiMap, list<WalkabilityMap> lowMap);
+	void SetMap(WalkabilityMap hiMap);
+	void SetMap(list<WalkabilityMap> lowMap);
 
 	// Main function to request a path from A to B
 	int CreatePath(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
@@ -114,7 +117,8 @@ public:
 	int BacktrackToCreatePath();
 
 	// To request all tiles involved in the last generated path
-	const vector<iPoint>* GetLastPath() const;
+	
+	vector<iPoint>* GetLastPath();
 
 	// To request the last tile checked by the search algorithm
 	iPoint GetLastTile() const;
@@ -142,7 +146,7 @@ public:
 
 private:
 
-	WalkabilityMap			hiLevelWalkabilityMap;
+	WalkabilityMap			currentLowLevelMap;
 	list<WalkabilityMap>	lowLevelWalkabilityMap;
 	DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan; // distance heuristic of choice
 

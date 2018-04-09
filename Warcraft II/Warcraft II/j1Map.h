@@ -170,6 +170,8 @@ struct Room
 	iPoint exitPointS{ 0,0 };
 	iPoint exitPointW{ 0,0 };
 
+	SDL_Rect			collider{ 0,0,0,0 };
+
 	fPoint GetObjectPosition(string groupObject, string object);
 	fPoint GetObjectSize(string groupObject, string object);
 	Object* GetObjectByName(string groupObject, string object);
@@ -257,6 +259,8 @@ public:
 	bool CreateCorridor(Room room, DIRECTION direction = DIRECTION_NONE);
 	bool LoadLogic();
 
+	RoomMap* GetMap() {return &playableMap;}
+
 private:
 
 	bool LoadRoom();
@@ -313,6 +317,7 @@ private:
 	MapLayer*				aboveLayer = nullptr;
 
 	RoomMap					playableMap;
+
 	list<RoomInfo>			roomsInfo;
 	vector<int>				noPullRoom;
 

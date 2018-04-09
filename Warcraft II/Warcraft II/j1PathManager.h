@@ -40,6 +40,7 @@ public:
 public:
 
 	WalkabilityMap			hiLevelWalkabilityMap;
+	WalkabilityMap			currentLowLevelMap;
 	list<WalkabilityMap>	lowLevelWalkabilityMap;
 };
 
@@ -104,16 +105,21 @@ public:
 	// An agent can use this method to remove a search request
 	void UnRegister(PathPlanner* pathPlanner);
 
-private:
+
+public:
 
 	list<PathPlanner*> searchRequests; // a container of all the active search requests
-	
+
+private:	
 	// total ms to spend on search cycles each update allocated to the manager
 	// each update step these are divided equally among all registered path requests
+
 	double msSearchPerUpdate = 0.0f;
 
-	j1PerfTimer timer; // timer to keep track of the ms spent on each update
+	j1PerfTimer timer; // timer to  keep track of the ms spent on each update
 };
+
+
 
 class PathPlanner 
 {
@@ -144,6 +150,12 @@ public:
 	// to request the tile found
 	iPoint GetTile() const;
 
+	bool UpdateNavgraph();
+
+	void LoadHiLevelSearch();
+	bool HilevelUpdate();
+
+
 	bool IsSearchCompleted() const;
 
 	bool IsSearchRequested() const;
@@ -159,14 +171,25 @@ private:
 	Entity* entity = nullptr; // a pointer to the owner of this class
 	bool isSearchRequested = false;
 	bool isSearchCompleted = false;
+	bool isLowLevelCompleted = false;
+	bool isHiLevelSearched = false;
 
 	PathfindingAlgorithmType pathfindingAlgorithmType = PathfindingAlgorithmType_NoType;
 	j1PathFinding* currentSearch = nullptr; // a pointer to the current search
+	j1PathFinding* hiLevelSearch = nullptr;
 	Navgraph& navgraph; // a local reference to the navgraph
-
+	WalkabilityMap			currentLowLevelMap;
 	// Dijkstra
 	FindActiveTrigger* trigger = nullptr; // a pointer to the FindActiveTrigger class
 	bool isPathRequested = false;
+
+	vector<iPoint> hiLevelPath;
+
+	iPoint nextRoom{ 0,0 };
+	iPoint currRoom{ 0,0 };
+
+
 };
+
 
 #endif //__j1PATH_MANAGER_H__

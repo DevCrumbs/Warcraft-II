@@ -17,7 +17,7 @@ j1PathFinding::j1PathFinding() : j1Module()
 // Destructor
 j1PathFinding::~j1PathFinding()
 {
-	RELEASE_ARRAY(hiLevelWalkabilityMap.map);
+	RELEASE_ARRAY(currentLowLevelMap.map);
 }
 
 // Called before quitting
@@ -26,28 +26,38 @@ bool j1PathFinding::CleanUp()
 	LOG("Freeing pathfinding library");
 
 	last_path.clear();
-	RELEASE_ARRAY(hiLevelWalkabilityMap.map);
+	RELEASE_ARRAY(currentLowLevelMap.map);
 	return true;
 }
 
 // Sets up the walkability map
 void j1PathFinding::SetMap(WalkabilityMap hiMap, list<WalkabilityMap> lowMap)
 {
-	hiLevelWalkabilityMap = hiMap;
+	currentLowLevelMap = hiMap;
+	lowLevelWalkabilityMap = lowMap;
+}
+
+void j1PathFinding::SetMap(WalkabilityMap hiMap)
+{
+	currentLowLevelMap = hiMap;
+}
+void j1PathFinding::SetMap(list<WalkabilityMap> lowMap)
+{
 	lowLevelWalkabilityMap = lowMap;
 }
 
 // Utility: return true if pos is inside the map boundaries
 bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 {
-	return (pos.x >= 0 && pos.x <= (int)hiLevelWalkabilityMap.width &&
-		pos.y >= 0 && pos.y <= (int)hiLevelWalkabilityMap.height);
+	return (pos.x >= 0 && pos.x <= (int)currentLowLevelMap.width &&
+		pos.y >= 0 && pos.y <= (int)currentLowLevelMap.height);
 }
 
 // Utility: returns true is the tile is walkable
 bool j1PathFinding::IsWalkable(const iPoint& pos) const
 {
-	int t = GetTileAt(pos);
+
+	int t = GetTileAt({ pos.x - currentLowLevelMap.position.x/32,pos.y - currentLowLevelMap.position.y / 32 });
 	return INVALID_WALK_CODE && t > 0;
 }
 
@@ -55,13 +65,13 @@ bool j1PathFinding::IsWalkable(const iPoint& pos) const
 int j1PathFinding::GetTileAt(const iPoint& pos) const
 {
 	if (CheckBoundaries(pos))
-		return hiLevelWalkabilityMap.map[(pos.y*hiLevelWalkabilityMap.width) + pos.x];
+		return currentLowLevelMap.map[(pos.y*currentLowLevelMap.width) + pos.x];
 
 	return INVALID_WALK_CODE;
 }
 
 // To request all tiles involved in the last generated path
-const vector<iPoint>* j1PathFinding::GetLastPath() const
+vector<iPoint>* j1PathFinding::GetLastPath()
 {
 	return &last_path;
 }
@@ -352,7 +362,7 @@ bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destinat
 	return true;
 }
 
-PathfindingStatus j1PathFinding::CycleOnceAStar()
+PathfindingStatus j1PathFinding::CycleOnceAStar( )
 {
 	// If the open list is empty, the path has not been found
 	if (open.pathNodeList.size() == 0)

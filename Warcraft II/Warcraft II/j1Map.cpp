@@ -636,6 +636,11 @@ bool j1Map::Load(const char* fileName, int x, int y, int type)
 	isMapLoaded = ret;
 
 	if (ret)
+	{
+		data.collider = { data.x, data.y, data.width * data.tileWidth, data.height * data.tileHeight };
+	}
+
+	if (ret)
 		playableMap.rooms.push_back(data);
 
 	return ret;
@@ -861,6 +866,7 @@ list<WalkabilityMap> j1Map::CreateLowLevelWalkabilityMap() const
 				}
 			}
 			WalkabilityMap temp;
+			temp.position = { (*iterator).x, (*iterator).y };
 			temp.map = map;
 			temp.width = (*iterator).width;
 			temp.height = (*iterator).height;
