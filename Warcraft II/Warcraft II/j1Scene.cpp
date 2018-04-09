@@ -693,14 +693,15 @@ void j1Scene::CreateSettingsMenu() {
 	
 	//Fullscreen
 	if (!App->win->fullscreen) {
-		buttonInfo.normalTexArea = { 635, 240, 20, 20 };
-		//buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 635, 240, 20, 20 };
+		buttonInfo.pressedTexArea = { 658, 240, 20, 20 };
 	}
 	else {
-		buttonInfo.normalTexArea = { 658, 240, 20, 20 };
-		//buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 658, 240, 20, 20 };
+		buttonInfo.pressedTexArea = { 635, 240, 20, 20 };
 	}
 	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	buttonInfo.checkbox = true;
 	int x = parchmentImg->GetLocalPos().x + 130;
 	int y = parchmentImg->GetLocalPos().y + 150;
 	fullScreenButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
@@ -724,6 +725,7 @@ void j1Scene::CreateSettingsMenu() {
 	y += 50;
 	App->menu->AddSlider(AudioMusicPause, { x,y }, "Audio Music", relativeVol, butText, bgText, this);
 
+	buttonInfo.checkbox = false;
 	buttonInfo.normalTexArea = { 1000, 0, 30, 20 };
 	buttonInfo.hoverTexArea = { 0, 0, 0, 0 };
 	buttonInfo.pressedTexArea = { 0, 0, 0, 0 };

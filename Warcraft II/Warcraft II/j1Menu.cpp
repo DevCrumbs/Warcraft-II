@@ -72,9 +72,6 @@ bool j1Menu::Update(float dt)
 {
 	App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 100, 100, 100, 255);
 	
-	//if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
-		//parchment = App->particles->AddParticle(App->particles->parchmentAnimation, (App->render->camera.w / 2) - 100, (App->render->camera.h / 2) - 125);
-	
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 		if (parchment != nullptr) {
 			parchment->isDeleted = true;
@@ -200,13 +197,14 @@ void j1Menu::CreateSettings() {
 
 	//Fullscreen
 	if (!App->win->fullscreen) {
-		buttonInfo.normalTexArea = { 572, 240, 30, 30 };
-		//buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 572, 240, 30, 30 };
+		buttonInfo.pressedTexArea = { 604, 240, 30, 30 };
 	}
 	else {
-		buttonInfo.normalTexArea = { 604, 240, 30, 30 };
-		//buttonInfo.hoverTexArea = { 129, 0, 20, 20 };
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 604, 240, 30, 30 };
+		buttonInfo.pressedTexArea = { 572, 240, 30, 30 };
 	}
+	buttonInfo.checkbox = true;
 	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	fullScreenButt = App->gui->CreateUIButton({ 300, 300 }, buttonInfo, this);
 
