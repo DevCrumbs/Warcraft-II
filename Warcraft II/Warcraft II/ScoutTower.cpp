@@ -19,13 +19,13 @@ void ScoutTower::Move(float dt)
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 
-	//Is building destroyed?
+	//Check if building is destroyed
 	if (currLife <= 0)
 		towerState = TowerState_Die;
 
-	//Check if tower has to attack
+	//Check if tower has to attack or not
 	if (isBuilt) {
-		if (!enemyAttackQueue.empty())
+		if (attackingTarget != nullptr && !enemyAttackQueue.empty())
 			towerState = TowerState_Attack;
 		else
 			towerState = TowerState_Idle;
@@ -33,14 +33,27 @@ void ScoutTower::Move(float dt)
 
 	TowerStateMachine(dt);
 
+	//Update animations for the construction cycle
 	if(!isBuilt)
 	UpdateAnimations(dt);
 
+	//Check is building is built already
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
 		isBuilt = true;
 
-	if (arrowParticle != nullptr)
+	//Check the arrow movement if the tower has to attack
+	if (attackingTarget != nullptr && arrowParticle != nullptr)
 		CheckArrowMovement(dt);
+
+	//Check if the tower has to change the attacking target
+	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
+
+		attackingTarget = nullptr;
+		enemyAttackQueue.pop();
+
+		if (!enemyAttackQueue.empty()) 
+			attackingTarget = enemyAttackQueue.front();
+	}
 }
 
 void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionState collisionState)
@@ -56,7 +69,7 @@ void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 			enemyAttackQueue.push (c2->entity);
 			
 			if (attackingTarget == nullptr) {
-				attackingTarget = enemyAttackQueue.back();
+				attackingTarget = enemyAttackQueue.front();
 				attackTimer.Start();
 			}
 		}
@@ -70,21 +83,22 @@ void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 		if (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit
 			|| c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding) {
 			
-			if (c2->entity == attackingTarget) {
+			/*if (c2->entity == attackingTarget) {
 				attackingTarget = nullptr;
 				enemyAttackQueue.pop();
 			}
-			else if (c2->entity != enemyAttackQueue.back()) {
+		/*	
+		    else if (c2->entity != enemyAttackQueue.back()) {
 				Entity* aux = c2->entity;
 				std::swap(enemyAttackQueue.back(), aux); //I don't know if this will work. Have to try it
 				enemyAttackQueue.pop();
-			}
+			}*/
 			
-			if (!enemyAttackQueue.empty() && attackingTarget == nullptr) {
+			/*if (!enemyAttackQueue.empty() && attackingTarget == nullptr) {
 				attackingTarget = enemyAttackQueue.back();
 				attackTimer.Start();
 
-			}
+			}*/
 		}
 		
 		break;
@@ -114,7 +128,7 @@ void ScoutTower::TowerStateMachine(float dt)
 	}
 		break;
 	case TowerState_Die:
-		
+		//Nothing
 		break;
 	}
 }
