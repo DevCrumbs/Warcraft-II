@@ -206,8 +206,8 @@ bool j1Scene::Update(float dt)
 			App->player->DeleteEntitiesMenu();
 			App->player->MakeUnitMenu(entity);
 		}
-		else
-			App->entities->UnselectAllEntities();
+		//else
+			//App->entities->UnselectAllEntities();
 	}
 
 	int width = mousePos.x - startRectangle.x;

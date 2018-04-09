@@ -518,6 +518,7 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
 		entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h / 2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
+		//TODO aleix
 		UILifeBar_Info lifeInfo;
 		lifeInfo.background = { 289,346,145,23 };
 		lifeInfo.bar = { 300,373,128,8 };
@@ -564,17 +565,91 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 
 	list<DynamicEntity*>::iterator it;
 	it = units.begin();
+	int i = 0;
 	while (it != units.end()) {
-		if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-			UIImage_Info imageInfo;
-			imageInfo.texArea = { 240,244, 50, 41 };
-			imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;		
-			imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
-			groupSelectedStats.entity1Icon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h / 2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
-		}
+		if (units.size() == 1) {
+			DeleteEntitiesMenu();
+			MakeUnitMenu((*it));
 
+		}
+		else {
+			DeleteEntitiesMenu();
+			switch (i)
+			{
+			case 0:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 2,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity1Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 2,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity1Icon);
+				}
+				break;
+			case 1:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 57,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity2Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 57,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity2Icon);
+				}
+				break;
+			case 2:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 111,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity3Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 111,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity3Icon);
+				}
+				break;
+			case 3:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 166,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity4Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 166,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity4Icon);
+				}
+				break;
+			case 4:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 2, 57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity5Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 2, 57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity5Icon);
+				}
+				break;
+			case 5:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 57,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity6Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 57,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity6Icon);
+				}
+				break;
+			case 6:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 111,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity7Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 111,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity7Icon);
+				}
+				break;
+			case 7:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 166,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity8Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 166,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity8Icon);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		
 		it++;
+		i++;
 	}
+	i = 0;
+	groupSelectedStats.units = units;
 }
 
 void j1Player::DeleteEntitiesMenu() {
@@ -602,6 +677,25 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement(entitySelectedStats.entitySight);
 		entitySelectedStats.entitySelected = nullptr;
 	}
+	if (groupSelectedStats.units.size() > 0) {
+		App->gui->DestroyElement(groupSelectedStats.entity1Icon);
+		App->gui->DestroyElement(groupSelectedStats.entity2Icon);
+		App->gui->DestroyElement(groupSelectedStats.entity3Icon);
+		App->gui->DestroyElement(groupSelectedStats.entity4Icon);
+		App->gui->DestroyElement(groupSelectedStats.entity5Icon);
+		App->gui->DestroyElement(groupSelectedStats.entity6Icon);
+		App->gui->DestroyElement(groupSelectedStats.entity7Icon);
+		App->gui->DestroyElement(groupSelectedStats.entity8Icon);
+		App->gui->DestroyElement(groupSelectedStats.lifeBar1);
+		App->gui->DestroyElement(groupSelectedStats.lifeBar2);
+		App->gui->DestroyElement(groupSelectedStats.lifeBar3);
+		App->gui->DestroyElement(groupSelectedStats.lifeBar4);
+		App->gui->DestroyElement(groupSelectedStats.lifeBar5);
+		App->gui->DestroyElement(groupSelectedStats.lifeBar6);
+		App->gui->DestroyElement(groupSelectedStats.lifeBar7);
+		App->gui->DestroyElement(groupSelectedStats.lifeBar8);
+		groupSelectedStats.units.clear();
+	}
 	
 }
 
@@ -610,6 +704,15 @@ void j1Player::DeleteHoverInfoMenu()
 	App->gui->DestroyElement(hoverInfo.background);
 	App->gui->DestroyElement(hoverInfo.cost);
 	App->gui->DestroyElement(hoverInfo.info);
+}
+
+void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* image)
+{
+	UIImage_Info imageInfo;
+	imageInfo.texArea = texArea;
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	image = App->gui->CreateUIImage(iconPos, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
 
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {

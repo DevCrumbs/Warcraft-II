@@ -63,6 +63,8 @@ struct GroupSelectedStats
 	UILifeBar* lifeBar6 = nullptr;
 	UILifeBar* lifeBar7 = nullptr;
 	UILifeBar* lifeBar8 = nullptr;
+
+	list<DynamicEntity*> units;
 };
 
 
@@ -125,6 +127,7 @@ public:
 	void DeleteEntitiesMenu();
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
+	void CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* image);
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
