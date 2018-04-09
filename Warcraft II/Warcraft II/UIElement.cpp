@@ -94,7 +94,7 @@ bool UIElement::MouseHover() const
 {
 	int x, y;
 	App->input->GetMousePosition(x, y);
-	uint scale = App->win->GetScale();
+	float scale = App->win->GetScale();
 
 	return x > GetScreenPos().x / scale && x < GetScreenPos().x / scale + GetLocalRect().w && y > GetScreenPos().y / scale && y < GetScreenPos().y / scale + GetLocalRect().h;
 }

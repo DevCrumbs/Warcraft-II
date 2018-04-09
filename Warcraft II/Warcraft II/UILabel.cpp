@@ -70,7 +70,7 @@ bool UILabel::MouseHover() const
 {
 	int x, y;
 	App->input->GetMousePosition(x, y);
-	uint scale = App->win->GetScale();
+	float scale = App->win->GetScale();
 
 	if (!label.interactionFromFather)
 		return x > GetScreenPos().x / scale && x < GetScreenPos().x / scale + GetLocalRect().w && 

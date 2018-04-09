@@ -262,11 +262,17 @@ bool j1Scene::Update(float dt)
 		App->map->CreateNewMap();
 	}
 
-//	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
-	//	App->win->scale += 0.05f;
+	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
+		App->win->scale += 0.05f;
 
-//	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
-//		App->win->scale -= 0.05f;
+	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
+		App->win->scale -= 0.05f;
+
+	if (App->scene->debugDrawMap) {
+		for (std::vector<SDL_Rect>::const_iterator item = QuadtreeAABBs.begin(); item < QuadtreeAABBs.end(); item++) {
+			App->render->DrawQuad((*item), 0, 255, 0, 255, false);
+		}
+	}
 
 	return ret;
 }
@@ -311,10 +317,10 @@ void j1Scene::DebugKeys()
 
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
 		debugDrawPath = !debugDrawPath;
-
+*/
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 		debugDrawMap = !debugDrawMap;
-	*/
+
 
 	// F1: start from the beginning of the first level
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {

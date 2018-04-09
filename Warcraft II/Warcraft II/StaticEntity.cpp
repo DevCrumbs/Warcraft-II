@@ -90,7 +90,7 @@ bool StaticEntity::MouseHover() const
 {
 	int x, y;
 	App->input->GetMousePosition(x, y);
-	uint scale = App->win->GetScale();
+	float scale = App->win->GetScale();
 
 	iPoint screen_pos;
 	screen_pos.x = pos.x + App->render->camera.x;
