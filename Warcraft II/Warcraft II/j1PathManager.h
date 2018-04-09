@@ -189,6 +189,8 @@ private:
 	iPoint currRoom{ 0,0 };
 
 
+	iPoint lowLevelGoal{ 0,0 };
+
 };
 
 

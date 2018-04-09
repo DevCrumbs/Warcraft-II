@@ -635,8 +635,10 @@ bool j1Map::Load(const char* fileName, int x, int y, int type)
 
 	isMapLoaded = ret;
 
+	//Walkability map info
 	if (ret)
 	{
+		data.walkabilityMap = CreateLowLevelWalkabilityMap(&data);
 		data.collider = { data.x, data.y, data.width * data.tileWidth, data.height * data.tileHeight };
 	}
 
@@ -772,9 +774,7 @@ bool j1Map::CreateWalkabilityMap()
 
 	hiLevelWalkabilityMap = CreateHiLevelWalkabilityMap();
 
-	lowLevelWalkabilityMap = CreateLowLevelWalkabilityMap();
-
-	hiLevelWalkabilityMap = (lowLevelWalkabilityMap.back());
+//	hiLevelWalkabilityMap = (lowLevelWalkabilityMap.back());
 
 	return ret;
 }
@@ -827,55 +827,51 @@ WalkabilityMap j1Map::CreateHiLevelWalkabilityMap()
 	return hiLevel;
 }
 
-list<WalkabilityMap> j1Map::CreateLowLevelWalkabilityMap() const
+WalkabilityMap j1Map::CreateLowLevelWalkabilityMap(Room* currRoom)
 {
-	list<WalkabilityMap> lowLevel;
-
-	for (list<Room>::const_iterator iterator = playableMap.rooms.begin(); iterator != playableMap.rooms.end(); ++iterator)
+	WalkabilityMap wMap;
+	list<MapLayer*>::const_iterator item;
+	item = currRoom->layers.begin();
+	for (item; item != currRoom->layers.end(); ++item)
 	{
-		list<MapLayer*>::const_iterator item;
-		item = (*iterator).layers.begin();
-		for (item; item != (*iterator).layers.end(); ++item)
+		MapLayer* layer = *item;
+		///	if (!layer->properties.GetProperty("Navigation", false))
+		if (!layer->properties.GetProperty("navigation", false))
+			continue;
+
+		uchar* map = new uchar[layer->width*layer->height];
+		memset(map, 1, layer->width*layer->height);
+
+		for (int y = 0; y < currRoom->height; ++y)
 		{
-			MapLayer* layer = *item;
-			///	if (!layer->properties.GetProperty("Navigation", false))
-			if (!layer->properties.GetProperty("navigation", false))
-				continue;
-
-			uchar* map = new uchar[layer->width*layer->height];
-			memset(map, 1, layer->width*layer->height);
-
-			for (int y = 0; y < (*iterator).height; ++y)
+			for (int x = 0; x < currRoom->width; ++x)
 			{
-				for (int x = 0; x < (*iterator).width; ++x)
+				int i = (y*layer->width) + x;
+
+				int tile_id = layer->Get(x, y);
+				TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
+
+				if (tileset != NULL)
 				{
-					int i = (y*layer->width) + x;
-
-					int tile_id = layer->Get(x, y);
-					TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
-
-					if (tileset != NULL)
+					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
+					/*TileType* ts = tileset->GetTileType(tileId);
+					if(ts != NULL)
 					{
-						map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
-						/*TileType* ts = tileset->GetTileType(tileId);
-						if(ts != NULL)
-						{
-						map[i] = ts->properties.Get("walkable", 1);
-						}*/
-					}
+					map[i] = ts->properties.Get("walkable", 1);
+					}*/
 				}
 			}
-			WalkabilityMap temp;
-			temp.position = { (*iterator).x, (*iterator).y };
-			temp.map = map;
-			temp.width = (*iterator).width;
-			temp.height = (*iterator).height;
-			
-			lowLevel.push_back(temp);
-			break;
 		}
+		wMap.position = { currRoom->x, currRoom->y };
+		wMap.map = map;
+		wMap.width = currRoom->width;
+		wMap.height = currRoom->height;
+
+		lowLevelWalkabilityMap.push_back(wMap);
+		break;
+
 	}
-	return lowLevel;
+	return wMap;
 
 }
 

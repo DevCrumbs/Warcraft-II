@@ -160,6 +160,8 @@ struct Room
 	ROOM_TYPE			type = ROOMTYPE_UNKNOWN;
 	list<TileSet*>		tilesets;
 
+	WalkabilityMap      walkabilityMap;
+
 	// TODO 2: Add a list/array of layers to the map!
 	list<MapLayer*>		layers;
 
@@ -248,7 +250,7 @@ public:
 
 	bool SetWalkabilityMap(int & hiWidth, int & hiHieight, uchar ** hiBuffer, int & lowWidth, int & lowHeight, uchar ** lowBuffer) const;
 
-	list<WalkabilityMap> CreateLowLevelWalkabilityMap() const;
+	WalkabilityMap CreateLowLevelWalkabilityMap(Room* currRoom);
 	WalkabilityMap CreateHiLevelWalkabilityMap();
 
 	bool CreateNewMap();

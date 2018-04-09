@@ -297,34 +297,17 @@ bool PathPlanner::HilevelUpdate()
 
 	nextRoom = hiLevelPath.front();
 
-	iPoint direction{ 0,0 };
-
-	direction.x = currRoom.x - nextRoom.x;
-	direction.y = currRoom.y - nextRoom.y;
-
-	if (direction.x == 1)
+	RoomMap* map = App->map->GetMap();
+	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
 	{
-
-	}
-
-	else if (direction.x == -1)
-	{
-
-	}
-
-	else if (direction.y == 1)
-	{
-
-	}
-
-	else if (direction.y == -1)
-	{
-
+		if (nextRoom.x == (*iterator).x && nextRoom.y == (*iterator).y )
+		{
+			currentLowLevelMap = (*iterator).walkabilityMap;
+		}
 	}
 
 
-
-
+	
 	return ret;
 }
 
