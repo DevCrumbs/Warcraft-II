@@ -82,3 +82,8 @@ int UILifeBar::GetLife() const
 {
 	return life_bar.life;
 }
+
+void UILifeBar::SetBar(SDL_Rect bar)
+{
+	this->bar = App->gui->GetRectFromAtlas(bar);
+}

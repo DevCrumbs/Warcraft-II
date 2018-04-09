@@ -54,6 +54,16 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, unitInfo.attackRadius);
 	sightRadiusCollider->isTrigger = true;
 	attackRadiusCollider->isTrigger = true;
+
+	//LifeBar creation
+	UILifeBar_Info lifeBarInfo;
+	lifeBarInfo.background = { 240,362,46,7 };
+	lifeBarInfo.bar = { 240,346,44,5 };
+	lifeBarInfo.maxLife = this->maxLife;
+	lifeBarInfo.life = this->currLife;
+	lifeBarInfo.maxWidth = lifeBarInfo.bar.w;
+
+	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 }
 
 void Grunt::Move(float dt)

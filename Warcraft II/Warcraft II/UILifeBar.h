@@ -37,6 +37,7 @@ public:
 	void IncreaseLife(const int life);
 	void DecreaseLife(const int life);
 	int GetLife() const;
+	void SetBar(SDL_Rect bar);
 
 private:
 	UILifeBar_Info life_bar;
