@@ -37,6 +37,17 @@ struct Particle
 	bool Update(float dt);
 };
 
+struct TowerArrowParticles {
+	Particle up;
+	Particle down;
+	Particle left;
+	Particle right;
+	Particle upLeft;
+	Particle downLeft;
+	Particle upRight;
+	Particle downRight;
+};
+
 class j1Particles : public j1Module
 {
 public:
@@ -58,8 +69,10 @@ public:
 
 private:
 
-	std::string particlesTexName;
-	SDL_Texture* fireText = nullptr;
+
+	std::string atlasTexName;
+	SDL_Texture* atlasTex = nullptr;
+
 
 	Particle* active[MAX_ACTIVE_PARTICLES];
 	uint lastParticle = 0;
@@ -67,6 +80,9 @@ private:
 public:
 	Particle lowFire;
 	Particle hardFire;
+
+	TowerArrowParticles towerArrowParticles;
+
 };
 
 #endif //__j1PARTICLES_H__

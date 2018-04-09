@@ -58,6 +58,12 @@ iPoint Entity::GetSize() const
 	return size;
 }
 
+void Entity::SetMaxLife(int life)
+{
+	maxLife = life;
+	SetStringLife(currLife, maxLife);
+}
+
 // Life and damage
 int Entity::GetMaxLife() const
 {
@@ -103,10 +109,19 @@ bool Entity::CreateEntityCollider(EntitySide entitySide)
 {
 	ColliderType collType = ColliderType_NoType;
 
-	if (entitySide == EntitySide_Player)
-		collType = ColliderType_PlayerUnit;
-	else if (entitySide == EntitySide_Enemy)
+	if (entitySide == EntitySide_Player) {
+		if (this->entityType == EntityCategory_DYNAMIC_ENTITY)
+			collType = ColliderType_PlayerUnit;
+
+		else if (this->entityType == EntityCategory_STATIC_ENTITY)
+			collType = ColliderType_PlayerBuilding;
+	}
+	else if (entitySide == EntitySide_Enemy) {
+		if (this->entityType == EntityCategory_DYNAMIC_ENTITY)
 		collType = ColliderType_EnemyUnit;
+		else if (this->entityType == EntityCategory_STATIC_ENTITY)
+			collType = ColliderType_EnemyBuilding;
+	}
 
 	if (collType == ColliderType_NoType)
 		return false;

@@ -33,6 +33,18 @@
 #include "Stables.h"
 #include "TownHall.h"
 #include "ElvenLumberMill.h"
+#include "GreatHall.h"
+#include "Stronghold.h"
+#include "Fortress.h"
+#include "EnemyBarracks.h"
+#include "PigFarm.h"
+#include "TrollLumberMill.h"
+#include "AltarOfStorms.h"
+#include "DragonRoost.h"
+#include "TempleOfTheDamned.h"
+#include "OgreMound.h"
+#include "EnemyBlacksmith.h"
+
 
 #include <list>
 #include <algorithm>
@@ -59,6 +71,7 @@ public:
 	bool Start();
 	bool PreUpdate();
 	bool Update(float dt);
+	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
 	bool PostUpdate();
 	bool CleanUp();
 	void Draw();
@@ -79,6 +92,8 @@ public:
 
 	Entity* AddEntity(ENTITY_TYPE entityType, fPoint pos, const EntityInfo& entityInfo, const UnitInfo& unitInfo, j1Module* listener = nullptr);
 	void DestroyStaticEntity(StaticEntity* staticEntity);
+
+	uint CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEGORY entityCategory);
 
 	/// SANDRA
 	// Returns a pointer to the Entity that is on the tile or nullptr
@@ -165,7 +180,10 @@ private:
 	DragonInfo dragonInfo;
 
 	/// Static entities
+	//Player buildings
 	TownHallInfo townHallInfo;
+	StrongholdInfo strongholdInfo;
+
 	BarracksInfo barracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
 	ElvenLumberMillInfo elvenLumberMillInfo;
@@ -175,11 +193,26 @@ private:
 	ScoutTowerInfo scoutTowerInfo;
 	PlayerGuardTowerInfo playerGuardTowerInfo; // TODO
 	PlayerCannonTowerInfo playerCannonTowerInfo; // TODO
+
+	//Neutral buildings
 	GoldMineInfo goldMineInfo;
 	RunestoneInfo runestoneInfo;
+
+	//Enemy buildings
+	GreatHallInfo greatHallInfo;
+	EnemyBarracksInfo enemyBarracksInfo;
+	PigFarmInfo pigFarmInfo;
+	TrollLumberMillInfo trollLumberMillInfo;
+	FortressInfo fortressInfo;
+	AltarOfStormsInfo altarOfStormsInfo;
+	DragonRoostInfo dragonRoostInfo;
+	TempleOfTheDamnedInfo templeOfTheDamnedInfo;
+	OgreMoundInfo ogreMoundInfo;
+	EnemyBlacksmithInfo enemyBlacksmithInfo;
 	WatchTowerInfo watchTowerInfo;
 	EnemyGuardTowerInfo enemyGuardTowerInfo;
 	EnemyCannonTowerInfo enemyCannonTowerInfo;
+
 
 	//Preview tiles
 	BuildingPreviewTiles buildingPreviewTiles;

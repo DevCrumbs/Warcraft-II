@@ -19,7 +19,7 @@ T: -20 HP to last Scout Torret created
 S: -20 HP to Stable
 G: -20 HP to Gryphon Aviary
 M: -20 HO to Mage Tower
-
+O: + 500 gold
 
 # The team: DevCrumbs
 

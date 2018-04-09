@@ -18,6 +18,8 @@ j1Collision::j1Collision()
 	/// PlayerUnit
 	matrix[ColliderType_PlayerUnit][ColliderType_PlayerUnit] = false;
 	matrix[ColliderType_PlayerUnit][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_EnemyBuilding] = false;
 	matrix[ColliderType_PlayerUnit][ColliderType_PlayerSightRadius] = false;
 	matrix[ColliderType_PlayerUnit][ColliderType_EnemySightRadius] = true;
 	matrix[ColliderType_PlayerUnit][ColliderType_PlayerAttackRadius] = false;
@@ -26,16 +28,40 @@ j1Collision::j1Collision()
 	/// EnemyUnit
 	matrix[ColliderType_EnemyUnit][ColliderType_EnemyUnit] = false;
 	matrix[ColliderType_EnemyUnit][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_EnemyBuilding] = false;
 	matrix[ColliderType_EnemyUnit][ColliderType_EnemySightRadius] = false;
 	matrix[ColliderType_EnemyUnit][ColliderType_PlayerSightRadius] = true;
 	matrix[ColliderType_EnemyUnit][ColliderType_EnemyAttackRadius] = false;
 	matrix[ColliderType_EnemyUnit][ColliderType_PlayerAttackRadius] = true;
+
+	//PlayerBuilding
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemySightRadius] = true;
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemyAttackRadius] = true;
+
+	//EnemyBuilding
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_EnemyBuilding ][ColliderType_PlayerSightRadius] = true;
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerAttackRadius] = true;
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyAttackRadius] = false;
 
 	/// PlayerSightRadius
 	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerSightRadius] = false;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemySightRadius] = false;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerUnit] = false;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyUnit] = true;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyBuilding] = true;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerAttackRadius] = false;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyAttackRadius] = false;
 
@@ -44,6 +70,8 @@ j1Collision::j1Collision()
 	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerSightRadius] = false;
 	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyUnit] = false;
 	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerUnit] = true;
+	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerBuilding] = true;
+	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyBuilding] = false;
 	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyAttackRadius] = false;
 	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerAttackRadius] = false;
 
@@ -54,6 +82,8 @@ j1Collision::j1Collision()
 	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemySightRadius] = false;
 	matrix[ColliderType_PlayerAttackRadius][ColliderType_PlayerUnit] = false;
 	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemyUnit] = true;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemyBuilding] = true;
 
 	/// EnemyAttackRadius
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyAttackRadius] = false;
@@ -62,12 +92,18 @@ j1Collision::j1Collision()
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerSightRadius] = false;
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyUnit] = false;
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerUnit] = true;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerBuilding] = true;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyBuilding] = false;
 
 	// DEBUG COLORS
 	debugColors[ColliderType_PlayerUnit] = ColorDarkBlue;
 	debugColors[ColliderType_EnemyUnit] = ColorDarkRed;
+	debugColors[ColliderType_PlayerBuilding] = ColorDarkBlue;
+	debugColors[ColliderType_EnemyBuilding] = ColorDarkRed;
 	debugColors[ColliderType_PlayerSightRadius] = ColorLightBlue;
 	debugColors[ColliderType_EnemySightRadius] = ColorLightRed;
+	debugColors[ColliderType_PlayerAttackRadius] = ColorLightBlue;
+	debugColors[ColliderType_EnemyAttackRadius] = ColorLightRed;
 }
 
 // Destructor
@@ -76,6 +112,8 @@ j1Collision::~j1Collision()
 
 bool j1Collision::PreUpdate()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	bool ret = true;
 
 	// Remove all colliders scheduled for deletion
@@ -84,7 +122,8 @@ bool j1Collision::PreUpdate()
 	while (it != colliderGroups.end()) {
 
 		if ((*it)->isRemove) {
-			colliderGroups.erase(remove(colliderGroups.begin(), colliderGroups.end(), *it), colliderGroups.end());
+
+			EraseColliderGroup(*it);
 
 			it = colliderGroups.begin();
 			continue;
@@ -110,25 +149,28 @@ bool j1Collision::Update(float dt)
 
 	while (I != colliderGroups.end()) {
 
-		for (uint i = 0; i < (*I)->colliders.size(); ++i) {
+		list<ColliderGroup*>::const_iterator J = I;
+		J++;
 
-			c1 = (*I)->colliders[i];
+		// Avoid checking collisions already checked
+		while (J != colliderGroups.end()) {
 
-			// Avoid checking collisions already checked
-			list<ColliderGroup*>::const_iterator J = I;
-			J++;
+			if (!matrix[(*I)->colliderType][(*J)->colliderType]
+				&& !matrix[(*J)->colliderType][(*I)->colliderType]) {
 
-			while (J != colliderGroups.end()) {
+				J++;
+				continue;
+			}
 
-				if (!matrix[(*I)->colliderType][(*J)->colliderType]
-					&& !matrix[(*J)->colliderType][(*I)->colliderType])
-					break;
+			for (uint i = 0; i < (*I)->colliders.size(); ++i) {
+
+				c1 = (*I)->colliders[i];
+
+				bool isCollision = false;
 
 				for (uint j = 0; j < (*J)->colliders.size(); ++j) {
 
 					c2 = (*J)->colliders[j];
-
-					bool isCollision = false;
 
 					// Check for the collision
 					if (c1->CheckCollision(c2->colliderRect)) {
@@ -176,30 +218,29 @@ bool j1Collision::Update(float dt)
 							else
 								c2->colliderGroup->callback->OnCollision(c2->colliderGroup, c1->colliderGroup, CollisionState_OnEnter);
 						}
-
-						if (isCollision)
-							break;
 					}
+
+					if (isCollision)
+						break;
 				}
-				J++;
+
+				if (isCollision)
+					break;
 			}
+			J++;
 		}
 		I++;
 	}
 
 	HandleTriggers();
 
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
-		isDebug = !isDebug;
-
-	if (isDebug)
-		DebugDraw();
-
 	return ret;
 }
 
 void j1Collision::HandleTriggers()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	list<ColliderGroup*>::const_iterator groups = colliderGroups.begin();
 
 	while (groups != colliderGroups.end()) {
@@ -247,6 +288,8 @@ bool j1Collision::CleanUp()
 
 void j1Collision::DebugDraw()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	Uint8 alpha = 80;
 	SDL_Color color;
 
@@ -282,10 +325,19 @@ ColliderGroup* j1Collision::CreateAndAddColliderGroup(vector<Collider*> collider
 
 bool j1Collision::EraseColliderGroup(ColliderGroup* colliderGroup)
 {
-	if (colliderGroups.erase(remove(colliderGroups.begin(), colliderGroups.end(), colliderGroup), colliderGroups.end()) != colliderGroups.end())
-		return true;
+	bool ret = false;
 
-	return false;
+	if (colliderGroup != nullptr) {
+
+		delete colliderGroup;
+
+		if (colliderGroups.erase(remove(colliderGroups.begin(), colliderGroups.end(), colliderGroup), colliderGroups.end()) != colliderGroups.end())
+			ret = true;
+
+		colliderGroup = nullptr;
+	}
+
+	return ret;
 }
 
 // Colliders
@@ -311,10 +363,18 @@ bool j1Collision::AddColliderToAColliderGroup(ColliderGroup* colliderGroup, Coll
 
 bool j1Collision::EraseColliderFromAColliderGroup(ColliderGroup* colliderGroup, Collider* collider)
 {
-	if (colliderGroup->colliders.erase(remove(colliderGroup->colliders.begin(), colliderGroup->colliders.end(), collider), colliderGroup->colliders.end()) != colliderGroup->colliders.end())
-		return true;
+	bool ret = false;
 
-	return false;
+	if (collider != nullptr) {
+
+		delete collider;
+
+		if (colliderGroup->colliders.erase(remove(colliderGroup->colliders.begin(), colliderGroup->colliders.end(), collider), colliderGroup->colliders.end()) != colliderGroup->colliders.end())
+			ret = true;
+
+		collider = nullptr;
+	}
+	return ret;
 }
 
 // Collider struct ---------------------------------------------------------------------------------
@@ -349,11 +409,15 @@ ColliderGroup::ColliderGroup(vector<Collider*> colliders, ColliderType colliderT
 ColliderGroup::~ColliderGroup()
 {
 	callback = nullptr;
+	entity = nullptr;
 
 	// Remove all colliders
 	for (uint i = 0; i < colliders.size(); ++i)
 
 		colliders.erase(remove(colliders.begin(), colliders.end(), colliders[i]), colliders.end());
+
+	collidingGroups.clear();
+	lastCollidingGroups.clear();
 }
 
 bool ColliderGroup::IsColliderInGroup(Collider* collider)

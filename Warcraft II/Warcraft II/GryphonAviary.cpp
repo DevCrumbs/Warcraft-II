@@ -6,6 +6,7 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife
 {
 	texArea = &gryphonAviaryInfo.constructionPlanks1;
 	this->constructionTimer.Start();
+	buildingState = BuildingState_Building;
 }
 
 void GryphonAviary::Move(float dt)
@@ -31,6 +32,8 @@ void GryphonAviary::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
 		texArea = &gryphonAviaryInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000)
+	if (constructionTimer.Read() >= constructionTime * 1000){
 		texArea = &gryphonAviaryInfo.completeTexArea;
+		buildingState = BuildingState_Normal;
+	}
 }

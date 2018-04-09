@@ -66,6 +66,19 @@ enum ENTITY_TYPE
 	EntityType_RUNESTONE = 401,
 
 	// Enemy buildings
+	///Production buildings
+	EntityType_GREAT_HALL = 390, 
+	EntityType_STRONGHOLD = 391, 
+	EntityType_FORTRESS = 392, 
+	EntityType_ENEMY_BARRACKS = 393,
+	EntityType_PIG_FARM = 394,
+	EntityType_TROLL_LUMBER_MILL = 395, 
+	EntityType_ALTAR_OF_STORMS = 396, 
+	EntityType_DRAGON_ROOST = 397,
+	EntityType_TEMPLE_OF_THE_DAMNED = 398,
+	EntityType_OGRE_MOUND = 399, 
+	EntityType_ENEMY_BLACKSMITH = 421,
+
 	/// Defense buildings
 	EntityType_WATCH_TOWER = 387,
 	EntityType_ENEMY_GUARD_TOWER = 388,
@@ -109,6 +122,7 @@ public:
 	iPoint GetSize() const;
 
 	// Life and damage
+	void SetMaxLife(int life);
 	int GetMaxLife() const;
 	void SetCurrLife(int currLife);
 	int GetCurrLife() const;

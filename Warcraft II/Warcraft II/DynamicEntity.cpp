@@ -13,10 +13,14 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 
+#include "UILifeBar.h"
+
 #include "Brofiler\Brofiler.h"
 
 DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, j1Module* listener) : Entity(pos, size, currLife, maxLife, listener), unitInfo(unitInfo)
 {
+	this->entityType = EntityCategory_DYNAMIC_ENTITY;
+
 	// Movement
 	/// UnitInfo
 	if (this->unitInfo.currSpeed == 0.0f)
@@ -32,6 +36,19 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 
 	/// PathPlanner
 	pathPlanner = new PathPlanner(this, *navgraph);
+
+	//LifeBar creation
+	UILifeBar_Info lifeBarInfo;
+	lifeBarInfo.background = { 240,362,46,7 };
+	lifeBarInfo.bar = { 240,356,44,5 };
+	lifeBarInfo.maxLife = this->maxLife;
+	lifeBarInfo.life = this->currLife;
+	lifeBarInfo.maxWidth = lifeBarInfo.bar.w;
+
+	lifeBarMarginX = 8;
+	lifeBarMarginY = 32;
+
+	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 }
 
 DynamicEntity::~DynamicEntity()
@@ -46,6 +63,8 @@ DynamicEntity::~DynamicEntity()
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
 	*/
+	App->gui->DestroyElement(lifeBar);
+	lifeBar = nullptr;
 }
 
 void DynamicEntity::Move(float dt) {}
@@ -101,6 +120,16 @@ float DynamicEntity::GetSpeed() const
 uint DynamicEntity::GetPriority() const
 {
 	return unitInfo.priority;
+}
+
+void DynamicEntity::SetBlitState(bool blitting) const
+{
+	blitting = isBlitting; 
+}
+
+bool DynamicEntity::GetBlitState() const
+{
+	return isBlitting;
 }
 
 // Animations

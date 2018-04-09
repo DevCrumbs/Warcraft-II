@@ -10,6 +10,8 @@ UILifeBar::UILifeBar(iPoint local_pos, UIElement* parent, UILifeBar_Info& info, 
 
 	bar = App->gui->GetRectFromAtlas(life_bar.bar);
 	background = App->gui->GetRectFromAtlas(life_bar.background);
+
+	this->isInWorld = isInWorld;
 	
 }
 
@@ -32,8 +34,13 @@ void UILifeBar::Draw() const
 		SDL_Rect daddy = GetParent()->GetScreenRect();
 		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
 	}
-	
-	if (!isInWorld) {
+
+	if (isInWorld) {
+		
+		App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x + life_bar.lifeBarPosition.x, GetLocalPos().y + life_bar.lifeBarPosition.y, &bar);
+		App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &background);
+	}
+	else if (!isInWorld) {
 		App->render->Blit(App->gui->GetAtlas(), blit_pos.x + life_bar.lifeBarPosition.x, blit_pos.y + life_bar.lifeBarPosition.y, &bar);
 		App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &background);
 	}

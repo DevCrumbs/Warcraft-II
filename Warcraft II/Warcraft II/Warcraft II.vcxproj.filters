@@ -67,6 +67,12 @@
     <Filter Include="Modules\Entities\StaticEntities\PlayerBuildings\DefenseBuildings">
       <UniqueIdentifier>{dfa694f3-6299-4555-b5cb-431c1258f6f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\Entities\StaticEntities\EnemyBuildings\DefenseBuildings">
+      <UniqueIdentifier>{d5df002e-e3b4-4d3d-b4e0-25e52d96f2f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings">
+      <UniqueIdentifier>{04f16880-8e80-409c-88de-148688e3aa48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PugiXml\src\pugiconfig.hpp">
@@ -201,15 +207,6 @@
     <ClInclude Include="Runestone.h">
       <Filter>Modules\Entities\StaticEntities\NeutralBuildings</Filter>
     </ClInclude>
-    <ClInclude Include="WatchTower.h">
-      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyCannonTower.h">
-      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyGuardTower.h">
-      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
-    </ClInclude>
     <ClInclude Include="j1Player.h">
       <Filter>Modules\Player</Filter>
     </ClInclude>
@@ -272,6 +269,54 @@
     </ClInclude>
     <ClInclude Include="UISlider.h">
       <Filter>Modules\UIElements</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Movement.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Pathmanager.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyCannonTower.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\DefenseBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyGuardTower.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\DefenseBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="WatchTower.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\DefenseBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="PigFarm.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="DragonRoost.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="TempleOfTheDamned.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBarracks.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="GreatHall.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="Stronghold.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="Fortress.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="TrollLumberMill.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="AltarOfStorms.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="OgreMound.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBlacksmith.h">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -389,15 +434,6 @@
     <ClCompile Include="Runestone.cpp">
       <Filter>Modules\Entities\StaticEntities\NeutralBuildings</Filter>
     </ClCompile>
-    <ClCompile Include="WatchTower.cpp">
-      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyCannonTower.cpp">
-      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyGuardTower.cpp">
-      <Filter>Modules\Entities\StaticEntities\EnemyBuildings</Filter>
-    </ClCompile>
     <ClCompile Include="j1Player.cpp">
       <Filter>Modules\Player</Filter>
     </ClCompile>
@@ -460,6 +496,54 @@
     </ClCompile>
     <ClCompile Include="UISlider.cpp">
       <Filter>Modules\UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Movement.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Pathmanager.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyCannonTower.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\DefenseBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyGuardTower.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\DefenseBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="WatchTower.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\DefenseBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="PigFarm.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="DragonRoost.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="TempleOfTheDamned.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBarracks.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="GreatHall.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="Stronghold.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="Fortress.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="TrollLumberMill.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="AltarOfStorms.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="OgreMound.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBlacksmith.cpp">
+      <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

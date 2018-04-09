@@ -20,6 +20,7 @@ struct SingleUnit;
 
 class PathPlanner;
 class Navgraph;
+class UILifeBar;
 
 enum ColliderType;
 enum CollisionState;
@@ -81,6 +82,10 @@ public:
 	float GetSpeed() const;
 	uint GetPriority() const;
 
+	//Blit
+	void SetBlitState(bool isBlitting) const;
+	bool GetBlitState() const;
+
 	// Animations
 	virtual void LoadAnimationsSpeed();
 	virtual void UpdateAnimationsSpeed(float dt);
@@ -136,9 +141,17 @@ protected:
 	bool isDead = false;
 	j1Timer deadTimer;
 
+	//Blit
+	bool isBlitting = false;
+
 	// Selection color
 	SDL_Color color = ColorWhite;
 	string colorName = "White";
+
+	//LifeBar
+	UILifeBar* lifeBar = nullptr;
+	int lifeBarMarginX = 0;
+	int lifeBarMarginY = 0;
 };
 
 #endif //__DynamicEntity_H__

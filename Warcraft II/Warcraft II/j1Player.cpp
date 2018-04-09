@@ -119,7 +119,8 @@ bool j1Player::Update(float dt) {
 				}
 			}
 		
-
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+		AddGold(500);
 	//Life Bar on building 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
@@ -129,10 +130,17 @@ bool j1Player::Update(float dt) {
 			entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
 			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
 			entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17});
+			if (entitySelectedStats.entitySelected == barracks) {
+				if (barracksUpgrade && stables != nullptr && producePaladinButton == nullptr) {
+					UIButton_Info produceButtonInfo;
+					produceButtonInfo.normalTexArea = { 444,244,50,41 };
+					produceButtonInfo.hoverTexArea = { 699,244,50,41 };
+					produceButtonInfo.pressedTexArea = { 954,244,50,41 };
+					producePaladinButton = App->gui->CreateUIButton({ 319, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+				}
+			}
 		}
 	}
-
-
 
 	return true;
 }
@@ -169,6 +177,16 @@ iPoint j1Player::GetMousePos() {
 	iPoint mouseTilePos = App->map->MapToWorld(GetMouseTilePos().x, GetMouseTilePos().y);
 
 	return mouseTilePos;
+}
+
+void j1Player::AddGold(int sumGold)
+{
+	currentGold += sumGold;
+}
+
+int j1Player::GetCurrentGold()
+{
+	return currentGold;
 }
 
 void j1Player::CheckIfPlaceBuilding()
@@ -326,11 +344,28 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		else if (staticEntity->staticEntityType == EntityType_STABLES)
 			MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 
-		else if (staticEntity->staticEntityType == EntityType_BARRACKS)
-			MakeEntitiesMenu(ent->GetStringLife(), "Barracks", { 241,160,50,41 }, ent);
+		else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->buildingState == BuildingState_Normal)
+			MakeEntitiesMenu(ent->GetStringLife(), "Barracks", { 546,160,50,41 }, ent);
 
-		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL)
-			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 241,160,50,41 }, ent);
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade && staticEntity->buildingState == BuildingState_Normal)
+			MakeEntitiesMenu(ent->GetStringLife(), "Castle", { 546,202,50,41 }, ent);
+
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade && staticEntity->buildingState == BuildingState_Normal)
+			MakeEntitiesMenu(ent->GetStringLife(), "Keep", { 597,202,50,41 }, ent);
+
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal)
+			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
+
+		else if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
+			list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
+			if (pene.size() != 0) {
+					pene.front()->SetBlitState(false);
+				}
+			staticEntity->buildingState = BuildingState_Destroyed;
+		}
+
+		else if (staticEntity->staticEntityType == EntityType_RUNESTONE)
+			staticEntity->buildingState = BuildingState_Destroyed;
 	
 		break;
 	case EntitiesEvent_HOVER:
@@ -420,11 +455,28 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	if (entityName_text == "Barracks") {
 		CreateBarracksButtons();
 	}
+	if (entityName_text == "Gryphon Aviary" && gryphonAviary->buildingState == BuildingState_Normal) {
+		CreateGryphonAviaryButtons();
+	}
+	if (entityName_text == "Mage Tower" && mageTower->buildingState == BuildingState_Normal) {
+		CreateMageTowerButtons();
+	}
 
 	entitySelectedStats.entitySelected = currentEntity;
 }
 
 void j1Player::DeleteEntitiesMenu() {
+
+	if (entitySelectedStats.entitySelected == barracks) {
+		DestroyUIElem(produceElvenArcherButton);
+		DestroyUIElem(produceFootmanButton);
+		DestroyUIElem(producePaladinButton);
+	}
+
+	else if (entitySelectedStats.entitySelected == gryphonAviary)
+		DestroyUIElem(produceGryphonRiderButton);
+	else if (entitySelectedStats.entitySelected == mageTower)
+		DestroyUIElem(produceMageButton);
 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.HP);
@@ -432,9 +484,14 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityIcon);
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.lifeBar);
 		entitySelectedStats.entitySelected = nullptr;
-		if(entitySelectedStats.entitySelected == barracks)
-			DestroyBarracksButtons();
 	}
+}
+
+void j1Player::DeleteHoverInfoMenu()
+{
+	App->gui->DestroyElement((UIElement**)&hoverInfo.background);
+	App->gui->DestroyElement((UIElement**)&hoverInfo.cost);
+	App->gui->DestroyElement((UIElement**)&hoverInfo.info);
 }
 
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
@@ -470,37 +527,144 @@ void j1Player::DestroyHoverButton(Entity* ent) {
 
 void j1Player::CreateBarracksButtons()
 {
-	UIButton_Info produceFootmanButtonInfo;
-	produceFootmanButtonInfo.normalTexArea = { 241,244,50,41 };
-	produceFootmanButtonInfo.hoverTexArea = { 496,244,50,41 };
-	produceFootmanButtonInfo.pressedTexArea = { 751,244,50,41 };
-	produceFootmanButton = App->gui->CreateUIButton({ 217, 2 }, produceFootmanButtonInfo, this, (UIElement*)App->scene->entitiesStats);
-
-	UIButton_Info produceElvenArcherButtonInfo;
-	produceElvenArcherButtonInfo.normalTexArea = { 292,244,50,41 };
-	produceElvenArcherButtonInfo.hoverTexArea = { 547,244,50,41 };
-	produceElvenArcherButtonInfo.pressedTexArea = { 802,244,50,41 };
-	produceElvenArcherButton = App->gui->CreateUIButton({ 269, 2 }, produceElvenArcherButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+	CreateSimpleButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 217, 2 }, produceFootmanButton);
+	CreateSimpleButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 268, 2 }, produceElvenArcherButton);
+	if (barracksUpgrade && stables != nullptr && stables->buildingState == BuildingState_Normal)
+		CreateSimpleButton({ 444,244,50,41 }, { 699, 244, 50, 41 }, { 954,244,50,41 }, { 319, 2 }, producePaladinButton);
 }
 
-void j1Player::DestroyBarracksButtons()
+void j1Player::CreateGryphonAviaryButtons()
 {
+	CreateSimpleButton({ 648,286,50,41 }, { 699, 286, 50, 41 }, { 750,286,50,41 }, { 217, 2 }, produceGryphonRiderButton);
+}
+
+void j1Player::CreateMageTowerButtons()
+{
+<<<<<<< HEAD
 	App->gui->DestroyElement((UIElement**)&produceFootmanButton);
 	App->gui->DestroyElement((UIElement**)&produceElvenArcherButton);
+=======
+	CreateSimpleButton({ 342,244,50,41 }, { 597, 244, 50, 41 }, { 852,244,50,41 }, { 217, 2 }, produceMageButton);
+}
+
+void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) {
+
+	UIButton_Info infoButton;
+
+	infoButton.normalTexArea = normal;
+	infoButton.hoverTexArea = hover;
+	infoButton.pressedTexArea = pressed;
+	button = App->gui->CreateUIButton(pos, infoButton, this, (UIElement*)App->scene->entitiesStats);
+
+}
+
+void j1Player::DestroyUIElem(UIElement* elem) {
+	if (elem != nullptr) {
+		App->gui->DestroyElement(elem);
+		elem = nullptr;
+	}
+>>>>>>> Develompent
 }
 
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
 {
 	UnitInfo unitInfo;
+	FootmanInfo footmanInfo;
+	ElvenArcherInfo elvenArcherInfo;
+	MageInfo mageInfo;
+	PaladinInfo paladinInfo;
+	GryphonRiderInfo gryphonRiderInfo;
+	fPoint barracksPos = barracks->GetPos();
+	fPoint mageTowerPos = { 0.0,0.0 };
+	fPoint gryphonAviaryPos = { 0.0,0.0 };
+	if (mageTower != nullptr) {
+		mageTowerPos = mageTower->GetPos();
+	}
+	if (gryphonAviary != nullptr) {
+		gryphonAviaryPos = gryphonAviary->GetPos();
+	}
 
 	switch (UIevent)
 	{
 	case UI_EVENT_NONE:
 		break;
 	case UI_EVENT_MOUSE_ENTER:
+		if (UIelem == produceFootmanButton) {
+			DeleteHoverInfoMenu();
+			UIImage_Info backgroundImageInfo;
+			backgroundImageInfo.texArea = { 241, 384, 85, 38 };
+			hoverInfo.background = App->gui->CreateUIImage({ -2, -40}, backgroundImageInfo, nullptr, produceFootmanButton);
+			UILabel_Info infoLabelInfo;
+			infoLabelInfo.text = "Produces footman";
+			infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+			hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
+			UILabel_Info costLabelInfo;
+			costLabelInfo.text = "Cost: 500 gold";
+			costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+			hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+		}
+		if (UIelem == produceElvenArcherButton) {
+			DeleteHoverInfoMenu();
+			UIImage_Info backgroundImageInfo;
+			backgroundImageInfo.texArea = { 241, 384, 85, 38 };
+			hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
+			UILabel_Info infoLabelInfo;
+			infoLabelInfo.text = "Produces archer";
+			infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+			hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
+			UILabel_Info costLabelInfo;
+			costLabelInfo.text = "Cost: 400 gold";
+			costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+			hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+		}
+		if (UIelem == produceMageButton && mageTower != nullptr) {
+			DeleteHoverInfoMenu();
+			UIImage_Info backgroundImageInfo;
+			backgroundImageInfo.texArea = { 241, 384, 85, 38 };
+			hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
+			UILabel_Info infoLabelInfo;
+			infoLabelInfo.text = "Produces mage";
+			infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+			hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
+			UILabel_Info costLabelInfo;
+			costLabelInfo.text = "Cost: 1200 gold";
+			costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+			hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+		}
+		if (UIelem == producePaladinButton) {
+			DeleteHoverInfoMenu();
+			UIImage_Info backgroundImageInfo;
+			backgroundImageInfo.texArea = { 241, 384, 85, 38 };
+			hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
+			UILabel_Info infoLabelInfo;
+			infoLabelInfo.text = "Produces paladin";
+			infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+			hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
+			UILabel_Info costLabelInfo;
+			costLabelInfo.text = "Cost: 800 gold";
+			costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+			hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+		}
+		if (UIelem == produceGryphonRiderButton) {
+			DeleteHoverInfoMenu();
+			UIImage_Info backgroundImageInfo;
+			backgroundImageInfo.texArea = { 241, 384, 85, 38 };
+			hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
+			UILabel_Info infoLabelInfo;
+			infoLabelInfo.text = "Produces gryphon";
+			infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+			hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
+			UILabel_Info costLabelInfo;
+			costLabelInfo.text = "Cost: 2500 gold";
+			costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+			hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+		}
 		break;
 	case UI_EVENT_MOUSE_LEAVE:
+		if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton || UIelem == produceMageButton || UIelem == produceGryphonRiderButton) {
+			DeleteHoverInfoMenu();
+		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
@@ -515,14 +679,39 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		}
 		else if (hoverCheck == HoverCheck_Upgrate)
 		{
-			//Use hoverButtonStruct
-			//TODO JOAN
+			if (hoverButtonStruct.currentEntity == barracks) {
+				barracksUpgrade = true;
+				currentGold -= 1000;
+			}
+			if (hoverButtonStruct.currentEntity == townHall && townHallUpgrade) {
+				keepUpgrade = true;
+				currentGold -= 500;
+			}
+			if (hoverButtonStruct.currentEntity == townHall) {
+				townHallUpgrade = true;
+				currentGold -= 1500;
+			}
 		}
-		if (UIelem == produceFootmanButton) {			
-			App->entities->AddEntity(EntityType_FOOTMAN, { 100, 100 }, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
+
+		if (UIelem == produceFootmanButton && currentGold >= footmanCost) {
+			App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)footmanInfo, unitInfo);
+			currentGold -= 500;
 		}
-		if (UIelem == produceElvenArcherButton) {
-			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { 100, 100 }, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
+		if (UIelem == produceElvenArcherButton && currentGold >= elvenArcherCost) {
+			App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)elvenArcherInfo, unitInfo);
+			currentGold -= 400;
+		}
+		if (UIelem == produceMageButton && mageTower != nullptr && currentGold >= mageCost) {
+			App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)mageInfo, unitInfo);
+			currentGold -= 1200;
+		}
+		if (UIelem == producePaladinButton && currentGold >= paladinCost) {
+			App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)paladinInfo, unitInfo);
+			currentGold -= 800;
+		}
+		if (UIelem == produceGryphonRiderButton && currentGold >= gryphonRiderCost) {
+			App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviaryPos.x + 30, gryphonAviaryPos.y - 50 }, (EntityInfo&)gryphonRiderInfo, unitInfo);
+			currentGold -= 2500;
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:

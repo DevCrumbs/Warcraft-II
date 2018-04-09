@@ -6,9 +6,12 @@
 #include "j1Render.h"
 #include "StaticEntity.h"
 #include "j1Particles.h"
+#include "j1Map.h"
+#include "j1EntityFactory.h"
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) {
-	
+	this->entityType = EntityCategory_STATIC_ENTITY;
+
 	if (App->GetSecondsSinceAppStartUp() < 700) //Checks for static entities built since startup
 		isBuilt = true;
 	
@@ -151,4 +154,36 @@ uint StaticEntity::GetConstructionTime() const
 bool StaticEntity::GetIsFinishedBuilt() const
 {
 	return isBuilt;
+}
+
+ColliderGroup * StaticEntity::CreateRhombusCollider(ColliderType colliderType, uint radius)
+{
+	vector<Collider*> colliders;
+	iPoint currTilePos = { (int)this->pos.x, (int)this->pos.y };
+
+	int sign = 1;
+	for (int y = -(int)radius + 1; y < (int)radius; ++y) {
+
+		if (y == 0)
+			sign *= -1;
+
+		for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
+			//Valdivia: Idk if this is the correct way of doing it but it works
+			SDL_Rect rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			colliders.push_back(App->collision->CreateCollider(rect));
+			rect = { currTilePos.x + 32 + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			colliders.push_back(App->collision->CreateCollider(rect));
+			rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + 32 + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			colliders.push_back(App->collision->CreateCollider(rect));
+			rect = { currTilePos.x + 32 + x * App->map->defaultTileSize, currTilePos.y + 32 + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			colliders.push_back(App->collision->CreateCollider(rect));
+		}
+	}
+
+	return App->collision->CreateAndAddColliderGroup(colliders, colliderType, App->entities, this);
+}
+
+ColliderGroup * StaticEntity::GetSightRadiusCollider() const
+{
+	return sightRadiusCollider;
 }

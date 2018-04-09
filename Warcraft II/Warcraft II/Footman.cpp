@@ -12,6 +12,8 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 
+#include "UILifeBar.h"
+
 #include "j1Scene.h" // isFrameByFrame
 #include "j1Input.h" // isFrameByFrame
 
@@ -98,12 +100,17 @@ void Footman::Move(float dt)
 		UpdateRhombusColliderPos(sightRadiusCollider, unitInfo.sightRadius);
 		UpdateRhombusColliderPos(attackRadiusCollider, unitInfo.attackRadius);
 	}
+
+	//Update Unit LifeBar
+	if (lifeBar != nullptr) {
+		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
+		lifeBar->SetLife(currLife);
+	}
 }
 
 void Footman::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr) {
-
+	if (animation != nullptr && isBlitting) {
 		fPoint offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
 		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
 	}

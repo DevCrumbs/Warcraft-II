@@ -6,7 +6,6 @@
 struct EnemyGuardTowerInfo
 {
 	SDL_Rect completeTexArea = { 0,0,0,0 };
-	SDL_Rect inProgressTexArea = { 0,0,0,0 };
 	iPoint size{ 0,0 };
 	uint life = 0u;
 	float speed = 0.0f;
