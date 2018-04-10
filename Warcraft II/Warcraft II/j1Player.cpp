@@ -489,6 +489,21 @@ void j1Player::DeleteEntitiesMenu() {
 	}
 }
 
+void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) {
+
+	UIImage_Info backgroundImageInfo;
+	backgroundImageInfo.texArea = { 241, 384, 85, 38 };
+	hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
+	UILabel_Info infoLabelInfo;
+	infoLabelInfo.text = unitProduce;
+	infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+	hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
+	UILabel_Info costLabelInfo;
+	costLabelInfo.text = gold;
+	costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
+	hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+
+}
 void j1Player::DeleteHoverInfoMenu()
 {
 	App->gui->DestroyElement((UIElement**)&hoverInfo.background);
@@ -581,74 +596,24 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			break;
 		case UI_EVENT_MOUSE_ENTER:
 			if (UIelem == produceFootmanButton) {
-				DeleteHoverInfoMenu();
-				UIImage_Info backgroundImageInfo;
-				backgroundImageInfo.texArea = { 241, 384, 85, 38 };
-				hoverInfo.background = App->gui->CreateUIImage({ -2, -40}, backgroundImageInfo, nullptr, produceFootmanButton);
-				UILabel_Info infoLabelInfo;
-				infoLabelInfo.text = "Produces footman";
-				infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-				hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
-				UILabel_Info costLabelInfo;
-				costLabelInfo.text = "Cost: 500 gold";
-				costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-				hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+				//DeleteHoverInfoMenu();
+				MakeHoverInfoMenu("Produces footman", "Cost: 500 gold");
 			}
 			if (UIelem == produceElvenArcherButton) {
-				DeleteHoverInfoMenu();
-				UIImage_Info backgroundImageInfo;
-				backgroundImageInfo.texArea = { 241, 384, 85, 38 };
-				hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
-				UILabel_Info infoLabelInfo;
-				infoLabelInfo.text = "Produces archer";
-				infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-				hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
-				UILabel_Info costLabelInfo;
-				costLabelInfo.text = "Cost: 400 gold";
-				costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-				hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+				//DeleteHoverInfoMenu();
+				MakeHoverInfoMenu("Produces archer", "Cost: 400 gold");
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
-				DeleteHoverInfoMenu();
-				UIImage_Info backgroundImageInfo;
-				backgroundImageInfo.texArea = { 241, 384, 85, 38 };
-				hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
-				UILabel_Info infoLabelInfo;
-				infoLabelInfo.text = "Produces mage";
-				infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-				hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
-				UILabel_Info costLabelInfo;
-				costLabelInfo.text = "Cost: 1200 gold";
-				costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-				hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+				//DeleteHoverInfoMenu();
+				MakeHoverInfoMenu("Produces mage", "Cost: 1200 gold");
 			}
 			if (UIelem == producePaladinButton) {
 				DeleteHoverInfoMenu();
-				UIImage_Info backgroundImageInfo;
-				backgroundImageInfo.texArea = { 241, 384, 85, 38 };
-				hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
-				UILabel_Info infoLabelInfo;
-				infoLabelInfo.text = "Produces paladin";
-				infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-				hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
-				UILabel_Info costLabelInfo;
-				costLabelInfo.text = "Cost: 800 gold";
-				costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-				hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+				MakeHoverInfoMenu("Produces paladin", "Cost: 800 gold");
 			}
 			if (UIelem == produceGryphonRiderButton) {
 				DeleteHoverInfoMenu();
-				UIImage_Info backgroundImageInfo;
-				backgroundImageInfo.texArea = { 241, 384, 85, 38 };
-				hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
-				UILabel_Info infoLabelInfo;
-				infoLabelInfo.text = "Produces gryphon";
-				infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-				hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
-				UILabel_Info costLabelInfo;
-				costLabelInfo.text = "Cost: 2500 gold";
-				costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-				hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+				MakeHoverInfoMenu("Produces gryphon", "Cost: 2500 gold");
 			}
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
