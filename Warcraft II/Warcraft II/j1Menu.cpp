@@ -79,6 +79,7 @@ bool j1Menu::Start()
 {
 	App->audio->PlayMusic(mainMenuMusicName.data(), 0.0f);
 
+	//If it is the first code iteration, change all the sounds
 	if(!App->isSoundCharged)
 	ChargeGameSounds();
 
@@ -144,6 +145,7 @@ bool j1Menu::PostUpdate()
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_SLIDERFX:
+		App->audio->PlayFx(1, 0); //Button sound
 		UpdateSlider(audioFX);
 		break;
 	case MenuActions_SLIDERMUSIC:
@@ -319,15 +321,15 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if(UIelem == returnButt)
 			menuActions = MenuActions_RETURN;
 
-		else if (UIelem == audioFX.slider) {
-			App->audio->PlayFx(1, 0); //Button sound
+		else if (UIelem == audioFX.slider) 
 			menuActions = MenuActions_SLIDERFX;
-		}
+		
 		else if (UIelem == audioMusic.slider) 
 			menuActions = MenuActions_SLIDERMUSIC;
 
 		else if (UIelem == fullScreenButt)
 		{
+			App->audio->PlayFx(1, 0); //Button sound
 			if (App->win->fullscreen) {
 				App->win->fullscreen = false;
 				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);

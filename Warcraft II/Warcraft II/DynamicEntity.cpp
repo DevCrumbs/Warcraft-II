@@ -37,19 +37,9 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 	/// PathPlanner
 	pathPlanner = new PathPlanner(this, *navgraph);
 
-	//LifeBar creation
-	UILifeBar_Info lifeBarInfo;
-	lifeBarInfo.background = { 240,362,46,7 };
-	lifeBarInfo.bar = { 240,356,44,5 };
-	lifeBarInfo.maxLife = this->maxLife;
-	lifeBarInfo.life = this->currLife;
-	lifeBarInfo.maxWidth = lifeBarInfo.bar.w;
-
 	lifeBarMarginX = 8;
 	lifeBarMarginY = 32;
 
-	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
-	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
 }
 
 DynamicEntity::~DynamicEntity()
@@ -64,8 +54,8 @@ DynamicEntity::~DynamicEntity()
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
 	*/
+	if (lifeBar != nullptr)
 	App->gui->DestroyElement((UIElement**)&lifeBar);
-	lifeBar = nullptr;
 }
 
 void DynamicEntity::Move(float dt) {}

@@ -1016,6 +1016,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		}
 
 		else if (UIelem == pauseMenuButt) {
+			App->audio->PlayFx(1, 0); //Button sound
 			if (parchmentImg == nullptr) {
 				UIImage_Info parchmentInfo;
 				parchmentInfo.texArea = App->gui->parchmentArea;
@@ -1029,18 +1030,22 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		}
 
 		else if (UIelem == continueButt) {
+			App->audio->PlayFx(1, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_DESTROY;
 		}
 
 		else if (UIelem == ReturnMenuButt) {
+			App->audio->PlayFx(1, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_RETURN_MENU;
 		}
 
 		else if (UIelem == settingsButt) {
+			App->audio->PlayFx(1, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_SETTINGS_MENU;
 		}
 
 		else if (UIelem == returnButt) {
+			App->audio->PlayFx(1, 0); //Button sound
 			DestroySettingsMenu();
 			pauseMenuActions = PauseMenuActions_CREATED;
 		}
@@ -1053,6 +1058,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 		else if (UIelem == fullScreenButt)
 		{
+			App->audio->PlayFx(1, 0); //Button sound
 			if (App->win->fullscreen) {
 				App->win->fullscreen = false;
 				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
