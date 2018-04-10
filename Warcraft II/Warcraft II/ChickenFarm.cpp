@@ -2,6 +2,8 @@
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
+	isBuilt = chickenFarmInfo.isBuilt;
+
 	if (isBuilt)
 		texArea = &chickenFarmInfo.completeTexArea;
 	else if (!isBuilt) {
