@@ -47,7 +47,11 @@ bool j1Menu::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
+	//Music
+	pugi::xml_node audio = config.child("audioPaths");
 
+
+	mainMenuMusicName = audio.child("mainTheme").attribute("path").as_string();
 
 	return ret;
 }
@@ -55,7 +59,7 @@ bool j1Menu::Awake(pugi::xml_node& config)
 // Called before the first frame
 bool j1Menu::Start()
 {
-
+	App->audio->PlayMusic(mainMenuMusicName.data(), 0.0f);
 	CreateMenu();
 	return true;
 }

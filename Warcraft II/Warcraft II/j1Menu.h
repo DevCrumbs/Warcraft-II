@@ -88,6 +88,8 @@ private:
 
 	MenuActions menuActions;
 
+	string mainMenuMusicName;
+
 public:
 	uint tab_button = 0;
 	

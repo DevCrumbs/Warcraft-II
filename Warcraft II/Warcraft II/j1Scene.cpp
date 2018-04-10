@@ -58,6 +58,11 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	warcraftActive = maps.child("warcraft").attribute("active").as_bool();
 	warcraftTexName = maps.child("warcraft").attribute("tex").as_string();
 
+	//Music
+	pugi::xml_node audio = config.child("audioPaths");
+
+	mainThemeMusicName = audio.child("mainTheme").attribute("path").as_string();
+
 	LoadKeys(config.child("buttons"));
 
 	// Load songs
@@ -118,6 +123,8 @@ bool j1Scene::Start()
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
 
 	alphaBuilding = EntityType_NONE;
+
+	App->audio->PlayMusic(mainThemeMusicName.data(), 2.0f);
 
 	return ret;
 }

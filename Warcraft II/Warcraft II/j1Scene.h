@@ -124,6 +124,7 @@ private:
 
 	string orthogonalMap, isometricMap, warcraftMap;
 	string orthogonalTexName, isometricTexName, warcraftTexName;
+	string mainThemeMusicName;
 	bool orthogonalActive, isometricActive, warcraftActive;
 
 	SDL_Texture* debugTex =	nullptr;
@@ -146,6 +147,9 @@ private:
 	SDL_Scancode buttonReloadMap = SDL_SCANCODE_UNKNOWN;
 
 	ENTITY_TYPE alphaBuilding;
+
+	//Paths
+
 
 };
 
