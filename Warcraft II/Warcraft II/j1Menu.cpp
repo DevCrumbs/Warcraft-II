@@ -187,8 +187,8 @@ void j1Menu::CreateSettings() {
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
 
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
-	SDL_Rect butText = { 972,176,26,30 };
-	SDL_Rect bgText = { 572,176,400,30 };
+	SDL_Rect butText = { 652,408,26,30 };
+	SDL_Rect bgText = { 252,408,400,30 };
 	AddSlider(audioFX, { 50,100 }, "Audio FX", relativeVol, butText, bgText, this);
 
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
@@ -197,12 +197,12 @@ void j1Menu::CreateSettings() {
 
 	//Fullscreen
 	if (!App->win->fullscreen) {
-		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 572, 240, 30, 30 };
-		buttonInfo.pressedTexArea = { 604, 240, 30, 30 };
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 252, 472, 30, 30 };
+		buttonInfo.pressedTexArea = { 284, 472, 30, 30 };
 	}
 	else {
-		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 604, 240, 30, 30 };
-		buttonInfo.pressedTexArea = { 572, 240, 30, 30 };
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 284, 472, 30, 30 };
+		buttonInfo.pressedTexArea = { 252, 472, 30, 30 };
 	}
 	buttonInfo.checkbox = true;
 	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;

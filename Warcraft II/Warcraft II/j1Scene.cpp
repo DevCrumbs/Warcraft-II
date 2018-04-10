@@ -845,12 +845,12 @@ void j1Scene::CreateSettingsMenu() {
 	
 	//Fullscreen
 	if (!App->win->fullscreen) {
-		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 635, 240, 20, 20 };
-		buttonInfo.pressedTexArea = { 658, 240, 20, 20 };
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 316, 472, 20, 20 };
+		buttonInfo.pressedTexArea = { 338, 472, 20, 20 };
 	}
 	else {
-		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 658, 240, 20, 20 };
-		buttonInfo.pressedTexArea = { 635, 240, 20, 20 };
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 338, 472, 20, 20 };
+		buttonInfo.pressedTexArea = { 316, 472, 20, 20 };
 	}
 	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	buttonInfo.checkbox = true;
@@ -870,8 +870,8 @@ void j1Scene::CreateSettingsMenu() {
 	x = parchmentImg->GetLocalPos().x + 30;
 	y = parchmentImg->GetLocalPos().y + 60;
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
-	SDL_Rect butText = { 703, 224 , 8, 10 };
-	SDL_Rect bgText = { 572, 224, 130, 10 };
+	SDL_Rect butText = { 383, 456 , 8, 10 };
+	SDL_Rect bgText = { 252, 456, 130, 10 };
 	App->menu->AddSlider(AudioFXPause, {x,y}, "Audio FX", relativeVol, butText, bgText, this);
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
 	y += 50;
