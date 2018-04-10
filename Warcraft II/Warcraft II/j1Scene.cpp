@@ -204,8 +204,8 @@ bool j1Scene::Update(float dt)
 		if (entity != nullptr) {
 			App->entities->SelectEntity(entity);
 		}
-		//else
-			//App->entities->UnselectAllEntities();
+		else
+			App->entities->UnselectAllEntities();
 	}
 
 	int width = mousePos.x - startRectangle.x;
@@ -234,10 +234,14 @@ bool j1Scene::Update(float dt)
 
 	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
+
 	if (units.size() > 0) {
-		if (App->player->unitsSelected == UnitsSelectedState_None) {
-			App->player->DeleteEntitiesMenu();
-			App->player->MakeUnitsMenu(units);
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+			if (App->player->unitsSelected == UnitsSelectedState_None) {
+				App->player->DeleteEntitiesMenu();
+				App->player->MakeUnitsMenu(units);
+			}
 		}
 
 		UnitGroup* group = App->movement->GetGroupByUnits(units);

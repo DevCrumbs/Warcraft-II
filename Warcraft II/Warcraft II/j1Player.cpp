@@ -582,6 +582,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
 						CreateGroupIcon({ 2,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity1Icon);
 					}
+					CreateGroupLifeBar({ 2,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar1, (Entity*)(*it));
 					break;
 				case 1:
 					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
@@ -590,6 +591,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
 						CreateGroupIcon({ 57,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity2Icon);
 					}
+					CreateGroupLifeBar({ 57,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar2, (Entity*)(*it));
 					break;
 				case 2:
 					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
@@ -598,7 +600,8 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
 						CreateGroupIcon({ 111,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity3Icon);
 					}
-					break;
+					CreateGroupLifeBar({ 111,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar3, (Entity*)(*it));
+					break;					
 				case 3:
 					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
 						CreateGroupIcon({ 166,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity4Icon);
@@ -606,6 +609,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
 						CreateGroupIcon({ 166,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity4Icon);
 					}
+					CreateGroupLifeBar({ 166,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar4, (Entity*)(*it));
 					break;
 				case 4:
 					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
@@ -614,6 +618,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
 						CreateGroupIcon({ 2, 57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity5Icon);
 					}
+					CreateGroupLifeBar({ 2,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar5, (Entity*)(*it));
 					break;
 				case 5:
 					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
@@ -622,6 +627,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
 						CreateGroupIcon({ 57,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity6Icon);
 					}
+					CreateGroupLifeBar({ 57,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar6, (Entity*)(*it));
 					break;
 				case 6:
 					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
@@ -630,6 +636,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
 						CreateGroupIcon({ 111,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity7Icon);
 					}
+					CreateGroupLifeBar({ 111,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar7, (Entity*)(*it));
 					break;
 				case 7:
 					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
@@ -638,6 +645,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
 						CreateGroupIcon({ 166,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity8Icon);
 					}
+					CreateGroupLifeBar({ 166,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar8, (Entity*)(*it));
 					break;
 				default:
 					break;
@@ -677,8 +685,9 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement(entitySelectedStats.entityRange);
 		App->gui->DestroyElement(entitySelectedStats.entitySight);
 		entitySelectedStats.entitySelected = nullptr;
+		unitsSelected = UnitsSelectedState_None;
 	}
-	if (groupSelectedStats.units.size() > 0) {
+	if (groupSelectedStats.entity1Icon != nullptr) {
 		App->gui->DestroyElement(groupSelectedStats.entity1Icon);
 		App->gui->DestroyElement(groupSelectedStats.entity2Icon);
 		App->gui->DestroyElement(groupSelectedStats.entity3Icon);
@@ -715,6 +724,16 @@ void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* image)
 	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
 	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	image = App->gui->CreateUIImage(iconPos, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+}
+void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar * lifeBar, Entity * entity)
+{
+	UILifeBar_Info lifeInfo;
+	lifeInfo.background = backgroundTexArea;
+	lifeInfo.bar = barTexArea;
+	lifeInfo.maxLife = entity->GetMaxLife();
+	lifeInfo.maxWidth = lifeInfo.bar.w;
+	lifeInfo.lifeBarPosition = { 12, 10 };
+	lifeBar = App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
 
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
