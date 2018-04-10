@@ -69,6 +69,9 @@ public:
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, uint numberValue);
 
 private:
+	void ChargeGameSounds();
+
+private:
 
 	//Main Menu
 	UIButton* PlayButt = nullptr;
@@ -94,6 +97,13 @@ private:
 	string buildingConstructionSound;
 	string errorButtonSound;
 	string buildingErrorButtonSound;
+	string chickenFarmSound;
+	string goldMineSound;
+	string gryphonAviarySound;
+	string mageTowerSound;
+	string stablesSound;
+	string repairBuildingSound;
+	string destroyBuildingSound;
 
 public:
 	uint tab_button = 0;

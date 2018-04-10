@@ -45,7 +45,11 @@
     <audioPaths>
       <mainTheme path= "mainMenu.ogg"/>
       <sounds>
-       <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"/>
+       <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"
+                      chickenFarm ="buildings/farm.wav" goldMine = "buildings/goldMine.wav" gryphAviar = "buildings/gryphonAviary.wav"
+                      mageTower = "buildings/mageTower.wav" stables= "buildings/stables.wav" repair = "buildings/buildingRepair.wav" 
+                      destroyBuilding = "buildingDestroy"/>
+        
        <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
       </sounds>
     </audioPaths>

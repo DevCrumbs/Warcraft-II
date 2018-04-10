@@ -211,8 +211,10 @@ bool j1Scene::Update(float dt)
 
 		Entity* entity = App->entities->IsEntityOnTile(mouseTile);
 
-		if (entity != nullptr)
+		if (entity != nullptr) {
+			App->audio->PlayFx(1, 0); //Button sound
 			App->entities->SelectEntity(entity);
+		}
 		else
 			App->entities->UnselectAllEntities();
 	}

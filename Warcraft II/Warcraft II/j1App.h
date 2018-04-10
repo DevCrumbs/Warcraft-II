@@ -122,6 +122,8 @@ public:
 	j1Movement*					movement = nullptr;
 	j1PathManager*				pathmanager = nullptr;
 
+	bool isSoundCharged = false;
+
 private:
 
 	list<j1Module*>		modules;

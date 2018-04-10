@@ -119,8 +119,10 @@ bool j1Player::Update(float dt) {
 				}
 			}
 		
-	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN) {
+		App->audio->PlayFx(6, 0); //Gold mine sound
 		AddGold(500);
+	}
 	//Life Bar on building 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
@@ -339,34 +341,54 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 	case EntitiesEvent_LEFT_CLICK:
 		DeleteEntitiesMenu();
 
-		if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM)
+		if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM) {
+			App->audio->PlayFx(5,0); //Chicken farm sound
 			MakeEntitiesMenu(ent->GetStringLife(), "Chicken Farm", { 241,34,50,41 }, ent);
+		}
 
-		else if (staticEntity->staticEntityType == EntityType_GRYPHON_AVIARY)
+		else if (staticEntity->staticEntityType == EntityType_GRYPHON_AVIARY) {
+			App->audio->PlayFx(7, 0); //Gryphon aviary sound
 			MakeEntitiesMenu(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 }, ent);
+		}
 
-		else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER)
+		else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER) {
+			App->audio->PlayFx(8, 0); //Mage tower sound
 			MakeEntitiesMenu(ent->GetStringLife(), "Mage Tower", { 394,202,50,41 }, ent);
+		}
 
-		else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER)
+		else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER) {
+			App->audio->PlayFx(1, 0); //Button sound
 			MakeEntitiesMenu(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 }, ent);
+		}
 
-		else if (staticEntity->staticEntityType == EntityType_STABLES)
+		else if (staticEntity->staticEntityType == EntityType_STABLES) {
+			App->audio->PlayFx(9, 0); //Stables sound
 			MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 
-		else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->buildingState == BuildingState_Normal)
+		}
+
+		else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->buildingState == BuildingState_Normal) {
+			App->audio->PlayFx(1, 0); //Button sound
 			MakeEntitiesMenu(ent->GetStringLife(), "Barracks", { 546,160,50,41 }, ent);
+		}
 
-		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade && staticEntity->buildingState == BuildingState_Normal)
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade && staticEntity->buildingState == BuildingState_Normal) {
+			App->audio->PlayFx(1, 0); //Button sound
 			MakeEntitiesMenu(ent->GetStringLife(), "Castle", { 546,202,50,41 }, ent);
+		}
 
-		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade && staticEntity->buildingState == BuildingState_Normal)
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade && staticEntity->buildingState == BuildingState_Normal) {
+			App->audio->PlayFx(1, 0); //Button sound
 			MakeEntitiesMenu(ent->GetStringLife(), "Keep", { 597,202,50,41 }, ent);
+		}
 
-		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal)
+		else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal) {
+			App->audio->PlayFx(1, 0); //Button sound
 			MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
+		}
 
 		else if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
+			App->audio->PlayFx(6, 0); //Gold mine sound
 			list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
 			if (pene.size() != 0) {
 					pene.front()->SetBlitState(false);
@@ -675,6 +697,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
 		if (hoverCheck == HoverCheck_Repair) {
+			App->audio->PlayFx(10, 0); //Repair building sound
 			hoverButtonStruct.currentEntity->SetCurrLife(hoverButtonStruct.currentEntity->GetMaxLife());
 			hoverButtonStruct.currentEntity->CheckBuildingState();
 			entitySelectedStats.HP->SetText(hoverButtonStruct.currentEntity->GetStringLife());
@@ -683,6 +706,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		}
 		else if (hoverCheck == HoverCheck_Upgrate)
 		{
+			//App->audio->PlayFx(2, 0); //Construction sound
 			if (hoverButtonStruct.currentEntity == barracks) {
 				barracksUpgrade = true;
 				currentGold -= 1000;

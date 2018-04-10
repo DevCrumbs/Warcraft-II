@@ -62,6 +62,13 @@ bool j1Menu::Awake(pugi::xml_node& config)
 	pugi::xml_node buildingSounds = sounds.child("buildingPaths");
 	buildingConstructionSound = buildingSounds.attribute("buildingConstruction").as_string();
 	buildingErrorButtonSound = buildingSounds.attribute("errorBttn").as_string();
+	chickenFarmSound = buildingSounds.attribute("chickenFarm").as_string();
+	goldMineSound = buildingSounds.attribute("goldMine").as_string();
+	gryphonAviarySound = buildingSounds.attribute("gryphAviar").as_string();
+	mageTowerSound = buildingSounds.attribute("mageTower").as_string();
+	stablesSound = buildingSounds.attribute("stables").as_string();
+	repairBuildingSound = buildingSounds.attribute("repair").as_string();
+	destroyBuildingSound = buildingSounds.attribute("buildingDestroy").as_string(); 
 
 	return ret;
 }
@@ -70,11 +77,9 @@ bool j1Menu::Awake(pugi::xml_node& config)
 bool j1Menu::Start()
 {
 	App->audio->PlayMusic(mainMenuMusicName.data(), 0.0f);
-	App->audio->LoadFx(mainButtonSound.data()); //1 Normal bttn sound
-	App->audio->LoadFx(buildingConstructionSound.data()); //2 Construction building
-	App->audio->LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
-	App->audio->LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
-	
+
+	if(!App->isSoundCharged)
+	ChargeGameSounds();
 
 	CreateMenu();
 	return true;
@@ -309,4 +314,21 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
 
+}
+
+void j1Menu::ChargeGameSounds()
+{
+	App->audio->LoadFx(mainButtonSound.data()); //1 Normal bttn sound
+	App->audio->LoadFx(buildingConstructionSound.data()); //2 Construction building
+	App->audio->LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
+	App->audio->LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
+	App->audio->LoadFx(chickenFarmSound.data()); //5 chicken farm sound
+	App->audio->LoadFx(goldMineSound.data()); //6 gold mine sound
+	App->audio->LoadFx(gryphonAviarySound.data()); //7 gryphon aviary sound
+	App->audio->LoadFx(mageTowerSound.data()); //8 mage tower sound
+	App->audio->LoadFx(stablesSound.data()); //9 stables sound
+	App->audio->LoadFx(repairBuildingSound.data()); //10 repair building sound
+	App->audio->LoadFx(destroyBuildingSound.data()); //11 destroy building sound
+	
+	App->isSoundCharged = true;
 }
