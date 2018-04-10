@@ -15,7 +15,7 @@ UISlider::UISlider(iPoint local_pos, UIElement* parent, UISlider_Info& info, j1M
 	height = tex_area.h;
 	start_pos = slider.sliderButtonPos;
 
-
+	priority = PriorityDraw_SLIDER;
 	SetOrientation();
 }
 

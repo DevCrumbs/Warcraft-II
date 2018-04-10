@@ -510,12 +510,7 @@ void j1Scene::LoadInGameUI()
 	UIImage_Info entitiesInfo;
 	entitiesInfo.texArea = { 0, 565, 371, 82 };
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
-
-	UICursor_Info mouseInfo;
-	mouseInfo.default = { 243, 525, 28, 33 };
-	mouseInfo.onClick = { 243, 525, 28, 33 };
-	mouseText = App->gui->CreateUICursor(mouseInfo, this);
-
+	entitiesStats->SetPriorityDraw(PriorityDraw_UIINGAME);
 }
 
 void j1Scene::LoadBuildingMenu()
@@ -527,6 +522,7 @@ void j1Scene::LoadBuildingMenu()
 	imageInfo.texArea = { 0,33,240,529 };
 	buildingMenu = App->gui->CreateUIImage({ -112, 0 }, imageInfo, this, buildingButton);
 	buildingMenuOn = true;
+	buildingMenu->SetPriorityDraw(PriorityDraw_UIINGAME);
 
 	buttonInfo.normalTexArea = { 241,34,50,41 };
 	buttonInfo.hoverTexArea = { 292,34,50,41 };
@@ -991,6 +987,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				parchmentInfo.texArea = App->gui->parchmentArea;
 				parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
 				parchmentImg->StartAnimation(App->gui->parchmentAnim);
+				parchmentImg->SetPriorityDraw(PriorityDraw_PAUSEMENU);
 			}
 			else {
 				pauseMenuActions = PauseMenuActions_DESTROY;

@@ -14,6 +14,7 @@ UICursor::UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Mo
 	width = texArea.w;
 	height = texArea.h;
 
+	priority = PriorityDraw_CURSOR;
 	SDL_ShowCursor(0);
 }
 

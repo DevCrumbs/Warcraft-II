@@ -19,7 +19,6 @@ struct UIButton;
 struct UIImage;
 struct UISlider;
 class UISlider_Info;
-struct UICursor;
 class UIInputText;
 
 enum ENTITY_TYPE;
@@ -144,7 +143,6 @@ private:
 
 	UIImage *buildingMenu;
 
-	UICursor* mouseText;
 	//Pause Menu
 	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
 	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;

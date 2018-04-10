@@ -3,6 +3,8 @@
 
 #include <map>
 #include <list>
+#include <queue>
+#include <functional>
 
 #include "j1Module.h"
 #include "UIElement.h"
@@ -43,6 +45,12 @@ class UISlider;
 
 // ---------------------------------------------------
 
+struct compare {
+	bool operator()(const UIElement* infoA, const UIElement* infoB)
+	{
+		return infoA->GetPriorityDraw() > infoB->GetPriorityDraw();
+	}
+};
 class j1Gui : public j1Module
 {
 public:
@@ -70,7 +78,7 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	bool Blit(float dt) const;
+	//bool Blit(float dt) const;
 
 	// Gui creation functions
 	UIImage* CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
@@ -111,7 +119,7 @@ private:
 	const SDL_Texture* atlas = nullptr;
 
 	list<UIElement*> UIElementsList;
-
+	priority_queue<UIElement*, vector<UIElement*>, compare> drawOrder;
 	// Alpha parameters
 	float totalTime = 0.0f;
 	float startTime = 0.0f;

@@ -15,15 +15,15 @@
 #include "j1Gui.h"
 #include "j1Fonts.h"
 #include "j1Particles.h"
+#include "j1FadeToBlack.h"
+#include "j1Menu.h"
 
 #include "j1Gui.h"
 #include "UIImage.h"
 #include "UIButton.h"
 #include "UILabel.h"
 #include "UISlider.h"
-#include "j1FadeToBlack.h"
-#include "j1Menu.h"
-
+#include "UICursor.h"
 
 
 #include <time.h>
@@ -58,6 +58,11 @@ bool j1Menu::Start()
 {
 	App->render->camera.x = App->render->camera.y = 0;
 	CreateMenu();
+
+	UICursor_Info mouseInfo;
+	mouseInfo.default = { 243, 525, 28, 33 };
+	mouseInfo.onClick = { 243, 525, 28, 33 };
+	mouseText = App->gui->CreateUICursor(mouseInfo, this);
 	return true;
 }
 

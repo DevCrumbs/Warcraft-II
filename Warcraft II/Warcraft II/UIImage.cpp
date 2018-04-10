@@ -14,6 +14,7 @@ UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Modul
 	width = texArea.w;
 	height = texArea.h;
 
+	priority = PriorityDraw_IMAGE;
 	SetOrientation();
 }
 

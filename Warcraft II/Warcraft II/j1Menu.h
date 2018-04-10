@@ -6,14 +6,11 @@
 
 
 struct SDL_Texture;
-//class GuiImage;
-//class GuiText;
 class UIImage;
 class UILabel;
 class UIButton;
-//class Window;
-//class InputText;
 class UISlider;
+struct UICursor;
 struct Particle;
 
 enum MenuActions
@@ -75,6 +72,8 @@ public:
 	void UpdateSlider(SliderStruct &sliderStruct);
 
 private:
+
+	UICursor * mouseText;
 
 	//Main Menu
 	UIButton* playButt = nullptr;

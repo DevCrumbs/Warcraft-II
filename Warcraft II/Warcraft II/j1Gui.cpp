@@ -73,6 +73,11 @@ bool j1Gui::PreUpdate()
 
 	UIElementsList = addedElementUI;
 
+	for (std::list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); iterator++) {
+		drawOrder.push(*iterator);
+	}
+
+
 	return ret;
 }
 
@@ -99,12 +104,14 @@ bool j1Gui::Update(float dt)
 
 	UI_elem_it = UIElementsList.begin();
 
-	Blit(dt);
-
+	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
+		info->Draw();
+	}
+	//Blit(dt);
 	return ret;
 }
 
-bool j1Gui::Blit(float dt) const
+/*bool j1Gui::Blit(float dt) const
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Azure);
 
@@ -123,9 +130,12 @@ bool j1Gui::Blit(float dt) const
 			(*iterator)->Draw();
 		iterator++;
 	}
+
+
+
 	return ret;
 }
-
+*/
 // Called after all Updates
 bool j1Gui::PostUpdate()
 {
@@ -260,7 +270,6 @@ UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIEleme
 		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)cursor);
-
 
 	return cursor;
 }
