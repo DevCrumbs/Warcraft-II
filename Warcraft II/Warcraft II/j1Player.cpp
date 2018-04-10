@@ -568,80 +568,80 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 	int i = 0;
 	while (it != units.end()) {
 		if (units.size() == 1) {
-			DeleteEntitiesMenu();
 			MakeUnitMenu((*it));
 
 		}
 		else {
-			DeleteEntitiesMenu();
-			switch (i)
-			{
-			case 0:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 2,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity1Icon);
+			if (groupSelectedStats.entity1Icon == nullptr) {
+				switch (i)
+				{
+				case 0:
+					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+						CreateGroupIcon({ 2,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity1Icon);
+					}
+					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						CreateGroupIcon({ 2,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity1Icon);
+					}
+					break;
+				case 1:
+					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+						CreateGroupIcon({ 57,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity2Icon);
+					}
+					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						CreateGroupIcon({ 57,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity2Icon);
+					}
+					break;
+				case 2:
+					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+						CreateGroupIcon({ 111,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity3Icon);
+					}
+					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						CreateGroupIcon({ 111,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity3Icon);
+					}
+					break;
+				case 3:
+					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+						CreateGroupIcon({ 166,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity4Icon);
+					}
+					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						CreateGroupIcon({ 166,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity4Icon);
+					}
+					break;
+				case 4:
+					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+						CreateGroupIcon({ 2, 57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity5Icon);
+					}
+					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						CreateGroupIcon({ 2, 57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity5Icon);
+					}
+					break;
+				case 5:
+					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+						CreateGroupIcon({ 57,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity6Icon);
+					}
+					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						CreateGroupIcon({ 57,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity6Icon);
+					}
+					break;
+				case 6:
+					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+						CreateGroupIcon({ 111,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity7Icon);
+					}
+					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						CreateGroupIcon({ 111,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity7Icon);
+					}
+					break;
+				case 7:
+					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+						CreateGroupIcon({ 166,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity8Icon);
+					}
+					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						CreateGroupIcon({ 166,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity8Icon);
+					}
+					break;
+				default:
+					break;
 				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 2,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity1Icon);
-				}
-				break;
-			case 1:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 57,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity2Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 57,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity2Icon);
-				}
-				break;
-			case 2:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 111,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity3Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 111,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity3Icon);
-				}
-				break;
-			case 3:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 166,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity4Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 166,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity4Icon);
-				}
-				break;
-			case 4:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 2, 57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity5Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 2, 57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity5Icon);
-				}
-				break;
-			case 5:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 57,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity6Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 57,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity6Icon);
-				}
-				break;
-			case 6:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 111,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity7Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 111,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity7Icon);
-				}
-				break;
-			case 7:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 166,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity8Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 166,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity8Icon);
-				}
-				break;
-			default:
-				break;
 			}
 		}
 		
@@ -650,6 +650,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 	}
 	i = 0;
 	groupSelectedStats.units = units;
+	unitsSelected = UnitsSelectedState_Selected;
 }
 
 void j1Player::DeleteEntitiesMenu() {
@@ -695,6 +696,7 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement(groupSelectedStats.lifeBar7);
 		App->gui->DestroyElement(groupSelectedStats.lifeBar8);
 		groupSelectedStats.units.clear();
+		unitsSelected = UnitsSelectedState_None;
 	}
 	
 }

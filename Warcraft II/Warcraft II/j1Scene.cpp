@@ -203,8 +203,6 @@ bool j1Scene::Update(float dt)
 
 		if (entity != nullptr) {
 			App->entities->SelectEntity(entity);
-			App->player->DeleteEntitiesMenu();
-			App->player->MakeUnitMenu(entity);
 		}
 		//else
 			//App->entities->UnselectAllEntities();
@@ -235,9 +233,12 @@ bool j1Scene::Update(float dt)
 	}
 
 	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
-	App->player->MakeUnitsMenu(units);
 
 	if (units.size() > 0) {
+		if (App->player->unitsSelected == UnitsSelectedState_None) {
+			App->player->DeleteEntitiesMenu();
+			App->player->MakeUnitsMenu(units);
+		}
 
 		UnitGroup* group = App->movement->GetGroupByUnits(units);
 

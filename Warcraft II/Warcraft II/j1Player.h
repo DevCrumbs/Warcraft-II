@@ -19,6 +19,13 @@ enum HoverCheck
 	HoverCheck_Repair
 };
 
+
+enum UnitsSelectedState
+{
+	UnitsSelectedState_None,
+	UnitsSelectedState_Selected
+};
+
 struct UILabel;
 struct UIImage;
 struct UIButton;
@@ -171,6 +178,7 @@ public:
 	int mageCost = 1200;
 	int gryphonRiderCost = 2500;
 
+	UnitsSelectedState unitsSelected = UnitsSelectedState_None;
 private:
 
 	double timer = 0.0f; // game time
