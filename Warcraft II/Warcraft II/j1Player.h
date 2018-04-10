@@ -101,7 +101,6 @@ public:
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
-	void DestroyUIElem(UIElement* elem);
 	void CreateBarracksButtons();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();

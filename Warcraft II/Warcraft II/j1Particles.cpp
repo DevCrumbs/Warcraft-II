@@ -34,11 +34,7 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	
 	//Fire
 	pugi::xml_node spritesheets = config.child("spritesheets");
-<<<<<<< HEAD
-	particlesTexName = spritesheets.child("sprite").attribute("name").as_string();
-=======
 	atlasTexName = spritesheets.child("atlas").attribute("name").as_string();
->>>>>>> Develompent
 
 
 	//spritesheets = config.child("fire");
@@ -87,11 +83,7 @@ bool j1Particles::Start()
 {
 	bool ret = true;
 
-<<<<<<< HEAD
-	fireText = App->tex->Load(particlesTexName.data());
-=======
 	atlasTex = App->tex->Load(atlasTexName.data());
->>>>>>> Develompent
 	LOG("Loading particles");
 
 	return ret;

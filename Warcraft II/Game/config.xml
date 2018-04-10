@@ -986,11 +986,7 @@
 
   <particles>
     <spritesheets>
-<<<<<<< HEAD
-      <sprite name = "data/assets/textures/buildings/parchment.png"/>
-=======
       <atlas name = "data/assets/textures/particles/atlas.png"/>
->>>>>>> Develompent
     </spritesheets>
 
     <towerArrows>

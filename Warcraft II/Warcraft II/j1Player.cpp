@@ -467,16 +467,18 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 
 void j1Player::DeleteEntitiesMenu() {
 
+
+
 	if (entitySelectedStats.entitySelected == barracks) {
-		DestroyUIElem(produceElvenArcherButton);
-		DestroyUIElem(produceFootmanButton);
-		DestroyUIElem(producePaladinButton);
+		App->gui->DestroyElement((UIElement**)&produceElvenArcherButton);
+		App->gui->DestroyElement((UIElement**)&produceFootmanButton);
+		App->gui->DestroyElement((UIElement**)&producePaladinButton);
 	}
 
 	else if (entitySelectedStats.entitySelected == gryphonAviary)
-		DestroyUIElem(produceGryphonRiderButton);
+		App->gui->DestroyElement((UIElement**)&produceGryphonRiderButton);
 	else if (entitySelectedStats.entitySelected == mageTower)
-		DestroyUIElem(produceMageButton);
+		App->gui->DestroyElement((UIElement**)&produceMageButton);
 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.HP);
@@ -540,10 +542,6 @@ void j1Player::CreateGryphonAviaryButtons()
 
 void j1Player::CreateMageTowerButtons()
 {
-<<<<<<< HEAD
-	App->gui->DestroyElement((UIElement**)&produceFootmanButton);
-	App->gui->DestroyElement((UIElement**)&produceElvenArcherButton);
-=======
 	CreateSimpleButton({ 342,244,50,41 }, { 597, 244, 50, 41 }, { 852,244,50,41 }, { 217, 2 }, produceMageButton);
 }
 
@@ -557,15 +555,6 @@ void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pres
 	button = App->gui->CreateUIButton(pos, infoButton, this, (UIElement*)App->scene->entitiesStats);
 
 }
-
-void j1Player::DestroyUIElem(UIElement* elem) {
-	if (elem != nullptr) {
-		App->gui->DestroyElement(elem);
-		elem = nullptr;
-	}
->>>>>>> Develompent
-}
-
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
 {
