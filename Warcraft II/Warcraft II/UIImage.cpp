@@ -14,6 +14,7 @@ UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Modul
 	width = texArea.w;
 	height = texArea.h;
 
+	priority = PriorityDraw_IMAGE;
 	SetOrientation();
 }
 
@@ -111,6 +112,11 @@ bool UIImage::FromAlphaToAlphaFade(float from, float to, float seconds)
 	}
 
 	return ret;
+}
+
+Animation * UIImage::GetAnimation()
+{
+	return anim;
 }
 
 void UIImage::ResetFade()

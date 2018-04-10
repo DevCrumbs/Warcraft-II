@@ -49,6 +49,7 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 	lifeBarMarginY = 32;
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
+	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
 }
 
 DynamicEntity::~DynamicEntity()
@@ -63,7 +64,7 @@ DynamicEntity::~DynamicEntity()
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
 	*/
-	App->gui->DestroyElement(lifeBar);
+	App->gui->DestroyElement((UIElement**)&lifeBar);
 	lifeBar = nullptr;
 }
 

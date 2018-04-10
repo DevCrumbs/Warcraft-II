@@ -25,6 +25,7 @@ UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Mo
 	width = texArea.w;
 	height = texArea.h;
 
+	priority = PriorityDraw_IMAGE;
 	SetOrientation();
 }
 

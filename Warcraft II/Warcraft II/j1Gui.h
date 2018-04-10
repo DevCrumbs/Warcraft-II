@@ -3,10 +3,13 @@
 
 #include <map>
 #include <list>
+#include <queue>
+#include <functional>
 
 #include "j1Module.h"
 #include "UIElement.h"
 #include "NTree.h"
+#include "Animation.h"
 
 using namespace std;
 
@@ -42,6 +45,12 @@ class UISlider;
 
 // ---------------------------------------------------
 
+struct compare {
+	bool operator()(const UIElement* infoA, const UIElement* infoB)
+	{
+		return infoA->GetPriorityDraw() > infoB->GetPriorityDraw();
+	}
+};
 class j1Gui : public j1Module
 {
 public:
@@ -69,7 +78,7 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	bool Blit(float dt) const;
+	//bool Blit(float dt) const;
 
 	// Gui creation functions
 	UIImage* CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
@@ -80,7 +89,7 @@ public:
 	UIInputText* CreateUIInputText(iPoint localPos, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UICursor* CreateUICursor(UICursor_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 
-	bool DestroyElement(UIElement* elem);
+	bool DestroyElement(UIElement** elem);
 	bool ClearAllUI();
 	bool ClearMapTextures();
 
@@ -95,23 +104,27 @@ public:
 	float IncreaseDecreaseAlpha(float from, float to, float seconds);
 	void ResetAlpha();
 
-private:
-
-	string atlasFileName;
-	const SDL_Texture* atlas = nullptr;
-
-	list<UIElement*> UIElementsList;
-
-	// Alpha parameters
-	float totalTime = 0.0f;
-	float startTime = 0.0f;
-	bool reset = true;
 
 public:
 	std::list<UIElement*> addedElementUI;
 
 	//NTree<UIElement*>* UIElementsTree; Don't delete yet
 	bool isDebug = false;
+	Animation parchmentAnim;
+	SDL_Rect parchmentArea;
+
+private:
+
+	string atlasFileName;
+	const SDL_Texture* atlas = nullptr;
+
+	list<UIElement*> UIElementsList;
+	priority_queue<UIElement*, vector<UIElement*>, compare> drawOrder;
+	// Alpha parameters
+	float totalTime = 0.0f;
+	float startTime = 0.0f;
+	bool reset = true;
+
 };
 
 #endif //__j1GUI_H__
