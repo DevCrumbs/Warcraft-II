@@ -88,7 +88,12 @@ private:
 
 	MenuActions menuActions;
 
+	//Audio paths
 	string mainMenuMusicName;
+	string mainButtonSound;
+	string buildingConstructionSound;
+	string errorButtonSound;
+	string buildingErrorButtonSound;
 
 public:
 	uint tab_button = 0;

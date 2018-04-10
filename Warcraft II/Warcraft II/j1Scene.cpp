@@ -63,6 +63,8 @@ bool j1Scene::Awake(pugi::xml_node& config)
 
 	mainThemeMusicName = audio.child("mainTheme").attribute("path").as_string();
 
+
+
 	LoadKeys(config.child("buttons"));
 
 	// Load songs
@@ -86,6 +88,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 bool j1Scene::Start()
 {
 	bool ret = true;
+	App->audio->active = true;
 
 	// Save camera info
 	App->win->GetWindowSize(width, height);
@@ -741,40 +744,67 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (UIelem == buildingButton) {
+			App->audio->PlayFx(1, 0); //Button sound
+
 			if (!buildingMenuOn)
 				LoadBuildingMenu();
 
 			else
 				UnLoadBuildingMenu();
 		}
-		if (UIelem == chickenFarmButton && App->player->currentGold >= chickenFarmCost) {
-			UnLoadBuildingMenu();
-			alphaBuilding = EntityType_CHICKEN_FARM;
-			App->player->AddGold(-chickenFarmCost);
+		if (UIelem == chickenFarmButton) {
+			if (App->player->currentGold >= chickenFarmCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_CHICKEN_FARM;
+				App->player->AddGold(-chickenFarmCost);
+			}
+			else if(App->player->currentGold < chickenFarmCost)
+				App->audio->PlayFx(3, 0); //Button error sound
 		}
 		
-		if (UIelem == stablesButton && App->player->currentGold >= stablesCost) {
-			UnLoadBuildingMenu();
-			alphaBuilding = EntityType_STABLES;
-			App->player->AddGold(-stablesCost);
+		if (UIelem == stablesButton) {
+			if (App->player->currentGold >= stablesCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_STABLES;
+				App->player->AddGold(-stablesCost);
+			}
+			else if(App->player->currentGold < stablesCost)
+				App->audio->PlayFx(3, 0); //Button error sound
 		}
 		
-		if (UIelem == gryphonAviaryButton && App->player->currentGold >= gryphonAviaryCost) {
-			UnLoadBuildingMenu();
-			alphaBuilding = EntityType_GRYPHON_AVIARY;
-			App->player->AddGold(-gryphonAviaryCost);
+		if (UIelem == gryphonAviaryButton) {
+			if (App->player->currentGold >= gryphonAviaryCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_GRYPHON_AVIARY;
+				App->player->AddGold(-gryphonAviaryCost);
+			}
+			else if(App->player->currentGold < gryphonAviaryCost)
+				App->audio->PlayFx(3, 0); //Button error sound
 		}
 
-		if (UIelem == mageTowerButton && App->player->currentGold >= mageTowerCost) {
-			UnLoadBuildingMenu();
-			alphaBuilding = EntityType_MAGE_TOWER;
-			App->player->AddGold(-mageTowerCost);
+		if (UIelem == mageTowerButton) {
+			if (App->player->currentGold >= mageTowerCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_MAGE_TOWER;
+				App->player->AddGold(-mageTowerCost);
+			}
+			else if(App->player->currentGold < mageTowerCost)
+				App->audio->PlayFx(3, 0); //Button error sound
 		}
 
-		if (UIelem == scoutTowerButton && App->player->currentGold >= scoutTowerCost) {
-			UnLoadBuildingMenu();
-			alphaBuilding = EntityType_SCOUT_TOWER;
-			App->player->AddGold(-scoutTowerCost);
+		if (UIelem == scoutTowerButton) {
+			if (App->player->currentGold >= scoutTowerCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_SCOUT_TOWER;
+				App->player->AddGold(-scoutTowerCost);
+			}
+			else if(App->player->currentGold < scoutTowerCost)
+				App->audio->PlayFx(3, 0); //Button error sound
 		}
 		break;
 

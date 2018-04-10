@@ -50,8 +50,18 @@ bool j1Menu::Awake(pugi::xml_node& config)
 	//Music
 	pugi::xml_node audio = config.child("audioPaths");
 
-
 	mainMenuMusicName = audio.child("mainTheme").attribute("path").as_string();
+
+	//Sounds
+	pugi::xml_node sounds = audio.child("sounds");
+
+	pugi::xml_node uIButtonsSounds = sounds.child("buttonPaths");
+	mainButtonSound = uIButtonsSounds.attribute("menuButton").as_string();
+	errorButtonSound = uIButtonsSounds.attribute("errorBttn").as_string();
+
+	pugi::xml_node buildingSounds = sounds.child("buildingPaths");
+	buildingConstructionSound = buildingSounds.attribute("buildingConstruction").as_string();
+	buildingErrorButtonSound = buildingSounds.attribute("errorBttn").as_string();
 
 	return ret;
 }
@@ -60,6 +70,12 @@ bool j1Menu::Awake(pugi::xml_node& config)
 bool j1Menu::Start()
 {
 	App->audio->PlayMusic(mainMenuMusicName.data(), 0.0f);
+	App->audio->LoadFx(mainButtonSound.data()); //1 Normal bttn sound
+	App->audio->LoadFx(buildingConstructionSound.data()); //2 Construction building
+	App->audio->LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
+	App->audio->LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
+	
+
 	CreateMenu();
 	return true;
 }
@@ -88,18 +104,22 @@ bool j1Menu::PostUpdate()
 	case MenuActions_NONE:
 		break;
 	case MenuActions_EXIT:
+		App->audio->PlayFx(1, 0); //Button sound
 		ret = false;
 		break;
 	case MenuActions_PLAY:
+		App->audio->PlayFx(1, 0); //Button sound
 		App->fade->FadeToBlack(this, App->scene);
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_SETTINGS:
+		App->audio->PlayFx(1, 0); //Button sound
 		DeteleMenu();
 		CreateSettings();
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_RETURN:
+		App->audio->PlayFx(1, 0); //Button sound
 		DeleteSettings();
 		CreateMenu();
 		menuActions = MenuActions_NONE;
@@ -219,6 +239,7 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			menuActions = MenuActions_RETURN;
 
 		else if (UIelem == AudioFX.slider) {
+			App->audio->PlayFx(1, 0); //Button sound
 			float volume = AudioFX.slider->GetRelativePosition();
 			App->audio->SetFxVolume(volume);
 			static char vol_text[4];

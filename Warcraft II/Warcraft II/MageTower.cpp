@@ -7,6 +7,7 @@ MageTower::MageTower(fPoint pos, iPoint size, int currLife, uint maxLife, const 
 	texArea = &mageTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 	buildingState = BuildingState_Building;
+	App->audio->PlayFx(2, 0); //Construction sound
 }
 
 void MageTower::Move(float dt)

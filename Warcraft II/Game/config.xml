@@ -44,6 +44,10 @@
     
     <audioPaths>
       <mainTheme path= "mainMenu.ogg"/>
+      <sounds>
+       <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"/>
+       <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
+      </sounds>
     </audioPaths>
     
   </menu>

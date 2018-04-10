@@ -1,6 +1,5 @@
 #include "ChickenFarm.h"
 
-
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
 	if (isBuilt)
@@ -8,6 +7,7 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	else if (!isBuilt) {
 		texArea = &chickenFarmInfo.constructionPlanks1;
 		this->constructionTimer.Start();
+		App->audio->PlayFx(2, 0); //Construction sound
 	}
 }
 

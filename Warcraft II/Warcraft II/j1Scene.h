@@ -148,9 +148,6 @@ private:
 
 	ENTITY_TYPE alphaBuilding;
 
-	//Paths
-
-
 };
 
 #endif //__j1SCENE1_H__
