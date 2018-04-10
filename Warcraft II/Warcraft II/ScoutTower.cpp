@@ -9,13 +9,17 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	texArea = &scoutTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 
-	CreateEntityCollider(EntitySide_Player);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, scoutTowerInfo.sightRadius);
-	sightRadiusCollider->isTrigger = true;
 }
 
 void ScoutTower::Move(float dt)
 {
+	if (!isColliderCreated) {
+		CreateEntityCollider(EntitySide_Player);
+		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, scoutTowerInfo.sightRadius);
+		sightRadiusCollider->isTrigger = true;
+		isColliderCreated = true;
+	}
+
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 
