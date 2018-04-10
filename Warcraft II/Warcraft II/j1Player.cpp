@@ -596,15 +596,15 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			break;
 		case UI_EVENT_MOUSE_ENTER:
 			if (UIelem == produceFootmanButton) {
-				//DeleteHoverInfoMenu();
+				DeleteHoverInfoMenu();
 				MakeHoverInfoMenu("Produces footman", "Cost: 500 gold");
 			}
 			if (UIelem == produceElvenArcherButton) {
-				//DeleteHoverInfoMenu();
+				DeleteHoverInfoMenu();
 				MakeHoverInfoMenu("Produces archer", "Cost: 400 gold");
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
-				//DeleteHoverInfoMenu();
+				DeleteHoverInfoMenu();
 				MakeHoverInfoMenu("Produces mage", "Cost: 1200 gold");
 			}
 			if (UIelem == producePaladinButton) {
