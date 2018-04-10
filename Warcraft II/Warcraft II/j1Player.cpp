@@ -572,84 +572,82 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 
 		}
 		else {
-			if (groupSelectedStats.entity1Icon == nullptr) {
-				switch (i)
-				{
-				case 0:
-					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-						CreateGroupIcon({ 2,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity1Icon);
-					}
-					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-						CreateGroupIcon({ 2,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity1Icon);
-					}
-					CreateGroupLifeBar({ 2,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar1, (Entity*)(*it));
-					break;
-				case 1:
-					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-						CreateGroupIcon({ 57,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity2Icon);
-					}
-					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-						CreateGroupIcon({ 57,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity2Icon);
-					}
-					CreateGroupLifeBar({ 57,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar2, (Entity*)(*it));
-					break;
-				case 2:
-					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-						CreateGroupIcon({ 111,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity3Icon);
-					}
-					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-						CreateGroupIcon({ 111,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity3Icon);
-					}
-					CreateGroupLifeBar({ 111,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar3, (Entity*)(*it));
-					break;					
-				case 3:
-					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-						CreateGroupIcon({ 166,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity4Icon);
-					}
-					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-						CreateGroupIcon({ 166,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity4Icon);
-					}
-					CreateGroupLifeBar({ 166,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar4, (Entity*)(*it));
-					break;
-				case 4:
-					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-						CreateGroupIcon({ 2, 57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity5Icon);
-					}
-					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-						CreateGroupIcon({ 2, 57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity5Icon);
-					}
-					CreateGroupLifeBar({ 2,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar5, (Entity*)(*it));
-					break;
-				case 5:
-					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-						CreateGroupIcon({ 57,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity6Icon);
-					}
-					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-						CreateGroupIcon({ 57,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity6Icon);
-					}
-					CreateGroupLifeBar({ 57,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar6, (Entity*)(*it));
-					break;
-				case 6:
-					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-						CreateGroupIcon({ 111,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity7Icon);
-					}
-					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-						CreateGroupIcon({ 111,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity7Icon);
-					}
-					CreateGroupLifeBar({ 111,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar7, (Entity*)(*it));
-					break;
-				case 7:
-					if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-						CreateGroupIcon({ 166,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity8Icon);
-					}
-					else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-						CreateGroupIcon({ 166,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity8Icon);
-					}
-					CreateGroupLifeBar({ 166,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar8, (Entity*)(*it));
-					break;
-				default:
-					break;
+			switch (i)
+			{
+			case 0:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 2,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity1Icon);
 				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 2,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity1Icon);
+				}
+				CreateGroupLifeBar({ 2,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar1, (Entity*)(*it));
+				break;
+			case 1:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 57,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity2Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 57,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity2Icon);
+				}
+				CreateGroupLifeBar({ 57,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar2, (Entity*)(*it));
+				break;
+			case 2:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 111,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity3Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 111,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity3Icon);
+				}
+				CreateGroupLifeBar({ 111,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar3, (Entity*)(*it));
+				break;
+			case 3:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 166,18 }, { 446, 328, 46, 30 }, groupSelectedStats.entity4Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 166,18 }, { 493, 328, 46, 30 }, groupSelectedStats.entity4Icon);
+				}
+				CreateGroupLifeBar({ 166,33 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar4, (Entity*)(*it));
+				break;
+			case 4:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 2, 57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity5Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 2, 57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity5Icon);
+				}
+				CreateGroupLifeBar({ 2,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar5, (Entity*)(*it));
+				break;
+			case 5:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 57,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity6Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 57,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity6Icon);
+				}
+				CreateGroupLifeBar({ 57,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar6, (Entity*)(*it));
+				break;
+			case 6:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 111,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity7Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 111,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity7Icon);
+				}
+				CreateGroupLifeBar({ 111,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar7, (Entity*)(*it));
+				break;
+			case 7:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 166,57 }, { 446, 328, 46, 30 }, groupSelectedStats.entity8Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 166,57 }, { 493, 328, 46, 30 }, groupSelectedStats.entity8Icon);
+				}
+				CreateGroupLifeBar({ 166,72 }, { 240,362,46,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar8, (Entity*)(*it));
+				break;
+			default:
+				break;
 			}
 		}
 		
@@ -658,7 +656,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 	}
 	i = 0;
 	groupSelectedStats.units = units;
-	unitsSelected = UnitsSelectedState_Selected;
+	
 }
 
 void j1Player::DeleteEntitiesMenu() {
@@ -685,9 +683,9 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement(entitySelectedStats.entityRange);
 		App->gui->DestroyElement(entitySelectedStats.entitySight);
 		entitySelectedStats.entitySelected = nullptr;
-		unitsSelected = UnitsSelectedState_None;
 	}
-	if (groupSelectedStats.entity1Icon != nullptr) {
+
+	if (!groupSelectedStats.units.empty()) {
 		App->gui->DestroyElement(groupSelectedStats.entity1Icon);
 		App->gui->DestroyElement(groupSelectedStats.entity2Icon);
 		App->gui->DestroyElement(groupSelectedStats.entity3Icon);
@@ -705,7 +703,6 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement(groupSelectedStats.lifeBar7);
 		App->gui->DestroyElement(groupSelectedStats.lifeBar8);
 		groupSelectedStats.units.clear();
-		unitsSelected = UnitsSelectedState_None;
 	}
 	
 }
@@ -717,7 +714,7 @@ void j1Player::DeleteHoverInfoMenu()
 	App->gui->DestroyElement(hoverInfo.info);
 }
 
-void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* image)
+void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image)
 {
 	UIImage_Info imageInfo;
 	imageInfo.texArea = texArea;
@@ -725,7 +722,7 @@ void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* image)
 	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	image = App->gui->CreateUIImage(iconPos, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
-void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar * lifeBar, Entity * entity)
+void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity * entity)
 {
 	UILifeBar_Info lifeInfo;
 	lifeInfo.background = backgroundTexArea;
