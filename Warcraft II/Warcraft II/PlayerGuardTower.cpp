@@ -4,6 +4,7 @@ PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint m
 {
 	texArea = &playerGuardTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
+	App->audio->PlayFx(2, 0); //Construction sound
 }
 
 void PlayerGuardTower::Move(float dt)

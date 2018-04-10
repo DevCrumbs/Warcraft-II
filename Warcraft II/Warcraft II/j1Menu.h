@@ -72,6 +72,9 @@ public:
 	void UpdateSlider(SliderStruct &sliderStruct);
 
 private:
+	void ChargeGameSounds();
+
+private:
 
 	UICursor * mouseText;
 
@@ -92,6 +95,20 @@ private:
 	Particle* parchment;
 
 	MenuActions menuActions;
+
+	//Audio paths
+	string mainMenuMusicName;
+	string mainButtonSound;
+	string buildingConstructionSound;
+	string errorButtonSound;
+	string buildingErrorButtonSound;
+	string chickenFarmSound;
+	string goldMineSound;
+	string gryphonAviarySound;
+	string mageTowerSound;
+	string stablesSound;
+	string repairBuildingSound;
+	string destroyBuildingSound;
 
 public:
 	uint tab_button = 0;

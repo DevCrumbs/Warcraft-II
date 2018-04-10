@@ -48,7 +48,28 @@ bool j1Menu::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
+	//Music
+	pugi::xml_node audio = config.child("audioPaths");
 
+	mainMenuMusicName = audio.child("mainTheme").attribute("path").as_string();
+
+	//Sounds
+	pugi::xml_node sounds = audio.child("sounds");
+
+	pugi::xml_node uIButtonsSounds = sounds.child("buttonPaths");
+	mainButtonSound = uIButtonsSounds.attribute("menuButton").as_string();
+	errorButtonSound = uIButtonsSounds.attribute("errorBttn").as_string();
+
+	pugi::xml_node buildingSounds = sounds.child("buildingPaths");
+	buildingConstructionSound = buildingSounds.attribute("buildingConstruction").as_string();
+	buildingErrorButtonSound = buildingSounds.attribute("errorBttn").as_string();
+	chickenFarmSound = buildingSounds.attribute("chickenFarm").as_string();
+	goldMineSound = buildingSounds.attribute("goldMine").as_string();
+	gryphonAviarySound = buildingSounds.attribute("gryphAviar").as_string();
+	mageTowerSound = buildingSounds.attribute("mageTower").as_string();
+	stablesSound = buildingSounds.attribute("stables").as_string();
+	repairBuildingSound = buildingSounds.attribute("repair").as_string();
+	destroyBuildingSound = buildingSounds.attribute("buildingDestroy").as_string(); 
 
 	return ret;
 }
@@ -56,7 +77,13 @@ bool j1Menu::Awake(pugi::xml_node& config)
 // Called before the first frame
 bool j1Menu::Start()
 {
+	App->audio->PlayMusic(mainMenuMusicName.data(), 0.0f);
+
+	if(!App->isSoundCharged)
+	ChargeGameSounds();
+
 	App->render->camera.x = App->render->camera.y = 0;
+
 	CreateMenu();
 
 	UICursor_Info mouseInfo;
@@ -96,18 +123,22 @@ bool j1Menu::PostUpdate()
 	case MenuActions_NONE:
 		break;
 	case MenuActions_EXIT:
+		App->audio->PlayFx(1, 0); //Button sound
 		ret = false;
 		break;
 	case MenuActions_PLAY:
+		App->audio->PlayFx(1, 0); //Button sound
 		App->fade->FadeToBlack(this, App->scene);
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_SETTINGS:
+		App->audio->PlayFx(1, 0); //Button sound
 		DeteleMenu();
 		CreateSettings();
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_RETURN:
+		App->audio->PlayFx(1, 0); //Button sound
 		DeleteSettings();
 		CreateMenu();
 		menuActions = MenuActions_NONE;
@@ -288,9 +319,10 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if(UIelem == returnButt)
 			menuActions = MenuActions_RETURN;
 
-		else if (UIelem == audioFX.slider) 
+		else if (UIelem == audioFX.slider) {
+			App->audio->PlayFx(1, 0); //Button sound
 			menuActions = MenuActions_SLIDERFX;
-		
+		}
 		else if (UIelem == audioMusic.slider) 
 			menuActions = MenuActions_SLIDERMUSIC;
 
@@ -346,5 +378,22 @@ void j1Menu::DeleteSettings() {
 	App->gui->DestroyElement((UIElement**)&audioMusic.name);
 	App->gui->DestroyElement((UIElement**)&audioMusic.value);
 	App->gui->DestroyElement((UIElement**)&audioMusic.slider);
+}
+
+void j1Menu::ChargeGameSounds()
+{
+	App->audio->LoadFx(mainButtonSound.data()); //1 Normal bttn sound
+	App->audio->LoadFx(buildingConstructionSound.data()); //2 Construction building
+	App->audio->LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
+	App->audio->LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
+	App->audio->LoadFx(chickenFarmSound.data()); //5 chicken farm sound
+	App->audio->LoadFx(goldMineSound.data()); //6 gold mine sound
+	App->audio->LoadFx(gryphonAviarySound.data()); //7 gryphon aviary sound
+	App->audio->LoadFx(mageTowerSound.data()); //8 mage tower sound
+	App->audio->LoadFx(stablesSound.data()); //9 stables sound
+	App->audio->LoadFx(repairBuildingSound.data()); //10 repair building sound
+	App->audio->LoadFx(destroyBuildingSound.data()); //11 destroy building sound
+	
+	App->isSoundCharged = true;
 }
 

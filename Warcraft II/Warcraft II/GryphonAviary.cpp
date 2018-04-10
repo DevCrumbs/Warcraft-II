@@ -7,6 +7,7 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife
 	texArea = &gryphonAviaryInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 	buildingState = BuildingState_Building;
+	App->audio->PlayFx(2,0); //Construction sound
 }
 
 void GryphonAviary::Move(float dt)

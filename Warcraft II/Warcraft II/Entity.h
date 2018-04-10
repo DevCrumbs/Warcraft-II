@@ -5,6 +5,7 @@
 #include "Animation.h"
 
 #include "j1App.h"
+#include "j1Audio.h"
 
 class j1Module;
 

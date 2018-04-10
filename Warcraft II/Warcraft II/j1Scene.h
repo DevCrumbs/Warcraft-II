@@ -158,6 +158,7 @@ private:
 
 	string orthogonalMap, isometricMap, warcraftMap;
 	string orthogonalTexName, isometricTexName, warcraftTexName;
+	string mainThemeMusicName;
 	bool orthogonalActive, isometricActive, warcraftActive;
 
 	SDL_Texture* debugTex =	nullptr;

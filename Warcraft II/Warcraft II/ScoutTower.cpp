@@ -12,6 +12,7 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	CreateEntityCollider(EntitySide_Player);
 	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, scoutTowerInfo.sightRadius);
 	sightRadiusCollider->isTrigger = true;
+	App->audio->PlayFx(2, 0); //Construction sound
 }
 
 void ScoutTower::Move(float dt)
