@@ -149,9 +149,9 @@ void j1Menu::CreateMenu() {
 
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
-	playButt = App->gui->CreateUIButton({ 500, 275 }, buttonInfo, this, nullptr);
-	settingsButt = App->gui->CreateUIButton({ 500, 350 }, buttonInfo, this, nullptr);
-	exitButt = App->gui->CreateUIButton({ 500, 425 }, buttonInfo, this, nullptr);
+	playButt = App->gui->CreateUIButton({ 600, 350 }, buttonInfo, this, nullptr);
+	settingsButt = App->gui->CreateUIButton({ 600, 425 }, buttonInfo, this, nullptr);
+	exitButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
@@ -174,7 +174,7 @@ void j1Menu::CreateSettings() {
 
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
-	returnButt = App->gui->CreateUIButton({ 500, 425 }, buttonInfo, this, nullptr);
+	returnButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
@@ -187,32 +187,32 @@ void j1Menu::CreateSettings() {
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
 
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
-	SDL_Rect butText = { 652,408,26,30 };
-	SDL_Rect bgText = { 252,408,400,30 };
-	AddSlider(audioFX, { 50,100 }, "Audio FX", relativeVol, butText, bgText, this);
+	SDL_Rect butText = { 834,328,26,30 };
+	SDL_Rect bgText = { 434,328,400,30 };
+	AddSlider(audioFX, { 175,100 }, "Audio FX", relativeVol, butText, bgText, this);
 
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
-	AddSlider(audioMusic, { 50,200 }, "Audio Music", relativeVol, butText, bgText, this);
+	AddSlider(audioMusic, { 175,200 }, "Audio Music", relativeVol, butText, bgText, this);
 
 
 	//Fullscreen
 	if (!App->win->fullscreen) {
-		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 252, 472, 30, 30 };
-		buttonInfo.pressedTexArea = { 284, 472, 30, 30 };
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 434, 370, 30, 30 };
+		buttonInfo.pressedTexArea = { 466, 370, 30, 30 };
 	}
 	else {
-		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 284, 472, 30, 30 };
-		buttonInfo.pressedTexArea = { 252, 472, 30, 30 };
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 466, 370, 30, 30 };
+		buttonInfo.pressedTexArea = { 434, 370, 30, 30 };
 	}
 	buttonInfo.checkbox = true;
 	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	fullScreenButt = App->gui->CreateUIButton({ 300, 300 }, buttonInfo, this);
+	fullScreenButt = App->gui->CreateUIButton({ 450, 350 }, buttonInfo, this);
 
 	labelInfo.text = "Fullscreen";
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
 
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
-	fullScreenLabel = App->gui->CreateUILabel({ 100, 300 }, labelInfo, this);
+	fullScreenLabel = App->gui->CreateUILabel({ 250, 350 }, labelInfo, this);
 }
 
 void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
