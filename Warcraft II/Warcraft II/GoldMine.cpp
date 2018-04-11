@@ -1,5 +1,6 @@
 #include "GoldMine.h"
 #include "j1Player.h"
+#include "j1Scene.h"
 
 GoldMine::GoldMine(fPoint pos, iPoint size, int currLife, uint maxLife, const GoldMineInfo& goldMineInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), goldMineInfo(goldMineInfo)
 {
@@ -48,5 +49,6 @@ void GoldMine::UpdateAnimations(float dt)
 			App->player->AddGold(3000);
 			break;
 		}
+		App->scene->hasGoldChanged = true;
 	}
 }
