@@ -172,7 +172,6 @@ bool j1Menu::CleanUp()
 	App->collision->active = true;
 	App->pathfinding->active = true;
 
-	App->map->Start();
 	App->player->Start();
 	App->entities->Start();
 	App->collision->Start();
@@ -192,15 +191,15 @@ void j1Menu::CreateMenu() {
 	exitButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
-	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	labelInfo.normalColor = Black_;
 	labelInfo.hoverColor = ColorGreen;
-	labelInfo.text = "Play";
+	labelInfo.text = "Start Demo";
 	playLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w/2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, playButt);
 
-	labelInfo.text = "Exit";
+	labelInfo.text = "Quit Game";
 	exitLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, exitButt);
 
 	labelInfo.text = "Settings";
@@ -288,7 +287,10 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 
 void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
 	float volume = sliderStruct.slider->GetRelativePosition();
-	App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
+	if(sliderStruct.name->GetText() == "Audio FX")
+		App->audio->SetFxVolume(volume * MAX_AUDIO_VOLUM);
+	else
+		App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
 	static char vol_text[4];
 	sprintf_s(vol_text, 4, "%.0f", volume * 100);
 	sliderStruct.value->SetText(vol_text);

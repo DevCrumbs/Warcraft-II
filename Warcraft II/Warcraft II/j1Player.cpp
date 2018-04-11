@@ -164,7 +164,7 @@ bool j1Player::PostUpdate() {
 	return true;
 }
 
-iPoint j1Player::GetMouseTilePos() {
+iPoint j1Player::GetMouseTilePos() const{
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
@@ -174,7 +174,7 @@ iPoint j1Player::GetMouseTilePos() {
 	return mouseTile;
 }
 
-iPoint j1Player::GetMousePos() {
+iPoint j1Player::GetMousePos() const{
 
 	iPoint mouseTilePos = App->map->MapToWorld(GetMouseTilePos().x, GetMouseTilePos().y);
 
@@ -186,7 +186,7 @@ void j1Player::AddGold(int sumGold)
 	currentGold += sumGold;
 }
 
-int j1Player::GetCurrentGold()
+int j1Player::GetCurrentGold() const
 {
 	return currentGold;
 }

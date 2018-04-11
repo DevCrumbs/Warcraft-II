@@ -74,11 +74,11 @@ public:
 	bool PostUpdate();
 
 	void CheckIfPlaceBuilding();
-	iPoint GetMouseTilePos();
-	iPoint GetMousePos();
+	iPoint GetMouseTilePos() const;
+	iPoint GetMousePos() const;
 
 	void AddGold(int sumGold);
-	int GetCurrentGold();
+	int GetCurrentGold() const;
 
 	// Called before quitting
 	bool CleanUp();

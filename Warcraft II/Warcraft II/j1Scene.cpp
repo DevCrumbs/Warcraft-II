@@ -357,7 +357,7 @@ bool j1Scene::CleanUp()
 
 
 	DestroyAllUI();
-
+	//warcraftActive = false;
 
 	// Set to nullptr the pointers to the UI elements
 	App->menu->active = true;
@@ -367,7 +367,7 @@ bool j1Scene::CleanUp()
 	App->collision->active = false;
 	App->pathfinding->active = false;
 
-	App->map->CleanUp();
+	App->map->UnLoad();
 	App->player->CleanUp();
 	App->entities->CleanUp();
 	App->collision->CleanUp();
@@ -810,10 +810,10 @@ void j1Scene::CreatePauseMenu() {
 	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
 	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	int x = parchmentImg->GetLocalPos().x + 100;
-	int y = parchmentImg->GetLocalPos().y + 60;
+	int y = parchmentImg->GetLocalPos().y + 110;
 	settingsButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
 
-	y = parchmentImg->GetLocalPos().y + 110;
+	y = parchmentImg->GetLocalPos().y + 60;
 	continueButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
 
 	y = parchmentImg->GetLocalPos().y + 160;
@@ -830,8 +830,8 @@ void j1Scene::CreatePauseMenu() {
 	labelInfo.text = "Resume Game";
 	continueLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, continueButt);
 
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Return Main Menu";
+	//labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.text = "Main Menu";
 	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
 
 }
@@ -863,7 +863,7 @@ void j1Scene::CreateSettingsMenu() {
 	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	buttonInfo.checkbox = true;
 	int x = parchmentImg->GetLocalPos().x + 130;
-	int y = parchmentImg->GetLocalPos().y + 150;
+	int y = parchmentImg->GetLocalPos().y + 160;
 	fullScreenButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
 
 	x -= 100;
@@ -876,7 +876,7 @@ void j1Scene::CreateSettingsMenu() {
 
 	//Sliders
 	x = parchmentImg->GetLocalPos().x + 30;
-	y = parchmentImg->GetLocalPos().y + 60;
+	y = parchmentImg->GetLocalPos().y + 70;
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
 	SDL_Rect butText = { 565, 359 , 8, 10 };
 	SDL_Rect bgText = { 434, 359, 130, 10 };
@@ -886,18 +886,18 @@ void j1Scene::CreateSettingsMenu() {
 	App->menu->AddSlider(AudioMusicPause, { x,y }, "Audio Music", relativeVol, butText, bgText, this);
 
 	buttonInfo.checkbox = false;
-	buttonInfo.normalTexArea = { 1000, 0, 30, 20 };
+	buttonInfo.normalTexArea = { 1000, 0, 40, 20 };
 	buttonInfo.hoverTexArea = { 0, 0, 0, 0 };
 	buttonInfo.pressedTexArea = { 0, 0, 0, 0 };
 	x = parchmentImg->GetLocalPos().x + 30;
-	y = parchmentImg->GetLocalPos().y + 185;
+	y = parchmentImg->GetLocalPos().y + 195;
 	returnButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
 
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
 	labelInfo.hoverColor = ColorGreen;
 	labelInfo.pressedColor = White_;
-	labelInfo.text = "<--";
+	labelInfo.text = "Back";
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
 }
 
