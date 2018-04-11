@@ -122,6 +122,7 @@ bool j1Player::Update(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN) {
 		App->audio->PlayFx(6, 0); //Gold mine sound
 		AddGold(500);
+		App->scene->hasGoldChanged = true;
 	}
 	//Life Bar on building 
 	if (entitySelectedStats.entitySelected != nullptr) {
@@ -217,6 +218,7 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				chickenFarm.push_back(c);
 				AddGold(-App->scene->chickenFarmCost); //Discount gold
+				App->scene->hasGoldChanged = true;
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -227,6 +229,7 @@ void j1Player::CheckIfPlaceBuilding()
 				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->stablesCost); //Discount gold
+				App->scene->hasGoldChanged = true;
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -237,6 +240,7 @@ void j1Player::CheckIfPlaceBuilding()
 				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->gryphonAviaryCost); //Discount gold
+				App->scene->hasGoldChanged = true;
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -247,6 +251,7 @@ void j1Player::CheckIfPlaceBuilding()
 				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->mageTowerCost); //Discount gold
+				App->scene->hasGoldChanged = true;
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -259,6 +264,7 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				scoutTower.push_back(s);
 				AddGold(-App->scene->scoutTowerCost); //Discount gold
+				App->scene->hasGoldChanged = true;
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound

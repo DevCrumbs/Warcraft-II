@@ -297,6 +297,23 @@ bool j1Scene::Update(float dt)
 	DebugKeys();
 	CheckCameraMovement(dt);
 
+	//Checks if resources have changed to update building menu and gold label
+	if (hasGoldChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		if (buildingMenuOn) {
+			UnLoadBuildingMenu();
+			LoadBuildingMenu();
+		}
+		hasGoldChanged = false;
+	}
+	if (hasFoodChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		hasFoodChanged = false;
+	}
+
+
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
 		App->map->UnLoad();
@@ -526,29 +543,35 @@ void j1Scene::LoadInGameUI()
 {
 	//Buiding options
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = {0, 0, 129, 33};
-	buttonInfo.hoverTexArea = { 129, 0, 129, 33 };
-	buttonInfo.pressedTexArea = { 257, 0, 129, 33 };
-	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w, 0 }, buttonInfo, this, nullptr);
+	buttonInfo.normalTexArea = {0, 0, 126, 26};
+	buttonInfo.hoverTexArea = { 129, 0, 126, 26 };
+	buttonInfo.pressedTexArea = { 257, 0, 126, 26 };
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.text = "Buildings";
-	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 12 }, labelInfo, this, buildingButton);
+	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, buildingButton);
 
 
 	//Pause menu 
-	pauseMenuButt = App->gui->CreateUIButton({ 0,0 }, buttonInfo, this);
+	pauseMenuButt = App->gui->CreateUIButton({ 5,1 }, buttonInfo, this);
 
 	labelInfo.text = "Menu";
-	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w/2, 12 }, labelInfo, this, pauseMenuButt);
+	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w/2, 8 }, labelInfo, this, pauseMenuButt);
 
 
 	UIImage_Info entitiesInfo;
 	entitiesInfo.texArea = { 0, 565, 371, 82 };
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
 	entitiesStats->SetPriorityDraw(PriorityDraw_UIINGAME);
+
+	entitiesInfo.texArea={ 1006,0,800,600 };
+	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
+	inGameFrameImage->SetPriorityDraw(PriorityDraw_UIINGAME);
+
+	LoadResourcesLabels();
 }
 
 void j1Scene::LoadBuildingMenu()
@@ -558,7 +581,7 @@ void j1Scene::LoadBuildingMenu()
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = { 0,33,240,529 };
-	buildingMenu = App->gui->CreateUIImage({ -112, 0 }, imageInfo, this, buildingButton);
+	buildingMenu = App->gui->CreateUIImage({ -111, 0 }, imageInfo, this, buildingButton);
 	buildingMenuOn = true;
 	buildingMenu->SetPriorityDraw(PriorityDraw_UIINGAME);
 
@@ -830,6 +853,24 @@ void j1Scene::UnLoadBuildingMenu()
 	buildingMenuOn = false;
 }
 
+void j1Scene::LoadResourcesLabels()
+{
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.text = to_string(App->player->currentGold);
+	goldLabel = App->gui->CreateUILabel({ 224, 0 }, labelInfo, this, inGameFrameImage);
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;	
+	labelInfo.text = to_string(App->player->currentFood);
+	foodLabel = App->gui->CreateUILabel({ 334, 0 }, labelInfo, this, inGameFrameImage);
+}
+
+void j1Scene::UnLoadResourcesLabels()
+{
+	App->gui->DestroyElement((UIElement**)&goldLabel);
+	App->gui->DestroyElement((UIElement**)&foodLabel);
+}
+
 void j1Scene::CreatePauseMenu() {
 
 	UIButton_Info buttonInfo;
@@ -955,6 +996,7 @@ void j1Scene::DestroyAllUI() {
 	App->gui->DestroyElement((UIElement**)&entitiesStats);
 	App->gui->DestroyElement((UIElement**)&buildingButton);
 	App->gui->DestroyElement((UIElement**)&buildingLabel);
+	App->gui->DestroyElement((UIElement**)&inGameFrameImage);
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()

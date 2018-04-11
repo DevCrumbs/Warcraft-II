@@ -166,6 +166,7 @@ public:
 
 	int totalGold = 0; // total gold earned during the game
 	int currentGold = 0; // amount of gold that the player has at the current moment
+	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
 	//Units costs
 	int footmanCost = 500;
 	int elvenArcherCost = 400;
