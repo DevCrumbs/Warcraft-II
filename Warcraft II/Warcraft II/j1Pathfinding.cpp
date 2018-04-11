@@ -362,7 +362,7 @@ bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destinat
 	return true;
 }
 
-PathfindingStatus j1PathFinding::CycleOnceAStar( )
+PathfindingStatus j1PathFinding::CycleOnceAStar()
 {
 	// If the open list is empty, the path has not been found
 	if (open.pathNodeList.size() == 0)

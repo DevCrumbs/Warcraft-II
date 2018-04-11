@@ -85,6 +85,16 @@ public:
 		return (x != v.x || y != v.y);
 	}
 
+	bool operator ==(const int& v) const
+	{
+		return (x == v && y == v);
+	}
+
+	bool operator !=(const int& v) const
+	{
+		return (x != v || y != v);
+	}
+
 	// Utils ------------------------------------------------
 	bool IsZero() const
 	{

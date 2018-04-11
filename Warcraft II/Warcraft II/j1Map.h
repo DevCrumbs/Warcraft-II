@@ -261,7 +261,7 @@ public:
 	bool CreateCorridor(Room room, DIRECTION direction = DIRECTION_NONE);
 	bool LoadLogic();
 
-	RoomMap* GetMap() {return &playableMap;}
+	inline RoomMap* GetMap() {return &playableMap;}
 
 private:
 

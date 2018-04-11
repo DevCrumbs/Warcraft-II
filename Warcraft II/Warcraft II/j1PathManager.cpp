@@ -36,6 +36,9 @@ bool j1PathManager::Update(float dt)
 	if (searchRequests.size() > 0)
 		UpdateSearches();
 
+	if (pathPlanners.size() > 0)
+		UpdatePathPlaners();
+
 	return ret;
 }
 
@@ -68,6 +71,13 @@ void j1PathManager::UpdateSearches()
 	}
 }
 
+void j1PathManager::UpdatePathPlaners()
+{
+	for (list<PathPlanner*>::const_iterator iterator = pathPlanners.begin(); iterator != pathPlanners.end(); ++iterator)
+	{
+		(*iterator)->HilevelUpdate();
+	}
+}
 
 void j1PathManager::Register(PathPlanner* pathPlanner) 
 {
@@ -88,7 +98,10 @@ void j1PathManager::UnRegister(PathPlanner* pathPlanner)
 // PATH PLANNER
 // ---------------------------------------------------------------------
 
-PathPlanner::PathPlanner(Entity* owner, Navgraph& navgraph) :entity(owner), navgraph(navgraph) {}
+PathPlanner::PathPlanner(Entity* owner, Navgraph& navgraph) :entity(owner), navgraph(navgraph) 
+{ 
+	App->pathmanager->pathPlanners.push_back(this);
+}
 
 PathPlanner::~PathPlanner()
 {
@@ -255,19 +268,15 @@ bool PathPlanner::UpdateNavgraph()
 {
 	bool ret = false;
 	fPoint pos = entity->GetPos();
-
-	//navgraph.lowLevelWalkabilityMap = App->map->lowLevelWalkabilityMap;
-	list<WalkabilityMap>::iterator iterator = App->map->lowLevelWalkabilityMap.begin();
-
-	if (iterator != App->map->lowLevelWalkabilityMap.end())
-		LOG("Hehe");
-
-	for (; iterator != App->map->lowLevelWalkabilityMap.end(); ++iterator)
+	
+	for (list<WalkabilityMap>::iterator iterator = App->map->lowLevelWalkabilityMap.begin();
+		 iterator != App->map->lowLevelWalkabilityMap.end(); ++iterator)
 	{
 		if ((*iterator).map != currentLowLevelMap.map)
 		{
-			SDL_Rect roomRect = { (*iterator).position.x, (*iterator).position.y, (*iterator).width * 32, (*iterator).height * 32 };
-			SDL_Rect entityRect = { pos.x,pos.y,32,32 };
+			SDL_Rect roomRect = { (*iterator).position.x, (*iterator).position.y, 
+								  (*iterator).width * defaultSize, (*iterator).height * defaultSize };
+			SDL_Rect entityRect = { pos.x, pos.y, defaultSize, defaultSize };
 			SDL_Rect result{ 0,0,0,0 };
 			if (SDL_IntersectRect(&roomRect, &entityRect, &result))
 			{
@@ -293,24 +302,85 @@ bool PathPlanner::UpdateNavgraph()
 bool PathPlanner::HilevelUpdate()
 {
 	bool ret = false;
-
-
-	nextRoom = hiLevelPath.front();
-
-	RoomMap* map = App->map->GetMap();
-	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
+	
+	if (unitReachDestination)
 	{
-		if (nextRoom.x == (*iterator).x && nextRoom.y == (*iterator).y )
+		currRoomPos = nextRoomPos;
+		currRoom = nextRoom;
+		nextRoomPos = hiLevelPath.front();
+
+		RoomMap* map = App->map->GetMap();
+		list<Room>::iterator iterator = map->rooms.begin();
+		for (; iterator != map->rooms.end(); ++iterator)
 		{
-			currentLowLevelMap = (*iterator).walkabilityMap;
+			if (nextRoomPos.x == (*iterator).x && nextRoomPos.y == (*iterator).y)
+			{
+				currentLowLevelMap = (*iterator).walkabilityMap;
+				nextRoom = &(*iterator);
+				unitReachDestination = false;
+				unitNeedPath = true;
+				ret = true;
+				break;
+			}
 		}
 	}
 
+	 if (unitNeedPath)
+	{
+		App->pathmanager->Register(this);
+
+		singleUnit->roomGoal = GetExitPoint();
+
+		if (singleUnit->roomGoal != -1)
+			ret = RequestAStar(singleUnit->currTile, singleUnit->roomGoal);
+
+		else if (singleUnit->roomGoal == -1)
+		{
+			ret = RequestAStar(singleUnit->currTile, singleUnit->goal);
+		}
+		unitNeedPath = false;
+	}
+
+	 if (singleUnit->currTile == singleUnit->roomGoal)
+	 {
+		 ret = unitReachDestination = true;
+	 }
 
 	
 	return ret;
 }
 
+iPoint PathPlanner::GetExitPoint()
+{
+	iPoint exitPoint{ -1, -1 };
+	iPoint auxRoomPos = nextRoomPos - currRoomPos;
+
+	//North
+	if (auxRoomPos.y == 1)
+	{
+		exitPoint = currRoom->exitPointN;
+	}
+
+	//South
+	else if (auxRoomPos.y == -1)
+	{
+		exitPoint = currRoom->exitPointS;
+	}
+
+	//East
+	else if (auxRoomPos.x == 1)
+	{
+		exitPoint = currRoom->exitPointE;
+	}
+
+	//West
+	else if (auxRoomPos.x == -1)
+	{
+		exitPoint = currRoom->exitPointW;
+	}
+
+	return exitPoint;
+}
 
 
 void PathPlanner::LoadHiLevelSearch()
@@ -320,34 +390,45 @@ void PathPlanner::LoadHiLevelSearch()
 
 	hiLevelSearch->SetMap(App->map->hiLevelWalkabilityMap);
 
+	if (entity != nullptr)
+	{
+		DynamicEntity* tempEnt = (DynamicEntity*)entity;
+		singleUnit = tempEnt->GetSingleUnit();
+	}
 	fPoint pos = entity->GetPos();
 	RoomMap* map = App->map->GetMap();
-	SDL_Rect entityRect = { pos.x,pos.y,32,32 };
+	SDL_Rect entityRect = { pos.x, pos.y, defaultSize, defaultSize };
 	SDL_Rect result{ 0,0,0,0 };
 
-	iPoint originRoom{ 0,0 };
+	iPoint originRoom{ -1,-1 };
 
 	DynamicEntity* tempEnt = (DynamicEntity*)entity;
 	SingleUnit* singleUnit = tempEnt->GetSingleUnit();
 
-	SDL_Rect goalRect{ singleUnit->goal.x,  singleUnit->goal.y, 32,32 };
-	iPoint goalPoint{ 0,0 };
+	SDL_Rect goalRect{ singleUnit->goal.x, singleUnit->goal.y, defaultSize, defaultSize };
+	iPoint goalRoom{ -1,-1 };
 
 	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
 	{
 		if (SDL_IntersectRect(&(*iterator).collider, &entityRect, &result))
 		{
-			originRoom = { (*iterator).x, (*iterator).y };
+			currRoomPos = originRoom = { (*iterator).x, (*iterator).y };
+			currRoom = &(*iterator);
 		}
 		if (SDL_IntersectRect(&goalRect, &entityRect, &result))
 		{
-			goalPoint = { (*iterator).x, (*iterator).y };
+			goalRoomPos = goalRoom = { (*iterator).x, (*iterator).y };
 		}
 	}
 
-	hiLevelSearch->CreatePath(originRoom, goalPoint);
+	if (originRoom != -1 && goalRoom != -1)
+	{
+		hiLevelSearch->CreatePath(originRoom, goalRoom);
+		hiLevelPath = *(hiLevelSearch->GetLastPath());
+		nextRoomPos = hiLevelPath.front();
+		unitNeedPath = true;
+	}
 
-	hiLevelPath = *(hiLevelSearch->GetLastPath());
 }
 
 

@@ -98,6 +98,8 @@ public:
 	// the method will notify the relevant bot
 	void UpdateSearches();
 
+	void UpdatePathPlaners();
+
 	// A path planner should call this method to register a search with the manager
 	// (this method checks to ensure the path planner is only registered once)
 	void Register(PathPlanner* pathPlanner);
@@ -109,7 +111,7 @@ public:
 public:
 
 	list<PathPlanner*> searchRequests; // a container of all the active search requests
-
+	list<PathPlanner*> pathPlanners; // container of all path planners
 private:	
 	// total ms to spend on search cycles each update allocated to the manager
 	// each update step these are divided equally among all registered path requests
@@ -155,6 +157,8 @@ public:
 	void LoadHiLevelSearch();
 	bool HilevelUpdate();
 
+	iPoint GetExitPoint();
+
 
 	bool IsSearchCompleted() const;
 
@@ -169,25 +173,34 @@ public:
 private:
 
 	Entity* entity = nullptr; // a pointer to the owner of this class
+	SingleUnit* singleUnit = nullptr;
 	bool isSearchRequested = false;
 	bool isSearchCompleted = false;
 	bool isLowLevelCompleted = false;
 	bool isHiLevelSearched = false;
 
+	bool unitReachDestination = false;
+	bool unitNeedPath = false;
+
+	int defaultSize = 32;
+
 	PathfindingAlgorithmType pathfindingAlgorithmType = PathfindingAlgorithmType_NoType;
 	j1PathFinding* currentSearch = nullptr; // a pointer to the current search
 	j1PathFinding* hiLevelSearch = nullptr;
 	Navgraph& navgraph; // a local reference to the navgraph
-	WalkabilityMap			currentLowLevelMap;
+	WalkabilityMap	currentLowLevelMap;
 	// Dijkstra
 	FindActiveTrigger* trigger = nullptr; // a pointer to the FindActiveTrigger class
 	bool isPathRequested = false;
 
 	vector<iPoint> hiLevelPath;
 
-	iPoint nextRoom{ 0,0 };
-	iPoint currRoom{ 0,0 };
+	Room* nextRoom = nullptr;
+	Room* currRoom = nullptr;
 
+	iPoint nextRoomPos{ 0,0 };
+	iPoint currRoomPos{ 0,0 };
+	iPoint goalRoomPos{ 0,0 };
 
 	iPoint lowLevelGoal{ 0,0 };
 
