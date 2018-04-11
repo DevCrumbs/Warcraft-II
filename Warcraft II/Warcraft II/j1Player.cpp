@@ -307,7 +307,7 @@ void j1Player::CheckUnitSpawning()
 	}
 
 	if (!toSpawnUnitTimerQueue.empty()) {
-		if (toSpawnUnitTimerQueue.back().Read() > (spawningTime * 1000)) {
+		if (toSpawnUnitTimerQueue.front().Read() > (spawningTime * 1000)) {
 			ENTITY_TYPE toSpawnEntity = toSpawnUnitTypeQueue.front();
 
 			switch (toSpawnEntity) {
@@ -747,12 +747,16 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 
 void j1Player::DeleteEntitiesMenu() {
 
-
-
 	if (entitySelectedStats.entitySelected == barracks) {
 		App->gui->DestroyElement((UIElement**)&produceElvenArcherButton);
 		App->gui->DestroyElement((UIElement**)&produceFootmanButton);
 		App->gui->DestroyElement((UIElement**)&producePaladinButton);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueBar);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueBar);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueBar);
 	}
 
 	else if (entitySelectedStats.entitySelected == gryphonAviary)
@@ -874,6 +878,64 @@ void j1Player::CreateBarracksButtons()
 	CreateSimpleButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 268, 2 }, produceElvenArcherButton);
 	if (barracksUpgrade && stables != nullptr && stables->buildingState == BuildingState_Normal)
 		CreateSimpleButton({ 444,244,50,41 }, { 699, 244, 50, 41 }, { 954,244,50,41 }, { 319, 2 }, producePaladinButton);
+	
+	uint unitInQueue = 1;
+	for each (ENTITY_TYPE elem in toSpawnUnitTypeQueue._Get_container()) {
+		UIImage_Info info;
+		UILifeBar_Info lifeInfo;
+		switch (unitInQueue) {
+		case 1:
+			switch (elem) {
+			case EntityType_FOOTMAN:
+				CreateGroupIcon({ 72, 20 }, { 649,160,39,30 }, toSpawnUnitStats.frstInQueueIcon);
+				//CreateGroupLifeBar({ 72, 40 }, { 241,362,46,7 }, { 243,358,42,3 }, toSpawnUnitStats.frstInQueueBar);
+				lifeInfo.background = { 241,362,46,7 };
+				lifeInfo.bar = { 243,358,42,3 };
+				lifeInfo.maxLife = 50;
+				lifeInfo.life = (lifeInfo.maxLife);
+				lifeInfo.maxWidth = lifeInfo.bar.w;
+				lifeInfo.lifeBarPosition = { 2, 2 };
+				toSpawnUnitStats.frstInQueueBar = App->gui->CreateUILifeBar({ 72, 40 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+				break;
+			case EntityType_ELVEN_ARCHER:
+				CreateGroupIcon({ 72, 20 }, { 696,160,39,30 }, toSpawnUnitStats.frstInQueueIcon);
+				break;
+			default:
+				CreateGroupIcon({ 72, 20 }, { 649,160,39,30 }, toSpawnUnitStats.frstInQueueIcon); //Footman
+				break;
+			}
+			break;
+		case 2:
+			switch (elem) {
+			case EntityType_FOOTMAN:
+				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
+				break;
+			case EntityType_ELVEN_ARCHER:
+				CreateGroupIcon({ 120, 20 }, { 696,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
+				break;
+			default:
+				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
+				break;
+			}
+			break;
+		case 3:
+			switch (elem) {
+			case EntityType_FOOTMAN:
+				CreateGroupIcon({ 168, 20 }, { 649,160,39,30 }, toSpawnUnitStats.trdInQueueIcon);
+				break;
+			case EntityType_ELVEN_ARCHER:
+				CreateGroupIcon({ 168, 20 }, { 696,160,39,30 }, toSpawnUnitStats.trdInQueueIcon);
+				break;
+			default:
+				CreateGroupIcon({ 168, 20 }, { 649,160,39,30 }, toSpawnUnitStats.trdInQueueIcon); //Footman
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+		unitInQueue++;
+	}
 }
 
 void j1Player::CreateGryphonAviaryButtons()

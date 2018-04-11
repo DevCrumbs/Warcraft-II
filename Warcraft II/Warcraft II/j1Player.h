@@ -69,6 +69,15 @@ struct GroupSelectedStats
 	list<DynamicEntity*> units;
 };
 
+struct ToSpawnUnitsStats 
+{
+	UIImage* frstInQueueIcon = nullptr;
+	UIImage* sndInQueueIcon = nullptr;
+	UIImage* trdInQueueIcon = nullptr;
+	UILifeBar* frstInQueueBar = nullptr;
+	UILifeBar* sndInQueueBar = nullptr;
+	UILifeBar* trdInQueueBar = nullptr;
+};
 
 struct EntitySelectedStats
 {
@@ -209,6 +218,8 @@ private:
 	EntitySelectedStats entitySelectedStats;
 
 	GroupSelectedStats groupSelectedStats;
+
+	ToSpawnUnitsStats toSpawnUnitStats;
 
 	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton;
 
