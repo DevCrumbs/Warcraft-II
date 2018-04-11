@@ -965,7 +965,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadBuildingMenu();
 				alphaBuilding = EntityType_CHICKEN_FARM;
-				App->player->AddGold(-chickenFarmCost);
 			}
 			else if(App->player->currentGold < chickenFarmCost)
 				App->audio->PlayFx(3, 0); //Button error sound
@@ -976,7 +975,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadBuildingMenu();
 				alphaBuilding = EntityType_STABLES;
-				App->player->AddGold(-stablesCost);
 			}
 			else if(App->player->currentGold < stablesCost)
 				App->audio->PlayFx(3, 0); //Button error sound
@@ -987,7 +985,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadBuildingMenu();
 				alphaBuilding = EntityType_GRYPHON_AVIARY;
-				App->player->AddGold(-gryphonAviaryCost);
 			}
 			else if(App->player->currentGold < gryphonAviaryCost)
 				App->audio->PlayFx(3, 0); //Button error sound
@@ -998,7 +995,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadBuildingMenu();
 				alphaBuilding = EntityType_MAGE_TOWER;
-				App->player->AddGold(-mageTowerCost);
 			}
 			else if(App->player->currentGold < mageTowerCost)
 				App->audio->PlayFx(3, 0); //Button error sound
@@ -1009,7 +1005,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadBuildingMenu();
 				alphaBuilding = EntityType_SCOUT_TOWER;
-				App->player->AddGold(-scoutTowerCost);
 			}
 			else if(App->player->currentGold < scoutTowerCost)
 				App->audio->PlayFx(3, 0); //Button error sound
