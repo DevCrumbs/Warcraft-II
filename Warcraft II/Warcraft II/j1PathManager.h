@@ -20,6 +20,7 @@ enum PathfindingAlgorithmType {
 
 class Entity;
 class PathPlanner;
+struct Room;
 
 // ---------------------------------------------------------------------
 // Helper struct to set a walkability map
@@ -181,6 +182,7 @@ private:
 
 	bool unitReachDestination = false;
 	bool unitNeedPath = false;
+	bool haveGoal = false;
 
 	int defaultSize = 32;
 

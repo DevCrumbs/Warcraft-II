@@ -53,11 +53,23 @@ bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 		pos.y >= 0 && pos.y <= (int)currentLowLevelMap.height);
 }
 
+bool j1PathFinding::CheckBoundaries(const iPoint& pos, bool test) const
+{
+	return (pos.x >= 0 && pos.x <= (int)App->map->hiLevelWalkabilityMap.width &&
+		pos.y >= 0 && pos.y <= (int)App->map->hiLevelWalkabilityMap.height);
+}
+
 // Utility: returns true is the tile is walkable
 bool j1PathFinding::IsWalkable(const iPoint& pos) const
 {
-
 	int t = GetTileAt({ pos.x - currentLowLevelMap.position.x/32,pos.y - currentLowLevelMap.position.y / 32 });
+	return INVALID_WALK_CODE && t > 0;
+}
+
+// Utility: returns true is the tile is walkable
+bool j1PathFinding::IsWalkable(const iPoint& pos, bool test) const
+{
+	int t = GetTileAt({ pos.x, pos.y }, true);
 	return INVALID_WALK_CODE && t > 0;
 }
 
@@ -66,6 +78,14 @@ int j1PathFinding::GetTileAt(const iPoint& pos) const
 {
 	if (CheckBoundaries(pos))
 		return currentLowLevelMap.map[(pos.y*currentLowLevelMap.width) + pos.x];
+
+	return INVALID_WALK_CODE;
+}
+
+int j1PathFinding::GetTileAt(const iPoint& pos, bool test) const
+{
+	if (CheckBoundaries(pos,true))
+		return App->map->hiLevelWalkabilityMap.map[(pos.y * App->map->hiLevelWalkabilityMap.width) + pos.x];
 
 	return INVALID_WALK_CODE;
 }
@@ -240,7 +260,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 	int ret = 0;
 
 	// If origin or destination are not walkable, return -1
-	if (!IsWalkable(origin) || !IsWalkable(destination))
+	if (!IsWalkable(origin,true) || !IsWalkable(destination,true))
 		ret = -1;
 	else {
 
@@ -256,6 +276,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 			// Move the lowest score cell from open list to the closed list
 			PathNode* curr = (PathNode*)open.GetNodeLowestScore();
 			close.pathNodeList.push_back(*curr);
+		//	close.pathNodeList.erase(curr);
 
 			// Erase element from list -----
 			list<PathNode>::iterator it = open.pathNodeList.begin();

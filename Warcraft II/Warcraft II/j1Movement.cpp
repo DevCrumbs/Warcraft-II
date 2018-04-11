@@ -269,7 +269,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 		if (!singleUnit->isGoalNeeded && !singleUnit->isSearching) {
 
 			// Request a new path for the unit
-			singleUnit->unit->GetPathPlanner()->RequestAStar(singleUnit->currTile, singleUnit->goal);
+			singleUnit->unit->GetPathPlanner()->LoadHiLevelSearch();
 
 			// ***IS THE PATH READY?***
 			if (singleUnit->unit->GetPathPlanner()->IsSearchCompleted()) {

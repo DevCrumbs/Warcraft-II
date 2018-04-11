@@ -800,12 +800,12 @@ WalkabilityMap j1Map::CreateHiLevelWalkabilityMap()
 	hiLevelMapSize = hiLevelMapWidth * hiLevelMapHeight;
 
 	hiLevelMap = new uint[hiLevelMapSize];
-	memset(hiLevelMap, 0, hiLevelMapSize);
 
 	int i = 0;
 	for (pugi::xml_node tileGid = node.child("data").child("tile"); tileGid; tileGid = tileGid.next_sibling("tile")) {
-		hiLevelMap[i++] = tileGid.attribute("gid").as_uint();
+		hiLevelMap[i++] = tileGid.attribute("gid").as_uint(0);
 	}
+	LOG("%i%i%i", hiLevelMap[0], hiLevelMap[1], hiLevelMap[2]);
 
 	if (hiLevelMapSize > 0)
 	{
@@ -814,8 +814,10 @@ WalkabilityMap j1Map::CreateHiLevelWalkabilityMap()
 
 		for (int i = 0; i < hiLevelMapSize; ++i)
 		{
-			map[i] = (hiLevelMap[i]) > 0 ? 0 : 1;
+			map[i] = (hiLevelMap[i]) > 0 ? 1 : 0;
 		}
+
+		LOG("%i%i%i", map[0], map[1], map[2]);
 
 		hiLevel.map = map;
 		hiLevel.width = hiLevelMapWidth;
@@ -933,7 +935,7 @@ bool j1Map::CreateNewMap()
 		static char typePath[50];
 		///sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
 		//sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure%i.tmx", mapType);
-		sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure1.tmx");
+		sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure11.tmx");
 		mapInfoDocument.loadFile(typePath);
 
 		pugi::xml_node mapInfo = mapInfoDocument;
@@ -1139,7 +1141,7 @@ bool j1Map::SelectRooms()
 	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
 	while (roomIterator != roomsInfo.end())
 	{
-		if (noPullRoom.size() >= (*roomIterator).type)
+		if (noPullRoom.size() > (*roomIterator).type)
 		{
 			room = rand() % noPullRoom[(*roomIterator).type];
 			(*roomIterator).pullRoomNo = room;

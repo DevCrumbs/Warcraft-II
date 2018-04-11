@@ -126,11 +126,17 @@ public:
 	// Utility: return true if pos is inside the map boundaries
 	bool CheckBoundaries(const iPoint& pos) const;
 
+	bool CheckBoundaries(const iPoint& pos, bool test) const;
+
 	// Utility: returns true is the tile is walkable
 	bool IsWalkable(const iPoint& pos) const;
 
+	bool IsWalkable(const iPoint& pos, bool test) const;
+
 	// Utility: return the walkability value of a tile
 	int GetTileAt(const iPoint& pos) const;
+
+	int GetTileAt(const iPoint& pos, bool test) const;
 
 	// Initialize CycleOnceAStar
 	bool InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
@@ -146,6 +152,7 @@ public:
 
 private:
 
+	WalkabilityMap			hiLevelWalkMap;
 	WalkabilityMap			currentLowLevelMap;
 	list<WalkabilityMap>	lowLevelWalkabilityMap;
 	DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan; // distance heuristic of choice

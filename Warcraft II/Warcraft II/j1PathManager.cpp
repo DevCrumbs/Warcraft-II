@@ -302,50 +302,61 @@ bool PathPlanner::UpdateNavgraph()
 bool PathPlanner::HilevelUpdate()
 {
 	bool ret = false;
-	
-	if (unitReachDestination)
+	if (haveGoal)
 	{
-		currRoomPos = nextRoomPos;
-		currRoom = nextRoom;
-		nextRoomPos = hiLevelPath.front();
-
-		RoomMap* map = App->map->GetMap();
-		list<Room>::iterator iterator = map->rooms.begin();
-		for (; iterator != map->rooms.end(); ++iterator)
+		if (unitReachDestination)
 		{
-			if (nextRoomPos.x == (*iterator).x && nextRoomPos.y == (*iterator).y)
+			currRoomPos = nextRoomPos;
+			currRoom = nextRoom;
+			nextRoomPos = hiLevelPath.front();
+
+			RoomMap* map = App->map->GetMap();
+			list<Room>::iterator iterator = map->rooms.begin();
+			for (; iterator != map->rooms.end(); ++iterator)
 			{
-				currentLowLevelMap = (*iterator).walkabilityMap;
-				nextRoom = &(*iterator);
-				unitReachDestination = false;
-				unitNeedPath = true;
-				ret = true;
-				break;
+				if (nextRoomPos.x == (*iterator).x  && nextRoomPos.y == (*iterator).y)
+				{
+					currentLowLevelMap = (*iterator).walkabilityMap;
+					nextRoom = &(*iterator);
+					unitReachDestination = false;
+					unitNeedPath = true;
+					ret = true;
+					break;
+				}
 			}
 		}
-	}
 
-	 if (unitNeedPath)
-	{
-		App->pathmanager->Register(this);
-
-		singleUnit->roomGoal = GetExitPoint();
-
-		if (singleUnit->roomGoal != -1)
-			ret = RequestAStar(singleUnit->currTile, singleUnit->roomGoal);
-
-		else if (singleUnit->roomGoal == -1)
+		if (unitNeedPath)
 		{
-			ret = RequestAStar(singleUnit->currTile, singleUnit->goal);
+			//App->pathmanager->UnRegister(this);
+			App->pathmanager->Register(this);
+
+			singleUnit->roomGoal = GetExitPoint();
+
+			if (singleUnit->roomGoal != -1)
+				ret = RequestAStar(singleUnit->currTile, singleUnit->roomGoal);
+
+			else if (singleUnit->roomGoal == -1)
+			{
+				ret = RequestAStar(singleUnit->currTile, singleUnit->goal);
+			}
+			unitNeedPath = false;
 		}
-		unitNeedPath = false;
+
+		if (singleUnit->currTile == singleUnit->roomGoal)
+		{
+			ret = unitReachDestination = true;
+		}
+
+		else if (singleUnit->currTile == singleUnit->goal)
+		{
+			unitReachDestination = false;
+			unitNeedPath = false;
+			haveGoal = false;
+
+			ret = true;
+		}
 	}
-
-	 if (singleUnit->currTile == singleUnit->roomGoal)
-	 {
-		 ret = unitReachDestination = true;
-	 }
-
 	
 	return ret;
 }
@@ -370,7 +381,7 @@ iPoint PathPlanner::GetExitPoint()
 	//East
 	else if (auxRoomPos.x == 1)
 	{
-		exitPoint = currRoom->exitPointE;
+		exitPoint = { currRoom->exitPointE.x / 32,currRoom->exitPointE.y / 32 };
 	}
 
 	//West
@@ -405,29 +416,41 @@ void PathPlanner::LoadHiLevelSearch()
 	DynamicEntity* tempEnt = (DynamicEntity*)entity;
 	SingleUnit* singleUnit = tempEnt->GetSingleUnit();
 
-	SDL_Rect goalRect{ singleUnit->goal.x, singleUnit->goal.y, defaultSize, defaultSize };
-	iPoint goalRoom{ -1,-1 };
+	
+
 
 	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
 	{
+		SDL_Rect goalRect{ singleUnit->goal.x * defaultSize, singleUnit->goal.y * defaultSize, 32, 32 };
+
 		if (SDL_IntersectRect(&(*iterator).collider, &entityRect, &result))
 		{
 			currRoomPos = originRoom = { (*iterator).x, (*iterator).y };
 			currRoom = &(*iterator);
 		}
-		if (SDL_IntersectRect(&goalRect, &entityRect, &result))
+		if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
 		{
-			goalRoomPos = goalRoom = { (*iterator).x, (*iterator).y };
+			goalRoomPos = { (*iterator).x / 32, (*iterator).y / 32};
+			goalRoomPos = { 2,0 };
 		}
 	}
-
-	if (originRoom != -1 && goalRoom != -1)
+	if (!haveGoal)
+	if (originRoom != -1 && goalRoomPos != -1)
 	{
-		hiLevelSearch->CreatePath(originRoom, goalRoom);
-		hiLevelPath = *(hiLevelSearch->GetLastPath());
-		nextRoomPos = hiLevelPath.front();
-		unitNeedPath = true;
+		hiLevelSearch->CreatePath(originRoom, goalRoomPos);
+	//	hiLevelPath = *(hiLevelSearch->GetLastPath());
+hiLevelPath.push_back({ 2,0 });
+		hiLevelPath.push_back({ 1,0 });
+		
+		if (hiLevelPath.size() > 0)
+			nextRoomPos = hiLevelPath.back();
+		else
+			nextRoomPos = originRoom;
+		unitNeedPath = true;	
+		haveGoal = true;
+
 	}
+
 
 }
 
