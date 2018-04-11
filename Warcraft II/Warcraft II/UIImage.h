@@ -19,6 +19,7 @@ struct UIImage_Info {
 
 	SDL_Color color = { 0,0,0,255 };
 	bool draggable = false;
+
 };
 
 // ---------------------------------------------------
@@ -38,6 +39,7 @@ public:
 
 	void ResetFade();
 	bool FromAlphaToAlphaFade(float from = 0.0f, float to = 0.0f, float seconds = 1.0f);
+	Animation* GetAnimation();
 
 private:
 	UIImage_Info image;

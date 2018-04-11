@@ -258,6 +258,12 @@
     <ClInclude Include="UILifeBar.h">
       <Filter>Modules\UIElements</Filter>
     </ClInclude>
+    <ClInclude Include="j1Movement.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="j1PathManager.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
     <ClInclude Include="j1Menu.h">
       <Filter>Modules</Filter>
     </ClInclude>
@@ -478,6 +484,12 @@
     </ClCompile>
     <ClCompile Include="UILifeBar.cpp">
       <Filter>Modules\UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Movement.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="j1PathManager.cpp">
+      <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="j1Menu.cpp">
       <Filter>Modules</Filter>

@@ -126,14 +126,15 @@ public:
 	void MakeUnitMenu(Entity* entity);
 	void MakeUnitsMenu(list<DynamicEntity*> units);
 	void DeleteEntitiesMenu();
+	void MakeHoverInfoMenu(string unitProduce, string gold);
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
 	void CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image);
 	void CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity * entity);
+
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
-	void DestroyUIElem(UIElement* elem);
 	void CreateBarracksButtons();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();

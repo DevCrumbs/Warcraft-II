@@ -189,3 +189,11 @@ UIElement* UIElement::GetParent() const
 {
 	return parent;
 }
+
+void UIElement::SetPriorityDraw(PriorityDraw priority) {
+	this->priority = priority;
+}
+
+PriorityDraw UIElement::GetPriorityDraw() const{
+	return priority;
+}

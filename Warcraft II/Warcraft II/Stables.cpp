@@ -6,6 +6,7 @@ Stables::Stables(fPoint pos, iPoint size, int currLife, uint maxLife, const Stab
 {
 	texArea = &stablesInfo.constructionPlanks1;
 	this->constructionTimer.Start();
+	App->audio->PlayFx(2, 0); //Construction sound
 }
 
 void Stables::Move(float dt)

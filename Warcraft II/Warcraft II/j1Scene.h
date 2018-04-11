@@ -3,6 +3,7 @@
 
 #include "j1Module.h"
 #include "Animation.h"
+#include "j1Menu.h"
 
 #include <vector>
 #include <string>
@@ -17,10 +18,26 @@ struct UILabel;
 struct UIButton;
 struct UIImage;
 struct UISlider;
-struct UICursor;
+class UISlider_Info;
 class UIInputText;
+
 enum ENTITY_TYPE;
 
+struct Particle;	
+
+struct SliderStruct;
+
+enum PauseMenuActions {
+	PauseMenuActions_NOT_EXIST,
+	PauseMenuActions_NONE,
+	PauseMenuActions_CREATED,
+	PauseMenuActions_DESTROY,
+	PauseMenuActions_RETURN_MENU,
+	PauseMenuActions_SETTINGS_MENU,
+	PauseMenuActions_SLIDERFX,
+	PauseMenuActions_SLIDERMUSIC
+
+};
 class j1Scene : public j1Module
 {
 public:
@@ -64,6 +81,12 @@ public:
 	void LoadInGameUI();
 	void LoadBuildingMenu();
 	void UnLoadBuildingMenu();
+	void CreatePauseMenu();
+    void DestroyPauseMenu();
+	void CreateSettingsMenu();
+	void DestroySettingsMenu();
+	void DestroyAllUI();
+	PauseMenuActions GetPauseMenuActions();
 
 	bool LoadKeys(pugi::xml_node&);
 
@@ -95,6 +118,7 @@ public:
 
 	bool pause = false;
 
+
 	UIImage* entitiesStats;
 	ENTITY_TYPE GetAlphaBuilding();
 	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
@@ -118,12 +142,23 @@ private:
 	UILabel *chickenFarmCostLabel, *elvenLumberCostLabel, *blackSmithCostLabel, *stablesCostLabel, *gryphonAviaryCostLabel, *mageTowerCostLabel, *churchCostLabel, *scoutTowerCostLabel, *guardTowerCostLabel, *cannonTowerCostLabel;
 
 	UIImage *buildingMenu;
-	UICursor* mouseText;
+
+	//Pause Menu
+	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
+	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;
+	UIImage* parchmentImg = nullptr;
+	//Settings Menu
+	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
+	SliderStruct AudioFXPause;
+	SliderStruct AudioMusicPause;
+
 
 	bool buildingMenuOn = false;
 
 	string orthogonalMap, isometricMap, warcraftMap;
 	string orthogonalTexName, isometricTexName, warcraftTexName;
+	string mainThemeMusicName;
 	bool orthogonalActive, isometricActive, warcraftActive;
 
 	SDL_Texture* debugTex =	nullptr;
@@ -147,6 +182,7 @@ private:
 
 	ENTITY_TYPE alphaBuilding;
 
+	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
 };
 
 #endif //__j1SCENE1_H__
