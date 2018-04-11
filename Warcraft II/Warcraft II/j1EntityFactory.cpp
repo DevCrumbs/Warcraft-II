@@ -597,9 +597,12 @@ void j1EntityFactory::Draw()
 	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
 
 	while (dynEnt != activeDynamicEntities.end()) {
-
+		SDL_Rect r = { (*dynEnt)->GetPos().x, (*dynEnt)->GetPos().y, (*dynEnt)->GetSize().x, (*dynEnt)->GetSize().y };
+		if (!App->render->IsInScreen(r)){
+			dynEnt++;
+			continue;
+			}
 		switch ((*dynEnt)->dynamicEntityType) {
-
 			// Player
 		case EntityType_FOOTMAN:
 			(*dynEnt)->Draw(footmanTex);
@@ -649,7 +652,11 @@ void j1EntityFactory::Draw()
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
 
 	while (statEnt != activeStaticEntities.end()) {
-
+		SDL_Rect r = { (*statEnt)->GetPos().x, (*statEnt)->GetPos().y, (*statEnt)->GetSize().x, (*statEnt)->GetSize().y };
+		if (!App->render->IsInScreen(r)) {
+			statEnt++;
+			continue;
+		}
 		switch ((*statEnt)->staticEntityCategory) {
 
 		case StaticEntityCategory_HumanBuilding:

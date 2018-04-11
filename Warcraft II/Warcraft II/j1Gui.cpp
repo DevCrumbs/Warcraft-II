@@ -105,37 +105,15 @@ bool j1Gui::Update(float dt)
 	UI_elem_it = UIElementsList.begin();
 
 	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
-		info->Draw();
+		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+			info->Draw();
+		else if (App->render->IsInScreen(info->GetLocalRect()))
+			info->Draw();
 	}
 	//Blit(dt);
 	return ret;
 }
 
-/*bool j1Gui::Blit(float dt) const
-{
-	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Azure);
-
-	bool ret = true;
-
-	list<UIElement*>::const_iterator iterator = UIElementsList.begin();
-
-	while (iterator != UIElementsList.end()) {
-		if((*iterator)->GetType() != UIE_TYPE_CURSOR)
-		(*iterator)->Draw();
-		iterator++;
-	}
-	iterator = UIElementsList.begin();
-	while (iterator != UIElementsList.end()) {
-		if ((*iterator)->GetType() == UIE_TYPE_CURSOR)
-			(*iterator)->Draw();
-		iterator++;
-	}
-
-
-
-	return ret;
-}
-*/
 // Called after all Updates
 bool j1Gui::PostUpdate()
 {
