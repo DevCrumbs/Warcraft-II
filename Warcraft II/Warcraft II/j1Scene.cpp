@@ -175,14 +175,14 @@ bool j1Scene::PreUpdate()
 		unitInfo.attackRadius = 3;
 
 		if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
-			App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo);
+			App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo, App->player);
 
 		// 2: spawn a Grunt with priority 1
 		unitInfo.sightRadius = 3;
 		unitInfo.attackRadius = 2;
 
 		if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
-			App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo);
+			App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, App->player);
 	}
 
 	return ret;
@@ -208,14 +208,16 @@ bool j1Scene::Update(float dt)
 	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 	//App->collision->DebugDraw();
 
-	// Movement															 // Select units by mouse click
-	/*if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+	// Movement															// Select units by mouse click
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 		startRectangle = mousePos;
 
 		Entity* entity = App->entities->IsEntityOnTile(mouseTile);
 
 		if (entity != nullptr) {
+
 			App->audio->PlayFx(1, 0); //Button sound
+
 			App->entities->SelectEntity(entity);
 		}
 		else
@@ -225,6 +227,7 @@ bool j1Scene::Update(float dt)
 	int width = mousePos.x - startRectangle.x;
 	int height = mousePos.y - startRectangle.y;
 
+	/// SELECT UNITS
 	// Select units by rectangle drawing
 	if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
@@ -245,31 +248,71 @@ bool j1Scene::Update(float dt)
 		App->entities->SelectEntitiesWithinRectangle(mouseRect);
 	}
 
-	// Select a new goal for the selected units (single click or drag)
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
+	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
-		if (App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected()) == nullptr)
+
+	if (units.size() > 0) {
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+			App->player->DeleteEntitiesMenu();
+			App->player->MakeUnitsMenu(units);
+		}
+
+		UnitGroup* group = App->movement->GetGroupByUnits(units);
+
+		if (group == nullptr)
 
 			// Selected units will now behave as a group
-			App->movement->CreateGroupFromUnits(App->entities->GetLastUnitsSelected());
+			group = App->movement->CreateGroupFromUnits(units);
 
-		App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected())->DrawShapedGoal(mouseTile);
+		if (group != nullptr) {
+
+			/// SET GOAL
+			// Draw a shaped goal
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+
+				group->DrawShapedGoal(mouseTile);
+
+			// Set a normal or shaped goal
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
+
+				if (!group->SetShapedGoal()) /// shaped goal
+					group->SetGoal(mouseTile); /// normal goal
+			}
+
+			/// COMMAND PATROL
+			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN) {
+
+				//App->entities->CommandToUnits(units, UnitCommand_Patrol);
+			}
+
+			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
+			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
+
+				//App->entities->CommandToUnits(units, UnitCommand_Stop);
+			}
+		}
 	}
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
-
-		if (App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected()) == nullptr)
-
-			// Selected units will now behave as a group
-			App->movement->CreateGroupFromUnits(App->entities->GetLastUnitsSelected());
-
-		UnitGroup* group = App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected());
-
-		if (!group->SetShapedGoal())
-			group->SetGoal(mouseTile);
-	}*/
 
 	DebugKeys();
 	CheckCameraMovement(dt);
+
+	//Checks if resources have changed to update building menu and gold label
+	if (hasGoldChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		if (buildingMenuOn) {
+			UnLoadBuildingMenu();
+			LoadBuildingMenu();
+		}
+		hasGoldChanged = false;
+	}
+	if (hasFoodChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		hasFoodChanged = false;
+	}
+
 
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
@@ -500,29 +543,35 @@ void j1Scene::LoadInGameUI()
 {
 	//Buiding options
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = {0, 0, 129, 33};
-	buttonInfo.hoverTexArea = { 129, 0, 129, 33 };
-	buttonInfo.pressedTexArea = { 257, 0, 129, 33 };
-	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w, 0 }, buttonInfo, this, nullptr);
+	buttonInfo.normalTexArea = {0, 0, 126, 26};
+	buttonInfo.hoverTexArea = { 129, 0, 126, 26 };
+	buttonInfo.pressedTexArea = { 257, 0, 126, 26 };
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.text = "Buildings";
-	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 12 }, labelInfo, this, buildingButton);
+	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, buildingButton);
 
 
 	//Pause menu 
-	pauseMenuButt = App->gui->CreateUIButton({ 0,0 }, buttonInfo, this);
+	pauseMenuButt = App->gui->CreateUIButton({ 5,1 }, buttonInfo, this);
 
 	labelInfo.text = "Menu";
-	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w/2, 12 }, labelInfo, this, pauseMenuButt);
+	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w/2, 8 }, labelInfo, this, pauseMenuButt);
 
 
 	UIImage_Info entitiesInfo;
 	entitiesInfo.texArea = { 0, 565, 371, 82 };
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
 	entitiesStats->SetPriorityDraw(PriorityDraw_UIINGAME);
+
+	entitiesInfo.texArea={ 1006,0,800,600 };
+	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
+	inGameFrameImage->SetPriorityDraw(PriorityDraw_UIINGAME);
+
+	LoadResourcesLabels();
 }
 
 void j1Scene::LoadBuildingMenu()
@@ -532,7 +581,7 @@ void j1Scene::LoadBuildingMenu()
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = { 0,33,240,529 };
-	buildingMenu = App->gui->CreateUIImage({ -112, 0 }, imageInfo, this, buildingButton);
+	buildingMenu = App->gui->CreateUIImage({ -111, 0 }, imageInfo, this, buildingButton);
 	buildingMenuOn = true;
 	buildingMenu->SetPriorityDraw(PriorityDraw_UIINGAME);
 
@@ -804,6 +853,24 @@ void j1Scene::UnLoadBuildingMenu()
 	buildingMenuOn = false;
 }
 
+void j1Scene::LoadResourcesLabels()
+{
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.text = to_string(App->player->currentGold);
+	goldLabel = App->gui->CreateUILabel({ 224, 0 }, labelInfo, this, inGameFrameImage);
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;	
+	labelInfo.text = to_string(App->player->currentFood);
+	foodLabel = App->gui->CreateUILabel({ 334, 0 }, labelInfo, this, inGameFrameImage);
+}
+
+void j1Scene::UnLoadResourcesLabels()
+{
+	App->gui->DestroyElement((UIElement**)&goldLabel);
+	App->gui->DestroyElement((UIElement**)&foodLabel);
+}
+
 void j1Scene::CreatePauseMenu() {
 
 	UIButton_Info buttonInfo;
@@ -929,6 +996,7 @@ void j1Scene::DestroyAllUI() {
 	App->gui->DestroyElement((UIElement**)&entitiesStats);
 	App->gui->DestroyElement((UIElement**)&buildingButton);
 	App->gui->DestroyElement((UIElement**)&buildingLabel);
+	App->gui->DestroyElement((UIElement**)&inGameFrameImage);
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()
