@@ -1,38 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="9" height="7" tilewidth="32" tileheight="32" nextobjectid="1">
- <tileset firstgid="1" name="mapStructure" tilewidth="32" tileheight="32" tilecount="13" columns="4">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="9" height="11" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="mapStructure" tilewidth="32" tileheight="32" tilecount="12" columns="4">
   <image source="mapStructure.png" width="128" height="96"/>
  </tileset>
- <layer name="Capa de Patrones 1" width="9" height="7">
+ <layer name="Capa de Patrones 1" width="9" height="11">
   <data>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="6"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
    <tile gid="2"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="9"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="3"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="9"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="3"/>
+   <tile gid="10"/>
+   <tile gid="3"/>
+   <tile gid="10"/>
+   <tile gid="4"/>
+   <tile gid="0"/>
    <tile gid="6"/>
    <tile gid="0"/>
-   <tile gid="3"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="3"/>
-   <tile gid="10"/>
-   <tile gid="3"/>
-   <tile gid="9"/>
    <tile gid="0"/>
    <tile gid="9"/>
    <tile gid="0"/>
@@ -41,8 +59,8 @@
    <tile gid="9"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="3"/>
-   <tile gid="10"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="3"/>
    <tile gid="10"/>
    <tile gid="3"/>
@@ -50,6 +68,24 @@
    <tile gid="3"/>
    <tile gid="10"/>
    <tile gid="4"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="9"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="3"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="9"/>
