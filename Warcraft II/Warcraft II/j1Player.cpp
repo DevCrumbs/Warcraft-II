@@ -43,6 +43,7 @@ bool j1Player::Start()
 bool j1Player::Update(float dt) {
 
 	CheckIfPlaceBuilding();
+	CheckUnitSpawning();
 
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		if (stables != nullptr) {
@@ -282,6 +283,49 @@ void j1Player::CheckIfPlaceBuilding()
 	{
 		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 		SDL_SetTextureAlphaMod(App->entities->GetNeutralBuildingTexture(), 255);
+	}
+}
+
+//This method checks for the spawning queue of the units and if they're ready to spawn or not
+void j1Player::CheckUnitSpawning()
+{
+	fPoint barracksPos = barracks->GetPos();
+	UnitInfo unitInfo;
+	fPoint mageTowerPos = { 0.0,0.0 };
+	fPoint gryphonAviaryPos = { 0.0,0.0 };
+	if (mageTower != nullptr) {
+		mageTowerPos = mageTower->GetPos();
+	}
+	if (gryphonAviary != nullptr) {
+		gryphonAviaryPos = gryphonAviary->GetPos();
+	}
+
+	if (!toSpawnUnitTimerQueue.empty()) {
+		if (toSpawnUnitTimerQueue.back().Read() > (spawningTime * 1000)) {
+			ENTITY_TYPE toSpawnEntity = toSpawnUnitTypeQueue.front();
+
+			switch (toSpawnEntity) {
+			case EntityType_FOOTMAN:
+				App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo);
+				break;
+			case EntityType_ELVEN_ARCHER:
+				App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo);
+				break;
+			case EntityType_MAGE:
+				App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_MAGE), unitInfo);
+				break;
+			case EntityType_PALADIN:
+				App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_PALADIN), unitInfo);
+				break;
+			case EntityType_GRYPHON_RIDER:
+				App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviaryPos.x + 30, gryphonAviaryPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo);
+				break;
+			default:
+				break;
+			}
+			toSpawnUnitTimerQueue.pop();
+			toSpawnUnitTypeQueue.pop();
+		}
 	}
 }
 
@@ -610,21 +654,6 @@ void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pres
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
 {
-	UnitInfo unitInfo;
-	FootmanInfo footmanInfo;
-	ElvenArcherInfo elvenArcherInfo;
-	MageInfo mageInfo;
-	PaladinInfo paladinInfo;
-	GryphonRiderInfo gryphonRiderInfo;
-	fPoint barracksPos = barracks->GetPos();
-	fPoint mageTowerPos = { 0.0,0.0 };
-	fPoint gryphonAviaryPos = { 0.0,0.0 };
-	if (mageTower != nullptr) {
-		mageTowerPos = mageTower->GetPos();
-	}
-	if (gryphonAviary != nullptr) {
-		gryphonAviaryPos = gryphonAviary->GetPos();
-	}
 
 	if(App->scene->GetPauseMenuActions() == PauseMenuActions_NOT_EXIST)
 		switch (UIevent)
@@ -688,46 +717,66 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 
 			if (UIelem == produceFootmanButton) {
-				if (currentGold >= footmanCost) {
+				if (currentGold >= footmanCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
-					App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)footmanInfo, unitInfo);
 					currentGold -= 500;
+					//Timer for the spawning
+					j1Timer spawnTimer;
+					toSpawnUnitTimerQueue.push(spawnTimer);
+					toSpawnUnitTimerQueue.back().Start();
+					toSpawnUnitTypeQueue.push(EntityType_FOOTMAN);
 				}
 				else if (currentGold < footmanCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == produceElvenArcherButton) {
-				if (currentGold >= elvenArcherCost) {
+				if (currentGold >= elvenArcherCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
-					App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)elvenArcherInfo, unitInfo);
 					currentGold -= 400;
+					//Timer for the spawning
+					j1Timer spawnTimer;
+					toSpawnUnitTimerQueue.push(spawnTimer);
+					toSpawnUnitTimerQueue.back().Start();
+					toSpawnUnitTypeQueue.push(EntityType_ELVEN_ARCHER);
 				}
 				else if (currentGold < elvenArcherCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
-				if (currentGold >= mageCost) {
+				if (currentGold >= mageCost  && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
-					App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)mageInfo, unitInfo);
 					currentGold -= 1200;
+					//Timer for the spawning
+					j1Timer spawnTimer;
+					toSpawnUnitTimerQueue.push(spawnTimer);
+					toSpawnUnitTimerQueue.back().Start();
+					toSpawnUnitTypeQueue.push(EntityType_MAGE);
 				}
 				else if (currentGold < mageCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == producePaladinButton) {
-				if (currentGold >= paladinCost) {
+				if (currentGold >= paladinCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
-					App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)paladinInfo, unitInfo);
 					currentGold -= 800;
+					//Timer for the spawning
+					j1Timer spawnTimer;
+					toSpawnUnitTimerQueue.push(spawnTimer);
+					toSpawnUnitTimerQueue.back().Start();
+					toSpawnUnitTypeQueue.push(EntityType_PALADIN);
 				}
 				else if (currentGold < paladinCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == produceGryphonRiderButton) {
-				if (currentGold >= gryphonRiderCost) {
+				if (currentGold >= gryphonRiderCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
-					App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviaryPos.x + 30, gryphonAviaryPos.y - 50 }, (EntityInfo&)gryphonRiderInfo, unitInfo);
 					currentGold -= 2500;
+					//Timer for the spawning
+					j1Timer spawnTimer;
+					toSpawnUnitTimerQueue.push(spawnTimer);
+					toSpawnUnitTimerQueue.back().Start();
+					toSpawnUnitTypeQueue.push(EntityType_GRYPHON_RIDER);
 				}
 				else if (currentGold < gryphonRiderCost)
 					App->audio->PlayFx(3, 0); //Button error sound

@@ -8,7 +8,7 @@
 #include "p2Point.h"
 #include "SDL\include\SDL_rect.h"
 
-
+#include <queue>
 #include <list>
 using namespace std;
 
@@ -26,6 +26,7 @@ struct UILifeBar;
 class Entity;
 
 class StaticEntity;
+enum ENTITY_TYPE;
 
 struct HoverButton
 {
@@ -74,6 +75,7 @@ public:
 	bool PostUpdate();
 
 	void CheckIfPlaceBuilding();
+	void CheckUnitSpawning();
 	iPoint GetMouseTilePos();
 	iPoint GetMousePos();
 
@@ -175,6 +177,12 @@ private:
 	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton;
 
 	list<UIElement*> UIMenuInfoList;
+
+	//Spawning units from barracks queues and variables
+	queue<j1Timer> toSpawnUnitTimerQueue;
+	queue<ENTITY_TYPE> toSpawnUnitTypeQueue;
+	uint spawningTime = 5; //In seconds
+	uint maxSpawnQueueSize = 2;
 
 };
 
