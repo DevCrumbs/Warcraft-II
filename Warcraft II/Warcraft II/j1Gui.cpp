@@ -65,14 +65,14 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 	pugi::xml_node scepter = artifacts.child("scepter");
 	scepterAnim.speed = artifacts.attribute("speed").as_float();
 	for (scepter = scepter.child("frame"); scepter; scepter = scepter.next_sibling("frame")) {
-		eyeAnim.PushBack({ scepter.attribute("x").as_int(), scepter.attribute("y").as_int(), scepter.attribute("w").as_int(), scepter.attribute("h").as_int() });
+		scepterAnim.PushBack({ scepter.attribute("x").as_int(), scepter.attribute("y").as_int(), scepter.attribute("w").as_int(), scepter.attribute("h").as_int() });
 		scepterText = { scepter.attribute("x").as_int(), scepter.attribute("y").as_int(), scepter.attribute("w").as_int(), scepter.attribute("h").as_int() };
 	}
 
 	pugi::xml_node skull = artifacts.child("skull");
 	skullAnim.speed = artifacts.attribute("speed").as_float();
-	for (skull = skull.child("frame"); skull; skull = scepter.next_sibling("frame")) {
-		eyeAnim.PushBack({ skull.attribute("x").as_int(), skull.attribute("y").as_int(), skull.attribute("w").as_int(), skull.attribute("h").as_int() });
+	for (skull = skull.child("frame"); skull; skull = skull.next_sibling("frame")) {
+		skullAnim.PushBack({ skull.attribute("x").as_int(), skull.attribute("y").as_int(), skull.attribute("w").as_int(), skull.attribute("h").as_int() });
 		skullText = { skull.attribute("x").as_int(), skull.attribute("y").as_int(), skull.attribute("w").as_int(), skull.attribute("h").as_int() };
 	}
 

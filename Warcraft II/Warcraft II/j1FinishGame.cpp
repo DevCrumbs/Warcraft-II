@@ -9,6 +9,7 @@
 #include "j1Textures.h"
 #include "j1Scene.h"
 #include "j1Player.h"
+#include "j1FadeToBlack.h"
 
 
 #include "UILabel.h"
@@ -55,6 +56,11 @@ bool j1FinishGame::Update(float dt)
 	return true;
 }
 
+bool j1FinishGame::CleanUp() {
+	DeleteScene();
+	App->menu->active = true;
+	return true;
+}
 
 void j1FinishGame::LoadSceneOne(bool isWin) {
 	
@@ -154,6 +160,7 @@ void j1FinishGame::DeleteScene() {
 		App->gui->DestroyElement((UIElement**)&imageVector.back());
 	}
 	App->gui->DestroyElement((UIElement**)&continueButt);
+	App->gui->DestroyElement((UIElement**)&returnButt);
 
 }
 
@@ -163,7 +170,7 @@ void j1FinishGame::LoadSceneTwo() {
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorGrey;
 	labelInfo.text = "Alpha out on May the 13h";
-	labelVector.push_back(App->gui->CreateUILabel({ 50, 525 }, labelInfo));
+	labelVector.push_back(App->gui->CreateUILabel({ 50, 542 }, labelInfo));
 
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
@@ -173,26 +180,25 @@ void j1FinishGame::LoadSceneTwo() {
 
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 250, 33 };
-	continueButt = App->gui->CreateUIButton({ 550, 525 }, buttonInfo, this, nullptr);
+	returnButt = App->gui->CreateUIButton({ 550, 525 }, buttonInfo, this, nullptr);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
-	labelInfo.hoverColor = ColorGreen;
+	labelInfo.normalColor = White_;
 	labelInfo.text = "Return to Main Menu";
-	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, continueButt));
+	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt));
 	
 
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = White_;
+	labelInfo.hoverColor = labelInfo.pressedColor = White_;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.textWrapLength = 600;
 	string s = "If you want to know which artifact you would have gained, do not forget to play th full game when it is relased! The enemy base awaits for your troops...";
 	labelInfo.text = s;
 	labelVector.push_back(App->gui->CreateUILabel({ 750, 400 }, labelInfo));
 
-	UIImage_Info imageInfo;
-	imageInfo.texArea = App->gui->bookText;
-	imageVector.push_back(App->gui->CreateUIImage({ 260, 145 }, imageInfo, this));
-	imageVector.back()->StartAnimation(App->gui->bookAnim);
-
+	imageVector.push_back(App->menu->AddArtifact({ 125,200 }, App->gui->bookText, App->gui->bookAnim));
+	imageVector.push_back(App->menu->AddArtifact({ 275,300 }, App->gui->skullText, App->gui->skullAnim));
+	imageVector.push_back(App->menu->AddArtifact({ 450,300 }, App->gui->eyeText, App->gui->eyeAnim));
+	imageVector.push_back(App->menu->AddArtifact({ 600,200 }, App->gui->scepterText, App->gui->scepterAnim));
 
 }
 
@@ -215,6 +221,9 @@ void j1FinishGame::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			LoadSceneTwo();
 		}
 
+		if (UIelem == returnButt) {
+			App->fade->FadeToBlack(this, App->menu);
+		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;

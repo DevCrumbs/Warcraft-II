@@ -22,6 +22,7 @@ public:
 	bool Awake(pugi::xml_node& config) { return true; }
 	bool Start();
 	bool Update(float dt);
+	bool CleanUp();
 
 
 private:
@@ -37,7 +38,7 @@ private:
 
 	vector<UILabel*> labelVector;
 	vector<UIImage*> imageVector;
-	UIButton* continueButt = nullptr;
+	UIButton* continueButt = nullptr, *returnButt = nullptr;
 
 	SDL_Rect screen;
 

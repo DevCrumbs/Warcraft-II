@@ -80,10 +80,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	// render last to swap buffer
 	AddModule(render);
 
-	menu->active = false;
 	map->active = false;
 	scene->active = false;
-	//finish->active = false;
+	finish->active = false;
 	player->active = false;
 	entities->active = false;
 	collision->active = false;
