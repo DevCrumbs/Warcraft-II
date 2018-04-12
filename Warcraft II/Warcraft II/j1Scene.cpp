@@ -581,7 +581,7 @@ void j1Scene::LoadBuildingMenu()
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = { 0,33,240,529 };
-	buildingMenu = App->gui->CreateUIImage({ -111, 0 }, imageInfo, this, buildingButton);
+	buildingMenu = App->gui->CreateUIImage({ -110, 0 }, imageInfo, this, buildingButton);
 	buildingMenuOn = true;
 	buildingMenu->SetPriorityDraw(PriorityDraw_UIINGAME);
 
@@ -601,17 +601,17 @@ void j1Scene::LoadBuildingMenu()
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Cost: 500 gold";
-	if (App->player->currentGold < 500) {
+	if (App->player->currentGold < chickenFarmCost) {
 		labelInfo.normalColor = BloodyRed_;
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
 	}
 	chickenFarmCostLabel = App->gui->CreateUILabel({ 75, 82 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 241,76,50,41 };
-	buttonInfo.hoverTexArea = { 292,76,50,41 };
+	buttonInfo.normalTexArea = { 343,76,50,41 };
+	buttonInfo.hoverTexArea = { 343,76,50,41 };
 	buttonInfo.pressedTexArea = { 343,76,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < elvenLumberCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -623,18 +623,16 @@ void j1Scene::LoadBuildingMenu()
 	elvenLumberLabel = App->gui->CreateUILabel({ 75, 110}, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 600 gold";
-	if (App->player->currentGold < 600) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
 	elvenLumberCostLabel = App->gui->CreateUILabel({ 75, 127 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 241,118,50,41 };
-	buttonInfo.hoverTexArea = { 292,118,50,41 };
+	buttonInfo.normalTexArea = { 343,118,50,41 };
+	buttonInfo.hoverTexArea = { 343,118,50,41 };
 	buttonInfo.pressedTexArea = { 343,118,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < blacksmithCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -646,18 +644,17 @@ void j1Scene::LoadBuildingMenu()
 	blackSmithLabel = App->gui->CreateUILabel({ 75, 155 }, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 800 gold";
-	if (App->player->currentGold < 800) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	
 	blackSmithCostLabel = App->gui->CreateUILabel({ 75, 172 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 241,160,50,41 };
-	buttonInfo.hoverTexArea = { 292,160,50,41 };
+	buttonInfo.normalTexArea = { 343,160,50,41 };
+	buttonInfo.hoverTexArea = { 343,160,50,41 };
 	buttonInfo.pressedTexArea = { 343,160,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < stablesCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -669,18 +666,17 @@ void j1Scene::LoadBuildingMenu()
 	stablesLabel = App->gui->CreateUILabel({ 75, 200 }, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 900 gold";
-	if (App->player->currentGold < 900) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	
 	stablesCostLabel = App->gui->CreateUILabel({ 75, 217 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 241,202,50,41 };
-	buttonInfo.hoverTexArea = { 292,202,50,41 };
+	buttonInfo.normalTexArea = { 343,202,50,41 };
+	buttonInfo.hoverTexArea = { 343,202,50,41 };
 	buttonInfo.pressedTexArea = { 343,202,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < churchCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -692,18 +688,17 @@ void j1Scene::LoadBuildingMenu()
 	churchLabel = App->gui->CreateUILabel({ 75, 245 }, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 900 gold";
-	if (App->player->currentGold < 900) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	
 	churchCostLabel = App->gui->CreateUILabel({ 75, 262 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 394,160,50,41 };
-	buttonInfo.hoverTexArea = { 445,160,50,41 };
+	buttonInfo.normalTexArea = { 496,160,50,41 };
+	buttonInfo.hoverTexArea = { 496,160,50,41 };
 	buttonInfo.pressedTexArea = { 496,160,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < gryphonAviaryCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -715,18 +710,17 @@ void j1Scene::LoadBuildingMenu()
 	gryphonAviaryLabel = App->gui->CreateUILabel({ 75, 290 }, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 400 gold";
-	if (App->player->currentGold < 400) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	
 	gryphonAviaryCostLabel = App->gui->CreateUILabel({ 75, 307 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 394,202,50,41 };
-	buttonInfo.hoverTexArea = { 445,202,50,41 };	
+	buttonInfo.normalTexArea = { 496,202,50,41 };
+	buttonInfo.hoverTexArea = { 496,202,50,41 };
 	buttonInfo.pressedTexArea = { 496,202,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < mageTowerCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -738,18 +732,17 @@ void j1Scene::LoadBuildingMenu()
 	mageTowerLabel = App->gui->CreateUILabel({ 75, 335 }, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 1000 gold";
-	if (App->player->currentGold < 1000) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	
 	mageTowerCostLabel = App->gui->CreateUILabel({ 75, 352 }, labelInfo, this, buildingMenu);
 
 	buttonInfo.normalTexArea = { 394,34,50,41 };
 	buttonInfo.hoverTexArea = { 445,34,50,41 };
 	buttonInfo.pressedTexArea = { 496,34,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < scoutTowerCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -762,7 +755,7 @@ void j1Scene::LoadBuildingMenu()
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Cost: 400 gold";
-	if (App->player->currentGold < 400) {
+	if (App->player->currentGold < scoutTowerCost) {
 		labelInfo.normalColor = BloodyRed_;
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
@@ -772,7 +765,7 @@ void j1Scene::LoadBuildingMenu()
 	buttonInfo.normalTexArea = { 394,76,50,41 };
 	buttonInfo.hoverTexArea = { 445,76,50,41 };
 	buttonInfo.pressedTexArea = { 496,76,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < guardTowerCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -785,7 +778,7 @@ void j1Scene::LoadBuildingMenu()
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Cost: 600 gold";
-	if (App->player->currentGold < 600) {
+	if (App->player->currentGold < guardTowerCost) {
 		labelInfo.normalColor = BloodyRed_;
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
@@ -795,7 +788,7 @@ void j1Scene::LoadBuildingMenu()
 	buttonInfo.normalTexArea = { 394,118,50,41 };
 	buttonInfo.hoverTexArea = { 445,118,50,41 };
 	buttonInfo.pressedTexArea = { 496,118,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < cannonTowerCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -808,7 +801,7 @@ void j1Scene::LoadBuildingMenu()
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Cost: 800 gold";
-	if (App->player->currentGold < 800) {
+	if (App->player->currentGold < cannonTowerCost) {
 		labelInfo.normalColor = BloodyRed_;
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
