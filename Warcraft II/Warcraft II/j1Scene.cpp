@@ -984,6 +984,7 @@ void j1Scene::DestroyAllUI() {
 	DestroyPauseMenu();
 	DestroySettingsMenu();
 	UnLoadBuildingMenu();
+	UnLoadResourcesLabels();
 	App->gui->DestroyElement((UIElement**)&pauseMenuButt);
 	App->gui->DestroyElement((UIElement**)&pauseMenuLabel);
 	App->gui->DestroyElement((UIElement**)&entitiesStats);
