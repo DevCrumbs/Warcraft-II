@@ -2,6 +2,7 @@
 #define __j1COLLISION_H__
 
 #include "j1Module.h"
+#include "p2Point.h"
 
 #include "SDL\include\SDL_rect.h"
 
@@ -15,6 +16,7 @@ enum ColliderType {
 	ColliderType_NoType = -1,
 	ColliderType_PlayerUnit,
 	ColliderType_EnemyUnit,
+	ColliderType_NeutralUnit,
 	ColliderType_PlayerBuilding,
 	ColliderType_EnemyBuilding,
 	ColliderType_PlayerSightRadius,
@@ -31,7 +33,8 @@ enum CollisionState {
 	CollisionState_OnExit
 };
 
-struct Entity;
+class Entity;
+
 struct Collider;
 struct ColliderGroup;
 
@@ -47,6 +50,7 @@ public:
 	bool CleanUp();
 	void DebugDraw();
 
+	bool ProcessCollision(ColliderGroup* I, ColliderGroup* J);
 	void HandleTriggers();
 
 	// ColliderGroups
@@ -67,7 +71,6 @@ public:
 private:
 
 	list<ColliderGroup*> colliderGroups;
-	bool isDebug = false;
 };
 
 // ---------------------------------------------------------------------
@@ -82,11 +85,21 @@ struct ColliderGroup
 
 	bool IsColliderInGroup(Collider* collider);
 
+	void CreateOffsetCollider();
+	Collider* GetCollider(bool left = false, bool right = false, bool top = false, bool bottom = false);
+
+	void RemoveCollider(Collider* collider);
+	bool RemoveAllColliders();
+
 	// -----
 
 	ColliderType colliderType = ColliderType_NoType;
-	bool isRemove = false;
-	bool isTrigger = false;
+
+	bool isTrigger = false; // the collider behaves as a trigger
+	bool isRemove = false; // the collider will be removed
+	bool isValid = true; // the collider is not valid anymore
+
+	Collider* offsetCollider = nullptr;
 	vector<Collider*> colliders;
 	list<ColliderGroup*> collidingGroups;
 	list<ColliderGroup*> lastCollidingGroups;
@@ -106,6 +119,8 @@ struct Collider
 	~Collider();
 
 	void SetPos(int x, int y);
+	iPoint GetPos() const;
+
 	void SetColliderGroup(ColliderGroup* colliderGroup);
 
 	bool CheckCollision(const SDL_Rect& r) const;
@@ -113,6 +128,7 @@ struct Collider
 	// -----
 
 	SDL_Rect colliderRect = { 0,0,0,0 };
+
 	ColliderGroup* colliderGroup = nullptr; // parent
 };
 

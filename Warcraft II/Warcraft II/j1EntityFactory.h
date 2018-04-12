@@ -16,6 +16,8 @@
 #include "GryphonRider.h"
 #include "Mage.h"
 #include "Paladin.h"
+#include "CritterBoar.h"
+#include "CritterSheep.h"
 
 // Buildings
 #include "EnemyCannonTower.h"
@@ -45,12 +47,12 @@
 #include "OgreMound.h"
 #include "EnemyBlacksmith.h"
 
-
+#include <string>
 #include <list>
 #include <algorithm>
 using namespace std;
 
-#define MAX_UNITS_SELECTED 10
+#define MAX_UNITS_SELECTED 8
 
 struct SDL_Texture;
 struct SDL_Rect;
@@ -59,6 +61,8 @@ class Entity;
 class StaticEntity;
 class DynamicEntity;
 struct EntityInfo;
+struct UnitInfo;
+
 enum ENTITY_TYPE;
 
 class j1EntityFactory : public j1Module
@@ -115,8 +119,18 @@ public:
 	// Returns a list with the last selected units (unitsSelected list)
 	list<DynamicEntity*> GetLastUnitsSelected() const;
 
+	bool RemoveUnitFromUnitsSelected(Entity* entity);
+
 	// Updates the selection color of all entities
 	void SetUnitsSelectedColor();
+
+	bool CommandToUnits(list<DynamicEntity*> units, UnitCommand unitCommand = UnitCommand_NoCommand);
+
+	bool RemoveAllUnitsGoals(list<DynamicEntity*> units);
+
+	// Removes the entity from all the targets and attacking units lists
+	void InvalidateAttackEntity(Entity* entity);
+	void InvalidateMovementEntity(Entity* entity);
 	///_SANDRA
 
 	bool Save(pugi::xml_node& save) const;
@@ -144,6 +158,7 @@ private:
 	string gruntTexName;
 	string trollAxethrowerTexName;
 	string dragonTexName;
+	string crittersTexName;
 
 	SDL_Texture* footmanTex = nullptr;
 	SDL_Texture* elvenArcherTex = nullptr;
@@ -156,6 +171,7 @@ private:
 	SDL_Texture* gruntTex = nullptr;
 	SDL_Texture* trollAxethrowerTex = nullptr;
 	SDL_Texture* dragonTex = nullptr;
+	SDL_Texture* crittersTex = nullptr;
 
 	/// Static entities
 	string humanBuildingsTexName;
@@ -179,6 +195,8 @@ private:
 	GruntInfo gruntInfo;
 	TrollAxethrowerInfo trollAxethrowerInfo;
 	DragonInfo dragonInfo;
+	CritterSheepInfo critterSheepInfo;
+	CritterBoarInfo critterBoarInfo;
 
 	/// Static entities
 	//Player buildings
@@ -214,7 +232,6 @@ private:
 	WatchTowerInfo watchTowerInfo;
 	EnemyGuardTowerInfo enemyGuardTowerInfo;
 	EnemyCannonTowerInfo enemyCannonTowerInfo;
-
 
 	//Preview tiles
 	BuildingPreviewTiles buildingPreviewTiles;

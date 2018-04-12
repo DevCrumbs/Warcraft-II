@@ -107,7 +107,7 @@ bool j1Menu::Update(float dt)
 	
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 		if (parchment != nullptr) {
-			parchment->isDeleted = true;
+			parchment->isRemove = true;
 			parchment = nullptr;
 		}
 	}

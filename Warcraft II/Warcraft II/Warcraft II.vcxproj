@@ -122,6 +122,8 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Barracks.h" />
     <ClInclude Include="ChickenFarm.h" />
+    <ClInclude Include="CritterBoar.h" />
+    <ClInclude Include="CritterSheep.h" />
     <ClInclude Include="Defs.h" />
     <ClInclude Include="Dragon.h" />
     <ClInclude Include="DragonRoost.h" />
@@ -135,6 +137,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Footman.h" />
     <ClInclude Include="Fortress.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="GoldMine.h" />
     <ClInclude Include="GreatHall.h" />
     <ClInclude Include="Grunt.h" />
@@ -203,6 +206,8 @@
     <ClCompile Include="AltarOfStorms.cpp" />
     <ClCompile Include="Barracks.cpp" />
     <ClCompile Include="ChickenFarm.cpp" />
+    <ClCompile Include="CritterBoar.cpp" />
+    <ClCompile Include="CritterSheep.cpp" />
     <ClCompile Include="Dragon.cpp" />
     <ClCompile Include="DragonRoost.cpp" />
     <ClCompile Include="DynamicEntity.cpp" />
@@ -215,6 +220,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Footman.cpp" />
     <ClCompile Include="Fortress.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="GoldMine.cpp" />
     <ClCompile Include="GreatHall.cpp" />
     <ClCompile Include="Grunt.cpp" />

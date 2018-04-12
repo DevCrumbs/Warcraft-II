@@ -10,6 +10,8 @@
 #include <algorithm>
 using namespace std;
 
+#define INVALID_WALK_CODE -1
+
 enum PathfindingAlgorithmType {
 
 	PathfindingAlgorithmType_NoType,
@@ -35,6 +37,17 @@ public:
 
 	bool SetNavgraph(j1PathFinding* currentSearch) const;
 
+	// Pathfinding methods ---------------------------------------------------------------------
+
+	// Utility: return true if pos is inside the map boundaries
+	bool CheckBoundaries(const iPoint& pos) const;
+
+	// Utility: returns true is the tile is walkable
+	bool IsWalkable(const iPoint& pos) const;
+
+	// Utility: return the walkability value of a tile
+	int GetTileAt(const iPoint& pos) const;
+
 public:
 
 	int w = 0, h = 0;
@@ -57,7 +70,7 @@ public:
 	};
 
 	FindActiveTrigger(ActiveTriggerType activeTriggerType, Entity* entity);
-	FindActiveTrigger(ActiveTriggerType activeTriggerType, ENTITY_TYPE entityType);
+	FindActiveTrigger(ActiveTriggerType activeTriggerType, ENTITY_CATEGORY entityType);
 
 	bool isSatisfied(iPoint tile) const;
 
@@ -68,7 +81,8 @@ private:
 
 public:
 
-	ENTITY_TYPE entityType = EntityType_NONE;
+	ENTITY_CATEGORY entityType = EntityCategory_NONE;
+
 	bool isCheckingCurrTile = false;
 	bool isCheckingNextTile = false;
 	bool isCheckingGoalTile = true;
@@ -105,7 +119,7 @@ public:
 private:
 
 	list<PathPlanner*> searchRequests; // a container of all the active search requests
-	
+
 	// total ms to spend on search cycles each update allocated to the manager
 	// each update step these are divided equally among all registered path requests
 	double msSearchPerUpdate = 0.0f;
@@ -113,7 +127,7 @@ private:
 	j1PerfTimer timer; // timer to keep track of the ms spent on each update
 };
 
-class PathPlanner 
+class PathPlanner
 {
 public:
 
@@ -152,11 +166,15 @@ public:
 	void SetCheckingNextTile(bool isCheckingNextTile);
 	void SetCheckingGoalTile(bool isCheckingGoalTile);
 
+	j1PathFinding* GetCurrentSearch() const;
+
 private:
 
 	Entity* entity = nullptr; // a pointer to the owner of this class
+
 	bool isSearchRequested = false;
 	bool isSearchCompleted = false;
+	bool isPathRequested = false;
 
 	PathfindingAlgorithmType pathfindingAlgorithmType = PathfindingAlgorithmType_NoType;
 	j1PathFinding* currentSearch = nullptr; // a pointer to the current search
@@ -164,7 +182,6 @@ private:
 
 	// Dijkstra
 	FindActiveTrigger* trigger = nullptr; // a pointer to the FindActiveTrigger class
-	bool isPathRequested = false;
 };
 
 #endif //__j1PATH_MANAGER_H__

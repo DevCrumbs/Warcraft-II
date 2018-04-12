@@ -90,6 +90,8 @@ public:
 	void DestroyAllUI();
 	PauseMenuActions GetPauseMenuActions();
 
+	iPoint FindClosestValidTile(iPoint tile) const;
+
 	bool LoadKeys(pugi::xml_node&);
 
 public:
@@ -131,6 +133,7 @@ public:
 	bool debugDrawMovement = true;
 	bool debugDrawPath = false;
 	bool debugDrawMap = false;
+	bool debugDrawAttack = false;
 
 	bool isFrameByFrame = false;
 

@@ -18,6 +18,8 @@ j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), hei
 j1PathFinding::~j1PathFinding()
 {
 	RELEASE_ARRAY(walkabilityMap);
+
+	trigger = nullptr;
 }
 
 // Called before quitting
@@ -44,11 +46,11 @@ void j1PathFinding::SetMap(uint width, uint height, uchar* data)
 // Utility: return true if pos is inside the map boundaries
 bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 {
-	return (pos.x >= 0 && pos.x <= (int)width &&
-		pos.y >= 0 && pos.y <= (int)height);
+	return (pos.x >= 0 && pos.x <= (int)(width - 1) &&
+		pos.y >= 0 && pos.y <= (int)(height - 1));
 }
 
-// Utility: returns true is the tile is walkable
+// Utility: returns true if the tile is walkable
 bool j1PathFinding::IsWalkable(const iPoint& pos) const
 {
 	int t = GetTileAt(pos);
@@ -322,11 +324,16 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 
 int j1PathFinding::BacktrackToCreatePath()
 {
-	// Backtrack to create the final path
-	for (PathNode iterator = close.pathNodeList.back(); iterator.parent != nullptr;
-		iterator = *close.Find(iterator.parent->pos)) {
+	last_path.clear();
 
-		last_path.push_back(iterator.pos);
+	// Backtrack to create the final path
+	if (close.pathNodeList.size() > 1) {
+
+		for (PathNode iterator = close.pathNodeList.back(); iterator.parent != nullptr;
+			iterator = *close.Find(iterator.parent->pos)) {
+
+			last_path.push_back(iterator.pos);
+		}
 	}
 
 	last_path.push_back(close.pathNodeList.front().pos);

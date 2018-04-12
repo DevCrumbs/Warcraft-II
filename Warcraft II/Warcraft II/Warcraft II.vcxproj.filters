@@ -73,6 +73,9 @@
     <Filter Include="Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings">
       <UniqueIdentifier>{04f16880-8e80-409c-88de-148688e3aa48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\Entities\DynamicEntities\Critters">
+      <UniqueIdentifier>{f78f8479-857f-4113-98c8-475f22c6346f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PugiXml\src\pugiconfig.hpp">
@@ -318,9 +321,21 @@
     <ClInclude Include="EnemyBlacksmith.h">
       <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="j1FinishGame.h">
       <Filter>Modules</Filter>
     </ClInclude>
+=======
+    <ClInclude Include="Goal.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="CritterBoar.h">
+      <Filter>Modules\Entities\DynamicEntities\Critters</Filter>
+    </ClInclude>
+    <ClInclude Include="CritterSheep.h">
+      <Filter>Modules\Entities\DynamicEntities\Critters</Filter>
+    </ClInclude>
+>>>>>>> Develompent
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -548,8 +563,20 @@
     <ClCompile Include="EnemyBlacksmith.cpp">
       <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="j1FinishGame.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
+=======
+    <ClCompile Include="Goal.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="CritterBoar.cpp">
+      <Filter>Modules\Entities\DynamicEntities\Critters</Filter>
+    </ClCompile>
+    <ClCompile Include="CritterSheep.cpp">
+      <Filter>Modules\Entities\DynamicEntities\Critters</Filter>
+    </ClCompile>
+>>>>>>> Develompent
   </ItemGroup>
 </Project>

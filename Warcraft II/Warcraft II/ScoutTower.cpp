@@ -127,7 +127,6 @@ void ScoutTower::TowerStateMachine(float dt)
 				attackTimer.Start();
 				DetermineArrowDirection();
 				CreateArrow();
-
 			}
 		}
 	}
@@ -179,51 +178,49 @@ void ScoutTower::DetermineArrowDirection()
 	//Down Right
 	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y > towerTilePos.y) 
 		arrowDirection = DOWN_RIGHT;
-	
-
 }
 
 void ScoutTower::CreateArrow()
 {
 	switch (arrowDirection) {
+
 	case UP:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.up, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.up, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case DOWN:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.down, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.down, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.left, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.left, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.right, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.right, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case UP_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.upLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case UP_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upRight, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.upRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case DOWN_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downLeft, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.downLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case DOWN_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.downRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	default:
 		break;
 	}
 
-	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->position.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->position.y, 2.0f));
-	arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->position.x) / m;
-	arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->position.y) / m;
+	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->pos.y, 2.0f));
+	arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->pos.x) / m;
+	arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->pos.y) / m;
 }
-
 
 void ScoutTower::CheckArrowMovement(float dt)
 {
 	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
-	iPoint arrowTilePos = App->map->WorldToMap((int)arrowParticle->position.x, (int)arrowParticle->position.y);
+	iPoint arrowTilePos = App->map->WorldToMap((int)arrowParticle->pos.x, (int)arrowParticle->pos.y);
 
 	switch (arrowDirection) {
 	case UP:
@@ -298,24 +295,22 @@ void ScoutTower::CheckArrowMovement(float dt)
 
 void ScoutTower::MoveArrowTowardsTarget(float dt)
 {
-	arrowParticle->position.x += arrowParticle->destination.x * dt * scoutTowerInfo.arrowSpeed;
-	arrowParticle->position.y += arrowParticle->destination.y * dt * scoutTowerInfo.arrowSpeed;
+	arrowParticle->pos.x += arrowParticle->destination.x * dt * scoutTowerInfo.arrowSpeed;
+	arrowParticle->pos.y += arrowParticle->destination.y * dt * scoutTowerInfo.arrowSpeed;
 }
 
 void ScoutTower::InflictDamageAndDestroyArrow()
 {
 	attackingTarget->ApplyDamage(scoutTowerInfo.damage);
-	arrowParticle->isDeleted = true;
+	arrowParticle->isRemove = true;
 	arrowParticle = nullptr;
 }
-
-
 
 // Animations
 void ScoutTower::LoadAnimationsSpeed()
 {
-
 }
+
 void ScoutTower::UpdateAnimations(float dt)
 {
 	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
