@@ -184,6 +184,8 @@ private:
 	bool unitNeedPath = false;
 	bool haveGoal = false;
 
+	bool test = false;
+
 	int defaultSize = 32;
 
 	PathfindingAlgorithmType pathfindingAlgorithmType = PathfindingAlgorithmType_NoType;
