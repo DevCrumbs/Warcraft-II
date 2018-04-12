@@ -58,18 +58,22 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(tex);
 	AddModule(audio);
 	AddModule(map);
+
+	/// Do not change this order -->
 	AddModule(pathfinding);
-	AddModule(entities);
+	AddModule(collision);
+	AddModule(particles);
+	AddModule(movement);
 	AddModule(pathmanager);
+	AddModule(entities);
+	/// <-- Do not change this order
+
 	AddModule(font);
 	AddModule(menu);
 	AddModule(player);
 
 	AddModule(scene);
 
-	AddModule(movement);
-	AddModule(collision);
-	AddModule(particles);
 	AddModule(console);
 	AddModule(gui);
 	AddModule(fade);

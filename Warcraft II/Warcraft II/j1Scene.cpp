@@ -65,17 +65,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 
 	mainThemeMusicName = audio.child("mainTheme").attribute("path").as_string();
 
-
-
 	LoadKeys(config.child("buttons"));
-
-	// Load songs
-
-	// Load FX
-	/*
-	for (pugi::xml_node node = config.child("audio").child("fx").child("fx"); node; node = node.next_sibling("fx"))
-		App->audio->LoadFx(node.attribute("name").as_string());
-	*/
 
 	//Load camera attributes
 	pugi::xml_node camera = config.child("camera");
@@ -131,6 +121,10 @@ bool j1Scene::Start()
 	pauseMenuActions = PauseMenuActions_NOT_EXIST;
 
 	App->audio->PlayMusic(mainThemeMusicName.data(), 2.0f);
+
+	// The camera is in the player base
+	App->render->camera.x = -2400;
+	App->render->camera.y = -6720;
 
 	return ret;
 }

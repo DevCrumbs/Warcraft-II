@@ -12,6 +12,7 @@
 #include "j1Input.h"
 #include "j1Movement.h"
 #include "j1PathManager.h"
+#include "Goal.h"
 
 #include "UILifeBar.h"
 
@@ -37,15 +38,36 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 	/// PathPlanner
 	pathPlanner = new PathPlanner(this, *navgraph);
 
+	// Goals
+	brain = new Goal_Think(this);
+
+	// LifeBar
 	lifeBarMarginX = 8;
 	lifeBarMarginY = 32;
-
 }
 
 DynamicEntity::~DynamicEntity()
 {
-	// Colliders
-	/*
+	animation = nullptr;
+
+	// Remove Movement
+	if (navgraph != nullptr)
+		delete navgraph;
+	navgraph = nullptr;
+
+	if (pathPlanner != nullptr)
+		delete pathPlanner;
+	pathPlanner = nullptr;
+
+	// Remove Goals
+	if (brain != nullptr)
+		delete brain;
+	brain = nullptr;
+
+	// Remove Attack
+	currTarget = nullptr;
+
+	// Remove Colliders
 	if (sightRadiusCollider != nullptr)
 		sightRadiusCollider->isRemove = true;
 	sightRadiusCollider = nullptr;
@@ -53,9 +75,9 @@ DynamicEntity::~DynamicEntity()
 	if (attackRadiusCollider != nullptr)
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
-	*/
+
 	if (lifeBar != nullptr)
-	App->gui->DestroyElement((UIElement**)&lifeBar);
+		App->gui->DestroyElement((UIElement**)&lifeBar);
 }
 
 void DynamicEntity::Move(float dt) {}
@@ -78,6 +100,32 @@ void DynamicEntity::DebugDrawSelected()
 void DynamicEntity::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState) {}
 
 // -------------------------------------------------------------
+
+Animation* DynamicEntity::GetAnimation() const
+{
+	return animation;
+}
+
+Goal_Think* DynamicEntity::GetBrain() const
+{
+	return brain;
+}
+
+// UnitInfo
+float DynamicEntity::GetSpeed() const
+{
+	return unitInfo.currSpeed;
+}
+
+uint DynamicEntity::GetPriority() const
+{
+	return unitInfo.priority;
+}
+
+uint DynamicEntity::GetDamage() const
+{
+	return unitInfo.damage;
+}
 
 // State machine
 void DynamicEntity::UnitStateMachine(float dt) {}
@@ -103,16 +151,22 @@ PathPlanner* DynamicEntity::GetPathPlanner() const
 	return pathPlanner;
 }
 
-float DynamicEntity::GetSpeed() const
+Navgraph* DynamicEntity::GetNavgraph() const
 {
-	return unitInfo.currSpeed;
+	return navgraph;
 }
 
-uint DynamicEntity::GetPriority() const
+void DynamicEntity::SetIsStill(bool isStill)
 {
-	return unitInfo.priority;
+	this->isStill = isStill;
 }
 
+bool DynamicEntity::IsStill() const
+{
+	return isStill;
+}
+
+// Blit
 void DynamicEntity::SetBlitState(bool blitting) const
 {
 	blitting = isBlitting; 
@@ -268,47 +322,382 @@ ColliderGroup* DynamicEntity::GetAttackRadiusCollider() const
 	return attackRadiusCollider;
 }
 
-ColliderGroup* DynamicEntity::CreateRhombusCollider(ColliderType colliderType, uint radius)
+ColliderGroup* DynamicEntity::CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic)
 {
+	vector<Collider*> colliders;
+
+	// Perform a BFS
+	queue<iPoint> queue;
+	list<iPoint> visited;
+
+	iPoint curr = singleUnit->currTile;
+	queue.push(curr);
+
+	while (queue.size() > 0) {
+
+		curr = queue.front();
+		queue.pop();
+
+		iPoint neighbors[4];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
+
+		/*
+		neighbors[4].create(curr.x + 1, curr.y + 1);
+		neighbors[5].create(curr.x + 1, curr.y - 1);
+		neighbors[6].create(curr.x - 1, curr.y + 1);
+		neighbors[7].create(curr.x - 1, curr.y - 1);
+		*/
+
+		for (uint i = 0; i < 4; ++i)
+		{
+			if (CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
+
+				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+					queue.push(neighbors[i]);
+					visited.push_back(neighbors[i]);
+
+					iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
+					SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+
+					Collider* coll = App->collision->CreateCollider(rect);
+					colliders.push_back(coll);
+				}
+			}
+		}
+	}
+
+	/*
 	vector<Collider*> colliders;
 	iPoint currTilePos = App->map->MapToWorld(singleUnit->currTile.x, singleUnit->currTile.y);
 
 	int sign = 1;
 	for (int y = -(int)radius + 1; y < (int)radius; ++y) {
 
-		if (y == 0)
-			sign *= -1;
+	if (y == 0)
+	sign *= -1;
 
-		for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
+	for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
 
-			SDL_Rect rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
-			colliders.push_back(App->collision->CreateCollider(rect));
-		}
+	SDL_Rect rect = { currTilePos.x + x * App->map->data.tile_width, currTilePos.y + y * App->map->data.tile_height, App->map->data.tile_width, App->map->data.tile_height };
+	colliders.push_back(App->collision->CreateCollider(rect));
 	}
+	}
+	*/
 
 	return App->collision->CreateAndAddColliderGroup(colliders, colliderType, App->entities, this);
 }
 
-void DynamicEntity::UpdateRhombusColliderPos(ColliderGroup* collider, uint radius)
+void DynamicEntity::UpdateRhombusColliderPos(ColliderGroup* collider, uint radius, DistanceHeuristic distanceHeuristic)
 {
+	collider->RemoveAllColliders();
+
+	// 1. Create the small colliders
+
+	// Perform a BFS
+	queue<iPoint> queue;
+	list<iPoint> visited;
+
+	iPoint curr = singleUnit->currTile;
+	queue.push(curr);
+
+	while (queue.size() > 0) {
+
+		curr = queue.front();
+		queue.pop();
+
+		iPoint neighbors[4];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
+
+		/*
+		neighbors[4].create(curr.x + 1, curr.y + 1);
+		neighbors[5].create(curr.x + 1, curr.y - 1);
+		neighbors[6].create(curr.x - 1, curr.y + 1);
+		neighbors[7].create(curr.x - 1, curr.y - 1);
+		*/
+
+		for (uint i = 0; i < 4; ++i)
+		{
+			if (navgraph->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
+
+				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+					queue.push(neighbors[i]);
+					visited.push_back(neighbors[i]);
+
+					iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
+					SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+
+					Collider* coll = App->collision->CreateCollider(rect);
+					App->collision->AddColliderToAColliderGroup(collider, coll);
+				}
+			}
+		}
+	}
+
+	// 2. Create/Update the offset collider
+	collider->CreateOffsetCollider();
+
+	/*
 	vector<Collider*>::const_iterator it = collider->colliders.begin();
 
 	while (it != collider->colliders.end()) {
 
-		iPoint currTilePos = App->map->MapToWorld(singleUnit->currTile.x, singleUnit->currTile.y);
+	iPoint currTilePos = App->map->MapToWorld(singleUnit->currTile.x, singleUnit->currTile.y);
 
-		int sign = 1;
-		for (int y = -(int)radius + 1; y < (int)radius; ++y) {
+	int sign = 1;
+	for (int y = -(int)radius + 1; y < (int)radius; ++y) {
 
-			if (y == 0)
-				sign *= -1;
+	if (y == 0)
+	sign *= -1;
 
-			for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
+	for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
 
-				SDL_Rect rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
-				(*it)->SetPos(rect.x, rect.y);
-				it++;
-			}
+	iPoint definitivePos = { currTilePos.x + x * App->map->data.tile_width, currTilePos.y + y * App->map->data.tile_height };
+	iPoint definitiveTile = App->map->WorldToMap(definitivePos.x, definitivePos.y);
+
+	SDL_Rect rect = { definitivePos.x, definitivePos.y, App->map->data.tile_width, App->map->data.tile_height };
+	(*it)->SetPos(rect.x, rect.y);
+
+	it++;
+	}
+	}
+	}
+	*/
+}
+
+// Attack
+/// Unit attacks a target
+Entity* DynamicEntity::GetCurrTarget() const
+{
+	if (currTarget != nullptr)
+		return currTarget->target;
+	else
+		return nullptr;
+}
+
+bool DynamicEntity::SetCurrTarget(Entity* target)
+{
+	bool ret = false;
+
+	if (target == nullptr)
+		return false;
+
+	if (currTarget != nullptr) {
+
+		if (target == currTarget->target)
+			return true;
+	}
+
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	TargetInfo* targetInfo = nullptr;
+
+	// Check if the target is already in the targets list (this means that the TargetInfo exists)
+	while (it != targets.end()) {
+
+		if ((*it)->target == target) {
+
+			targetInfo = *it;
+			break;
+		}
+		it++;
+	}
+
+	// If the target is not in the targets list, create a new TargetInfo
+	if (targetInfo == nullptr) {
+
+		targetInfo = new TargetInfo();
+		targetInfo->target = target;
+
+		targets.push_front(targetInfo);
+	}
+
+	if (targetInfo != nullptr) {
+
+		// Only push it if it does not have to be removed
+		if (!targetInfo->isRemoved) {
+
+			currTarget = targetInfo;
+			ret = true;
 		}
 	}
+
+	return ret;
+}
+
+bool DynamicEntity::IsEntityInTargetsList(Entity* entity) const
+{
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+
+		if ((*it)->target == entity)
+			return true;
+
+		it++;
+	}
+
+	return false;
+}
+
+bool DynamicEntity::InvalidateTarget(Entity* entity)
+{
+	bool ret = false;
+
+	TargetInfo* targetInfo = nullptr;
+
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	// Find the TargetInfo of the target
+	while (it != targets.end()) {
+
+		if ((*it)->target == entity) {
+
+			targetInfo = *it;
+			break;
+		}
+
+		it++;
+	}
+
+	// If TargetInfo is found, invalidate it
+	if (targetInfo != nullptr) {
+
+		(*it)->target = nullptr;
+		(*it)->isRemoved = true;
+		ret = true;
+	}
+
+	return ret;
+}
+
+bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
+{
+	if (targetInfo == nullptr)
+		return false;
+
+	// If the target matches the currTarget, set currTarget to null
+	if (currTarget != nullptr) {
+
+		if (currTarget->target == targetInfo->target)
+			currTarget = nullptr;
+	}
+
+	// Remove the target from the targets list
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+
+		if (*it == targetInfo) {
+
+			delete *it;
+			targets.erase(it);
+
+			return true;
+		}
+		it++;
+	}
+
+	return false;
+}
+
+TargetInfo* DynamicEntity::GetBestTargetInfo() const
+{
+	// If there are no targets, return null
+	if (targets.size() == 0)
+		return nullptr;
+
+	// Else, check out the available targets
+	TargetInfo* result = nullptr;
+
+	list<TargetInfo*>::const_iterator it = targets.begin();
+	bool isChecked = false;
+
+	// Order the targets by their priority (the target closer to the unit has the max priority)
+	priority_queue<TargetInfoPriority, vector<TargetInfoPriority>, TargetInfoPriorityComparator> queue;
+	TargetInfoPriority priorityTargetInfo;
+
+	while (it != targets.end()) {
+
+		if (!(*it)->isRemoved) {
+
+			priorityTargetInfo.targetInfo = *it;
+			priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
+			queue.push(priorityTargetInfo);
+		}
+
+		it++;
+	}
+
+	TargetInfoPriority curr;
+	while (queue.size() > 0) {
+
+		curr = queue.top();
+		queue.pop();
+
+		if (!isChecked) {
+
+			result = curr.targetInfo;
+			isChecked = true;
+		}
+		else {
+
+			// Pick the target with the less units attacking them (except for the unit)
+			if (result->target->GetAttackingUnitsSize((Entity*)this) > curr.targetInfo->target->GetAttackingUnitsSize((Entity*)this))
+
+				result = curr.targetInfo;
+		}
+	}
+
+	return result;
+}
+
+void DynamicEntity::SetHitting(bool isHitting)
+{
+	this->isHitting = isHitting;
+}
+
+bool DynamicEntity::IsHitting() const
+{
+	return isHitting;
+}
+
+// Player commands
+bool DynamicEntity::SetUnitCommand(UnitCommand unitCommand)
+{
+	bool ret = false;
+
+	if (this->unitCommand == UnitCommand_NoCommand) {
+
+		this->unitCommand = unitCommand;
+		ret = true;
+	}
+
+	return ret;
+}
+
+UnitCommand DynamicEntity::GetUnitCommand() const
+{
+	return unitCommand;
+}
+
+// TargetInfo struct ---------------------------------------------------------------------------------
+
+bool TargetInfo::IsTargetPresent() const
+{
+	if (target == nullptr)
+		return false;
+
+	// The target is dead
+	if (target->GetCurrLife() <= 0)
+		return false;
+
+	return true;
 }
