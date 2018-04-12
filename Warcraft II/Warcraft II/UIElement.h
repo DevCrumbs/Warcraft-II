@@ -51,6 +51,7 @@ enum PriorityDraw {
 	PriorityDraw_NONE,
 	PriorityDraw_LIFEBAR_INGAME = -1,
 	PriorityDraw_BUTTONSINGAME,
+	PriorityDraw_FRAMEWORK,
 	PriorityDraw_UIINGAME,
 	PriorityDraw_PAUSEMENU,
 	PriorityDraw_SLIDER,

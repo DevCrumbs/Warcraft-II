@@ -569,7 +569,7 @@ void j1Scene::LoadInGameUI()
 
 	entitiesInfo.texArea={ 1006,0,800,600 };
 	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
-	inGameFrameImage->SetPriorityDraw(PriorityDraw_UIINGAME);
+	inGameFrameImage->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
 	LoadResourcesLabels();
 }
@@ -979,7 +979,6 @@ void j1Scene::DestroySettingsMenu() {
 
 void j1Scene::DestroyAllUI() {
 	if (parchmentImg != nullptr) {
-		//parchment->isDeleted = true;
 		App->gui->DestroyElement((UIElement**)&parchmentImg);
 	}
 	DestroyPauseMenu();
