@@ -817,6 +817,7 @@ void j1Scene::CreatePauseMenu() {
 	continueButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
 
 	y = parchmentImg->GetLocalPos().y + 160;
+	buttonInfo.normalTexArea = { 1000, 0, 150, 33 };
 	ReturnMenuButt = App->gui->CreateUIButton({ x, y}, buttonInfo, this);
 
 	UILabel_Info labelInfo;
@@ -830,8 +831,8 @@ void j1Scene::CreatePauseMenu() {
 	labelInfo.text = "Resume Game";
 	continueLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, continueButt);
 
-	//labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Main Menu";
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.text = "Return to Main Menu";
 	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
 
 }

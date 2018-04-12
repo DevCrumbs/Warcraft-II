@@ -24,6 +24,10 @@ public:
 	void LoadWinScene();
 	void LoadLoseScene();
 
+	uint totalGold = 0u; // total gold earned during the game
+	uint Time = 0u;
+
+
 private:
 
 	UILabel* titleLabel = nullptr;

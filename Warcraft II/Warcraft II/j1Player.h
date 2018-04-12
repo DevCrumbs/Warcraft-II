@@ -131,7 +131,6 @@ public:
 	bool townHallUpgrade = false;
 	bool keepUpgrade = false;
 
-	int totalGold = 0; // total gold earned during the game
 	int currentGold = 0; // amount of gold that the player has at the current moment
 	//Units costs
 	int footmanCost = 500;
