@@ -209,7 +209,7 @@ bool j1Scene::Update(float dt)
 	//App->collision->DebugDraw();
 
 	// Movement															// Select units by mouse click
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+	/*if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 		startRectangle = mousePos;
 
 		Entity* entity = App->entities->IsEntityOnTile(mouseTile);
@@ -292,7 +292,7 @@ bool j1Scene::Update(float dt)
 				//App->entities->CommandToUnits(units, UnitCommand_Stop);
 			}
 		}
-	}
+	}*/
 
 	DebugKeys();
 	CheckCameraMovement(dt);
@@ -985,6 +985,7 @@ void j1Scene::DestroyAllUI() {
 	DestroyPauseMenu();
 	DestroySettingsMenu();
 	UnLoadBuildingMenu();
+	UnLoadResourcesLabels();
 	App->gui->DestroyElement((UIElement**)&pauseMenuButt);
 	App->gui->DestroyElement((UIElement**)&pauseMenuLabel);
 	App->gui->DestroyElement((UIElement**)&entitiesStats);

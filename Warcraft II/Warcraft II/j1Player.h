@@ -79,6 +79,15 @@ struct ToSpawnUnitsStats
 	UILifeBar* trdInQueueBar = nullptr;
 };
 
+struct ToSpawnUnit {
+	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
+		this->toSpawnTimer = toSpawnTimer;
+		this->entityType = entityType;
+	}
+	j1Timer toSpawnTimer;
+	ENTITY_TYPE entityType;
+};
+
 struct EntitySelectedStats
 {
 	UILabel* HP = nullptr;
@@ -142,12 +151,14 @@ public:
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
 	void CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image);
-	void CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity * entity);
+	void CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity* entity);
+	void CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar);
 
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateBarracksButtons();
+	void HandleBarracksUIElem();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 
@@ -235,8 +246,7 @@ private:
 	list<UIElement*> UIMenuInfoList;
 
 	//Spawning units from barracks queues and variables
-	queue<j1Timer> toSpawnUnitTimerQueue;
-	queue<ENTITY_TYPE> toSpawnUnitTypeQueue;
+	queue<ToSpawnUnit> toSpawnUnitQueue;
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;
 

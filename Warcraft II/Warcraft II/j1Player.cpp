@@ -147,6 +147,11 @@ bool j1Player::Update(float dt) {
 		}
 	}
 
+	//Handle the apparence and disapparence of to spawn units UI elements
+	if (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected == barracks) 
+		HandleBarracksUIElem();	
+	
+
 	return true;
 }
 
@@ -307,9 +312,9 @@ void j1Player::CheckUnitSpawning()
 		gryphonAviaryPos = gryphonAviary->GetPos();
 	}
 
-	if (!toSpawnUnitTimerQueue.empty()) {
-		if (toSpawnUnitTimerQueue.front().Read() > (spawningTime * 1000)) {
-			ENTITY_TYPE toSpawnEntity = toSpawnUnitTypeQueue.front();
+	if (!toSpawnUnitQueue.empty()) {
+		if (toSpawnUnitQueue.front().toSpawnTimer.Read() > (spawningTime * 1000)) {
+			ENTITY_TYPE toSpawnEntity = toSpawnUnitQueue.front().entityType;
 
 			switch (toSpawnEntity) {
 			case EntityType_FOOTMAN:
@@ -330,8 +335,7 @@ void j1Player::CheckUnitSpawning()
 			default:
 				break;
 			}
-			toSpawnUnitTimerQueue.pop();
-			toSpawnUnitTypeQueue.pop();
+			toSpawnUnitQueue.pop();
 		}
 	}
 }
@@ -841,6 +845,18 @@ void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea,
 	lifeBar = App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
 
+void j1Player::CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar)
+{
+	UILifeBar_Info barInfo;
+	barInfo.background = { 241,362,46,7 };
+	barInfo.bar = { 243,358,42,3 };
+	barInfo.maxLife = spawningTime;
+	barInfo.life = (barInfo.maxLife);
+	barInfo.maxWidth = barInfo.bar.w;
+	barInfo.lifeBarPosition = { 2, 2 };
+	lifeBar = App->gui->CreateUILifeBar({ lifeBarPos.x, lifeBarPos.y }, barInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+}
+
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
 
 	UIButton_Info InfoButton;
@@ -879,24 +895,28 @@ void j1Player::CreateBarracksButtons()
 	CreateSimpleButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 268, 2 }, produceElvenArcherButton);
 	if (barracksUpgrade && stables != nullptr && stables->buildingState == BuildingState_Normal)
 		CreateSimpleButton({ 444,244,50,41 }, { 699, 244, 50, 41 }, { 954,244,50,41 }, { 319, 2 }, producePaladinButton);
-	
+}
+
+void j1Player::HandleBarracksUIElem()
+{
+	//Delete UI elements when not used
+	if (toSpawnUnitStats.frstInQueueIcon != nullptr) {
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueBar);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueBar);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueBar);
+	}
+
 	uint unitInQueue = 1;
-	for each (ENTITY_TYPE elem in toSpawnUnitTypeQueue._Get_container()) {
+	for each (ToSpawnUnit unit in toSpawnUnitQueue._Get_container()) { //Iterates every element in the queue
 		UIImage_Info info;
-		UILifeBar_Info lifeInfo;
 		switch (unitInQueue) {
 		case 1:
-			switch (elem) {
+			switch (unit.entityType) {
 			case EntityType_FOOTMAN:
 				CreateGroupIcon({ 72, 20 }, { 649,160,39,30 }, toSpawnUnitStats.frstInQueueIcon);
-				//CreateGroupLifeBar({ 72, 40 }, { 241,362,46,7 }, { 243,358,42,3 }, toSpawnUnitStats.frstInQueueBar);
-				lifeInfo.background = { 241,362,46,7 };
-				lifeInfo.bar = { 243,358,42,3 };
-				lifeInfo.maxLife = 50;
-				lifeInfo.life = (lifeInfo.maxLife);
-				lifeInfo.maxWidth = lifeInfo.bar.w;
-				lifeInfo.lifeBarPosition = { 2, 2 };
-				toSpawnUnitStats.frstInQueueBar = App->gui->CreateUILifeBar({ 72, 40 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 				break;
 			case EntityType_ELVEN_ARCHER:
 				CreateGroupIcon({ 72, 20 }, { 696,160,39,30 }, toSpawnUnitStats.frstInQueueIcon);
@@ -905,9 +925,11 @@ void j1Player::CreateBarracksButtons()
 				CreateGroupIcon({ 72, 20 }, { 649,160,39,30 }, toSpawnUnitStats.frstInQueueIcon); //Footman
 				break;
 			}
+			CreateToSpawnUnitLifeBar({ 72, 40 }, toSpawnUnitStats.frstInQueueBar); //To spawn unit lifeBar timer
+			toSpawnUnitStats.frstInQueueBar->SetLife(unit.toSpawnTimer.ReadSec());
 			break;
 		case 2:
-			switch (elem) {
+			switch (unit.entityType) {
 			case EntityType_FOOTMAN:
 				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
 				break;
@@ -915,12 +937,14 @@ void j1Player::CreateBarracksButtons()
 				CreateGroupIcon({ 120, 20 }, { 696,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
 				break;
 			default:
-				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
+				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon); //Footman
 				break;
 			}
+			CreateToSpawnUnitLifeBar({ 120, 40 }, toSpawnUnitStats.sndInQueueBar); //To spawn unit lifeBar timer
+			toSpawnUnitStats.sndInQueueBar->SetLife(unit.toSpawnTimer.ReadSec());
 			break;
 		case 3:
-			switch (elem) {
+			switch (unit.entityType) {
 			case EntityType_FOOTMAN:
 				CreateGroupIcon({ 168, 20 }, { 649,160,39,30 }, toSpawnUnitStats.trdInQueueIcon);
 				break;
@@ -931,6 +955,8 @@ void j1Player::CreateBarracksButtons()
 				CreateGroupIcon({ 168, 20 }, { 649,160,39,30 }, toSpawnUnitStats.trdInQueueIcon); //Footman
 				break;
 			}
+			CreateToSpawnUnitLifeBar({ 168, 40 }, toSpawnUnitStats.trdInQueueBar); //To spawn unit lifeBar timer
+			toSpawnUnitStats.trdInQueueBar->SetLife(unit.toSpawnTimer.ReadSec());
 			break;
 		default:
 			break;
@@ -1025,66 +1051,66 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 
 			if (UIelem == produceFootmanButton) {
-				if (currentGold >= footmanCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
+				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
 					currentGold -= 500;
 					//Timer for the spawning
 					j1Timer spawnTimer;
-					toSpawnUnitTimerQueue.push(spawnTimer);
-					toSpawnUnitTimerQueue.back().Start();
-					toSpawnUnitTypeQueue.push(EntityType_FOOTMAN);
+					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_FOOTMAN);
+					toSpawnUnitQueue.push(toSpawnUnit);
+					toSpawnUnitQueue.back().toSpawnTimer.Start();
 				}
 				else if (currentGold < footmanCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == produceElvenArcherButton) {
-				if (currentGold >= elvenArcherCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
+				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
 					currentGold -= 400;
 					//Timer for the spawning
 					j1Timer spawnTimer;
-					toSpawnUnitTimerQueue.push(spawnTimer);
-					toSpawnUnitTimerQueue.back().Start();
-					toSpawnUnitTypeQueue.push(EntityType_ELVEN_ARCHER);
+					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
+					toSpawnUnitQueue.push(toSpawnUnit);
+					toSpawnUnitQueue.back().toSpawnTimer.Start();
 				}
 				else if (currentGold < elvenArcherCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
-				if (currentGold >= mageCost  && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
+				if (currentGold >= mageCost  && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
 					currentGold -= 1200;
 					//Timer for the spawning
 					j1Timer spawnTimer;
-					toSpawnUnitTimerQueue.push(spawnTimer);
-					toSpawnUnitTimerQueue.back().Start();
-					toSpawnUnitTypeQueue.push(EntityType_MAGE);
+					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_MAGE);
+					toSpawnUnitQueue.push(toSpawnUnit);
+					toSpawnUnitQueue.back().toSpawnTimer.Start();
 				}
 				else if (currentGold < mageCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == producePaladinButton) {
-				if (currentGold >= paladinCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
+				if (currentGold >= paladinCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
 					currentGold -= 800;
 					//Timer for the spawning
 					j1Timer spawnTimer;
-					toSpawnUnitTimerQueue.push(spawnTimer);
-					toSpawnUnitTimerQueue.back().Start();
-					toSpawnUnitTypeQueue.push(EntityType_PALADIN);
+					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_PALADIN);
+					toSpawnUnitQueue.push(toSpawnUnit);
+					toSpawnUnitQueue.back().toSpawnTimer.Start();
 				}
 				else if (currentGold < paladinCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == produceGryphonRiderButton) {
-				if (currentGold >= gryphonRiderCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
+				if (currentGold >= gryphonRiderCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
 					currentGold -= 2500;
 					//Timer for the spawning
 					j1Timer spawnTimer;
-					toSpawnUnitTimerQueue.push(spawnTimer);
-					toSpawnUnitTimerQueue.back().Start();
-					toSpawnUnitTypeQueue.push(EntityType_GRYPHON_RIDER);
+					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_GRYPHON_RIDER);
+					toSpawnUnitQueue.push(toSpawnUnit);
+					toSpawnUnitQueue.back().toSpawnTimer.Start();
 				}
 				else if (currentGold < gryphonRiderCost)
 					App->audio->PlayFx(3, 0); //Button error sound
