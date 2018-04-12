@@ -318,6 +318,9 @@
     <ClInclude Include="EnemyBlacksmith.h">
       <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
     </ClInclude>
+    <ClInclude Include="j1FinishGame.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -544,6 +547,9 @@
     </ClCompile>
     <ClCompile Include="EnemyBlacksmith.cpp">
       <Filter>Modules\Entities\StaticEntities\EnemyBuildings\ProductionBuildings</Filter>
+    </ClCompile>
+    <ClCompile Include="j1FinishGame.cpp">
+      <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

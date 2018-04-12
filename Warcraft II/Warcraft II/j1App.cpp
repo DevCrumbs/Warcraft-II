@@ -22,6 +22,7 @@
 #include "j1Menu.h"
 #include "j1Movement.h"
 #include "j1PathManager.h"
+#include "j1FinishGame.h"
 
 #include "j1App.h"
 #include "Brofiler\Brofiler.h"
@@ -50,6 +51,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	menu = new j1Menu();
 	movement = new j1Movement();
 	pathmanager = new j1PathManager(MS_PATHFINDING);
+	finish = new j1FinishGame();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -66,6 +68,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(player);
 
 	AddModule(scene);
+	AddModule(finish);
 
 	AddModule(movement);
 	AddModule(collision);

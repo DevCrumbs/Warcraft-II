@@ -32,6 +32,7 @@ class j1Console;
 class j1Menu;
 class j1Movement;
 class j1PathManager;
+class j1FinishGame;
 
 class j1App
 {
@@ -121,6 +122,7 @@ public:
 	j1Menu*						menu = nullptr;
 	j1Movement*					movement = nullptr;
 	j1PathManager*				pathmanager = nullptr;
+	j1FinishGame*				finish = nullptr;
 
 	bool isSoundCharged = false;
 

@@ -146,6 +146,7 @@
     <ClInclude Include="j1Console.h" />
     <ClInclude Include="j1EntityFactory.h" />
     <ClInclude Include="j1FadeToBlack.h" />
+    <ClInclude Include="j1FinishGame.h" />
     <ClInclude Include="j1Fonts.h" />
     <ClInclude Include="j1Gui.h" />
     <ClInclude Include="j1Input.h" />
@@ -225,6 +226,7 @@
     <ClCompile Include="j1Console.cpp" />
     <ClCompile Include="j1EntityFactory.cpp" />
     <ClCompile Include="j1FadeToBlack.cpp" />
+    <ClCompile Include="j1FinishGame.cpp" />
     <ClCompile Include="j1Fonts.cpp" />
     <ClCompile Include="j1Gui.cpp" />
     <ClCompile Include="j1Input.cpp" />
