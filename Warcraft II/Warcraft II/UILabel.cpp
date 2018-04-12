@@ -19,6 +19,7 @@ UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Modul
 
 	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.textWrapLength);
 	App->font->CalcSize(label.text.data(), width, height, font);
+	priority = PrioriryDraw_LABEL;
 
 	SetOrientation();
 }

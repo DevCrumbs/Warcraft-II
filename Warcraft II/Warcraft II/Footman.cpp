@@ -54,6 +54,17 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, unitInfo.attackRadius);
 	sightRadiusCollider->isTrigger = true;
 	attackRadiusCollider->isTrigger = true;
+
+	//LifeBar creation
+	UILifeBar_Info lifeBarInfo;
+	lifeBarInfo.background = { 241,336,45,8 };
+	lifeBarInfo.bar = { 241, 369,44,8 };
+	lifeBarInfo.maxLife = this->maxLife;
+	lifeBarInfo.life = this->currLife;
+	lifeBarInfo.maxWidth = lifeBarInfo.bar.w;
+
+	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
+	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
 }
 
 void Footman::Move(float dt)

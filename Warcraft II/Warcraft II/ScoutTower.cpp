@@ -9,6 +9,7 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	texArea = &scoutTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 
+	App->audio->PlayFx(2, 0); //Construction sound
 }
 
 void ScoutTower::Move(float dt)

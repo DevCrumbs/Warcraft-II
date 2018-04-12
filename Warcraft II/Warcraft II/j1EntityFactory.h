@@ -83,6 +83,7 @@ public:
 	
 	const EntityInfo& GetBuildingInfo(ENTITY_TYPE staticEntityType);
 	const EntityInfo& GetUnitInfo(ENTITY_TYPE dynamicEntityType);
+	const EntityInfo& GetBuiltBuilding();
 
 	SDL_Texture* GetHumanBuildingTexture();
 	SDL_Texture* GetNeutralBuildingTexture();
@@ -186,6 +187,7 @@ private:
 
 	BarracksInfo barracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
+	ChickenFarmInfo builtChickenFarmInfo;
 	ElvenLumberMillInfo elvenLumberMillInfo;
 	StablesInfo stablesInfo;
 	GryphonAviaryInfo gryphonAviaryInfo;

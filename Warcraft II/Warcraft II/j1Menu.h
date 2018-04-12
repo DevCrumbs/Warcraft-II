@@ -4,15 +4,14 @@
 #include "j1Module.h"
 #include "p2List.h"
 
+
 struct SDL_Texture;
-//class GuiImage;
-//class GuiText;
 class UIImage;
 class UILabel;
 class UIButton;
-//class Window;
-//class InputText;
 class UISlider;
+struct UICursor;
+struct Particle;
 
 enum MenuActions
 {
@@ -20,14 +19,16 @@ enum MenuActions
 	MenuActions_EXIT,
 	MenuActions_PLAY,
 	MenuActions_SETTINGS,
-	MenuActions_RETURN
+	MenuActions_RETURN,
+	MenuActions_SLIDERFX,
+	MenuActions_SLIDERMUSIC
 };
 
 struct SliderStruct
 {
 	UISlider* slider = nullptr;
 	UILabel*  name = nullptr;
-	UILabel*  value = nullptr;
+	UILabel*  value = nullptr; 
 };
 
 class j1Menu : public j1Module
@@ -64,29 +65,50 @@ public:
 	void CreateLoading();
 	void DeteleMenu();
 
+
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
-	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, uint numberValue);
+	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
+	void UpdateSlider(SliderStruct &sliderStruct);
+
+private:
+	void ChargeGameSounds();
 
 private:
 
+	UICursor * mouseText;
+
 	//Main Menu
-	UIButton* PlayButt = nullptr;
-	UILabel*  PlayLabel = nullptr;
-	UIButton* ExitButt = nullptr;
-	UILabel*  ExitLabel = nullptr;
-	UIButton* SettingsButt = nullptr;
-	UILabel*  SettingsLabel = nullptr;
+	UIButton* playButt = nullptr;
+	UILabel*  playLabel = nullptr;
+	UIButton* exitButt = nullptr;
+	UILabel*  exitLabel = nullptr;
+	UIButton* settingsButt = nullptr;
+	UILabel*  settingsLabel = nullptr;
 
 	//Settings
-	SliderStruct FPS;
-	SliderStruct AudioFX;
-	SliderStruct AudioMusic;
-	UIButton* ReturnButt = nullptr;
-	UILabel*  ReturnLabel = nullptr;
+	SliderStruct audioFX;
+	SliderStruct audioMusic;
+	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 
+	Particle* parchment;
 
 	MenuActions menuActions;
+
+	//Audio paths
+	string mainMenuMusicName;
+	string mainButtonSound;
+	string buildingConstructionSound;
+	string errorButtonSound;
+	string buildingErrorButtonSound;
+	string chickenFarmSound;
+	string goldMineSound;
+	string gryphonAviarySound;
+	string mageTowerSound;
+	string stablesSound;
+	string repairBuildingSound;
+	string destroyBuildingSound;
 
 public:
 	uint tab_button = 0;

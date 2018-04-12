@@ -83,6 +83,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	entities->active = false;
 	collision->active = false;
 	pathfinding->active = false;
+
 }
 
 // Destructor
@@ -168,6 +169,9 @@ bool j1App::Update()
 {
 	bool ret = true;
 	PrepareUpdate();
+
+	if (scene->GetPauseMenuActions() != PauseMenuActions_NOT_EXIST)
+		dt = 0;
 
 	if (input->GetWindowEvent(WE_QUIT) || quitGame)
 		ret = false;

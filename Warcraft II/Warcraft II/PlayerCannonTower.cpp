@@ -4,6 +4,7 @@ PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint
 {
 	texArea = &playerCannonTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
+	App->audio->PlayFx(2, 0); //Construction sound
 }
 
 void PlayerCannonTower::Move(float dt)

@@ -496,6 +496,9 @@ bool j1EntityFactory::Start()
 	footmanTex = App->tex->Load(footmanTexName.data());
 	gruntTex = App->tex->Load(gruntTexName.data());
 
+	builtChickenFarmInfo = chickenFarmInfo;
+	builtChickenFarmInfo.isBuilt = true;
+
 	return ret;
 }
 
@@ -982,6 +985,11 @@ const EntityInfo& j1EntityFactory::GetUnitInfo(ENTITY_TYPE dynamicEntityType)
 		return (const EntityInfo&)footmanInfo;
 		break;
 	}
+}
+
+const EntityInfo& j1EntityFactory::GetBuiltBuilding()
+{
+	return (const EntityInfo&)builtChickenFarmInfo;
 }
 
 SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {

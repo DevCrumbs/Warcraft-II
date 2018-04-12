@@ -31,18 +31,50 @@
   </map>
 
   <audio>
-    <music_folder>Assets/Audio/Music/</music_folder>
-    <fx_folder>Assets/Audio/FX/</fx_folder>
+    <music_folder>data/assets/audio/music/</music_folder>
+    <fx_folder>data/assets/audio/fx/</fx_folder>
     <volume default="16"/>
   </audio>
 
   <gui>
     <atlas file="data/assets/textures/UI/atlas.png"/>
+
+    <parchment speed = "5" loop = "0">
+      <frame x="  0" y="674" w="200" h="250" />
+      <frame x="200" y="674" w="200" h="250" />
+      <frame x="400" y="674" w="200" h="250" />
+      <frame x="600" y="674" w="200" h="250" />
+      <frame x="800" y="674" w="200" h="250" />
+    </parchment>
+      
   </gui>
 
+  <menu>
+    
+    <audioPaths>
+      <mainTheme path= "mainMenu.ogg"/>
+      <sounds>
+       <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"
+                      chickenFarm ="buildings/farm.wav" goldMine = "buildings/goldMine.wav" gryphAviar = "buildings/gryphonAviary.wav"
+                      mageTower = "buildings/mageTower.wav" stables= "buildings/stables.wav" repair = "buildings/buildingRepair.wav" 
+                      destroyBuilding = "buildingDestroy"/>
+        
+       <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
+      </sounds>
+    </audioPaths>
+    
+  </menu>
+  
+  
   <scene>
 
     <camera speed ="300.0" movMarginPcnt = "5"/>
+
+    <audioPaths>
+      <mainTheme path= "mainTheme.ogg"/>
+      <victoryScreen path= "victoryScreen.ogg"/>
+      <defeatScreen path= "defeatScreen.ogg"/>
+    </audioPaths>
     
     <maps>
       <orthogonal name="orthogonal_walk.tmx" active="0"/>
@@ -992,7 +1024,7 @@
     </towerArrows>
     
     <fire>
-        <low speed = "0.3" loop = "1" life = "1">
+        <low speed = "0.3" loop = "1">
            <frame x="  2" y="3" w="30" h="30" />
            <frame x=" 34" y="3" w="30" h="30" />
            <frame x=" 66" y="3" w="30" h="30" />
@@ -1001,7 +1033,7 @@
            <frame x="163" y="3" w="30" h="30" />
        </low>
          
-       <hard speed = "0.3" loop = "1" life = "1">
+       <hard speed = "0.3" loop = "1">
          <frame x="  0" y="38" w="50" h="50" />
          <frame x=" 55" y="38" w="50" h="50" />
          <frame x="112" y="38" w="50" h="50" />
@@ -1012,9 +1044,9 @@
          <frame x="114" y="93" w="50" h="50" />
          <frame x="167" y="93" w="50" h="50" />
          <frame x="221" y="92" w="50" h="50" />
-       </hard>
-  
+       </hard>      
     </fire> 
+  
   </particles>
 
 </config>

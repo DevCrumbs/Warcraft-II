@@ -20,6 +20,8 @@
 #include "j1Pathfinding.h"
 #include "j1Movement.h"
 #include "j1Gui.h"
+#include "j1Menu.h"
+#include "j1Player.h"
 #include "j1Fonts.h"
 
 #include "UILabel.h"
@@ -58,6 +60,13 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	warcraftActive = maps.child("warcraft").attribute("active").as_bool();
 	warcraftTexName = maps.child("warcraft").attribute("tex").as_string();
 
+	//Music
+	pugi::xml_node audio = config.child("audioPaths");
+
+	mainThemeMusicName = audio.child("mainTheme").attribute("path").as_string();
+
+
+
 	LoadKeys(config.child("buttons"));
 
 	// Load songs
@@ -81,6 +90,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 bool j1Scene::Start()
 {
 	bool ret = true;
+	App->audio->active = true;
 
 	// Save camera info
 	App->win->GetWindowSize(width, height);
@@ -118,6 +128,9 @@ bool j1Scene::Start()
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
 
 	alphaBuilding = EntityType_NONE;
+	pauseMenuActions = PauseMenuActions_NOT_EXIST;
+
+	App->audio->PlayMusic(mainThemeMusicName.data(), 2.0f);
 
 	return ret;
 }
@@ -162,14 +175,14 @@ bool j1Scene::PreUpdate()
 		unitInfo.attackRadius = 3;
 
 		if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
-			App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo);
+			App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo, App->player);
 
 		// 2: spawn a Grunt with priority 1
 		unitInfo.sightRadius = 3;
 		unitInfo.attackRadius = 2;
 
 		if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
-			App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo);
+			App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, App->player);
 	}
 
 	return ret;
@@ -195,14 +208,18 @@ bool j1Scene::Update(float dt)
 	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 	//App->collision->DebugDraw();
 
-	// Movement															 // Select units by mouse click
+	// Movement															// Select units by mouse click
 	/*if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 		startRectangle = mousePos;
 
 		Entity* entity = App->entities->IsEntityOnTile(mouseTile);
 
-		if (entity != nullptr)
+		if (entity != nullptr) {
+
+			App->audio->PlayFx(1, 0); //Button sound
+
 			App->entities->SelectEntity(entity);
+		}
 		else
 			App->entities->UnselectAllEntities();
 	}
@@ -210,6 +227,7 @@ bool j1Scene::Update(float dt)
 	int width = mousePos.x - startRectangle.x;
 	int height = mousePos.y - startRectangle.y;
 
+	/// SELECT UNITS
 	// Select units by rectangle drawing
 	if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
@@ -230,31 +248,71 @@ bool j1Scene::Update(float dt)
 		App->entities->SelectEntitiesWithinRectangle(mouseRect);
 	}
 
-	// Select a new goal for the selected units (single click or drag)
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
+	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
-		if (App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected()) == nullptr)
+
+	if (units.size() > 0) {
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+			App->player->DeleteEntitiesMenu();
+			App->player->MakeUnitsMenu(units);
+		}
+
+		UnitGroup* group = App->movement->GetGroupByUnits(units);
+
+		if (group == nullptr)
 
 			// Selected units will now behave as a group
-			App->movement->CreateGroupFromUnits(App->entities->GetLastUnitsSelected());
+			group = App->movement->CreateGroupFromUnits(units);
 
-		App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected())->DrawShapedGoal(mouseTile);
-	}
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
+		if (group != nullptr) {
 
-		if (App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected()) == nullptr)
+			/// SET GOAL
+			// Draw a shaped goal
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 
-			// Selected units will now behave as a group
-			App->movement->CreateGroupFromUnits(App->entities->GetLastUnitsSelected());
+				group->DrawShapedGoal(mouseTile);
 
-		UnitGroup* group = App->movement->GetGroupByUnits(App->entities->GetLastUnitsSelected());
+			// Set a normal or shaped goal
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
 
-		if (!group->SetShapedGoal())
-			group->SetGoal(mouseTile);
+				if (!group->SetShapedGoal()) /// shaped goal
+					group->SetGoal(mouseTile); /// normal goal
+			}
+
+			/// COMMAND PATROL
+			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN) {
+
+				//App->entities->CommandToUnits(units, UnitCommand_Patrol);
+			}
+
+			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
+			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
+
+				//App->entities->CommandToUnits(units, UnitCommand_Stop);
+			}
+		}
 	}*/
 
 	DebugKeys();
 	CheckCameraMovement(dt);
+
+	//Checks if resources have changed to update building menu and gold label
+	if (hasGoldChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		if (buildingMenuOn) {
+			UnLoadBuildingMenu();
+			LoadBuildingMenu();
+		}
+		hasGoldChanged = false;
+	}
+	if (hasFoodChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		hasFoodChanged = false;
+	}
+
 
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
@@ -268,6 +326,16 @@ bool j1Scene::Update(float dt)
 //	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
 //		App->win->scale -= 0.05f;
 
+	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
+	}
+
+	if(parchmentImg != nullptr)
+		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) 
+			pauseMenuActions = PauseMenuActions_CREATED;
+
 	return ret;
 }
 
@@ -276,8 +344,45 @@ bool j1Scene::PostUpdate()
 {
 	bool ret = true;
 
-	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN)
+	switch (pauseMenuActions)
+	{
+	case PauseMenuActions_NONE:
+		break;
+	case PauseMenuActions_CREATED:
+		CreatePauseMenu();
+		pauseMenuActions = PauseMenuActions_NONE;
+		break;
+	case PauseMenuActions_DESTROY:
+		if (parchmentImg != nullptr) {
+			App->gui->DestroyElement((UIElement**)&parchmentImg);
+		}
+		DestroyPauseMenu();
+		DestroySettingsMenu();
+		pauseMenuActions = PauseMenuActions_NOT_EXIST;
+		break;
+	case PauseMenuActions_RETURN_MENU:
+		pauseMenuActions = PauseMenuActions_NONE;
+		App->fade->FadeToBlack(this, App->menu);
+			break;
+	case PauseMenuActions_SETTINGS_MENU:
+		DestroyPauseMenu();
+		CreateSettingsMenu();
+		pauseMenuActions = PauseMenuActions_NONE;		
+		break;
+	case PauseMenuActions_SLIDERFX:
+		App->menu->UpdateSlider(AudioFXPause);
+		break;
+	case PauseMenuActions_SLIDERMUSIC:
+		App->menu->UpdateSlider(AudioMusicPause);
+	default:
+		break;
+	}
+	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
 		ret = false;
+		if (parchmentImg != nullptr) {
+			App->gui->DestroyElement((UIElement**)&parchmentImg);
+		}
+	}
 
 	return ret;
 }
@@ -293,7 +398,25 @@ bool j1Scene::CleanUp()
 	App->map->UnLoad();
 	App->tex->UnLoad(debugTex);
 
+
+	DestroyAllUI();
+
+
 	// Set to nullptr the pointers to the UI elements
+	App->menu->active = true;
+	App->map->active = false;
+	App->player->active = false;
+	App->entities->active = false;
+	App->collision->active = false;
+	App->pathfinding->active = false;
+
+	App->map->CleanUp();
+	App->player->CleanUp();
+	App->entities->CleanUp();
+	App->collision->CleanUp();
+	App->pathfinding->CleanUp();
+
+	active = false;
 
 	return ret;
 }
@@ -418,28 +541,37 @@ void j1Scene::CheckCameraMovement(float dt) {
 
 void j1Scene::LoadInGameUI()
 {
-	UIButton_Info buildingButtonInfo;
-	buildingButtonInfo.normalTexArea = {0, 0, 129, 33};
-	buildingButtonInfo.hoverTexArea = { 129, 0, 129, 33 };
-	buildingButtonInfo.pressedTexArea = { 257, 0, 129, 33 };
-	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buildingButtonInfo.normalTexArea.w, 0 }, buildingButtonInfo, this, nullptr);
+	//Buiding options
+	UIButton_Info buttonInfo;
+	buttonInfo.normalTexArea = {0, 0, 126, 26};
+	buttonInfo.hoverTexArea = { 129, 0, 126, 26 };
+	buttonInfo.pressedTexArea = { 257, 0, 126, 26 };
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this, nullptr);
 
-	UILabel_Info buildingLabelInfo;
-	buildingLabelInfo.fontName = FONT_NAME_WARCRAFT;
-	buildingLabelInfo.normalColor = White_;
-	buildingLabelInfo.text = "Buildings";
-	buildingLabel = App->gui->CreateUILabel({ 27,12 }, buildingLabelInfo, this, buildingButton);
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.text = "Buildings";
+	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, buildingButton);
+
+
+	//Pause menu 
+	pauseMenuButt = App->gui->CreateUIButton({ 5,1 }, buttonInfo, this);
+
+	labelInfo.text = "Menu";
+	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w/2, 8 }, labelInfo, this, pauseMenuButt);
 
 
 	UIImage_Info entitiesInfo;
 	entitiesInfo.texArea = { 0, 565, 371, 82 };
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
+	entitiesStats->SetPriorityDraw(PriorityDraw_UIINGAME);
 
-	UICursor_Info mouseInfo;
-	mouseInfo.default = { 243, 525, 28, 33 };
-	mouseInfo.onClick = { 243, 525, 28, 33 };
-	mouseText = App->gui->CreateUICursor(mouseInfo, this);
+	entitiesInfo.texArea={ 1006,0,800,600 };
+	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
+	inGameFrameImage->SetPriorityDraw(PriorityDraw_UIINGAME);
 
+	LoadResourcesLabels();
 }
 
 void j1Scene::LoadBuildingMenu()
@@ -449,8 +581,9 @@ void j1Scene::LoadBuildingMenu()
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = { 0,33,240,529 };
-	buildingMenu = App->gui->CreateUIImage({ -112, 0 }, imageInfo, this, buildingButton);
+	buildingMenu = App->gui->CreateUIImage({ -110, 0 }, imageInfo, this, buildingButton);
 	buildingMenuOn = true;
+	buildingMenu->SetPriorityDraw(PriorityDraw_UIINGAME);
 
 	buttonInfo.normalTexArea = { 241,34,50,41 };
 	buttonInfo.hoverTexArea = { 292,34,50,41 };
@@ -468,17 +601,17 @@ void j1Scene::LoadBuildingMenu()
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Cost: 500 gold";
-	if (App->player->currentGold < 500) {
+	if (App->player->currentGold < chickenFarmCost) {
 		labelInfo.normalColor = BloodyRed_;
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
 	}
 	chickenFarmCostLabel = App->gui->CreateUILabel({ 75, 82 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 241,76,50,41 };
-	buttonInfo.hoverTexArea = { 292,76,50,41 };
+	buttonInfo.normalTexArea = { 343,76,50,41 };
+	buttonInfo.hoverTexArea = { 343,76,50,41 };
 	buttonInfo.pressedTexArea = { 343,76,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < elvenLumberCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -490,18 +623,16 @@ void j1Scene::LoadBuildingMenu()
 	elvenLumberLabel = App->gui->CreateUILabel({ 75, 110}, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 600 gold";
-	if (App->player->currentGold < 600) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
 	elvenLumberCostLabel = App->gui->CreateUILabel({ 75, 127 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 241,118,50,41 };
-	buttonInfo.hoverTexArea = { 292,118,50,41 };
+	buttonInfo.normalTexArea = { 343,118,50,41 };
+	buttonInfo.hoverTexArea = { 343,118,50,41 };
 	buttonInfo.pressedTexArea = { 343,118,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < blacksmithCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -513,18 +644,17 @@ void j1Scene::LoadBuildingMenu()
 	blackSmithLabel = App->gui->CreateUILabel({ 75, 155 }, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 800 gold";
-	if (App->player->currentGold < 800) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	
 	blackSmithCostLabel = App->gui->CreateUILabel({ 75, 172 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 241,160,50,41 };
-	buttonInfo.hoverTexArea = { 292,160,50,41 };
+	buttonInfo.normalTexArea = { 343,160,50,41 };
+	buttonInfo.hoverTexArea = { 343,160,50,41 };
 	buttonInfo.pressedTexArea = { 343,160,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < stablesCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -536,18 +666,17 @@ void j1Scene::LoadBuildingMenu()
 	stablesLabel = App->gui->CreateUILabel({ 75, 200 }, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 900 gold";
-	if (App->player->currentGold < 900) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	
 	stablesCostLabel = App->gui->CreateUILabel({ 75, 217 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 241,202,50,41 };
-	buttonInfo.hoverTexArea = { 292,202,50,41 };
+	buttonInfo.normalTexArea = { 343,202,50,41 };
+	buttonInfo.hoverTexArea = { 343,202,50,41 };
 	buttonInfo.pressedTexArea = { 343,202,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < churchCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -559,18 +688,17 @@ void j1Scene::LoadBuildingMenu()
 	churchLabel = App->gui->CreateUILabel({ 75, 245 }, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 900 gold";
-	if (App->player->currentGold < 900) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	
 	churchCostLabel = App->gui->CreateUILabel({ 75, 262 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 394,160,50,41 };
-	buttonInfo.hoverTexArea = { 445,160,50,41 };
+	buttonInfo.normalTexArea = { 496,160,50,41 };
+	buttonInfo.hoverTexArea = { 496,160,50,41 };
 	buttonInfo.pressedTexArea = { 496,160,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < gryphonAviaryCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -582,18 +710,17 @@ void j1Scene::LoadBuildingMenu()
 	gryphonAviaryLabel = App->gui->CreateUILabel({ 75, 290 }, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 400 gold";
-	if (App->player->currentGold < 400) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	
 	gryphonAviaryCostLabel = App->gui->CreateUILabel({ 75, 307 }, labelInfo, this, buildingMenu);
 
-	buttonInfo.normalTexArea = { 394,202,50,41 };
-	buttonInfo.hoverTexArea = { 445,202,50,41 };	
+	buttonInfo.normalTexArea = { 496,202,50,41 };
+	buttonInfo.hoverTexArea = { 496,202,50,41 };
 	buttonInfo.pressedTexArea = { 496,202,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < mageTowerCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -605,18 +732,17 @@ void j1Scene::LoadBuildingMenu()
 	mageTowerLabel = App->gui->CreateUILabel({ 75, 335 }, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 1000 gold";
-	if (App->player->currentGold < 1000) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	
 	mageTowerCostLabel = App->gui->CreateUILabel({ 75, 352 }, labelInfo, this, buildingMenu);
 
 	buttonInfo.normalTexArea = { 394,34,50,41 };
 	buttonInfo.hoverTexArea = { 445,34,50,41 };
 	buttonInfo.pressedTexArea = { 496,34,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < scoutTowerCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -629,7 +755,7 @@ void j1Scene::LoadBuildingMenu()
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Cost: 400 gold";
-	if (App->player->currentGold < 400) {
+	if (App->player->currentGold < scoutTowerCost) {
 		labelInfo.normalColor = BloodyRed_;
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
@@ -639,7 +765,7 @@ void j1Scene::LoadBuildingMenu()
 	buttonInfo.normalTexArea = { 394,76,50,41 };
 	buttonInfo.hoverTexArea = { 445,76,50,41 };
 	buttonInfo.pressedTexArea = { 496,76,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < guardTowerCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -652,7 +778,7 @@ void j1Scene::LoadBuildingMenu()
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Cost: 600 gold";
-	if (App->player->currentGold < 600) {
+	if (App->player->currentGold < guardTowerCost) {
 		labelInfo.normalColor = BloodyRed_;
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
@@ -662,7 +788,7 @@ void j1Scene::LoadBuildingMenu()
 	buttonInfo.normalTexArea = { 394,118,50,41 };
 	buttonInfo.hoverTexArea = { 445,118,50,41 };
 	buttonInfo.pressedTexArea = { 496,118,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	if (App->player->currentGold < cannonTowerCost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
@@ -675,7 +801,7 @@ void j1Scene::LoadBuildingMenu()
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Cost: 800 gold";
-	if (App->player->currentGold < 800) {
+	if (App->player->currentGold < cannonTowerCost) {
 		labelInfo.normalColor = BloodyRed_;
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
@@ -685,40 +811,192 @@ void j1Scene::LoadBuildingMenu()
 
 void j1Scene::UnLoadBuildingMenu()
 {
-	App->gui->DestroyElement(buildingMenu);
-	App->gui->DestroyElement(chickenFarmButton);
-	App->gui->DestroyElement(chickenFarmLabel);
-	App->gui->DestroyElement(chickenFarmCostLabel);
-	App->gui->DestroyElement(elvenLumberButton);
-	App->gui->DestroyElement(elvenLumberLabel);
-	App->gui->DestroyElement(elvenLumberCostLabel);
-	App->gui->DestroyElement(blackSmithButton);
-	App->gui->DestroyElement(blackSmithLabel);
-	App->gui->DestroyElement(blackSmithCostLabel);
-	App->gui->DestroyElement(stablesButton);
-	App->gui->DestroyElement(stablesLabel);
-	App->gui->DestroyElement(stablesCostLabel);
-	App->gui->DestroyElement(churchButton);
-	App->gui->DestroyElement(churchLabel);
-	App->gui->DestroyElement(churchCostLabel);
-	App->gui->DestroyElement(gryphonAviaryButton);
-	App->gui->DestroyElement(gryphonAviaryLabel);
-	App->gui->DestroyElement(gryphonAviaryCostLabel);
-	App->gui->DestroyElement(mageTowerButton);
-	App->gui->DestroyElement(mageTowerLabel);
-	App->gui->DestroyElement(mageTowerCostLabel);
-	App->gui->DestroyElement(scoutTowerButton);
-	App->gui->DestroyElement(scoutTowerLabel);
-	App->gui->DestroyElement(scoutTowerCostLabel);
-	App->gui->DestroyElement(guardTowerButton);
-	App->gui->DestroyElement(guardTowerLabel);
-	App->gui->DestroyElement(guardTowerCostLabel);
-	App->gui->DestroyElement(cannonTowerButton);
-	App->gui->DestroyElement(cannonTowerLabel);
-	App->gui->DestroyElement(cannonTowerCostLabel);
+
+	App->gui->DestroyElement((UIElement**)&buildingMenu);
+	App->gui->DestroyElement((UIElement**)&chickenFarmButton);
+	App->gui->DestroyElement((UIElement**)&chickenFarmLabel);
+	App->gui->DestroyElement((UIElement**)&chickenFarmCostLabel);
+	App->gui->DestroyElement((UIElement**)&elvenLumberButton);
+	App->gui->DestroyElement((UIElement**)&elvenLumberLabel);
+	App->gui->DestroyElement((UIElement**)&elvenLumberCostLabel);
+	App->gui->DestroyElement((UIElement**)&blackSmithButton);
+	App->gui->DestroyElement((UIElement**)&blackSmithLabel);
+	App->gui->DestroyElement((UIElement**)&blackSmithCostLabel);
+	App->gui->DestroyElement((UIElement**)&stablesButton);
+	App->gui->DestroyElement((UIElement**)&stablesLabel);
+	App->gui->DestroyElement((UIElement**)&stablesCostLabel);
+	App->gui->DestroyElement((UIElement**)&churchButton);
+	App->gui->DestroyElement((UIElement**)&churchLabel);
+	App->gui->DestroyElement((UIElement**)&churchCostLabel);
+	App->gui->DestroyElement((UIElement**)&gryphonAviaryButton);
+	App->gui->DestroyElement((UIElement**)&gryphonAviaryLabel);
+	App->gui->DestroyElement((UIElement**)&gryphonAviaryCostLabel);
+	App->gui->DestroyElement((UIElement**)&mageTowerButton);
+	App->gui->DestroyElement((UIElement**)&mageTowerLabel);
+	App->gui->DestroyElement((UIElement**)&mageTowerCostLabel);
+	App->gui->DestroyElement((UIElement**)&scoutTowerButton);
+	App->gui->DestroyElement((UIElement**)&scoutTowerLabel);
+	App->gui->DestroyElement((UIElement**)&scoutTowerCostLabel);
+	App->gui->DestroyElement((UIElement**)&guardTowerButton);
+	App->gui->DestroyElement((UIElement**)&guardTowerLabel);
+	App->gui->DestroyElement((UIElement**)&guardTowerCostLabel);
+	App->gui->DestroyElement((UIElement**)&cannonTowerButton);
+	App->gui->DestroyElement((UIElement**)&cannonTowerLabel);
+	App->gui->DestroyElement((UIElement**)&cannonTowerCostLabel);
 	buildingMenuOn = false;
+}
+
+void j1Scene::LoadResourcesLabels()
+{
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.text = to_string(App->player->currentGold);
+	goldLabel = App->gui->CreateUILabel({ 224, 0 }, labelInfo, this, inGameFrameImage);
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;	
+	labelInfo.text = to_string(App->player->currentFood);
+	foodLabel = App->gui->CreateUILabel({ 334, 0 }, labelInfo, this, inGameFrameImage);
+}
+
+void j1Scene::UnLoadResourcesLabels()
+{
+	App->gui->DestroyElement((UIElement**)&goldLabel);
+	App->gui->DestroyElement((UIElement**)&foodLabel);
+}
+
+void j1Scene::CreatePauseMenu() {
+
+	UIButton_Info buttonInfo;
+	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
+	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	int x = parchmentImg->GetLocalPos().x + 100;
+	int y = parchmentImg->GetLocalPos().y + 60;
+	settingsButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
+
+	y = parchmentImg->GetLocalPos().y + 110;
+	continueButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
+
+	y = parchmentImg->GetLocalPos().y + 160;
+	ReturnMenuButt = App->gui->CreateUIButton({ x, y}, buttonInfo, this);
+
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.normalColor = Black_;
+	labelInfo.hoverColor = ColorGreen;
+	labelInfo.text = "Settings";
+	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, settingsButt);
+
+	labelInfo.text = "Resume Game";
+	continueLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, continueButt);
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.text = "Return Main Menu";
+	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
 
 }
+
+void j1Scene::DestroyPauseMenu() {
+
+	App->gui->DestroyElement((UIElement**)&settingsButt);
+	App->gui->DestroyElement((UIElement**)&ReturnMenuButt);
+	App->gui->DestroyElement((UIElement**)&continueButt);
+	App->gui->DestroyElement((UIElement**)&settingsLabel);
+	App->gui->DestroyElement((UIElement**)&continueLabel);
+	App->gui->DestroyElement((UIElement**)&ReturnMenuLabel);
+
+}
+
+void j1Scene::CreateSettingsMenu() {
+	UIButton_Info buttonInfo;
+	UILabel_Info labelInfo;
+	
+	//Fullscreen
+	if (!App->win->fullscreen) {
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 498, 370, 20, 20 };
+		buttonInfo.pressedTexArea = { 520, 370, 20, 20 };
+	}
+	else {
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 520, 370, 20, 20 };
+		buttonInfo.pressedTexArea = { 498, 370, 20, 20 };
+	}
+	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	buttonInfo.checkbox = true;
+	int x = parchmentImg->GetLocalPos().x + 130;
+	int y = parchmentImg->GetLocalPos().y + 150;
+	fullScreenButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
+
+	x -= 100;
+	labelInfo.text = "Fullscreen";
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
+	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
+
+
+	//Sliders
+	x = parchmentImg->GetLocalPos().x + 30;
+	y = parchmentImg->GetLocalPos().y + 60;
+	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
+	SDL_Rect butText = { 565, 359 , 8, 10 };
+	SDL_Rect bgText = { 434, 359, 130, 10 };
+	App->menu->AddSlider(AudioFXPause, {x,y}, "Audio FX", relativeVol, butText, bgText, this);
+	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
+	y += 50;
+	App->menu->AddSlider(AudioMusicPause, { x,y }, "Audio Music", relativeVol, butText, bgText, this);
+
+	buttonInfo.checkbox = false;
+	buttonInfo.normalTexArea = { 1000, 0, 30, 20 };
+	buttonInfo.hoverTexArea = { 0, 0, 0, 0 };
+	buttonInfo.pressedTexArea = { 0, 0, 0, 0 };
+	x = parchmentImg->GetLocalPos().x + 30;
+	y = parchmentImg->GetLocalPos().y + 185;
+	returnButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
+
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+	labelInfo.hoverColor = ColorGreen;
+	labelInfo.pressedColor = White_;
+	labelInfo.text = "<--";
+	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
+}
+
+void j1Scene::DestroySettingsMenu() {
+
+	App->gui->DestroyElement((UIElement**)&returnButt);
+	App->gui->DestroyElement((UIElement**)&returnLabel);
+	App->gui->DestroyElement((UIElement**)&fullScreenButt);
+	App->gui->DestroyElement((UIElement**)&fullScreenLabel);
+	App->gui->DestroyElement((UIElement**)&AudioFXPause.slider);
+	App->gui->DestroyElement((UIElement**)&AudioFXPause.name);
+	App->gui->DestroyElement((UIElement**)&AudioFXPause.value);
+	App->gui->DestroyElement((UIElement**)&AudioMusicPause.slider);
+	App->gui->DestroyElement((UIElement**)&AudioMusicPause.name);
+	App->gui->DestroyElement((UIElement**)&AudioMusicPause.value);
+
+}
+
+void j1Scene::DestroyAllUI() {
+	if (parchmentImg != nullptr) {
+		//parchment->isDeleted = true;
+		App->gui->DestroyElement((UIElement**)&parchmentImg);
+	}
+	DestroyPauseMenu();
+	DestroySettingsMenu();
+	UnLoadBuildingMenu();
+	App->gui->DestroyElement((UIElement**)&pauseMenuButt);
+	App->gui->DestroyElement((UIElement**)&pauseMenuLabel);
+	App->gui->DestroyElement((UIElement**)&entitiesStats);
+	App->gui->DestroyElement((UIElement**)&buildingButton);
+	App->gui->DestroyElement((UIElement**)&buildingLabel);
+	App->gui->DestroyElement((UIElement**)&inGameFrameImage);
+}
+
+PauseMenuActions j1Scene::GetPauseMenuActions()
+{
+	return pauseMenuActions;
+}
+
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 {
@@ -734,44 +1012,125 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (UIelem == buildingButton) {
+			App->audio->PlayFx(1, 0); //Button sound
+
 			if (!buildingMenuOn)
 				LoadBuildingMenu();
 
 			else
 				UnLoadBuildingMenu();
 		}
-		if (UIelem == chickenFarmButton && App->player->currentGold >= chickenFarmCost) {
-			UnLoadBuildingMenu();
-			alphaBuilding = EntityType_CHICKEN_FARM;
-			App->player->AddGold(-chickenFarmCost);
+
+		if (UIelem == chickenFarmButton) {
+			if (App->player->currentGold >= chickenFarmCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_CHICKEN_FARM;
+			}
+			else if(App->player->currentGold < chickenFarmCost)
+				App->audio->PlayFx(3, 0); //Button error sound
 		}
 		
-		if (UIelem == stablesButton && App->player->currentGold >= stablesCost) {
-			UnLoadBuildingMenu();
-			alphaBuilding = EntityType_STABLES;
-			App->player->AddGold(-stablesCost);
+		if (UIelem == stablesButton) {
+			if (App->player->currentGold >= stablesCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_STABLES;
+			}
+			else if(App->player->currentGold < stablesCost)
+				App->audio->PlayFx(3, 0); //Button error sound
 		}
 		
-		if (UIelem == gryphonAviaryButton && App->player->currentGold >= gryphonAviaryCost) {
-			UnLoadBuildingMenu();
-			alphaBuilding = EntityType_GRYPHON_AVIARY;
-			App->player->AddGold(-gryphonAviaryCost);
+		if (UIelem == gryphonAviaryButton) {
+			if (App->player->currentGold >= gryphonAviaryCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_GRYPHON_AVIARY;
+			}
+			else if(App->player->currentGold < gryphonAviaryCost)
+				App->audio->PlayFx(3, 0); //Button error sound
 		}
 
-		if (UIelem == mageTowerButton && App->player->currentGold >= mageTowerCost) {
-			UnLoadBuildingMenu();
-			alphaBuilding = EntityType_MAGE_TOWER;
-			App->player->AddGold(-mageTowerCost);
+		if (UIelem == mageTowerButton) {
+			if (App->player->currentGold >= mageTowerCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_MAGE_TOWER;
+			}
+			else if(App->player->currentGold < mageTowerCost)
+				App->audio->PlayFx(3, 0); //Button error sound
 		}
 
-		if (UIelem == scoutTowerButton && App->player->currentGold >= scoutTowerCost) {
-			UnLoadBuildingMenu();
-			alphaBuilding = EntityType_SCOUT_TOWER;
-			App->player->AddGold(-scoutTowerCost);
+		if (UIelem == scoutTowerButton) {
+			if (App->player->currentGold >= scoutTowerCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_SCOUT_TOWER;
+			}
+			else if(App->player->currentGold < scoutTowerCost)
+				App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+		else if (UIelem == pauseMenuButt) {
+			App->audio->PlayFx(1, 0); //Button sound
+			if (parchmentImg == nullptr) {
+				UIImage_Info parchmentInfo;
+				parchmentInfo.texArea = App->gui->parchmentArea;
+				parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
+				parchmentImg->StartAnimation(App->gui->parchmentAnim);
+				parchmentImg->SetPriorityDraw(PriorityDraw_PAUSEMENU);
+			}
+			else {
+				pauseMenuActions = PauseMenuActions_DESTROY;
+			}
+		}
+
+		else if (UIelem == continueButt) {
+			App->audio->PlayFx(1, 0); //Button sound
+			pauseMenuActions = PauseMenuActions_DESTROY;
+		}
+
+		else if (UIelem == ReturnMenuButt) {
+			App->audio->PlayFx(1, 0); //Button sound
+			pauseMenuActions = PauseMenuActions_RETURN_MENU;
+		}
+
+		else if (UIelem == settingsButt) {
+			App->audio->PlayFx(1, 0); //Button sound
+			pauseMenuActions = PauseMenuActions_SETTINGS_MENU;
+		}
+
+		else if (UIelem == returnButt) {
+			App->audio->PlayFx(1, 0); //Button sound
+			DestroySettingsMenu();
+			pauseMenuActions = PauseMenuActions_CREATED;
+		}
+
+		else if (UIelem == (UIElement*)AudioFXPause.slider)
+			pauseMenuActions = PauseMenuActions_SLIDERFX;
+
+		else if (UIelem == (UIElement*)AudioMusicPause.slider)
+			pauseMenuActions = PauseMenuActions_SLIDERMUSIC;
+
+		else if (UIelem == fullScreenButt)
+		{
+			App->audio->PlayFx(1, 0); //Button sound
+			if (App->win->fullscreen) {
+				App->win->fullscreen = false;
+				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
+				break;
+			}
+			else {
+				App->win->fullscreen = true;
+				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+				break;
+			}
 		}
 		break;
 
 	case UI_EVENT_MOUSE_LEFT_UP:
+		if (UIelem == (UIElement*)AudioFXPause.slider || UIelem == (UIElement*)AudioMusicPause.slider)
+			pauseMenuActions = PauseMenuActions_NONE;
 		break;
 	}
 }

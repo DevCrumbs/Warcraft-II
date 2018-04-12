@@ -8,7 +8,7 @@
 #include "p2Point.h"
 #include "SDL\include\SDL_rect.h"
 
-
+#include <queue>
 #include <list>
 using namespace std;
 
@@ -19,6 +19,7 @@ enum HoverCheck
 	HoverCheck_Repair
 };
 
+
 struct UILabel;
 struct UIImage;
 struct UIButton;
@@ -26,6 +27,7 @@ struct UILifeBar;
 class Entity;
 
 class StaticEntity;
+enum ENTITY_TYPE;
 
 struct HoverButton
 {
@@ -45,10 +47,56 @@ struct HoverInfo
 	UIImage* background = nullptr;
 };
 
+struct GroupSelectedStats
+{
+	UIImage* entity1Icon = nullptr;
+	UIImage* entity2Icon = nullptr;
+	UIImage* entity3Icon = nullptr;
+	UIImage* entity4Icon = nullptr;
+	UIImage* entity5Icon = nullptr;
+	UIImage* entity6Icon = nullptr;
+	UIImage* entity7Icon = nullptr;
+	UIImage* entity8Icon = nullptr;
+	UILifeBar* lifeBar1 = nullptr;
+	UILifeBar* lifeBar2 = nullptr;
+	UILifeBar* lifeBar3 = nullptr;
+	UILifeBar* lifeBar4 = nullptr;
+	UILifeBar* lifeBar5 = nullptr;
+	UILifeBar* lifeBar6 = nullptr;
+	UILifeBar* lifeBar7 = nullptr;
+	UILifeBar* lifeBar8 = nullptr;
+
+	list<DynamicEntity*> units;
+};
+
+struct ToSpawnUnitsStats 
+{
+	UIImage* frstInQueueIcon = nullptr;
+	UIImage* sndInQueueIcon = nullptr;
+	UIImage* trdInQueueIcon = nullptr;
+	UILifeBar* frstInQueueBar = nullptr;
+	UILifeBar* sndInQueueBar = nullptr;
+	UILifeBar* trdInQueueBar = nullptr;
+};
+
+struct ToSpawnUnit {
+	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
+		this->toSpawnTimer = toSpawnTimer;
+		this->entityType = entityType;
+	}
+	j1Timer toSpawnTimer;
+	ENTITY_TYPE entityType;
+};
+
 struct EntitySelectedStats
 {
 	UILabel* HP = nullptr;
 	UILabel* entityName = nullptr;
+	UILabel* entitySight = nullptr;
+	UILabel* entityRange = nullptr;
+	UILabel* entityDamage = nullptr;
+	UILabel* entityMana = nullptr;
+	UILabel* entityMovementSpeed = nullptr;
 	UIImage* entityIcon = nullptr;
 	UILifeBar* lifeBar = nullptr;
 
@@ -74,6 +122,7 @@ public:
 	bool PostUpdate();
 
 	void CheckIfPlaceBuilding();
+	void CheckUnitSpawning();
 	iPoint GetMouseTilePos();
 	iPoint GetMousePos();
 
@@ -94,14 +143,21 @@ public:
 
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
+	void MakeUnitMenu(Entity* entity);
+	void MakeUnitsMenu(list<DynamicEntity*> units);
 	void DeleteEntitiesMenu();
+	void MakeHoverInfoMenu(string unitProduce, string gold);
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
+	void CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image);
+	void CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity* entity);
+	void CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar);
+
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
-	void DestroyUIElem(UIElement* elem);
 	void CreateBarracksButtons();
+	void HandleBarracksUIElem();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 
@@ -132,6 +188,7 @@ public:
 
 	int totalGold = 0; // total gold earned during the game
 	int currentGold = 0; // amount of gold that the player has at the current moment
+	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
 	//Units costs
 	int footmanCost = 500;
 	int elvenArcherCost = 400;
@@ -171,9 +228,18 @@ private:
 
 	EntitySelectedStats entitySelectedStats;
 
+	GroupSelectedStats groupSelectedStats;
+
+	ToSpawnUnitsStats toSpawnUnitStats;
+
 	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton;
 
 	list<UIElement*> UIMenuInfoList;
+
+	//Spawning units from barracks queues and variables
+	queue<ToSpawnUnit> toSpawnUnitQueue;
+	uint spawningTime = 5; //In seconds
+	uint maxSpawnQueueSize = 2;
 
 };
 
