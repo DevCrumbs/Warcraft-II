@@ -21,16 +21,13 @@ public:
 	bool Start();
 	bool Update(float dt);
 
-	void LoadWinScene();
-	void LoadLoseScene();
-
-	uint totalGold = 0u; // total gold earned during the game
-	uint Time = 0u;
+	void LoadScene(bool isWin);
 
 
 private:
 
-	UILabel* titleLabel = nullptr;
+	UILabel* titleLabel = nullptr, *unitProuceLabel = nullptr, *totalGoldLabel = nullptr, *enemiesKilLabel = nullptr, 
+		*buildingsDestroyedLabel = nullptr, *totalTimeLabel = nullptr, *roomsExploredLabel = nullptr;
 
 	SDL_Rect screen;
 

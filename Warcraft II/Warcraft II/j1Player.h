@@ -132,6 +132,7 @@ public:
 	bool keepUpgrade = false;
 
 	int currentGold = 0; // amount of gold that the player has at the current moment
+	uint totalGold = 0u; // total gold earned during the game
 	//Units costs
 	int footmanCost = 500;
 	int elvenArcherCost = 400;

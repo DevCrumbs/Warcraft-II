@@ -48,10 +48,8 @@ bool j1FinishGame::Start()
 	scale = App->win->GetScale();
 
 	screen = { 0, 0, static_cast<int>(width * scale), static_cast<int>(height * scale) };
-	if(App->player->isWin)
-		LoadWinScene();
-	else
-		LoadLoseScene();
+	LoadScene(App->player->isWin);
+
 
 	bg = App->tex->Load(bgTexName.data());
 
@@ -63,35 +61,51 @@ bool j1FinishGame::Update(float dt)
 {
 
 	//App->render->Blit(bg, 0, 0, &screen);
-	if(App->player->isWin)
+	/*if(App->player->isWin)
 		App->render->DrawQuad(screen, 0, 255, 0, 255);
 	else
 		App->render->DrawQuad(screen, 255, 0, 0, 255);
-
+*/
 	return true;
 }
 
 
-void j1FinishGame::LoadWinScene() {
+void j1FinishGame::LoadScene(bool isWin) {
+	
 	UILabel_Info labelInfo;
 
-	labelInfo.text = "Congratulations! Yo have defeated the Horde!";
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorBlue;
-	//labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	if (isWin) {
+		labelInfo.text = "Congratulations! You have defeated the Horde!";
+		labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorBlue;
+	}
+	else {
+		labelInfo.text = "Oh, no! You have been defeated by the Horde!";
+		labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorRed;
+	}
 
 	titleLabel = App->gui->CreateUILabel({ screen.w / 2, 50 }, labelInfo);
 
-}
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = White_;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
 
-void j1FinishGame::LoadLoseScene() {
-	UILabel_Info labelInfo;
-
-	labelInfo.text = "Oh, no! Yo have been defeated by the Horde!";
-	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
-	//labelInfo.fontName = FONT_NAME_WARCRAFT20;
-
-	titleLabel = App->gui->CreateUILabel({ screen.w / 2, 50 }, labelInfo);
-
+	labelInfo.text = "Units produced: ";
+	unitProuceLabel = App->gui->CreateUILabel({ 50 , 175 }, labelInfo);
+										    
+	labelInfo.text = "Gold gathered: ";	    
+	totalGoldLabel = App->gui->CreateUILabel({ 50 , 225 }, labelInfo);
+										    
+	labelInfo.text = "Enemies killed: ";    
+	enemiesKilLabel = App->gui->CreateUILabel({ 50 , 325 }, labelInfo);
+										  
+	labelInfo.text = "Buildings destroyed: ";
+	buildingsDestroyedLabel = App->gui->CreateUILabel({ 50 , 375 }, labelInfo);
+										   
+	labelInfo.text = "Rooms explored: ";   
+	roomsExploredLabel = App->gui->CreateUILabel({ 50 , 475 }, labelInfo);
+										    
+	labelInfo.text = "Total time: ";	    
+	totalTimeLabel = App->gui->CreateUILabel({ 50 , 525 }, labelInfo);
 }
