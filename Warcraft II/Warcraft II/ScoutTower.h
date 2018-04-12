@@ -74,6 +74,8 @@ private:
 	//Arrow
 	Particle* arrowParticle = nullptr;
 	ArrowDirection arrowDirection = NO_DIRECTION;
+
+	bool isColliderCreated = false;
 };
 
 #endif //__ScoutTower_H__
