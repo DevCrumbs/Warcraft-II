@@ -1049,4 +1049,11 @@
   
   </particles>
 
+  
+  <finish>
+    <spritesheets>
+      <atlas name = "data/assets/textures/backgrounds/finishGame.png"/>
+    </spritesheets>
+    
+  </finish>
 </config>

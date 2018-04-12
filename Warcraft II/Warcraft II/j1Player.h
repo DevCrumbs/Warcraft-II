@@ -141,6 +141,7 @@ public:
 	int mageCost = 1200;
 	int gryphonRiderCost = 2500;
 
+	bool isWin = false;
 private:
 
 	double timer = 0.0f; // game time
