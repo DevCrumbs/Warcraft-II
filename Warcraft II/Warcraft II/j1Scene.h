@@ -81,6 +81,8 @@ public:
 	void LoadInGameUI();
 	void LoadBuildingMenu();
 	void UnLoadBuildingMenu();
+	void LoadResourcesLabels();
+	void UnLoadResourcesLabels();
 	void CreatePauseMenu();
     void DestroyPauseMenu();
 	void CreateSettingsMenu();
@@ -118,6 +120,8 @@ public:
 
 	bool pause = false;
 
+	bool hasGoldChanged = false;
+	bool hasFoodChanged = false;
 
 	UIImage* entitiesStats;
 	ENTITY_TYPE GetAlphaBuilding();
@@ -142,6 +146,10 @@ private:
 	UILabel *chickenFarmCostLabel, *elvenLumberCostLabel, *blackSmithCostLabel, *stablesCostLabel, *gryphonAviaryCostLabel, *mageTowerCostLabel, *churchCostLabel, *scoutTowerCostLabel, *guardTowerCostLabel, *cannonTowerCostLabel;
 
 	UIImage *buildingMenu;
+
+	//Frame InGame
+	UIImage* inGameFrameImage;
+	UILabel* goldLabel, *foodLabel;
 
 	//Pause Menu
 	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;

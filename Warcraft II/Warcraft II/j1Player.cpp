@@ -44,6 +44,7 @@ bool j1Player::Start()
 bool j1Player::Update(float dt) {
 
 	CheckIfPlaceBuilding();
+	CheckUnitSpawning();
 
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		if (stables != nullptr) {
@@ -123,6 +124,7 @@ bool j1Player::Update(float dt) {
 	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN) {
 		App->audio->PlayFx(6, 0); //Gold mine sound
 		AddGold(500);
+		App->scene->hasGoldChanged = true;
 	}
 	//Life Bar on building 
 	if (entitySelectedStats.entitySelected != nullptr) {
@@ -217,6 +219,8 @@ void j1Player::CheckIfPlaceBuilding()
 				c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				chickenFarm.push_back(c);
+				AddGold(-App->scene->chickenFarmCost); //Discount gold
+				App->scene->hasGoldChanged = true;
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -226,6 +230,8 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
 				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
+				AddGold(-App->scene->stablesCost); //Discount gold
+				App->scene->hasGoldChanged = true;
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -235,6 +241,8 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
 				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
+				AddGold(-App->scene->gryphonAviaryCost); //Discount gold
+				App->scene->hasGoldChanged = true;
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -244,6 +252,8 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
 				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
+				AddGold(-App->scene->mageTowerCost); //Discount gold
+				App->scene->hasGoldChanged = true;
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -255,6 +265,8 @@ void j1Player::CheckIfPlaceBuilding()
 				s = (StaticEntity*)App->entities->AddEntity(EntityType_SCOUT_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_SCOUT_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				scoutTower.push_back(s);
+				AddGold(-App->scene->scoutTowerCost); //Discount gold
+				App->scene->hasGoldChanged = true;
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -278,6 +290,49 @@ void j1Player::CheckIfPlaceBuilding()
 	{
 		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 		SDL_SetTextureAlphaMod(App->entities->GetNeutralBuildingTexture(), 255);
+	}
+}
+
+//This method checks for the spawning queue of the units and if they're ready to spawn or not
+void j1Player::CheckUnitSpawning()
+{
+	fPoint barracksPos = barracks->GetPos();
+	UnitInfo unitInfo;
+	fPoint mageTowerPos = { 0.0,0.0 };
+	fPoint gryphonAviaryPos = { 0.0,0.0 };
+	if (mageTower != nullptr) {
+		mageTowerPos = mageTower->GetPos();
+	}
+	if (gryphonAviary != nullptr) {
+		gryphonAviaryPos = gryphonAviary->GetPos();
+	}
+
+	if (!toSpawnUnitTimerQueue.empty()) {
+		if (toSpawnUnitTimerQueue.front().Read() > (spawningTime * 1000)) {
+			ENTITY_TYPE toSpawnEntity = toSpawnUnitTypeQueue.front();
+
+			switch (toSpawnEntity) {
+			case EntityType_FOOTMAN:
+				App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo);
+				break;
+			case EntityType_ELVEN_ARCHER:
+				App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo);
+				break;
+			case EntityType_MAGE:
+				App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_MAGE), unitInfo);
+				break;
+			case EntityType_PALADIN:
+				App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_PALADIN), unitInfo);
+				break;
+			case EntityType_GRYPHON_RIDER:
+				App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviaryPos.x + 30, gryphonAviaryPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo);
+				break;
+			default:
+				break;
+			}
+			toSpawnUnitTimerQueue.pop();
+			toSpawnUnitTypeQueue.pop();
+		}
 	}
 }
 
@@ -443,10 +498,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 }
 
+
 void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) {
 
 	UILabel_Info labelInfo;
 	labelInfo.text = entityName_text;
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
 	entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
@@ -497,14 +554,210 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	entitySelectedStats.entitySelected = currentEntity;
 }
 
+void j1Player::MakeUnitMenu(Entity* entity)
+{
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_FOOTMAN) {
+		UIImage_Info imageInfo;
+		imageInfo.texArea = { 240,244, 50, 41 };
+		imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+		imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+		entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h / 2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		UILifeBar_Info lifeInfo;
+		lifeInfo.background = { 289,346,145,23 };
+		lifeInfo.bar = { 300,373,128,8 };
+		lifeInfo.maxLife = entity->GetMaxLife();
+		lifeInfo.maxWidth = lifeInfo.bar.w;
+		lifeInfo.lifeBarPosition = { 12, 10 };
+		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		UILabel_Info labelInfo;
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
+		labelInfo.text = "Footman";
+		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+		entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "60/60";
+		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT9;
+		labelInfo.text = "Damage: 6";
+		entitySelectedStats.entityDamage = App->gui->CreateUILabel({ 75, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Mana: -";
+		entitySelectedStats.entityMana = App->gui->CreateUILabel({ 145, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Sight: 4";
+		entitySelectedStats.entitySight = App->gui->CreateUILabel({ 75, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Range: 9";
+		entitySelectedStats.entityRange = App->gui->CreateUILabel({ 145, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Movement Speed: 10";
+		entitySelectedStats.entityMovementSpeed = App->gui->CreateUILabel({ 75, 50 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	}
+
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+		UIImage_Info imageInfo;
+		imageInfo.texArea = { 291,244, 50, 41 };
+		imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+		imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+		entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h / 2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		//TODO aleix
+		UILifeBar_Info lifeInfo;
+		lifeInfo.background = { 289,346,145,23 };
+		lifeInfo.bar = { 300,373,128,8 };
+		lifeInfo.maxLife = entity->GetMaxLife();
+		lifeInfo.maxWidth = lifeInfo.bar.w;
+		lifeInfo.lifeBarPosition = { 12, 10 };
+		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		UILabel_Info labelInfo;
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
+		labelInfo.text = "Elven Archer";
+		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+		entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "50/50";
+		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
+		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT9;
+		labelInfo.text = "Damage: 5";
+		entitySelectedStats.entityDamage = App->gui->CreateUILabel({ 75, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Mana: -";
+		entitySelectedStats.entityMana = App->gui->CreateUILabel({ 145, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Sight: 9";
+		entitySelectedStats.entitySight = App->gui->CreateUILabel({ 75, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Range: 4";
+		entitySelectedStats.entityRange = App->gui->CreateUILabel({ 145, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+		labelInfo.text = "Movement Speed: 10";
+		entitySelectedStats.entityMovementSpeed = App->gui->CreateUILabel({ 75, 50 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	}
+
+	
+
+	entitySelectedStats.entitySelected = entity;
+	
+}
+
+void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
+{	
+
+	list<DynamicEntity*>::iterator it;
+	it = units.begin();
+	int i = 0;
+	while (it != units.end()) {
+		if (units.size() == 1) {
+			MakeUnitMenu((*it));
+
+		}
+		else {
+			switch (i)
+			{
+			case 0:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 2,18 }, { 649, 160, 46, 30 }, groupSelectedStats.entity1Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 2,18 }, { 696, 160, 46, 30 }, groupSelectedStats.entity1Icon);
+				}
+				CreateGroupLifeBar({ 1,33 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar1, (Entity*)(*it));
+				break;
+			case 1:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 57,18 }, { 649, 160, 46, 30 }, groupSelectedStats.entity2Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 57,18 }, { 696, 160, 46, 30 }, groupSelectedStats.entity2Icon);
+				}
+				CreateGroupLifeBar({ 56,33 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar2, (Entity*)(*it));
+				break;
+			case 2:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 111,18 }, { 649, 160, 46, 30 }, groupSelectedStats.entity3Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 111,18 }, { 696, 160, 46, 30 }, groupSelectedStats.entity3Icon);
+				}
+				CreateGroupLifeBar({ 110,33 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar3, (Entity*)(*it));
+				break;
+			case 3:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 166,18 }, { 649, 160, 46, 30 }, groupSelectedStats.entity4Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 166,18 }, { 696, 160, 46, 30 }, groupSelectedStats.entity4Icon);
+				}
+				CreateGroupLifeBar({ 165,33 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar4, (Entity*)(*it));
+				break;
+			case 4:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 2, 57 }, { 649, 160, 46, 30 }, groupSelectedStats.entity5Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 2, 57 }, { 696, 160, 46, 30 }, groupSelectedStats.entity5Icon);
+				}
+				CreateGroupLifeBar({ 1,72 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar5, (Entity*)(*it));
+				break;
+			case 5:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 57,57 }, { 649, 160, 46, 30 }, groupSelectedStats.entity6Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 57,57 }, { 696, 160, 46, 30 }, groupSelectedStats.entity6Icon);
+				}
+				CreateGroupLifeBar({ 56,72 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar6, (Entity*)(*it));
+				break;
+			case 6:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 111,57 }, { 649, 160, 46, 30 }, groupSelectedStats.entity7Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 111,57 }, { 696, 160, 46, 30 }, groupSelectedStats.entity7Icon);
+				}
+				CreateGroupLifeBar({ 110,72 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar7, (Entity*)(*it));
+				break;
+			case 7:
+				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+					CreateGroupIcon({ 166,57 }, { 649, 160, 46, 30 }, groupSelectedStats.entity8Icon);
+				}
+				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+					CreateGroupIcon({ 166,57 }, { 696, 160, 46, 30 }, groupSelectedStats.entity8Icon);
+				}
+				CreateGroupLifeBar({ 165,72 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar8, (Entity*)(*it));
+				break;
+			default:
+				break;
+			}
+		}
+		
+		it++;
+		i++;
+	}
+	i = 0;
+	groupSelectedStats.units = units;
+	
+}
+
 void j1Player::DeleteEntitiesMenu() {
-
-
 
 	if (entitySelectedStats.entitySelected == barracks) {
 		App->gui->DestroyElement((UIElement**)&produceElvenArcherButton);
 		App->gui->DestroyElement((UIElement**)&produceFootmanButton);
 		App->gui->DestroyElement((UIElement**)&producePaladinButton);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueBar);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueBar);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueBar);
 	}
 
 	else if (entitySelectedStats.entitySelected == gryphonAviary)
@@ -517,8 +770,34 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityName);
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityIcon);
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.lifeBar);
+		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityDamage);
+		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityMana);
+		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityMovementSpeed);
+		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityRange);
+		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entitySight);
 		entitySelectedStats.entitySelected = nullptr;
 	}
+
+	if (!groupSelectedStats.units.empty()) {
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity1Icon);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity2Icon);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity3Icon);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity4Icon);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity5Icon);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity6Icon);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity7Icon);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity8Icon);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar1);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar2);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar3);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar4);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar5);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar6);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar7);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar8);
+		groupSelectedStats.units.clear();
+	}
+	
 }
 
 void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) {
@@ -541,6 +820,25 @@ void j1Player::DeleteHoverInfoMenu()
 	App->gui->DestroyElement((UIElement**)&hoverInfo.background);
 	App->gui->DestroyElement((UIElement**)&hoverInfo.cost);
 	App->gui->DestroyElement((UIElement**)&hoverInfo.info);
+}
+
+void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image)
+{
+	UIImage_Info imageInfo;
+	imageInfo.texArea = texArea;
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	image = App->gui->CreateUIImage(iconPos, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+}
+void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity * entity)
+{
+	UILifeBar_Info lifeInfo;
+	lifeInfo.background = backgroundTexArea;
+	lifeInfo.bar = barTexArea;
+	lifeInfo.maxLife = entity->GetMaxLife();
+	lifeInfo.maxWidth = lifeInfo.bar.w;
+	lifeInfo.lifeBarPosition = { 12, 10 };
+	lifeBar = App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
 
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
@@ -581,6 +879,64 @@ void j1Player::CreateBarracksButtons()
 	CreateSimpleButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 268, 2 }, produceElvenArcherButton);
 	if (barracksUpgrade && stables != nullptr && stables->buildingState == BuildingState_Normal)
 		CreateSimpleButton({ 444,244,50,41 }, { 699, 244, 50, 41 }, { 954,244,50,41 }, { 319, 2 }, producePaladinButton);
+	
+	uint unitInQueue = 1;
+	for each (ENTITY_TYPE elem in toSpawnUnitTypeQueue._Get_container()) {
+		UIImage_Info info;
+		UILifeBar_Info lifeInfo;
+		switch (unitInQueue) {
+		case 1:
+			switch (elem) {
+			case EntityType_FOOTMAN:
+				CreateGroupIcon({ 72, 20 }, { 649,160,39,30 }, toSpawnUnitStats.frstInQueueIcon);
+				//CreateGroupLifeBar({ 72, 40 }, { 241,362,46,7 }, { 243,358,42,3 }, toSpawnUnitStats.frstInQueueBar);
+				lifeInfo.background = { 241,362,46,7 };
+				lifeInfo.bar = { 243,358,42,3 };
+				lifeInfo.maxLife = 50;
+				lifeInfo.life = (lifeInfo.maxLife);
+				lifeInfo.maxWidth = lifeInfo.bar.w;
+				lifeInfo.lifeBarPosition = { 2, 2 };
+				toSpawnUnitStats.frstInQueueBar = App->gui->CreateUILifeBar({ 72, 40 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+				break;
+			case EntityType_ELVEN_ARCHER:
+				CreateGroupIcon({ 72, 20 }, { 696,160,39,30 }, toSpawnUnitStats.frstInQueueIcon);
+				break;
+			default:
+				CreateGroupIcon({ 72, 20 }, { 649,160,39,30 }, toSpawnUnitStats.frstInQueueIcon); //Footman
+				break;
+			}
+			break;
+		case 2:
+			switch (elem) {
+			case EntityType_FOOTMAN:
+				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
+				break;
+			case EntityType_ELVEN_ARCHER:
+				CreateGroupIcon({ 120, 20 }, { 696,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
+				break;
+			default:
+				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
+				break;
+			}
+			break;
+		case 3:
+			switch (elem) {
+			case EntityType_FOOTMAN:
+				CreateGroupIcon({ 168, 20 }, { 649,160,39,30 }, toSpawnUnitStats.trdInQueueIcon);
+				break;
+			case EntityType_ELVEN_ARCHER:
+				CreateGroupIcon({ 168, 20 }, { 696,160,39,30 }, toSpawnUnitStats.trdInQueueIcon);
+				break;
+			default:
+				CreateGroupIcon({ 168, 20 }, { 649,160,39,30 }, toSpawnUnitStats.trdInQueueIcon); //Footman
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+		unitInQueue++;
+	}
 }
 
 void j1Player::CreateGryphonAviaryButtons()
@@ -606,21 +962,6 @@ void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pres
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
 {
-	UnitInfo unitInfo;
-	FootmanInfo footmanInfo;
-	ElvenArcherInfo elvenArcherInfo;
-	MageInfo mageInfo;
-	PaladinInfo paladinInfo;
-	GryphonRiderInfo gryphonRiderInfo;
-	fPoint barracksPos = barracks->GetPos();
-	fPoint mageTowerPos = { 0.0,0.0 };
-	fPoint gryphonAviaryPos = { 0.0,0.0 };
-	if (mageTower != nullptr) {
-		mageTowerPos = mageTower->GetPos();
-	}
-	if (gryphonAviary != nullptr) {
-		gryphonAviaryPos = gryphonAviary->GetPos();
-	}
 
 	if(App->scene->GetPauseMenuActions() == PauseMenuActions_NOT_EXIST)
 		switch (UIevent)
@@ -684,46 +1025,66 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 
 			if (UIelem == produceFootmanButton) {
-				if (currentGold >= footmanCost) {
+				if (currentGold >= footmanCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
-					App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)footmanInfo, unitInfo);
 					currentGold -= 500;
+					//Timer for the spawning
+					j1Timer spawnTimer;
+					toSpawnUnitTimerQueue.push(spawnTimer);
+					toSpawnUnitTimerQueue.back().Start();
+					toSpawnUnitTypeQueue.push(EntityType_FOOTMAN);
 				}
 				else if (currentGold < footmanCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == produceElvenArcherButton) {
-				if (currentGold >= elvenArcherCost) {
+				if (currentGold >= elvenArcherCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
-					App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)elvenArcherInfo, unitInfo);
 					currentGold -= 400;
+					//Timer for the spawning
+					j1Timer spawnTimer;
+					toSpawnUnitTimerQueue.push(spawnTimer);
+					toSpawnUnitTimerQueue.back().Start();
+					toSpawnUnitTypeQueue.push(EntityType_ELVEN_ARCHER);
 				}
 				else if (currentGold < elvenArcherCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
-				if (currentGold >= mageCost) {
+				if (currentGold >= mageCost  && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
-					App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)mageInfo, unitInfo);
 					currentGold -= 1200;
+					//Timer for the spawning
+					j1Timer spawnTimer;
+					toSpawnUnitTimerQueue.push(spawnTimer);
+					toSpawnUnitTimerQueue.back().Start();
+					toSpawnUnitTypeQueue.push(EntityType_MAGE);
 				}
 				else if (currentGold < mageCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == producePaladinButton) {
-				if (currentGold >= paladinCost) {
+				if (currentGold >= paladinCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
-					App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)paladinInfo, unitInfo);
 					currentGold -= 800;
+					//Timer for the spawning
+					j1Timer spawnTimer;
+					toSpawnUnitTimerQueue.push(spawnTimer);
+					toSpawnUnitTimerQueue.back().Start();
+					toSpawnUnitTypeQueue.push(EntityType_PALADIN);
 				}
 				else if (currentGold < paladinCost)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == produceGryphonRiderButton) {
-				if (currentGold >= gryphonRiderCost) {
+				if (currentGold >= gryphonRiderCost && toSpawnUnitTimerQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
-					App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviaryPos.x + 30, gryphonAviaryPos.y - 50 }, (EntityInfo&)gryphonRiderInfo, unitInfo);
 					currentGold -= 2500;
+					//Timer for the spawning
+					j1Timer spawnTimer;
+					toSpawnUnitTimerQueue.push(spawnTimer);
+					toSpawnUnitTimerQueue.back().Start();
+					toSpawnUnitTypeQueue.push(EntityType_GRYPHON_RIDER);
 				}
 				else if (currentGold < gryphonRiderCost)
 					App->audio->PlayFx(3, 0); //Button error sound

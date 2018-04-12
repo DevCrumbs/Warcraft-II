@@ -1,7 +1,10 @@
 #include "ChickenFarm.h"
+#include "j1Player.h"
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
+	isBuilt = chickenFarmInfo.isBuilt;
+
 	if (isBuilt)
 		texArea = &chickenFarmInfo.completeTexArea;
 	else if (!isBuilt) {
@@ -9,6 +12,7 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		this->constructionTimer.Start();
 		App->audio->PlayFx(2, 0); //Construction sound
 	}
+	App->player->currentFood += 4;
 }
 
 void ChickenFarm::Move(float dt)
