@@ -43,6 +43,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	orcishBuildingsTexName = spritesheets.child("orcishBuildings").attribute("name").as_string();
 	footmanTexName = spritesheets.child("footmanAnimations").attribute("name").as_string();
 	gruntTexName = spritesheets.child("gruntAnimations").attribute("name").as_string();
+	crittersTexName = spritesheets.child("critters").attribute("name").as_string();
 
 	//Debug Textures Properties
 	buildingPreviewTiles.opacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
@@ -472,7 +473,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	}
 
 	// Critter sheep
-	pugi::xml_node sheepAnimations = config.child("animations").child("sheep");
+	pugi::xml_node sheepAnimations = config.child("dynamicEntities").child("sheep");
 
 	// up
 	currentAnimation = sheepAnimations.child("up");
@@ -561,7 +562,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	}
 
 	// Critter boar
-	pugi::xml_node boarAnimations = config.child("animations").child("boar");
+	pugi::xml_node boarAnimations = config.child("dynamicEntities").child("boar");
 
 	// up
 	currentAnimation = boarAnimations.child("up");

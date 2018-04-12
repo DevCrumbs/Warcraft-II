@@ -145,39 +145,171 @@ bool j1Scene::PreUpdate()
 
 	// Entities info
 	/// Entity
-	fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
-	iPoint size = { 32,32 };
-	uint maxLife = 10;
+	iPoint size = { App->map->data.tileWidth,App->map->data.tileHeight };
+	uint maxLife = 30;
 	int currLife = (int)maxLife;
 
 	/// DynamicEntity
 	UnitInfo unitInfo;
-	unitInfo.maxSpeed = 50.0f;
 	unitInfo.damage = 2;
+	unitInfo.priority = 1; // TODO: change to 3 or so
 
-	/// Footman
+						   /// Footman
 	FootmanInfo footmanInfo;
 
 	/// Grunt
 	GruntInfo gruntInfo;
 
+	/// Sheep
+	CritterSheepInfo critterSheepInfo;
+	critterSheepInfo.restoredHealth = 5;
+
+	/// Boar
+	CritterBoarInfo critterBoarInfo;
+	critterBoarInfo.restoredHealth = 10;
+
 	// Entities creation
-	if (App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY) == nullptr && App->pathfinding->IsWalkable(mouseTile)) {
 
-		// 1: spawn a Footman with priority 1
-		unitInfo.sightRadius = 6;
-		unitInfo.attackRadius = 3;
+	// 1: spawn a Footman with priority 1
+	unitInfo.sightRadius = 6;
+	unitInfo.attackRadius = 2;
+	unitInfo.maxSpeed = 80.0f;
 
-		if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
-			App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo, App->player);
+	if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN) {
 
-		// 2: spawn a Grunt with priority 1
-		unitInfo.sightRadius = 3;
-		unitInfo.attackRadius = 2;
+		iPoint tile = { 10,10 };
 
-		if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
-			App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, App->player);
+		// Make sure that there are no entities on the spawn tile and that the tile is walkable
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = FindClosestValidTile(tile);
+
+		// Make sure that the spawn tile is valid
+		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
+		App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo, this);
+		//}
 	}
+
+	// 2: spawn a Grunt with priority 1
+	unitInfo.sightRadius = 5;
+	unitInfo.attackRadius = 2;
+	unitInfo.maxSpeed = 50.0f;
+
+	maxLife = 20;
+	currLife = (int)maxLife;
+
+	if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN) {
+
+		iPoint tile = { 15,11 };
+
+		// Make sure that there are no entities on the spawn tile and that the tile is walkable
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = FindClosestValidTile(tile);
+
+		// Make sure that the spawn tile is valid
+		//if (tile.x != -1 && tile.y != -1) { // TODO: uncomment this line
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
+		App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, this);
+		//}
+	}
+
+	/*
+	// 5: spawn a group of Footmans
+	if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
+
+		list<DynamicEntity*> units;
+		uint maxFootmans = 4;
+
+		for (uint i = 0; i < maxFootmans; ++i) {
+
+			iPoint tile = { rand() % App->map->data.width,rand() % App->map->data.height };
+
+			// Make sure that there are no entities on the spawn tile and that the tile is walkable
+			if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+				tile = FindClosestValidTile(tile);
+
+			// Make sure that the spawn tile is valid
+			if (tile.x != -1 && tile.y != -1) {
+
+				iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+				fPoint pos = { (float)tilePos.x,(float)tilePos.y };
+
+				DynamicEntity* dynEnt = (DynamicEntity*)App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo, this);
+
+				if (dynEnt != nullptr)
+					units.push_back(dynEnt);
+			}
+		}
+
+		if (units.size() > 0)
+			App->movement->CreateGroupFromUnits(units);
+	}
+
+	// 6: spawn a group of Grunts
+	if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN) {
+
+		list<DynamicEntity*> units;
+		uint maxGrunts = 4;
+
+		for (uint i = 0; i < maxGrunts; ++i) {
+
+			iPoint tile = { rand() % App->map->data.width,rand() % App->map->data.height };
+
+			// Make sure that there are no entities on the spawn tile and that the tile is walkable
+			if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+				tile = FindClosestValidTile(tile);
+
+			// Make sure that the spawn tile is valid
+			if (tile.x != -1 && tile.y != -1) {
+
+				iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+				fPoint pos = { (float)tilePos.x,(float)tilePos.y };
+
+				DynamicEntity* dynEnt = (DynamicEntity*)App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, this);
+
+				if (dynEnt != nullptr)
+					units.push_back(dynEnt);
+			}
+		}
+
+		if (units.size() > 0)
+			App->movement->CreateGroupFromUnits(units);
+	}
+	*/
+
+	fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
+
+	// 3: spawn a Sheep
+	unitInfo.sightRadius = 0;
+	unitInfo.attackRadius = 0;
+	unitInfo.priority = 1;
+	maxLife = 10;
+	currLife = (int)maxLife;
+
+	if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+		App->entities->AddEntity(EntityType_SHEEP, pos, (EntityInfo&)critterSheepInfo, unitInfo, this);
+
+	// 4: spawn a Boar
+	unitInfo.sightRadius = 0;
+	unitInfo.attackRadius = 0;
+	unitInfo.priority = 2;
+	maxLife = 20;
+	currLife = (int)maxLife;
+
+	if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+		App->entities->AddEntity(EntityType_BOAR, pos, (EntityInfo&)critterBoarInfo, unitInfo, this);
 
 	return ret;
 }
@@ -198,22 +330,28 @@ bool j1Scene::Update(float dt)
 
 	// Draw
 	App->map->Draw(); // map
+	App->particles->Draw(); // particles (only paws)
 	App->entities->Draw(); // entities
+
+	if (debugDrawAttack)
+		App->collision->DebugDraw(); // debug draw collisions
+
+	if (debugDrawMovement)
+		App->movement->DebugDraw(); // debug draw movement
+
 	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 	//App->collision->DebugDraw();
 
-	// Movement															// Select units by mouse click
-	/*if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+	// Units ---------------------------------------------------------------------------------
+	
+	// Select units by mouse click
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 		startRectangle = mousePos;
 
 		Entity* entity = App->entities->IsEntityOnTile(mouseTile);
 
-		if (entity != nullptr) {
-
-			App->audio->PlayFx(1, 0); //Button sound
-
+		if (entity != nullptr)
 			App->entities->SelectEntity(entity);
-		}
 		else
 			App->entities->UnselectAllEntities();
 	}
@@ -244,13 +382,7 @@ bool j1Scene::Update(float dt)
 
 	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
-
 	if (units.size() > 0) {
-
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
-			App->player->DeleteEntitiesMenu();
-			App->player->MakeUnitsMenu(units);
-		}
 
 		UnitGroup* group = App->movement->GetGroupByUnits(units);
 
@@ -261,7 +393,65 @@ bool j1Scene::Update(float dt)
 
 		if (group != nullptr) {
 
-			/// SET GOAL
+			/// COMMAND PATROL
+			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+
+				App->entities->CommandToUnits(units, UnitCommand_Patrol);
+
+			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
+			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+
+				App->entities->CommandToUnits(units, UnitCommand_Stop);
+
+			/// COMMAND ATTACK
+			/// Enemy
+			// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
+			Entity* target = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
+
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr) {
+
+				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
+				list<DynamicEntity*>::const_iterator it = units.begin();
+
+				bool isTarget = true;
+
+				while (it != units.end()) {
+
+					if (!(*it)->SetCurrTarget(target))
+						isTarget = false;
+
+					it++;
+				}
+
+				if (isTarget)
+
+					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+			}
+
+			/// Critter
+			Entity* critter = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
+
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr) {
+
+				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
+				list<DynamicEntity*>::const_iterator it = units.begin();
+
+				bool isTarget = true;
+
+				while (it != units.end()) {
+
+					if (!(*it)->SetCurrTarget(critter))
+						isTarget = false;
+
+					it++;
+				}
+
+				if (isTarget)
+
+					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+			}
+
+			/// SET GOAL (COMMAND MOVE TO POSITION)
 			// Draw a shaped goal
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 
@@ -270,23 +460,48 @@ bool j1Scene::Update(float dt)
 			// Set a normal or shaped goal
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
 
-				if (!group->SetShapedGoal()) /// shaped goal
-					group->SetGoal(mouseTile); /// normal goal
-			}
+				bool isGoal = false;
 
-			/// COMMAND PATROL
-			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN) {
+				if (group->GetShapedGoalSize() <= 1) {
 
-				//App->entities->CommandToUnits(units, UnitCommand_Patrol);
-			}
+					group->ClearShapedGoal();
 
-			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
-			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
+					if (group->SetGoal(mouseTile)) /// normal goal
 
-				//App->entities->CommandToUnits(units, UnitCommand_Stop);
+						isGoal = true;
+				}
+				else if (group->SetShapedGoal()) /// shaped goal
+
+					isGoal = true;
+
+				if (isGoal) {
+
+					uint isPatrol = 0;
+
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					while (it != units.end()) {
+
+						if ((*it)->GetUnitCommand() == UnitCommand_Patrol)
+							isPatrol++;
+
+						it++;
+					}
+
+					/// If all units are in the Patrol command or the AttackTarget command, do not set the MoveToPosition command
+					bool isFull = false;
+
+					if (isPatrol == units.size() || target != nullptr || critter != nullptr)
+						isFull = true;
+
+					if (!isFull)
+						App->entities->CommandToUnits(units, UnitCommand_MoveToPosition);
+				}
 			}
 		}
-	}*/
+	}
+	
+	// ---------------------------------------------------------------------------------
 
 	DebugKeys();
 	CheckCameraMovement(dt);
@@ -326,8 +541,8 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 	}
 
-	if(parchmentImg != nullptr)
-		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) 
+	if (parchmentImg != nullptr)
+		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
 
 	return ret;
@@ -1136,6 +1351,49 @@ ENTITY_TYPE j1Scene::GetAlphaBuilding() {
 
 void j1Scene::SetAplphaBuilding(ENTITY_TYPE alphaBuilding) {
 	this->alphaBuilding = alphaBuilding;
+}
+
+iPoint j1Scene::FindClosestValidTile(iPoint tile) const
+{
+	// Perform a BFS
+	queue<iPoint> queue;
+	list<iPoint> visited;
+
+	iPoint curr = tile;
+	queue.push(curr);
+
+	while (queue.size() > 0) {
+
+		curr = queue.front();
+		queue.pop();
+
+		if (!App->entities->IsEntityOnTile(curr) && App->pathfinding->IsWalkable(curr))
+			return curr;
+
+		iPoint neighbors[8];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
+		neighbors[4].create(curr.x + 1, curr.y + 1);
+		neighbors[5].create(curr.x + 1, curr.y - 1);
+		neighbors[6].create(curr.x - 1, curr.y + 1);
+		neighbors[7].create(curr.x - 1, curr.y - 1);
+
+		for (uint i = 0; i < 8; ++i)
+		{
+			if (App->pathfinding->IsWalkable(neighbors[i])) {
+
+				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+					queue.push(neighbors[i]);
+					visited.push_back(neighbors[i]);
+				}
+			}
+		}
+	}
+
+	return { -1,-1 };
 }
 
 // -------------------------------------------------------------
