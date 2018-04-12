@@ -20,7 +20,7 @@ UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Modul
 
 void UIImage::Update(float dt)
 {
-	if (startAimation && animToPlay.Finished()) {
+	if (startAimation && animToPlay.Finished() && !animToPlay.loop) {
 		animToPlay.Reset();
 		startAimation = false;
 	}

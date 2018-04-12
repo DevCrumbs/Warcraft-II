@@ -179,6 +179,20 @@ void j1FinishGame::LoadSceneTwo() {
 	labelInfo.hoverColor = ColorGreen;
 	labelInfo.text = "Return to Main Menu";
 	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, continueButt));
+	
+
+	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = White_;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.textWrapLength = 600;
+	string s = "If you want to know which artifact you would have gained, do not forget to play th full game when it is relased! The enemy base awaits for your troops...";
+	labelInfo.text = s;
+	labelVector.push_back(App->gui->CreateUILabel({ 750, 400 }, labelInfo));
+
+	UIImage_Info imageInfo;
+	imageInfo.texArea = App->gui->bookText;
+	imageVector.push_back(App->gui->CreateUIImage({ 260, 145 }, imageInfo, this));
+	imageVector.back()->StartAnimation(App->gui->bookAnim);
+
 
 }
 

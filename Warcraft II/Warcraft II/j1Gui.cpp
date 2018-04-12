@@ -45,6 +45,37 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 		parchmentArea = { parchment.attribute("x").as_int(), parchment.attribute("y").as_int(), parchment.attribute("w").as_int(), parchment.attribute("h").as_int() };
 	}
 
+
+	pugi::xml_node artifacts = conf.child("artifacts");
+
+	pugi::xml_node book = artifacts.child("book");
+	bookAnim.speed = artifacts.attribute("speed").as_float();
+	for (book = book.child("frame"); book; book = book.next_sibling("frame")) {
+		bookAnim.PushBack({ book.attribute("x").as_int(), book.attribute("y").as_int(), book.attribute("w").as_int(), book.attribute("h").as_int() });
+		bookText = { book.attribute("x").as_int(), book.attribute("y").as_int(), book.attribute("w").as_int(), book.attribute("h").as_int() };
+	}
+	
+	pugi::xml_node eye = artifacts.child("eye");
+	eyeAnim.speed = artifacts.attribute("speed").as_float();
+	for (eye = eye.child("frame"); eye; eye = eye.next_sibling("frame")) {
+		eyeAnim.PushBack({ eye.attribute("x").as_int(), eye.attribute("y").as_int(), eye.attribute("w").as_int(), eye.attribute("h").as_int() });
+		eyeText = { eye.attribute("x").as_int(), eye.attribute("y").as_int(), eye.attribute("w").as_int(), eye.attribute("h").as_int() };
+	}
+
+	pugi::xml_node scepter = artifacts.child("scepter");
+	scepterAnim.speed = artifacts.attribute("speed").as_float();
+	for (scepter = scepter.child("frame"); scepter; scepter = scepter.next_sibling("frame")) {
+		eyeAnim.PushBack({ scepter.attribute("x").as_int(), scepter.attribute("y").as_int(), scepter.attribute("w").as_int(), scepter.attribute("h").as_int() });
+		scepterText = { scepter.attribute("x").as_int(), scepter.attribute("y").as_int(), scepter.attribute("w").as_int(), scepter.attribute("h").as_int() };
+	}
+
+	pugi::xml_node skull = artifacts.child("skull");
+	skullAnim.speed = artifacts.attribute("speed").as_float();
+	for (skull = skull.child("frame"); skull; skull = scepter.next_sibling("frame")) {
+		eyeAnim.PushBack({ skull.attribute("x").as_int(), skull.attribute("y").as_int(), skull.attribute("w").as_int(), skull.attribute("h").as_int() });
+		skullText = { skull.attribute("x").as_int(), skull.attribute("y").as_int(), skull.attribute("w").as_int(), skull.attribute("h").as_int() };
+	}
+
 	return ret;
 }
 

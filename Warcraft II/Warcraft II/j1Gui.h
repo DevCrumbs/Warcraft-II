@@ -111,6 +111,10 @@ public:
 	Animation parchmentAnim;
 	SDL_Rect parchmentArea;
 
+	//artifacts
+	Animation scepterAnim, bookAnim, skullAnim, eyeAnim;
+	SDL_Rect scepterText, bookText, skullText, eyeText;
+
 private:
 
 	string atlasFileName;
