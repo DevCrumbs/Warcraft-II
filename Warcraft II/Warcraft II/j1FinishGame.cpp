@@ -38,7 +38,7 @@ bool j1FinishGame::Start()
 	scale = App->win->GetScale();
 
 	screen = { 0, 0, static_cast<int>(width * scale), static_cast<int>(height * scale) };
-	LoadScene(App->player->isWin);
+	LoadSceneOne(App->player->isWin);
 
 
 	bg = App->tex->Load(bgTexName.data());
@@ -56,7 +56,7 @@ bool j1FinishGame::Update(float dt)
 }
 
 
-void j1FinishGame::LoadScene(bool isWin) {
+void j1FinishGame::LoadSceneOne(bool isWin) {
 	
 	UILabel_Info labelInfo;
 
@@ -131,7 +131,7 @@ void j1FinishGame::LoadScene(bool isWin) {
 
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
-	continueButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
+	continueButt = App->gui->CreateUIButton({ 625, 525 }, buttonInfo, this, nullptr);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
 	labelInfo.hoverColor = ColorGreen;
@@ -142,9 +142,9 @@ void j1FinishGame::LoadScene(bool isWin) {
 
 }
 
-void j1FinishGame::DeleteScreen() {
+void j1FinishGame::DeleteScene() {
 	
-	for (; labelVector.size() > 1; labelVector.pop_back())
+	for (; !labelVector.empty(); labelVector.pop_back())
 	{
 		App->gui->DestroyElement((UIElement**)&labelVector.back());
 	}
@@ -153,4 +153,65 @@ void j1FinishGame::DeleteScreen() {
 	{
 		App->gui->DestroyElement((UIElement**)&imageVector.back());
 	}
+	App->gui->DestroyElement((UIElement**)&continueButt);
+
+}
+
+void j1FinishGame::LoadSceneTwo() {
+	UILabel_Info labelInfo;
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorGrey;
+	labelInfo.text = "Alpha out on May the 13h";
+	labelVector.push_back(App->gui->CreateUILabel({ 50, 525 }, labelInfo));
+
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	labelInfo.text = "Thanks for playing the demo!";
+	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorGreen;
+	labelVector.push_back(App->gui->CreateUILabel({ screen.w / 2, 50 }, labelInfo));
+
+	UIButton_Info buttonInfo;
+	buttonInfo.normalTexArea = { 2000, 0, 250, 33 };
+	continueButt = App->gui->CreateUIButton({ 550, 525 }, buttonInfo, this, nullptr);
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	labelInfo.hoverColor = ColorGreen;
+	labelInfo.text = "Return to Main Menu";
+	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, continueButt));
+
+}
+
+void j1FinishGame::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
+
+	switch (UIevent)
+	{
+	case UI_EVENT_NONE:
+		break;
+	case UI_EVENT_MOUSE_ENTER:
+		break;
+	case UI_EVENT_MOUSE_LEAVE:
+		break;
+	case UI_EVENT_MOUSE_RIGHT_CLICK:
+		break;
+	case UI_EVENT_MOUSE_LEFT_CLICK:
+
+		if (UIelem == continueButt) {
+			DeleteScene();
+			LoadSceneTwo();
+		}
+
+		break;
+	case UI_EVENT_MOUSE_RIGHT_UP:
+		break;
+	case UI_EVENT_MOUSE_LEFT_UP:
+		break;
+	case UI_EVENT_MAX_EVENTS:
+
+		break;
+	default:
+
+		break;
+	}
+
 }

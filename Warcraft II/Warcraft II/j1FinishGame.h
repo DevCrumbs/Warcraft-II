@@ -26,8 +26,12 @@ public:
 
 private:
 
-	void LoadScene(bool isWin);
-	void DeleteScreen();
+	void LoadSceneOne(bool isWin);
+	void LoadSceneTwo();
+	void DeleteScene();
+	void DeleteSceneTwo();
+
+	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 private:
 
