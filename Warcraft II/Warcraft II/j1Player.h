@@ -141,7 +141,13 @@ public:
 	int mageCost = 1200;
 	int gryphonRiderCost = 2500;
 
+	//For finish Screen
 	bool isWin = false;
+	j1Timer startGameTimer;
+	uint unitProduce = 0u;
+	uint enemiesKill = 0u;
+	uint buildDestroy = 0u;
+
 private:
 
 	double timer = 0.0f; // game time

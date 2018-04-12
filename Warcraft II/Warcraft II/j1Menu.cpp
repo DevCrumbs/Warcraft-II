@@ -185,7 +185,7 @@ bool j1Menu::CleanUp()
 void j1Menu::CreateMenu() {
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
+	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	playButt = App->gui->CreateUIButton({ 600, 350 }, buttonInfo, this, nullptr);
 	settingsButt = App->gui->CreateUIButton({ 600, 425 }, buttonInfo, this, nullptr);
 	exitButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
@@ -210,7 +210,7 @@ void j1Menu::CreateMenu() {
 void j1Menu::CreateSettings() {
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
+	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	returnButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;

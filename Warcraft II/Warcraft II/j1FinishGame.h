@@ -4,7 +4,8 @@
 #include "j1Module.h"
 
 #include "Animation.h"
-#include <list>
+//#include <list>
+#include <vector>
 
 #include "SDL\include\SDL_rect.h"
 
@@ -18,23 +19,31 @@ public:
 	j1FinishGame();
 	~j1FinishGame();
 
-	bool Awake(pugi::xml_node& config);
+	bool Awake(pugi::xml_node& config) { return true; }
 	bool Start();
 	bool Update(float dt);
-
-	void LoadScene(bool isWin);
 
 
 private:
 
-	
+	void LoadScene(bool isWin);
+	void DeleteScreen();
+
+private:
+
 	vector<UILabel*> labelVector;
 	vector<UIImage*> imageVector;
+	UIButton* continueButt = nullptr;
 
 	SDL_Rect screen;
 
 	string bgTexName;
 	SDL_Texture* bg;
+
+	//Values
+
+	uint roomsExploredCont = 0u;
+
 
 };
 

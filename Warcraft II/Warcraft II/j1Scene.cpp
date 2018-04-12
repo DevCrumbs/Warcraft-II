@@ -807,7 +807,7 @@ void j1Scene::UnLoadBuildingMenu()
 void j1Scene::CreatePauseMenu() {
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
+	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	int x = parchmentImg->GetLocalPos().x + 100;
 	int y = parchmentImg->GetLocalPos().y + 110;

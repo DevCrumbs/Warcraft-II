@@ -37,6 +37,7 @@ bool j1Player::Start()
 {
 	bool ret = true;
 
+	startGameTimer.Start();
 	return ret;
 }
 

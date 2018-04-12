@@ -23,16 +23,6 @@ j1FinishGame::j1FinishGame()
 	name.assign("finish");
 }
 
-bool j1FinishGame::Awake(pugi::xml_node& config) {
-
-	bool ret = true;
-
-
-	//pugi::xml_node spritesheets = config.child("spritesheets");
-	//bgTexName = spritesheets.child("atlas").attribute("name").as_string();
-
-	return true;
-}
 
 j1FinishGame::~j1FinishGame()
 {}
@@ -53,6 +43,7 @@ bool j1FinishGame::Start()
 
 	bg = App->tex->Load(bgTexName.data());
 
+	//DeleteScreen();
 	return true;
 }
 
@@ -60,19 +51,7 @@ bool j1FinishGame::Start()
 bool j1FinishGame::Update(float dt)
 {
 
-	App->render->DrawQuad({ 250,155,100,40}, 0, 255, 0, 255);
-	App->render->DrawQuad({ 250,210,100,40 }, 0, 255, 0, 255);
-	App->render->DrawQuad({ 250,305,100,40 }, 0, 255, 0, 255);
-	App->render->DrawQuad({ 250,360,100,40 }, 0, 255, 0, 255);
-	App->render->DrawQuad({ 250,455,100,40 }, 0, 255, 0, 255);
-	App->render->DrawQuad({ 250,510,100,40 }, 0, 255, 0, 255);
 
-	//App->render->Blit(bg, 0, 0, &screen);
-	/*if(App->player->isWin)
-		App->render->DrawQuad(screen, 0, 255, 0, 255);
-	else
-		App->render->DrawQuad(screen, 255, 0, 0, 255);
-*/
 	return true;
 }
 
@@ -95,10 +74,12 @@ void j1FinishGame::LoadScene(bool isWin) {
 	labelVector.push_back(App->gui->CreateUILabel({ screen.w / 2, 50 }, labelInfo));
 
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = White_;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 
-	labelInfo.text = "Units produced: ";
+	labelInfo.text = "Units produced: "; 
 	labelVector.push_back(App->gui->CreateUILabel({ 50 , 175 }, labelInfo));
 										    
 	labelInfo.text = "Gold gathered: ";	    
@@ -116,5 +97,60 @@ void j1FinishGame::LoadScene(bool isWin) {
 	labelInfo.text = "Total time: ";	    
 	labelVector.push_back(App->gui->CreateUILabel({ 50 , 525 }, labelInfo));
 
+	UIImage_Info imageInfo;
+	imageInfo.texArea = { 328,384,100,40 };
+	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 
+	imageVector.push_back(App->gui->CreateUIImage({ 275, 175 }, imageInfo));
+	imageVector.push_back(App->gui->CreateUIImage({ 275, 225 }, imageInfo));
+	imageVector.push_back(App->gui->CreateUIImage({ 275, 325 }, imageInfo));
+	imageVector.push_back(App->gui->CreateUIImage({ 275, 375 }, imageInfo));
+	imageVector.push_back(App->gui->CreateUIImage({ 275, 475 }, imageInfo));
+	imageVector.push_back(App->gui->CreateUIImage({ 275, 525 }, imageInfo));
+
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+
+	labelInfo.text = to_string(App->player->unitProduce);
+	labelVector.push_back(App->gui->CreateUILabel({ 275 , 175 }, labelInfo));
+
+	labelInfo.text = to_string(App->player->totalGold);
+	labelVector.push_back(App->gui->CreateUILabel({ 275 , 225 }, labelInfo));
+	
+	labelInfo.text = to_string(App->player->enemiesKill);
+	labelVector.push_back(App->gui->CreateUILabel({ 275 , 325 }, labelInfo));
+	
+	labelInfo.text = to_string(App->player->buildDestroy);
+	labelVector.push_back(App->gui->CreateUILabel({ 275 , 375 }, labelInfo));
+	
+	labelInfo.text = to_string(roomsExploredCont);
+	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));
+	
+	labelInfo.text = to_string((uint)App->player->startGameTimer.ReadSec() / 60) + ":" + to_string((uint)App->player->startGameTimer.ReadSec() % 60);
+	labelVector.push_back(App->gui->CreateUILabel({ 275 , 525 }, labelInfo));
+
+	UIButton_Info buttonInfo;
+	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
+	continueButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	labelInfo.hoverColor = ColorGreen;
+
+	labelInfo.text = "Continue";
+	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, continueButt));
+
+
+}
+
+void j1FinishGame::DeleteScreen() {
+	
+	for (; labelVector.size() > 1; labelVector.pop_back())
+	{
+		App->gui->DestroyElement((UIElement**)&labelVector.back());
+	}
+
+	for (; !imageVector.empty(); imageVector.pop_back())
+	{
+		App->gui->DestroyElement((UIElement**)&imageVector.back());
+	}
 }
