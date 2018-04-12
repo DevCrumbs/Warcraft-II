@@ -877,7 +877,7 @@ void j1Scene::CreatePauseMenu() {
 	continueButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
 
 	y = parchmentImg->GetLocalPos().y + 160;
-	buttonInfo.normalTexArea = { 1000, 0, 150, 33 };
+	buttonInfo.normalTexArea = { 2000, 0, 150, 33 };
 	ReturnMenuButt = App->gui->CreateUIButton({ x, y}, buttonInfo, this);
 
 	UILabel_Info labelInfo;
@@ -947,7 +947,7 @@ void j1Scene::CreateSettingsMenu() {
 	App->menu->AddSlider(AudioMusicPause, { x,y }, "Audio Music", relativeVol, butText, bgText, this);
 
 	buttonInfo.checkbox = false;
-	buttonInfo.normalTexArea = { 1000, 0, 40, 20 };
+	buttonInfo.normalTexArea = { 2000, 0, 40, 20 };
 	buttonInfo.hoverTexArea = { 0, 0, 0, 0 };
 	buttonInfo.pressedTexArea = { 0, 0, 0, 0 };
 	x = parchmentImg->GetLocalPos().x + 30;
@@ -1014,13 +1014,15 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 		if (UIelem == buildingButton) {
-			App->audio->PlayFx(1, 0); //Button sound
+			if (parchmentImg == nullptr) {
+				App->audio->PlayFx(1, 0); //Button sound
 
-			if (!buildingMenuOn)
-				LoadBuildingMenu();
+				if (!buildingMenuOn)
+					LoadBuildingMenu();
 
-			else
-				UnLoadBuildingMenu();
+				else
+					UnLoadBuildingMenu();
+			}
 		}
 
 		if (UIelem == chickenFarmButton) {

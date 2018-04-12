@@ -162,8 +162,6 @@ public:
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 
-	void DeleteStaticEntity(StaticEntity* &staticEntity);
-
 public:
 
 	//Player

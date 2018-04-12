@@ -52,9 +52,11 @@ bool j1Player::Update(float dt) {
 				Entity* ent = (Entity*)stables;
 				ent->ApplyDamage(20);
 				if (!stables->CheckBuildingState()) {
-					DeleteStaticEntity(stables);
+					stables->isRemove = true;
+					if (entitySelectedStats.entitySelected == ent)
+						DeleteEntitiesMenu();
 				}
-				if (entitySelectedStats.entitySelected == ent) {
+				else if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
@@ -67,9 +69,11 @@ bool j1Player::Update(float dt) {
 				Entity* ent = (Entity*)mageTower;
 				ent->ApplyDamage(20);
 				if (!mageTower->CheckBuildingState()) {
-					DeleteStaticEntity(mageTower);
+					mageTower->isRemove = true;
+					if (entitySelectedStats.entitySelected == ent)
+						DeleteEntitiesMenu();
 				}
-				if (entitySelectedStats.entitySelected == ent) {
+				else if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
@@ -82,10 +86,12 @@ bool j1Player::Update(float dt) {
 				Entity* ent = (Entity*)scoutTower.back();
 				ent->ApplyDamage(20);
 				if (!scoutTower.back()->CheckBuildingState()) {
-					DeleteStaticEntity(scoutTower.back());
+					scoutTower.back()->isRemove = true;
+					if (entitySelectedStats.entitySelected == ent)
+						DeleteEntitiesMenu();
 					scoutTower.pop_back();
 				}
-				if (entitySelectedStats.entitySelected == ent) {
+				else if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
@@ -98,7 +104,9 @@ bool j1Player::Update(float dt) {
 				Entity* ent = (Entity*)gryphonAviary;
 				ent->ApplyDamage(20);
 				if (!gryphonAviary->CheckBuildingState()) {
-					DeleteStaticEntity(gryphonAviary);
+					gryphonAviary->isRemove = true;
+					if (entitySelectedStats.entitySelected == ent)
+						DeleteEntitiesMenu();
 				}
 				else if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
@@ -112,7 +120,9 @@ bool j1Player::Update(float dt) {
 				Entity* ent = (Entity*)chickenFarm.back();
 				ent->ApplyDamage(20);
 				if (!chickenFarm.back()->CheckBuildingState()) {
-					DeleteStaticEntity(chickenFarm.back());
+					chickenFarm.back()->isRemove = true;
+					if (entitySelectedStats.entitySelected == ent)
+						DeleteEntitiesMenu();
 					chickenFarm.pop_back();
 				}
 				else if (entitySelectedStats.entitySelected == ent) {
@@ -396,7 +406,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		case EntitiesEvent_NONE:
 			break;
 		case EntitiesEvent_RIGHT_CLICK:
-			DeleteEntitiesMenu();
 			break;
 		case EntitiesEvent_LEFT_CLICK:
 			DeleteEntitiesMenu();
@@ -1125,12 +1134,4 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		default:
 			break;
 		}
-}
-
-void j1Player::DeleteStaticEntity(StaticEntity* &staticEntity) {
-
-	if (entitySelectedStats.entitySelected == staticEntity)
-		DeleteEntitiesMenu();
-	App->entities->DestroyStaticEntity(staticEntity);
-		staticEntity = nullptr;
 }
