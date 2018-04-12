@@ -146,6 +146,11 @@ bool j1Player::Update(float dt) {
 		}
 	}
 
+	//Handle the apparence and disapparence of to spawn units UI elements
+	if (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected == barracks) 
+		HandleBarracksUIElem();	
+	
+
 	return true;
 }
 
@@ -878,7 +883,19 @@ void j1Player::CreateBarracksButtons()
 	CreateSimpleButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 268, 2 }, produceElvenArcherButton);
 	if (barracksUpgrade && stables != nullptr && stables->buildingState == BuildingState_Normal)
 		CreateSimpleButton({ 444,244,50,41 }, { 699, 244, 50, 41 }, { 954,244,50,41 }, { 319, 2 }, producePaladinButton);
-	
+}
+
+void j1Player::HandleBarracksUIElem()
+{
+	if (toSpawnUnitStats.frstInQueueIcon != nullptr) {
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueBar);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueBar);
+		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueBar);
+	}
+
 	uint unitInQueue = 1;
 	for each (ENTITY_TYPE elem in toSpawnUnitTypeQueue._Get_container()) {
 		UIImage_Info info;
@@ -914,7 +931,7 @@ void j1Player::CreateBarracksButtons()
 				CreateGroupIcon({ 120, 20 }, { 696,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
 				break;
 			default:
-				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
+				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon); //Footman
 				break;
 			}
 			break;
