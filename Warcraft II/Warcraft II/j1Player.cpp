@@ -845,6 +845,18 @@ void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea,
 	lifeBar = App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
 
+void j1Player::CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar)
+{
+	UILifeBar_Info barInfo;
+	barInfo.background = { 241,362,46,7 };
+	barInfo.bar = { 243,358,42,3 };
+	barInfo.maxLife = spawningTime;
+	barInfo.life = (barInfo.maxLife);
+	barInfo.maxWidth = barInfo.bar.w;
+	barInfo.lifeBarPosition = { 2, 2 };
+	lifeBar = App->gui->CreateUILifeBar({ lifeBarPos.x, lifeBarPos.y }, barInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+}
+
 void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
 
 	UIButton_Info InfoButton;
@@ -899,20 +911,13 @@ void j1Player::HandleBarracksUIElem()
 	uint unitInQueue = 1;
 	for each (ENTITY_TYPE elem in toSpawnUnitTypeQueue._Get_container()) {
 		UIImage_Info info;
-		UILifeBar_Info lifeInfo;
 		switch (unitInQueue) {
 		case 1:
 			switch (elem) {
 			case EntityType_FOOTMAN:
 				CreateGroupIcon({ 72, 20 }, { 649,160,39,30 }, toSpawnUnitStats.frstInQueueIcon);
-				//CreateGroupLifeBar({ 72, 40 }, { 241,362,46,7 }, { 243,358,42,3 }, toSpawnUnitStats.frstInQueueBar);
-				lifeInfo.background = { 241,362,46,7 };
-				lifeInfo.bar = { 243,358,42,3 };
-				lifeInfo.maxLife = 50;
-				lifeInfo.life = (lifeInfo.maxLife);
-				lifeInfo.maxWidth = lifeInfo.bar.w;
-				lifeInfo.lifeBarPosition = { 2, 2 };
-				toSpawnUnitStats.frstInQueueBar = App->gui->CreateUILifeBar({ 72, 40 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+				CreateToSpawnUnitLifeBar({72, 40}, toSpawnUnitStats.frstInQueueBar);
+				toSpawnUnitStats.frstInQueueBar->SetLife(toSpawnUnitTimerQueue.front().ReadSec());
 				break;
 			case EntityType_ELVEN_ARCHER:
 				CreateGroupIcon({ 72, 20 }, { 696,160,39,30 }, toSpawnUnitStats.frstInQueueIcon);
