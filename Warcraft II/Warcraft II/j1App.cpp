@@ -86,7 +86,6 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	map->active = false;
 	scene->active = false;
-	finish->active = false;
 	player->active = false;
 	entities->active = false;
 	collision->active = false;

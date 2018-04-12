@@ -51,8 +51,6 @@ bool j1FinishGame::Start()
 // Update: draw background
 bool j1FinishGame::Update(float dt)
 {
-
-
 	return true;
 }
 
