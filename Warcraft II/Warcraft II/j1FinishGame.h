@@ -4,6 +4,7 @@
 #include "j1Module.h"
 
 #include "Animation.h"
+#include <list>
 
 #include "SDL\include\SDL_rect.h"
 
@@ -26,8 +27,9 @@ public:
 
 private:
 
-	UILabel* titleLabel = nullptr, *unitProuceLabel = nullptr, *totalGoldLabel = nullptr, *enemiesKilLabel = nullptr, 
-		*buildingsDestroyedLabel = nullptr, *totalTimeLabel = nullptr, *roomsExploredLabel = nullptr;
+	
+	vector<UILabel*> labelVector;
+	vector<UIImage*> imageVector;
 
 	SDL_Rect screen;
 
