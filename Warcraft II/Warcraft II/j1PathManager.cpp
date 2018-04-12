@@ -356,8 +356,8 @@ bool PathPlanner::HilevelUpdate()
 		if (unitNeedPath)
 		{
 			//App->pathmanager->UnRegister(this);
-			App->pathmanager->Register(this);
-
+//			App->pathmanager->Register(this);
+			isSearchRequested = false;
 			singleUnit->roomGoal = GetExitPoint();
 
 			if (singleUnit->roomGoal != -1)
@@ -368,6 +368,7 @@ bool PathPlanner::HilevelUpdate()
 				ret = RequestAStar(singleUnit->currTile, singleUnit->goal);
 			}
 			unitNeedPath = false;
+			singleUnit->isGoalChanged = true;
 		}
 
 		if (singleUnit->currTile == singleUnit->roomGoal)
@@ -443,7 +444,7 @@ void PathPlanner::LoadHiLevelSearch()
 	DynamicEntity* tempEnt = (DynamicEntity*)entity;
 	SingleUnit* singleUnit = tempEnt->GetSingleUnit();
 
-	
+
 
 
 	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
@@ -457,37 +458,39 @@ void PathPlanner::LoadHiLevelSearch()
 		}
 		if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
 		{
-			goalRoomPos = { (*iterator).x / 32, (*iterator).y / 32};
+			goalRoomPos = { (*iterator).x / 32, (*iterator).y / 32 };
 			goalRoomPos = { 2,0 };
 		}
 	}
 	if (!haveGoal)
-	if (originRoom != -1 && goalRoomPos != -1)
-	{
-		hiLevelSearch->CreatePath(originRoom, goalRoomPos);
-	//	hiLevelPath = *(hiLevelSearch->GetLastPath());
-		hiLevelPath.push_back({ 2,0 });
-		hiLevelPath.push_back({ 1,0 });
-		
-		if (hiLevelPath.size() > 0)
-			nextRoomPos = hiLevelPath.back();
-		else
-			nextRoomPos = originRoom;
-		unitNeedPath = true;	
-		haveGoal = true;
-
-
-		for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
+		if (originRoom != -1 && goalRoomPos != -1)
 		{
-			SDL_Rect goalRect{ 1600, 672, 20 *32, 8 * 32 };
+			hiLevelSearch->CreatePath(originRoom, goalRoomPos);
+		//	hiLevelPath = *(hiLevelSearch->GetLastPath());
 
-			if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
+			hiLevelPath.push_back({ 2,0 });
+			hiLevelPath.push_back({ 1,0 });
+
+			if (hiLevelPath.size() > 0)
+				nextRoomPos = hiLevelPath.back();
+			else
+				nextRoomPos = originRoom;
+			unitNeedPath = true;
+			haveGoal = true;
+
+
+			for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
 			{
-				nextRoom = &(*iterator);
-			}
-		}
+				SDL_Rect goalRect{ 1600, 672, 20 * 32, 8 * 32 };
 
-	}
+				if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
+				{
+					nextRoom = &(*iterator);
+				}
+			}
+			currentLowLevelMap = currRoom->walkabilityMap;
+			App->pathfinding->SetMap(currentLowLevelMap);
+		}
 
 
 }

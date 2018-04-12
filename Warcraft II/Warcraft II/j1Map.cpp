@@ -48,7 +48,8 @@ bool j1Map::Awake(pugi::xml_node& config)
 	playerBaseSize = 40;
 	defaultLittleRoomSize = 30;
 	defaultTileSize = 32;
-	defaultHallSize = 20;
+	defaultHallHeight = 20;
+	defaultHallWidth = 8;
 	mapTypesNo = config.child("general").child("mapTypesNo").attribute("number").as_int();
 	for (pugi::xml_node iterator = config.child("general").child("roomPullNo"); iterator; iterator = iterator.next_sibling("roomPullNo"))
 	{
@@ -929,13 +930,14 @@ bool j1Map::CreateNewMap()
 	}
 	//Search map type
 
+	iPoint test = WorldToTile(TileToWorld({ 3,4 }));
 
 	if (ret)
 	{
 		static char typePath[50];
 		///sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
 		//sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure%i.tmx", mapType);
-		sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure11.tmx");
+		sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure12.tmx");
 		mapInfoDocument.loadFile(typePath);
 
 		pugi::xml_node mapInfo = mapInfoDocument;
@@ -971,8 +973,8 @@ bool j1Map::CreateNewMap()
 	if (ret)
 		ret = LoadLogic();
 
-	if (ret)
-		ret = LoadCorridors();
+//	if (ret)
+//		ret = LoadCorridors();
 
 	if (ret)
 	{
@@ -989,40 +991,6 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 	bool ret = true;
 
 	DIRECTION direction = DIRECTION_NONE;
-
-	/*
-
-	for (pugi::xml_node iterator = mapInfoDocument.child("rooms").child("room"); iterator; iterator = iterator.next_sibling("room"))
-	{
-		RoomInfo newRoom;
-		newRoom.type = iterator.attribute("type").as_int(-3);
-		if (newRoom.type == -3)
-		{
-			ret = false;
-			LOG("Wrong room type");
-			break;
-		}
-		newRoom.x = iterator.attribute("x").as_int();
-		newRoom.y = iterator.attribute("y").as_int();
-
-		for (pugi::xml_node doorIterator = iterator.child("doors").child("door"); doorIterator; doorIterator = doorIterator.next_sibling("door"))
-		{
-			direction = (DIRECTION)doorIterator.attribute("direction").as_int(-1);
-
-			if (direction >= 0 && direction <= 4)
-				newRoom.doors.push_back(direction);
-			else {
-				ret = false;
-				LOG("Wrong door direction");
-				break;
-			}
-
-
-		}
-		roomsInfo.push_back(newRoom);
-	}
-
-	*/
 
 	pugi::xml_node& node = mapInfoDocument.child("map").child("layer");
 
@@ -1068,61 +1036,79 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 			case 1:
 				newRoom.type = -1;
 				
-				newRoom.x = ((pos.x * defaultRoomSize)  + (pos.x * defaultHallSize) + ((defaultRoomSize - playerBaseSize) / 2)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
-				
-						
+				newRoom.x = ((pos.x * defaultRoomSize)  + (pos.x * defaultHallHeight) + ((defaultRoomSize - playerBaseSize) / 2)) * defaultTileSize;
+				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallHeight)) * defaultTileSize;
 				break;	
 				// Enemy base
 			case 2:
 				newRoom.type = -2;
 
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
+				pos = TileToWorld(pos);
+				newRoom.x = pos.x;
+				newRoom.y = pos.y;
+				break;
+				// Default Room
+			case 3:
+				newRoom.type = 0;
 
+				pos = TileToWorld(pos);
+				newRoom.x = pos.x;
+				newRoom.y = pos.y;
 				break;
 				// Little room N
-			case 3:
-				newRoom.type = -3;
-
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize) + (defaultRoomSize - defaultLittleRoomSize)) * defaultTileSize;
-
-				newRoom.doors.push_back(DIRECTION_SOUTH);
-
-				break;
-				// Little room E
 			case 4:
 				newRoom.type = -3;
 
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
-
+				pos = TileToWorld(pos);
+				newRoom.x = ((pos.x / defaultTileSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+				newRoom.y = ((pos.y / defaultTileSize) + (defaultRoomSize - defaultLittleRoomSize)) * defaultTileSize;
 				break;
-				// Little room S	
+				// Little room E
 			case 5:
 				newRoom.type = -3;
 
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
+				pos = TileToWorld(pos);
+
+				newRoom.x = pos.x;
+				newRoom.y = ((pos.y / defaultTileSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
 
 				break;
-				// Little room W
+				// Little room S	
 			case 6:
 				newRoom.type = -3;
 
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize) + (defaultRoomSize - defaultLittleRoomSize)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+				pos = TileToWorld(pos);
+				newRoom.x = ((pos.x / defaultTileSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+				newRoom.y = pos.y;
 
-				newRoom.doors.push_back(DIRECTION_EAST);
 				break;
+				// Little room W
+			case 7:
+				newRoom.type = -3;
 
+				pos = TileToWorld(pos);
+				newRoom.x = ((pos.x / defaultTileSize) + (defaultRoomSize - defaultLittleRoomSize)) * defaultTileSize;
+				newRoom.y = ((pos.y / defaultTileSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+				break;
+				// Vertical hall
+			case 9:
+				newRoom.type = -4;
+
+				pos = TileToWorld(pos);
+				newRoom.x = ((pos.x / defaultTileSize) + ((defaultRoomSize - defaultHallWidth) / 2)) * defaultTileSize;
+				newRoom.y = pos.y;
+
+				break;
+				// Horizontal hall
+			case 10:
+				newRoom.type = -5;
+
+				pos = TileToWorld(pos);
+				newRoom.x = pos.x;
+				newRoom.y = ((pos.y / defaultTileSize) + ((defaultRoomSize - defaultHallWidth) / 2)) * defaultTileSize;
+
+					break;
 			default:
-				newRoom.type = mapDistribution[i] - 7;
-
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
-
 				break;
 			}
 			roomsInfo.push_back(newRoom);
@@ -1151,6 +1137,14 @@ bool j1Map::SelectRooms()
 			(*roomIterator).pullRoomNo = (*roomIterator).type;
 		}
 		else if ((*roomIterator).type == -3)
+		{
+			(*roomIterator).pullRoomNo = (*roomIterator).type;
+		}
+		else if ((*roomIterator).type == -4)
+		{
+			(*roomIterator).pullRoomNo = (*roomIterator).type;
+		}
+		else if ((*roomIterator).type == -5)
 		{
 			(*roomIterator).pullRoomNo = (*roomIterator).type;
 		}
@@ -1191,6 +1185,14 @@ bool j1Map::LoadRooms()
 		else if ((*roomIterator).type == -3)
 		{
 			ret = Load("data/maps/rooms/littleroom/littleRoom0.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
+		}
+		else if ((*roomIterator).type == -4)
+		{
+			ret = Load("data/maps/corridors/corridorV.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
+		}
+		else if ((*roomIterator).type == -5)
+		{
+			ret = Load("data/maps/corridors/corridorH.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
 		}
 		if (!ret)
 			break;
@@ -1360,6 +1362,46 @@ bool j1Map::LoadLogic()
 	}
 
 
+
+	return ret;
+}
+
+iPoint j1Map::TileToWorld(iPoint pos)
+{
+	iPoint ret{ 0,0 };
+	
+	if ((pos.x % 2) == 0)
+		ret.x = (((pos.x / 2) * defaultRoomSize * defaultTileSize) + 
+				 ((pos.x / 2) * defaultHallHeight * defaultTileSize));
+	else
+		ret.x = ((((pos.x / 2) + 1) * defaultRoomSize * defaultTileSize) + 
+				  ((pos.x / 2) * defaultHallHeight * defaultTileSize));
+
+	if ((pos.y % 2) == 0)
+		ret.y = (((pos.y / 2) * defaultRoomSize * defaultTileSize) + 
+		         ((pos.y / 2) * defaultHallHeight * defaultTileSize));
+	else
+		ret.y = ((((pos.y / 2) + 1) * defaultRoomSize * defaultTileSize) + 
+		          ((pos.y / 2) * defaultHallHeight * defaultTileSize));
+	
+	return ret;
+}
+
+iPoint j1Map::WorldToTile(iPoint pos)
+{
+	iPoint ret{ 0,0 };
+	int x = ((defaultRoomSize + defaultHallHeight) * defaultTileSize);
+	if ((pos.x % x) == 0)
+		ret.x = pos.x / ((defaultRoomSize + defaultHallHeight) * defaultTileSize) * 2;
+
+	else
+		ret.x = (pos.x / ((defaultRoomSize + defaultHallHeight) * defaultTileSize)) ;
+
+	if ((pos.y % ((defaultRoomSize + defaultHallHeight) * defaultTileSize)) == 0)
+		ret.y = pos.y / ((defaultRoomSize + defaultHallHeight) * defaultTileSize) * 2;
+
+	else
+		ret.y = (pos.y / ((defaultRoomSize + defaultHallHeight) * defaultTileSize)) ;
 
 	return ret;
 }

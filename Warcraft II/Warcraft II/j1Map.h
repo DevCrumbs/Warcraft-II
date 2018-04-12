@@ -261,6 +261,10 @@ public:
 	bool CreateCorridor(Room room, DIRECTION direction = DIRECTION_NONE);
 	bool LoadLogic();
 
+	iPoint TileToWorld(iPoint pos);
+
+	iPoint WorldToTile(iPoint pos);
+
 	inline RoomMap* GetMap() {return &playableMap;}
 
 private:
@@ -302,7 +306,8 @@ public:
 	int						playerBaseSize = 0;
 	int						defaultLittleRoomSize = 0;
 	int						defaultTileSize = 0;
-	int						defaultHallSize = 0;
+	int						defaultHallHeight = 0;
+	int						defaultHallWidth = 0;
 
 	WalkabilityMap			hiLevelWalkabilityMap;
 	list<WalkabilityMap>	lowLevelWalkabilityMap;

@@ -396,7 +396,7 @@
    <tile gid="126"/>
   </data>
  </layer>
- <layer name="Navigation" width="20" height="8">
+ <layer name="Navigation" width="20" height="8" opacity="0.4">
   <properties>
    <property name="navigation" type="bool" value="true"/>
   </properties>
@@ -443,12 +443,14 @@
    <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -458,25 +460,45 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="381"/>
    <tile gid="0"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
+   <tile gid="381"/>
    <tile gid="0"/>
+   <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -490,35 +512,13 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="381"/>
