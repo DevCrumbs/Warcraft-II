@@ -22,6 +22,6 @@
 	<gui />
 	<fade />
 	<renderer>
-		<camera x="-2400" y="-6720" />
+		<camera x="-2532" y="-6703" />
 	</renderer>
 </game_state>
