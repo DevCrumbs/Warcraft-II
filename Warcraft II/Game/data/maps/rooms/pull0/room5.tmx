@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" name="Wasteland" tilewidth="32" tileheight="32" spacing="1" tilecount="380" columns="19">
-  <image source="wastelandTiles.png" width="626" height="659"/>
+  <image source="SpriteSheet/SpriteSheet/Tiles/Wasteland Tiles/PC Computer - Warcraft 2 - Wasteland Tiles.png" width="626" height="659"/>
   <terraintypes>
    <terrain name="Ground" tile="-1"/>
    <terrain name="DarkGorund" tile="-1"/>
@@ -258,14 +258,14 @@
    <tile gid="126"/>
    <tile gid="139"/>
    <tile gid="126"/>
-   <tile gid="112"/>
-   <tile gid="111"/>
+   <tile gid="126"/>
+   <tile gid="117"/>
    <tile gid="253"/>
    <tile gid="264"/>
    <tile gid="244"/>
    <tile gid="358"/>
-   <tile gid="103"/>
-   <tile gid="136"/>
+   <tile gid="104"/>
+   <tile gid="138"/>
    <tile gid="139"/>
    <tile gid="139"/>
    <tile gid="138"/>
@@ -308,14 +308,14 @@
    <tile gid="138"/>
    <tile gid="139"/>
    <tile gid="139"/>
-   <tile gid="110"/>
-   <tile gid="359"/>
+   <tile gid="112"/>
+   <tile gid="111"/>
    <tile gid="253"/>
    <tile gid="264"/>
    <tile gid="244"/>
    <tile gid="352"/>
-   <tile gid="347"/>
    <tile gid="129"/>
+   <tile gid="138"/>
    <tile gid="139"/>
    <tile gid="126"/>
    <tile gid="138"/>
@@ -364,8 +364,8 @@
    <tile gid="363"/>
    <tile gid="260"/>
    <tile gid="241"/>
-   <tile gid="347"/>
-   <tile gid="129"/>
+   <tile gid="103"/>
+   <tile gid="136"/>
    <tile gid="126"/>
    <tile gid="126"/>
    <tile gid="138"/>
@@ -1287,9 +1287,9 @@
    <tile gid="252"/>
    <tile gid="244"/>
    <tile gid="129"/>
-   <tile gid="112"/>
-   <tile gid="125"/>
-   <tile gid="111"/>
+   <tile gid="126"/>
+   <tile gid="126"/>
+   <tile gid="117"/>
    <tile gid="359"/>
    <tile gid="352"/>
    <tile gid="351"/>
@@ -1337,9 +1337,9 @@
    <tile gid="236"/>
    <tile gid="234"/>
    <tile gid="129"/>
+   <tile gid="125"/>
+   <tile gid="137"/>
    <tile gid="111"/>
-   <tile gid="349"/>
-   <tile gid="350"/>
    <tile gid="356"/>
    <tile gid="353"/>
    <tile gid="347"/>

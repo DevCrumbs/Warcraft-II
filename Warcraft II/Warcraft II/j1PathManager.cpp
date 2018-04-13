@@ -452,7 +452,7 @@ void PathPlanner::LoadHiLevelSearch()
 
 	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
 	{
-		SDL_Rect goalRect{ singleUnit->goal.x * defaultSize, singleUnit->goal.y * defaultSize, 32, 32 };
+		SDL_Rect goalRect{ singleUnit->goal.x * defaultSize + 1600 + 640, singleUnit->goal.y * defaultSize + 800, 32, 32 };
 
 		if (SDL_IntersectRect(&(*iterator).collider, &entityRect, &result))
 		{
@@ -474,12 +474,9 @@ void PathPlanner::LoadHiLevelSearch()
 			hiLevelSearch->CreatePath(originRoom, goalRoomPos);
 			hiLevelPath = *(hiLevelSearch->GetLastPath());
 
-			hiLevelPath.erase(hiLevelPath.begin());
-			//hiLevelPath.push_back({ 2,0 });
-		//	hiLevelPath.push_back({ 1,0 });
-
 			if (hiLevelPath.size() > 0)
 			{
+				hiLevelPath.erase(hiLevelPath.begin());
 				nextRoomPos = hiLevelPath.front();
 				hiLevelPath.erase(hiLevelPath.begin());
 			}

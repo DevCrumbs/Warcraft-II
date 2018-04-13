@@ -129,8 +129,8 @@ bool j1Scene::Start()
 	App->audio->PlayMusic(mainThemeMusicName.data(), 2.0f);
 
 	// The camera is in the player base
-	App->render->camera.x = -2400;
-	App->render->camera.y = -6720;
+//	App->render->camera.x = -2400;
+	//App->render->camera.y = -6720;
 
 	return ret;
 }
