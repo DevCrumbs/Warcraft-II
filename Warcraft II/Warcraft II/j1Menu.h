@@ -74,12 +74,12 @@ public:
 
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim);
 
+	UICursor * mouseText;
+
 private:
 	void ChargeGameSounds();
 
 private:
-
-	UICursor * mouseText;
 
 	//Main Menu
 	UIButton* playButt = nullptr;
