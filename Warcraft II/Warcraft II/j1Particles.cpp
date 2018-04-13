@@ -67,6 +67,14 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	towerArrowParticles.downLeft.animation.PushBack({ towerArrows.child("downLeft").attribute("x").as_int(), towerArrows.child("downLeft").attribute("y").as_int(), towerArrows.child("downLeft").attribute("w").as_int(), towerArrows.child("downLeft").attribute("h").as_int() });
 	towerArrowParticles.downRight.animation.PushBack({ towerArrows.child("downRight").attribute("x").as_int(), towerArrows.child("downRight").attribute("y").as_int(), towerArrows.child("downRight").attribute("w").as_int(), towerArrows.child("downRight").attribute("h").as_int() });
 
+	//Troll's axe
+	pugi::xml_node trollAxeAnimation = config.child("trollAxe");
+	trollAxe.animation.speed = trollAxeAnimation.attribute("speed").as_float();
+	trollAxe.animation.loop = trollAxeAnimation.attribute("loop").as_bool();
+	for (currentAnimation = trollAxeAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxe.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
 	// Sheep Paws
 	pugi::xml_node sheepPawsAnimation = config.child("animations").child("sheepPaws");
 

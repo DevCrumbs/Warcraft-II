@@ -8,6 +8,7 @@
 #include "j1App.h"
 #include "j1EntityFactory.h"
 #include "j1Scene.h"
+#include "j1Menu.h"
 #include "j1Gui.h"
 #include "j1Pathfinding.h"
 #include "j1Particles.h"
@@ -17,6 +18,7 @@
 #include "UIButton.h"
 #include "UIImage.h"
 #include "UILifeBar.h"
+#include "UICursor.h"
 
 j1Player::j1Player() : j1Module()
 {
@@ -507,6 +509,9 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		
 			break;
 		case EntitiesEvent_HOVER:
+			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
+				App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+			}
 			if ((staticEntity->staticEntityType == EntityType_TOWN_HALL || staticEntity->staticEntityType == EntityType_BARRACKS) && ent->GetCurrLife() == ent->GetMaxLife())
 				hoverCheck = HoverCheck_Upgrate;
 			else if (ent->GetCurrLife() < ent->GetMaxLife())
@@ -523,7 +528,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			break;
 		case EntitiesEvent_LEAVE:
 			DestroyHoverButton(ent);
-
+			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 			break;
 		case EntitiesEvent_CREATED:
 			DeleteEntitiesMenu();
