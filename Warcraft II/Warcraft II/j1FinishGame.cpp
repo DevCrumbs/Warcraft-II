@@ -52,7 +52,6 @@ bool j1FinishGame::Start()
 bool j1FinishGame::Update(float dt)
 {
 
-
 	return true;
 }
 

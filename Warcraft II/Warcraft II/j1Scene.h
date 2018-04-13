@@ -105,8 +105,6 @@ public:
 	void LoadTerenasDialog(TerenasDialogEvents dialogEvent);
 	void UnLoadTerenasDialog();
 
-	iPoint FindClosestValidTile(iPoint tile) const;
-
 	bool LoadKeys(pugi::xml_node&);
 
 public:

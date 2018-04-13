@@ -126,6 +126,8 @@ public:
 	iPoint GetMousePos() const;
 	void CheckUnitSpawning();
 
+	iPoint FindClosestValidTile(iPoint tile) const;
+
 
 	void AddGold(int sumGold);
 	int GetCurrentGold() const;
