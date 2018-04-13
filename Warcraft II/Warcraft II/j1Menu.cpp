@@ -71,6 +71,30 @@ bool j1Menu::Awake(pugi::xml_node& config)
 	repairBuildingSound = buildingSounds.attribute("repair").as_string();
 	destroyBuildingSound = buildingSounds.attribute("buildingDestroy").as_string(); 
 
+	pugi::xml_node unitsSounds = sounds.child("unitsPaths");
+	humanDeadSound = unitsSounds.attribute("humanDeadSound").as_string();
+	orcDeadSound = unitsSounds.attribute("orcDeadSound").as_string();
+	prisonerRescueSound = unitsSounds.attribute("prisonerRescue").as_string();
+
+	pugi::xml_node crittersSounds = sounds.child("crittersPaths");
+	crittersBoarDead = crittersSounds.attribute("boarDead").as_string();
+	crittersSheepDead = crittersSounds.attribute("sheepDead").as_string();
+
+	pugi::xml_node archerSounds = sounds.child("archerPaths");
+	archerGoToPlaceSound = archerSounds.attribute("goToPlace").as_string();
+	archerReadySound = archerSounds.attribute("ready").as_string();
+	archerSelectedSound = archerSounds.attribute("selected").as_string();
+
+	pugi::xml_node footmanSounds = sounds.child("footmanPaths");
+	footmanGoToPlaceSound = footmanSounds.attribute("goToPlace").as_string();
+	footmanReadySound = footmanSounds.attribute("ready").as_string();
+	footmanSelectedSound = footmanSounds.attribute("selected").as_string();
+
+	pugi::xml_node attackSounds = sounds.child("attackPaths");
+	axeThrowSound = attackSounds.attribute("axeThrow").as_string();
+	bowFireSound = attackSounds.attribute("bowFire").as_string();
+	swordSound = attackSounds.attribute("sword").as_string();
+
 	return ret;
 }
 
@@ -89,7 +113,9 @@ bool j1Menu::Start()
 
 	UICursor_Info mouseInfo;
 	mouseInfo.default = { 243, 525, 28, 33 };
-	mouseInfo.onClick = { 243, 525, 28, 33 };
+	mouseInfo.onClick = { 275, 525, 28, 33 };
+	mouseInfo.onMine = { 310, 525, 28, 33 };
+	mouseInfo.onMineClick = { 338, 525, 28, 33 };
 	mouseText = App->gui->CreateUICursor(mouseInfo, this);
 	return true;
 }
@@ -104,13 +130,14 @@ bool j1Menu::PreUpdate()
 bool j1Menu::Update(float dt)
 {
 	App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 100, 100, 100, 255);
-	
+
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 		if (parchment != nullptr) {
 			parchment->isRemove = true;
 			parchment = nullptr;
 		}
 	}
+
 	return true;
 }
 
@@ -428,7 +455,22 @@ void j1Menu::ChargeGameSounds()
 	App->audio->LoadFx(stablesSound.data()); //9 stables sound
 	App->audio->LoadFx(repairBuildingSound.data()); //10 repair building sound
 	App->audio->LoadFx(destroyBuildingSound.data()); //11 destroy building sound
-	
+
+	App->audio->LoadFx(humanDeadSound.data()); //12
+	App->audio->LoadFx(orcDeadSound.data()); //13
+	App->audio->LoadFx(prisonerRescueSound.data()); //14
+	App->audio->LoadFx(crittersBoarDead.data()); //15
+	App->audio->LoadFx(crittersSheepDead.data()); //16
+	App->audio->LoadFx(archerGoToPlaceSound.data()); //17
+	App->audio->LoadFx(archerReadySound.data()); //18
+	App->audio->LoadFx(archerSelectedSound.data()); //19
+	App->audio->LoadFx(footmanGoToPlaceSound.data()); //20
+	App->audio->LoadFx(footmanReadySound.data()); //21
+	App->audio->LoadFx(footmanSelectedSound.data()); //22
+	App->audio->LoadFx(axeThrowSound.data()); //23
+	App->audio->LoadFx(bowFireSound.data()); //24
+	App->audio->LoadFx(swordSound.data()); //25
+
 	App->isSoundCharged = true;
 }
 

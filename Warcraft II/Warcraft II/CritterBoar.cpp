@@ -13,6 +13,7 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 #include "Goal.h"
+#include "j1Audio.h"
 
 #include "j1Scene.h" // isFrameByFrame
 #include "j1Input.h" // isFrameByFrame
@@ -64,6 +65,10 @@ void CritterBoar::Move(float dt)
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
 	if (currLife <= 0 && unitState != UnitState_Die && singleUnit->IsFittingTile()) {
+
+		RestoreHealth();
+
+		App->audio->PlayFx(15, 0);
 
 		isDead = true;
 
@@ -283,4 +288,13 @@ void CritterBoar::UpdatePaws()
 			lastPawTile = singleUnit->currTile;
 		}
 	}
+}
+
+bool CritterBoar::RestoreHealth() 
+{
+	if (unitsAttacking.front() != nullptr) {
+		unitsAttacking.front()->ApplyHealth(critterBoarInfo.restoredHealth);
+		return true;
+	}
+	return false;
 }

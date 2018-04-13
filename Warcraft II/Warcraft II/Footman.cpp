@@ -12,6 +12,7 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 #include "Goal.h"
+#include "j1Audio.h"
 
 #include "UILifeBar.h"
 
@@ -69,6 +70,8 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
+
+	auxIsSelected = isSelected;
 }
 
 void Footman::Move(float dt)
@@ -88,7 +91,10 @@ void Footman::Move(float dt)
 
 		if (currLife <= 0
 			&& unitState != UnitState_Die
-			&& singleUnit->IsFittingTile()) {
+			&& singleUnit->IsFittingTile()
+			&& !isDead) {
+
+			App->audio->PlayFx(12, 0);
 
 			isDead = true;
 
@@ -114,6 +120,14 @@ void Footman::Move(float dt)
 
 	if (!isDead) {
 
+		if (auxIsSelected != isSelected) {
+
+			auxIsSelected = isSelected;
+
+			if (isSelected)
+				App->audio->PlayFx(22, 0);
+		}
+
 		// PROCESS THE COMMANDS
 		switch (unitCommand) {
 
@@ -135,6 +149,8 @@ void Footman::Move(float dt)
 			if (singleUnit->isGoalChanged) {
 
 				if (singleUnit->IsFittingTile()) {
+
+					App->audio->PlayFx(20, 0);
 
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);
@@ -270,7 +286,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 	case CollisionState_OnEnter:
 
 		// An enemy is within the sight of this player unit
-		if (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
+		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
@@ -302,7 +319,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				targets.push_back(targetInfo);
 			}
 		}
-		else if (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
+		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
@@ -327,7 +345,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 	case CollisionState_OnExit:
 
 		// Reset attack parameters
-		if (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
+		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
@@ -359,7 +378,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				it++;
 			}
 		}
-		else if (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
+		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());

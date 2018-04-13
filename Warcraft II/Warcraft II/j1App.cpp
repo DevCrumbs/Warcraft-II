@@ -79,6 +79,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	AddModule(console);
 	AddModule(gui);
+
 	AddModule(fade);
 
 	// render last to swap buffer
@@ -91,7 +92,6 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	entities->active = false;
 	collision->active = false;
 	pathfinding->active = false;
-
 }
 
 // Destructor

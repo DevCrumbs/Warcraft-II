@@ -15,6 +15,10 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		App->audio->PlayFx(2, 0); //Construction sound
 	}
 }
+ChickenFarm::~ChickenFarm() {
+	App->player->currentFood -= 4;
+	App->scene->hasFoodChanged = true;
+};
 
 void ChickenFarm::Move(float dt)
 {

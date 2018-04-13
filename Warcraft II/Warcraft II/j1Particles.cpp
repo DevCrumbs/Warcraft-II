@@ -67,6 +67,18 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	towerArrowParticles.downLeft.animation.PushBack({ towerArrows.child("downLeft").attribute("x").as_int(), towerArrows.child("downLeft").attribute("y").as_int(), towerArrows.child("downLeft").attribute("w").as_int(), towerArrows.child("downLeft").attribute("h").as_int() });
 	towerArrowParticles.downRight.animation.PushBack({ towerArrows.child("downRight").attribute("x").as_int(), towerArrows.child("downRight").attribute("y").as_int(), towerArrows.child("downRight").attribute("w").as_int(), towerArrows.child("downRight").attribute("h").as_int() });
 
+	//Cannon from the cannon tower
+	pugi::xml_node bulletsCannon = config.child("cannon");
+	cannonBullet.animation.PushBack({ bulletsCannon.attribute("x").as_int(), bulletsCannon.attribute("y").as_int(), bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() });
+
+	//Troll's axe
+	pugi::xml_node trollAxeAnimation = config.child("trollAxe");
+	trollAxe.animation.speed = trollAxeAnimation.attribute("speed").as_float();
+	trollAxe.animation.loop = trollAxeAnimation.attribute("loop").as_bool();
+	for (currentAnimation = trollAxeAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxe.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
 	// Sheep Paws
 	pugi::xml_node sheepPawsAnimation = config.child("animations").child("sheepPaws");
 
@@ -198,6 +210,14 @@ bool j1Particles::Start()
 	LOG("Loading particles");
 
 	paws.particleType = ParticleType_Paws;
+	towerArrowParticles.up.particleType = ParticleType_NoType;
+	towerArrowParticles.down.particleType = ParticleType_NoType;
+	towerArrowParticles.left.particleType = ParticleType_NoType;
+	towerArrowParticles.right.particleType = ParticleType_NoType;
+	towerArrowParticles.upLeft.particleType = ParticleType_NoType;
+	towerArrowParticles.upRight.particleType = ParticleType_NoType;
+	towerArrowParticles.downLeft.particleType = ParticleType_NoType;
+	towerArrowParticles.downRight.particleType = ParticleType_NoType;
 
 	LoadAnimationsSpeed();
 
@@ -246,16 +266,29 @@ bool j1Particles::Update(float dt)
 			delete p;
 			active[i] = nullptr;
 		}
-
-		// TODO Sandra: the Paws draw is done called from another module
-		if (p->particleType != ParticleType_Paws)
-			Draw();
 	}
 
 	return ret;
 }
 
 void j1Particles::Draw()
+{
+	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
+	{
+		Particle* p = active[i];
+
+		if (p == nullptr)
+			continue;
+
+		if (SDL_GetTicks() >= p->born)
+		{
+			if (p->particleType != ParticleType_Paws)
+				App->render->Blit(atlasTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()));
+		}
+	}
+}
+
+void j1Particles::DrawPaws() 
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
@@ -420,14 +453,14 @@ bool Particle::Update(float dt)
 	ret = false;
 	*/
 
-	if (life == 0)
-	{
+	//if (life == 0)
+	//{
 		//if ((SDL_GetTicks() - born) > life)
+		//ret = false;
+	//}
+
+	if (isRemove)
 		ret = false;
-	}
-	if (isRemove) {
-		ret = false;
-	}
 
 	return ret;
 }

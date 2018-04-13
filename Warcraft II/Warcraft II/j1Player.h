@@ -126,6 +126,8 @@ public:
 	iPoint GetMousePos() const;
 	void CheckUnitSpawning();
 
+	iPoint FindClosestValidTile(iPoint tile) const;
+
 
 	void AddGold(int sumGold);
 	int GetCurrentGold() const;
@@ -161,6 +163,7 @@ public:
 	void HandleBarracksUIElem();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
+	void CreateAbilitiesButtons();
 
 public:
 
@@ -239,7 +242,7 @@ private:
 
 	ToSpawnUnitsStats toSpawnUnitStats;
 
-	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton;
+	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton, *commandPatrolButton, *commandStopButton;
 
 	list<UIElement*> UIMenuInfoList;
 

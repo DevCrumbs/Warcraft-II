@@ -114,6 +114,12 @@ bool j1Scene::Start()
 	//LoadInGameUI
 	LoadInGameUI();
 
+	if (terenasDialogEvent == TerenasDialog_NONE) {
+		terenasDialogTimer.Start();
+		terenasDialogEvent = TerenasDialog_START;
+		LoadTerenasDialog(terenasDialogEvent);
+	}
+
 	//Calculate camera movement in pixels through the percentatge given
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
 
@@ -154,11 +160,11 @@ bool j1Scene::PreUpdate()
 	unitInfo.damage = 2;
 	unitInfo.priority = 1; // TODO: change to 3 or so
 
-						   /// Footman
-	//FootmanInfo footmanInfo;
-
-	/// Grunt
+	 /// Footman
+	FootmanInfo footmanInfo;
 	GruntInfo gruntInfo;
+	ElvenArcherInfo elvenArcherInfo;
+	TrollAxethrowerInfo trollAxethrowerInfo;
 
 	/// Sheep
 	CritterSheepInfo critterSheepInfo;
@@ -182,7 +188,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = FindClosestValidTile(tile);
+			tile = App->player->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
@@ -191,7 +197,7 @@ bool j1Scene::PreUpdate()
 		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
 
 		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
+		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
 		//}
 	}
 
@@ -210,7 +216,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = FindClosestValidTile(tile);
+			tile = App->player->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) { // TODO: uncomment this line
@@ -219,7 +225,7 @@ bool j1Scene::PreUpdate()
 		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
 
 		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, this);
+		App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, this);
 		//}
 	}
 
@@ -330,7 +336,7 @@ bool j1Scene::Update(float dt)
 
 	// Draw
 	App->map->Draw(); // map
-	App->particles->Draw(); // particles (only paws)
+	App->particles->DrawPaws(); // paws particles
 	App->entities->Draw(); // entities
 
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
@@ -355,8 +361,8 @@ bool j1Scene::Update(float dt)
 
 		if (entity != nullptr)
 			App->entities->SelectEntity(entity);
-		else
-			App->entities->UnselectAllEntities();
+		//else
+			//App->entities->UnselectAllEntities();
 	}
 
 	int width = mousePos.x - startRectangle.x;
@@ -402,15 +408,17 @@ bool j1Scene::Update(float dt)
 		if (group != nullptr) {
 
 			/// COMMAND PATROL
+			/*
 			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 
 				App->entities->CommandToUnits(units, UnitCommand_Patrol);
-
+			*/
 			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
+			/*
 			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 
 				App->entities->CommandToUnits(units, UnitCommand_Stop);
-
+			*/
 			/// COMMAND ATTACK
 			/// Enemy
 			// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
@@ -530,6 +538,10 @@ bool j1Scene::Update(float dt)
 		hasFoodChanged = false;
 	}
 
+	if (terenasDialogTimer.Read() >= 30000 && terenasDialogEvent != TerenasDialog_NONE) {
+		terenasDialogEvent = TerenasDialog_NONE;
+		UnLoadTerenasDialog();
+	}
 
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
@@ -1215,6 +1227,47 @@ PauseMenuActions j1Scene::GetPauseMenuActions()
 	return pauseMenuActions;
 }
 
+void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
+{
+	UIImage_Info imageInfo;
+	UILabel_Info labelInfo;
+	if (dialogEvent == TerenasDialog_START) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 340;
+		labelInfo.interactive = false;
+		labelInfo.text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_RESCUE_ALLERIA) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 350;
+		labelInfo.interactive = false;
+		labelInfo.text = "Congratulations! You have freed Alleria. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_RESCUE_KHADGAR) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 350;
+		labelInfo.interactive = false;
+		labelInfo.text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_RESCUE_TURALYON) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 350;
+		labelInfo.interactive = false;
+		labelInfo.text = "Congratulations! You have freed Turalyon. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+
+}
+
+void j1Scene::UnLoadTerenasDialog()
+{
+	App->gui->DestroyElement((UIElement**)&terenasAdvices.text);
+	App->gui->DestroyElement((UIElement**)&terenasAdvices.terenasImage);
+}
+
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 {
@@ -1253,19 +1306,29 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		
 		if (UIelem == stablesButton) {
 			if (App->player->currentGold >= stablesCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_STABLES;
+				//App->audio->PlayFx(1, 0); //Button sound
+				//UnLoadBuildingMenu();
+				//alphaBuilding = EntityType_STABLES;
+				App->audio->PlayFx(3, 0); //Button error sound
 			}
 			else if(App->player->currentGold < stablesCost)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
 		
+		if (UIelem == elvenLumberButton) {
+			App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+		if (UIelem == blackSmithButton) {
+			App->audio->PlayFx(3, 0); //Button error sound
+		}
+		
 		if (UIelem == gryphonAviaryButton) {
 			if (App->player->currentGold >= gryphonAviaryCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_GRYPHON_AVIARY;
+				//App->audio->PlayFx(1, 0); //Button sound
+				//UnLoadBuildingMenu();
+				//alphaBuilding = EntityType_GRYPHON_AVIARY;
+				App->audio->PlayFx(3, 0); //Button error sound
 			}
 			else if(App->player->currentGold < gryphonAviaryCost)
 				App->audio->PlayFx(3, 0); //Button error sound
@@ -1273,12 +1336,17 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 		if (UIelem == mageTowerButton) {
 			if (App->player->currentGold >= mageTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_MAGE_TOWER;
+				//App->audio->PlayFx(1, 0); //Button sound
+				//UnLoadBuildingMenu();
+				//alphaBuilding = EntityType_MAGE_TOWER;
+				App->audio->PlayFx(3, 0); //Button error sound
 			}
 			else if(App->player->currentGold < mageTowerCost)
 				App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+		if (UIelem == churchButton) {
+			App->audio->PlayFx(3, 0); //Button error sound
 		}
 
 		if (UIelem == scoutTowerButton) {
@@ -1290,6 +1358,28 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			else if(App->player->currentGold < scoutTowerCost)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
+
+		if (UIelem == guardTowerButton) {
+			if (App->player->currentGold >= guardTowerCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
+			}
+			else if (App->player->currentGold < guardTowerCost)
+				App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+		if (UIelem == cannonTowerButton) {
+			if (App->player->currentGold >= cannonTowerCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
+			}
+			else if (App->player->currentGold < cannonTowerCost)
+				App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+
 
 		else if (UIelem == pauseMenuButt) {
 			App->audio->PlayFx(1, 0); //Button sound
@@ -1361,49 +1451,6 @@ ENTITY_TYPE j1Scene::GetAlphaBuilding() {
 
 void j1Scene::SetAplphaBuilding(ENTITY_TYPE alphaBuilding) {
 	this->alphaBuilding = alphaBuilding;
-}
-
-iPoint j1Scene::FindClosestValidTile(iPoint tile) const
-{
-	// Perform a BFS
-	queue<iPoint> queue;
-	list<iPoint> visited;
-
-	iPoint curr = tile;
-	queue.push(curr);
-
-	while (queue.size() > 0) {
-
-		curr = queue.front();
-		queue.pop();
-
-		if (!App->entities->IsEntityOnTile(curr) && App->pathfinding->IsWalkable(curr))
-			return curr;
-
-		iPoint neighbors[8];
-		neighbors[0].create(curr.x + 1, curr.y + 0);
-		neighbors[1].create(curr.x + 0, curr.y + 1);
-		neighbors[2].create(curr.x - 1, curr.y + 0);
-		neighbors[3].create(curr.x + 0, curr.y - 1);
-		neighbors[4].create(curr.x + 1, curr.y + 1);
-		neighbors[5].create(curr.x + 1, curr.y - 1);
-		neighbors[6].create(curr.x - 1, curr.y + 1);
-		neighbors[7].create(curr.x - 1, curr.y - 1);
-
-		for (uint i = 0; i < 8; ++i)
-		{
-			if (App->pathfinding->IsWalkable(neighbors[i])) {
-
-				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
-
-					queue.push(neighbors[i]);
-					visited.push_back(neighbors[i]);
-				}
-			}
-		}
-	}
-
-	return { -1,-1 };
 }
 
 // -------------------------------------------------------------
