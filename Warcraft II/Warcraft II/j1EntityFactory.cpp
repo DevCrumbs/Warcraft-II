@@ -1277,6 +1277,8 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 
 	case EntityType_CHICKEN_FARM:
 	case EntityType_SCOUT_TOWER:
+	case EntityType_PLAYER_GUARD_TOWER:
+	case EntityType_PLAYER_CANNON_TOWER:
 		DrawStaticEntityPreviewTiles(true, Small, mousePos);
 
 		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), Small)) 

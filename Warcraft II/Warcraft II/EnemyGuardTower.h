@@ -2,6 +2,8 @@
 #define __EnemyGuardTower_H__
 
 #include "StaticEntity.h"
+#include "ScoutTower.h"
+#include <list>
 
 struct EnemyGuardTowerInfo
 {
@@ -25,6 +27,17 @@ public:
 	~EnemyGuardTower() {};
 
 	void Move(float dt);
+	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
+
+	// State machine
+	void TowerStateMachine(float dt);
+
+	//Arrows
+	void DetermineArrowDirection();
+	void CreateArrow();
+	void CheckArrowMovement(float dt);
+	void MoveArrowTowardsTarget(float dt);
+	void InflictDamageAndDestroyArrow();
 
 	// Animations
 	void LoadAnimationsSpeed();
@@ -33,6 +46,17 @@ public:
 private:
 
 	EnemyGuardTowerInfo enemyGuardTowerInfo;
+	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
+	TowerState towerState = TowerState_Idle;
+
+	//Attack
+	Entity* attackingTarget = nullptr;
+	j1Timer attackTimer;
+	std::list<Entity*> enemyAttackList;
+
+	//Arrow
+	Particle* arrowParticle = nullptr;
+	ArrowDirection arrowDirection = NO_DIRECTION;
 };
 
 #endif //__EnemyGuardTower_H__
