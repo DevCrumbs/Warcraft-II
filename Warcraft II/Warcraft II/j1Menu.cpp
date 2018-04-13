@@ -112,8 +112,6 @@ bool j1Menu::Update(float dt)
 		}
 	}
 
-	App->gui->Draw();
-
 	return true;
 }
 

@@ -11,6 +11,7 @@
 #include "j1Input.h"
 #include "j1Gui.h"
 #include "j1Window.h"
+#include "j1Particles.h"
 
 #include "UIImage.h"
 #include "UILabel.h"
@@ -131,6 +132,17 @@ bool j1Gui::Update(float dt)
 
 		UI_elem_it++;
 	}
+	
+	UI_elem_it = UIElementsList.begin();
+
+	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
+		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+			info->Draw();
+		else if (App->render->IsInScreen(info->GetLocalRect()))
+			info->Draw();
+	}
+
+	App->particles->Draw(); // the rest of the particles
 
 	return ret;
 }

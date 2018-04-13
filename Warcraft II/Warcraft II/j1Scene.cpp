@@ -160,7 +160,7 @@ bool j1Scene::PreUpdate()
 	unitInfo.damage = 2;
 	unitInfo.priority = 1; // TODO: change to 3 or so
 
-						   /// Footman
+	 /// Footman
 	//FootmanInfo footmanInfo;
 
 	/// Grunt
@@ -338,8 +338,6 @@ bool j1Scene::Update(float dt)
 	App->map->Draw(); // map
 	App->particles->DrawPaws(); // paws particles
 	App->entities->Draw(); // entities
-	App->particles->Draw(); // the rest of the particles
-	App->gui->Draw(); // gui
 
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		debugDrawAttack = !debugDrawAttack;
