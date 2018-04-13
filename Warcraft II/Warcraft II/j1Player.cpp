@@ -757,6 +757,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 	}
 	i = 0;
 	groupSelectedStats.units = units;
+	CreateAbilitiesButtons();
 	
 }
 
@@ -789,6 +790,8 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityMovementSpeed);
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityRange);
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entitySight);
+		App->gui->DestroyElement((UIElement**)&commandPatrolButton);
+		App->gui->DestroyElement((UIElement**)&commandStopButton);
 		entitySelectedStats.entitySelected = nullptr;
 	}
 
@@ -808,6 +811,9 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar5);
 		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar6);
 		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar7);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar8);
+		App->gui->DestroyElement((UIElement**)&commandPatrolButton);
+		App->gui->DestroyElement((UIElement**)&commandStopButton);
 		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar8);
 		groupSelectedStats.units.clear();
 	}
@@ -985,6 +991,12 @@ void j1Player::CreateMageTowerButtons()
 	CreateSimpleButton({ 342,244,50,41 }, { 597, 244, 50, 41 }, { 852,244,50,41 }, { 217, 2 }, produceMageButton);
 }
 
+void j1Player::CreateAbilitiesButtons()
+{
+	CreateSimpleButton({ 802,202,50,41 }, { 904, 202, 50, 41 }, { 853,202,50,41 }, { 217, 2 }, commandStopButton);
+	CreateSimpleButton({ 649,202,50,41 }, { 751, 202, 50, 41 }, { 700,202,50,41 }, { 268, 2 }, commandPatrolButton);
+}
+
 void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) {
 
 	UIButton_Info infoButton;
@@ -1024,6 +1036,12 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			if (UIelem == produceGryphonRiderButton) {
 				DeleteHoverInfoMenu();
 				MakeHoverInfoMenu("Produces gryphon", "Cost: 2500 gold");
+			}
+			if (UIelem == commandPatrolButton) {
+				// Command Patrol (SANDRA)
+			}
+			if (UIelem == commandStopButton) {
+				// Command Stop (SANDRA)
 			}
 			break;
 		case UI_EVENT_MOUSE_LEAVE:

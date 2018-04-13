@@ -536,6 +536,10 @@ bool j1Scene::Update(float dt)
 		hasFoodChanged = false;
 	}
 
+	if (terenasDialogTimer.Read() >= 30000 && terenasDialogEvent != TerenasDialog_NONE) {
+		terenasDialogEvent = TerenasDialog_NONE;
+		UnLoadTerenasDialog();
+	}
 
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
@@ -1223,17 +1227,33 @@ PauseMenuActions j1Scene::GetPauseMenuActions()
 
 void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
 {
+	UIImage_Info imageInfo;
+	UILabel_Info labelInfo;
 	if (dialogEvent == TerenasDialog_START) {
-		UILabel_Info labelInfo;
-		UIImage_Info imageInfo;
-
 		labelInfo.fontName = FONT_NAME_WARCRAFT14;
 		labelInfo.textWrapLength = 350;
-		labelInfo.text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE";
-
-		terenasAdvices.text = App->gui->CreateUILabel({ 200,200 }, labelInfo, this);
-
+		labelInfo.text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
 	}
+	else if (dialogEvent == TerenasDialog_RESCUE_ALLERIA) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 350;
+		labelInfo.text = "Congratulations! You have freed Alleria. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_RESCUE_KHADGAR) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 350;
+		labelInfo.text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_RESCUE_TURALYON) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 350;
+		labelInfo.text = "Congratulations! You have freed Turalyon. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+
 }
 
 void j1Scene::UnLoadTerenasDialog()
