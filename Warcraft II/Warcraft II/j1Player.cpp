@@ -757,6 +757,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 	}
 	i = 0;
 	groupSelectedStats.units = units;
+	CreateAbilitiesButtons();
 	
 }
 
@@ -789,6 +790,8 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityMovementSpeed);
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityRange);
 		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entitySight);
+		App->gui->DestroyElement((UIElement**)&commandPatrolButton);
+		App->gui->DestroyElement((UIElement**)&commandStopButton);
 		entitySelectedStats.entitySelected = nullptr;
 	}
 
@@ -808,6 +811,9 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar5);
 		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar6);
 		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar7);
+		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar8);
+		App->gui->DestroyElement((UIElement**)&commandPatrolButton);
+		App->gui->DestroyElement((UIElement**)&commandStopButton);
 		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar8);
 		groupSelectedStats.units.clear();
 	}
@@ -985,6 +991,12 @@ void j1Player::CreateMageTowerButtons()
 	CreateSimpleButton({ 342,244,50,41 }, { 597, 244, 50, 41 }, { 852,244,50,41 }, { 217, 2 }, produceMageButton);
 }
 
+void j1Player::CreateAbilitiesButtons()
+{
+	CreateSimpleButton({ 802,202,50,41 }, { 904, 202, 50, 41 }, { 853,202,50,41 }, { 217, 2 }, commandStopButton);
+	CreateSimpleButton({ 649,202,50,41 }, { 751, 202, 50, 41 }, { 700,202,50,41 }, { 268, 2 }, commandPatrolButton);
+}
+
 void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) {
 
 	UIButton_Info infoButton;
@@ -1025,6 +1037,12 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				DeleteHoverInfoMenu();
 				MakeHoverInfoMenu("Produces gryphon", "Cost: 2500 gold");
 			}
+			if (UIelem == commandPatrolButton) {
+				// Command Patrol (SANDRA)
+			}
+			if (UIelem == commandStopButton) {
+				// Command Stop (SANDRA)
+			}
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
 			if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton || UIelem == produceMageButton || UIelem == produceGryphonRiderButton) {
@@ -1036,24 +1054,28 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		case UI_EVENT_MOUSE_LEFT_CLICK:
 
 			if (hoverCheck == HoverCheck_Repair) {
-				App->audio->PlayFx(10, 0); //Repair building sound
-				hoverButtonStruct.currentEntity->SetCurrLife(hoverButtonStruct.currentEntity->GetMaxLife());
-				hoverButtonStruct.currentEntity->CheckBuildingState();
-				entitySelectedStats.HP->SetText(hoverButtonStruct.currentEntity->GetStringLife());
-				entitySelectedStats.lifeBar->SetLife(hoverButtonStruct.currentEntity->GetMaxLife());
-				currentGold -= 500;
-				App->scene->hasGoldChanged = true;
-
+				if (currentGold < 500) {
+					App->audio->PlayFx(3, 0); //Button error sound
+				}
+				else {
+					App->audio->PlayFx(10, 0); //Repair building sound
+					hoverButtonStruct.currentEntity->SetCurrLife(hoverButtonStruct.currentEntity->GetMaxLife());
+					hoverButtonStruct.currentEntity->CheckBuildingState();
+					entitySelectedStats.HP->SetText(hoverButtonStruct.currentEntity->GetStringLife());
+					entitySelectedStats.lifeBar->SetLife(hoverButtonStruct.currentEntity->GetMaxLife());
+					currentGold -= 500;
+					App->scene->hasGoldChanged = true;
+				}
 			}
 			else if (hoverCheck == HoverCheck_Upgrate)
 			{
-				//App->audio->PlayFx(2, 0); //Construction sound
 				if (hoverButtonStruct.currentEntity == barracks) {
 					if (currentGold >= 1000) {
 						barracksUpgrade = true;
 						currentGold -= 1000;
 						App->scene->hasGoldChanged = true;
 						DestroyHoverButton(barracks);
+						App->audio->PlayFx(2, 0); //Construction sound
 					}
 					else
 						App->audio->PlayFx(3, 0); //Button error sound
@@ -1064,6 +1086,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						currentGold -= 500;
 						App->scene->hasGoldChanged = true;
 						DestroyHoverButton(townHall);
+						App->audio->PlayFx(2, 0); //Construction sound
 					}
 					else
 						App->audio->PlayFx(3, 0); //Button error sound

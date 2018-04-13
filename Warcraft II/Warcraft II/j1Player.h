@@ -161,6 +161,7 @@ public:
 	void HandleBarracksUIElem();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
+	void CreateAbilitiesButtons();
 
 public:
 
@@ -239,7 +240,7 @@ private:
 
 	ToSpawnUnitsStats toSpawnUnitStats;
 
-	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton;
+	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton, *commandPatrolButton, *commandStopButton;
 
 	list<UIElement*> UIMenuInfoList;
 
