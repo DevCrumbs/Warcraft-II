@@ -155,6 +155,8 @@ struct Room
 
 	int					roomType = 0;
 
+	bool				isVisited = false;
+
 	fPoint				roomPos{ 0, 0 };
 	SDL_Color			backgroundColor;
 	ROOM_TYPE			type = ROOMTYPE_UNKNOWN;

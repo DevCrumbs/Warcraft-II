@@ -309,33 +309,37 @@ bool PathPlanner::HilevelUpdate()
 		{
 			currRoomPos = nextRoomPos;
 			currRoom = nextRoom;
-			nextRoomPos = hiLevelPath.front();
+			currRoom->isVisited = true;
 
+			if (hiLevelPath.size() > 0)
+			{
+				nextRoomPos = hiLevelPath.front();
+				hiLevelPath.erase(hiLevelPath.begin());
+			}
 			currentLowLevelMap = currRoom->walkabilityMap;
 			App->pathfinding->SetMap(currentLowLevelMap);
 
 			SDL_Rect result{ 0,0,0,0 };
-
 			RoomMap* map = App->map->GetMap();
-	//		if (test)
-		//	{
-				for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
+
+			iPoint pos = App->map->TileToWorld(nextRoomPos);
+			for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
+			{			
+				SDL_Rect goalRect{ pos.x, pos.y, 800, 800 };
+
+				if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
 				{
-					SDL_Rect goalRect{ 2240, 0, 50 * 32, 50 * 32 };
+					nextRoom = &(*iterator);
 
-					if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
-					{
-						nextRoom = &(*iterator);
+					unitReachDestination = false;
+					unitNeedPath = true;
+					ret = true;
 
-						unitReachDestination = false;
-						unitNeedPath = true;
-						ret = true;
-
-						break;
-					}
+					break;
 				}
+			}
 
-		//	}
+
 
 			//list<Room>::iterator iterator = map->rooms.begin();
 			//for (; iterator != map->rooms.end(); ++iterator)
@@ -455,33 +459,42 @@ void PathPlanner::LoadHiLevelSearch()
 		{
 			currRoomPos = originRoom = { (*iterator).x, (*iterator).y };
 			currRoom = &(*iterator);
+			currRoom->isVisited = true;
+			originRoom = App->map->WorldToTile(originRoom);
 		}
 		if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
 		{
-			goalRoomPos = { (*iterator).x / 32, (*iterator).y / 32 };
-			goalRoomPos = { 2,0 };
+			goalRoomPos = { (*iterator).x, (*iterator).y };
+			goalRoomPos = App->map->WorldToTile(goalRoomPos);
 		}
 	}
+
 	if (!haveGoal)
 		if (originRoom != -1 && goalRoomPos != -1)
 		{
 			hiLevelSearch->CreatePath(originRoom, goalRoomPos);
-		//	hiLevelPath = *(hiLevelSearch->GetLastPath());
+			hiLevelPath = *(hiLevelSearch->GetLastPath());
 
-			hiLevelPath.push_back({ 2,0 });
-			hiLevelPath.push_back({ 1,0 });
+			hiLevelPath.erase(hiLevelPath.begin());
+			//hiLevelPath.push_back({ 2,0 });
+		//	hiLevelPath.push_back({ 1,0 });
 
 			if (hiLevelPath.size() > 0)
-				nextRoomPos = hiLevelPath.back();
+			{
+				nextRoomPos = hiLevelPath.front();
+				hiLevelPath.erase(hiLevelPath.begin());
+			}
 			else
 				nextRoomPos = originRoom;
+
 			unitNeedPath = true;
 			haveGoal = true;
 
+			iPoint pos = App->map->TileToWorld(nextRoomPos);
 
 			for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
 			{
-				SDL_Rect goalRect{ 1600, 672, 20 * 32, 8 * 32 };
+				SDL_Rect goalRect{ pos.x, pos.y, 32, 1600 };
 
 				if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
 				{

@@ -118,11 +118,6 @@ void j1Map::Draw()
 				}//for
 
 				SDL_Rect section = { 32,32,32,32 };
-
-				App->render->Blit(tex, (*roomIterator).exitPointN.x, (*roomIterator).exitPointN.y, &section);
-				App->render->Blit(tex, (*roomIterator).exitPointE.x, (*roomIterator).exitPointE.y, &section);
-				App->render->Blit(tex, (*roomIterator).exitPointS.x, (*roomIterator).exitPointS.y, &section);
-				App->render->Blit(tex, (*roomIterator).exitPointW.x, (*roomIterator).exitPointW.y, &section);
 			}
 		}
 		roomIterator++;
@@ -1369,21 +1364,34 @@ bool j1Map::LoadLogic()
 iPoint j1Map::TileToWorld(iPoint pos)
 {
 	iPoint ret{ 0,0 };
-	
+
+	int xMargin = 0;
+	int yMargin = 0;
+
 	if ((pos.x % 2) == 0)
-		ret.x = (((pos.x / 2) * defaultRoomSize * defaultTileSize) + 
-				 ((pos.x / 2) * defaultHallHeight * defaultTileSize));
+		ret.x = (((pos.x / 2) * defaultRoomSize * defaultTileSize) +
+		((pos.x / 2) * defaultHallHeight * defaultTileSize));
+
 	else
-		ret.x = ((((pos.x / 2) + 1) * defaultRoomSize * defaultTileSize) + 
-				  ((pos.x / 2) * defaultHallHeight * defaultTileSize));
+	{
+		ret.x = ((((pos.x / 2) + 1) * defaultRoomSize * defaultTileSize) +
+			((pos.x / 2) * defaultHallHeight * defaultTileSize));
+		yMargin = ((defaultRoomSize - defaultHallWidth) / 2) * defaultTileSize;
+	}
 
 	if ((pos.y % 2) == 0)
-		ret.y = (((pos.y / 2) * defaultRoomSize * defaultTileSize) + 
-		         ((pos.y / 2) * defaultHallHeight * defaultTileSize));
+		ret.y = (((pos.y / 2) * defaultRoomSize * defaultTileSize) +
+		((pos.y / 2) * defaultHallHeight * defaultTileSize));
+
 	else
-		ret.y = ((((pos.y / 2) + 1) * defaultRoomSize * defaultTileSize) + 
-		          ((pos.y / 2) * defaultHallHeight * defaultTileSize));
-	
+	{
+		ret.y = ((((pos.y / 2) + 1) * defaultRoomSize * defaultTileSize) +
+			((pos.y / 2) * defaultHallHeight * defaultTileSize));
+		xMargin = ((defaultRoomSize - defaultHallWidth) / 2) * defaultTileSize;
+	}
+	ret.x += xMargin;
+	ret.y += xMargin;
+
 	return ret;
 }
 
@@ -1391,18 +1399,25 @@ iPoint j1Map::WorldToTile(iPoint pos)
 {
 	iPoint ret{ 0,0 };
 	int x = ((defaultRoomSize + defaultHallHeight) * defaultTileSize);
+
 	if ((pos.x % x) == 0)
 		ret.x = pos.x / ((defaultRoomSize + defaultHallHeight) * defaultTileSize) * 2;
 
 	else
-		ret.x = (pos.x / ((defaultRoomSize + defaultHallHeight) * defaultTileSize)) ;
-
+	{
+		int r = defaultRoomSize * defaultTileSize;
+		int h = defaultHallHeight * defaultTileSize;
+		ret.x = ((pos.x - (r / 2) + (h / 2)) / (float)(r + h)) * 2;
+	}
 	if ((pos.y % ((defaultRoomSize + defaultHallHeight) * defaultTileSize)) == 0)
 		ret.y = pos.y / ((defaultRoomSize + defaultHallHeight) * defaultTileSize) * 2;
 
 	else
-		ret.y = (pos.y / ((defaultRoomSize + defaultHallHeight) * defaultTileSize)) ;
-
+	{
+		int r = defaultRoomSize * defaultTileSize;
+		int h = defaultHallHeight * defaultTileSize;
+		ret.x = ((pos.x - (r / 2) + (h / 2)) / (float)(r + h)) * 2;
+	}
 	return ret;
 }
 //----------------------------------
