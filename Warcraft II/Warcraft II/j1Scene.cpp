@@ -155,7 +155,7 @@ bool j1Scene::PreUpdate()
 	unitInfo.priority = 1; // TODO: change to 3 or so
 
 						   /// Footman
-	FootmanInfo footmanInfo;
+	//FootmanInfo footmanInfo;
 
 	/// Grunt
 	GruntInfo gruntInfo;
@@ -191,7 +191,7 @@ bool j1Scene::PreUpdate()
 		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
 
 		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo, this);
+		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
 		//}
 	}
 
@@ -333,6 +333,9 @@ bool j1Scene::Update(float dt)
 	App->particles->Draw(); // particles (only paws)
 	App->entities->Draw(); // entities
 
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+		debugDrawAttack = !debugDrawAttack;
+
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
 
@@ -348,7 +351,7 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 		startRectangle = mousePos;
 
-		Entity* entity = App->entities->IsEntityOnTile(mouseTile);
+		Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY); // TODO Sandra: only player side
 
 		if (entity != nullptr)
 			App->entities->SelectEntity(entity);
@@ -377,12 +380,17 @@ bool j1Scene::Update(float dt)
 			mouseRect.h *= -1;
 		}
 
-		App->entities->SelectEntitiesWithinRectangle(mouseRect);
+		App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY); // TODO Sandra: add static entities, only player side
 	}
 
 	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
 	if (units.size() > 0) {
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+			App->player->DeleteEntitiesMenu();
+			App->player->MakeUnitsMenu(units);
+		}
 
 		UnitGroup* group = App->movement->GetGroupByUnits(units);
 
@@ -1080,10 +1088,10 @@ void j1Scene::CreatePauseMenu() {
 	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	int x = parchmentImg->GetLocalPos().x + 100;
 	int y = parchmentImg->GetLocalPos().y + 110;
-	settingsButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
+	settingsButt = App->gui->CreateUIButton	 ({ x - 10, y }, buttonInfo, this);
 
 	y = parchmentImg->GetLocalPos().y + 60;
-	continueButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
+	continueButt = App->gui->CreateUIButton	 ({ x - 8, y }, buttonInfo, this);
 
 	y = parchmentImg->GetLocalPos().y + 160;
 	buttonInfo.normalTexArea = { 2000, 0, 150, 33 };

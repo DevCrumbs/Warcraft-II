@@ -108,7 +108,7 @@ public:
 	bool SelectEntity(Entity* entity);
 
 	// Selects the entities within a rectangle
-	void SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, EntitySide entitySide = EntitySide_NoSide);
+	void SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide);
 
 	// Unselects all entities
 	void UnselectAllEntities();
