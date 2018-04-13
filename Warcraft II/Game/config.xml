@@ -971,6 +971,7 @@
 
         <guardTower>
           <maxLife value = "175"/>
+          <attack sightRadius = "5" damage= "5" attackWaitTime= "2" arrowSpeed ="400"/>
           <sprites>
             <complete x="399" y="134" w="64" h="64"/>
             <inProgress x="399" y="198" w="64" h="64"/>
