@@ -460,7 +460,7 @@ void j1Scene::LoadInGameUI()
 	buildingLabelInfo.text = "Buildings";
 	buildingLabel = App->gui->CreateUILabel({ 27,12 }, buildingLabelInfo, this, buildingButton);
 
-
+				
 	UIImage_Info entitiesInfo;
 	entitiesInfo.texArea = { 0, 565, 371, 82 };
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
@@ -468,7 +468,7 @@ void j1Scene::LoadInGameUI()
 	UICursor_Info mouseInfo;
 	mouseInfo.default = { 243, 525, 28, 33 };
 	mouseInfo.onClick = { 243, 525, 28, 33 };
-	mouseText = App->gui->CreateUICursor(mouseInfo, this);
+//	mouseText = App->gui->CreateUICursor(mouseInfo, this);
 
 }
 

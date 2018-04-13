@@ -3,10 +3,8 @@
 
 #include "j1Module.h"
 #include "Animation.h"
-
 #include "j1Menu.h"
 #include "j1Timer.h"
-
 
 #include <vector>
 #include <string>
@@ -21,11 +19,12 @@ struct UILabel;
 struct UIButton;
 struct UIImage;
 struct UISlider;
-struct UICursor;
+class UISlider_Info;
 class UIInputText;
+
 enum ENTITY_TYPE;
 
-struct Particle;	
+struct Particle;
 
 struct SliderStruct;
 
@@ -94,11 +93,10 @@ public:
 	void LoadInGameUI();
 	void LoadBuildingMenu();
 	void UnLoadBuildingMenu();
-
 	void LoadResourcesLabels();
 	void UnLoadResourcesLabels();
 	void CreatePauseMenu();
-    void DestroyPauseMenu();
+	void DestroyPauseMenu();
 	void CreateSettingsMenu();
 	void DestroySettingsMenu();
 	void DestroyAllUI();
@@ -109,10 +107,24 @@ public:
 
 	iPoint FindClosestValidTile(iPoint tile) const;
 
-
 	bool LoadKeys(pugi::xml_node&);
 
 public:
+
+	//Building costs
+	int keepCost = 500;
+	int castleCost = 1500;
+	int barracks2Cost = 1000;
+	int chickenFarmCost = 500;
+	int stablesCost = 900;
+	int gryphonAviaryCost = 400;
+	int mageTowerCost = 1000;
+	int churchCost = 900;
+	int blacksmithCost = 800;
+	int elvenLumberCost = 600;
+	int scoutTowerCost = 400;
+	int guardTowerCost = 600;
+	int cannonTowerCost = 800;
 
 	// Camera
 	float up = false, down = false, left = false, right = false;
@@ -125,6 +137,9 @@ public:
 
 	bool pause = false;
 
+	bool hasGoldChanged = false;
+	bool hasFoodChanged = false;
+
 	UIImage* entitiesStats;
 	ENTITY_TYPE GetAlphaBuilding();
 	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
@@ -133,6 +148,7 @@ public:
 	bool debugDrawMovement = true;
 	bool debugDrawPath = false;
 	bool debugDrawMap = false;
+	bool debugDrawAttack = false;
 
 	bool isFrameByFrame = false;
 
@@ -144,18 +160,36 @@ private:
 	iPoint startRectangle = { 0,0 };
 
 	//UI
-	UIButton * buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
-	UILabel * buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
-	UIImage * buildingMenu;
-	UICursor* mouseText;
+	UIButton *buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
+	UILabel *buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
+	//Building costs
+	UILabel *chickenFarmCostLabel, *elvenLumberCostLabel, *blackSmithCostLabel, *stablesCostLabel, *gryphonAviaryCostLabel, *mageTowerCostLabel, *churchCostLabel, *scoutTowerCostLabel, *guardTowerCostLabel, *cannonTowerCostLabel;
+
+	UIImage *buildingMenu;
+
+	//Frame InGame
+	UIImage* inGameFrameImage;
+	UILabel* goldLabel, *foodLabel;
+
+	//Pause Menu
+	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
+	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;
+	UIImage* parchmentImg = nullptr;
+	//Settings Menu
+	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
+	SliderStruct AudioFXPause;
+	SliderStruct AudioMusicPause;
+
 
 	bool buildingMenuOn = false;
 
 	string orthogonalMap, isometricMap, warcraftMap;
 	string orthogonalTexName, isometricTexName, warcraftTexName;
+	string mainThemeMusicName;
 	bool orthogonalActive, isometricActive, warcraftActive;
 
-	SDL_Texture* debugTex =	nullptr;
+	SDL_Texture* debugTex = nullptr;
 
 	iPoint mouse = { 0,0 };
 
@@ -163,15 +197,15 @@ private:
 	float camSpeed = 0.0f;
 	int camMovMargin = 0;
 
-	SDL_Scancode buttonSaveGame =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonLoadGame =	SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonSaveGame = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonLoadGame = SDL_SCANCODE_UNKNOWN;
 	SDL_Scancode buttonFullScreen = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonGodMode =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveUp =		SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveDown =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveLeft =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveRight =  SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonLeaveGame =	SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonGodMode = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveUp = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveDown = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveLeft = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveRight = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonLeaveGame = SDL_SCANCODE_UNKNOWN;
 	SDL_Scancode buttonReloadMap = SDL_SCANCODE_UNKNOWN;
 
 	ENTITY_TYPE alphaBuilding;
