@@ -8,6 +8,7 @@
 using namespace std;
 
 #define DEFAULT_MUSIC_FADE_TIME 2.0f
+#define MAX_AUDIO_VOLUM 128
 
 struct _Mix_Music;
 struct Mix_Chunk;
