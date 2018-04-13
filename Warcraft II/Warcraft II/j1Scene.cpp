@@ -333,6 +333,9 @@ bool j1Scene::Update(float dt)
 	App->particles->Draw(); // particles (only paws)
 	App->entities->Draw(); // entities
 
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+		debugDrawAttack = !debugDrawAttack;
+
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
 
