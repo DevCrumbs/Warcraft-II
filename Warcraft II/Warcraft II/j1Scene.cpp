@@ -114,6 +114,12 @@ bool j1Scene::Start()
 	//LoadInGameUI
 	LoadInGameUI();
 
+	if (terenasDialogEvent == TerenasDialog_NONE) {
+		terenasDialogTimer.Start();
+		terenasDialogEvent = TerenasDialog_START;
+		LoadTerenasDialog(terenasDialogEvent);
+	}
+
 	//Calculate camera movement in pixels through the percentatge given
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
 
@@ -1210,6 +1216,27 @@ void j1Scene::DestroyAllUI() {
 PauseMenuActions j1Scene::GetPauseMenuActions()
 {
 	return pauseMenuActions;
+}
+
+void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
+{
+	if (dialogEvent == TerenasDialog_START) {
+		UILabel_Info labelInfo;
+		UIImage_Info imageInfo;
+
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 350;
+		labelInfo.text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE";
+
+		terenasAdvices.text = App->gui->CreateUILabel({ 200,200 }, labelInfo, this);
+
+	}
+}
+
+void j1Scene::UnLoadTerenasDialog()
+{
+	App->gui->DestroyElement((UIElement**)&terenasAdvices.text);
+	App->gui->DestroyElement((UIElement**)&terenasAdvices.terenasImage);
 }
 
 
