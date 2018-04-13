@@ -175,17 +175,17 @@ void j1Menu::CreateSettings() {
 
 void j1Menu::DeleteSettings() {
 
-	App->gui->DestroyElement(ReturnButt);
-	App->gui->DestroyElement(ReturnLabel);
-	App->gui->DestroyElement(AudioFX.name);
-	App->gui->DestroyElement(AudioFX.value);
-	App->gui->DestroyElement(AudioFX.slider);
-	App->gui->DestroyElement(AudioMusic.name);
-	App->gui->DestroyElement(AudioMusic.value);
-	App->gui->DestroyElement(AudioMusic.slider);
-	App->gui->DestroyElement(FPS.name);
-	App->gui->DestroyElement(FPS.value);
-	App->gui->DestroyElement(FPS.slider);
+	App->gui->DestroyElement((UIElement**)&ReturnButt);
+	App->gui->DestroyElement((UIElement**)&ReturnLabel);
+	App->gui->DestroyElement((UIElement**)&AudioFX.name);
+	App->gui->DestroyElement((UIElement**)&AudioFX.value);
+	App->gui->DestroyElement((UIElement**)&AudioFX.slider);
+	App->gui->DestroyElement((UIElement**)&AudioMusic.name);
+	App->gui->DestroyElement((UIElement**)&AudioMusic.value);
+	App->gui->DestroyElement((UIElement**)&AudioMusic.slider);
+	App->gui->DestroyElement((UIElement**)&FPS.name);
+	App->gui->DestroyElement((UIElement**)&FPS.value);
+	App->gui->DestroyElement((UIElement**)&FPS.slider);
 }
 
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -247,13 +247,13 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 }
 void j1Menu::DeteleMenu() {
 
-	App->gui->DestroyElement(PlayButt);
-	App->gui->DestroyElement(PlayLabel);
-	App->gui->DestroyElement(ExitButt);
-	App->gui->DestroyElement(ExitLabel);
-	App->gui->DestroyElement(SettingsButt);
-	App->gui->DestroyElement(SettingsLabel);
-	
+	App->gui->DestroyElement((UIElement**)&PlayButt);
+	App->gui->DestroyElement((UIElement**)&PlayLabel);
+	App->gui->DestroyElement((UIElement**)&ExitButt);
+	App->gui->DestroyElement((UIElement**)&ExitLabel);
+	App->gui->DestroyElement((UIElement**)&SettingsButt);
+	App->gui->DestroyElement((UIElement**)&SettingsLabel);
+
 }
 
 
