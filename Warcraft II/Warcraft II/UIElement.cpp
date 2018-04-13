@@ -146,7 +146,7 @@ iPoint UIElement::GetScreenPos() const
 		screen_pos.x = parent->GetScreenPos().x + localPos.x;
 		screen_pos.y = parent->GetScreenPos().y + localPos.y;
 	}
-	else if (!isInWorld){
+	else if (!isInWorld) {
 		screen_pos.x = localPos.x;
 		screen_pos.y = localPos.y;
 	}
@@ -188,4 +188,12 @@ void UIElement::SetInteraction(bool interactive)
 UIElement* UIElement::GetParent() const
 {
 	return parent;
+}
+
+void UIElement::SetPriorityDraw(PriorityDraw priority) {
+	this->priority = priority;
+}
+
+PriorityDraw UIElement::GetPriorityDraw() const {
+	return priority;
 }

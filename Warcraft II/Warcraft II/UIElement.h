@@ -46,6 +46,21 @@ enum UI_EVENT {
 	UI_EVENT_MAX_EVENTS
 };
 
+enum PriorityDraw {
+
+	PriorityDraw_NONE,
+	PriorityDraw_LIFEBAR_INGAME = -1,
+	PriorityDraw_BUTTONSINGAME,
+	PriorityDraw_FRAMEWORK,
+	PriorityDraw_UIINGAME,
+	PriorityDraw_PAUSEMENU,
+	PriorityDraw_SLIDER,
+	PriorityDraw_IMAGE,
+	PrioriryDraw_LABEL,
+
+	PriorityDraw_CURSOR
+
+};
 // ---------------------------------------------------
 
 class UIElement
@@ -82,9 +97,10 @@ public:
 	void SetLocalPos(iPoint localPos);
 	void IncreasePos(iPoint add_localPos);
 	void DecreasePos(iPoint add_localPos);
+	void SetPriorityDraw(PriorityDraw priority);
+	PriorityDraw GetPriorityDraw() const;
 
 	UIElement* GetParent() const;
-
 public:
 	bool drag = false;
 	bool toRemove = false;
@@ -104,6 +120,7 @@ protected:
 	// Texture parameters
 	SDL_Rect texArea = { 0,0,0,0 };
 	int width = 0, height = 0;
+	PriorityDraw priority = PriorityDraw_NONE;
 
 private:
 	iPoint localPos = { 0,0 };
