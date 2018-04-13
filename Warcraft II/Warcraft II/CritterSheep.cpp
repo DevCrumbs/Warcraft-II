@@ -66,6 +66,8 @@ void CritterSheep::Move(float dt)
 	/// The unit must fit the tile (it is more attractive for the player)
 	if (currLife <= 0 && unitState != UnitState_Die && singleUnit->IsFittingTile()) {
 
+		RestoreHealth();
+
 		App->audio->PlayFx(16, 0);
 
 		isDead = true;
@@ -286,4 +288,13 @@ void CritterSheep::UpdatePaws()
 			lastPawTile = singleUnit->currTile;
 		}
 	}
+}
+
+bool CritterSheep::RestoreHealth()
+{
+	if (unitsAttacking.front() != nullptr) {
+		unitsAttacking.front()->ApplyHealth(critterSheepInfo.restoredHealth);
+		return true;
+	}
+	return false;
 }
