@@ -1306,19 +1306,29 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		
 		if (UIelem == stablesButton) {
 			if (App->player->currentGold >= stablesCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_STABLES;
+				//App->audio->PlayFx(1, 0); //Button sound
+				//UnLoadBuildingMenu();
+				//alphaBuilding = EntityType_STABLES;
+				App->audio->PlayFx(3, 0); //Button error sound
 			}
 			else if(App->player->currentGold < stablesCost)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
 		
+		if (UIelem == elvenLumberButton) {
+			App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+		if (UIelem == blackSmithButton) {
+			App->audio->PlayFx(3, 0); //Button error sound
+		}
+		
 		if (UIelem == gryphonAviaryButton) {
 			if (App->player->currentGold >= gryphonAviaryCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_GRYPHON_AVIARY;
+				//App->audio->PlayFx(1, 0); //Button sound
+				//UnLoadBuildingMenu();
+				//alphaBuilding = EntityType_GRYPHON_AVIARY;
+				App->audio->PlayFx(3, 0); //Button error sound
 			}
 			else if(App->player->currentGold < gryphonAviaryCost)
 				App->audio->PlayFx(3, 0); //Button error sound
@@ -1326,12 +1336,17 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 		if (UIelem == mageTowerButton) {
 			if (App->player->currentGold >= mageTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_MAGE_TOWER;
+				//App->audio->PlayFx(1, 0); //Button sound
+				//UnLoadBuildingMenu();
+				//alphaBuilding = EntityType_MAGE_TOWER;
+				App->audio->PlayFx(3, 0); //Button error sound
 			}
 			else if(App->player->currentGold < mageTowerCost)
 				App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+		if (UIelem == churchButton) {
+			App->audio->PlayFx(3, 0); //Button error sound
 		}
 
 		if (UIelem == scoutTowerButton) {
