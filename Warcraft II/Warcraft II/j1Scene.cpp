@@ -188,7 +188,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = FindClosestValidTile(tile);
+			tile = App->player->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
@@ -216,7 +216,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = FindClosestValidTile(tile);
+			tile = App->player->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) { // TODO: uncomment this line
@@ -364,8 +364,8 @@ bool j1Scene::Update(float dt)
 
 		if (entity != nullptr)
 			App->entities->SelectEntity(entity);
-		else
-			App->entities->UnselectAllEntities();
+		//else
+			//App->entities->UnselectAllEntities();
 	}
 
 	int width = mousePos.x - startRectangle.x;
@@ -411,15 +411,17 @@ bool j1Scene::Update(float dt)
 		if (group != nullptr) {
 
 			/// COMMAND PATROL
+			/*
 			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 
 				App->entities->CommandToUnits(units, UnitCommand_Patrol);
-
+			*/
 			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
+			/*
 			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 
 				App->entities->CommandToUnits(units, UnitCommand_Stop);
-
+			*/
 			/// COMMAND ATTACK
 			/// Enemy
 			// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
@@ -1415,49 +1417,6 @@ ENTITY_TYPE j1Scene::GetAlphaBuilding() {
 
 void j1Scene::SetAplphaBuilding(ENTITY_TYPE alphaBuilding) {
 	this->alphaBuilding = alphaBuilding;
-}
-
-iPoint j1Scene::FindClosestValidTile(iPoint tile) const
-{
-	// Perform a BFS
-	queue<iPoint> queue;
-	list<iPoint> visited;
-
-	iPoint curr = tile;
-	queue.push(curr);
-
-	while (queue.size() > 0) {
-
-		curr = queue.front();
-		queue.pop();
-
-		if (!App->entities->IsEntityOnTile(curr) && App->pathfinding->IsWalkable(curr))
-			return curr;
-
-		iPoint neighbors[8];
-		neighbors[0].create(curr.x + 1, curr.y + 0);
-		neighbors[1].create(curr.x + 0, curr.y + 1);
-		neighbors[2].create(curr.x - 1, curr.y + 0);
-		neighbors[3].create(curr.x + 0, curr.y - 1);
-		neighbors[4].create(curr.x + 1, curr.y + 1);
-		neighbors[5].create(curr.x + 1, curr.y - 1);
-		neighbors[6].create(curr.x - 1, curr.y + 1);
-		neighbors[7].create(curr.x - 1, curr.y - 1);
-
-		for (uint i = 0; i < 8; ++i)
-		{
-			if (App->pathfinding->IsWalkable(neighbors[i])) {
-
-				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
-
-					queue.push(neighbors[i]);
-					visited.push_back(neighbors[i]);
-				}
-			}
-		}
-	}
-
-	return { -1,-1 };
 }
 
 // -------------------------------------------------------------

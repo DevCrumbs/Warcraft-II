@@ -788,7 +788,7 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 							else
 								map[i] = 0;
 							//map[i] = (tile_id - 380) > 0 ? 0 : 1;
-							LOG("%i", map[i]);
+							//LOG("%i", map[i]);
 							/*TileType* ts = tileset->GetTileType(tileId);
 							if(ts != NULL)
 							{
@@ -800,7 +800,7 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 				}
 				for (int i = 0; i < aux; ++i)
 				{
-					LOG("%i", map[i]);
+					//LOG("%i", map[i]);
 				}
 
 				*buffer = map;

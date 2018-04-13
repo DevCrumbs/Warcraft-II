@@ -248,8 +248,11 @@ bool j1Particles::Update(float dt)
 		}
 
 		// TODO Sandra: the Paws draw is done called from another module
-		if (p->particleType != ParticleType_Paws)
-			Draw();
+		if (p->particleType != ParticleType_Paws) {
+			
+			if (SDL_GetTicks() >= p->born)
+				App->render->Blit(pawsTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()));
+		}
 	}
 
 	return ret;

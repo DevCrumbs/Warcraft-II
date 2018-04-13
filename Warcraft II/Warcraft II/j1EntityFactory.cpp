@@ -1858,6 +1858,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		Footman* footman = new Footman(pos, { 32,32 }, footmanInfo.currLife, footmanInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
 		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
 		footman->dynamicEntityType = EntityType_FOOTMAN;
+		footman->entitySide = EntitySide_Enemy;
 		footman->SetStringLife(footman->GetCurrLife(), footman->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)footman);
@@ -1912,6 +1913,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		Grunt* grunt = new Grunt(pos, { 32,32 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
 		grunt->entityType = EntityCategory_DYNAMIC_ENTITY;
 		grunt->dynamicEntityType = EntityType_GRUNT;
+		grunt->entitySide = EntitySide_Enemy;
 
 		toSpawnEntities.push_back((Entity*)grunt);
 		return (DynamicEntity*)grunt;
@@ -2003,7 +2005,7 @@ uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEG
 // Returns a pointer to the Entity that is on the tile or nullptr
 Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCategory, EntitySide entitySide) const
 {
-	if (entityCategory == EntityCategory_DYNAMIC_ENTITY) {
+	if (entityCategory == EntityCategory_DYNAMIC_ENTITY || entityCategory == EntityCategory_NONE) {
 
 		list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
 
@@ -2052,6 +2054,7 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 	// TODO: Add StaticEntities (and check them depending on the entityType parameter)
 
 	// We do also need to check the toSpawn list (just in case)
+	/*
 	list<Entity*>::const_iterator toSpawn = toSpawnEntities.begin();
 
 	while (toSpawn != toSpawnEntities.end()) {
@@ -2109,6 +2112,7 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 
 		toSpawn++;
 	}
+	*/
 
 	return nullptr;
 }
