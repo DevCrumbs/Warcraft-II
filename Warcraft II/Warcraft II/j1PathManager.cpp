@@ -359,8 +359,6 @@ bool PathPlanner::HilevelUpdate()
 
 		if (unitNeedPath)
 		{
-			//App->pathmanager->UnRegister(this);
-//			App->pathmanager->Register(this);
 			isSearchRequested = false;
 			singleUnit->roomGoal = GetExitPoint();
 
