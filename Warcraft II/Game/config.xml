@@ -1169,6 +1169,12 @@
       <upLeft x="550" y="9" w="30" h="30" />
     </towerArrows>
     
+    <trollAxe speed = "0.3" loop = "1">
+      <frame x="283" y="52" w="20" h="22" />
+      <frame x="313" y="52" w="20" h="22" />
+      <frame x="343" y="52" w="20" h="22" />
+    </trollAxe>
+    
     <fire>
         <low speed = "0.3" loop = "1">
            <frame x="  2" y="3" w="30" h="30" />
