@@ -67,6 +67,10 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	towerArrowParticles.downLeft.animation.PushBack({ towerArrows.child("downLeft").attribute("x").as_int(), towerArrows.child("downLeft").attribute("y").as_int(), towerArrows.child("downLeft").attribute("w").as_int(), towerArrows.child("downLeft").attribute("h").as_int() });
 	towerArrowParticles.downRight.animation.PushBack({ towerArrows.child("downRight").attribute("x").as_int(), towerArrows.child("downRight").attribute("y").as_int(), towerArrows.child("downRight").attribute("w").as_int(), towerArrows.child("downRight").attribute("h").as_int() });
 
+	//Cannon from the cannon tower
+	pugi::xml_node bulletsCannon = config.child("cannon");
+	cannonBullet.animation.PushBack({ bulletsCannon.attribute("x").as_int(), bulletsCannon.attribute("y").as_int(), bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() });
+
 	//Troll's axe
 	pugi::xml_node trollAxeAnimation = config.child("trollAxe");
 	trollAxe.animation.speed = trollAxeAnimation.attribute("speed").as_float();

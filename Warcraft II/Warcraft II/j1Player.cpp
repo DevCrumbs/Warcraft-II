@@ -300,7 +300,13 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->hasGoldChanged = true;
 			}
 			break;
-
+		case EntityType_PLAYER_CANNON_TOWER:
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+				cannonTower = (StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_CANNON_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_CANNON_TOWER), unitInfo, this);
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				AddGold(-App->scene->cannonTowerCost); //Discount gold
+				App->scene->hasGoldChanged = true;
+			}
 		case EntityType_NONE:
 			break;
 

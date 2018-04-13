@@ -132,6 +132,7 @@ public:
 	Particle hardFire;
 
 	TowerArrowParticles towerArrowParticles;
+	Particle cannonBullet;
 	Particle trollAxe;
 
 	Particle paws;

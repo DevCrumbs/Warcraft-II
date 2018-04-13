@@ -133,6 +133,7 @@ void PlayerGuardTower::TowerStateMachine(float dt)
 				attackTimer.Start();
 				DetermineArrowDirection();
 				CreateArrow();
+				App->audio->PlayFx(24, 0); //Arrow sound
 			}
 		}
 	}
