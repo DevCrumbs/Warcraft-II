@@ -1053,6 +1053,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						barracksUpgrade = true;
 						currentGold -= 1000;
 						App->scene->hasGoldChanged = true;
+						DestroyHoverButton(barracks);
 					}
 					else
 						App->audio->PlayFx(3, 0); //Button error sound
@@ -1062,6 +1063,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						keepUpgrade = true;
 						currentGold -= 500;
 						App->scene->hasGoldChanged = true;
+						DestroyHoverButton(townHall);
 					}
 					else
 						App->audio->PlayFx(3, 0); //Button error sound
@@ -1071,6 +1073,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						townHallUpgrade = true;
 						currentGold -= 1500;
 						App->scene->hasGoldChanged = true;
+						DestroyHoverButton(townHall);
 					}
 					else
 						App->audio->PlayFx(3, 0); //Button error sound

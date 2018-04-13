@@ -143,6 +143,7 @@
       <footmanAnimations name = "data/assets/textures/units/humanUnits/FinalFootman.png"/>
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/FinalGrunt.png"/>
       <khadgarAnimarions name = "data/assets/textures/units/prisonersUnits/Khadgar.png"/>
+      <alleriaAnimarions name = "data/assets/textures/units/prisonersUnits/Alleria.png"/>
       <critters name="data/assets/textures/units/neutralUnits/critters.png"/>
     </spritesheets>
 
@@ -491,6 +492,16 @@
 
           </animations>
         </khadgar>
+
+        <alleria>
+          <animations>
+
+            <idle speed="4" loop="1">
+              <frame x="0" y="0" w="64" h="64"/>
+            </idle>
+
+          </animations>
+        </alleria>
 
       </prisioners>
 
