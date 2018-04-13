@@ -6,7 +6,6 @@
 #include "j1Particles.h"
 #include "j1Pathfinding.h"
 #include "j1Map.h"
-#include <utility> 
 
 ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), scoutTowerInfo(scoutTowerInfo)
 {

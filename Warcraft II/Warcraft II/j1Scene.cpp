@@ -1359,6 +1359,28 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
 
+		if (UIelem == guardTowerButton) {
+			if (App->player->currentGold >= guardTowerCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
+			}
+			else if (App->player->currentGold < guardTowerCost)
+				App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+		if (UIelem == cannonTowerButton) {
+			if (App->player->currentGold >= cannonTowerCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
+			}
+			else if (App->player->currentGold < cannonTowerCost)
+				App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+
+
 		else if (UIelem == pauseMenuButt) {
 			App->audio->PlayFx(1, 0); //Button sound
 			if (parchmentImg == nullptr) {
