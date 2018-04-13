@@ -150,7 +150,7 @@
 
     <dynamicEntities>
       <humans>
-        <footman>
+        <footman maxLife = "60">
           <animations>
 
             <up speed="4" loop="1">
@@ -356,7 +356,7 @@
       </boar>
       
       <orcs>
-        <grunt>
+        <grunt maxLife = "60">
           <animations>
             
               <up speed="4" loop="1">

@@ -580,7 +580,7 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		UILifeBar_Info lifeInfo;
 		lifeInfo.background = { 289,346,145,23 };
 		lifeInfo.bar = { 300,373,128,8 };
-		lifeInfo.maxLife = entity->GetMaxLife();
+		lifeInfo.maxLife = lifeInfo.life = entity->GetMaxLife();
 		lifeInfo.maxWidth = lifeInfo.bar.w;
 		lifeInfo.lifeBarPosition = { 12, 10 };
 		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
@@ -591,7 +591,8 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
 		entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-		labelInfo.text = "60 HP";
+		entity->SetStringLife(entity->GetCurrLife(), entity->GetMaxLife());
+		labelInfo.text = entity->GetStringLife();
 		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
 		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
@@ -619,11 +620,10 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
 		entitySelectedStats.entityIcon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h / 2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-		//TODO aleix
 		UILifeBar_Info lifeInfo;
 		lifeInfo.background = { 289,346,145,23 };
 		lifeInfo.bar = { 300,373,128,8 };
-		lifeInfo.maxLife = entity->GetMaxLife();
+		lifeInfo.maxLife = lifeInfo.life = entity->GetMaxLife();
 		lifeInfo.maxWidth = lifeInfo.bar.w;
 		lifeInfo.lifeBarPosition = { 12, 10 };
 		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);

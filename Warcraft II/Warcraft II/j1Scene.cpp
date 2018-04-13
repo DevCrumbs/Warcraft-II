@@ -155,7 +155,7 @@ bool j1Scene::PreUpdate()
 	unitInfo.priority = 1; // TODO: change to 3 or so
 
 						   /// Footman
-	FootmanInfo footmanInfo;
+	//FootmanInfo footmanInfo;
 
 	/// Grunt
 	GruntInfo gruntInfo;
@@ -191,7 +191,7 @@ bool j1Scene::PreUpdate()
 		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
 
 		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo, this);
+		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
 		//}
 	}
 

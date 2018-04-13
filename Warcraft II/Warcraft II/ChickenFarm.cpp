@@ -14,7 +14,6 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		this->constructionTimer.Start();
 		App->audio->PlayFx(2, 0); //Construction sound
 	}
-	App->player->currentFood += 4;
 	App->scene->hasFoodChanged = true;
 }
 
@@ -26,8 +25,10 @@ void ChickenFarm::Move(float dt)
 	if(!isBuilt)
 		UpdateAnimations(dt);
 	
-	if (constructionTimer.Read() >= (constructionTime * 1000))
+	if (constructionTimer.Read() >= (constructionTime * 1000)) {
 		isBuilt = true;
+		App->player->currentFood += 4;
+	}
 }
 
 // Animations
