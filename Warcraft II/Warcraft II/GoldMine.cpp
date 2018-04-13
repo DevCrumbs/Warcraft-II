@@ -1,13 +1,26 @@
 #include "GoldMine.h"
+#include "j1Player.h"
+#include "j1Scene.h"
 
 GoldMine::GoldMine(fPoint pos, iPoint size, int currLife, uint maxLife, const GoldMineInfo& goldMineInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), goldMineInfo(goldMineInfo)
 {
 	texArea = &goldMineInfo.completeTexArea;
+	isBuilt = true;
 }
 
 void GoldMine::Move(float dt)
 {
+	if (listener != nullptr)
+		HandleInput(entityEvent);
 
+	if (buildingState == BuildingState_Destroyed) {
+		if (startTimer) {
+			constructionTimer.Start();
+			startTimer = false;
+		}
+		else
+			UpdateAnimations(dt);
+	}
 }
 
 // Animations

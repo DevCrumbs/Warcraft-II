@@ -167,12 +167,12 @@ bool j1Scene::PreUpdate()
 	GruntInfo gruntInfo;
 
 	/// Sheep
-	CritterSheepInfo critterSheepInfo;
-	critterSheepInfo.restoredHealth = 5;
+//	CritterSheepInfo critterSheepInfo;
+//	critterSheepInfo.restoredHealth = 5;
 
 	/// Boar
-	CritterBoarInfo critterBoarInfo;
-	critterBoarInfo.restoredHealth = 10;
+	//CritterBoarInfo critterBoarInfo;
+//	critterBoarInfo.restoredHealth = 10;
 
 	// Entities creation
 

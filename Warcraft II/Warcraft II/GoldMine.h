@@ -29,6 +29,10 @@ public:
 private:
 
 	GoldMineInfo goldMineInfo;
+
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
+
+	bool startTimer = true;
 };
 
-#endif //__GoldMine_H__
+#endif //__GoldMine_H__GoldMine_H__

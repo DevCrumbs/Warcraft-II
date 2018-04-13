@@ -37,6 +37,45 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 
 	atlasFileName = conf.child("atlas").attribute("file").as_string("");
 
+	pugi::xml_node parchment = conf.child("parchment");
+	parchmentAnim.speed = parchment.attribute("speed").as_float();
+	parchmentAnim.loop = parchment.attribute("loop").as_bool();
+	for (parchment = parchment.child("frame"); parchment; parchment = parchment.next_sibling("frame")) {
+		parchmentAnim.PushBack({ parchment.attribute("x").as_int(), parchment.attribute("y").as_int(), parchment.attribute("w").as_int(), parchment.attribute("h").as_int() });
+		parchmentArea = { parchment.attribute("x").as_int(), parchment.attribute("y").as_int(), parchment.attribute("w").as_int(), parchment.attribute("h").as_int() };
+	}
+
+
+	pugi::xml_node artifacts = conf.child("artifacts");
+
+	pugi::xml_node book = artifacts.child("book");
+	bookAnim.speed = artifacts.attribute("speed").as_float();
+	for (book = book.child("frame"); book; book = book.next_sibling("frame")) {
+		bookAnim.PushBack({ book.attribute("x").as_int(), book.attribute("y").as_int(), book.attribute("w").as_int(), book.attribute("h").as_int() });
+		bookText = { book.attribute("x").as_int(), book.attribute("y").as_int(), book.attribute("w").as_int(), book.attribute("h").as_int() };
+	}
+
+	pugi::xml_node eye = artifacts.child("eye");
+	eyeAnim.speed = artifacts.attribute("speed").as_float();
+	for (eye = eye.child("frame"); eye; eye = eye.next_sibling("frame")) {
+		eyeAnim.PushBack({ eye.attribute("x").as_int(), eye.attribute("y").as_int(), eye.attribute("w").as_int(), eye.attribute("h").as_int() });
+		eyeText = { eye.attribute("x").as_int(), eye.attribute("y").as_int(), eye.attribute("w").as_int(), eye.attribute("h").as_int() };
+	}
+
+	pugi::xml_node scepter = artifacts.child("scepter");
+	scepterAnim.speed = artifacts.attribute("speed").as_float();
+	for (scepter = scepter.child("frame"); scepter; scepter = scepter.next_sibling("frame")) {
+		scepterAnim.PushBack({ scepter.attribute("x").as_int(), scepter.attribute("y").as_int(), scepter.attribute("w").as_int(), scepter.attribute("h").as_int() });
+		scepterText = { scepter.attribute("x").as_int(), scepter.attribute("y").as_int(), scepter.attribute("w").as_int(), scepter.attribute("h").as_int() };
+	}
+
+	pugi::xml_node skull = artifacts.child("skull");
+	skullAnim.speed = artifacts.attribute("speed").as_float();
+	for (skull = skull.child("frame"); skull; skull = skull.next_sibling("frame")) {
+		skullAnim.PushBack({ skull.attribute("x").as_int(), skull.attribute("y").as_int(), skull.attribute("w").as_int(), skull.attribute("h").as_int() });
+		skullText = { skull.attribute("x").as_int(), skull.attribute("y").as_int(), skull.attribute("w").as_int(), skull.attribute("h").as_int() };
+	}
+
 	return ret;
 }
 
@@ -65,6 +104,11 @@ bool j1Gui::PreUpdate()
 
 	UIElementsList = addedElementUI;
 
+	for (std::list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); iterator++) {
+		drawOrder.push(*iterator);
+	}
+
+
 	return ret;
 }
 
@@ -84,37 +128,20 @@ bool j1Gui::Update(float dt)
 
 		/*
 		if (iterator->data->drag && update_drag)
-			(*UI_elem_it)->UpdateDragging(dt);*/
+		(*UI_elem_it)->UpdateDragging(dt);*/
 
 		UI_elem_it++;
 	}
 
 	UI_elem_it = UIElementsList.begin();
 
-	Blit(dt);
-
-	return ret;
-}
-
-bool j1Gui::Blit(float dt) const
-{
-	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Azure);
-
-	bool ret = true;
-
-	list<UIElement*>::const_iterator iterator = UIElementsList.begin();
-
-	while (iterator != UIElementsList.end()) {
-		if((*iterator)->GetType() != UIE_TYPE_CURSOR)
-		(*iterator)->Draw();
-		iterator++;
+	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
+		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+			info->Draw();
+		else if (App->render->IsInScreen(info->GetLocalRect()))
+			info->Draw();
 	}
-	iterator = UIElementsList.begin();
-	while (iterator != UIElementsList.end()) {
-		if ((*iterator)->GetType() == UIE_TYPE_CURSOR)
-			(*iterator)->Draw();
-		iterator++;
-	}
+	//Blit(dt);
 	return ret;
 }
 
@@ -134,7 +161,7 @@ bool j1Gui::PostUpdate()
 
 		iterator++;
 	}
-	
+
 
 	return ret;
 }
@@ -185,7 +212,7 @@ UILabel* j1Gui::CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* lis
 		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)label);
-	
+
 
 	return label;
 }
@@ -253,16 +280,17 @@ UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIEleme
 
 	addedElementUI.push_back((UIElement*)cursor);
 
-
 	return cursor;
 }
 
-bool j1Gui::DestroyElement(UIElement* elem)
+bool j1Gui::DestroyElement(UIElement** elem)
 {
 	bool ret = false;
 
-	addedElementUI.remove(elem);
-
+	if (*elem != nullptr) {
+		addedElementUI.remove(*elem);
+		*elem = nullptr;
+	}
 	return ret;
 }
 
@@ -293,10 +321,10 @@ bool j1Gui::ClearAllUI()
 
 		/*
 		if (iterator->data != (UIElement*)App->trans->l_level_name && iterator->data != (UIElement*)App->trans->l_cats_picked
-			&& iterator->data != (UIElement*)App->trans->l_level_cats_picked && iterator->data != (UIElement*)App->trans->l_level_cats_picked2
-			&& iterator->data != (UIElement*)App->trans->l_score_text && iterator->data != (UIElement*)App->trans->l_you
-			&& iterator->data != (UIElement*)App->trans->l_died && iterator->data != (UIElement*)App->trans->black_screen_image)
-			iterator->data->toRemove = true;
+		&& iterator->data != (UIElement*)App->trans->l_level_cats_picked && iterator->data != (UIElement*)App->trans->l_level_cats_picked2
+		&& iterator->data != (UIElement*)App->trans->l_score_text && iterator->data != (UIElement*)App->trans->l_you
+		&& iterator->data != (UIElement*)App->trans->l_died && iterator->data != (UIElement*)App->trans->black_screen_image)
+		iterator->data->toRemove = true;
 		*/
 
 		UI_elem_it++;
@@ -384,24 +412,24 @@ void j1Gui::SetUpDraggingChildren(UIElement* elem, bool drag)
 
 /*void j1Gui::SetUpDraggingNode(bool drag)
 {
-	UIElement* draggingNode = nullptr;
-	int lowest_level = UIElementsTree->getNumLevels(UIElementsTree->getRoot()) + 1;
+UIElement* draggingNode = nullptr;
+int lowest_level = UIElementsTree->getNumLevels(UIElementsTree->getRoot()) + 1;
 
-	// If several elements are clicked at once, select the element in the lowest level in the tree
-	list<UIElement*>::const_iterator iterator = UIElementsList.begin();
+// If several elements are clicked at once, select the element in the lowest level in the tree
+list<UIElement*>::const_iterator iterator = UIElementsList.begin();
 
-	while (iterator != UIElementsList.end()) {
+while (iterator != UIElementsList.end()) {
 
-		if ((*iterator)->drag == drag) {
-			int level = UIElementsTree->getNumLevels(UIElementsTree->search(*iterator));
+if ((*iterator)->drag == drag) {
+int level = UIElementsTree->getNumLevels(UIElementsTree->search(*iterator));
 
-			if (level <= lowest_level) {
-				draggingNode = *iterator;
-			}
-		}
+if (level <= lowest_level) {
+draggingNode = *iterator;
+}
+}
 
-		iterator++;
-	}
+iterator++;
+}
 
-	SetUpDraggingChildren(draggingNode, drag);
+SetUpDraggingChildren(draggingNode, drag);
 }*/
