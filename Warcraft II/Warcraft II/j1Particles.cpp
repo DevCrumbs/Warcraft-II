@@ -198,6 +198,14 @@ bool j1Particles::Start()
 	LOG("Loading particles");
 
 	paws.particleType = ParticleType_Paws;
+	towerArrowParticles.up.particleType = ParticleType_NoType;
+	towerArrowParticles.down.particleType = ParticleType_NoType;
+	towerArrowParticles.left.particleType = ParticleType_NoType;
+	towerArrowParticles.right.particleType = ParticleType_NoType;
+	towerArrowParticles.upLeft.particleType = ParticleType_NoType;
+	towerArrowParticles.upRight.particleType = ParticleType_NoType;
+	towerArrowParticles.downLeft.particleType = ParticleType_NoType;
+	towerArrowParticles.downRight.particleType = ParticleType_NoType;
 
 	LoadAnimationsSpeed();
 
@@ -246,19 +254,29 @@ bool j1Particles::Update(float dt)
 			delete p;
 			active[i] = nullptr;
 		}
-
-		// TODO Sandra: the Paws draw is done called from another module
-		if (p->particleType != ParticleType_Paws) {
-			
-			if (SDL_GetTicks() >= p->born)
-				App->render->Blit(pawsTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()));
-		}
 	}
 
 	return ret;
 }
 
 void j1Particles::Draw()
+{
+	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
+	{
+		Particle* p = active[i];
+
+		if (p == nullptr)
+			continue;
+
+		if (SDL_GetTicks() >= p->born)
+		{
+			if (p->particleType != ParticleType_Paws)
+				App->render->Blit(atlasTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()));
+		}
+	}
+}
+
+void j1Particles::DrawPaws() 
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
@@ -423,14 +441,14 @@ bool Particle::Update(float dt)
 	ret = false;
 	*/
 
-	if (life == 0)
-	{
+	//if (life == 0)
+	//{
 		//if ((SDL_GetTicks() - born) > life)
+		//ret = false;
+	//}
+
+	if (isRemove)
 		ret = false;
-	}
-	if (isRemove) {
-		ret = false;
-	}
 
 	return ret;
 }

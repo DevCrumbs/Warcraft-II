@@ -334,13 +334,12 @@ bool j1Scene::Update(float dt)
 
 	// ---------------------------------------------------------------------
 
-
-
-
 	// Draw
 	App->map->Draw(); // map
-	App->particles->Draw(); // particles (only paws)
+	App->particles->DrawPaws(); // paws particles
 	App->entities->Draw(); // entities
+	App->particles->Draw(); // the rest of the particles
+	App->gui->Draw(); // gui
 
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		debugDrawAttack = !debugDrawAttack;
