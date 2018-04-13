@@ -40,35 +40,55 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 void j1Map::Draw()
 {
-	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+	BROFILER_CATEGORY("Draw(notAbove)", Profiler::Color::Azure);
 
-	if (map_loaded == false)
-		return;
 
-	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer) {
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		App->render->camera.x = 0;
+		App->render->camera.y = 0;
+	}
+	// TODO 5: Prepare the loop to draw all tilesets + Blit
 
-		if ((*layer)->properties.GetProperty("Draw", false) == false && !App->scene->debugDrawMap)
-			continue;
 
-		for (int i = 0; i < (*layer)->width; ++i) {
-			for (int j = 0; j < (*layer)->height; ++j) {
 
-				int tile_id = (*layer)->Get(i, j);
-				if (tile_id > 0) {
+	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
+	{
+		iPoint startTile = WorldToMap(-App->render->camera.x / App->win->GetScale(),
+			-App->render->camera.y / App->win->GetScale());
+		iPoint endTile = WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
+			-App->render->camera.y / App->win->GetScale() + App->render->camera.h);
+		int i = startTile.x;
+		if (i < 0 && endTile.x >= 0)
+			i = 0;
 
-					TileSet* tileset = GetTilesetFromTileId(tile_id);
+		for (; i < (*layer)->width && i < endTile.x +1; ++i) {
+			int j = startTile.y;
+			if (j < 0 && endTile.y >= 0)
+				j = 0;
 
-					SDL_Rect rect = tileset->GetTileRect(tile_id);
+			for (; j < (*layer)->height && j < endTile.y +1 ; ++j) {
+
+				int tileId = (*layer)->Get(i, j);
+				if (tileId > 0) {
+
+					TileSet* tileset = GetTilesetFromTileId(tileId);
+
+					SDL_Rect rect = tileset->GetTileRect(tileId);
 
 					SDL_Rect* section = &rect;
 					iPoint world = MapToWorld(i, j);
 
+
 					App->render->Blit(tileset->texture, world.x, world.y, section, (*layer)->speed);
-				}//for
+				}
 			}//for
-		}
+		}//for
+
+
 	}
 }
+
 
 TileSet* j1Map::GetTilesetFromTileId(int id) const
 {
