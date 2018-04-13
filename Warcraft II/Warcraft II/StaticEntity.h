@@ -12,6 +12,10 @@ struct Particle;
 
 enum ENTITY_TYPE;
 
+enum ColliderType;
+enum DistanceHeuristic;
+
+
 enum StaticEntityCategory
 {
 	StaticEntityCategory_NoCategory,
@@ -62,6 +66,9 @@ public:
 	uint GetConstructionTime() const;
 	bool GetIsFinishedBuilt() const;
 
+	//Colliders
+	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
+	ColliderGroup* GetSightRadiusCollider() const;
 
 public:
 

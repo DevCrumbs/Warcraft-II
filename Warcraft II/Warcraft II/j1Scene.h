@@ -4,6 +4,10 @@
 #include "j1Module.h"
 #include "Animation.h"
 
+#include "j1Menu.h"
+#include "j1Timer.h"
+
+
 #include <vector>
 #include <string>
 using namespace std;
@@ -20,6 +24,32 @@ struct UISlider;
 struct UICursor;
 class UIInputText;
 enum ENTITY_TYPE;
+
+struct Particle;	
+
+struct SliderStruct;
+
+enum TerenasDialogEvents {
+	TerenasDialog_START,
+	TerenasDialog_RESCUE_ALLERIA,
+	TerenasDialog_RESCUE_KHADGAR,
+	TerenasDialog_RESCUE_TURALYON,
+	TerenasDialog_NONE
+};
+enum PauseMenuActions {
+	PauseMenuActions_NOT_EXIST,
+	PauseMenuActions_NONE,
+	PauseMenuActions_CREATED,
+	PauseMenuActions_DESTROY,
+	PauseMenuActions_RETURN_MENU,
+	PauseMenuActions_SETTINGS_MENU,
+	PauseMenuActions_SLIDERFX,
+	PauseMenuActions_SLIDERMUSIC
+};
+struct TerenasAdvices {
+	UIImage* terenasImage;
+	UILabel* text;
+};
 
 class j1Scene : public j1Module
 {
@@ -65,6 +95,21 @@ public:
 	void LoadBuildingMenu();
 	void UnLoadBuildingMenu();
 
+	void LoadResourcesLabels();
+	void UnLoadResourcesLabels();
+	void CreatePauseMenu();
+    void DestroyPauseMenu();
+	void CreateSettingsMenu();
+	void DestroySettingsMenu();
+	void DestroyAllUI();
+	PauseMenuActions GetPauseMenuActions();
+
+	void LoadTerenasDialog(TerenasDialogEvents dialogEvent);
+	void UnLoadTerenasDialog();
+
+	iPoint FindClosestValidTile(iPoint tile) const;
+
+
 	bool LoadKeys(pugi::xml_node&);
 
 public:
@@ -91,6 +136,8 @@ public:
 
 	bool isFrameByFrame = false;
 
+	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
+	TerenasAdvices terenasAdvices;
 private:
 
 	// Draw rectangle
@@ -129,6 +176,9 @@ private:
 
 	ENTITY_TYPE alphaBuilding;
 
+	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
+
+	j1Timer terenasDialogTimer;
 };
 
 #endif //__j1SCENE1_H__

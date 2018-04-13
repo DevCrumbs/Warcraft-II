@@ -259,7 +259,8 @@ void j1Collision::DebugDraw()
 
 		for (uint i = 0; i < (*it)->colliders.size(); ++i)
 
-			App->render->DrawQuad((*it)->colliders[i]->colliderRect, color.r, color.g, color.b, alpha);
+		if ((*it)->offsetCollider != nullptr)
+			App->render->DrawQuad((*it)->offsetCollider->colliderRect, 255, 255, 255, alpha);
 
 		it++;
 	}

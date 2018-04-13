@@ -152,3 +152,49 @@ bool StaticEntity::GetIsFinishedBuilt() const
 {
 	return isBuilt;
 }
+
+ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic)
+{
+	vector<Collider*> colliders;
+	iPoint currTilePos = { (int)this->pos.x, (int)this->pos.y };
+
+	int sign = 1;
+	for (int y = -(int)radius + 1; y < (int)radius; ++y) {
+
+		if (y == 0)
+			sign *= -1;
+
+		for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
+
+			//Valdivia: Idk if this is the correct way of doing it but it works
+			SDL_Rect rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			Collider* collider = App->collision->CreateCollider(rect);
+			
+			if (collider != nullptr)
+				colliders.push_back(collider);
+			/*
+			rect = { currTilePos.x + 32 + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			colliders.push_back(App->collision->CreateCollider(rect));
+			rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + 32 + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			colliders.push_back(App->collision->CreateCollider(rect));
+			rect = { currTilePos.x + 32 + x * App->map->defaultTileSize, currTilePos.y + 32 + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			colliders.push_back(App->collision->CreateCollider(rect));
+			*/
+		}
+	}
+
+	// 2. Create/Update the offset collider
+	ColliderGroup* colliderGroup = App->collision->CreateAndAddColliderGroup(colliders, colliderType, App->entities, this);
+
+	if (colliderGroup != nullptr)
+
+		colliderGroup->CreateOffsetCollider();
+
+	return colliderGroup;
+}
+
+ColliderGroup * StaticEntity::GetSightRadiusCollider() const
+{
+	return sightRadiusCollider;
+}
+

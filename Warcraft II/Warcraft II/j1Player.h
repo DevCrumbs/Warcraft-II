@@ -88,9 +88,12 @@ public:
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
 	void CreateBarracksButtons();
-	void DestroyBarracksButtons();
 
-	void DeleteStaticEntity(StaticEntity* &staticEntity);
+	void HandleBarracksUIElem();
+	void CreateGryphonAviaryButtons();
+	void CreateMageTowerButtons();
+	void CreateAbilitiesButtons();
+
 
 public:
 
@@ -137,8 +140,12 @@ private:
 
 	EntitySelectedStats entitySelectedStats;
 
-	UIButton *produceFootmanButton, *produceElvenArcherButton;
-	
+	GroupSelectedStats groupSelectedStats;
+
+	ToSpawnUnitsStats toSpawnUnitStats;
+
+	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton, *commandPatrolButton, *commandStopButton;
+
 	list<UIElement*> UIMenuInfoList;
 
 };

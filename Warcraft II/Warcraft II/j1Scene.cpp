@@ -114,6 +114,12 @@ bool j1Scene::Start()
 	//LoadInGameUI
 	LoadInGameUI();
 
+	if (terenasDialogEvent == TerenasDialog_NONE) {
+		terenasDialogTimer.Start();
+		terenasDialogEvent = TerenasDialog_START;
+		LoadTerenasDialog(terenasDialogEvent);
+	}
+
 	//Calculate camera movement in pixels through the percentatge given
 	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
 
@@ -189,6 +195,9 @@ bool j1Scene::Update(float dt)
 
 	// ---------------------------------------------------------------------
 
+
+
+
 	// Draw
 	App->map->Draw(); // map
 	App->entities->Draw(); // entities
@@ -255,6 +264,27 @@ bool j1Scene::Update(float dt)
 
 	DebugKeys();
 	CheckCameraMovement(dt);
+
+	//Checks if resources have changed to update building menu and gold label
+	if (hasGoldChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		if (buildingMenuOn) {
+			UnLoadBuildingMenu();
+			LoadBuildingMenu();
+		}
+		hasGoldChanged = false;
+	}
+	if (hasFoodChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		hasFoodChanged = false;
+	}
+
+	if (terenasDialogTimer.Read() >= 30000 && terenasDialogEvent != TerenasDialog_NONE) {
+		terenasDialogEvent = TerenasDialog_NONE;
+		UnLoadTerenasDialog();
+	}
 
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
@@ -568,6 +598,182 @@ void j1Scene::UnLoadBuildingMenu()
 	App->gui->DestroyElement(cannonTowerLabel);
 	buildingMenuOn = false;
 
+}
+
+
+void j1Scene::CreatePauseMenu() {
+
+	UIButton_Info buttonInfo;
+	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
+	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	int x = parchmentImg->GetLocalPos().x + 100;
+	int y = parchmentImg->GetLocalPos().y + 110;
+	settingsButt = App->gui->CreateUIButton	 ({ x - 10, y }, buttonInfo, this);
+
+	y = parchmentImg->GetLocalPos().y + 60;
+	continueButt = App->gui->CreateUIButton	 ({ x - 8, y }, buttonInfo, this);
+
+	y = parchmentImg->GetLocalPos().y + 160;
+	buttonInfo.normalTexArea = { 2000, 0, 150, 33 };
+	ReturnMenuButt = App->gui->CreateUIButton({ x, y}, buttonInfo, this);
+
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.normalColor = Black_;
+	labelInfo.hoverColor = ColorGreen;
+	labelInfo.text = "Settings";
+	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, settingsButt);
+
+	labelInfo.text = "Resume Game";
+	continueLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, continueButt);
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.text = "Return to Main Menu";
+	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
+
+}
+
+void j1Scene::DestroyPauseMenu() {
+
+	App->gui->DestroyElement((UIElement**)&settingsButt);
+	App->gui->DestroyElement((UIElement**)&ReturnMenuButt);
+	App->gui->DestroyElement((UIElement**)&continueButt);
+	App->gui->DestroyElement((UIElement**)&settingsLabel);
+	App->gui->DestroyElement((UIElement**)&continueLabel);
+	App->gui->DestroyElement((UIElement**)&ReturnMenuLabel);
+
+}
+
+void j1Scene::CreateSettingsMenu() {
+	UIButton_Info buttonInfo;
+	UILabel_Info labelInfo;
+	
+	//Fullscreen
+	if (!App->win->fullscreen) {
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 498, 370, 20, 20 };
+		buttonInfo.pressedTexArea = { 520, 370, 20, 20 };
+	}
+	else {
+		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 520, 370, 20, 20 };
+		buttonInfo.pressedTexArea = { 498, 370, 20, 20 };
+	}
+	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	buttonInfo.checkbox = true;
+	int x = parchmentImg->GetLocalPos().x + 130;
+	int y = parchmentImg->GetLocalPos().y + 160;
+	fullScreenButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
+
+	x -= 100;
+	labelInfo.text = "Fullscreen";
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
+	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
+
+
+	//Sliders
+	x = parchmentImg->GetLocalPos().x + 30;
+	y = parchmentImg->GetLocalPos().y + 70;
+	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
+	SDL_Rect butText = { 565, 359 , 8, 10 };
+	SDL_Rect bgText = { 434, 359, 130, 10 };
+	App->menu->AddSlider(AudioFXPause, {x,y}, "Audio FX", relativeVol, butText, bgText, this);
+	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
+	y += 50;
+	App->menu->AddSlider(AudioMusicPause, { x,y }, "Audio Music", relativeVol, butText, bgText, this);
+
+	buttonInfo.checkbox = false;
+	buttonInfo.normalTexArea = { 2000, 0, 40, 20 };
+	buttonInfo.hoverTexArea = { 0, 0, 0, 0 };
+	buttonInfo.pressedTexArea = { 0, 0, 0, 0 };
+	x = parchmentImg->GetLocalPos().x + 30;
+	y = parchmentImg->GetLocalPos().y + 195;
+	returnButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
+
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+	labelInfo.hoverColor = ColorGreen;
+	labelInfo.pressedColor = White_;
+	labelInfo.text = "Back";
+	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
+}
+
+void j1Scene::DestroySettingsMenu() {
+
+	App->gui->DestroyElement((UIElement**)&returnButt);
+	App->gui->DestroyElement((UIElement**)&returnLabel);
+	App->gui->DestroyElement((UIElement**)&fullScreenButt);
+	App->gui->DestroyElement((UIElement**)&fullScreenLabel);
+	App->gui->DestroyElement((UIElement**)&AudioFXPause.slider);
+	App->gui->DestroyElement((UIElement**)&AudioFXPause.name);
+	App->gui->DestroyElement((UIElement**)&AudioFXPause.value);
+	App->gui->DestroyElement((UIElement**)&AudioMusicPause.slider);
+	App->gui->DestroyElement((UIElement**)&AudioMusicPause.name);
+	App->gui->DestroyElement((UIElement**)&AudioMusicPause.value);
+
+}
+
+void j1Scene::DestroyAllUI() {
+	if (parchmentImg != nullptr) {
+		App->gui->DestroyElement((UIElement**)&parchmentImg);
+	}
+	DestroyPauseMenu();
+	DestroySettingsMenu();
+	UnLoadBuildingMenu();
+	UnLoadResourcesLabels();
+	App->gui->DestroyElement((UIElement**)&pauseMenuButt);
+	App->gui->DestroyElement((UIElement**)&pauseMenuLabel);
+	App->gui->DestroyElement((UIElement**)&entitiesStats);
+	App->gui->DestroyElement((UIElement**)&buildingButton);
+	App->gui->DestroyElement((UIElement**)&buildingLabel);
+	App->gui->DestroyElement((UIElement**)&inGameFrameImage);
+}
+
+PauseMenuActions j1Scene::GetPauseMenuActions()
+{
+	return pauseMenuActions;
+}
+
+void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
+{
+	UIImage_Info imageInfo;
+	UILabel_Info labelInfo;
+	if (dialogEvent == TerenasDialog_START) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 340;
+		labelInfo.interactive = false;
+		labelInfo.text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_RESCUE_ALLERIA) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 350;
+		labelInfo.interactive = false;
+		labelInfo.text = "Congratulations! You have freed Alleria. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_RESCUE_KHADGAR) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 350;
+		labelInfo.interactive = false;
+		labelInfo.text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_RESCUE_TURALYON) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 350;
+		labelInfo.interactive = false;
+		labelInfo.text = "Congratulations! You have freed Turalyon. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+	}
+
+}
+
+void j1Scene::UnLoadTerenasDialog()
+{
+	App->gui->DestroyElement((UIElement**)&terenasAdvices.text);
+	App->gui->DestroyElement((UIElement**)&terenasAdvices.terenasImage);
 }
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)

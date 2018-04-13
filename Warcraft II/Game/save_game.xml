@@ -4,7 +4,11 @@
 	<window />
 	<textures />
 	<audio>
+<<<<<<< HEAD
 		<volume default="16" />
+=======
+		<volume default="0" />
+>>>>>>> Develompent
 	</audio>
 	<map />
 	<pathfinding />
