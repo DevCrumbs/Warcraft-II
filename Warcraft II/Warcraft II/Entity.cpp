@@ -88,6 +88,15 @@ void Entity::ApplyDamage(int damage)
 	SetStringLife(currLife, maxLife);
 }
 
+void Entity::ApplyHealth(int health) 
+{
+	if (currLife + health >= maxLife)
+		currLife = maxLife;
+	else
+		currLife += health;
+	SetStringLife(currLife, maxLife);
+}
+
 string Entity::GetStringLife() const
 {
 	return lifeString;

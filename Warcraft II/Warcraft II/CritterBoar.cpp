@@ -66,6 +66,8 @@ void CritterBoar::Move(float dt)
 	/// The unit must fit the tile (it is more attractive for the player)
 	if (currLife <= 0 && unitState != UnitState_Die && singleUnit->IsFittingTile()) {
 
+		RestoreHealth();
+
 		App->audio->PlayFx(15, 0);
 
 		isDead = true;
@@ -286,4 +288,13 @@ void CritterBoar::UpdatePaws()
 			lastPawTile = singleUnit->currTile;
 		}
 	}
+}
+
+bool CritterBoar::RestoreHealth() 
+{
+	if (unitsAttacking.front() != nullptr) {
+		unitsAttacking.front()->ApplyHealth(critterBoarInfo.restoredHealth);
+		return true;
+	}
+	return false;
 }

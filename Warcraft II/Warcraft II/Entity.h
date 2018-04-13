@@ -152,6 +152,7 @@ public:
 	void SetCurrLife(int currLife);
 	int GetCurrLife() const;
 	void ApplyDamage(int damage);
+	void ApplyHealth(int health);
 
 	string GetStringLife() const;
 	void SetStringLife(int currentLife, int maxLife);

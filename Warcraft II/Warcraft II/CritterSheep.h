@@ -47,6 +47,8 @@ public:
 	// Paws
 	void UpdatePaws();
 
+	bool RestoreHealth();
+
 private:
 
 	CritterSheepInfo critterSheepInfo;
