@@ -1080,10 +1080,10 @@ void j1Scene::CreatePauseMenu() {
 	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	int x = parchmentImg->GetLocalPos().x + 100;
 	int y = parchmentImg->GetLocalPos().y + 110;
-	settingsButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
+	settingsButt = App->gui->CreateUIButton	 ({ x - 10, y }, buttonInfo, this);
 
 	y = parchmentImg->GetLocalPos().y + 60;
-	continueButt = App->gui->CreateUIButton	 ({ x, y }, buttonInfo, this);
+	continueButt = App->gui->CreateUIButton	 ({ x - 8, y }, buttonInfo, this);
 
 	y = parchmentImg->GetLocalPos().y + 160;
 	buttonInfo.normalTexArea = { 2000, 0, 150, 33 };
