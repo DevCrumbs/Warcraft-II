@@ -1054,24 +1054,28 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		case UI_EVENT_MOUSE_LEFT_CLICK:
 
 			if (hoverCheck == HoverCheck_Repair) {
-				App->audio->PlayFx(10, 0); //Repair building sound
-				hoverButtonStruct.currentEntity->SetCurrLife(hoverButtonStruct.currentEntity->GetMaxLife());
-				hoverButtonStruct.currentEntity->CheckBuildingState();
-				entitySelectedStats.HP->SetText(hoverButtonStruct.currentEntity->GetStringLife());
-				entitySelectedStats.lifeBar->SetLife(hoverButtonStruct.currentEntity->GetMaxLife());
-				currentGold -= 500;
-				App->scene->hasGoldChanged = true;
-
+				if (currentGold < 500) {
+					App->audio->PlayFx(3, 0); //Button error sound
+				}
+				else {
+					App->audio->PlayFx(10, 0); //Repair building sound
+					hoverButtonStruct.currentEntity->SetCurrLife(hoverButtonStruct.currentEntity->GetMaxLife());
+					hoverButtonStruct.currentEntity->CheckBuildingState();
+					entitySelectedStats.HP->SetText(hoverButtonStruct.currentEntity->GetStringLife());
+					entitySelectedStats.lifeBar->SetLife(hoverButtonStruct.currentEntity->GetMaxLife());
+					currentGold -= 500;
+					App->scene->hasGoldChanged = true;
+				}
 			}
 			else if (hoverCheck == HoverCheck_Upgrate)
 			{
-				//App->audio->PlayFx(2, 0); //Construction sound
 				if (hoverButtonStruct.currentEntity == barracks) {
 					if (currentGold >= 1000) {
 						barracksUpgrade = true;
 						currentGold -= 1000;
 						App->scene->hasGoldChanged = true;
 						DestroyHoverButton(barracks);
+						App->audio->PlayFx(2, 0); //Construction sound
 					}
 					else
 						App->audio->PlayFx(3, 0); //Button error sound
@@ -1082,6 +1086,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						currentGold -= 500;
 						App->scene->hasGoldChanged = true;
 						DestroyHoverButton(townHall);
+						App->audio->PlayFx(2, 0); //Construction sound
 					}
 					else
 						App->audio->PlayFx(3, 0); //Button error sound
