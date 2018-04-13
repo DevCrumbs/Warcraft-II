@@ -1,5 +1,7 @@
 #include "ChickenFarm.h"
 #include "j1Player.h"
+#include "j1Scene.h"
+
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
@@ -13,6 +15,7 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		App->audio->PlayFx(2, 0); //Construction sound
 	}
 	App->player->currentFood += 4;
+	App->scene->hasFoodChanged = true;
 }
 
 void ChickenFarm::Move(float dt)
