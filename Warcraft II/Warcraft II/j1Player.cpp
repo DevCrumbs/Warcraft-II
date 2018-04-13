@@ -12,6 +12,7 @@
 #include "j1Gui.h"
 #include "j1Pathfinding.h"
 #include "j1Particles.h"
+#include "j1Audio.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
@@ -357,6 +358,7 @@ void j1Player::CheckUnitSpawning()
 					fPoint pos = { (float)barracksTilePos.x,(float)barracksTilePos.y };
 
 					App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
+					App->audio->PlayFx(21, 0);
 				}
 			}
 				
@@ -364,6 +366,7 @@ void j1Player::CheckUnitSpawning()
 
 			case EntityType_ELVEN_ARCHER:
 				App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
+				App->audio->PlayFx(18, 0);
 				break;
 
 			case EntityType_MAGE:

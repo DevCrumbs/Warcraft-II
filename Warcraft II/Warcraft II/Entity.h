@@ -174,6 +174,7 @@ public:
 
 	bool isRemove = false;
 	bool isSelected = false;
+	bool auxIsSelected = false; // to play fx
 
 protected:
 

@@ -115,6 +115,23 @@ private:
 	string repairBuildingSound;
 	string destroyBuildingSound;
 
+	string humanDeadSound;
+	string orcDeadSound;
+	string prisonerRescueSound;
+	string crittersBoarDead;
+	string crittersSheepDead;
+
+	string archerGoToPlaceSound;
+	string archerReadySound;
+	string archerSelectedSound;
+	string footmanGoToPlaceSound;
+	string footmanReadySound;
+	string footmanSelectedSound;
+
+	string axeThrowSound;
+	string bowFireSound;
+	string swordSound;
+
 public:
 	uint tab_button = 0;
 	
