@@ -89,7 +89,9 @@ bool j1Menu::Start()
 
 	UICursor_Info mouseInfo;
 	mouseInfo.default = { 243, 525, 28, 33 };
-	mouseInfo.onClick = { 243, 525, 28, 33 };
+	mouseInfo.onClick = { 275, 525, 28, 33 };
+	mouseInfo.onMine = { 310, 525, 28, 33 };
+	mouseInfo.onMineClick = { 338, 525, 28, 33 };
 	mouseText = App->gui->CreateUICursor(mouseInfo, this);
 	return true;
 }
