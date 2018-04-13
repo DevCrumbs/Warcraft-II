@@ -48,12 +48,12 @@ void j1Map::Draw()
 		App->render->camera.x = 0;
 		App->render->camera.y = 0;
 	}
-	// TODO 5: Prepare the loop to draw all tilesets + Blit
-
-
 
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
 	{
+		if (!(*layer)->properties.GetProperty("Draw", false))
+			continue;
+
 		iPoint startTile = WorldToMap(-App->render->camera.x / App->win->GetScale(),
 			-App->render->camera.y / App->win->GetScale());
 		iPoint endTile = WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
