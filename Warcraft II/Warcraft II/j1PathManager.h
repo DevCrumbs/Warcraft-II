@@ -120,8 +120,8 @@ private:
 
 	list<PathPlanner*> searchRequests; // a container of all the active search requests
 
-	// total ms to spend on search cycles each update allocated to the manager
-	// each update step these are divided equally among all registered path requests
+									   // total ms to spend on search cycles each update allocated to the manager
+									   // each update step these are divided equally among all registered path requests
 	double msSearchPerUpdate = 0.0f;
 
 	j1PerfTimer timer; // timer to keep track of the ms spent on each update
@@ -180,7 +180,7 @@ private:
 	j1PathFinding* currentSearch = nullptr; // a pointer to the current search
 	Navgraph& navgraph; // a local reference to the navgraph
 
-	// Dijkstra
+						// Dijkstra
 	FindActiveTrigger* trigger = nullptr; // a pointer to the FindActiveTrigger class
 };
 
