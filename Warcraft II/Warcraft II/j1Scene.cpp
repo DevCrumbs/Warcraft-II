@@ -161,10 +161,10 @@ bool j1Scene::PreUpdate()
 	unitInfo.priority = 1; // TODO: change to 3 or so
 
 	 /// Footman
-	//FootmanInfo footmanInfo;
-
-	/// Grunt
+	FootmanInfo footmanInfo;
 	GruntInfo gruntInfo;
+	ElvenArcherInfo elvenArcherInfo;
+	TrollAxethrowerInfo trollAxethrowerInfo;
 
 	/// Sheep
 	CritterSheepInfo critterSheepInfo;
@@ -197,7 +197,7 @@ bool j1Scene::PreUpdate()
 		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
 
 		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
+		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
 		//}
 	}
 
@@ -225,7 +225,7 @@ bool j1Scene::PreUpdate()
 		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
 
 		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, this);
+		App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, this);
 		//}
 	}
 
