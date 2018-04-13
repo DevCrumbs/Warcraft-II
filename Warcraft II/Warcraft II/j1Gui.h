@@ -69,6 +69,8 @@ public:
 	// Called before all Updates
 	bool PreUpdate();
 
+	void Draw();
+
 	// Called each loop iteration
 	bool Update(float dt);
 
@@ -94,14 +96,12 @@ public:
 	void SetUpDraggingChildren(UIElement* elem, bool dragging);
 	void SetUpDraggingNode(bool drag);
 
-
 	const SDL_Texture* GetAtlas() const;
 	SDL_Rect GetRectFromAtlas(SDL_Rect rect);
 
 	void SetTextureAlphaMod(float alpha);
 	float IncreaseDecreaseAlpha(float from, float to, float seconds);
 	void ResetAlpha();
-
 
 public:
 	std::list<UIElement*> addedElementUI;

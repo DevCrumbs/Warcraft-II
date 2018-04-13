@@ -11,6 +11,7 @@
 #include "j1Input.h"
 #include "j1Gui.h"
 #include "j1Window.h"
+#include "j1Particles.h"
 
 #include "UIImage.h"
 #include "UILabel.h"
@@ -107,8 +108,7 @@ bool j1Gui::PreUpdate()
 	for (std::list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); iterator++) {
 		drawOrder.push(*iterator);
 	}
-
-
+	
 	return ret;
 }
 
@@ -132,7 +132,7 @@ bool j1Gui::Update(float dt)
 
 		UI_elem_it++;
 	}
-
+	
 	UI_elem_it = UIElementsList.begin();
 
 	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
@@ -141,8 +141,22 @@ bool j1Gui::Update(float dt)
 		else if (App->render->IsInScreen(info->GetLocalRect()))
 			info->Draw();
 	}
-	//Blit(dt);
+
+	App->particles->Draw(); // the rest of the particles
+
 	return ret;
+}
+
+void j1Gui::Draw() 
+{
+	list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin();
+
+	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
+		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+			info->Draw();
+		else if (App->render->IsInScreen(info->GetLocalRect()))
+			info->Draw();
+	}
 }
 
 // Called after all Updates
@@ -161,7 +175,6 @@ bool j1Gui::PostUpdate()
 
 		iterator++;
 	}
-	
 
 	return ret;
 }

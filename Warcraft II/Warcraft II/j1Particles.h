@@ -89,6 +89,7 @@ public:
 	bool Start();
 	bool Update(float dt);
 	void Draw();
+	void DrawPaws();
 	bool CleanUp();
 
 	Particle* AddParticle(const Particle& particle, iPoint pos, ColliderType colliderType = ColliderType_NoType, Uint32 delay = 0, fPoint speed = { 0,0 });
