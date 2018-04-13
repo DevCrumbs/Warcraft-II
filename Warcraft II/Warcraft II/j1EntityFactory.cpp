@@ -482,9 +482,21 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
 
 	pugi::xml_node khadgarAnimations = prisionerEntities.child("khadgar").child("animations");
+	currentAnimation = khadgarAnimations.child("idle");
+	khadgarInfo.idle.speed = currentAnimation.attribute("speed").as_float();
+	khadgarInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		khadgarInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
 
 	//Alleria
-	pugi::xml_node alleriaAnimations = prisionerEntities.child("khadgar").child("animations");
+	pugi::xml_node alleriaAnimations = prisionerEntities.child("alleria").child("animations");
+	currentAnimation = alleriaAnimations.child("idle");
+	alleriaInfo.idle.speed = currentAnimation.attribute("speed").as_float();
+	alleriaInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		alleriaInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
 
 	// Critter sheep
 	pugi::xml_node sheepAnimations = config.child("dynamicEntities").child("sheep");
@@ -1897,12 +1909,24 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_KHADGAR:
 	{
+		Khadgar* khadgar = new Khadgar(pos, { 64,64 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const KhadgarInfo&)entityInfo, listener);
+		khadgar->entityType = EntityCategory_DYNAMIC_ENTITY;
+		khadgar->dynamicEntityType = EntityType_KHADGAR;
+
+		toSpawnEntities.push_back((Entity*)khadgar);
+		return (DynamicEntity*)khadgar;
 
 	}
 	break;
 
 	case EntityType_ALLERIA:
 	{
+		Alleria* alleria = new Alleria(pos, { 64,64 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const AlleriaInfo&)entityInfo, listener);
+		alleria->entityType = EntityCategory_DYNAMIC_ENTITY;
+		alleria->dynamicEntityType = EntityType_ALLERIA;
+
+		toSpawnEntities.push_back((Entity*)alleria);
+		return (DynamicEntity*)alleria;
 
 	}
 	break;

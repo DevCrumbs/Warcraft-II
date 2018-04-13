@@ -5,6 +5,8 @@
 
 struct KhadgarInfo
 {
+	UnitInfo unitInfo;
+	Animation idle;
 	int currLife = 0;
 	uint maxLife = 0;
 };
