@@ -4,19 +4,24 @@
 	<window />
 	<textures />
 	<audio>
-		<volume default="16" />
+		<volume default="3" />
 	</audio>
 	<map />
 	<pathfinding />
-	<entities />
-	<particles />
 	<collision />
+	<particles />
+	<:anonymous />
+	<pathmanager />
+	<entities />
 	<fonts />
+	<menu />
+	<scene />
+	<scene />
+	<finish />
+	<:anonymous />
 	<gui />
-	<scene />
-	<scene />
 	<fade />
 	<renderer>
-		<camera x="0" y="0" />
+		<camera x="-2400" y="-6720" />
 	</renderer>
 </game_state>

@@ -29,6 +29,7 @@ enum EntitySide
 	EntitySide_NoSide,
 	EntitySide_Player,
 	EntitySide_Enemy,
+	EntitySide_Neutral,
 	EntitySide_MaxSides
 };
 
@@ -101,10 +102,33 @@ enum ENTITY_TYPE
 	EntityType_TROLL_AXETHROWER = 382,
 	EntityType_DRAGON = 383,
 
+	// Neutral types
+	EntityType_SHEEP,
+	EntityType_BOAR,
+
 	EntityType_MAX = 500
 };
 
+class Entity;
+
 struct EntityInfo; // empty container
+
+struct TargetInfo
+{
+	TargetInfo();
+	TargetInfo(const TargetInfo& t);
+
+	bool isSightSatisfied = false; // if true, sight distance is satisfied
+	bool isAttackSatisfied = false; // if true, attack distance is satisfied
+
+	bool isRemoved = false; // if true, it means that the entity has been killed
+
+	Entity* target = nullptr;
+
+	// -----
+
+	bool IsTargetPresent() const;
+};
 
 class Entity
 {
@@ -137,6 +161,12 @@ public:
 	bool CreateEntityCollider(EntitySide entitySide);
 	void UpdateEntityColliderPos();
 
+	// Attack
+	/// Entity is being attacked by units
+	bool AddAttackingUnit(Entity* entity);
+	bool RemoveAttackingUnit(Entity* entity);
+	uint GetAttackingUnitsSize(Entity* attackingUnit) const;
+
 public:
 
 	ENTITY_CATEGORY entityType = EntityCategory_NONE;
@@ -154,10 +184,13 @@ protected:
 	uint maxLife = 0;
 	string lifeString;
 
-	j1Module* listener = nullptr;
+	j1Module* listener = nullptr; // callback
 
 	// Collision
 	ColliderGroup* entityCollider = nullptr;
+
+	// Attack
+	list<Entity*> unitsAttacking;
 };
 
 #endif //__Entity_H__

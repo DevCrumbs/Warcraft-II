@@ -120,19 +120,19 @@ bool StaticEntity::CheckBuildingState() {
 		switch (buildingState)
 		{
 		case BuildingState_Normal:
-			fire->isDeleted = true;
+			fire->isRemove = true;
 			break;
 		case BuildingState_LowFire:
-			fire = App->particles->AddParticle(App->particles->lowFire, this->GetPos().x + this->GetSize().x / 3, this->GetPos().y + this->GetSize().y / 3);
+			fire = App->particles->AddParticle(App->particles->lowFire, { (int)this->GetPos().x + this->GetSize().x / 3, (int)this->GetPos().y + this->GetSize().y / 3 });
 			break;
 
 		case BuildingState_HardFire:
-			fire->isDeleted = true;
-			fire = App->particles->AddParticle(App->particles->hardFire, this->GetPos().x + this->GetSize().x / 5, this->GetPos().y + this->GetSize().y / 5);
+			fire->isRemove = true;
+			fire = App->particles->AddParticle(App->particles->hardFire, { (int)this->GetPos().x + this->GetSize().x / 5, (int)this->GetPos().y + this->GetSize().y / 5 });
 
 			break;
 		case BuildingState_Destroyed:
-			fire->isDeleted = true;
+			fire->isRemove = true;
 			ret = false;
 			break;
 		default:

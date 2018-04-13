@@ -6,13 +6,11 @@
 
 #include <list>
 #include <vector>
-#include <queue>
 #include <algorithm>
-#include <map>
 using namespace std;
 
 #define DEFAULT_PATH_LENGTH 50
-#define INVALID_WALK_CODE 255
+#define INVALID_WALK_CODE -1
 
 enum DistanceHeuristic {
 
@@ -135,11 +133,14 @@ public:
 	// CycleOnce Dijkstra
 	PathfindingStatus CycleOnceDijkstra();
 
-private:
-
 	uint width = 0; // size of the map (w)
 	uint height = 0; // size of the map (h)
 	uchar* walkabilityMap = nullptr; // all map walkability values [0..255]
+
+private:
+
+
+//	uchar* walkabilityMap = nullptr; // all map walkability values [0..255]
 	DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan; // distance heuristic of choice
 
 	PathList open; // open list of PathNodes
@@ -147,10 +148,10 @@ private:
 	vector<iPoint> last_path; // we store the created path here
 	iPoint last_tile = { -1,-1 }; // we store the last tile checked here
 
-	// A Star
+								  // A Star
 	iPoint goal = { -1,-1 }; // destination tile
 
-	// Dijkstra
+							 // Dijkstra
 	FindActiveTrigger* trigger = nullptr;
 	bool isPathRequested = false;
 };

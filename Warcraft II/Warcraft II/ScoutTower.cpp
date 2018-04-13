@@ -9,24 +9,28 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	texArea = &scoutTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 
-	CreateEntityCollider(EntitySide_Player);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, scoutTowerInfo.sightRadius);
-	sightRadiusCollider->isTrigger = true;
 	App->audio->PlayFx(2, 0); //Construction sound
 }
 
 void ScoutTower::Move(float dt)
 {
+	if (!isColliderCreated) {
+		CreateEntityCollider(EntitySide_Player);
+		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, scoutTowerInfo.sightRadius);
+		sightRadiusCollider->isTrigger = true;
+		isColliderCreated = true;
+	}
+
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 
-	//Is building destroyed?
+	//Check if building is destroyed
 	if (currLife <= 0)
 		towerState = TowerState_Die;
 
-	//Check if tower has to attack
+	//Check if tower has to attack or not
 	if (isBuilt) {
-		if (!enemyAttackQueue.empty())
+		if (attackingTarget != nullptr && !enemyAttackList.empty())
 			towerState = TowerState_Attack;
 		else
 			towerState = TowerState_Idle;
@@ -34,14 +38,27 @@ void ScoutTower::Move(float dt)
 
 	TowerStateMachine(dt);
 
+	//Update animations for the construction cycle
 	if(!isBuilt)
 	UpdateAnimations(dt);
 
+	//Check is building is built already
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
 		isBuilt = true;
 
-	if (arrowParticle != nullptr)
+	//Check the arrow movement if the tower has to attack
+	if (attackingTarget != nullptr && arrowParticle != nullptr)
 		CheckArrowMovement(dt);
+
+	//Check if the tower has to change the attacking target
+	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
+
+		attackingTarget = nullptr;
+		enemyAttackList.pop_front();
+
+		if (!enemyAttackList.empty())
+			attackingTarget = enemyAttackList.front();
+	}
 }
 
 void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionState collisionState)
@@ -54,10 +71,10 @@ void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 		if (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit
 			|| c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding) {
 			
-			enemyAttackQueue.push (c2->entity);
+			enemyAttackList.push_back(c2->entity);
 			
 			if (attackingTarget == nullptr) {
-				attackingTarget = enemyAttackQueue.back();
+				attackingTarget = enemyAttackList.front();
 				attackTimer.Start();
 			}
 		}
@@ -73,16 +90,16 @@ void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 			
 			if (c2->entity == attackingTarget) {
 				attackingTarget = nullptr;
-				enemyAttackQueue.pop();
+				enemyAttackList.pop_front();
 			}
-			else if (c2->entity != enemyAttackQueue.back()) {
-				Entity* aux = c2->entity;
-				std::swap(enemyAttackQueue.back(), aux); //I don't know if this will work. Have to try it
-				enemyAttackQueue.pop();
+		
+		    else if (c2->entity != attackingTarget) {
+				enemyAttackList.remove(c2->entity);
+
 			}
 			
-			if (!enemyAttackQueue.empty() && attackingTarget == nullptr) {
-				attackingTarget = enemyAttackQueue.back();
+			if (!enemyAttackList.empty() && attackingTarget == nullptr) {
+				attackingTarget = enemyAttackList.front();
 				attackTimer.Start();
 
 			}
@@ -109,13 +126,12 @@ void ScoutTower::TowerStateMachine(float dt)
 				attackTimer.Start();
 				DetermineArrowDirection();
 				CreateArrow();
-
 			}
 		}
 	}
 		break;
 	case TowerState_Die:
-		
+		//Nothing
 		break;
 	}
 }
@@ -161,51 +177,49 @@ void ScoutTower::DetermineArrowDirection()
 	//Down Right
 	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y > towerTilePos.y) 
 		arrowDirection = DOWN_RIGHT;
-	
-
 }
 
 void ScoutTower::CreateArrow()
 {
 	switch (arrowDirection) {
+
 	case UP:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.up, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.up, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case DOWN:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.down, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.down, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.left, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.left, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.right, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.right, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case UP_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.upLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case UP_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upRight, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.upRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case DOWN_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downLeft, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.downLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case DOWN_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, this->GetPos().x + 16, this->GetPos().y + 16);
+		arrowParticle = App->particles->AddParticle((const Particle&)App->particles->towerArrowParticles.downRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	default:
 		break;
 	}
 
-	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->position.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->position.y, 2.0f));
-	arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->position.x) / m;
-	arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->position.y) / m;
+	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->pos.y, 2.0f));
+	arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->pos.x) / m;
+	arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->pos.y) / m;
 }
-
 
 void ScoutTower::CheckArrowMovement(float dt)
 {
 	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
-	iPoint arrowTilePos = App->map->WorldToMap((int)arrowParticle->position.x, (int)arrowParticle->position.y);
+	iPoint arrowTilePos = App->map->WorldToMap((int)arrowParticle->pos.x, (int)arrowParticle->pos.y);
 
 	switch (arrowDirection) {
 	case UP:
@@ -280,24 +294,22 @@ void ScoutTower::CheckArrowMovement(float dt)
 
 void ScoutTower::MoveArrowTowardsTarget(float dt)
 {
-	arrowParticle->position.x += arrowParticle->destination.x * dt * scoutTowerInfo.arrowSpeed;
-	arrowParticle->position.y += arrowParticle->destination.y * dt * scoutTowerInfo.arrowSpeed;
+	arrowParticle->pos.x += arrowParticle->destination.x * dt * scoutTowerInfo.arrowSpeed;
+	arrowParticle->pos.y += arrowParticle->destination.y * dt * scoutTowerInfo.arrowSpeed;
 }
 
 void ScoutTower::InflictDamageAndDestroyArrow()
 {
 	attackingTarget->ApplyDamage(scoutTowerInfo.damage);
-	arrowParticle->isDeleted = true;
+	arrowParticle->isRemove = true;
 	arrowParticle = nullptr;
 }
-
-
 
 // Animations
 void ScoutTower::LoadAnimationsSpeed()
 {
-
 }
+
 void ScoutTower::UpdateAnimations(float dt)
 {
 	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
@@ -309,3 +321,106 @@ void ScoutTower::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= constructionTime * 1000)
 		texArea = &scoutTowerInfo.completeTexArea;
 }
+
+
+//DELET THIS
+
+/*
+
+void ScoutTower::Move(float dt)
+{
+if (!isColliderCreated) {
+CreateEntityCollider(EntitySide_Player);
+sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, scoutTowerInfo.sightRadius);
+sightRadiusCollider->isTrigger = true;
+isColliderCreated = true;
+}
+
+if (listener != nullptr)
+HandleInput(EntityEvent);
+
+//Check if building is destroyed
+if (currLife <= 0)
+towerState = TowerState_Die;
+
+//Check if tower has to attack or not
+if (isBuilt) {
+if (attackingTarget != nullptr && !enemyAttackQueue.empty())
+towerState = TowerState_Attack;
+else
+towerState = TowerState_Idle;
+}
+
+TowerStateMachine(dt);
+
+//Update animations for the construction cycle
+if (!isBuilt)
+UpdateAnimations(dt);
+
+//Check is building is built already
+if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
+isBuilt = true;
+
+//Check the arrow movement if the tower has to attack
+if (attackingTarget != nullptr && arrowParticle != nullptr)
+CheckArrowMovement(dt);
+
+//Check if the tower has to change the attacking target
+if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
+
+attackingTarget = nullptr;
+enemyAttackQueue.pop();
+
+if (!enemyAttackQueue.empty())
+attackingTarget = enemyAttackQueue.front();
+}
+}
+
+void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionState collisionState)
+{
+switch (collisionState) {
+
+case CollisionState_OnEnter:
+
+//Every time a enemy enters range it is added to the attack queue
+if (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit
+|| c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding) {
+
+enemyAttackQueue.push(c2->entity);
+
+if (attackingTarget == nullptr) {
+attackingTarget = enemyAttackQueue.front();
+attackTimer.Start();
+}
+}
+
+break;
+
+
+case CollisionState_OnExit:
+
+//Every time the enemy dies or exits sight this enemy is deleted from the atack queue
+if (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit
+|| c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding) {
+
+/*if (c2->entity == attackingTarget) {
+attackingTarget = nullptr;
+enemyAttackQueue.pop();
+}
+/*
+else if (c2->entity != enemyAttackQueue.back()) {
+Entity* aux = c2->entity;
+std::swap(enemyAttackQueue.back(), aux); //I don't know if this will work. Have to try it
+enemyAttackQueue.pop();
+}*/
+
+/*if (!enemyAttackQueue.empty() && attackingTarget == nullptr) {
+attackingTarget = enemyAttackQueue.back();
+attackTimer.Start();
+
+}
+}
+
+break;
+
+}*/

@@ -17,11 +17,10 @@ Entity::Entity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* li
 
 Entity::~Entity()
 {
-	/*
+	// Remove Colliders
 	if (entityCollider != nullptr)
 		entityCollider->isRemove = true;
 	entityCollider = nullptr;
-	*/
 }
 
 void Entity::Draw(SDL_Texture* sprites)
@@ -110,18 +109,22 @@ bool Entity::CreateEntityCollider(EntitySide entitySide)
 	ColliderType collType = ColliderType_NoType;
 
 	if (entitySide == EntitySide_Player) {
+
 		if (this->entityType == EntityCategory_DYNAMIC_ENTITY)
 			collType = ColliderType_PlayerUnit;
-
 		else if (this->entityType == EntityCategory_STATIC_ENTITY)
 			collType = ColliderType_PlayerBuilding;
 	}
 	else if (entitySide == EntitySide_Enemy) {
+
 		if (this->entityType == EntityCategory_DYNAMIC_ENTITY)
-		collType = ColliderType_EnemyUnit;
+			collType = ColliderType_EnemyUnit;
 		else if (this->entityType == EntityCategory_STATIC_ENTITY)
 			collType = ColliderType_EnemyBuilding;
 	}
+	else if (entitySide == EntitySide_NoSide)
+
+		collType = ColliderType_NeutralUnit;
 
 	if (collType == ColliderType_NoType)
 		return false;
@@ -140,4 +143,57 @@ bool Entity::CreateEntityCollider(EntitySide entitySide)
 void Entity::UpdateEntityColliderPos()
 {
 	entityCollider->colliders.front()->SetPos(pos.x, pos.y);
+
+	// 2. Create/Update the offset collider
+	entityCollider->CreateOffsetCollider();
 }
+
+// Attack
+/// Entity is being attacked by units
+bool Entity::AddAttackingUnit(Entity* entity)
+{
+	bool ret = false;
+
+	if (find(unitsAttacking.begin(), unitsAttacking.end(), entity) == unitsAttacking.end()) {
+		unitsAttacking.push_back(entity);
+		ret = true;
+	}
+
+	return ret;
+}
+
+bool Entity::RemoveAttackingUnit(Entity* entity)
+{
+	bool ret = false;
+
+	if (find(unitsAttacking.begin(), unitsAttacking.end(), entity) != unitsAttacking.end()) {
+		unitsAttacking.remove(entity);
+		ret = true;
+	}
+
+	return ret;
+}
+
+uint Entity::GetAttackingUnitsSize(Entity* attackingUnit) const
+{
+	list<Entity*>::const_iterator it = unitsAttacking.begin();
+	uint size = 0;
+
+	while (it != unitsAttacking.end()) {
+
+		if (*it != attackingUnit)
+			size++;
+
+		it++;
+	}
+
+	return size;
+}
+
+// Struct TargetInfo -------------------------------------------------------------
+
+TargetInfo::TargetInfo() {}
+
+TargetInfo::TargetInfo(const TargetInfo& t) :
+	isSightSatisfied(t.isSightSatisfied), isAttackSatisfied(t.isAttackSatisfied),
+	isRemoved(t.isRemoved), target(t.target) {}

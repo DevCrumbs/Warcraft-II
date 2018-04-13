@@ -50,6 +50,8 @@ public:
 	// Set background color
 	void SetBackgroundColor(SDL_Color color);
 
+	bool IsInScreen(const SDL_Rect& item) const;
+
 public:
 
 	SDL_Renderer*	renderer = nullptr;

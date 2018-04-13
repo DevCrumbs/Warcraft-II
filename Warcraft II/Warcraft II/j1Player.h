@@ -79,6 +79,15 @@ struct ToSpawnUnitsStats
 	UILifeBar* trdInQueueBar = nullptr;
 };
 
+struct ToSpawnUnit {
+	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
+		this->toSpawnTimer = toSpawnTimer;
+		this->entityType = entityType;
+	}
+	j1Timer toSpawnTimer;
+	ENTITY_TYPE entityType;
+};
+
 struct EntitySelectedStats
 {
 	UILabel* HP = nullptr;
@@ -113,12 +122,13 @@ public:
 	bool PostUpdate();
 
 	void CheckIfPlaceBuilding();
+	iPoint GetMouseTilePos() const;
+	iPoint GetMousePos() const;
 	void CheckUnitSpawning();
-	iPoint GetMouseTilePos();
-	iPoint GetMousePos();
+
 
 	void AddGold(int sumGold);
-	int GetCurrentGold();
+	int GetCurrentGold() const;
 
 	// Called before quitting
 	bool CleanUp();
@@ -141,16 +151,17 @@ public:
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
 	void CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image);
-	void CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity * entity);
+	void CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity* entity);
+	void CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar);
 
 	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateBarracksButtons();
+	void HandleBarracksUIElem();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
-
-	void DeleteStaticEntity(StaticEntity* &staticEntity);
+	void CreateAbilitiesButtons();
 
 public:
 
@@ -175,9 +186,10 @@ public:
 	bool townHallUpgrade = false;
 	bool keepUpgrade = false;
 
-	int totalGold = 0; // total gold earned during the game
 	int currentGold = 0; // amount of gold that the player has at the current moment
-	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
+	uint totalGold = 0u; // total gold earned during the game
+	int currentFood = 8; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
+
 	//Units costs
 	int footmanCost = 500;
 	int elvenArcherCost = 400;
@@ -185,6 +197,13 @@ public:
 	int ballistaCost = 900;
 	int mageCost = 1200;
 	int gryphonRiderCost = 2500;
+
+	//For finish Screen
+	bool isWin = false;
+	j1Timer startGameTimer;
+	uint unitProduce = 0u;
+	uint enemiesKill = 0u;
+	uint buildDestroy = 0u;
 
 private:
 
@@ -221,13 +240,12 @@ private:
 
 	ToSpawnUnitsStats toSpawnUnitStats;
 
-	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton;
+	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton, *commandPatrolButton, *commandStopButton;
 
 	list<UIElement*> UIMenuInfoList;
 
 	//Spawning units from barracks queues and variables
-	queue<j1Timer> toSpawnUnitTimerQueue;
-	queue<ENTITY_TYPE> toSpawnUnitTypeQueue;
+	queue<ToSpawnUnit> toSpawnUnitQueue;
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;
 

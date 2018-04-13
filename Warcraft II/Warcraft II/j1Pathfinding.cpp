@@ -18,6 +18,8 @@ j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), hei
 j1PathFinding::~j1PathFinding()
 {
 	RELEASE_ARRAY(walkabilityMap);
+
+	trigger = nullptr;
 }
 
 // Called before quitting
@@ -44,23 +46,33 @@ void j1PathFinding::SetMap(uint width, uint height, uchar* data)
 // Utility: return true if pos is inside the map boundaries
 bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 {
-	return (pos.x >= 0 && pos.x <= (int)width &&
-		pos.y >= 0 && pos.y <= (int)height);
+	return (pos.x >= 0 && pos.x <= (int)(App->map->width - 1) &&
+		pos.y >= 0 && pos.y <= (int)(App->map->height - 1));
 }
 
-// Utility: returns true is the tile is walkable
+// Utility: returns true if the tile is walkable
 bool j1PathFinding::IsWalkable(const iPoint& pos) const
 {
 	int t = GetTileAt(pos);
-	return INVALID_WALK_CODE && t > 0;
+	bool ret = INVALID_WALK_CODE && t == 0;
+	return ret;
 }
 
 // Utility: return the walkability value of a tile
 int j1PathFinding::GetTileAt(const iPoint& pos) const
 {
-	if (CheckBoundaries(pos))
-		return walkabilityMap[(pos.y*width) + pos.x];
-
+	iPoint Pos{ pos };
+	if (pos.x > 50 || pos.y > 50)
+	{
+		Pos.x = pos.x - 2400 / 32;
+		Pos.y = pos.y - 6720 / 32;
+	}
+	if (CheckBoundaries(Pos))
+	{
+		int pos = (Pos.y*width) + Pos.x;
+		int i = App->map->walkabilityMap[pos];
+		return i;
+	}
 	return INVALID_WALK_CODE;
 }
 
@@ -322,11 +334,16 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 
 int j1PathFinding::BacktrackToCreatePath()
 {
-	// Backtrack to create the final path
-	for (PathNode iterator = close.pathNodeList.back(); iterator.parent != nullptr;
-		iterator = *close.Find(iterator.parent->pos)) {
+	last_path.clear();
 
-		last_path.push_back(iterator.pos);
+	// Backtrack to create the final path
+	if (close.pathNodeList.size() > 1) {
+
+		for (PathNode iterator = close.pathNodeList.back(); iterator.parent != nullptr;
+			iterator = *close.Find(iterator.parent->pos)) {
+
+			last_path.push_back(iterator.pos);
+		}
 	}
 
 	last_path.push_back(close.pathNodeList.front().pos);

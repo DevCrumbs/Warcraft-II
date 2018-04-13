@@ -46,7 +46,45 @@
       <frame x="600" y="674" w="200" h="250" />
       <frame x="800" y="674" w="200" h="250" />
     </parchment>
-      
+
+    <artifacts speed = "5">
+       <scepter>
+         <frame x="577" y="361" w="55" h="55" />
+         <frame x="632" y="361" w="55" h="55" />
+         <frame x="687" y="361" w="55" h="55" />
+         <frame x="742" y="361" w="55" h="55" />
+         <frame x="797" y="361" w="55" h="55" />
+         <frame x="852" y="361" w="55" h="55" />
+         <frame x="907" y="361" w="55" h="55" />
+       </scepter>                         
+       <book>                             
+         <frame x="577" y="420" w="55" h="55" />
+         <frame x="632" y="420" w="55" h="55" />
+         <frame x="687" y="420" w="55" h="55" />
+         <frame x="742" y="420" w="55" h="55" />
+         <frame x="797" y="420" w="55" h="55" />
+         <frame x="852" y="420" w="55" h="55" />
+         <frame x="907" y="420" w="55" h="55" />
+       </book>                            
+       <skull>                            
+         <frame x="577" y="479" w="55" h="55" />
+         <frame x="632" y="479" w="55" h="55" />
+         <frame x="687" y="479" w="55" h="55" />
+         <frame x="742" y="479" w="55" h="55" />
+         <frame x="797" y="479" w="55" h="55" />
+         <frame x="852" y="479" w="55" h="55" />
+         <frame x="907" y="479" w="55" h="55" />
+       </skull>                           
+       <eye>                              
+         <frame x="577" y="536" w="55" h="55" />
+         <frame x="632" y="536" w="55" h="55" />
+         <frame x="687" y="536" w="55" h="55" />
+         <frame x="742" y="536" w="55" h="55" />
+         <frame x="797" y="536" w="55" h="55" />
+         <frame x="852" y="536" w="55" h="55" />
+         <frame x="907" y="536" w="55" h="55" />
+        </eye>
+    </artifacts>
   </gui>
 
   <menu>
@@ -104,13 +142,16 @@
       <orcishBuildings name ="data/assets/textures/buildings/OrcishBuildings.png"/>
       <footmanAnimations name = "data/assets/textures/units/humanUnits/FinalFootman.png"/>
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/FinalGrunt.png"/>
+      <khadgarAnimarions name = "data/assets/textures/units/prisonersUnits/Khadgar.png"/>
+      <alleriaAnimarions name = "data/assets/textures/units/prisonersUnits/Alleria.png"/>
+      <critters name="data/assets/textures/units/neutralUnits/critters.png"/>
     </spritesheets>
 
     <previewTexturesProperties buildingPlaceOpacity ="200" tileBuildingPlaceOpacity ="120"/>
 
     <dynamicEntities>
       <humans>
-        <footman>
+        <footman maxLife = "60">
           <animations>
 
             <up speed="4" loop="1">
@@ -234,9 +275,89 @@
           </animations>
         </footman>
       </humans>
+
+      <sheep>
+        <deathDownLeft speed="0" loop="0">
+          <frame x="0" y="0" w="30" h="31"/>
+        </deathDownLeft>
+        <deathUpRight speed="0" loop="0">
+          <frame x="30" y="0" w="30" h="31"/>
+        </deathUpRight>
+        <down speed="0" loop="0">
+          <frame x="60" y="0" w="30" h="31"/>
+        </down>
+        <right speed="0" loop="0">
+          <frame x="90" y="0" w="30" h="31"/>
+        </right>
+        <left speed="0" loop="0">
+          <frame x="120" y="0" w="30" h="31"/>
+        </left>
+        <upRight speed="0" loop="0">
+          <frame x="150" y="0" w="30" h="31"/>
+        </upRight>
+        <upLeft speed="0" loop="0">
+          <frame x="180" y="0" w="30" h="31"/>
+        </upLeft>
+
+        <deathDownRight speed="0" loop="0">
+          <frame x="0" y="31" w="30" h="31"/>
+        </deathDownRight>
+        <deathUpLeft speed="0" loop="0">
+          <frame x="30" y="31" w="30" h="31"/>
+        </deathUpLeft>
+        <up speed="0" loop="0">
+          <frame x="60" y="31" w="30" h="31"/>
+        </up>
+        <downRight speed="0" loop="0">
+          <frame x="90" y="31" w="30" h="31"/>
+        </downRight>
+        <downLeft speed="0" loop="0">
+          <frame x="120" y="31" w="30" h="31"/>
+        </downLeft>
+      </sheep>
+
+      <boar>
+        <deathDownLeft speed="0" loop="0">
+          <frame x="0" y="62" w="32" h="32"/>
+        </deathDownLeft>
+        <deathUpRight speed="0" loop="0">
+          <frame x="32" y="62" w="32" h="32"/>
+        </deathUpRight>
+        <down speed="0" loop="0">
+          <frame x="64" y="62" w="32" h="32"/>
+        </down>
+        <right speed="0" loop="0">
+          <frame x="96" y="62" w="32" h="32"/>
+        </right>
+        <left speed="0" loop="0">
+          <frame x="128" y="62" w="32" h="32"/>
+        </left>
+        <upRight speed="0" loop="0">
+          <frame x="160" y="62" w="32" h="32"/>
+        </upRight>
+        <upLeft speed="0" loop="0">
+          <frame x="192" y="62" w="32" h="32"/>
+        </upLeft>
+
+        <deathDownRight speed="0" loop="0">
+          <frame x="0" y="94" w="32" h="32"/>
+        </deathDownRight>
+        <deathUpLeft speed="0" loop="0">
+          <frame x="32" y="94" w="32" h="32"/>
+        </deathUpLeft>
+        <up speed="0" loop="0">
+          <frame x="64" y="94" w="32" h="32"/>
+        </up>
+        <downRight speed="0" loop="0">
+          <frame x="96" y="94" w="32" h="32"/>
+        </downRight>
+        <downLeft speed="0" loop="0">
+          <frame x="128" y="94" w="32" h="32"/>
+        </downLeft>
+      </boar>
       
       <orcs>
-        <grunt>
+        <grunt maxLife = "60">
           <animations>
             
               <up speed="4" loop="1">
@@ -360,6 +481,30 @@
           </animations>
         </grunt>
       </orcs>
+      
+      <prisioners>
+        <khadgar>
+          <animations>
+            
+            <idle speed="4" loop="1">
+              <frame x="0" y="0" w="64" h="64"/>
+            </idle>
+
+          </animations>
+        </khadgar>
+
+        <alleria>
+          <animations>
+
+            <idle speed="4" loop="1">
+              <frame x="0" y="0" w="64" h="64"/>
+            </idle>
+
+          </animations>
+        </alleria>
+
+      </prisioners>
+
     </dynamicEntities>
     
      <!-- // ELVEN ARCHER
@@ -1010,6 +1155,7 @@
   <particles>
     <spritesheets>
       <atlas name = "data/assets/textures/particles/atlas.png"/>
+      <paws name="data/assets/textures/sprites/paws.png"/>
     </spritesheets>
 
     <towerArrows>
@@ -1045,8 +1191,122 @@
          <frame x="167" y="93" w="50" h="50" />
          <frame x="221" y="92" w="50" h="50" />
        </hard>      
-    </fire> 
-  
+    </fire>
+
+    <animations>
+
+      <sheepPaws>
+        <up speed="1" loop="0">
+          <frame x="0" y="0" w="32" h="32"/>
+          <frame x="128" y="0" w="32" h="32"/>
+          <frame x="0" y="128" w="32" h="32"/>
+          <frame x="128" y="128" w="32" h="32"/>
+        </up>
+        <down speed="1" loop="0">
+          <frame x="0" y="32" w="32" h="32"/>
+          <frame x="128" y="32" w="32" h="32"/>
+          <frame x="0" y="160" w="32" h="32"/>
+          <frame x="128" y="160" w="32" h="32"/>
+        </down>
+        <left speed="1" loop="0">
+          <frame x="64" y="32" w="32" h="32"/>
+          <frame x="192" y="32" w="32" h="32"/>
+          <frame x="64" y="160" w="32" h="32"/>
+          <frame x="192" y="160" w="32" h="32"/>
+        </left>
+        <right speed="1" loop="0">
+          <frame x="64" y="0" w="32" h="32"/>
+          <frame x="192" y="0" w="32" h="32"/>
+          <frame x="64" y="128" w="32" h="32"/>
+          <frame x="192" y="128" w="32" h="32"/>
+        </right>
+
+        <upLeft speed="1" loop="0">
+          <frame x="32" y="32" w="32" h="32"/>
+          <frame x="160" y="32" w="32" h="32"/>
+          <frame x="32" y="160" w="32" h="32"/>
+          <frame x="160" y="160" w="32" h="32"/>
+        </upLeft>
+        <upRight speed="1" loop="0">
+          <frame x="32" y="0" w="32" h="32"/>
+          <frame x="160" y="0" w="32" h="32"/>
+          <frame x="32" y="128" w="32" h="32"/>
+          <frame x="160" y="128" w="32" h="32"/>
+        </upRight>
+        <downLeft speed="1" loop="0">
+          <frame x="96" y="32" w="32" h="32"/>
+          <frame x="224" y="32" w="32" h="32"/>
+          <frame x="96" y="160" w="32" h="32"/>
+          <frame x="224" y="160" w="32" h="32"/>
+        </downLeft>
+        <downRight speed="1" loop="0">
+          <frame x="96" y="0" w="32" h="32"/>
+          <frame x="224" y="0" w="32" h="32"/>
+          <frame x="96" y="128" w="32" h="32"/>
+          <frame x="224" y="128" w="32" h="32"/>
+        </downRight>
+      </sheepPaws>
+
+      <boarPaws>
+        <up speed="1" loop="0">
+          <frame x="0" y="64" w="32" h="32"/>
+          <frame x="128" y="64" w="32" h="32"/>
+          <frame x="0" y="192" w="32" h="32"/>
+          <frame x="128" y="192" w="32" h="32"/>
+        </up>
+        <down speed="1" loop="0">
+          <frame x="0" y="96" w="32" h="32"/>
+          <frame x="128" y="96" w="32" h="32"/>
+          <frame x="0" y="224" w="32" h="32"/>
+          <frame x="128" y="224" w="32" h="32"/>
+        </down>
+        <left speed="1" loop="0">
+          <frame x="64" y="96" w="32" h="32"/>
+          <frame x="192" y="96" w="32" h="32"/>
+          <frame x="64" y="224" w="32" h="32"/>
+          <frame x="192" y="224" w="32" h="32"/>
+        </left>
+        <right speed="1" loop="0">
+          <frame x="64" y="64" w="32" h="32"/>
+          <frame x="192" y="64" w="32" h="32"/>
+          <frame x="64" y="192" w="32" h="32"/>
+          <frame x="192" y="192" w="32" h="32"/>
+        </right>
+
+        <upLeft speed="1" loop="0">
+          <frame x="32" y="96" w="32" h="32"/>
+          <frame x="160" y="96" w="32" h="32"/>
+          <frame x="32" y="224" w="32" h="32"/>
+          <frame x="160" y="224" w="32" h="32"/>
+        </upLeft>
+        <upRight speed="1" loop="0">
+          <frame x="32" y="64" w="32" h="32"/>
+          <frame x="160" y="64" w="32" h="32"/>
+          <frame x="32" y="192" w="32" h="32"/>
+          <frame x="160" y="192" w="32" h="32"/>
+        </upRight>
+        <downLeft speed="1" loop="0">
+          <frame x="96" y="96" w="32" h="32"/>
+          <frame x="224" y="96" w="32" h="32"/>
+          <frame x="96" y="224" w="32" h="32"/>
+          <frame x="224" y="224" w="32" h="32"/>
+        </downLeft>
+        <downRight speed="1" loop="0">
+          <frame x="96" y="64" w="32" h="32"/>
+          <frame x="224" y="64" w="32" h="32"/>
+          <frame x="96" y="192" w="32" h="32"/>
+          <frame x="224" y="192" w="32" h="32"/>
+        </downRight>
+      </boarPaws>
+
+    </animations>
   </particles>
 
+  
+  <finish>
+    <spritesheets>
+      <atlas name = "data/assets/textures/backgrounds/finishGame.png"/>
+    </spritesheets>
+    
+  </finish>
 </config>

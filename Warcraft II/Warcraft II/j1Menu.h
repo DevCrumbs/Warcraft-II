@@ -4,6 +4,7 @@
 #include "j1Module.h"
 #include "p2List.h"
 
+#include <vector>
 
 struct SDL_Texture;
 class UIImage;
@@ -71,6 +72,8 @@ public:
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
 	void UpdateSlider(SliderStruct &sliderStruct);
 
+	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim);
+
 private:
 	void ChargeGameSounds();
 
@@ -85,6 +88,8 @@ private:
 	UILabel*  exitLabel = nullptr;
 	UIButton* settingsButt = nullptr;
 	UILabel*  settingsLabel = nullptr;
+	vector<UIImage*> artifacts;
+
 
 	//Settings
 	SliderStruct audioFX;

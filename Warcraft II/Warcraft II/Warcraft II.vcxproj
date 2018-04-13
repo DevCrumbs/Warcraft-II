@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{ECCF88E5-2C26-4595-ADF0-7C9D47359E90}</ProjectGuid>
     <RootNamespace>WarcraftII</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -122,6 +122,8 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Barracks.h" />
     <ClInclude Include="ChickenFarm.h" />
+    <ClInclude Include="CritterBoar.h" />
+    <ClInclude Include="CritterSheep.h" />
     <ClInclude Include="Defs.h" />
     <ClInclude Include="Dragon.h" />
     <ClInclude Include="DragonRoost.h" />
@@ -135,6 +137,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Footman.h" />
     <ClInclude Include="Fortress.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="GoldMine.h" />
     <ClInclude Include="GreatHall.h" />
     <ClInclude Include="Grunt.h" />
@@ -146,6 +149,7 @@
     <ClInclude Include="j1Console.h" />
     <ClInclude Include="j1EntityFactory.h" />
     <ClInclude Include="j1FadeToBlack.h" />
+    <ClInclude Include="j1FinishGame.h" />
     <ClInclude Include="j1Fonts.h" />
     <ClInclude Include="j1Gui.h" />
     <ClInclude Include="j1Input.h" />
@@ -202,6 +206,8 @@
     <ClCompile Include="AltarOfStorms.cpp" />
     <ClCompile Include="Barracks.cpp" />
     <ClCompile Include="ChickenFarm.cpp" />
+    <ClCompile Include="CritterBoar.cpp" />
+    <ClCompile Include="CritterSheep.cpp" />
     <ClCompile Include="Dragon.cpp" />
     <ClCompile Include="DragonRoost.cpp" />
     <ClCompile Include="DynamicEntity.cpp" />
@@ -214,6 +220,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Footman.cpp" />
     <ClCompile Include="Fortress.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="GoldMine.cpp" />
     <ClCompile Include="GreatHall.cpp" />
     <ClCompile Include="Grunt.cpp" />
@@ -225,6 +232,7 @@
     <ClCompile Include="j1Console.cpp" />
     <ClCompile Include="j1EntityFactory.cpp" />
     <ClCompile Include="j1FadeToBlack.cpp" />
+    <ClCompile Include="j1FinishGame.cpp" />
     <ClCompile Include="j1Fonts.cpp" />
     <ClCompile Include="j1Gui.cpp" />
     <ClCompile Include="j1Input.cpp" />
@@ -271,6 +279,9 @@
     <ClCompile Include="UILifeBar.cpp" />
     <ClCompile Include="UISlider.cpp" />
     <ClCompile Include="WatchTower.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\Game\config.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

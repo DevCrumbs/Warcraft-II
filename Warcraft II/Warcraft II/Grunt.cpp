@@ -11,6 +11,7 @@
 #include "j1EntityFactory.h"
 #include "j1Movement.h"
 #include "j1PathManager.h"
+#include "Goal.h"
 
 #include "UILifeBar.h"
 
@@ -24,7 +25,6 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	// XML loading
 	/// Animations
 	GruntInfo info = (GruntInfo&)App->entities->GetUnitInfo(EntityType_GRUNT);
-	this->gruntInfo.idle = info.idle;
 	this->gruntInfo.up = info.up;
 	this->gruntInfo.down = info.down;
 	this->gruntInfo.left = info.left;
@@ -48,14 +48,18 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 
 	LoadAnimationsSpeed();
 
+	// Initialize the goals
+	brain->RemoveAllSubgoals();
+
 	// Collisions
 	CreateEntityCollider(EntitySide_Enemy);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, unitInfo.sightRadius);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, unitInfo.attackRadius);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+	entityCollider->isTrigger = true;
 	sightRadiusCollider->isTrigger = true;
 	attackRadiusCollider->isTrigger = true;
 
-	//LifeBar creation
+	// LifeBar creation
 	UILifeBar_Info lifeBarInfo;
 	lifeBarInfo.background = { 241,336,45,8 };
 	lifeBarInfo.bar = { 241, 327,44,8 };
@@ -79,23 +83,97 @@ void Grunt::Move(float dt)
 	// ---------------------------------------------------------------------
 
 	// Is the unit dead?
-	if (currLife <= 0) 
-		isDead = true;
+	/// The unit must fit the tile (it is more attractive for the player)
+	if (singleUnit != nullptr) {
 
-	if (singleUnit != nullptr)
-		if ((isSelected && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN) || singleUnit->wakeUp)
-			unitState = UnitState_Walk;
+		if (currLife <= 0
+			&& unitState != UnitState_Die
+			&& singleUnit->IsFittingTile()) {
+
+			isDead = true;
+
+			// Remove the entity from the unitsSelected list
+			App->entities->RemoveUnitFromUnitsSelected(this);
+
+			// Remove Movement (so other units can walk above them)
+			App->entities->InvalidateMovementEntity(this);
+
+			if (singleUnit != nullptr)
+				delete singleUnit;
+			singleUnit = nullptr;
+
+			// Invalidate colliders
+			sightRadiusCollider->isValid = false;
+			attackRadiusCollider->isValid = false;
+			entityCollider->isValid = false;
+
+			// If the player dies, remove all their goals
+			unitCommand = UnitCommand_Stop;
+		}
+	}
+
+	if (!isDead) {
+
+		/// GOAL: MoveToPosition
+		// The goal of the unit has been changed manually
+		if (singleUnit->isGoalChanged)
+
+			brain->AddGoal_MoveToPosition(singleUnit->goal);
+
+		/// GOAL: AttackTarget
+		// Check if there are available targets
+		/// Prioritize a type of target (static or dynamic)
+		/*
+		if (singleUnit->IsFittingTile()) {
+
+		newTarget = GetBestTargetInfo();
+
+		if (newTarget != nullptr) {
+
+		// A new target has found, update the attacking target
+		if (currTarget != newTarget) {
+
+		if (currTarget != nullptr) {
+
+		if (!currTarget->isRemoved) {
+
+		currTarget->target->RemoveAttackingUnit(this);
+		isHitting = false;
+		}
+		}
+
+		currTarget = newTarget;
+		brain->AddGoal_AttackTarget(currTarget);
+		}
+		}
+		}
+		*/
+
+		// ---------------------------------------------------------------------
+
+		// PROCESS THE CURRENTLY ACTIVE GOAL
+		brain->Process(dt);
+	}
+
+	// ---------------------------------------------------------------------
 
 	UnitStateMachine(dt);
 
 	// Update animations
-	UpdateAnimationsSpeed(dt);
+	if (!isStill || isHitting)
+		UpdateAnimationsSpeed(dt);
+
 	ChangeAnimation();
 
-	// Update colliders
-	UpdateEntityColliderPos();
-	UpdateRhombusColliderPos(sightRadiusCollider, unitInfo.sightRadius);
-	UpdateRhombusColliderPos(attackRadiusCollider, unitInfo.attackRadius);
+	if (!isDead && lastColliderUpdateTile != singleUnit->currTile) {
+
+		// Update colliders
+		UpdateEntityColliderPos();
+		UpdateRhombusColliderPos(sightRadiusCollider, unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+		UpdateRhombusColliderPos(attackRadiusCollider, unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+
+		lastColliderUpdateTile = singleUnit->currTile;
+	}
 
 	//Update Unit LifeBar
 	if (lifeBar != nullptr) {
@@ -107,7 +185,7 @@ void Grunt::Move(float dt)
 void Grunt::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr) {
-	
+
 		fPoint offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
 		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
 	}
@@ -129,9 +207,121 @@ void Grunt::DebugDrawSelected()
 
 void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
 {
-	// An player is within the sight of this enemy unit
-	if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) {
-		//LOG("ATTACK THE ALLIANCE!");
+	switch (collisionState) {
+
+	case CollisionState_OnEnter:
+
+		// An player is within the sight of this enemy unit
+		if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+
+			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+			LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
+
+			// The Alliance is within the SIGHT radius
+
+			list<TargetInfo*>::const_iterator it = targets.begin();
+			bool isTargetFound = false;
+
+			// If the target is already in the targets list, set its isSightSatisfied to true
+			while (it != targets.end()) {
+
+				if ((*it)->target == c2->entity) {
+
+					(*it)->isSightSatisfied = true;
+					isTargetFound = true;
+					break;
+				}
+				it++;
+			}
+
+			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
+			if (!isTargetFound) {
+
+				TargetInfo* targetInfo = new TargetInfo();
+				targetInfo->target = c2->entity;
+				targetInfo->isSightSatisfied = true;
+
+				targets.push_back(targetInfo);
+			}
+		}
+		else if (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+
+			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+			LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
+
+			// The Alliance is within the ATTACK radius
+
+			list<TargetInfo*>::const_iterator it = targets.begin();
+
+			while (it != targets.end()) {
+
+				if ((*it)->target == c2->entity) {
+
+					(*it)->isAttackSatisfied = true;
+					break;
+				}
+				it++;
+			}
+		}
+
+		break;
+
+	case CollisionState_OnExit:
+
+		// Reset attack parameters
+		if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+
+			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+			LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
+
+			// The Alliance is NO longer within the SIGHT radius
+
+			// Remove the target from the targets list
+			list<TargetInfo*>::const_iterator it = targets.begin();
+
+			while (it != targets.end()) {
+
+				if ((*it)->target == c2->entity) {
+
+					// If currTarget matches the target that needs to be removed, set its isSightSatisfied to false and it will be removed later		
+					if (currTarget != nullptr) {
+
+						if (currTarget->target == c2->entity) {
+
+							currTarget->isSightSatisfied = false;
+							break;
+						}
+					}
+					// If currTarget is different from the target that needs to be removed, remove the target from the list
+					delete *it;
+					targets.erase(it);
+
+					break;
+				}
+				it++;
+			}
+		}
+		else if (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+
+			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+			LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
+
+			// The Alliance is NO longer within the ATTACK radius
+
+			list<TargetInfo*>::const_iterator it = targets.begin();
+
+			while (it != targets.end()) {
+
+				if ((*it)->target == c2->entity) {
+
+					(*it)->isAttackSatisfied = false;
+					break;
+				}
+				it++;
+			}
+		}
+
+		break;
 	}
 }
 
@@ -140,26 +330,25 @@ void Grunt::UnitStateMachine(float dt)
 {
 	switch (unitState) {
 
-	case UnitState_Idle:
+	case UnitState_AttackTarget:
 
 		break;
 
-	case UnitState_Walk:
-
-		if (App->scene->isFrameByFrame) {
-			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-				App->movement->MoveUnit(this, dt);
-		}
-		else
-			App->movement->MoveUnit(this, dt);
+	case UnitState_Patrol:
 
 		break;
 
 	case UnitState_Die:
 
 		// Remove the corpse when a certain time is reached
-		if (deadTimer.ReadSec() >= 5.0f)
+		if (deadTimer.ReadSec() >= TIME_REMOVE_CORPSE)
 			isRemove = true;
+
+		break;
+
+	case UnitState_Idle:
+	case UnitState_NoState:
+	default:
 
 		break;
 	}
@@ -170,7 +359,6 @@ void Grunt::UnitStateMachine(float dt)
 // Animations
 void Grunt::LoadAnimationsSpeed()
 {
-	idleSpeed = gruntInfo.idle.speed;
 	upSpeed = gruntInfo.up.speed;
 	downSpeed = gruntInfo.down.speed;
 	leftSpeed = gruntInfo.left.speed;
@@ -195,7 +383,6 @@ void Grunt::LoadAnimationsSpeed()
 
 void Grunt::UpdateAnimationsSpeed(float dt)
 {
-	gruntInfo.idle.speed = idleSpeed * dt;
 	gruntInfo.up.speed = upSpeed * dt;
 	gruntInfo.down.speed = downSpeed * dt;
 	gruntInfo.left.speed = leftSpeed * dt;
@@ -252,83 +439,26 @@ bool Grunt::ChangeAnimation()
 		return ret;
 	}
 
-	if (!isAttacking) {
+	// The unit is hitting their target
+	else if (isHitting) {
 
-		// The unit is in UnitState_Walk
-		switch (GetUnitDirection()) {
+		// Set the direction of the unit as the orientation towards the target
+		if (currTarget != nullptr) {
 
-		case UnitDirection_NoDirection:
+			if (!currTarget->isRemoved) {
 
-			animation = &gruntInfo.idle;
-			ret = true;
-			break;
+				fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
 
-		case UnitDirection_Up:
+				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
-			animation = &gruntInfo.up;
-			ret = true;
-			break;
+				if (m > 0.0f) {
+					orientation.x /= m;
+					orientation.y /= m;
+				}
 
-		case UnitDirection_Down:
-
-			animation = &gruntInfo.down;
-			ret = true;
-			break;
-
-		case UnitDirection_Left:
-
-			animation = &gruntInfo.left;
-			ret = true;
-			break;
-
-		case UnitDirection_Right:
-
-			animation = &gruntInfo.right;
-			ret = true;
-			break;
-
-		case UnitDirection_UpLeft:
-
-			animation = &gruntInfo.upLeft;
-			ret = true;
-			break;
-
-		case UnitDirection_UpRight:
-
-			animation = &gruntInfo.upRight;
-			ret = true;
-			break;
-
-		case UnitDirection_DownLeft:
-
-			animation = &gruntInfo.downLeft;
-			ret = true;
-			break;
-
-		case UnitDirection_DownRight:
-
-			animation = &gruntInfo.downRight;
-			ret = true;
-			break;
+				SetUnitDirectionByValue(orientation);
+			}
 		}
-
-		return ret;
-	}
-	else {
-
-		// The unit is in UnitState_Attack
-
-		// Set the direction of the unit as the orientation towards the attacking target
-		fPoint orientation = { attackingTarget->GetPos().x - pos.x, (float)attackingTarget->GetPos().y - pos.y };
-
-		float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-		if (m > 0.0f) {
-			orientation.x /= m;
-			orientation.y /= m;
-		}
-
-		SetUnitDirectionByValue(orientation);
 
 		switch (GetUnitDirection()) {
 
@@ -384,5 +514,141 @@ bool Grunt::ChangeAnimation()
 		return ret;
 	}
 
+	// The unit is either moving or still
+	else {
+
+		switch (GetUnitDirection()) {
+
+		case UnitDirection_Up:
+
+			if (isStill) {
+
+				gruntInfo.up.loop = false;
+				gruntInfo.up.Reset();
+				gruntInfo.up.speed = 0.0f;
+			}
+			else
+				gruntInfo.up.loop = true;
+
+			animation = &gruntInfo.up;
+
+			ret = true;
+			break;
+
+		case UnitDirection_NoDirection:
+		case UnitDirection_Down:
+
+			if (isStill) {
+
+				gruntInfo.down.loop = false;
+				gruntInfo.down.Reset();
+				gruntInfo.down.speed = 0.0f;
+			}
+			else
+				gruntInfo.down.loop = true;
+
+			animation = &gruntInfo.down;
+
+			ret = true;
+			break;
+
+		case UnitDirection_Left:
+
+			if (isStill) {
+
+				gruntInfo.left.loop = false;
+				gruntInfo.left.Reset();
+				gruntInfo.left.speed = 0.0f;
+			}
+			else
+				gruntInfo.left.loop = true;
+
+			animation = &gruntInfo.left;
+
+			ret = true;
+			break;
+
+		case UnitDirection_Right:
+
+			if (isStill) {
+
+				gruntInfo.right.loop = false;
+				gruntInfo.right.Reset();
+				gruntInfo.right.speed = 0.0f;
+			}
+			else
+				gruntInfo.right.loop = true;
+
+			animation = &gruntInfo.right;
+
+			ret = true;
+			break;
+
+		case UnitDirection_UpLeft:
+
+			if (isStill) {
+
+				gruntInfo.upLeft.loop = false;
+				gruntInfo.upLeft.Reset();
+				gruntInfo.upLeft.speed = 0.0f;
+			}
+			else
+				gruntInfo.upLeft.loop = true;
+
+			animation = &gruntInfo.upLeft;
+
+			ret = true;
+			break;
+
+		case UnitDirection_UpRight:
+
+			if (isStill) {
+
+				gruntInfo.upRight.loop = false;
+				gruntInfo.upRight.Reset();
+				gruntInfo.upRight.speed = 0.0f;
+			}
+			else
+				gruntInfo.upRight.loop = true;
+
+			animation = &gruntInfo.upRight;
+
+			ret = true;
+			break;
+
+		case UnitDirection_DownLeft:
+
+			if (isStill) {
+
+				gruntInfo.downLeft.loop = false;
+				gruntInfo.downLeft.Reset();
+				gruntInfo.downLeft.speed = 0.0f;
+			}
+			else
+				gruntInfo.downLeft.loop = true;
+
+			animation = &gruntInfo.downLeft;
+
+			ret = true;
+			break;
+
+		case UnitDirection_DownRight:
+
+			if (isStill) {
+
+				gruntInfo.downRight.loop = false;
+				gruntInfo.downRight.Reset();
+				gruntInfo.downRight.speed = 0.0f;
+			}
+			else
+				gruntInfo.downRight.loop = true;
+
+			animation = &gruntInfo.downRight;
+
+			ret = true;
+			break;
+		}
+		return ret;
+	}
 	return ret;
 }

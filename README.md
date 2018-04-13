@@ -11,8 +11,15 @@ The player must command this expedition in an RTS dungeon crawler game in which 
 1: Create other random map
 2: Go to base
 
-5: Spawn an ally unit at mouse pos
-6: Spawn an enemy unit at mouse pos
+5: Spawn an ally unit at mouse pos (Footman)
+6: Spawn an enemy unit at mouse pos (Grunt)
+7: Spawn a sheep at mouse pos
+8: Spawn a boar at mouse pos
+P: set command patrol to the units selected (click a tile to patrol there)
+S: stop the units selected
+Mouse Left click: select a group of units
+Mouse Right click: send a group of units to a destination
+Mouse Right click (if there is an enemy on the tile): attack the enemy
 
 C: -20 HP to last Chicken Farm created
 T: -20 HP to last Scout Torret created

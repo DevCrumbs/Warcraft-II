@@ -80,7 +80,6 @@ void UIButton::HandleInput()
 		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)) {
 			nextEvent = false;
 			LOG("MOUSE R CLICK START");
-			ChangeSprite(pressedTexArea);
 
 			mouseClickPos.x = mouse_pos.x * App->win->GetScale() - GetLocalPos().x;
 			mouseClickPos.y = mouse_pos.y * App->win->GetScale() - GetLocalPos().y;

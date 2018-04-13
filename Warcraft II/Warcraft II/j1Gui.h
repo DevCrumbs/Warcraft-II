@@ -78,8 +78,6 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	//bool Blit(float dt) const;
-
 	// Gui creation functions
 	UIImage* CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UILabel* CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
@@ -112,6 +110,10 @@ public:
 	bool isDebug = false;
 	Animation parchmentAnim;
 	SDL_Rect parchmentArea;
+
+	//artifacts
+	Animation scepterAnim, bookAnim, skullAnim, eyeAnim;
+	SDL_Rect scepterText, bookText, skullText, eyeText;
 
 private:
 

@@ -107,7 +107,7 @@ bool j1Menu::Update(float dt)
 	
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 		if (parchment != nullptr) {
-			parchment->isDeleted = true;
+			parchment->isRemove = true;
 			parchment = nullptr;
 		}
 	}
@@ -172,7 +172,6 @@ bool j1Menu::CleanUp()
 	App->collision->active = true;
 	App->pathfinding->active = true;
 
-	App->map->Start();
 	App->player->Start();
 	App->entities->Start();
 	App->collision->Start();
@@ -186,32 +185,37 @@ bool j1Menu::CleanUp()
 void j1Menu::CreateMenu() {
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
+	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	playButt = App->gui->CreateUIButton({ 600, 350 }, buttonInfo, this, nullptr);
 	settingsButt = App->gui->CreateUIButton({ 600, 425 }, buttonInfo, this, nullptr);
 	exitButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
-	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	labelInfo.normalColor = Black_;
 	labelInfo.hoverColor = ColorGreen;
-	labelInfo.text = "Play";
+	labelInfo.text = "Start Demo";
 	playLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w/2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, playButt);
 
-	labelInfo.text = "Exit";
+	labelInfo.text = "Quit Game";
 	exitLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, exitButt);
 
 	labelInfo.text = "Settings";
 	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, settingsButt);
+
+	artifacts.push_back(AddArtifact({ 50,450 }, App->gui->bookText, App->gui->bookAnim));
+	artifacts.push_back(AddArtifact({ 175,500 }, App->gui->skullText, App->gui->skullAnim));
+	artifacts.push_back(AddArtifact({ 300,500 }, App->gui->eyeText, App->gui->eyeAnim));
+	artifacts.push_back(AddArtifact({ 425,450 }, App->gui->scepterText, App->gui->scepterAnim));
 
 }
 
 void j1Menu::CreateSettings() {
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1000, 0, 129, 33 };
+	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	returnButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
@@ -227,10 +231,10 @@ void j1Menu::CreateSettings() {
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
 	SDL_Rect butText = { 834,328,26,30 };
 	SDL_Rect bgText = { 434,328,400,30 };
-	AddSlider(audioFX, { 175,100 }, "Audio FX", relativeVol, butText, bgText, this);
+	AddSlider(audioFX, { 175,200 }, "Audio FX", relativeVol, butText, bgText, this);
 
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
-	AddSlider(audioMusic, { 175,200 }, "Audio Music", relativeVol, butText, bgText, this);
+	AddSlider(audioMusic, { 175,300 }, "Audio Music", relativeVol, butText, bgText, this);
 
 
 	//Fullscreen
@@ -244,13 +248,18 @@ void j1Menu::CreateSettings() {
 	}
 	buttonInfo.checkbox = true;
 	buttonInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	fullScreenButt = App->gui->CreateUIButton({ 450, 350 }, buttonInfo, this);
+	fullScreenButt = App->gui->CreateUIButton({ 450, 450 }, buttonInfo, this);
 
 	labelInfo.text = "Fullscreen";
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
 
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
-	fullScreenLabel = App->gui->CreateUILabel({ 250, 350 }, labelInfo, this);
+	fullScreenLabel = App->gui->CreateUILabel({ 250, 450 }, labelInfo, this);
+
+	artifacts.push_back(AddArtifact({ 100,125 }, App->gui->bookText, App->gui->bookAnim));
+	artifacts.push_back(AddArtifact({ 275, 50 }, App->gui->skullText, App->gui->skullAnim));
+	artifacts.push_back(AddArtifact({ 450, 50 }, App->gui->eyeText, App->gui->eyeAnim));
+	artifacts.push_back(AddArtifact({ 625,125 }, App->gui->scepterText, App->gui->scepterAnim));
 }
 
 void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
@@ -282,13 +291,26 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 	x = sliderInfo.tex_area.w + sliderStruct.slider->GetLocalPos().x + 5;
 	y = sliderStruct.slider->GetLocalPos().y + (sliderInfo.tex_area.h / 2);
 	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, listener);
-
-
 }
+
+UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim) {
+	UIImage* retImage;
+
+	UIImage_Info imageInfo;
+	imageInfo.texArea = textArea;
+	retImage = App->gui->CreateUIImage(pos, imageInfo);
+	retImage->StartAnimation(anim);
+
+	return retImage;
+}
+
 
 void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
 	float volume = sliderStruct.slider->GetRelativePosition();
-	App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
+	if(sliderStruct.name->GetText() == "Audio FX")
+		App->audio->SetFxVolume(volume * MAX_AUDIO_VOLUM);
+	else
+		App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
 	static char vol_text[4];
 	sprintf_s(vol_text, 4, "%.0f", volume * 100);
 	sliderStruct.value->SetText(vol_text);
@@ -366,6 +388,11 @@ void j1Menu::DeteleMenu() {
 	App->gui->DestroyElement((UIElement**)&settingsButt);
 	App->gui->DestroyElement((UIElement**)&settingsLabel);
 	
+	for (; !artifacts.empty(); artifacts.pop_back())
+	{
+		App->gui->DestroyElement((UIElement**)&artifacts.back());
+	}
+
 }
 
 void j1Menu::DeleteSettings() {
@@ -380,6 +407,12 @@ void j1Menu::DeleteSettings() {
 	App->gui->DestroyElement((UIElement**)&audioMusic.name);
 	App->gui->DestroyElement((UIElement**)&audioMusic.value);
 	App->gui->DestroyElement((UIElement**)&audioMusic.slider);
+
+	for (; !artifacts.empty(); artifacts.pop_back())
+	{
+		App->gui->DestroyElement((UIElement**)&artifacts.back());
+	}
+
 }
 
 void j1Menu::ChargeGameSounds()

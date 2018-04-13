@@ -19,17 +19,26 @@ j1PathManager::j1PathManager(double msSearchPerUpdate) : j1Module(), msSearchPer
 // Destructor
 j1PathManager::~j1PathManager()
 {
-
 }
 
 // Called before quitting
 bool j1PathManager::CleanUp()
 {
+	bool ret = true;
 
-	return true;
+	list<PathPlanner*>::const_iterator it = searchRequests.begin();
+
+	while (it != searchRequests.end()) {
+
+		delete *it;
+		it++;
+	}
+	searchRequests.clear();
+
+	return ret;
 }
 
-bool j1PathManager::Update(float dt) 
+bool j1PathManager::Update(float dt)
 {
 	bool ret = true;
 
@@ -39,7 +48,7 @@ bool j1PathManager::Update(float dt)
 	return ret;
 }
 
-void j1PathManager::UpdateSearches() 
+void j1PathManager::UpdateSearches()
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
@@ -68,7 +77,7 @@ void j1PathManager::UpdateSearches()
 	}
 }
 
-void j1PathManager::Register(PathPlanner* pathPlanner) 
+void j1PathManager::Register(PathPlanner* pathPlanner)
 {
 	list<PathPlanner*>::const_iterator it = find(searchRequests.begin(), searchRequests.end(), pathPlanner);
 
@@ -76,7 +85,7 @@ void j1PathManager::Register(PathPlanner* pathPlanner)
 		searchRequests.push_back(pathPlanner);
 }
 
-void j1PathManager::UnRegister(PathPlanner* pathPlanner) 
+void j1PathManager::UnRegister(PathPlanner* pathPlanner)
 {
 	pathPlanner->SetSearchRequested(false);
 
@@ -91,15 +100,19 @@ PathPlanner::PathPlanner(Entity* owner, Navgraph& navgraph) :entity(owner), navg
 
 PathPlanner::~PathPlanner()
 {
+	entity = nullptr;
+
+	// Remove Current Search
+	App->pathmanager->UnRegister(this);
+
 	if (currentSearch != nullptr)
 		delete currentSearch;
 	currentSearch = nullptr;
 
+	// Remove Trigger
 	if (trigger != nullptr)
 		delete trigger;
 	trigger = nullptr;
-
-	entity = nullptr;
 }
 
 bool PathPlanner::RequestAStar(iPoint origin, iPoint destination)
@@ -155,7 +168,7 @@ bool PathPlanner::RequestDijkstra(iPoint origin, FindActiveTrigger::ActiveTrigge
 
 	case FindActiveTrigger::ActiveTriggerType_Object:
 
-		trigger = new FindActiveTrigger(activeTriggerType, ((StaticEntity*)entity)->staticEntityType);
+		trigger = new FindActiveTrigger(activeTriggerType, entity->entityType);
 
 		break;
 
@@ -173,7 +186,7 @@ bool PathPlanner::RequestDijkstra(iPoint origin, FindActiveTrigger::ActiveTrigge
 
 	if (ret)
 		App->pathmanager->Register(this);
-	
+
 	return ret;
 }
 
@@ -196,7 +209,7 @@ void PathPlanner::GetReadyForNewSearch()
 PathfindingStatus PathPlanner::CycleOnce()
 {
 	PathfindingStatus result;
-
+	currentSearch->walkabilityMap = App->map->walkabilityMap;
 	switch (pathfindingAlgorithmType) {
 
 	case PathfindingAlgorithmType_AStar:
@@ -264,22 +277,27 @@ void PathPlanner::SetSearchRequested(bool isSearchRequested)
 	this->isSearchRequested = isSearchRequested;
 }
 
-void PathPlanner::SetCheckingCurrTile(bool isCheckingCurrTile) 
+void PathPlanner::SetCheckingCurrTile(bool isCheckingCurrTile)
 {
 	if (trigger != nullptr)
 		trigger->isCheckingCurrTile = isCheckingCurrTile;
 }
 
-void PathPlanner::SetCheckingNextTile(bool isCheckingNextTile) 
+void PathPlanner::SetCheckingNextTile(bool isCheckingNextTile)
 {
 	if (trigger != nullptr)
 		trigger->isCheckingNextTile = isCheckingNextTile;
 }
 
-void PathPlanner::SetCheckingGoalTile(bool isCheckingGoalTile) 
+void PathPlanner::SetCheckingGoalTile(bool isCheckingGoalTile)
 {
 	if (trigger != nullptr)
 		trigger->isCheckingGoalTile = isCheckingGoalTile;
+}
+
+j1PathFinding* PathPlanner::GetCurrentSearch() const
+{
+	return currentSearch;
 }
 
 // WalkabilityMap struct ---------------------------------------------------------------------------------
@@ -299,11 +317,41 @@ bool Navgraph::SetNavgraph(j1PathFinding* currentSearch) const
 	return true;
 }
 
+// Utility: return true if pos is inside the map boundaries
+bool Navgraph::CheckBoundaries(const iPoint& pos) const
+{
+	return (pos.x >= 0 && pos.x <= (int)(App->map->width - 1) &&
+		pos.y >= 0 && pos.y <= (int)(App->map->height - 1));
+}
+
+// Utility: returns true if the tile is walkable
+bool Navgraph::IsWalkable(const iPoint& pos) const
+{
+	int t = GetTileAt(pos);
+	return INVALID_WALK_CODE && t == 0;
+}
+// Utility: return the walkability value of a tile
+int Navgraph::GetTileAt(const iPoint& pos) const
+{
+	iPoint Pos{ pos };
+	Pos.x = pos.x - 2400 / 32;
+	Pos.y = pos.y - 6720 / 32;
+
+	if (CheckBoundaries(Pos))
+	{
+
+		int i = App->map->walkabilityMap[(Pos.y*App->map->width) + Pos.x];
+		return i;
+	}
+	return INVALID_WALK_CODE;
+}
+
+
 // FindActiveTrigger class ---------------------------------------------------------------------------------
 
 FindActiveTrigger::FindActiveTrigger(ActiveTriggerType activeTriggerType, Entity* entity) :activeTriggerType(activeTriggerType), entity(entity) {}
 
-FindActiveTrigger::FindActiveTrigger(ActiveTriggerType activeTriggerType, ENTITY_TYPE entityType) : activeTriggerType(activeTriggerType), entityType(entityType) {}
+FindActiveTrigger::FindActiveTrigger(ActiveTriggerType activeTriggerType, ENTITY_CATEGORY entityType) : activeTriggerType(activeTriggerType), entityType(entityType) {}
 
 bool FindActiveTrigger::isSatisfied(iPoint tile) const
 {
