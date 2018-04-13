@@ -87,7 +87,7 @@ bool j1PathFinding::IsWalkable(iPoint& pos) const
 	pos.x = pos.x - currentLowLevelMap.position.x / 32;
 	pos.y = pos.y - currentLowLevelMap.position.y / 32;
 
-	int t = GetTileAt({ pos.x, pos.y }, true);
+	int t = GetTileAt({ pos.x, pos.y });
 
 	return INVALID_WALK_CODE && t > 0;
 }
@@ -270,7 +270,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 	int ret = 0;
 
 	// If origin or destination are not walkable, return -1
-	if (!IsWalkable(origin,true) || !IsWalkable(destination,true))
+	if (!IsWalkable((iPoint&)origin) || !IsWalkable((iPoint&)destination))
 		ret = -1;
 	else {
 
@@ -377,7 +377,7 @@ int j1PathFinding::BacktrackToCreatePath()
 bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic)
 {
 	// If origin or destination are not walkable, return false
-	if (!IsWalkable(origin) || !IsWalkable(destination))
+	if (!IsWalkable((iPoint&)origin) || !IsWalkable((iPoint&)destination))
 		return false;
 
 	goal = destination;
@@ -465,7 +465,7 @@ PathfindingStatus j1PathFinding::CycleOnceAStar()
 bool j1PathFinding::InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger, bool isPathRequested)
 {
 	// If origin is not walkable, return false
-	if (!IsWalkable(origin))
+	if (!IsWalkable((iPoint&)origin))
 		return false;
 
 	last_path.clear();

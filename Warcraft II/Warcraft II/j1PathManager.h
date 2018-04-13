@@ -36,7 +36,14 @@ public:
 
 	bool SetNavgraph(j1PathFinding* currentSearch) const;
 
+	bool CheckBoundaries(const iPoint & pos) const;
+
+	bool IsWalkable(iPoint & pos);
+
+	int GetTileAt(const iPoint & pos) const;
+
 	bool GetNavgraph();
+
 
 public:
 

@@ -575,12 +575,37 @@ bool Navgraph::SetNavgraph(j1PathFinding* currentSearch) const
 	return true; 
 }
 
-bool Navgraph::GetNavgraph()
-{
-	hiLevelWalkabilityMap = App->map->hiLevelWalkabilityMap;
-	lowLevelWalkabilityMap = App->map->lowLevelWalkabilityMap;
 
-	return true;
+bool Navgraph::CheckBoundaries(const iPoint& pos) const
+{
+	return (pos.x >= 0 && pos.x <= (int)currentLowLevelMap.width &&
+		pos.y >= 0 && pos.y <= (int)currentLowLevelMap.height);
+}
+
+
+//bool j1PathFinding::IsWalkable(const iPoint& pos) const
+//{
+//	int t = GetTileAt({ pos.x - currentLowLevelMap.position.x/32,pos.y - currentLowLevelMap.position.y / 32 });
+//	return INVALID_WALK_CODE && t > 0;
+//}
+
+// Utility: returns true is the tile is walkable
+bool Navgraph::IsWalkable(iPoint& pos)
+{
+	pos.x = pos.x - currentLowLevelMap.position.x / 32;
+	pos.y = pos.y - currentLowLevelMap.position.y / 32;
+
+	int t = GetTileAt({ pos.x, pos.y });
+
+	return INVALID_WALK_CODE && t > 0;
+}
+
+int Navgraph::GetTileAt(const iPoint& pos) const
+{
+	if (CheckBoundaries(pos))
+		return currentLowLevelMap.map[(pos.y * currentLowLevelMap.width) + pos.x];
+
+	return INVALID_WALK_CODE;
 }
 
 // FindActiveTrigger class ---------------------------------------------------------------------------------
