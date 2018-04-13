@@ -1250,6 +1250,12 @@ bool j1Map::LoadLogic()
 						case EntityType_RUNESTONE:
 							App->player->runestone.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
 							break;
+						case EntityType_FOOTMAN:
+							App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, (j1Module*)App->player);
+							break;
+						case EntityType_ELVEN_ARCHER:
+							App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, (j1Module*)App->player);
+							break;
 						default:
 						//	App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
 							break;
