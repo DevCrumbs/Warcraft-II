@@ -328,6 +328,9 @@ bool j1Scene::Update(float dt)
 
 	// ---------------------------------------------------------------------
 
+
+
+
 	// Draw
 	App->map->Draw(); // map
 	App->particles->Draw(); // particles (only paws)
