@@ -101,7 +101,6 @@ bool j1Scene::Start()
 	}
 
 	// Create walkability map
-	/*
 	if (ret)
 	{
 		int w, h;
@@ -110,7 +109,7 @@ bool j1Scene::Start()
 			App->pathfinding->SetMap(w, h, data);
 
 		RELEASE_ARRAY(data);
-	}*/
+	}
 
 	//LoadInGameUI
 	LoadInGameUI();
