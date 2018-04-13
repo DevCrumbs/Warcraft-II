@@ -22,6 +22,7 @@
 #include "j1Player.h"
 #include "j1Pathfinding.h"
 
+
 j1Map::j1Map() : j1Module(), isMapLoaded(false)
 {
 	name.assign("map");
@@ -47,7 +48,8 @@ bool j1Map::Awake(pugi::xml_node& config)
 	playerBaseSize = 40;
 	defaultLittleRoomSize = 30;
 	defaultTileSize = 32;
-	defaultHallSize = 20;
+	defaultHallHeight = 20;
+	defaultHallWidth = 8;
 	mapTypesNo = config.child("general").child("mapTypesNo").attribute("number").as_int();
 	for (pugi::xml_node iterator = config.child("general").child("roomPullNo"); iterator; iterator = iterator.next_sibling("roomPullNo"))
 	{
@@ -76,6 +78,7 @@ void j1Map::Draw()
 	list<Room>::iterator roomIterator = playableMap.rooms.begin();
 	while (roomIterator != playableMap.rooms.end())
 	{
+		SDL_Texture* tex = nullptr;
 		for (list<MapLayer*>::const_iterator layer = (*roomIterator).layers.begin(); layer != (*roomIterator).layers.end(); ++layer)
 		{
 			//			if (!(*layer)->properties.GetProperty("Draw", false))
@@ -101,7 +104,8 @@ void j1Map::Draw()
 						if (tileId > 0) {
 
 							TileSet* tileset = GetTilesetFromTileId(tileId);
-
+							if(tex == nullptr)
+							tex = tileset->texture;
 							SDL_Rect rect = tileset->GetTileRect(tileId);
 
 							SDL_Rect* section = &rect;
@@ -113,10 +117,11 @@ void j1Map::Draw()
 					}//for
 				}//for
 
-
+				SDL_Rect section = { 32,32,32,32 };
 			}
 		}
 		roomIterator++;
+
 	}
 
 
@@ -487,7 +492,7 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tilesetNode, TileSet* set)
 }
 
 // Load new room
-bool j1Map::Load(const char* fileName, int x, int y)
+bool j1Map::Load(const char* fileName, int x, int y, int type)
 {
 	Room* newRoom = new Room;
 	newRoom->x = x;
@@ -496,6 +501,8 @@ bool j1Map::Load(const char* fileName, int x, int y)
 	delete newRoom;
 
 	bool ret = true;
+
+	data.roomType = type;
 
 	pugi::xml_parse_result result = mapFile.loadFile(fileName);
 
@@ -624,6 +631,13 @@ bool j1Map::Load(const char* fileName, int x, int y)
 
 	isMapLoaded = ret;
 
+	//Walkability map info
+	if (ret)
+	{
+		data.walkabilityMap = CreateLowLevelWalkabilityMap(&data);
+		data.collider = { data.x, data.y, data.width * data.tileWidth, data.height * data.tileHeight };
+	}
+
 	if (ret)
 		playableMap.rooms.push_back(data);
 
@@ -654,7 +668,7 @@ bool j1Map::LoadTilesetImage(pugi::xml_node imageInfo)
 
 				(*setIterator)->texWidth = imageInfo.attribute("width").as_int();
 
-				if ((*setIterator)->texWidth <= 0)
+			if ((*setIterator)->texWidth <= 0)
 				{
 					(*setIterator)->texWidth = w;
 				}
@@ -750,72 +764,113 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 	return ret;
 }
 
-bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
+bool j1Map::CreateWalkabilityMap()
 {
-	bool ret = false;
+	bool ret = true;
 
+	hiLevelWalkabilityMap = CreateHiLevelWalkabilityMap();
 
+//	hiLevelWalkabilityMap = (lowLevelWalkabilityMap.back());
 
-	for (list<Room>::const_iterator iterator = playableMap.rooms.begin(); iterator != playableMap.rooms.end(); ++iterator)
-	{
-		if ((*iterator).width == 40)
-		{
-			list<MapLayer*>::const_iterator item;
-			item = (*iterator).layers.begin();
-			for (item; item != (*iterator).layers.end(); ++item)
-			{
-				MapLayer* layer = *item;
-				///	if (!layer->properties.GetProperty("Navigation", false))
-				if (!layer->properties.GetProperty("navigation", false))
-					continue;
-
-				uchar* map = new uchar[layer->width*layer->height];
-				memset(map, 0, layer->width*layer->height);
-				int aux(0);
-				for (int y = 0; y < (*iterator).height; ++y)
-				{
-					for (int x = 0; x < (*iterator).width; ++x)
-					{
-						int i = (y*layer->width) + x;
-
-						int tile_id = layer->Get(x, y);
-						TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
-
-						if (tileset != NULL)
-						{
-							if (tile_id == 381)
-								map[i] = 1;
-							else
-								map[i] = 0;
-							//map[i] = (tile_id - 380) > 0 ? 0 : 1;
-							//LOG("%i", map[i]);
-							/*TileType* ts = tileset->GetTileType(tileId);
-							if(ts != NULL)
-							{
-							map[i] = ts->properties.Get("walkable", 1);
-							}*/
-							aux = i;
-						}
-					}
-				}
-				for (int i = 0; i < aux; ++i)
-				{
-					//LOG("%i", map[i]);
-				}
-
-				*buffer = map;
-				width = (*iterator).width;
-				height = (*iterator).height;
-				walkabilityMap = map;
-				this->width = this->height = 40;
-				ret = true;
-
-				break;
-			}
-
-		}
-	}
 	return ret;
+}
+
+bool j1Map::SetWalkabilityMap(int& hiWidth, int& hiHieight, uchar** hiBuffer, int& lowWidth, int& lowHeight, uchar** lowBuffer) const
+{
+	return true;
+}
+
+WalkabilityMap j1Map::CreateHiLevelWalkabilityMap()
+{
+	WalkabilityMap hiLevel;
+
+	pugi::xml_node hiLevelWalkMap = hiLevelWalkabilityMapDocument;
+	pugi::xml_node& node = hiLevelWalkMap.child("map").child("layer");
+
+	int width = node.attribute("width").as_uint();
+	int height = node.attribute("height").as_uint();
+
+
+	hiLevelMapWidth = width;
+	hiLevelMapHeight = height;
+	hiLevelMapSize = hiLevelMapWidth * hiLevelMapHeight;
+
+	hiLevelMap = new uint[hiLevelMapSize];
+
+	int i = 0;
+	for (pugi::xml_node tileGid = node.child("data").child("tile"); tileGid; tileGid = tileGid.next_sibling("tile")) {
+		hiLevelMap[i++] = tileGid.attribute("gid").as_uint(0);
+	}
+	LOG("%i%i%i", hiLevelMap[0], hiLevelMap[1], hiLevelMap[2]);
+
+	if (hiLevelMapSize > 0)
+	{
+		uchar* map = new uchar[hiLevelMapSize];
+		memset(map, 1, hiLevelMapSize);
+
+		for (int i = 0; i < hiLevelMapSize; ++i)
+		{
+			map[i] = (hiLevelMap[i]) > 0 ? 1 : 0;
+		}
+
+		LOG("%i%i%i", map[0], map[1], map[2]);
+
+		hiLevel.map = map;
+		hiLevel.width = hiLevelMapWidth;
+		hiLevel.height = hiLevelMapHeight;
+	}
+	else
+		LOG("No map loaded");
+
+	return hiLevel;
+}
+
+WalkabilityMap j1Map::CreateLowLevelWalkabilityMap(Room* currRoom)
+{
+	WalkabilityMap wMap;
+	list<MapLayer*>::const_iterator item;
+	item = currRoom->layers.begin();
+	for (item; item != currRoom->layers.end(); ++item)
+	{
+		MapLayer* layer = *item;
+		///	if (!layer->properties.GetProperty("Navigation", false))
+		if (!layer->properties.GetProperty("navigation", false))
+			continue;
+
+		uchar* map = new uchar[layer->width*layer->height];
+		memset(map, 1, layer->width*layer->height);
+
+		for (int y = 0; y < currRoom->height; ++y)
+		{
+			for (int x = 0; x < currRoom->width; ++x)
+			{
+				int i = (y*layer->width) + x;
+
+				int tile_id = layer->Get(x, y);
+				TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
+
+				if (tileset != NULL)
+				{
+					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
+					/*TileType* ts = tileset->GetTileType(tileId);
+					if(ts != NULL)
+					{
+					map[i] = ts->properties.Get("walkable", 1);
+					}*/
+				}
+			}
+		}
+		wMap.position = { currRoom->x, currRoom->y };
+		wMap.map = map;
+		wMap.width = currRoom->width;
+		wMap.height = currRoom->height;
+
+		lowLevelWalkabilityMap.push_back(wMap);
+		break;
+
+	}
+	return wMap;
+
 }
 
 bool Properties::GetProperty(const char* value, bool default_value) const
@@ -870,12 +925,14 @@ bool j1Map::CreateNewMap()
 	}
 	//Search map type
 
+	iPoint test = WorldToTile(TileToWorld({ 3,4 }));
 
 	if (ret)
 	{
 		static char typePath[50];
 		///sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
-		sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure%i.tmx", mapType);
+		//sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure%i.tmx", mapType);
+		sprintf_s(typePath, 50, "data/maps/mapTypes/mapStructure12.tmx");
 		mapInfoDocument.loadFile(typePath);
 
 		pugi::xml_node mapInfo = mapInfoDocument;
@@ -883,6 +940,15 @@ bool j1Map::CreateNewMap()
 
 		if (!ret)
 			LOG("Could not load rooms");
+
+		else
+		{
+			static char mapPath[50];
+			///sprintf_s(typePath, 50, "data/maps/mapTypes/map%i.xml", mapType);
+			//sprintf_s(typePath, 50, "data/maps/mapTypes/hiLevelWalkabilityMap%i.tmx", mapType);
+			sprintf_s(mapPath, 50, "data/maps/mapTypes/hiLevelWalkabilityMap1.tmx");
+			hiLevelWalkabilityMapDocument.loadFile(mapPath);	
+		}
 
 
 	}
@@ -902,8 +968,8 @@ bool j1Map::CreateNewMap()
 	if (ret)
 		ret = LoadLogic();
 
-	if (ret)
-		ret = LoadCorridors();
+//	if (ret)
+//		ret = LoadCorridors();
 
 	if (ret)
 	{
@@ -921,138 +987,123 @@ bool j1Map::LoadMapInfo(pugi::xml_node& mapInfoDocument)
 
 	DIRECTION direction = DIRECTION_NONE;
 
-	/*
-
-	for (pugi::xml_node iterator = mapInfoDocument.child("rooms").child("room"); iterator; iterator = iterator.next_sibling("room"))
-	{
-		RoomInfo newRoom;
-		newRoom.type = iterator.attribute("type").as_int(-3);
-		if (newRoom.type == -3)
-		{
-			ret = false;
-			LOG("Wrong room type");
-			break;
-		}
-		newRoom.x = iterator.attribute("x").as_int();
-		newRoom.y = iterator.attribute("y").as_int();
-
-		for (pugi::xml_node doorIterator = iterator.child("doors").child("door"); doorIterator; doorIterator = doorIterator.next_sibling("door"))
-		{
-			direction = (DIRECTION)doorIterator.attribute("direction").as_int(-1);
-
-			if (direction >= 0 && direction <= 4)
-				newRoom.doors.push_back(direction);
-			else {
-				ret = false;
-				LOG("Wrong door direction");
-				break;
-			}
-
-
-		}
-		roomsInfo.push_back(newRoom);
-	}
-
-	*/
-
 	pugi::xml_node& node = mapInfoDocument.child("map").child("layer");
 
 	int width = node.attribute("width").as_uint();
 	int height = node.attribute("height").as_uint();
 
-	int sizeData = width * height;
-	uint* data = new uint[sizeData];
+	mapWidth = width;
+	mapHeight = height;
+	mapSize = mapWidth * mapHeight;
 
-	memset(data, 0, width * height);	
+	mapDistribution = new uint[mapSize];
+	memset(mapDistribution, 0, mapSize);
 
 	int i = 0;
-
 	for (pugi::xml_node tileGid = node.child("data").child("tile"); tileGid; tileGid = tileGid.next_sibling("tile")) {
-		data[i++] = tileGid.attribute("gid").as_uint();
+		mapDistribution[i++] = tileGid.attribute("gid").as_uint();
 	}
 
 
-	for (i = 0; i < sizeData; ++i)
+	for (i = 0; i < mapSize; ++i)
 	{
 		RoomInfo newRoom;
 
-		if (data[i] > 0)
+		if (mapDistribution[i] > 0)
 		{
-			if (data[i] != 3 && data[i] != 4 && data[i] != 5 && data[i] != 6)
+			if (mapDistribution[i] != 3 && mapDistribution[i] != 4 && mapDistribution[i] != 5 && mapDistribution[i] != 6)
 			{
-				if (i < sizeData - 1)
-					if (data[i + 1] > 0)
+				if (i < mapSize - 1)
+					if (mapDistribution[i + 1] > 0)
 						newRoom.doors.push_back(DIRECTION_EAST);
 
-				if (i + width < sizeData)
-					if (data[i + width] > 0)
+				if (i + width < mapSize)
+					if (mapDistribution[i + width] > 0)
 						newRoom.doors.push_back(DIRECTION_SOUTH);
 			}
 			int x = i % width;
 			int y = i / width;
 			iPoint pos = MapToWorld(x, y);
 
-			switch (data[i])
+			switch (mapDistribution[i])
 			{
 				// Player base
 			case 1:
 				newRoom.type = -1;
 				
-				newRoom.x = ((pos.x * defaultRoomSize)  + (pos.x * defaultHallSize) + ((defaultRoomSize - playerBaseSize) / 2)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
-				
-						
+				newRoom.x = ((pos.x * defaultRoomSize)  + (pos.x * defaultHallHeight) + ((defaultRoomSize - playerBaseSize) / 2)) * defaultTileSize;
+				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallHeight)) * defaultTileSize;
 				break;	
 				// Enemy base
 			case 2:
 				newRoom.type = -2;
 
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
+				pos = TileToWorld(pos);
+				newRoom.x = pos.x;
+				newRoom.y = pos.y;
+				break;
+				// Default Room
+			case 3:
+				newRoom.type = 0;
 
+				pos = TileToWorld(pos);
+				newRoom.x = pos.x;
+				newRoom.y = pos.y;
 				break;
 				// Little room N
-			case 3:
-				newRoom.type = -3;
-
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize) + (defaultRoomSize - defaultLittleRoomSize)) * defaultTileSize;
-
-				newRoom.doors.push_back(DIRECTION_SOUTH);
-
-				break;
-				// Little room E
 			case 4:
 				newRoom.type = -3;
 
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
-
+				pos = TileToWorld(pos);
+				newRoom.x = ((pos.x / defaultTileSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+				newRoom.y = ((pos.y / defaultTileSize) + (defaultRoomSize - defaultLittleRoomSize)) * defaultTileSize;
 				break;
-				// Little room S	
+				// Little room E
 			case 5:
 				newRoom.type = -3;
 
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
+				pos = TileToWorld(pos);
+
+				newRoom.x = pos.x;
+				newRoom.y = ((pos.y / defaultTileSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
 
 				break;
-				// Little room W
+				// Little room S	
 			case 6:
 				newRoom.type = -3;
 
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize) + (defaultRoomSize - defaultLittleRoomSize)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+				pos = TileToWorld(pos);
+				newRoom.x = ((pos.x / defaultTileSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+				newRoom.y = pos.y;
 
-				newRoom.doors.push_back(DIRECTION_EAST);
 				break;
+				// Little room W
+			case 7:
+				newRoom.type = -3;
 
+				pos = TileToWorld(pos);
+				newRoom.x = ((pos.x / defaultTileSize) + (defaultRoomSize - defaultLittleRoomSize)) * defaultTileSize;
+				newRoom.y = ((pos.y / defaultTileSize) + ((defaultRoomSize - defaultLittleRoomSize) / 2)) * defaultTileSize;
+				break;
+				// Vertical hall
+			case 9:
+				newRoom.type = -4;
+
+				pos = TileToWorld(pos);
+				newRoom.x = ((pos.x / defaultTileSize) + ((defaultRoomSize - defaultHallWidth) / 2)) * defaultTileSize;
+				newRoom.y = pos.y;
+
+				break;
+				// Horizontal hall
+			case 10:
+				newRoom.type = -5;
+
+				pos = TileToWorld(pos);
+				newRoom.x = pos.x;
+				newRoom.y = ((pos.y / defaultTileSize) + ((defaultRoomSize - defaultHallWidth) / 2)) * defaultTileSize;
+
+					break;
 			default:
-				newRoom.type = data[i] - 7;
-
-				newRoom.x = ((pos.x * defaultRoomSize) + (pos.x * defaultHallSize)) * defaultTileSize;
-				newRoom.y = ((pos.y * defaultRoomSize) + (pos.y * defaultHallSize)) * defaultTileSize;
-
 				break;
 			}
 			roomsInfo.push_back(newRoom);
@@ -1071,7 +1122,7 @@ bool j1Map::SelectRooms()
 	list<RoomInfo>::iterator roomIterator = roomsInfo.begin();
 	while (roomIterator != roomsInfo.end())
 	{
-		if (noPullRoom.size() >= (*roomIterator).type)
+		if (noPullRoom.size() > (*roomIterator).type)
 		{
 			room = rand() % noPullRoom[(*roomIterator).type];
 			(*roomIterator).pullRoomNo = room;
@@ -1081,6 +1132,14 @@ bool j1Map::SelectRooms()
 			(*roomIterator).pullRoomNo = (*roomIterator).type;
 		}
 		else if ((*roomIterator).type == -3)
+		{
+			(*roomIterator).pullRoomNo = (*roomIterator).type;
+		}
+		else if ((*roomIterator).type == -4)
+		{
+			(*roomIterator).pullRoomNo = (*roomIterator).type;
+		}
+		else if ((*roomIterator).type == -5)
 		{
 			(*roomIterator).pullRoomNo = (*roomIterator).type;
 		}
@@ -1106,20 +1165,29 @@ bool j1Map::LoadRooms()
 		if ((*roomIterator).type >= 0 && (*roomIterator).pullRoomNo >= 0)
 		{
 			static char roomPath[50];
-			sprintf_s(roomPath, 50, "data/maps/rooms/pull%i/room%i.tmx", (*roomIterator).type, (*roomIterator).pullRoomNo);
+			///sprintf_s(roomPath, 50, "data/maps/rooms/pull%i/room%i.tmx", (*roomIterator).type, (*roomIterator).pullRoomNo);
+			sprintf_s(roomPath, 50, "data/maps/rooms/pull0/room7.tmx");
 			ret = Load(roomPath, (*roomIterator).x, (*roomIterator).y);
 		}
 		else if ((*roomIterator).type == -1)
 		{
-			ret = Load("data/maps/rooms/base/base.tmx", (*roomIterator).x, (*roomIterator).y);
+			ret = Load("data/maps/rooms/base/base.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
 		}
 		else if ((*roomIterator).type == -2)
 		{
-			ret = Load("data/maps/rooms/boss/boss.tmx", (*roomIterator).x, (*roomIterator).y);
+			ret = Load("data/maps/rooms/boss/boss.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
 		}
 		else if ((*roomIterator).type == -3)
 		{
-			ret = Load("data/maps/rooms/littleroom/littleRoom0.tmx", (*roomIterator).x, (*roomIterator).y);
+			ret = Load("data/maps/rooms/littleroom/littleRoom0.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
+		}
+		else if ((*roomIterator).type == -4)
+		{
+			ret = Load("data/maps/corridors/corridorV.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
+		}
+		else if ((*roomIterator).type == -5)
+		{
+			ret = Load("data/maps/corridors/corridorH.tmx", (*roomIterator).x, (*roomIterator).y, (*roomIterator).type);
 		}
 		if (!ret)
 			break;
@@ -1230,32 +1298,25 @@ bool j1Map::LoadLogic()
 						pos.y = auxPos.y + (*iterator).y;
 
 						UnitInfo unitInfo;
-						
-						ENTITY_TYPE entityType = (ENTITY_TYPE)((*layerIterator)->data[i]);
 
+						ENTITY_TYPE entityType = (ENTITY_TYPE)((*layerIterator)->data[i]);
 						switch (entityType)
 						{
 						case EntityType_TOWN_HALL:
 							App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 							break;
 						case EntityType_CHICKEN_FARM:
-							App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(), unitInfo, (j1Module*)App->player));
+							App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
 							break;
 						case EntityType_BARRACKS:
 							App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 							break;
-						case EntityType_GOLD_MINE:
-							App->player->goldMine.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
-							break;
-						case EntityType_RUNESTONE:
-							App->player->runestone.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
-							break;
 						default:
-						//	App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
+							App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
 							break;
 						}
-						
-						
+
+
 						//App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetBuildingInfo(EntityType_FOOTMAN));
 
 //						ret = App->entities->AddEntity(x, y, (*layerIterator)->data[i]);
@@ -1263,10 +1324,100 @@ bool j1Map::LoadLogic()
 				}
 			}
 		}
+
+		int x = (*iterator).x;
+		int y = (*iterator).y;
+
+		int tileWidth = (*iterator).tileWidth;
+		int tileHeight = (*iterator).tileHeight;
+
+		int width = (*iterator).width * tileWidth;
+		int height = (*iterator).height * tileHeight;
+
+		switch ((*iterator).roomType)
+		{
+		case -1:
+
+			break;
+		case -2:
+
+			break;
+		case -3:
+
+			break;
+		default:
+
+			(*iterator).exitPointN = { x + (width / 2),			y - tileHeight };
+			(*iterator).exitPointE = { x + width,				y + (height / 2) };
+			(*iterator).exitPointS = { x + (width / 2),			y + height};
+			(*iterator).exitPointW = { x - tileWidth,			y + (height / 2) };
+
+			break;
+		}
 	}
 
 
 
+	return ret;
+}
+
+iPoint j1Map::TileToWorld(iPoint pos)
+{
+	iPoint ret{ 0,0 };
+
+	int xMargin = 0;
+	int yMargin = 0;
+
+	if ((pos.x % 2) == 0)
+		ret.x = (((pos.x / 2) * defaultRoomSize * defaultTileSize) +
+		((pos.x / 2) * defaultHallHeight * defaultTileSize));
+
+	else
+	{
+		ret.x = ((((pos.x / 2) + 1) * defaultRoomSize * defaultTileSize) +
+			((pos.x / 2) * defaultHallHeight * defaultTileSize));
+		yMargin = ((defaultRoomSize - defaultHallWidth) / 2) * defaultTileSize;
+	}
+
+	if ((pos.y % 2) == 0)
+		ret.y = (((pos.y / 2) * defaultRoomSize * defaultTileSize) +
+		((pos.y / 2) * defaultHallHeight * defaultTileSize));
+
+	else
+	{
+		ret.y = ((((pos.y / 2) + 1) * defaultRoomSize * defaultTileSize) +
+			((pos.y / 2) * defaultHallHeight * defaultTileSize));
+		xMargin = ((defaultRoomSize - defaultHallWidth) / 2) * defaultTileSize;
+	}
+	ret.x += xMargin;
+	ret.y += xMargin;
+
+	return ret;
+}
+
+iPoint j1Map::WorldToTile(iPoint pos)
+{
+	iPoint ret{ 0,0 };
+	int x = ((defaultRoomSize + defaultHallHeight) * defaultTileSize);
+
+	if ((pos.x % x) == 0)
+		ret.x = pos.x / ((defaultRoomSize + defaultHallHeight) * defaultTileSize) * 2;
+
+	else
+	{
+		int r = defaultRoomSize * defaultTileSize;
+		int h = defaultHallHeight * defaultTileSize;
+		ret.x = ((pos.x - (r / 2) + (h / 2)) / (float)(r + h)) * 2;
+	}
+	if ((pos.y % ((defaultRoomSize + defaultHallHeight) * defaultTileSize)) == 0)
+		ret.y = pos.y / ((defaultRoomSize + defaultHallHeight) * defaultTileSize) * 2;
+
+	else
+	{
+		int r = defaultRoomSize * defaultTileSize;
+		int h = defaultHallHeight * defaultTileSize;
+		ret.x = ((pos.x - (r / 2) + (h / 2)) / (float)(r + h)) * 2;
+	}
 	return ret;
 }
 //----------------------------------

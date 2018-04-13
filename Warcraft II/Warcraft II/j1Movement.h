@@ -67,8 +67,6 @@ public:
 	// Returns an existing group by a list to all of its units or nullptr
 	UnitGroup* GetGroupByUnits(list<DynamicEntity*> units) const;
 
-	bool RemoveGroup(UnitGroup* unitGroup);
-
 	// Moves a unit applying the principles of group movement. Returns the state of the unit's movement
 	/// Call this method from a unit's update
 	MovementState MoveUnit(DynamicEntity* unit, float dt); /// Not const because it needs to keep track of the number of paths created at the current update
@@ -145,7 +143,7 @@ struct UnitGroup
 	list<SingleUnit*> units; // contains all the units of a given group
 	iPoint goal = { -1,-1 }; // current goal of the group
 
-	vector<iPoint> shapedGoal;
+	vector<iPoint> shapedGoal;	
 	bool isShapedGoal = false;
 };
 
@@ -157,12 +155,13 @@ struct SingleUnit
 {
 	SingleUnit(DynamicEntity* entity, UnitGroup* group);
 
-	~SingleUnit();
-
 	// Returns true if the unit would reach its next tile during this move
 	/// nextPos is the next tile that the unit is heading to
 	/// endPos is the tile that the unit would reach during this move
 	bool IsTileReached(iPoint nextPos, fPoint endPos) const;
+
+	// Stops the unit
+	void StopUnit();
 
 	// Resets the parameters of the unit (general info)
 	void ResetUnitParameters();
@@ -174,14 +173,10 @@ struct SingleUnit
 	void SetCollisionParameters(CollisionType collisionType, SingleUnit* waitUnit, iPoint waitTile);
 
 	// Prepares the unit for its next movement cycle
-	bool GetReadyForNewMove();
+	void GetReadyForNewMove();
 
 	// Sets the state of the unit to UnitState_Walk
 	void WakeUp();
-
-	bool IsFittingTile() const;
-
-	void SetGoal(iPoint goal);
 
 	// -----
 
@@ -195,14 +190,11 @@ struct SingleUnit
 	iPoint nextTile = { -1,-1 }; // next waypoint of the path (next tile the unit is heading to in map coords)
 
 	iPoint goal = { -1,-1 }; // goal of the unit
-	iPoint shapedGoal = { -1,-1 }; // shaped goal of the unit
-
-	 /// Changed goals
+	iPoint roomGoal{ -1,-1 };
+	iPoint shapedGoal = { -1,-1 };
 	bool isGoalChanged = false; // if true, it means that the goal has been changed
-
-	/// Goal planning
-	bool isGoalNeeded = false; // if true, it means that the unit needs to search for a new goal using Dijkstra
 	bool isSearching = false; // if true, it means that the unit is searching a tile using Dijkstra
+	bool isGoalNeeded = false;
 
 	bool reversePriority = false; // if true, the priority of the unit is not taken into account
 
@@ -229,13 +221,13 @@ public:
 	}
 
 	iPoint point = { 0,0 };
-	int priority = 0;
+	uint priority = 0;
 };
 
 // ---------------------------------------------------------------------
 // Helper class to compare two iPoints by its priority values
 // ---------------------------------------------------------------------
-class iPointPriorityComparator
+class Comparator
 {
 public:
 	int operator() (const iPointPriority a, const iPointPriority b)

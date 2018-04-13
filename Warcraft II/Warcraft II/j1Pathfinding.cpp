@@ -9,7 +9,7 @@
 
 #include "Brofiler\Brofiler.h"
 
-j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), height(0)
+j1PathFinding::j1PathFinding() : j1Module()
 {
 	name.assign("pathfinding");
 }
@@ -17,9 +17,7 @@ j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), hei
 // Destructor
 j1PathFinding::~j1PathFinding()
 {
-	RELEASE_ARRAY(walkabilityMap);
-
-	trigger = nullptr;
+	RELEASE_ARRAY(currentLowLevelMap.map);
 }
 
 // Called before quitting
@@ -28,56 +26,82 @@ bool j1PathFinding::CleanUp()
 	LOG("Freeing pathfinding library");
 
 	last_path.clear();
-	RELEASE_ARRAY(walkabilityMap);
+	RELEASE_ARRAY(currentLowLevelMap.map);
 	return true;
 }
 
 // Sets up the walkability map
-void j1PathFinding::SetMap(uint width, uint height, uchar* data)
+void j1PathFinding::SetMap(WalkabilityMap hiMap, list<WalkabilityMap> lowMap)
 {
-	this->width = width;
-	this->height = height;
+	currentLowLevelMap = hiMap;
+	lowLevelWalkabilityMap = lowMap;
+}
 
-	RELEASE_ARRAY(walkabilityMap);
-	walkabilityMap = new uchar[width*height];
-	memcpy(walkabilityMap, data, width*height);
+void j1PathFinding::SetMap(WalkabilityMap hiMap)
+{
+	currentLowLevelMap = hiMap;
+}
+void j1PathFinding::SetMap(list<WalkabilityMap> lowMap)
+{
+	lowLevelWalkabilityMap = lowMap;
 }
 
 // Utility: return true if pos is inside the map boundaries
+//bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
+//{
+//	return (pos.x >= 0 && pos.x <= (int)currentLowLevelMap.width &&
+//		pos.y >= 0 && pos.y <= (int)currentLowLevelMap.height);
+//}
+
+// Utility: returns true is the tile is walkable
 bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 {
-	return (pos.x >= 0 && pos.x <= (int)(App->map->width - 1) &&
-		pos.y >= 0 && pos.y <= (int)(App->map->height - 1));
+	return (pos.x >= 0 && pos.x <= (int)currentLowLevelMap.width &&
+		pos.y >= 0 && pos.y <= (int)currentLowLevelMap.height);
 }
 
-// Utility: returns true if the tile is walkable
-bool j1PathFinding::IsWalkable(const iPoint& pos) const
+
+//bool j1PathFinding::IsWalkable(const iPoint& pos) const
+//{
+//	int t = GetTileAt({ pos.x - currentLowLevelMap.position.x/32,pos.y - currentLowLevelMap.position.y / 32 });
+//	return INVALID_WALK_CODE && t > 0;
+//}
+
+// Utility: returns true is the tile is walkable
+bool j1PathFinding::IsWalkable(iPoint& pos) const
 {
-	int t = GetTileAt(pos);
-	bool ret = INVALID_WALK_CODE && t == 0;
-	return ret;
+	RoomMap* map = App->map->GetMap();
+
+	SDL_Rect tileToCheck{ pos.x * 32,pos.y * 32, 32 , 32 };
+	SDL_Rect result{ 0,0,0,0 };
+
+	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
+	{
+		if (SDL_IntersectRect(&(*iterator).collider, &tileToCheck, &result))
+		{
+			this->currentLowLevelMap = (*iterator).walkabilityMap;
+			break;
+		}
+	}
+
+	pos.x = pos.x - currentLowLevelMap.position.x / 32;
+	pos.y = pos.y - currentLowLevelMap.position.y / 32;
+
+	int t = GetTileAt({ pos.x, pos.y }, true);
+
+	return INVALID_WALK_CODE && t > 0;
 }
 
-// Utility: return the walkability value of a tile
 int j1PathFinding::GetTileAt(const iPoint& pos) const
 {
-	iPoint Pos{ pos };
-	if (pos.x > 50 || pos.y > 50)
-	{
-		Pos.x = pos.x - 2400 / 32;
-		Pos.y = pos.y - 6720 / 32;
-	}
-	if (CheckBoundaries(Pos))
-	{
-		int pos = (Pos.y*width) + Pos.x;
-		int i = App->map->walkabilityMap[pos];
-		return i;
-	}
+	if (CheckBoundaries(pos))
+		return currentLowLevelMap.map[(pos.y * currentLowLevelMap.width) + pos.x];
+
 	return INVALID_WALK_CODE;
 }
 
 // To request all tiles involved in the last generated path
-const vector<iPoint>* j1PathFinding::GetLastPath() const
+vector<iPoint>* j1PathFinding::GetLastPath()
 {
 	return &last_path;
 }
@@ -246,7 +270,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 	int ret = 0;
 
 	// If origin or destination are not walkable, return -1
-	if (!IsWalkable(origin) || !IsWalkable(destination))
+	if (!IsWalkable(origin,true) || !IsWalkable(destination,true))
 		ret = -1;
 	else {
 
@@ -262,6 +286,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 			// Move the lowest score cell from open list to the closed list
 			PathNode* curr = (PathNode*)open.GetNodeLowestScore();
 			close.pathNodeList.push_back(*curr);
+		//	close.pathNodeList.erase(curr);
 
 			// Erase element from list -----
 			list<PathNode>::iterator it = open.pathNodeList.begin();
@@ -334,16 +359,11 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 
 int j1PathFinding::BacktrackToCreatePath()
 {
-	last_path.clear();
-
 	// Backtrack to create the final path
-	if (close.pathNodeList.size() > 1) {
+	for (PathNode iterator = close.pathNodeList.back(); iterator.parent != nullptr;
+		iterator = *close.Find(iterator.parent->pos)) {
 
-		for (PathNode iterator = close.pathNodeList.back(); iterator.parent != nullptr;
-			iterator = *close.Find(iterator.parent->pos)) {
-
-			last_path.push_back(iterator.pos);
-		}
+		last_path.push_back(iterator.pos);
 	}
 
 	last_path.push_back(close.pathNodeList.front().pos);

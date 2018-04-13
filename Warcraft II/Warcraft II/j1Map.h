@@ -14,6 +14,9 @@
 #include "j1App.h"
 #include "j1Textures.h"
 
+#include "j1Pathfinding.h"
+
+
 using namespace std;
 
 struct Object {
@@ -150,15 +153,28 @@ struct Room
 	int					tileWidth = 0;
 	int					tileHeight = 0;
 
+	int					roomType = 0;
+
+	bool				isVisited = false;
+
 	fPoint				roomPos{ 0, 0 };
 	SDL_Color			backgroundColor;
 	ROOM_TYPE			type = ROOMTYPE_UNKNOWN;
 	list<TileSet*>		tilesets;
 
+	WalkabilityMap      walkabilityMap;
+
 	// TODO 2: Add a list/array of layers to the map!
 	list<MapLayer*>		layers;
 
 	list<ObjectGroup*>	objectGroups;
+
+	iPoint exitPointN{ 0,0 };
+	iPoint exitPointE{ 0,0 };
+	iPoint exitPointS{ 0,0 };
+	iPoint exitPointW{ 0,0 };
+
+	SDL_Rect			collider{ 0,0,0,0 };
 
 	fPoint GetObjectPosition(string groupObject, string object);
 	fPoint GetObjectSize(string groupObject, string object);
@@ -223,7 +239,7 @@ public:
 	bool CleanUp();
 
 	// Load new map
-	bool Load(const char* path, int x = 0, int y = 0);
+	bool Load(const char* path, int x = 0, int y = 0, int type = 0);
 
 	// Unload map
 	bool UnLoad();
@@ -232,7 +248,12 @@ public:
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 
-	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
+	bool CreateWalkabilityMap();
+
+	bool SetWalkabilityMap(int & hiWidth, int & hiHieight, uchar ** hiBuffer, int & lowWidth, int & lowHeight, uchar ** lowBuffer) const;
+
+	WalkabilityMap CreateLowLevelWalkabilityMap(Room* currRoom);
+	WalkabilityMap CreateHiLevelWalkabilityMap();
 
 	bool CreateNewMap();
 	bool LoadMapInfo(pugi::xml_node& mapInfoDocument);
@@ -241,6 +262,12 @@ public:
 	bool LoadCorridors();
 	bool CreateCorridor(Room room, DIRECTION direction = DIRECTION_NONE);
 	bool LoadLogic();
+
+	iPoint TileToWorld(iPoint pos);
+
+	iPoint WorldToTile(iPoint pos);
+
+	inline RoomMap* GetMap() {return &playableMap;}
 
 private:
 
@@ -257,39 +284,51 @@ private:
 
 	TileSet* GetTilesetFromTileId(int id) const;
 
+	uint* mapDistribution = nullptr;
+	uint mapSize = 0;
+	uint mapWidth = 0;
+	uint mapHeight = 0;
+
+	uint* hiLevelMap = nullptr;
+	uint hiLevelMapSize = 0;
+	uint hiLevelMapWidth = 0;
+	uint hiLevelMapHeight = 0;
+
 public:
 
-	Room				data;
-	MapLayer*			collisionLayer = nullptr;
+	Room					data;
+	MapLayer*				collisionLayer = nullptr;
 
-	int					culingOffset = 0;
-	int					blitOffset = 0;
-	bool				cameraBlit = false;
+	int						culingOffset = 0;
+	int						blitOffset = 0;
+	bool					cameraBlit = false;
 
-	int					mapTypesNo = 0;
-	int					defaultRoomSize = 0;
-	int					playerBaseSize = 0;
-	int					defaultLittleRoomSize = 0;
-	int					defaultTileSize = 0;
-	int					defaultHallSize = 0;
+	int						mapTypesNo = 0;
+	int						defaultRoomSize = 0;
+	int						playerBaseSize = 0;
+	int						defaultLittleRoomSize = 0;
+	int						defaultTileSize = 0;
+	int						defaultHallHeight = 0;
+	int						defaultHallWidth = 0;
 
-	mutable uint				width = 0; 
-	mutable uint				height = 0;
-	mutable uchar*				walkabilityMap = nullptr;
+	WalkabilityMap			hiLevelWalkabilityMap;
+	list<WalkabilityMap>	lowLevelWalkabilityMap;
 
 private:
 
-	pugi::xml_document	mapFile;
-	pugi::xml_document  mapInfoDocument;
+	pugi::xml_document		mapFile;
+	pugi::xml_document		mapInfoDocument;
+	pugi::xml_document      hiLevelWalkabilityMapDocument;
 
-	string				folder;
-	bool				isMapLoaded = false;
+	string					folder;
+	bool					isMapLoaded = false;
 
-	MapLayer*			aboveLayer = nullptr;
+	MapLayer*				aboveLayer = nullptr;
 
-	RoomMap				playableMap;
-	list<RoomInfo>		roomsInfo;
-	vector<int>			noPullRoom;
+	RoomMap					playableMap;
+
+	list<RoomInfo>			roomsInfo;
+	vector<int>				noPullRoom;
 
 };
 

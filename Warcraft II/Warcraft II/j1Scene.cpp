@@ -105,8 +105,8 @@ bool j1Scene::Start()
 	{
 		int w, h;
 		uchar* data = NULL;
-		if (App->map->CreateWalkabilityMap(w, h, &data))
-			App->pathfinding->SetMap(w, h, data);
+		if (App->map->CreateWalkabilityMap())
+		//	App->pathfinding->SetMap(w, h, data);
 
 		RELEASE_ARRAY(data);
 	}

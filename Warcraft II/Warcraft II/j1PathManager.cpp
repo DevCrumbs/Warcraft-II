@@ -19,36 +19,30 @@ j1PathManager::j1PathManager(double msSearchPerUpdate) : j1Module(), msSearchPer
 // Destructor
 j1PathManager::~j1PathManager()
 {
+
 }
 
 // Called before quitting
 bool j1PathManager::CleanUp()
 {
-	bool ret = true;
 
-	list<PathPlanner*>::const_iterator it = searchRequests.begin();
-
-	while (it != searchRequests.end()) {
-
-		delete *it;
-		it++;
-	}
-	searchRequests.clear();
-
-	return ret;
+	return true;
 }
 
-bool j1PathManager::Update(float dt)
+bool j1PathManager::Update(float dt) 
 {
 	bool ret = true;
 
 	if (searchRequests.size() > 0)
 		UpdateSearches();
 
+	if (pathPlanners.size() > 0)
+		UpdatePathPlaners();
+
 	return ret;
 }
 
-void j1PathManager::UpdateSearches()
+void j1PathManager::UpdateSearches() 
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
@@ -77,7 +71,15 @@ void j1PathManager::UpdateSearches()
 	}
 }
 
-void j1PathManager::Register(PathPlanner* pathPlanner)
+void j1PathManager::UpdatePathPlaners()
+{
+	for (list<PathPlanner*>::const_iterator iterator = pathPlanners.begin(); iterator != pathPlanners.end(); ++iterator)
+	{
+		(*iterator)->HilevelUpdate();
+	}
+}
+
+void j1PathManager::Register(PathPlanner* pathPlanner) 
 {
 	list<PathPlanner*>::const_iterator it = find(searchRequests.begin(), searchRequests.end(), pathPlanner);
 
@@ -85,7 +87,7 @@ void j1PathManager::Register(PathPlanner* pathPlanner)
 		searchRequests.push_back(pathPlanner);
 }
 
-void j1PathManager::UnRegister(PathPlanner* pathPlanner)
+void j1PathManager::UnRegister(PathPlanner* pathPlanner) 
 {
 	pathPlanner->SetSearchRequested(false);
 
@@ -96,23 +98,26 @@ void j1PathManager::UnRegister(PathPlanner* pathPlanner)
 // PATH PLANNER
 // ---------------------------------------------------------------------
 
-PathPlanner::PathPlanner(Entity* owner, Navgraph& navgraph) :entity(owner), navgraph(navgraph) {}
+PathPlanner::PathPlanner(Entity* owner, Navgraph& navgraph) :entity(owner), navgraph(navgraph) 
+{ 
+	App->pathmanager->pathPlanners.push_back(this);
+}
 
 PathPlanner::~PathPlanner()
 {
-	entity = nullptr;
-
-	// Remove Current Search
-	App->pathmanager->UnRegister(this);
-
 	if (currentSearch != nullptr)
 		delete currentSearch;
 	currentSearch = nullptr;
 
-	// Remove Trigger
 	if (trigger != nullptr)
 		delete trigger;
 	trigger = nullptr;
+
+	if (hiLevelSearch != nullptr)
+		delete 	hiLevelSearch;
+	hiLevelSearch = nullptr;
+
+	entity = nullptr;
 }
 
 bool PathPlanner::RequestAStar(iPoint origin, iPoint destination)
@@ -122,16 +127,26 @@ bool PathPlanner::RequestAStar(iPoint origin, iPoint destination)
 	if (isSearchRequested)
 		return false;
 
+	if (!isHiLevelSearched)
+	{
+		LoadHiLevelSearch();
+		isHiLevelSearched = true;
+	}
+
 	App->pathmanager->UnRegister(this);
 	GetReadyForNewSearch();
 
 	pathfindingAlgorithmType = PathfindingAlgorithmType_AStar;
 
+	if (currentSearch != nullptr)
+		delete currentSearch;
+	currentSearch = nullptr;
+
 	currentSearch = new j1PathFinding();
 
 	// Set the walkability map
-	ret = navgraph.SetNavgraph(currentSearch);
-
+	currentSearch->SetMap(currentLowLevelMap);
+	ret = true;
 	// Invalidate if origin or destination are non-walkable
 	if (ret)
 		ret = currentSearch->InitializeAStar(origin, destination);
@@ -168,7 +183,7 @@ bool PathPlanner::RequestDijkstra(iPoint origin, FindActiveTrigger::ActiveTrigge
 
 	case FindActiveTrigger::ActiveTriggerType_Object:
 
-		trigger = new FindActiveTrigger(activeTriggerType, entity->entityType);
+		trigger = new FindActiveTrigger(activeTriggerType, ((StaticEntity*)entity)->staticEntityType);
 
 		break;
 
@@ -186,7 +201,7 @@ bool PathPlanner::RequestDijkstra(iPoint origin, FindActiveTrigger::ActiveTrigge
 
 	if (ret)
 		App->pathmanager->Register(this);
-
+	
 	return ret;
 }
 
@@ -208,8 +223,11 @@ void PathPlanner::GetReadyForNewSearch()
 
 PathfindingStatus PathPlanner::CycleOnce()
 {
-	PathfindingStatus result;
-	currentSearch->walkabilityMap = App->map->walkabilityMap;
+	PathfindingStatus result = PathfindingStatus_PathNotFound;
+
+//	if (UpdateNavgraph())
+//		App->pathfinding->SetMap(currentLowLevelMap, App->map->lowLevelWalkabilityMap);
+
 	switch (pathfindingAlgorithmType) {
 
 	case PathfindingAlgorithmType_AStar:
@@ -246,6 +264,252 @@ PathfindingStatus PathPlanner::CycleOnce()
 	return result;
 }
 
+bool PathPlanner::UpdateNavgraph()
+{
+	bool ret = false;
+	fPoint pos = entity->GetPos();
+	
+	for (list<WalkabilityMap>::iterator iterator = App->map->lowLevelWalkabilityMap.begin();
+		 iterator != App->map->lowLevelWalkabilityMap.end(); ++iterator)
+	{
+		if ((*iterator).map != currentLowLevelMap.map)
+		{
+			SDL_Rect roomRect = { (*iterator).position.x, (*iterator).position.y, 
+								  (*iterator).width * defaultSize, (*iterator).height * defaultSize };
+			SDL_Rect entityRect = { pos.x, pos.y, defaultSize, defaultSize };
+			SDL_Rect result{ 0,0,0,0 };
+			if (SDL_IntersectRect(&roomRect, &entityRect, &result))
+			{
+				currentLowLevelMap = (*iterator);
+				ret = true;
+			}
+		}
+		if (ret)
+			break;
+	}
+
+	if (ret)
+	{
+		DynamicEntity* tempEnt = (DynamicEntity*)entity;
+		SingleUnit* singleUnit = tempEnt->GetSingleUnit();
+
+		RequestAStar(singleUnit->currTile, singleUnit->goal);
+	}
+	return ret;
+}
+
+
+bool PathPlanner::HilevelUpdate()
+{
+	bool ret = false;
+
+	if (haveGoal)
+	{
+		if (unitReachDestination)
+		{
+			currRoomPos = nextRoomPos;
+			currRoom = nextRoom;
+			currRoom->isVisited = true;
+
+			if (hiLevelPath.size() > 0)
+			{
+				nextRoomPos = hiLevelPath.front();
+				hiLevelPath.erase(hiLevelPath.begin());
+			}
+			currentLowLevelMap = currRoom->walkabilityMap;
+			App->pathfinding->SetMap(currentLowLevelMap);
+
+			SDL_Rect result{ 0,0,0,0 };
+			RoomMap* map = App->map->GetMap();
+
+			iPoint pos = App->map->TileToWorld(nextRoomPos);
+
+			for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
+			{			
+				SDL_Rect goalRect{ pos.x, pos.y, 800, 800 };
+
+				if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
+				{
+					nextRoom = &(*iterator);
+
+					unitReachDestination = false;
+					unitNeedPath = true;
+					ret = true;
+
+					break;
+				}
+			}
+
+
+
+			//list<Room>::iterator iterator = map->rooms.begin();
+			//for (; iterator != map->rooms.end(); ++iterator)
+			//{
+			//	if (nextRoomPos.x == (*iterator).x  && nextRoomPos.y == (*iterator).y)
+			//	{
+			//		currentLowLevelMap = (*iterator).walkabilityMap;
+			//		nextRoom = &(*iterator);
+			//		unitReachDestination = false;
+			//		unitNeedPath = true;
+			//		test = ret = true;
+
+			//		break;
+			//	}
+			//}
+		}
+
+		if (unitNeedPath)
+		{
+			isSearchRequested = false;
+			singleUnit->roomGoal = GetExitPoint();
+
+			if (singleUnit->roomGoal != -1)
+				ret = RequestAStar(singleUnit->currTile, singleUnit->roomGoal);
+
+			else if (singleUnit->roomGoal == -1)
+			{
+				ret = RequestAStar(singleUnit->currTile, singleUnit->goal);
+			}
+			unitNeedPath = false;
+			singleUnit->isGoalChanged = true;
+		}
+
+		if (singleUnit->currTile == singleUnit->roomGoal)
+		{
+			ret = unitReachDestination = true;
+		}
+
+		else if (singleUnit->currTile == singleUnit->goal)
+		{
+			unitReachDestination = false;
+			unitNeedPath = false;
+			haveGoal = false;
+
+			ret = true;
+		}
+	}
+	
+	return ret;
+}
+
+iPoint PathPlanner::GetExitPoint()
+{
+	iPoint exitPoint{ -1, -1 };
+	iPoint auxRoomPos = nextRoomPos - currRoomPos;
+
+	//North
+	if (auxRoomPos.y == 1)
+	{
+		exitPoint = currRoom->exitPointN;
+	}
+
+	//South
+	else if (auxRoomPos.y == -1)
+	{
+		exitPoint = currRoom->exitPointS;
+	}
+
+	//East
+	else if (auxRoomPos.x == 1)
+	{
+		exitPoint = { currRoom->exitPointE.x / 32,currRoom->exitPointE.y / 32 };
+	}
+
+	//West
+	else if (auxRoomPos.x == -1)
+	{
+		exitPoint = currRoom->exitPointW;
+	}
+
+	return exitPoint;
+}
+
+
+void PathPlanner::LoadHiLevelSearch()
+{
+	if (hiLevelSearch == nullptr)
+		hiLevelSearch = new j1PathFinding();
+
+	hiLevelSearch->SetMap(App->map->hiLevelWalkabilityMap);
+
+	if (entity != nullptr)
+	{
+		DynamicEntity* tempEnt = (DynamicEntity*)entity;
+		singleUnit = tempEnt->GetSingleUnit();
+	}
+	fPoint pos = entity->GetPos();
+	RoomMap* map = App->map->GetMap();
+	SDL_Rect entityRect = { pos.x, pos.y, defaultSize, defaultSize };
+	SDL_Rect result{ 0,0,0,0 };
+
+	iPoint originRoom{ -1,-1 };
+
+	DynamicEntity* tempEnt = (DynamicEntity*)entity;
+	SingleUnit* singleUnit = tempEnt->GetSingleUnit();
+
+
+
+
+	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
+	{
+		SDL_Rect goalRect{ singleUnit->goal.x * defaultSize, singleUnit->goal.y * defaultSize, 32, 32 };
+
+		if (SDL_IntersectRect(&(*iterator).collider, &entityRect, &result))
+		{
+			currRoomPos = originRoom = { (*iterator).x, (*iterator).y };
+			currRoom = &(*iterator);
+			currRoom->isVisited = true;
+			originRoom = App->map->WorldToTile(originRoom);
+		}
+		if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
+		{
+			goalRoomPos = { (*iterator).x, (*iterator).y };
+			goalRoomPos = App->map->WorldToTile(goalRoomPos);
+		}
+	}
+
+	if (!haveGoal)
+		if (originRoom != -1 && goalRoomPos != -1)
+		{
+			hiLevelSearch->CreatePath(originRoom, goalRoomPos);
+			hiLevelPath = *(hiLevelSearch->GetLastPath());
+
+			hiLevelPath.erase(hiLevelPath.begin());
+			//hiLevelPath.push_back({ 2,0 });
+		//	hiLevelPath.push_back({ 1,0 });
+
+			if (hiLevelPath.size() > 0)
+			{
+				nextRoomPos = hiLevelPath.front();
+				hiLevelPath.erase(hiLevelPath.begin());
+			}
+			else
+				nextRoomPos = originRoom;
+
+			unitNeedPath = true;
+			haveGoal = true;
+
+			iPoint pos = App->map->TileToWorld(nextRoomPos);
+
+			for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
+			{
+				SDL_Rect goalRect{ pos.x, pos.y, 32, 1600 };
+
+				if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
+				{
+					nextRoom = &(*iterator);
+				}
+			}
+			currentLowLevelMap = currRoom->walkabilityMap;
+			App->pathfinding->SetMap(currentLowLevelMap);
+		}
+
+
+}
+
+
+
+
 vector<iPoint> PathPlanner::GetPath() const
 {
 	if (isSearchCompleted)
@@ -258,7 +522,6 @@ vector<iPoint> PathPlanner::GetPath() const
 iPoint PathPlanner::GetTile() const
 {
 	if (isSearchCompleted)
-
 		return currentSearch->GetLastTile();
 }
 
@@ -277,34 +540,29 @@ void PathPlanner::SetSearchRequested(bool isSearchRequested)
 	this->isSearchRequested = isSearchRequested;
 }
 
-void PathPlanner::SetCheckingCurrTile(bool isCheckingCurrTile)
+void PathPlanner::SetCheckingCurrTile(bool isCheckingCurrTile) 
 {
 	if (trigger != nullptr)
 		trigger->isCheckingCurrTile = isCheckingCurrTile;
 }
 
-void PathPlanner::SetCheckingNextTile(bool isCheckingNextTile)
+void PathPlanner::SetCheckingNextTile(bool isCheckingNextTile) 
 {
 	if (trigger != nullptr)
 		trigger->isCheckingNextTile = isCheckingNextTile;
 }
 
-void PathPlanner::SetCheckingGoalTile(bool isCheckingGoalTile)
+void PathPlanner::SetCheckingGoalTile(bool isCheckingGoalTile) 
 {
 	if (trigger != nullptr)
 		trigger->isCheckingGoalTile = isCheckingGoalTile;
-}
-
-j1PathFinding* PathPlanner::GetCurrentSearch() const
-{
-	return currentSearch;
 }
 
 // WalkabilityMap struct ---------------------------------------------------------------------------------
 
 bool Navgraph::CreateNavgraph()
 {
-	return App->map->CreateWalkabilityMap(w, h, &data);
+	return true; // App->map->CreateWalkabilityMap(hiW, hiH, &hiW, lowW , lowH, &lowData);
 }
 
 bool Navgraph::SetNavgraph(j1PathFinding* currentSearch) const
@@ -312,46 +570,24 @@ bool Navgraph::SetNavgraph(j1PathFinding* currentSearch) const
 	if (currentSearch == nullptr)
 		return false;
 
-	currentSearch->SetMap(w, h, data);
+	//currentSearch->SetMap(hiLevelWalkabilityMap, lowLevelWalkabilityMap);
+
+	return true; 
+}
+
+bool Navgraph::GetNavgraph()
+{
+	hiLevelWalkabilityMap = App->map->hiLevelWalkabilityMap;
+	lowLevelWalkabilityMap = App->map->lowLevelWalkabilityMap;
 
 	return true;
 }
-
-// Utility: return true if pos is inside the map boundaries
-bool Navgraph::CheckBoundaries(const iPoint& pos) const
-{
-	return (pos.x >= 0 && pos.x <= (int)(App->map->width - 1) &&
-		pos.y >= 0 && pos.y <= (int)(App->map->height - 1));
-}
-
-// Utility: returns true if the tile is walkable
-bool Navgraph::IsWalkable(const iPoint& pos) const
-{
-	int t = GetTileAt(pos);
-	return INVALID_WALK_CODE && t == 0;
-}
-// Utility: return the walkability value of a tile
-int Navgraph::GetTileAt(const iPoint& pos) const
-{
-	iPoint Pos{ pos };
-	Pos.x = pos.x - 2400 / 32;
-	Pos.y = pos.y - 6720 / 32;
-
-	if (CheckBoundaries(Pos))
-	{
-
-		int i = App->map->walkabilityMap[(Pos.y*App->map->width) + Pos.x];
-		return i;
-	}
-	return INVALID_WALK_CODE;
-}
-
 
 // FindActiveTrigger class ---------------------------------------------------------------------------------
 
 FindActiveTrigger::FindActiveTrigger(ActiveTriggerType activeTriggerType, Entity* entity) :activeTriggerType(activeTriggerType), entity(entity) {}
 
-FindActiveTrigger::FindActiveTrigger(ActiveTriggerType activeTriggerType, ENTITY_CATEGORY entityType) : activeTriggerType(activeTriggerType), entityType(entityType) {}
+FindActiveTrigger::FindActiveTrigger(ActiveTriggerType activeTriggerType, ENTITY_TYPE entityType) : activeTriggerType(activeTriggerType), entityType(entityType) {}
 
 bool FindActiveTrigger::isSatisfied(iPoint tile) const
 {

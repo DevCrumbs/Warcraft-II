@@ -6,11 +6,13 @@
 
 #include <list>
 #include <vector>
+#include <queue>
 #include <algorithm>
+#include <map>
 using namespace std;
 
 #define DEFAULT_PATH_LENGTH 50
-#define INVALID_WALK_CODE -1
+#define INVALID_WALK_CODE 255
 
 enum DistanceHeuristic {
 
@@ -62,6 +64,12 @@ struct PathNode
 	bool diagonal = false;
 };
 
+struct WalkabilityMap
+{
+	iPoint position{ 0,0 };
+	mutable uchar* map = nullptr;
+	int width = 0, height = 0;
+};
 // ---------------------------------------------------------------------
 // Helper struct to include a list of path nodes
 // ---------------------------------------------------------------------
@@ -98,7 +106,9 @@ public:
 	bool CleanUp();
 
 	// Sets up the walkability map
-	void SetMap(uint width, uint height, uchar* data);
+	void SetMap(WalkabilityMap hiMap, list<WalkabilityMap> lowMap);
+	void SetMap(WalkabilityMap hiMap);
+	void SetMap(list<WalkabilityMap> lowMap);
 
 	// Main function to request a path from A to B
 	int CreatePath(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
@@ -107,7 +117,8 @@ public:
 	int BacktrackToCreatePath();
 
 	// To request all tiles involved in the last generated path
-	const vector<iPoint>* GetLastPath() const;
+	
+	vector<iPoint>* GetLastPath();
 
 	// To request the last tile checked by the search algorithm
 	iPoint GetLastTile() const;
@@ -115,11 +126,17 @@ public:
 	// Utility: return true if pos is inside the map boundaries
 	bool CheckBoundaries(const iPoint& pos) const;
 
+	bool CheckBoundaries(const iPoint& pos, bool test) const;
+
 	// Utility: returns true is the tile is walkable
-	bool IsWalkable(const iPoint& pos) const;
+	bool IsWalkable(iPoint& pos) const;
+
+	bool IsWalkable(const iPoint& pos, bool test) const;
 
 	// Utility: return the walkability value of a tile
 	int GetTileAt(const iPoint& pos) const;
+
+	int GetTileAt(const iPoint& pos, bool test) const;
 
 	// Initialize CycleOnceAStar
 	bool InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
@@ -133,14 +150,11 @@ public:
 	// CycleOnce Dijkstra
 	PathfindingStatus CycleOnceDijkstra();
 
-	uint width = 0; // size of the map (w)
-	uint height = 0; // size of the map (h)
-	uchar* walkabilityMap = nullptr; // all map walkability values [0..255]
-
 private:
 
-
-//	uchar* walkabilityMap = nullptr; // all map walkability values [0..255]
+	WalkabilityMap			hiLevelWalkMap;
+	mutable WalkabilityMap			currentLowLevelMap;
+	list<WalkabilityMap>	lowLevelWalkabilityMap;
 	DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan; // distance heuristic of choice
 
 	PathList open; // open list of PathNodes
@@ -148,12 +162,14 @@ private:
 	vector<iPoint> last_path; // we store the created path here
 	iPoint last_tile = { -1,-1 }; // we store the last tile checked here
 
-								  // A Star
+	// A Star
 	iPoint goal = { -1,-1 }; // destination tile
 
-							 // Dijkstra
+	// Dijkstra
 	FindActiveTrigger* trigger = nullptr;
 	bool isPathRequested = false;
+
+
 };
 
 #endif //__j1PATHFINDING_H__

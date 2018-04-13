@@ -10,8 +10,6 @@
 #include <algorithm>
 using namespace std;
 
-#define INVALID_WALK_CODE -1
-
 enum PathfindingAlgorithmType {
 
 	PathfindingAlgorithmType_NoType,
@@ -22,6 +20,7 @@ enum PathfindingAlgorithmType {
 
 class Entity;
 class PathPlanner;
+struct Room;
 
 // ---------------------------------------------------------------------
 // Helper struct to set a walkability map
@@ -37,21 +36,13 @@ public:
 
 	bool SetNavgraph(j1PathFinding* currentSearch) const;
 
-	// Pathfinding methods ---------------------------------------------------------------------
-
-	// Utility: return true if pos is inside the map boundaries
-	bool CheckBoundaries(const iPoint& pos) const;
-
-	// Utility: returns true is the tile is walkable
-	bool IsWalkable(const iPoint& pos) const;
-
-	// Utility: return the walkability value of a tile
-	int GetTileAt(const iPoint& pos) const;
+	bool GetNavgraph();
 
 public:
 
-	int w = 0, h = 0;
-	uchar* data = nullptr;
+	WalkabilityMap			hiLevelWalkabilityMap;
+	WalkabilityMap			currentLowLevelMap;
+	list<WalkabilityMap>	lowLevelWalkabilityMap;
 };
 
 // ---------------------------------------------------------------------
@@ -70,7 +61,7 @@ public:
 	};
 
 	FindActiveTrigger(ActiveTriggerType activeTriggerType, Entity* entity);
-	FindActiveTrigger(ActiveTriggerType activeTriggerType, ENTITY_CATEGORY entityType);
+	FindActiveTrigger(ActiveTriggerType activeTriggerType, ENTITY_TYPE entityType);
 
 	bool isSatisfied(iPoint tile) const;
 
@@ -81,8 +72,7 @@ private:
 
 public:
 
-	ENTITY_CATEGORY entityType = EntityCategory_NONE;
-
+	ENTITY_TYPE entityType = EntityType_NONE;
 	bool isCheckingCurrTile = false;
 	bool isCheckingNextTile = false;
 	bool isCheckingGoalTile = true;
@@ -109,6 +99,8 @@ public:
 	// the method will notify the relevant bot
 	void UpdateSearches();
 
+	void UpdatePathPlaners();
+
 	// A path planner should call this method to register a search with the manager
 	// (this method checks to ensure the path planner is only registered once)
 	void Register(PathPlanner* pathPlanner);
@@ -116,18 +108,23 @@ public:
 	// An agent can use this method to remove a search request
 	void UnRegister(PathPlanner* pathPlanner);
 
-private:
+
+public:
 
 	list<PathPlanner*> searchRequests; // a container of all the active search requests
-
+	list<PathPlanner*> pathPlanners; // container of all path planners
+private:	
 	// total ms to spend on search cycles each update allocated to the manager
 	// each update step these are divided equally among all registered path requests
+
 	double msSearchPerUpdate = 0.0f;
 
-	j1PerfTimer timer; // timer to keep track of the ms spent on each update
+	j1PerfTimer timer; // timer to  keep track of the ms spent on each update
 };
 
-class PathPlanner
+
+
+class PathPlanner 
 {
 public:
 
@@ -156,6 +153,14 @@ public:
 	// to request the tile found
 	iPoint GetTile() const;
 
+	bool UpdateNavgraph();
+
+	void LoadHiLevelSearch();
+	bool HilevelUpdate();
+
+	iPoint GetExitPoint();
+
+
 	bool IsSearchCompleted() const;
 
 	bool IsSearchRequested() const;
@@ -166,22 +171,44 @@ public:
 	void SetCheckingNextTile(bool isCheckingNextTile);
 	void SetCheckingGoalTile(bool isCheckingGoalTile);
 
-	j1PathFinding* GetCurrentSearch() const;
-
 private:
 
 	Entity* entity = nullptr; // a pointer to the owner of this class
-
+	SingleUnit* singleUnit = nullptr;
 	bool isSearchRequested = false;
 	bool isSearchCompleted = false;
-	bool isPathRequested = false;
+	bool isLowLevelCompleted = false;
+	bool isHiLevelSearched = false;
+
+	bool unitReachDestination = false;
+	bool unitNeedPath = false;
+	bool haveGoal = false;
+
+	bool test = false;
+
+	int defaultSize = 32;
 
 	PathfindingAlgorithmType pathfindingAlgorithmType = PathfindingAlgorithmType_NoType;
 	j1PathFinding* currentSearch = nullptr; // a pointer to the current search
+	j1PathFinding* hiLevelSearch = nullptr;
 	Navgraph& navgraph; // a local reference to the navgraph
-
+	WalkabilityMap	currentLowLevelMap;
 	// Dijkstra
 	FindActiveTrigger* trigger = nullptr; // a pointer to the FindActiveTrigger class
+	bool isPathRequested = false;
+
+	vector<iPoint> hiLevelPath;
+
+	Room* nextRoom = nullptr;
+	Room* currRoom = nullptr;
+
+	iPoint nextRoomPos{ 0,0 };
+	iPoint currRoomPos{ 0,0 };
+	iPoint goalRoomPos{ 0,0 };
+
+	iPoint lowLevelGoal{ 0,0 };
+
 };
+
 
 #endif //__j1PATH_MANAGER_H__
