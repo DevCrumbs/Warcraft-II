@@ -450,7 +450,7 @@ GoalStatus Goal_MoveToPosition::Process(float dt)
 
 	App->movement->MoveUnit(owner, dt);
 
-	if (owner->GetSingleUnit()->movementState == MovementState_GoalReached) {
+	if (owner->GetSingleUnit()->movementState == MovementState_GoalReached && owner->GetSingleUnit()->isLastPath) {
 
 		if (owner->GetSingleUnit()->group->isShapedGoal) {
 
@@ -460,7 +460,23 @@ GoalStatus Goal_MoveToPosition::Process(float dt)
 		}
 		else
 			goalStatus = GoalStatus_Completed;
+
+		Terminate();
 	}
+
+	else if (owner->GetSingleUnit()->movementState == MovementState_GoalReached) {
+
+		Terminate();
+
+		Activate();
+	}
+
+
+
+
+
+
+
 
 	return goalStatus;
 }

@@ -36,13 +36,13 @@ public:
 
 	bool SetNavgraph(j1PathFinding* currentSearch) const;
 
-	bool CheckBoundaries(const iPoint & pos) const;
+	bool GetNavgraph();
 
-	bool IsWalkable(iPoint & pos);
+	bool IsWalkable(const iPoint & pos) const;
 
 	int GetTileAt(const iPoint & pos) const;
 
-	bool GetNavgraph();
+	bool CheckBoundaries(const iPoint & pos) const;
 
 
 public:
@@ -178,6 +178,8 @@ public:
 	void SetCheckingNextTile(bool isCheckingNextTile);
 	void SetCheckingGoalTile(bool isCheckingGoalTile);
 
+	inline SingleUnit* GetSingleUnit() { return singleUnit; }
+
 private:
 
 	Entity* entity = nullptr; // a pointer to the owner of this class
@@ -186,6 +188,7 @@ private:
 	bool isSearchCompleted = false;
 	bool isLowLevelCompleted = false;
 	bool isHiLevelSearched = false;
+
 
 	bool unitReachDestination = false;
 	bool unitNeedPath = false;

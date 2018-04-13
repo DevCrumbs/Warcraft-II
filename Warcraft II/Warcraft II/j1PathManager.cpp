@@ -143,7 +143,7 @@ bool PathPlanner::RequestAStar(iPoint origin, iPoint destination)
 	currentSearch = nullptr;
 
 	currentSearch = new j1PathFinding();
-
+	
 	// Set the walkability map
 	currentSearch->SetMap(currentLowLevelMap);
 	ret = true;
@@ -240,7 +240,6 @@ PathfindingStatus PathPlanner::CycleOnce()
 		}
 		// Let the bot know a path has been found
 		else if (result == PathfindingStatus_PathFound)
-
 			isSearchCompleted = true;
 
 		break;
@@ -323,9 +322,8 @@ bool PathPlanner::HilevelUpdate()
 			RoomMap* map = App->map->GetMap();
 
 			iPoint pos = App->map->TileToWorld(nextRoomPos);
-
 			for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
-			{			
+			{
 				SDL_Rect goalRect{ pos.x, pos.y, 800, 800 };
 
 				if (SDL_IntersectRect(&(*iterator).collider, &goalRect, &result))
@@ -360,12 +358,15 @@ bool PathPlanner::HilevelUpdate()
 
 		if (unitNeedPath)
 		{
+			//App->pathmanager->UnRegister(this);
+			//			App->pathmanager->Register(this);
 			isSearchRequested = false;
 			singleUnit->roomGoal = GetExitPoint();
 
 			if (singleUnit->roomGoal != -1)
+			{
 				ret = RequestAStar(singleUnit->currTile, singleUnit->roomGoal);
-
+			}
 			else if (singleUnit->roomGoal == -1)
 			{
 				ret = RequestAStar(singleUnit->currTile, singleUnit->goal);
@@ -385,10 +386,46 @@ bool PathPlanner::HilevelUpdate()
 			unitNeedPath = false;
 			haveGoal = false;
 
+			singleUnit->isLastPath = true;
+
+			{
+			 isSearchRequested = false;
+			 isSearchCompleted = false;
+			 isLowLevelCompleted = false;
+			 isHiLevelSearched = false;
+
+
+			 unitReachDestination = false;
+			 unitNeedPath = false;
+			 haveGoal = false;
+
+			 test = false;
+
+			defaultSize = 32;
+
+				 pathfindingAlgorithmType = PathfindingAlgorithmType_NoType;
+				currentSearch = nullptr; 
+				hiLevelSearch = nullptr;
+
+				isPathRequested = false;
+
+				vector<iPoint> hiLevelPath;
+
+				Room* nextRoom = nullptr;
+				Room* currRoom = nullptr;
+
+				iPoint nextRoomPos{ 0,0 };
+				iPoint currRoomPos{ 0,0 };
+				iPoint goalRoomPos{ 0,0 };
+
+				iPoint lowLevelGoal{ 0,0 };
+			}
+
+
 			ret = true;
 		}
 	}
-	
+
 	return ret;
 }
 
@@ -452,7 +489,7 @@ void PathPlanner::LoadHiLevelSearch()
 
 	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
 	{
-		SDL_Rect goalRect{ singleUnit->goal.x * defaultSize + 1600 + 640, singleUnit->goal.y * defaultSize + 800, 32, 32 };
+		SDL_Rect goalRect{ singleUnit->goal.x * defaultSize, singleUnit->goal.y * defaultSize, 32, 32 };
 
 		if (SDL_IntersectRect(&(*iterator).collider, &entityRect, &result))
 		{
@@ -474,9 +511,12 @@ void PathPlanner::LoadHiLevelSearch()
 			hiLevelSearch->CreatePath(originRoom, goalRoomPos);
 			hiLevelPath = *(hiLevelSearch->GetLastPath());
 
+			hiLevelPath.erase(hiLevelPath.begin());
+			//hiLevelPath.push_back({ 2,0 });
+			//	hiLevelPath.push_back({ 1,0 });
+
 			if (hiLevelPath.size() > 0)
 			{
-				hiLevelPath.erase(hiLevelPath.begin());
 				nextRoomPos = hiLevelPath.front();
 				hiLevelPath.erase(hiLevelPath.begin());
 			}
@@ -572,37 +612,34 @@ bool Navgraph::SetNavgraph(j1PathFinding* currentSearch) const
 	return true; 
 }
 
+bool Navgraph::GetNavgraph()
+{
+	hiLevelWalkabilityMap = App->map->hiLevelWalkabilityMap;
+	lowLevelWalkabilityMap = App->map->lowLevelWalkabilityMap;
+
+	return true;
+}
+
+// Utility: returns true is the tile is walkable
+bool Navgraph::IsWalkable(const iPoint& pos) const
+{
+	int t = GetTileAt({ pos.x, pos.y });
+	return INVALID_WALK_CODE && t > 0;
+}
+
+// Utility: return the walkability value of a tile
+int Navgraph::GetTileAt(const iPoint& pos) const
+{
+	if (CheckBoundaries(pos))
+		return currentLowLevelMap.map[(pos.y*currentLowLevelMap.width) + pos.x];
+
+	return INVALID_WALK_CODE;
+}
 
 bool Navgraph::CheckBoundaries(const iPoint& pos) const
 {
 	return (pos.x >= 0 && pos.x <= (int)currentLowLevelMap.width &&
 		pos.y >= 0 && pos.y <= (int)currentLowLevelMap.height);
-}
-
-
-//bool j1PathFinding::IsWalkable(const iPoint& pos) const
-//{
-//	int t = GetTileAt({ pos.x - currentLowLevelMap.position.x/32,pos.y - currentLowLevelMap.position.y / 32 });
-//	return INVALID_WALK_CODE && t > 0;
-//}
-
-// Utility: returns true is the tile is walkable
-bool Navgraph::IsWalkable(iPoint& pos)
-{
-	pos.x = pos.x - currentLowLevelMap.position.x / 32;
-	pos.y = pos.y - currentLowLevelMap.position.y / 32;
-
-	int t = GetTileAt({ pos.x, pos.y });
-
-	return INVALID_WALK_CODE && t > 0;
-}
-
-int Navgraph::GetTileAt(const iPoint& pos) const
-{
-	if (CheckBoundaries(pos))
-		return currentLowLevelMap.map[(pos.y * currentLowLevelMap.width) + pos.x];
-
-	return INVALID_WALK_CODE;
 }
 
 // FindActiveTrigger class ---------------------------------------------------------------------------------

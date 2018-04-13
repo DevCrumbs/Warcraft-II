@@ -1621,6 +1621,8 @@ void SingleUnit::ResetUnitParameters()
 	wakeUp = false;
 	nextTile = { -1,-1 };
 
+	isLastPath = false;
+
 	isSearching = false;
 	unit->GetPathPlanner()->SetSearchRequested(false);
 }

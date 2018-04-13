@@ -51,7 +51,7 @@ struct PathNode
 
 	// Fills a list (PathList) of all valid adjacent pathnodes
 	uint FindWalkableAdjacents(PathList& list_to_fill) const;
-	uint FindHiLevelWalkableAdjacents(PathList & list_to_fill) const;
+	uint FindWalkableAdjacents(PathList & list_to_fill, bool test) const;
 	// Calculates this tile score
 	float Score() const;
 	// Calculate the F for a specific destination tile
@@ -68,7 +68,7 @@ struct PathNode
 struct WalkabilityMap
 {
 	iPoint position{ 0,0 };
-	mutable uchar* map = nullptr;
+	uchar* map = nullptr;
 	int width = 0, height = 0;
 };
 // ---------------------------------------------------------------------
@@ -119,12 +119,6 @@ public:
 
 	// To request all tiles involved in the last generated path
 	
-	bool CheckHiLevelBoundaries(const iPoint & pos) const;
-
-	bool IsHiLevelWalkable(iPoint & pos) const;
-
-	int GetHiLevelTileAt(const iPoint & pos) const;
-
 	vector<iPoint>* GetLastPath();
 
 	// To request the last tile checked by the search algorithm
@@ -136,10 +130,14 @@ public:
 	bool CheckBoundaries(const iPoint& pos, bool test) const;
 
 	// Utility: returns true is the tile is walkable
-	bool IsWalkable(iPoint& pos) const;
+	bool IsWalkable(const iPoint& pos) const;
+
+	bool IsWalkable(const iPoint& pos, bool test) const;
 
 	// Utility: return the walkability value of a tile
 	int GetTileAt(const iPoint& pos) const;
+
+	int GetTileAt(const iPoint& pos, bool test) const;
 
 	// Initialize CycleOnceAStar
 	bool InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
@@ -153,11 +151,13 @@ public:
 	// CycleOnce Dijkstra
 	PathfindingStatus CycleOnceDijkstra();
 
+	WalkabilityMap			hiLevelWalkMap;
+	WalkabilityMap			currentLowLevelMap;
+	list<WalkabilityMap>	lowLevelWalkabilityMap;
+
 private:
 
-	WalkabilityMap			hiLevelWalkMap;
-	mutable WalkabilityMap	currentLowLevelMap;
-	list<WalkabilityMap>	lowLevelWalkabilityMap;
+
 	DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan; // distance heuristic of choice
 
 	PathList open; // open list of PathNodes

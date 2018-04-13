@@ -47,80 +47,48 @@ void j1PathFinding::SetMap(list<WalkabilityMap> lowMap)
 }
 
 // Utility: return true if pos is inside the map boundaries
-//bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
-//{
-//	return (pos.x >= 0 && pos.x <= (int)currentLowLevelMap.width &&
-//		pos.y >= 0 && pos.y <= (int)currentLowLevelMap.height);
-//}
-
-// Utility: returns true is the tile is walkable
 bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 {
 	return (pos.x >= 0 && pos.x <= (int)currentLowLevelMap.width &&
 		pos.y >= 0 && pos.y <= (int)currentLowLevelMap.height);
 }
 
-
-//bool j1PathFinding::IsWalkable(const iPoint& pos) const
-//{
-//	int t = GetTileAt({ pos.x - currentLowLevelMap.position.x/32,pos.y - currentLowLevelMap.position.y / 32 });
-//	return INVALID_WALK_CODE && t > 0;
-//}
+bool j1PathFinding::CheckBoundaries(const iPoint& pos, bool test) const
+{
+	return (pos.x >= 0 && pos.x <= (int)App->map->hiLevelWalkabilityMap.width &&
+		pos.y >= 0 && pos.y <= (int)App->map->hiLevelWalkabilityMap.height);
+}
 
 // Utility: returns true is the tile is walkable
-bool j1PathFinding::IsWalkable(iPoint& pos) const
+bool j1PathFinding::IsWalkable(const iPoint& pos) const
 {
-	RoomMap* map = App->map->GetMap();
-
-	SDL_Rect tileToCheck{ pos.x * 32,pos.y * 32, 32 , 32 };
-	SDL_Rect result{ 0,0,0,0 };
-
-	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
-	{
-		if (SDL_IntersectRect(&(*iterator).collider, &tileToCheck, &result))
-		{
-			this->currentLowLevelMap = (*iterator).walkabilityMap;
-			break;
-		}
-	}
-
-	pos.x = pos.x - currentLowLevelMap.position.x / 32;
-	pos.y = pos.y - currentLowLevelMap.position.y / 32;
-
-	int t = GetTileAt({ pos.x, pos.y });
-
+	int t = GetTileAt({ pos.x - currentLowLevelMap.position.x/32,pos.y - currentLowLevelMap.position.y / 32 });
 	return INVALID_WALK_CODE && t > 0;
 }
 
+// Utility: returns true is the tile is walkable
+bool j1PathFinding::IsWalkable(const iPoint& pos, bool test) const
+{
+	int t = GetTileAt({ pos.x, pos.y }, true);
+	return INVALID_WALK_CODE && t > 0;
+}
+
+// Utility: return the walkability value of a tile
 int j1PathFinding::GetTileAt(const iPoint& pos) const
 {
 	if (CheckBoundaries(pos))
-		return currentLowLevelMap.map[(pos.y * currentLowLevelMap.width) + pos.x];
+		return currentLowLevelMap.map[(pos.y*currentLowLevelMap.width) + pos.x];
 
 	return INVALID_WALK_CODE;
 }
 
-
-bool j1PathFinding::CheckHiLevelBoundaries(const iPoint& pos) const
+int j1PathFinding::GetTileAt(const iPoint& pos, bool test) const
 {
-	return (pos.x >= 0 && pos.x <= (int)hiLevelWalkMap.width &&
-		pos.y >= 0 && pos.y <= (int)hiLevelWalkMap.height);
-}
-
-bool j1PathFinding::IsHiLevelWalkable(iPoint& pos) const
-{
-	int t = GetTileAt({ pos.x, pos.y });
-	return INVALID_WALK_CODE && t > 0;
-}
-
-int j1PathFinding::GetHiLevelTileAt(const iPoint& pos) const
-{
-	if (CheckHiLevelBoundaries(pos))
-		return hiLevelWalkMap.map[(pos.y * hiLevelWalkMap.width) + pos.x];
+	if (CheckBoundaries(pos,true))
+		return App->map->hiLevelWalkabilityMap.map[(pos.y * App->map->hiLevelWalkabilityMap.width) + pos.x];
 
 	return INVALID_WALK_CODE;
 }
-
 
 // To request all tiles involved in the last generated path
 vector<iPoint>* j1PathFinding::GetLastPath()
@@ -149,7 +117,6 @@ PathNode::PathNode(const PathNode& node) : g(node.g), h(node.h), pos(node.pos), 
 // PathNode -------------------------------------------------------------------------
 // Fills a list (PathList) of all valid adjacent pathnodes
 // ----------------------------------------------------------------------------------
-
 uint PathNode::FindWalkableAdjacents(PathList& list_to_fill) const
 {
 	iPoint cell;
@@ -197,48 +164,48 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill) const
 	return list_to_fill.pathNodeList.size();
 }
 
-uint PathNode::FindHiLevelWalkableAdjacents(PathList& list_to_fill) const
+uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool test) const
 {
 	iPoint cell;
 	uint before = list_to_fill.pathNodeList.size();
 
 	cell.create(pos.x, pos.y + 1);
-	if (App->pathfinding->IsHiLevelWalkable(cell))
+	if (App->pathfinding->IsWalkable(cell, true))
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// south
 	cell.create(pos.x, pos.y - 1);
-	if (App->pathfinding->IsHiLevelWalkable(cell))
+	if (App->pathfinding->IsWalkable(cell, true))
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// east
 	cell.create(pos.x + 1, pos.y);
-	if (App->pathfinding->IsHiLevelWalkable(cell))
+	if (App->pathfinding->IsWalkable(cell, true))
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// west
 	cell.create(pos.x - 1, pos.y);
-	if (App->pathfinding->IsHiLevelWalkable(cell))
+	if (App->pathfinding->IsWalkable(cell, true))
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// north-west
 	cell.create(pos.x + 1, pos.y - 1);
-	if (App->pathfinding->IsHiLevelWalkable(cell))
+	if (App->pathfinding->IsWalkable(cell, true))
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	// south-west
 	cell.create(pos.x - 1, pos.y - 1);
-	if (App->pathfinding->IsHiLevelWalkable(cell))
+	if (App->pathfinding->IsWalkable(cell, true))
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	// north-west
 	cell.create(pos.x + 1, pos.y + 1);
-	if (App->pathfinding->IsHiLevelWalkable(cell))
+	if (App->pathfinding->IsWalkable(cell, true))
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	// south-est
 	cell.create(pos.x - 1, pos.y + 1);
-	if (App->pathfinding->IsHiLevelWalkable(cell))
+	if (App->pathfinding->IsWalkable(cell, true))
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	return list_to_fill.pathNodeList.size();
@@ -340,7 +307,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 	int ret = 0;
 
 	// If origin or destination are not walkable, return -1
-	if (!IsHiLevelWalkable((iPoint&)origin) || !IsHiLevelWalkable((iPoint&)destination))
+	if (!IsWalkable(origin,true) || !IsWalkable(destination,true))
 		ret = -1;
 	else {
 
@@ -392,7 +359,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 			else {
 				// Fill a list of all adjancent nodes
 				PathList neighbors;
-				close.pathNodeList.back().FindHiLevelWalkableAdjacents(neighbors);
+				close.pathNodeList.back().FindWalkableAdjacents(neighbors, true);
 
 				// Iterate adjancent nodes:
 				list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
@@ -447,7 +414,7 @@ int j1PathFinding::BacktrackToCreatePath()
 bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic)
 {
 	// If origin or destination are not walkable, return false
-	if (!IsWalkable((iPoint&)origin) || !IsWalkable((iPoint&)destination))
+	if (!IsWalkable(origin) || !IsWalkable(destination))
 		return false;
 
 	goal = destination;
@@ -535,7 +502,7 @@ PathfindingStatus j1PathFinding::CycleOnceAStar()
 bool j1PathFinding::InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger, bool isPathRequested)
 {
 	// If origin is not walkable, return false
-	if (!IsWalkable((iPoint&)origin))
+	if (!IsWalkable(origin))
 		return false;
 
 	last_path.clear();

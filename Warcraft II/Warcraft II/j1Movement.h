@@ -208,6 +208,9 @@ struct SingleUnit
 
 								  // COLLISION AVOIDANCE
 	bool wait = false;
+
+
+	bool isLastPath = false;
 	/// If a unit is not in the UnitState_Walk and another unit needs this unit to move away, set wakeUp to true
 	iPoint waitTile = { -1,-1 }; // conflict tile (tile where the collision has been found)
 	SingleUnit* waitUnit = nullptr; // conflict unit (unit whom the collision has been found with)
