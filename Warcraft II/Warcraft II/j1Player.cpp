@@ -491,7 +491,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			DeleteEntitiesMenu();
 			if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM)
 				MakeEntitiesMenu("NO_HP_TEXT", "Chicken Farm", { 241,34,50,41 }, ent);
-
+		
 			else if (staticEntity->staticEntityType == EntityType_GRYPHON_AVIARY)
 				MakeEntitiesMenu("NO_HP_TEXT", "Gryphon Aviary", { 394,160,50,41 }, ent);
 
@@ -590,7 +590,7 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
 		entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-		labelInfo.text = "60/60";
+		labelInfo.text = "60 HP";
 		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
 		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
@@ -633,7 +633,7 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
 		entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-		labelInfo.text = "50/50";
+		labelInfo.text = "50 HP";
 		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
 		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
@@ -1040,22 +1040,39 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				hoverButtonStruct.currentEntity->CheckBuildingState();
 				entitySelectedStats.HP->SetText(hoverButtonStruct.currentEntity->GetStringLife());
 				entitySelectedStats.lifeBar->SetLife(hoverButtonStruct.currentEntity->GetMaxLife());
+				currentGold -= 500;
+				App->scene->hasGoldChanged = true;
 
 			}
 			else if (hoverCheck == HoverCheck_Upgrate)
 			{
 				//App->audio->PlayFx(2, 0); //Construction sound
 				if (hoverButtonStruct.currentEntity == barracks) {
-					barracksUpgrade = true;
-					currentGold -= 1000;
+					if (currentGold >= 1000) {
+						barracksUpgrade = true;
+						currentGold -= 1000;
+						App->scene->hasGoldChanged = true;
+					}
+					else
+						App->audio->PlayFx(3, 0); //Button error sound
 				}
 				if (hoverButtonStruct.currentEntity == townHall && townHallUpgrade) {
-					keepUpgrade = true;
-					currentGold -= 500;
+					if (currentGold >= 500) {
+						keepUpgrade = true;
+						currentGold -= 500;
+						App->scene->hasGoldChanged = true;
+					}
+					else
+						App->audio->PlayFx(3, 0); //Button error sound
 				}
 				if (hoverButtonStruct.currentEntity == townHall) {
-					townHallUpgrade = true;
-					currentGold -= 1500;
+					if (currentGold >= 1500) {
+						townHallUpgrade = true;
+						currentGold -= 1500;
+						App->scene->hasGoldChanged = true;
+					}
+					else
+						App->audio->PlayFx(3, 0); //Button error sound
 				}
 			}
 
@@ -1063,6 +1080,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
 					currentGold -= 500;
+					App->scene->hasGoldChanged = true;
 					//Timer for the spawning
 					j1Timer spawnTimer;
 					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_FOOTMAN);
@@ -1076,6 +1094,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
 					App->audio->PlayFx(1, 0); //Button sound
 					currentGold -= 400;
+					App->scene->hasGoldChanged = true;
 					//Timer for the spawning
 					j1Timer spawnTimer;
 					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
