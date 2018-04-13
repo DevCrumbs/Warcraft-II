@@ -44,6 +44,9 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	footmanTexName = spritesheets.child("footmanAnimations").attribute("name").as_string();
 	gruntTexName = spritesheets.child("gruntAnimations").attribute("name").as_string();
 	crittersTexName = spritesheets.child("critters").attribute("name").as_string();
+	khadgarTexName = spritesheets.child("khadgar").attribute("name").as_string();
+	alleriaTexName = spritesheets.child("alleria").attribute("name").as_string();
+
 
 	//Debug Textures Properties
 	buildingPreviewTiles.opacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
@@ -208,6 +211,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	//Humans
 	pugi::xml_node humanEntities = config.child("dynamicEntities").child("humans");
 
+	footmanInfo.maxLife = footmanInfo.currLife = humanEntities.child("footman").attribute("maxLife").as_int();
 	//Footman animations
 	pugi::xml_node footmanAnimations = humanEntities.child("footman").child("animations");
 	pugi::xml_node currentAnimation;
@@ -341,6 +345,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	//Orcs
 	pugi::xml_node orcEntities = config.child("dynamicEntities").child("orcs");
+	gruntInfo.maxLife = gruntInfo.currLife = orcEntities.child("grunt").attribute("maxLife").as_int();
 
 	//Grunt animations
 	pugi::xml_node gruntAnimations = orcEntities.child("grunt").child("animations");
@@ -471,6 +476,15 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
+
+	//Prisoners
+	//Khadgar
+	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
+
+	pugi::xml_node khadgarAnimations = prisionerEntities.child("khadgar").child("animations");
+
+	//Alleria
+	pugi::xml_node alleriaAnimations = prisionerEntities.child("khadgar").child("animations");
 
 	// Critter sheep
 	pugi::xml_node sheepAnimations = config.child("dynamicEntities").child("sheep");
@@ -665,6 +679,8 @@ bool j1EntityFactory::Start()
 	footmanTex = App->tex->Load(footmanTexName.data());
 	gruntTex = App->tex->Load(gruntTexName.data());
 	crittersTex = App->tex->Load(crittersTexName.data());
+	khadgarTex = App->tex->Load(khadgarTexName.data());
+	alleriaTex = App->tex->Load(alleriaTexName.data());
 
 	builtChickenFarmInfo = chickenFarmInfo;
 	builtChickenFarmInfo.isBuilt = true;
@@ -1495,6 +1511,8 @@ bool j1EntityFactory::CleanUp()
 	App->tex->UnLoad(humanBuildingsTex);
 	App->tex->UnLoad(neutralBuildingsTex);
 	App->tex->UnLoad(orcishBuildingsTex);
+	App->tex->UnLoad(khadgarTex);
+	App->tex->UnLoad(alleriaTex);
 
 	return ret;
 }
@@ -1837,7 +1855,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	// Dynamic entities
 	case EntityType_FOOTMAN:
 	{
-		Footman* footman = new Footman(pos, { 32,32 }, 10, 10, unitInfo, (const FootmanInfo&)entityInfo, listener);
+		Footman* footman = new Footman(pos, { 32,32 }, footmanInfo.currLife, footmanInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
 		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
 		footman->dynamicEntityType = EntityType_FOOTMAN;
 		footman->SetStringLife(footman->GetCurrLife(), footman->GetMaxLife());
@@ -1891,7 +1909,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRUNT:
 	{
-		Grunt* grunt = new Grunt(pos, { 32,32 }, 20, 20, unitInfo, (const GruntInfo&)entityInfo, listener);
+		Grunt* grunt = new Grunt(pos, { 32,32 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
 		grunt->entityType = EntityCategory_DYNAMIC_ENTITY;
 		grunt->dynamicEntityType = EntityType_GRUNT;
 
@@ -1985,47 +2003,50 @@ uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEG
 // Returns a pointer to the Entity that is on the tile or nullptr
 Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCategory, EntitySide entitySide) const
 {
-	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+	if (entityCategory == EntityCategory_DYNAMIC_ENTITY) {
 
-	while (activeDyn != activeDynamicEntities.end()) {
+		list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
 
-		// The unit cannot be dead
-		if (!(*activeDyn)->isDead) {
+		while (activeDyn != activeDynamicEntities.end()) {
 
-			iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
+			// The unit cannot be dead
+			if (!(*activeDyn)->isDead) {
 
-			switch (entitySide) {
+				iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
 
-			case EntitySide_Player:
+				switch (entitySide) {
 
-				if ((*activeDyn)->entitySide == EntitySide_Player)
+				case EntitySide_Player:
+
+					if ((*activeDyn)->entitySide == EntitySide_Player)
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)(*activeDyn);
+					break;
+
+				case EntitySide_Enemy:
+
+					if ((*activeDyn)->entitySide == EntitySide_Enemy)
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)(*activeDyn);
+					break;
+
+				case EntitySide_Neutral:
+
+					if ((*activeDyn)->entitySide == EntitySide_Neutral)
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)(*activeDyn);
+					break;
+
+				case EntitySide_NoSide:
+
 					if (tile.x == entityTile.x && tile.y == entityTile.y)
 						return (Entity*)(*activeDyn);
-				break;
-
-			case EntitySide_Enemy:
-
-				if ((*activeDyn)->entitySide == EntitySide_Enemy)
-					if (tile.x == entityTile.x && tile.y == entityTile.y)
-						return (Entity*)(*activeDyn);
-				break;
-
-			case EntitySide_Neutral:
-
-				if ((*activeDyn)->entitySide == EntitySide_Neutral)
-					if (tile.x == entityTile.x && tile.y == entityTile.y)
-						return (Entity*)(*activeDyn);
-				break;
-
-			case EntitySide_NoSide:
-
-				if (tile.x == entityTile.x && tile.y == entityTile.y)
-					return (Entity*)(*activeDyn);
-				break;
+					break;
+				}
 			}
-		}
 
-		activeDyn++;
+			activeDyn++;
+		}
 	}
 
 	// TODO: Add StaticEntities (and check them depending on the entityType parameter)
@@ -2041,29 +2062,48 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 
 		case EntitySide_Player:
 
-			if ((*toSpawn)->entitySide == EntitySide_Player)
-				if (tile.x == entityTile.x && tile.y == entityTile.y)
-					return (Entity*)(*toSpawn);
+			if ((*toSpawn)->entitySide == EntitySide_Player) {
+
+				if (entityCategory == EntityCategory_NONE ||
+					(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
+					|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
+
+					if ((*toSpawn)->entitySide == EntitySide_Player)
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)(*toSpawn);
+			}
 			break;
 
 		case EntitySide_Enemy:
 
-			if ((*toSpawn)->entitySide == EntitySide_Enemy)
-				if (tile.x == entityTile.x && tile.y == entityTile.y)
-					return (Entity*)(*toSpawn);
+			if (entityCategory == EntityCategory_NONE ||
+				(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
+				|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
+				
+				if ((*toSpawn)->entitySide == EntitySide_Enemy)
+					if (tile.x == entityTile.x && tile.y == entityTile.y)
+						return (Entity*)(*toSpawn);
 			break;
 
 		case EntitySide_Neutral:
 
-			if ((*toSpawn)->entitySide == EntitySide_Neutral)
-				if (tile.x == entityTile.x && tile.y == entityTile.y)
-					return (Entity*)(*toSpawn);
+			if (entityCategory == EntityCategory_NONE ||
+				(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
+				|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
+				
+				if ((*toSpawn)->entitySide == EntitySide_Neutral)
+					if (tile.x == entityTile.x && tile.y == entityTile.y)
+						return (Entity*)(*toSpawn);
 			break;
 
 		case EntitySide_NoSide:
 
-			if (tile.x == entityTile.x && tile.y == entityTile.y)
-				return (Entity*)(*toSpawn);
+			if (entityCategory == EntityCategory_NONE ||
+				(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
+				|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
+				
+				if (tile.x == entityTile.x && tile.y == entityTile.y)
+					return (Entity*)(*toSpawn);
 			break;
 		}
 
@@ -2116,7 +2156,7 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 /// - If units are selected, buildings cannot be selected
 /// - If a building is selected, units cannot be selected
 /// · Only 1 building can be selected at a time
-void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, EntitySide entitySide)
+void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTITY_CATEGORY entityCategory, EntitySide entitySide)
 {
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
@@ -2133,18 +2173,22 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, Enti
 			|| (entitySide == EntitySide_Player && (*it)->entitySide == EntitySide_Player)
 			|| (entitySide == EntitySide_Enemy && (*it)->entitySide == EntitySide_Enemy)) {
 
-			SDL_Rect entityRect = { (*it)->GetPos().x, (*it)->GetPos().y, (*it)->GetSize().x, (*it)->GetSize().y };
+			if (entityCategory == EntityCategory_NONE
+				|| (entityCategory == EntityCategory_DYNAMIC_ENTITY && (*it)->entityType == EntityCategory_DYNAMIC_ENTITY)) {
 
-			// If the unit is within the selection:
-			if (SDL_HasIntersection(&entityRect, &rectangleRect)) {
+				SDL_Rect entityRect = { (*it)->GetPos().x, (*it)->GetPos().y, (*it)->GetSize().x, (*it)->GetSize().y };
 
-				// It there are less units than MAX_UNITS_SELECTED selected:
-				if (unitsSelected.size() < MAX_UNITS_SELECTED) {
+				// If the unit is within the selection:
+				if (SDL_HasIntersection(&entityRect, &rectangleRect)) {
 
-					// If the unit isn't in the unitsSelected list, add it
-					if (find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
-						unitsSelected.push_back(GetDynamicEntityByEntity(*it));
-						(*it)->isSelected = true;
+					// It there are less units than MAX_UNITS_SELECTED selected:
+					if (unitsSelected.size() < MAX_UNITS_SELECTED) {
+
+						// If the unit isn't in the unitsSelected list, add it
+						if (find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
+							unitsSelected.push_back(GetDynamicEntityByEntity(*it));
+							(*it)->isSelected = true;
+						}
 					}
 				}
 			}
@@ -2155,6 +2199,14 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, Enti
 					unitsSelected.remove(GetDynamicEntityByEntity(*it));
 					(*it)->isSelected = false;
 				}
+			}
+		}
+		else {
+
+			// If the unit is in the unitsSelected list, remove it
+			if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
+				unitsSelected.remove(GetDynamicEntityByEntity(*it));
+				(*it)->isSelected = false;
 			}
 		}
 

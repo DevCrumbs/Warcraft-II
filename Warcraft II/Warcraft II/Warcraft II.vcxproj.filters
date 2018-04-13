@@ -573,4 +573,9 @@
       <Filter>Modules\Entities\DynamicEntities\Critters</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\Game\config.xml">
+      <Filter>Modules\Tools</Filter>
+    </Xml>
+  </ItemGroup>
 </Project>
