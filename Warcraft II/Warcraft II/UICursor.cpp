@@ -9,6 +9,10 @@ UICursor::UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Mo
 
 	default = App->gui->GetRectFromAtlas(cursor.default);
 	onClick = App->gui->GetRectFromAtlas(cursor.onClick);
+	onMine = App->gui->GetRectFromAtlas(cursor.onMine);
+	onMineClick = App->gui->GetRectFromAtlas(cursor.onMineClick);
+	onEnemies = App->gui->GetRectFromAtlas(cursor.onEnemies);
+	onEnemiesClick = App->gui->GetRectFromAtlas(cursor.onEnemiesClick);
 
 	texArea = default;
 	width = texArea.w;
@@ -89,4 +93,11 @@ void UICursor::SetMousePosition()
 	mouse_position.x *= scale;
 	mouse_position.y *= scale;
 	SetLocalPos(mouse_position);
+}
+
+void UICursor::SetTexArea(SDL_Rect texAreaDefault, SDL_Rect texAreaOnClick)
+{
+	this->texArea = texAreaDefault;
+	this->default = texAreaDefault;
+	this->onClick = texAreaOnClick;
 }
