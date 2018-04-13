@@ -10,6 +10,10 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		this->constructionTimer.Start();
 	}
 }
+ChickenFarm::~ChickenFarm() {
+	App->player->currentFood -= 4;
+	App->scene->hasFoodChanged = true;
+};
 
 void ChickenFarm::Move(float dt)
 {

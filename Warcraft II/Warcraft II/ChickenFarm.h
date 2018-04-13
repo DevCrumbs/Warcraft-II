@@ -25,7 +25,7 @@ class ChickenFarm :public StaticEntity
 public:
 
 	ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener = nullptr);
-	~ChickenFarm() {};
+	~ChickenFarm();
 
 	void Move(float dt);
 
