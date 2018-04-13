@@ -1985,47 +1985,50 @@ uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEG
 // Returns a pointer to the Entity that is on the tile or nullptr
 Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCategory, EntitySide entitySide) const
 {
-	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+	if (entityCategory == EntityCategory_DYNAMIC_ENTITY) {
 
-	while (activeDyn != activeDynamicEntities.end()) {
+		list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
 
-		// The unit cannot be dead
-		if (!(*activeDyn)->isDead) {
+		while (activeDyn != activeDynamicEntities.end()) {
 
-			iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
+			// The unit cannot be dead
+			if (!(*activeDyn)->isDead) {
 
-			switch (entitySide) {
+				iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
 
-			case EntitySide_Player:
+				switch (entitySide) {
 
-				if ((*activeDyn)->entitySide == EntitySide_Player)
+				case EntitySide_Player:
+
+					if ((*activeDyn)->entitySide == EntitySide_Player)
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)(*activeDyn);
+					break;
+
+				case EntitySide_Enemy:
+
+					if ((*activeDyn)->entitySide == EntitySide_Enemy)
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)(*activeDyn);
+					break;
+
+				case EntitySide_Neutral:
+
+					if ((*activeDyn)->entitySide == EntitySide_Neutral)
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)(*activeDyn);
+					break;
+
+				case EntitySide_NoSide:
+
 					if (tile.x == entityTile.x && tile.y == entityTile.y)
 						return (Entity*)(*activeDyn);
-				break;
-
-			case EntitySide_Enemy:
-
-				if ((*activeDyn)->entitySide == EntitySide_Enemy)
-					if (tile.x == entityTile.x && tile.y == entityTile.y)
-						return (Entity*)(*activeDyn);
-				break;
-
-			case EntitySide_Neutral:
-
-				if ((*activeDyn)->entitySide == EntitySide_Neutral)
-					if (tile.x == entityTile.x && tile.y == entityTile.y)
-						return (Entity*)(*activeDyn);
-				break;
-
-			case EntitySide_NoSide:
-
-				if (tile.x == entityTile.x && tile.y == entityTile.y)
-					return (Entity*)(*activeDyn);
-				break;
+					break;
+				}
 			}
-		}
 
-		activeDyn++;
+			activeDyn++;
+		}
 	}
 
 	// TODO: Add StaticEntities (and check them depending on the entityType parameter)
@@ -2041,29 +2044,48 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 
 		case EntitySide_Player:
 
-			if ((*toSpawn)->entitySide == EntitySide_Player)
-				if (tile.x == entityTile.x && tile.y == entityTile.y)
-					return (Entity*)(*toSpawn);
+			if ((*toSpawn)->entitySide == EntitySide_Player) {
+
+				if (entityCategory == EntityCategory_NONE ||
+					(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
+					|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
+
+					if ((*toSpawn)->entitySide == EntitySide_Player)
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)(*toSpawn);
+			}
 			break;
 
 		case EntitySide_Enemy:
 
-			if ((*toSpawn)->entitySide == EntitySide_Enemy)
-				if (tile.x == entityTile.x && tile.y == entityTile.y)
-					return (Entity*)(*toSpawn);
+			if (entityCategory == EntityCategory_NONE ||
+				(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
+				|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
+				
+				if ((*toSpawn)->entitySide == EntitySide_Enemy)
+					if (tile.x == entityTile.x && tile.y == entityTile.y)
+						return (Entity*)(*toSpawn);
 			break;
 
 		case EntitySide_Neutral:
 
-			if ((*toSpawn)->entitySide == EntitySide_Neutral)
-				if (tile.x == entityTile.x && tile.y == entityTile.y)
-					return (Entity*)(*toSpawn);
+			if (entityCategory == EntityCategory_NONE ||
+				(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
+				|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
+				
+				if ((*toSpawn)->entitySide == EntitySide_Neutral)
+					if (tile.x == entityTile.x && tile.y == entityTile.y)
+						return (Entity*)(*toSpawn);
 			break;
 
 		case EntitySide_NoSide:
 
-			if (tile.x == entityTile.x && tile.y == entityTile.y)
-				return (Entity*)(*toSpawn);
+			if (entityCategory == EntityCategory_NONE ||
+				(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
+				|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
+				
+				if (tile.x == entityTile.x && tile.y == entityTile.y)
+					return (Entity*)(*toSpawn);
 			break;
 		}
 
@@ -2116,7 +2138,7 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 /// - If units are selected, buildings cannot be selected
 /// - If a building is selected, units cannot be selected
 /// · Only 1 building can be selected at a time
-void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, EntitySide entitySide)
+void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTITY_CATEGORY entityCategory, EntitySide entitySide)
 {
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
@@ -2133,18 +2155,22 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, Enti
 			|| (entitySide == EntitySide_Player && (*it)->entitySide == EntitySide_Player)
 			|| (entitySide == EntitySide_Enemy && (*it)->entitySide == EntitySide_Enemy)) {
 
-			SDL_Rect entityRect = { (*it)->GetPos().x, (*it)->GetPos().y, (*it)->GetSize().x, (*it)->GetSize().y };
+			if (entityCategory == EntityCategory_NONE
+				|| (entityCategory == EntityCategory_DYNAMIC_ENTITY && (*it)->entityType == EntityCategory_DYNAMIC_ENTITY)) {
 
-			// If the unit is within the selection:
-			if (SDL_HasIntersection(&entityRect, &rectangleRect)) {
+				SDL_Rect entityRect = { (*it)->GetPos().x, (*it)->GetPos().y, (*it)->GetSize().x, (*it)->GetSize().y };
 
-				// It there are less units than MAX_UNITS_SELECTED selected:
-				if (unitsSelected.size() < MAX_UNITS_SELECTED) {
+				// If the unit is within the selection:
+				if (SDL_HasIntersection(&entityRect, &rectangleRect)) {
 
-					// If the unit isn't in the unitsSelected list, add it
-					if (find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
-						unitsSelected.push_back(GetDynamicEntityByEntity(*it));
-						(*it)->isSelected = true;
+					// It there are less units than MAX_UNITS_SELECTED selected:
+					if (unitsSelected.size() < MAX_UNITS_SELECTED) {
+
+						// If the unit isn't in the unitsSelected list, add it
+						if (find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
+							unitsSelected.push_back(GetDynamicEntityByEntity(*it));
+							(*it)->isSelected = true;
+						}
 					}
 				}
 			}
@@ -2155,6 +2181,14 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, Enti
 					unitsSelected.remove(GetDynamicEntityByEntity(*it));
 					(*it)->isSelected = false;
 				}
+			}
+		}
+		else {
+
+			// If the unit is in the unitsSelected list, remove it
+			if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
+				unitsSelected.remove(GetDynamicEntityByEntity(*it));
+				(*it)->isSelected = false;
 			}
 		}
 
