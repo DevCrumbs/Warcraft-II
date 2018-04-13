@@ -1,6 +1,7 @@
 #include "ScoutTower.h"
 #include "j1Collision.h"
 #include "j1Particles.h"
+#include "j1Pathfinding.h"
 #include "j1Map.h"
 #include <utility> 
 
@@ -15,8 +16,9 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 void ScoutTower::Move(float dt)
 {
 	if (!isColliderCreated) {
+
 		CreateEntityCollider(EntitySide_Player);
-		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, scoutTowerInfo.sightRadius);
+		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, scoutTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 		sightRadiusCollider->isTrigger = true;
 		isColliderCreated = true;
 	}

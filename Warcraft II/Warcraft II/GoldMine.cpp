@@ -31,7 +31,7 @@ void GoldMine::LoadAnimationsSpeed()
 void GoldMine::UpdateAnimations(float dt)
 {
 	if (constructionTimer.Read() >= constructionTime * 1000) {
-		buildingState = BuildingState_Normal;
+		buildingState = BuildingState_Building;
 		texArea = &goldMineInfo.inProgressTexArea;
 		startTimer = true;
 		int random = rand() % 4;
