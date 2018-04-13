@@ -384,6 +384,11 @@ bool j1Scene::Update(float dt)
 
 	if (units.size() > 0) {
 
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+			App->player->DeleteEntitiesMenu();
+			App->player->MakeUnitsMenu(units);
+		}
+
 		UnitGroup* group = App->movement->GetGroupByUnits(units);
 
 		if (group == nullptr)
