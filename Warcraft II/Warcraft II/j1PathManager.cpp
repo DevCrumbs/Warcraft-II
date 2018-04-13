@@ -323,6 +323,7 @@ bool PathPlanner::HilevelUpdate()
 			RoomMap* map = App->map->GetMap();
 
 			iPoint pos = App->map->TileToWorld(nextRoomPos);
+
 			for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
 			{			
 				SDL_Rect goalRect{ pos.x, pos.y, 800, 800 };

@@ -47,45 +47,55 @@ void j1PathFinding::SetMap(list<WalkabilityMap> lowMap)
 }
 
 // Utility: return true if pos is inside the map boundaries
+//bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
+//{
+//	return (pos.x >= 0 && pos.x <= (int)currentLowLevelMap.width &&
+//		pos.y >= 0 && pos.y <= (int)currentLowLevelMap.height);
+//}
+
+// Utility: returns true is the tile is walkable
 bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 {
 	return (pos.x >= 0 && pos.x <= (int)currentLowLevelMap.width &&
 		pos.y >= 0 && pos.y <= (int)currentLowLevelMap.height);
 }
 
-bool j1PathFinding::CheckBoundaries(const iPoint& pos, bool test) const
-{
-	return (pos.x >= 0 && pos.x <= (int)App->map->hiLevelWalkabilityMap.width &&
-		pos.y >= 0 && pos.y <= (int)App->map->hiLevelWalkabilityMap.height);
-}
+
+//bool j1PathFinding::IsWalkable(const iPoint& pos) const
+//{
+//	int t = GetTileAt({ pos.x - currentLowLevelMap.position.x/32,pos.y - currentLowLevelMap.position.y / 32 });
+//	return INVALID_WALK_CODE && t > 0;
+//}
 
 // Utility: returns true is the tile is walkable
-bool j1PathFinding::IsWalkable(const iPoint& pos) const
+bool j1PathFinding::IsWalkable(iPoint& pos) const
 {
-	int t = GetTileAt({ pos.x - currentLowLevelMap.position.x/32,pos.y - currentLowLevelMap.position.y / 32 });
-	return INVALID_WALK_CODE && t > 0;
-}
+	RoomMap* map = App->map->GetMap();
 
-// Utility: returns true is the tile is walkable
-bool j1PathFinding::IsWalkable(const iPoint& pos, bool test) const
-{
+	SDL_Rect tileToCheck{ pos.x * 32,pos.y * 32, 32 , 32 };
+	SDL_Rect result{ 0,0,0,0 };
+
+	for (list<Room>::iterator iterator = map->rooms.begin(); iterator != map->rooms.end(); ++iterator)
+	{
+		if (SDL_IntersectRect(&(*iterator).collider, &tileToCheck, &result))
+		{
+			this->currentLowLevelMap = (*iterator).walkabilityMap;
+			break;
+		}
+	}
+
+	pos.x = pos.x - currentLowLevelMap.position.x / 32;
+	pos.y = pos.y - currentLowLevelMap.position.y / 32;
+
 	int t = GetTileAt({ pos.x, pos.y }, true);
+
 	return INVALID_WALK_CODE && t > 0;
 }
 
-// Utility: return the walkability value of a tile
 int j1PathFinding::GetTileAt(const iPoint& pos) const
 {
 	if (CheckBoundaries(pos))
-		return currentLowLevelMap.map[(pos.y*currentLowLevelMap.width) + pos.x];
-
-	return INVALID_WALK_CODE;
-}
-
-int j1PathFinding::GetTileAt(const iPoint& pos, bool test) const
-{
-	if (CheckBoundaries(pos,true))
-		return App->map->hiLevelWalkabilityMap.map[(pos.y * App->map->hiLevelWalkabilityMap.width) + pos.x];
+		return currentLowLevelMap.map[(pos.y * currentLowLevelMap.width) + pos.x];
 
 	return INVALID_WALK_CODE;
 }

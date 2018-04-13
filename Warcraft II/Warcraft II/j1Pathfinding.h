@@ -67,7 +67,7 @@ struct PathNode
 struct WalkabilityMap
 {
 	iPoint position{ 0,0 };
-	uchar* map = nullptr;
+	mutable uchar* map = nullptr;
 	int width = 0, height = 0;
 };
 // ---------------------------------------------------------------------
@@ -129,7 +129,7 @@ public:
 	bool CheckBoundaries(const iPoint& pos, bool test) const;
 
 	// Utility: returns true is the tile is walkable
-	bool IsWalkable(const iPoint& pos) const;
+	bool IsWalkable(iPoint& pos) const;
 
 	bool IsWalkable(const iPoint& pos, bool test) const;
 
@@ -153,7 +153,7 @@ public:
 private:
 
 	WalkabilityMap			hiLevelWalkMap;
-	WalkabilityMap			currentLowLevelMap;
+	mutable WalkabilityMap			currentLowLevelMap;
 	list<WalkabilityMap>	lowLevelWalkabilityMap;
 	DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan; // distance heuristic of choice
 
