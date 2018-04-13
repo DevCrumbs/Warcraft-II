@@ -3,6 +3,7 @@
 
 #include "StaticEntity.h"
 #include <queue>
+#include <list>
 
 struct ColliderGroup;
 
@@ -70,6 +71,7 @@ private:
 	Entity* attackingTarget = nullptr;
 	j1Timer attackTimer;
 	std::queue<Entity*> enemyAttackQueue;
+	std::list<Entity*> enemyAttackList;
 
 	//Arrow
 	Particle* arrowParticle = nullptr;
