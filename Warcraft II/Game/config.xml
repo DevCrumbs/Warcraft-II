@@ -88,24 +88,26 @@
   </gui>
 
   <menu>
-    
     <audioPaths>
-      <mainTheme path= "mainMenu.ogg"/>
+      <mainTheme path ="mainMenu.ogg"/>
       <sounds>
-       <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"
-                      chickenFarm ="buildings/farm.wav" goldMine = "buildings/goldMine.wav" gryphAviar = "buildings/gryphonAviary.wav"
-                      mageTower = "buildings/mageTower.wav" stables= "buildings/stables.wav" repair = "buildings/buildingRepair.wav" 
-                      destroyBuilding = "buildingDestroy"/>
+        <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"
+                       chickenFarm ="buildings/farm.wav" goldMine = "buildings/goldMine.wav" gryphAviar = "buildings/gryphonAviary.wav"
+                       mageTower ="buildings/mageTower.wav" stables= "buildings/stables.wav" repair = "buildings/buildingRepair.wav"
+                       destroyBuilding = "buildingDestroy"/>
+        <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
         
-       <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
+        <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" prisonerRescue="PrisonerRescue.wav"/>
+        <archerPaths goToPlace ="Units/Archer/GoToPlace1.wav" ready="Units/Archer/Ready.wav" selected="Units/Archer/Selected1.wav"/>
+        <footmanPaths goToPlace ="Units/Footman/GoToPlace1.wav" ready="Units/Footman/Ready.wav" selected="Units/Footman/Selected1.wav"/>
+        <crittersPaths boarDead ="Units/Critters/BoarDead.wav" sheepDead="Units/Critters/SheepDead.wav"/>
+        <attackPaths axeThrow="Attack/AxeThrow.wav" bowFire="Attack/BowFire.wav" sword="Attack/Sword2.wav"/>
+
       </sounds>
     </audioPaths>
-    
   </menu>
   
-  
   <scene>
-
     <camera speed ="300.0" movMarginPcnt = "5"/>
 
     <audioPaths>
@@ -142,6 +144,8 @@
       <orcishBuildings name ="data/assets/textures/buildings/OrcishBuildings.png"/>
       <footmanAnimations name = "data/assets/textures/units/humanUnits/FinalFootman.png"/>
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/FinalGrunt.png"/>
+      <trollAxethrowerAnimations name = "data/assets/textures/units/orcishUnits/TrollAxethrower.png"/>
+      <elvenArcherAnimations name = "data/assets/textures/units/humanUnits/archer.png"/>
       <khadgarAnimarions name = "data/assets/textures/units/prisonersUnits/Khadgar.png"/>
       <alleriaAnimarions name = "data/assets/textures/units/prisonersUnits/Alleria.png"/>
       <critters name="data/assets/textures/units/neutralUnits/critters.png"/>
@@ -210,9 +214,6 @@
               <frame x="240" y="400" w="80" h="80"/>
               <frame x="320" y="400" w="80" h="80"/>
             </right>
-            <idle speed="2" loop="1">
-              <frame x="0" y="80" w="80" h="80"/>
-            </idle>
             <attackUp speed="2" loop="0">
               <frame x="400" y="0" w="80" h="80"/>
               <frame x="480" y="0" w="80" h="80"/>
@@ -274,6 +275,111 @@
 
           </animations>
         </footman>
+
+        <elvenArcher>
+          <animations>
+
+            <up speed="4" loop="1">
+              <frame x="0" y="0" w="60" h="75"/>
+              <frame x="0" y="75" w="60" h="75"/>
+              <frame x="0" y="150" w="60" h="75"/>
+              <frame x="0" y="225" w="60" h="75"/>
+              <frame x="0" y="300" w="60" h="75"/>
+            </up>
+            <upRight speed="4" loop="1">
+              <frame x="60" y="0" w="60" h="75"/>
+              <frame x="60" y="75" w="60" h="75"/>
+              <frame x="60" y="150" w="60" h="75"/>
+              <frame x="60" y="225" w="60" h="75"/>
+              <frame x="60" y="300" w="60" h="75"/>
+            </upRight>
+            <upLeft speed="4" loop="1">
+              <frame x="480" y="0" w="60" h="75"/>
+              <frame x="480" y="75" w="60" h="75"/>
+              <frame x="480" y="150" w="60" h="75"/>
+              <frame x="480" y="225" w="60" h="75"/>
+              <frame x="480" y="300" w="60" h="75"/>
+            </upLeft>
+            <down speed="4" loop="1">
+              <frame x="240" y="0" w="60" h="75"/>
+              <frame x="240" y="75" w="60" h="75"/>
+              <frame x="240" y="150" w="60" h="75"/>
+              <frame x="240" y="225" w="60" h="75"/>
+              <frame x="240" y="300" w="60" h="75"/>
+            </down>
+            <downRight speed="4" loop="1">
+              <frame x="180" y="0" w="60" h="75"/>
+              <frame x="180" y="75" w="60" h="75"/>
+              <frame x="180" y="150" w="60" h="75"/>
+              <frame x="180" y="225" w="60" h="75"/>
+              <frame x="180" y="300" w="60" h="75"/>
+            </downRight>
+            <downLeft speed="4" loop="1">
+              <frame x="360" y="0" w="60" h="75"/>
+              <frame x="360" y="75" w="60" h="75"/>
+              <frame x="360" y="150" w="60" h="75"/>
+              <frame x="360" y="225" w="60" h="75"/>
+              <frame x="360" y="300" w="60" h="75"/>
+            </downLeft>
+            <left speed="4" loop="1">
+              <frame x="420" y="0" w="60" h="75"/>
+              <frame x="420" y="75" w="60" h="75"/>
+              <frame x="420" y="150" w="60" h="75"/>
+              <frame x="420" y="225" w="60" h="75"/>
+              <frame x="420" y="300" w="60" h="75"/>
+            </left>
+            <right speed="4" loop="1">
+              <frame x="120" y="0" w="60" h="75"/>
+              <frame x="120" y="75" w="60" h="75"/>
+              <frame x="120" y="150" w="60" h="75"/>
+              <frame x="120" y="225" w="60" h="75"/>
+              <frame x="120" y="300" w="60" h="75"/>
+            </right>
+            <attackUp speed="2" loop="0">
+              <frame x="1" y="375" w="60" h="75"/>
+              <frame x="1" y="450" w="60" h="75"/>
+            </attackUp>
+            <attackUpRight speed="2" loop="0">
+              <frame x="60" y="375" w="60" h="75"/>
+              <frame x="60" y="450" w="60" h="75"/>
+            </attackUpRight>
+            <attackUpLeft speed="2" loop="0">
+              <frame x="480" y="375" w="60" h="75"/>
+              <frame x="480" y="450" w="60" h="75"/>
+            </attackUpLeft>
+            <attackDown speed="2" loop="0">
+              <frame x="240" y="375" w="60" h="75"/>
+              <frame x="240" y="450" w="60" h="75"/>
+            </attackDown>
+            <attackDownRight speed="2" loop="0">
+              <frame x="180" y="375" w="60" h="75"/>
+              <frame x="180" y="450" w="60" h="75"/>
+            </attackDownRight>
+            <attackDownLeft speed="2" loop="0">
+              <frame x="360" y="375" w="60" h="75"/>
+              <frame x="360" y="450" w="60" h="75"/>
+            </attackDownLeft>
+            <attackRight speed="2" loop="0">
+              <frame x="120" y="375" w="60" h="75"/>
+              <frame x="120" y="450" w="60" h="75"/>
+            </attackRight>
+            <attackLeft speed="2" loop="0">
+              <frame x="420" y="375" w="60" h="75"/>
+              <frame x="420" y="450" w="60" h="75"/>
+            </attackLeft>
+            <deathUp speed="1" loop="0">
+              <frame x="69" y="538" w="60" h="75"/>
+              <frame x="183" y="540" w="60" h="75"/>
+              <frame x="11" y="613" w="60" h="75"/>
+            </deathUp>
+            <deathDown speed="1" loop="0">
+              <frame x="13" y="542" w="60" h="75"/>
+              <frame x="127" y="534" w="60" h="75"/>
+              <frame x="237" y="541" w="60" h="75"/>
+            </deathDown>
+            
+          </animations>                 
+        </elvenArcher>          
       </humans>
 
       <sheep>
@@ -416,9 +522,6 @@
                 <frame x="300" y="200" w="100" h="100"/>
                 <frame x="400" y="200" w="100" h="100"/>
               </right>
-              <idle speed="4" loop="1">
-                <frame x="0" y="0" w="100" h="100"/>
-              </idle>
               <attackUp speed="2" loop="0">
                 <frame x="500" y="100" w="100" h="100"/>
                 <frame x="600" y="100" w="100" h="100"/>
@@ -480,6 +583,126 @@
          
           </animations>
         </grunt>
+
+        <trollAxethrower>
+          <animations>
+
+            <up speed="4" loop="1">
+              <frame x="0" y="0" w="55" h="58"/>
+              <frame x="0" y="58" w="55" h="58"/>
+              <frame x="0" y="116" w="55" h="58"/>
+              <frame x="0" y="174" w="55" h="58"/>
+              <frame x="0" y="232" w="55" h="58"/>
+            </up>
+            <upRight speed="4" loop="1">
+              <frame x="55" y="0" w="55" h="58"/>
+              <frame x="55" y="58" w="55" h="58"/>
+              <frame x="55" y="116" w="55" h="58"/>
+              <frame x="55" y="174" w="55" h="58"/>
+              <frame x="55" y="232" w="55" h="58"/>
+            </upRight>
+            <upLeft speed="4" loop="1">
+              <frame x="385" y="0" w="55" h="58"/>
+              <frame x="385" y="58" w="55" h="58"/>
+              <frame x="385" y="116" w="55" h="58"/>
+              <frame x="385" y="174" w="55" h="58"/>
+              <frame x="385" y="232" w="55" h="58"/>
+            </upLeft>
+            <down speed="4" loop="1">
+              <frame x="220" y="0" w="55" h="58"/>
+              <frame x="220" y="58" w="55" h="58"/>
+              <frame x="220" y="116" w="55" h="58"/>
+              <frame x="220" y="174" w="55" h="58"/>
+              <frame x="220" y="232" w="55" h="58"/>
+            </down>
+            <downRight speed="4" loop="1">
+              <frame x="165" y="0" w="55" h="58"/>
+              <frame x="165" y="58" w="55" h="58"/>
+              <frame x="165" y="116" w="55" h="58"/>
+              <frame x="165" y="174" w="55" h="58"/>
+              <frame x="165" y="232" w="55" h="58"/>
+            </downRight>
+            <downLeft speed="4" loop="1">
+              <frame x="275" y="0" w="55" h="58"/>
+              <frame x="275" y="58" w="55" h="58"/>
+              <frame x="275" y="116" w="55" h="58"/>
+              <frame x="275" y="174" w="55" h="58"/>
+              <frame x="275" y="232" w="55" h="58"/>
+            </downLeft>
+            <left speed="4" loop="1">
+              <frame x="330" y="0" w="55" h="58"/>
+              <frame x="330" y="58" w="55" h="58"/>
+              <frame x="330" y="116" w="55" h="58"/>
+              <frame x="330" y="174" w="55" h="58"/>
+              <frame x="330" y="232" w="55" h="58"/>
+            </left>
+            <right speed="4" loop="1">
+              <frame x="110" y="0" w="55" h="58"/>
+              <frame x="110" y="58" w="55" h="58"/>
+              <frame x="110" y="116" w="55" h="58"/>
+              <frame x="110" y="174" w="55" h="58"/>
+              <frame x="110" y="232" w="55" h="58"/>
+            </right>
+            <attackUp speed="2" loop="0">
+              <frame x="0" y="290" w="55" h="58"/>
+              <frame x="0" y="348" w="55" h="58"/>
+              <frame x="0" y="406" w="55" h="58"/>
+              <frame x="0" y="464" w="55" h="58"/>
+            </attackUp>
+            <attackUpRight speed="2" loop="0">
+              <frame x="55" y="290" w="55" h="58"/>
+              <frame x="55" y="348" w="55" h="58"/>
+              <frame x="55" y="406" w="55" h="58"/>
+              <frame x="55" y="464" w="55" h="58"/>
+            </attackUpRight>
+            <attackUpLeft speed="2" loop="0">
+              <frame x="385" y="290" w="55" h="58"/>
+              <frame x="385" y="348" w="55" h="58"/>
+              <frame x="385" y="406" w="55" h="58"/>
+              <frame x="385" y="464" w="55" h="58"/>
+            </attackUpLeft>
+            <attackDown speed="2" loop="0">
+              <frame x="220" y="290" w="55" h="58"/>
+              <frame x="220" y="348" w="55" h="58"/>
+              <frame x="220" y="406" w="55" h="58"/>
+              <frame x="220" y="464" w="55" h="58"/>
+            </attackDown>
+            <attackDownRight speed="2" loop="0">
+              <frame x="165" y="290" w="55" h="58"/>
+              <frame x="165" y="348" w="55" h="58"/>
+              <frame x="165" y="406" w="55" h="58"/>
+              <frame x="165" y="464" w="55" h="58"/>
+            </attackDownRight>
+            <attackDownLeft speed="2" loop="0">
+              <frame x="275" y="290" w="55" h="58"/>
+              <frame x="275" y="348" w="55" h="58"/>
+              <frame x="275" y="406" w="55" h="58"/>
+              <frame x="275" y="464" w="55" h="58"/>
+            </attackDownLeft>
+            <attackRight speed="2" loop="0">
+              <frame x="110" y="290" w="55" h="58"/>
+              <frame x="110" y="348" w="55" h="58"/>
+              <frame x="110" y="406" w="55" h="58"/>
+              <frame x="110" y="464" w="55" h="58"/>
+            </attackRight>
+            <attackLeft speed="2" loop="0">
+              <frame x="330" y="290" w="55" h="58"/>
+              <frame x="330" y="348" w="55" h="58"/>
+              <frame x="330" y="406" w="55" h="58"/>
+              <frame x="330" y="464" w="55" h="58"/>
+            </attackLeft>
+            <deathUp speed="1" loop="0">
+              <frame x="55" y="552" w="55" h="58"/>
+              <frame x="165" y="552" w="55" h="58"/>
+              <frame x="275" y="552" w="55" h="58"/>
+            </deathUp>
+            <deathDown speed="1" loop="0">
+              <frame x="0" y="552" w="55" h="58"/>
+              <frame x="110" y="552" w="55" h="58"/>
+              <frame x="220" y="552" w="55" h="58"/>
+            </deathDown>           
+          </animations>         
+        </trollAxethrower>
       </orcs>
       
       <prisioners>
@@ -506,228 +729,6 @@
       </prisioners>
 
     </dynamicEntities>
-    
-     <!-- // ELVEN ARCHER
-              <up speed="4" loop="1">
-                <frame x="0" y="0" w="60" h="75"/>
-                <frame x="0" y="75" w="60" h="75"/>
-                <frame x="0" y="150" w="60" h="75"/>
-                <frame x="0" y="225" w="60" h="75"/>
-                <frame x="0" y="300" w="60" h="75"/>
-              </up>
-              <upRight speed="4" loop="1">
-                <frame x="60" y="0" w="60" h="75"/>
-                <frame x="60" y="75" w="60" h="75"/>
-                <frame x="60" y="150" w="60" h="75"/>
-                <frame x="60" y="225" w="60" h="75"/>
-                <frame x="60" y="300" w="60" h="75"/>
-              </upRight>
-              <upLeft speed="4" loop="1">
-                <frame x="480" y="0" w="60" h="75"/>
-                <frame x="480" y="75" w="60" h="75"/>
-                <frame x="480" y="150" w="60" h="75"/>
-                <frame x="480" y="225" w="60" h="75"/>
-                <frame x="480" y="300" w="60" h="75"/>
-              </upLeft>
-              <down speed="4" loop="1">
-                <frame x="240" y="0" w="60" h="75"/>
-                <frame x="240" y="75" w="60" h="75"/>
-                <frame x="240" y="150" w="60" h="75"/>
-                <frame x="240" y="225" w="60" h="75"/>
-                <frame x="240" y="300" w="60" h="75"/>
-              </down>
-              <downRight speed="4" loop="1">
-                <frame x="180" y="0" w="60" h="75"/>
-                <frame x="180" y="75" w="60" h="75"/>
-                <frame x="180" y="150" w="60" h="75"/>
-                <frame x="180" y="225" w="60" h="75"/>
-                <frame x="180" y="300" w="60" h="75"/>
-              </downRight>
-              <downLeft speed="4" loop="1">
-                <frame x="360" y="0" w="60" h="75"/>
-                <frame x="360" y="75" w="60" h="75"/>
-                <frame x="360" y="150" w="60" h="75"/>
-                <frame x="360" y="225" w="60" h="75"/>
-                <frame x="360" y="300" w="60" h="75"/>
-              </downLeft>
-              <left speed="4" loop="1">
-                <frame x="420" y="0" w="60" h="75"/>
-                <frame x="420" y="75" w="60" h="75"/>
-                <frame x="420" y="150" w="60" h="75"/>
-                <frame x="420" y="225" w="60" h="75"/>
-                <frame x="420" y="300" w="60" h="75"/>
-              </left>
-              <right speed="4" loop="1">
-                <frame x="120" y="0" w="60" h="75"/>
-                <frame x="120" y="75" w="60" h="75"/>
-                <frame x="120" y="150" w="60" h="75"/>
-                <frame x="120" y="225" w="60" h="75"/>
-                <frame x="120" y="300" w="60" h="75"/>
-              </right>
-              <idle speed="4" loop="1">
-                <frame x="240" y="0" w="60" h="75"/>
-              </idle>
-              <attackUp speed="2" loop="0"> 
-                <frame x="1" y="375" w="60" h="75"/>
-                <frame x="1" y="450" w="60" h="75"/>
-              </attackUp>                         
-              <attackUpRight speed="2" loop="0">  
-                <frame x="60" y="375" w="60" h="75"/>
-                <frame x="60" y="450" w="60" h="75"/>
-              </attackUpRight>                    
-              <attackUpLeft speed="2" loop="0">   
-                <frame x="480" y="375" w="60" h="75"/>
-                <frame x="480" y="450" w="60" h="75"/>              
-              </attackUpLeft>
-              <attackDown speed="2" loop="0">
-                <frame x="240" y="375" w="60" h="75"/>
-                <frame x="240" y="450" w="60" h="75"/>                
-              </attackDown>
-              <attackDownRight speed="2" loop="0">
-                <frame x="180" y="375" w="60" h="75"/>
-                <frame x="180" y="450" w="60" h="75"/>
-              </attackDownRight>                  
-              <attackDownLeft speed="2" loop="0"> 
-                <frame x="360" y="375" w="60" h="75"/>
-                <frame x="360" y="450" w="60" h="75"/>                
-              </attackDownLeft>                   
-              <attackRight speed="2" loop="0">    
-                <frame x="120" y="375" w="60" h="75"/>
-                <frame x="120" y="450" w="60" h="75"/>                
-              </attackRight>                      
-              <attackLeft speed="2" loop="0">     
-                <frame x="420" y="375" w="60" h="75"/>
-                <frame x="420" y="450" w="60" h="75"/>                
-              </attackLeft>                       
-              <deathUp speed="1" loop="0">        
-                <frame x="69" y="538" w="60" h="75"/>
-                <frame x="183" y="540" w="60" h="75"/>
-                <frame x="11" y="613" w="60" h="75"/>
-              </deathUp>
-              <deathDown speed="1" loop="0">
-                <frame x="13" y="542" w="60" h="75"/>
-                <frame x="127" y="534" w="60" h="75"/>
-                <frame x="237" y="541" w="60" h="75"/>
-              </deathDown> -->
-    
-    <!-- //TROLL AXETHROWER
-              <up speed="4" loop="1">
-                <frame x="0" y="0" w="55" h="58"/>
-                <frame x="0" y="58" w="55" h="58"/>
-                <frame x="0" y="116" w="55" h="58"/>
-                <frame x="0" y="174" w="55" h="58"/>
-                <frame x="0" y="232" w="55" h="58"/>
-              </up>
-              <upRight speed="4" loop="1">
-                <frame x="55" y="0" w="55" h="58"/>
-                <frame x="55" y="58" w="55" h="58"/>
-                <frame x="55" y="116" w="55" h="58"/>
-                <frame x="55" y="174" w="55" h="58"/>
-                <frame x="55" y="232" w="55" h="58"/>
-              </upRight>
-              <upLeft speed="4" loop="1">
-                <frame x="385" y="0" w="55" h="58"/>
-                <frame x="385" y="58" w="55" h="58"/>
-                <frame x="385" y="116" w="55" h="58"/>
-                <frame x="385" y="174" w="55" h="58"/>
-                <frame x="385" y="232" w="55" h="58"/>
-              </upLeft>
-              <down speed="4" loop="1">
-                <frame x="220" y="0" w="55" h="58"/>
-                <frame x="220" y="58" w="55" h="58"/>
-                <frame x="220" y="116" w="55" h="58"/>
-                <frame x="220" y="174" w="55" h="58"/>
-                <frame x="220" y="232" w="55" h="58"/>
-              </down>
-              <downRight speed="4" loop="1">
-                <frame x="165" y="0" w="55" h="58"/>
-                <frame x="165" y="58" w="55" h="58"/>
-                <frame x="165" y="116" w="55" h="58"/>
-                <frame x="165" y="174" w="55" h="58"/>
-                <frame x="165" y="232" w="55" h="58"/>
-              </downRight>
-              <downLeft speed="4" loop="1">
-                <frame x="275" y="0" w="55" h="58"/>
-                <frame x="275" y="58" w="55" h="58"/>
-                <frame x="275" y="116" w="55" h="58"/>
-                <frame x="275" y="174" w="55" h="58"/>
-                <frame x="275" y="232" w="55" h="58"/>
-              </downLeft>
-              <left speed="4" loop="1">
-                <frame x="330" y="0" w="55" h="58"/>
-                <frame x="330" y="58" w="55" h="58"/>
-                <frame x="330" y="116" w="55" h="58"/>
-                <frame x="330" y="174" w="55" h="58"/>
-                <frame x="330" y="232" w="55" h="58"/>
-              </left>
-              <right speed="4" loop="1">
-                <frame x="110" y="0" w="55" h="58"/>
-                <frame x="110" y="58" w="55" h="58"/>
-                <frame x="110" y="116" w="55" h="58"/>
-                <frame x="110" y="174" w="55" h="58"/>
-                <frame x="110" y="232" w="55" h="58"/>
-              </right>
-              <idle speed="4" loop="1">
-                <frame x="220" y="0" w="55" h="58"/>
-              </idle>
-              <attackUp speed="2" loop="0"> 
-                <frame x="0" y="290" w="55" h="58"/>
-                <frame x="0" y="348" w="55" h="58"/>
-                <frame x="0" y="406" w="55" h="58"/>
-                <frame x="0" y="464" w="55" h="58"/>
-              </attackUp>
-              <attackUpRight speed="2" loop="0">
-                <frame x="55" y="290" w="55" h="58"/>
-                <frame x="55" y="348" w="55" h="58"/>
-                <frame x="55" y="406" w="55" h="58"/>
-                <frame x="55" y="464" w="55" h="58"/>
-              </attackUpRight>
-              <attackUpLeft speed="2" loop="0">
-                <frame x="385" y="290" w="55" h="58"/>
-                <frame x="385" y="348" w="55" h="58"/>
-                <frame x="385" y="406" w="55" h="58"/>
-                <frame x="385" y="464" w="55" h="58"/>
-              </attackUpLeft>
-              <attackDown speed="2" loop="0">
-                <frame x="220" y="290" w="55" h="58"/>
-                <frame x="220" y="348" w="55" h="58"/>
-                <frame x="220" y="406" w="55" h="58"/>
-                <frame x="220" y="464" w="55" h="58"/>
-              </attackDown>
-              <attackDownRight speed="2" loop="0">
-                <frame x="165" y="290" w="55" h="58"/>
-                <frame x="165" y="348" w="55" h="58"/>
-                <frame x="165" y="406" w="55" h="58"/>
-                <frame x="165" y="464" w="55" h="58"/>
-              </attackDownRight>
-              <attackDownLeft speed="2" loop="0">
-                <frame x="275" y="290" w="55" h="58"/>
-                <frame x="275" y="348" w="55" h="58"/>
-                <frame x="275" y="406" w="55" h="58"/>
-                <frame x="275" y="464" w="55" h="58"/>
-              </attackDownLeft>
-              <attackRight speed="2" loop="0">
-                <frame x="110" y="290" w="55" h="58"/>
-                <frame x="110" y="348" w="55" h="58"/>
-                <frame x="110" y="406" w="55" h="58"/>
-                <frame x="110" y="464" w="55" h="58"/>
-              </attackRight>
-              <attackLeft speed="2" loop="0">
-                <frame x="330" y="290" w="55" h="58"/>
-                <frame x="330" y="348" w="55" h="58"/>
-                <frame x="330" y="406" w="55" h="58"/>
-                <frame x="330" y="464" w="55" h="58"/>
-              </attackLeft>
-              <deathUp speed="1" loop="0">
-                <frame x="55" y="552" w="55" h="58"/>
-                <frame x="165" y="552" w="55" h="58"/>
-                <frame x="275" y="552" w="55" h="58"/>
-              </deathUp>
-              <deathDown speed="1" loop="0">
-                <frame x="0" y="552" w="55" h="58"/>
-                <frame x="110" y="552" w="55" h="58"/>
-                <frame x="220" y="552" w="55" h="58"/>
-              </deathDown> -->
     
     <!-- //DRAGON
              <up speed="4" loop="1">

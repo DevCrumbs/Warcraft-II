@@ -19,9 +19,12 @@ UILifeBar::UILifeBar(iPoint local_pos, UIElement* parent, UILifeBar_Info& info, 
 void UILifeBar::Update(float dt)
 {
 	int l;
-	l = life_bar.life * 100 / life_bar.maxLife; //Pass life to %
-	bar.w = l * life_bar.maxWidth / 100;		//Pass % to width
 
+	if (life_bar.maxLife > 0) {
+
+		l = life_bar.life * 100 / life_bar.maxLife; //Pass life to %
+		bar.w = l * life_bar.maxWidth / 100;//Pass % to width
+	}
 }
 
 void UILifeBar::Draw() const
