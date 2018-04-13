@@ -44,6 +44,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	footmanTexName = spritesheets.child("footmanAnimations").attribute("name").as_string();
 	gruntTexName = spritesheets.child("gruntAnimations").attribute("name").as_string();
 	crittersTexName = spritesheets.child("critters").attribute("name").as_string();
+	khadgarTexName = spritesheets.child("khadgar").attribute("name").as_string();
+
 
 	//Debug Textures Properties
 	buildingPreviewTiles.opacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
@@ -208,6 +210,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	//Humans
 	pugi::xml_node humanEntities = config.child("dynamicEntities").child("humans");
 
+	footmanInfo.maxLife = footmanInfo.currLife = humanEntities.child("footman").attribute("maxLife").as_int();
 	//Footman animations
 	pugi::xml_node footmanAnimations = humanEntities.child("footman").child("animations");
 	pugi::xml_node currentAnimation;
@@ -341,6 +344,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	//Orcs
 	pugi::xml_node orcEntities = config.child("dynamicEntities").child("orcs");
+	gruntInfo.maxLife = gruntInfo.currLife = orcEntities.child("grunt").attribute("maxLife").as_int();
 
 	//Grunt animations
 	pugi::xml_node gruntAnimations = orcEntities.child("grunt").child("animations");
@@ -471,6 +475,13 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
+
+	//Prisoners
+	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
+
+	pugi::xml_node khadgarAnimations = orcEntities.child("khadgar").child("animations");
+
+
 
 	// Critter sheep
 	pugi::xml_node sheepAnimations = config.child("dynamicEntities").child("sheep");
@@ -665,6 +676,7 @@ bool j1EntityFactory::Start()
 	footmanTex = App->tex->Load(footmanTexName.data());
 	gruntTex = App->tex->Load(gruntTexName.data());
 	crittersTex = App->tex->Load(crittersTexName.data());
+	khadgarTex = App->tex->Load(khadgarTexName.data());
 
 	builtChickenFarmInfo = chickenFarmInfo;
 	builtChickenFarmInfo.isBuilt = true;
@@ -1495,6 +1507,7 @@ bool j1EntityFactory::CleanUp()
 	App->tex->UnLoad(humanBuildingsTex);
 	App->tex->UnLoad(neutralBuildingsTex);
 	App->tex->UnLoad(orcishBuildingsTex);
+	App->tex->UnLoad(khadgarTex);
 
 	return ret;
 }
@@ -1837,7 +1850,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	// Dynamic entities
 	case EntityType_FOOTMAN:
 	{
-		Footman* footman = new Footman(pos, { 32,32 }, 10, 10, unitInfo, (const FootmanInfo&)entityInfo, listener);
+		Footman* footman = new Footman(pos, { 32,32 }, footmanInfo.currLife, footmanInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
 		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
 		footman->dynamicEntityType = EntityType_FOOTMAN;
 		footman->SetStringLife(footman->GetCurrLife(), footman->GetMaxLife());
@@ -1891,7 +1904,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRUNT:
 	{
-		Grunt* grunt = new Grunt(pos, { 32,32 }, 20, 20, unitInfo, (const GruntInfo&)entityInfo, listener);
+		Grunt* grunt = new Grunt(pos, { 32,32 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
 		grunt->entityType = EntityCategory_DYNAMIC_ENTITY;
 		grunt->dynamicEntityType = EntityType_GRUNT;
 

@@ -142,6 +142,7 @@
       <orcishBuildings name ="data/assets/textures/buildings/OrcishBuildings.png"/>
       <footmanAnimations name = "data/assets/textures/units/humanUnits/FinalFootman.png"/>
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/FinalGrunt.png"/>
+      <khadgarAnimarions name = "data/assets/textures/units/prisonersUnits/Khadgar.png"/>
       <critters name="data/assets/textures/units/neutralUnits/critters.png"/>
     </spritesheets>
 
@@ -149,7 +150,7 @@
 
     <dynamicEntities>
       <humans>
-        <footman>
+        <footman maxLife = "60">
           <animations>
 
             <up speed="4" loop="1">
@@ -355,7 +356,7 @@
       </boar>
       
       <orcs>
-        <grunt>
+        <grunt maxLife = "60">
           <animations>
             
               <up speed="4" loop="1">
@@ -479,6 +480,20 @@
           </animations>
         </grunt>
       </orcs>
+      
+      <prisioners>
+        <khadgar>
+          <animations>
+            
+            <idle speed="4" loop="1">
+              <frame x="0" y="0" w="64" h="64"/>
+            </idle>
+
+          </animations>
+        </khadgar>
+
+      </prisioners>
+
     </dynamicEntities>
     
      <!-- // ELVEN ARCHER
