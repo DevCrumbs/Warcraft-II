@@ -273,6 +273,10 @@ public:
 	int					defaultTileSize = 0;
 	int					defaultHallSize = 0;
 
+	mutable uint				width = 0; 
+	mutable uint				height = 0;
+	mutable uchar*				walkabilityMap = nullptr;
+
 private:
 
 	pugi::xml_document	mapFile;

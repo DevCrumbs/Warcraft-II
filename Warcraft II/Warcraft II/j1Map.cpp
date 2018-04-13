@@ -20,7 +20,7 @@
 #include "Entity.h"
 #include "StaticEntity.h"
 #include "j1Player.h"
-
+#include "j1Pathfinding.h"
 
 j1Map::j1Map() : j1Module(), isMapLoaded(false)
 {
@@ -758,50 +758,66 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 
 	for (list<Room>::const_iterator iterator = playableMap.rooms.begin(); iterator != playableMap.rooms.end(); ++iterator)
 	{
-		list<MapLayer*>::const_iterator item;
-		item = (*iterator).layers.begin();
-		for (item; item != (*iterator).layers.end(); ++item)
+		if ((*iterator).width == 40)
 		{
-			MapLayer* layer = *item;
-			///	if (!layer->properties.GetProperty("Navigation", false))
-			if (!layer->properties.GetProperty("Navigation", true))
-				continue;
-
-			uchar* map = new uchar[layer->width*layer->height];
-			memset(map, 1, layer->width*layer->height);
-
-			for (int y = 0; y < (*iterator).height; ++y)
+			list<MapLayer*>::const_iterator item;
+			item = (*iterator).layers.begin();
+			for (item; item != (*iterator).layers.end(); ++item)
 			{
-				for (int x = 0; x < (*iterator).width; ++x)
+				MapLayer* layer = *item;
+				///	if (!layer->properties.GetProperty("Navigation", false))
+				if (!layer->properties.GetProperty("navigation", false))
+					continue;
+
+				uchar* map = new uchar[layer->width*layer->height];
+				memset(map, 0, layer->width*layer->height);
+				int aux(0);
+				for (int y = 0; y < (*iterator).height; ++y)
 				{
-					int i = (y*layer->width) + x;
-
-					int tile_id = layer->Get(x, y);
-					TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
-
-					if (tileset != NULL)
+					for (int x = 0; x < (*iterator).width; ++x)
 					{
-						map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
-						/*TileType* ts = tileset->GetTileType(tileId);
-						if(ts != NULL)
+						int i = (y*layer->width) + x;
+
+						int tile_id = layer->Get(x, y);
+						TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
+
+						if (tileset != NULL)
 						{
-						map[i] = ts->properties.Get("walkable", 1);
-						}*/
+							if (tile_id == 381)
+								map[i] = 1;
+							else
+								map[i] = 0;
+							//map[i] = (tile_id - 380) > 0 ? 0 : 1;
+							LOG("%i", map[i]);
+							/*TileType* ts = tileset->GetTileType(tileId);
+							if(ts != NULL)
+							{
+							map[i] = ts->properties.Get("walkable", 1);
+							}*/
+							aux = i;
+						}
 					}
 				}
+				for (int i = 0; i < aux; ++i)
+				{
+					LOG("%i", map[i]);
+				}
+
+				*buffer = map;
+				width = (*iterator).width;
+				height = (*iterator).height;
+				walkabilityMap = map;
+				this->width = this->height = 40;
+				ret = true;
+
+				break;
 			}
 
-			*buffer = map;
-			width = (*iterator).width;
-			height = (*iterator).height;
-			ret = true;
-
-			break;
 		}
 	}
 	return ret;
-
 }
+
 bool Properties::GetProperty(const char* value, bool default_value) const
 {
 	list<Property*>::const_iterator item = properties.begin();
@@ -1216,6 +1232,7 @@ bool j1Map::LoadLogic()
 						UnitInfo unitInfo;
 						
 						ENTITY_TYPE entityType = (ENTITY_TYPE)((*layerIterator)->data[i]);
+
 						switch (entityType)
 						{
 						case EntityType_TOWN_HALL:
@@ -1234,7 +1251,7 @@ bool j1Map::LoadLogic()
 							App->player->runestone.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
 							break;
 						default:
-							App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
+						//	App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
 							break;
 						}
 						

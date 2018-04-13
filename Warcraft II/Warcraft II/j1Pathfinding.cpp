@@ -46,23 +46,33 @@ void j1PathFinding::SetMap(uint width, uint height, uchar* data)
 // Utility: return true if pos is inside the map boundaries
 bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 {
-	return (pos.x >= 0 && pos.x <= (int)(width - 1) &&
-		pos.y >= 0 && pos.y <= (int)(height - 1));
+	return (pos.x >= 0 && pos.x <= (int)(App->map->width - 1) &&
+		pos.y >= 0 && pos.y <= (int)(App->map->height - 1));
 }
 
 // Utility: returns true if the tile is walkable
 bool j1PathFinding::IsWalkable(const iPoint& pos) const
 {
 	int t = GetTileAt(pos);
-	return INVALID_WALK_CODE && t > 0;
+	bool ret = INVALID_WALK_CODE && t == 0;
+	return ret;
 }
 
 // Utility: return the walkability value of a tile
 int j1PathFinding::GetTileAt(const iPoint& pos) const
 {
-	if (CheckBoundaries(pos))
-		return walkabilityMap[(pos.y*width) + pos.x];
-
+	iPoint Pos{ pos };
+	if (pos.x > 50 || pos.y > 50)
+	{
+		Pos.x = pos.x - 2400 / 32;
+		Pos.y = pos.y - 6720 / 32;
+	}
+	if (CheckBoundaries(Pos))
+	{
+		int pos = (Pos.y*width) + Pos.x;
+		int i = App->map->walkabilityMap[pos];
+		return i;
+	}
 	return INVALID_WALK_CODE;
 }
 
