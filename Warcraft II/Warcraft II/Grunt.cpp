@@ -12,6 +12,7 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 #include "Goal.h"
+#include "j1Audio.h"
 
 #include "UILifeBar.h"
 
@@ -88,7 +89,10 @@ void Grunt::Move(float dt)
 
 		if (currLife <= 0
 			&& unitState != UnitState_Die
-			&& singleUnit->IsFittingTile()) {
+			&& singleUnit->IsFittingTile()
+			&& !isDead) {
+
+			App->audio->PlayFx(13, 0);
 
 			isDead = true;
 

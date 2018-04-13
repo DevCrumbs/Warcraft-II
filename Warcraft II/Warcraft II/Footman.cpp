@@ -12,6 +12,7 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 #include "Goal.h"
+#include "j1Audio.h"
 
 #include "UILifeBar.h"
 
@@ -69,6 +70,8 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
+
+	auxIsSelected = isSelected;
 }
 
 void Footman::Move(float dt)
@@ -88,7 +91,10 @@ void Footman::Move(float dt)
 
 		if (currLife <= 0
 			&& unitState != UnitState_Die
-			&& singleUnit->IsFittingTile()) {
+			&& singleUnit->IsFittingTile()
+			&& !isDead) {
+
+			App->audio->PlayFx(12, 0);
 
 			isDead = true;
 
@@ -114,6 +120,14 @@ void Footman::Move(float dt)
 
 	if (!isDead) {
 
+		if (auxIsSelected != isSelected) {
+
+			auxIsSelected = isSelected;
+
+			if (isSelected)
+				App->audio->PlayFx(22, 0);
+		}
+
 		// PROCESS THE COMMANDS
 		switch (unitCommand) {
 
@@ -135,6 +149,8 @@ void Footman::Move(float dt)
 			if (singleUnit->isGoalChanged) {
 
 				if (singleUnit->IsFittingTile()) {
+
+					App->audio->PlayFx(20, 0);
 
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);
