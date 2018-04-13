@@ -9,6 +9,11 @@ struct EnemyCannonTowerInfo
 	iPoint size{ 0,0 };
 	uint life = 0u;
 	float speed = 0.0f;
+
+	uint sightRadius = 0;
+	uint damage = 0;
+	uint attackWaitTime = 0;
+	uint arrowSpeed = 0;
 };
 
 class EnemyCannonTower :public StaticEntity

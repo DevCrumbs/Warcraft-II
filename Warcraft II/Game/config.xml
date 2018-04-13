@@ -1136,16 +1136,19 @@
       </blacksmith>
       
       <watchTower>
+        <attack sightRadius = "5" damage= "7" attackWaitTime= "2" arrowSpeed ="400"/>
         <maxLife value ="150"/>
         <sprite x="548" y="405" w="64" h="64"/>
       </watchTower>
 
       <guardTower>
+        <attack sightRadius = "7" damage= "5" attackWaitTime= "1" arrowSpeed ="400"/>
         <maxLife value ="175"/>
         <sprite x="548" y="613" w="64" h="64"/>
       </guardTower>
 
       <cannonTower>
+        <attack sightRadius = "4" damage= "12" attackWaitTime= "3" arrowSpeed ="600"/>
         <maxLife value ="200"/>
         <sprite x="548" y="542" w="64" h="64"/>
       </cannonTower>

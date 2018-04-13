@@ -216,12 +216,25 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	watchTowerInfo.life = { orcishBuildings.child("watchTower").child("maxLife").attribute("value").as_uint() };
 	watchTowerInfo.completeTexArea = { orcishBuildings.child("watchTower").child("sprite").attribute("x").as_int(), orcishBuildings.child("watchTower").child("sprite").attribute("y").as_int(), orcishBuildings.child("watchTower").child("sprite").attribute("w").as_int(), orcishBuildings.child("watchTower").child("sprite").attribute("h").as_int() };
-	
+	watchTowerInfo.sightRadius = { orcishBuildings.child("watchTower").child("attack").attribute("sightRadius").as_uint() };
+	watchTowerInfo.damage = { orcishBuildings.child("watchTower").child("attack").attribute("damage").as_uint() };
+	watchTowerInfo.attackWaitTime = { orcishBuildings.child("watchTower").child("attack").attribute("attackWaitTime").as_uint() };
+	watchTowerInfo.arrowSpeed = { orcishBuildings.child("watchTower").child("attack").attribute("arrowSpeed").as_uint() };
+
 	enemyGuardTowerInfo.life = { orcishBuildings.child("guardTower").child("maxLife").attribute("value").as_uint() };
 	enemyGuardTowerInfo.completeTexArea = { orcishBuildings.child("guardTower").child("sprite").attribute("x").as_int(), orcishBuildings.child("guardTower").child("sprite").attribute("y").as_int(), orcishBuildings.child("guardTower").child("sprite").attribute("w").as_int(), orcishBuildings.child("guardTower").child("sprite").attribute("h").as_int() };
+	enemyGuardTowerInfo.sightRadius = { orcishBuildings.child("guardTower").child("attack").attribute("sightRadius").as_uint() };
+	enemyGuardTowerInfo.damage = { orcishBuildings.child("guardTower").child("attack").attribute("damage").as_uint() };
+	enemyGuardTowerInfo.attackWaitTime = { orcishBuildings.child("guardTower").child("attack").attribute("attackWaitTime").as_uint() };
+	enemyGuardTowerInfo.arrowSpeed = { orcishBuildings.child("guardTower").child("attack").attribute("arrowSpeed").as_uint() };
 
 	enemyCannonTowerInfo.life = { orcishBuildings.child("cannonTower").child("maxLife").attribute("value").as_uint() };
 	enemyCannonTowerInfo.completeTexArea = { orcishBuildings.child("cannonTower").child("sprite").attribute("x").as_int(), orcishBuildings.child("cannonTower").child("sprite").attribute("y").as_int(), orcishBuildings.child("cannonTower").child("sprite").attribute("w").as_int(), orcishBuildings.child("cannonTower").child("sprite").attribute("h").as_int() };
+	enemyCannonTowerInfo.sightRadius = { orcishBuildings.child("cannonTower").child("attack").attribute("sightRadius").as_uint() };
+	enemyCannonTowerInfo.damage = { orcishBuildings.child("cannonTower").child("attack").attribute("damage").as_uint() };
+	enemyCannonTowerInfo.attackWaitTime = { orcishBuildings.child("cannonTower").child("attack").attribute("attackWaitTime").as_uint() };
+	enemyCannonTowerInfo.arrowSpeed = { orcishBuildings.child("cannonTower").child("attack").attribute("arrowSpeed").as_uint() };
+
 
 	//Dynamic entities
 	//Humans

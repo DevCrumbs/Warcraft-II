@@ -2,6 +2,8 @@
 #define __WatchTower_H__
 
 #include "StaticEntity.h"
+#include "ScoutTower.h"
+#include <list>
 
 struct WatchTowerInfo
 {
@@ -9,6 +11,12 @@ struct WatchTowerInfo
 	iPoint size{ 0,0 };
 	uint life = 0u;
 	float speed = 0.0f;
+
+
+	uint sightRadius = 0;
+	uint damage = 0;
+	uint attackWaitTime = 0;
+	uint arrowSpeed = 0;
 };
 
 class WatchTower :public StaticEntity
@@ -19,6 +27,17 @@ public:
 	~WatchTower() {};
 
 	void Move(float dt);
+	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
+
+	// State machine
+	void TowerStateMachine(float dt);
+
+	//Arrows
+	void DetermineArrowDirection();
+	void CreateArrow();
+	void CheckArrowMovement(float dt);
+	void MoveArrowTowardsTarget(float dt);
+	void InflictDamageAndDestroyArrow();
 
 	// Animations
 	void LoadAnimationsSpeed();
@@ -27,6 +46,18 @@ public:
 private:
 
 	WatchTowerInfo watchTowerInfo;
+	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
+	TowerState towerState = TowerState_Idle;
+
+	//Attack
+	Entity* attackingTarget = nullptr;
+	j1Timer attackTimer;
+	std::list<Entity*> enemyAttackList;
+
+	//Arrow
+	Particle* arrowParticle = nullptr;
+	ArrowDirection arrowDirection = NO_DIRECTION;
+
 };
 
 #endif //__WatchTower_H__

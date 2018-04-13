@@ -159,7 +159,7 @@ bool StaticEntity::GetIsFinishedBuilt() const
 ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic)
 {
 	vector<Collider*> colliders;
-	iPoint currTilePos = { (int)this->pos.x, (int)this->pos.y };
+	iPoint currTilePos = { (int)this->pos.x + 16, (int)this->pos.y + 16 };
 
 	int sign = 1;
 	for (int y = -(int)radius + 1; y < (int)radius; ++y) {
