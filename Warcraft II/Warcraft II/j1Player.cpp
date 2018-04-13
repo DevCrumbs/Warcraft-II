@@ -138,25 +138,26 @@ bool j1Player::Update(float dt) {
 	}
 	//Life Bar on building 
 	if (entitySelectedStats.entitySelected != nullptr) {
-		if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
-			entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-		}
-		else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
-			entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
-			entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17});
-			if (entitySelectedStats.entitySelected == barracks) {
-				if (barracksUpgrade && stables != nullptr && producePaladinButton == nullptr) {
-					UIButton_Info produceButtonInfo;
-					produceButtonInfo.normalTexArea = { 444,244,50,41 };
-					produceButtonInfo.hoverTexArea = { 699,244,50,41 };
-					produceButtonInfo.pressedTexArea = { 954,244,50,41 };
-					producePaladinButton = App->gui->CreateUIButton({ 319, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+		if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
+			if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
+				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+			}
+			else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
+				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+				entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+				entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
+				if (entitySelectedStats.entitySelected == barracks) {
+					if (barracksUpgrade && stables != nullptr && producePaladinButton == nullptr) {
+						UIButton_Info produceButtonInfo;
+						produceButtonInfo.normalTexArea = { 444,244,50,41 };
+						produceButtonInfo.hoverTexArea = { 699,244,50,41 };
+						produceButtonInfo.pressedTexArea = { 954,244,50,41 };
+						producePaladinButton = App->gui->CreateUIButton({ 319, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
+					}
 				}
 			}
 		}
 	}
-
 	//Handle the apparence and disapparence of to spawn units UI elements
 	if (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected == barracks) 
 		HandleBarracksUIElem();	

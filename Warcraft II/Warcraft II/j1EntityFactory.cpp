@@ -44,6 +44,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	footmanTexName = spritesheets.child("footmanAnimations").attribute("name").as_string();
 	gruntTexName = spritesheets.child("gruntAnimations").attribute("name").as_string();
 	crittersTexName = spritesheets.child("critters").attribute("name").as_string();
+	khadgarTexName = spritesheets.child("khadgar").attribute("name").as_string();
+
 
 	//Debug Textures Properties
 	buildingPreviewTiles.opacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
@@ -472,6 +474,13 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		gruntInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
+	//Prisoners
+	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
+
+	pugi::xml_node khadgarAnimations = orcEntities.child("khadgar").child("animations");
+
+
+
 	// Critter sheep
 	pugi::xml_node sheepAnimations = config.child("dynamicEntities").child("sheep");
 
@@ -665,6 +674,7 @@ bool j1EntityFactory::Start()
 	footmanTex = App->tex->Load(footmanTexName.data());
 	gruntTex = App->tex->Load(gruntTexName.data());
 	crittersTex = App->tex->Load(crittersTexName.data());
+	khadgarTex = App->tex->Load(khadgarTexName.data());
 
 	builtChickenFarmInfo = chickenFarmInfo;
 	builtChickenFarmInfo.isBuilt = true;
@@ -1495,6 +1505,7 @@ bool j1EntityFactory::CleanUp()
 	App->tex->UnLoad(humanBuildingsTex);
 	App->tex->UnLoad(neutralBuildingsTex);
 	App->tex->UnLoad(orcishBuildingsTex);
+	App->tex->UnLoad(khadgarTex);
 
 	return ret;
 }
