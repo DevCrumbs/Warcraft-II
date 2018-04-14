@@ -80,7 +80,7 @@ struct MapLayer {
 	uint height = 0; //number of tiles in the y axis
 
 	uint* data = nullptr;
-	uint sizeData = 0;
+	uint size_data = 0;
 
 	float speed = 1.0f; //parallax (speed of the layer)
 
@@ -181,8 +181,6 @@ public:
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
-	bool LoadLogic();
-
 private:
 
 	bool LoadMap();
@@ -206,7 +204,7 @@ private:
 
 	pugi::xml_document	map_file;
 	string				folder;
-	bool				mapLoaded = false;
+	bool				map_loaded = false;
 
 	MapLayer*			aboveLayer = nullptr;
 
