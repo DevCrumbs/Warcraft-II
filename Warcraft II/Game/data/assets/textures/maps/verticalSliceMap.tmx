@@ -21851,9 +21851,10 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="logic" width="120" height="180" visible="0" opacity="0.5">
+ <layer name="logic" width="120" height="180" opacity="0.5">
   <properties>
    <property name="Draw" type="bool" value="false"/>
+   <property name="Logic" type="bool" value="true"/>
   </properties>
   <data>
    <tile gid="0"/>
