@@ -13,6 +13,7 @@
 #include "j1PathManager.h"
 #include "Goal.h"
 #include "j1Audio.h"
+#include "j1Particles.h"
 
 #include "UILifeBar.h"
 
@@ -26,6 +27,7 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 	// XML loading
 	/// Animations
 	TrollAxethrowerInfo info = (TrollAxethrowerInfo&)App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER);
+	this->unitInfo = this->trollAxethrowerInfo.unitInfo;
 	this->trollAxethrowerInfo.up = info.up;
 	this->trollAxethrowerInfo.down = info.down;
 	this->trollAxethrowerInfo.left = info.left;
@@ -54,8 +56,8 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 
 	// Collisions
 	CreateEntityCollider(EntitySide_Enemy);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
 	entityCollider->isTrigger = true;
 	sightRadiusCollider->isTrigger = true;
 	attackRadiusCollider->isTrigger = true;
@@ -127,31 +129,36 @@ void TrollAxethrower::Move(float dt)
 		/// GOAL: AttackTarget
 		// Check if there are available targets
 		/// Prioritize a type of target (static or dynamic)
-		/*
+
 		if (singleUnit->IsFittingTile()) {
 
-		newTarget = GetBestTargetInfo();
+			newTarget = GetBestTargetInfo();
 
-		if (newTarget != nullptr) {
+			if (newTarget != nullptr) {
 
-		// A new target has found, update the attacking target
-		if (currTarget != newTarget) {
+				// A new target has found, update the attacking target
+				if (currTarget != newTarget) {
 
-		if (currTarget != nullptr) {
+					if (currTarget != nullptr) {
 
-		if (!currTarget->isRemoved) {
+						if (particle != nullptr) {
 
-		currTarget->target->RemoveAttackingUnit(this);
-		isHitting = false;
+							particle->isRemove = true;
+							particle = nullptr;
+						}
+
+						if (!currTarget->isRemoved) {
+
+							currTarget->target->RemoveAttackingUnit(this);
+							isHitting = false;
+						}
+					}
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
 		}
-		}
-
-		currTarget = newTarget;
-		brain->AddGoal_AttackTarget(currTarget);
-		}
-		}
-		}
-		*/
 
 		// ---------------------------------------------------------------------
 

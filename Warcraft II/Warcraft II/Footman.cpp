@@ -26,6 +26,7 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	// XML loading
 	/// Animations
 	FootmanInfo info = (FootmanInfo&)App->entities->GetUnitInfo(EntityType_FOOTMAN);
+	this->unitInfo = this->footmanInfo.unitInfo;
 	this->footmanInfo.up = info.up;
 	this->footmanInfo.down = info.down;
 	this->footmanInfo.left = info.left;
@@ -54,8 +55,8 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 	// Collisions
 	CreateEntityCollider(EntitySide_Player);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
 	entityCollider->isTrigger = true;
 	sightRadiusCollider->isTrigger = true;
 	attackRadiusCollider->isTrigger = true;
