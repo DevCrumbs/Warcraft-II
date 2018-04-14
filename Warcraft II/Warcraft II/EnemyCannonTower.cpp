@@ -59,6 +59,10 @@ void EnemyCannonTower::Move(float dt)
 	//Check the arrow movement if the tower has to attack
 	if (attackingTarget != nullptr && cannonParticle != nullptr)
 		CheckCannonBulletMovement(dt);
+	else if (attackingTarget == nullptr && cannonParticle != nullptr) {
+		cannonParticle->isRemove = true;
+		cannonParticle = nullptr;
+	}
 
 	//Check if the tower has to change the attacking target
 	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
@@ -69,6 +73,7 @@ void EnemyCannonTower::Move(float dt)
 		if (!enemyAttackList.empty())
 			attackingTarget = enemyAttackList.front();
 	}
+
 }
 
 void EnemyCannonTower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState) {
