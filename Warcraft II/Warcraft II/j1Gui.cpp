@@ -136,7 +136,8 @@ bool j1Gui::Update(float dt)
 		UI_elem_it++;
 	}
 
-	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
+	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
+		info = drawOrder.top();
 		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
 			info->Draw();
 		else if (App->render->IsInScreen(info->GetLocalRect()))
@@ -304,6 +305,18 @@ bool j1Gui::DestroyElement(UIElement** elem)
 
 		delete *elem;
 		UIElementsList.remove(*elem);
+		*elem = nullptr;
+	}
+
+	return ret;
+}
+
+bool j1Gui::RemoveElem(UIElement** elem)
+{
+	bool ret = false;
+
+	if (*elem != nullptr) {
+		(*elem)->toRemove = true;
 		*elem = nullptr;
 	}
 

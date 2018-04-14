@@ -30,6 +30,7 @@
 #include "UIButton.h"
 #include "UIImage.h"
 #include "UICursor.h"
+#include "UISlider.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -590,20 +591,6 @@ bool j1Scene::Update(float dt)
 	CheckCameraMovement(dt);
 
 	//Checks if resources have changed to update building menu and gold label
-	if (hasGoldChanged) {
-		UnLoadResourcesLabels();
-		LoadResourcesLabels();
-		if (buildingMenuOn) {
-			UnLoadBuildingMenu();
-			LoadBuildingMenu();
-		}
-		hasGoldChanged = false;
-	}
-	if (hasFoodChanged == true) {
-		UnLoadResourcesLabels();
-		LoadResourcesLabels();
-		hasFoodChanged = false;
-	}
 
 	if (terenasDialogTimer.Read() >= 30000 && terenasDialogEvent != TerenasDialog_NONE) {
 		terenasDialogEvent = TerenasDialog_NONE;
@@ -652,7 +639,8 @@ bool j1Scene::PostUpdate()
 		break;
 	case PauseMenuActions_DESTROY:
 		if (parchmentImg != nullptr) {
-			App->gui->DestroyElement((UIElement**)&parchmentImg);
+			parchmentImg->toRemove = true;
+			parchmentImg = nullptr;
 		}
 		DestroyPauseMenu();
 		DestroySettingsMenu();
@@ -679,7 +667,8 @@ bool j1Scene::PostUpdate()
 	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
 		ret = false;
 		if (parchmentImg != nullptr) {
-			App->gui->DestroyElement((UIElement**)&parchmentImg);
+			parchmentImg->toRemove = true;
+			parchmentImg = nullptr;
 		}
 	}
 
@@ -687,6 +676,21 @@ bool j1Scene::PostUpdate()
 		App->player->isWin = true;
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
+	}
+
+	if (hasGoldChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		if (buildingMenuOn) {
+			UnLoadBuildingMenu();
+			LoadBuildingMenu();
+		}
+		hasGoldChanged = false;
+	}
+	if (hasFoodChanged == true) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		hasFoodChanged = false;
 	}
 
 	return ret;
@@ -1119,21 +1123,22 @@ void j1Scene::LoadBuildingMenu()
 
 void j1Scene::UnLoadBuildingMenu()
 {
-	App->gui->DestroyElement((UIElement**)&buildingMenu);
-	App->gui->DestroyElement((UIElement**)&chickenFarmButton);
-	App->gui->DestroyElement((UIElement**)&elvenLumberButton);
-	App->gui->DestroyElement((UIElement**)&blackSmithButton);
-	App->gui->DestroyElement((UIElement**)&stablesButton);
-	App->gui->DestroyElement((UIElement**)&churchButton);
-	App->gui->DestroyElement((UIElement**)&gryphonAviaryButton);
-	App->gui->DestroyElement((UIElement**)&mageTowerButton);
-	App->gui->DestroyElement((UIElement**)&scoutTowerButton);
-	App->gui->DestroyElement((UIElement**)&guardTowerButton);
-	App->gui->DestroyElement((UIElement**)&cannonTowerButton);
+	App->gui->RemoveElem((UIElement**)&buildingMenu);
+	App->gui->RemoveElem((UIElement**)&chickenFarmButton);
+	App->gui->RemoveElem((UIElement**)&elvenLumberButton);
+	App->gui->RemoveElem((UIElement**)&blackSmithButton);
+	App->gui->RemoveElem((UIElement**)&stablesButton);
+	App->gui->RemoveElem((UIElement**)&churchButton);
+	App->gui->RemoveElem((UIElement**)&gryphonAviaryButton);
+	App->gui->RemoveElem((UIElement**)&mageTowerButton);
+	App->gui->RemoveElem((UIElement**)&scoutTowerButton);
+	App->gui->RemoveElem((UIElement**)&guardTowerButton);
+	App->gui->RemoveElem((UIElement**)&cannonTowerButton);
 
-	for (; !buildingLabelsList.empty(); buildingLabelsList.pop_back())
+	for (list<UILabel*>::iterator it = buildingLabelsList.begin(); it != buildingLabelsList.end();)
 	{
-		App->gui->DestroyElement((UIElement**)&buildingLabelsList.back());
+		buildingLabelsList.back()->toRemove = true;
+		buildingLabelsList.erase(it++);
 	}
 	buildingMenuOn = false;
 }
@@ -1152,8 +1157,8 @@ void j1Scene::LoadResourcesLabels()
 
 void j1Scene::UnLoadResourcesLabels()
 {
-	App->gui->DestroyElement((UIElement**)&goldLabel);
-	App->gui->DestroyElement((UIElement**)&foodLabel);
+	App->gui->RemoveElem((UIElement**)&goldLabel);
+	App->gui->RemoveElem((UIElement**)&foodLabel);
 }
 
 void j1Scene::CreatePauseMenu() {
@@ -1191,13 +1196,12 @@ void j1Scene::CreatePauseMenu() {
 
 void j1Scene::DestroyPauseMenu() {
 
-	App->gui->DestroyElement((UIElement**)&settingsButt);
-	App->gui->DestroyElement((UIElement**)&ReturnMenuButt);
-	App->gui->DestroyElement((UIElement**)&continueButt);
-	App->gui->DestroyElement((UIElement**)&settingsLabel);
-	App->gui->DestroyElement((UIElement**)&continueLabel);
-	App->gui->DestroyElement((UIElement**)&ReturnMenuLabel);
-
+	App->gui->RemoveElem((UIElement**)&settingsButt);
+	App->gui->RemoveElem((UIElement**)&ReturnMenuButt);
+	App->gui->RemoveElem((UIElement**)&continueButt);
+	App->gui->RemoveElem((UIElement**)&settingsLabel);
+	App->gui->RemoveElem((UIElement**)&continueLabel);
+	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
 }
 
 void j1Scene::CreateSettingsMenu() {
@@ -1256,33 +1260,34 @@ void j1Scene::CreateSettingsMenu() {
 
 void j1Scene::DestroySettingsMenu() {
 
-	App->gui->DestroyElement((UIElement**)&returnButt);
-	App->gui->DestroyElement((UIElement**)&returnLabel);
-	App->gui->DestroyElement((UIElement**)&fullScreenButt);
-	App->gui->DestroyElement((UIElement**)&fullScreenLabel);
-	App->gui->DestroyElement((UIElement**)&AudioFXPause.slider);
-	App->gui->DestroyElement((UIElement**)&AudioFXPause.name);
-	App->gui->DestroyElement((UIElement**)&AudioFXPause.value);
-	App->gui->DestroyElement((UIElement**)&AudioMusicPause.slider);
-	App->gui->DestroyElement((UIElement**)&AudioMusicPause.name);
-	App->gui->DestroyElement((UIElement**)&AudioMusicPause.value);
+
+	App->gui->RemoveElem((UIElement**)&returnButt);
+	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&fullScreenButt);
+	App->gui->RemoveElem((UIElement**)&fullScreenLabel);
+	App->gui->RemoveElem((UIElement**)&AudioFXPause.slider);
+	App->gui->RemoveElem((UIElement**)&AudioFXPause.name);
+	App->gui->RemoveElem((UIElement**)&AudioFXPause.value);
+	App->gui->RemoveElem((UIElement**)&AudioMusicPause.slider);
+	App->gui->RemoveElem((UIElement**)&AudioMusicPause.name);
+	App->gui->RemoveElem((UIElement**)&AudioMusicPause.value);
 
 }
 
 void j1Scene::DestroyAllUI() {
 	if (parchmentImg != nullptr) {
-		App->gui->DestroyElement((UIElement**)&parchmentImg);
+		App->gui->RemoveElem((UIElement**)&parchmentImg);
 	}
 	DestroyPauseMenu();
 	DestroySettingsMenu();
 	UnLoadBuildingMenu();
 	UnLoadResourcesLabels();
-	App->gui->DestroyElement((UIElement**)&pauseMenuButt);
-	App->gui->DestroyElement((UIElement**)&pauseMenuLabel);
-	App->gui->DestroyElement((UIElement**)&entitiesStats);
-	App->gui->DestroyElement((UIElement**)&buildingButton);
-	App->gui->DestroyElement((UIElement**)&buildingLabel);
-	App->gui->DestroyElement((UIElement**)&inGameFrameImage);
+	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
+	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
+	App->gui->RemoveElem((UIElement**)&entitiesStats);
+	App->gui->RemoveElem((UIElement**)&buildingButton);
+	App->gui->RemoveElem((UIElement**)&buildingLabel);
+	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()
@@ -1327,8 +1332,8 @@ void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
 
 void j1Scene::UnLoadTerenasDialog()
 {
-	App->gui->DestroyElement((UIElement**)&terenasAdvices.text);
-	App->gui->DestroyElement((UIElement**)&terenasAdvices.terenasImage);
+	App->gui->RemoveElem((UIElement**)&terenasAdvices.text);
+	App->gui->RemoveElem((UIElement**)&terenasAdvices.terenasImage);
 }
 
 

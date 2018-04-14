@@ -449,44 +449,56 @@ bool j1Player::CleanUp()
 {
 	bool ret = true;
 
-	App->gui->DestroyElement((UIElement**)&barracks);	   
-	App->gui->DestroyElement((UIElement**)&townHall);
-	App->gui->DestroyElement((UIElement**)&blacksmith);
-	App->gui->DestroyElement((UIElement**)&stables);
-	App->gui->DestroyElement((UIElement**)&church);
-	App->gui->DestroyElement((UIElement**)&mageTower);
-	App->gui->DestroyElement((UIElement**)&cannonTower);
-	App->gui->DestroyElement((UIElement**)&guardTower);
-	App->gui->DestroyElement((UIElement**)&gryphonAviary);
+	barracks->isRemove = true;
+	barracks = nullptr;
+	townHall->isRemove = true;
+	townHall = nullptr;
+	blacksmith->isRemove = true;
+	blacksmith = nullptr;
+	stables->isRemove = true;
+	stables = nullptr;
+	church->isRemove = true;
+	church = nullptr;
+	mageTower->isRemove = true;
+	mageTower = nullptr;
+	cannonTower->isRemove = true;
+	cannonTower = nullptr;
+	guardTower->isRemove = true;
+	guardTower = nullptr;
+	gryphonAviary->isRemove = true;
+	gryphonAviary = nullptr;
 
 	for (; !chickenFarm.empty(); chickenFarm.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&chickenFarm.back());
+		chickenFarm.back()->isRemove = true;
 	}
 
 	for (; !scoutTower.empty(); scoutTower.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&scoutTower.back());
+		scoutTower.back()->isRemove = true;
 	}
 
-	for (; !UIMenuInfoList.empty(); UIMenuInfoList.pop_back())
+
+	for (list<UIElement*>::iterator it = UIMenuInfoList.begin(); it != UIMenuInfoList.end();)
 	{
-		App->gui->DestroyElement((UIElement**)&UIMenuInfoList.back());
+		UIMenuInfoList.back()->toRemove = true;
+		UIMenuInfoList.erase(it++);
 	}
 
 	for (; !goldMine.empty(); goldMine.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&goldMine.back());
+		goldMine.back()->isRemove = true;
 	}
 
 	for (; !runestone.empty(); runestone.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&runestone.back());
+		runestone.back()->isRemove = true;
 	}
 
-	for (; !imagePrisonersVector.empty(); imagePrisonersVector.pop_back())
+	for (vector<UIImage*>::iterator it = imagePrisonersVector.begin(); it != imagePrisonersVector.end();)
 	{
-		App->gui->DestroyElement((UIElement**)&imagePrisonersVector.back());
+		imagePrisonersVector.back()->toRemove = true;
+		imagePrisonersVector.erase(it++);
 	}
 	DeleteEntitiesMenu();
 
@@ -969,64 +981,42 @@ void j1Player::DeleteEntitiesMenu()
 {
 	if (entitySelectedStats.entitySelected == barracks)
 	{
-		/*
-		App->gui->DestroyElement((UIElement**)&produceElvenArcherButton);
-		App->gui->DestroyElement((UIElement**)&produceFootmanButton);
-		App->gui->DestroyElement((UIElement**)&producePaladinButton);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueBar);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueBar);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueBar);
-		*/
-
-		produceElvenArcherButton->toRemove = true;
-		produceFootmanButton->toRemove = true;
-		producePaladinButton->toRemove = true;
-		toSpawnUnitStats.frstInQueueIcon->toRemove = true;
-		toSpawnUnitStats.sndInQueueIcon->toRemove = true;
-		toSpawnUnitStats.trdInQueueIcon->toRemove = true;
-		toSpawnUnitStats.frstInQueueBar->toRemove = true;
-		toSpawnUnitStats.sndInQueueBar->toRemove = true;
-		toSpawnUnitStats.trdInQueueBar->toRemove = true;
+		App->gui->RemoveElem((UIElement**)&produceElvenArcherButton);
+		App->gui->RemoveElem((UIElement**)&produceFootmanButton);
+		App->gui->RemoveElem((UIElement**)&producePaladinButton);
+		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
+		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
+		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueBar);
+		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.sndInQueueBar);
+		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.trdInQueueBar);
 	}
 
 	if (entitySelectedStats.entitySelected != nullptr) {
-
-		entitySelectedStats.HP->toRemove = true;
-		entitySelectedStats.entityName->toRemove = true;
-		entitySelectedStats.entityIcon->toRemove = true;
-		entitySelectedStats.lifeBar->toRemove = true;
-		entitySelectedStats.entityDamage->toRemove = true;
-		entitySelectedStats.entityMana->toRemove = true;
-		entitySelectedStats.entityMovementSpeed->toRemove = true;
-		entitySelectedStats.entityRange->toRemove = true;
-		entitySelectedStats.entitySight->toRemove = true;
-		commandPatrolButton->toRemove = true;
-		commandStopButton->toRemove = true;
-
+		App->gui->RemoveElem((UIElement**)&entitySelectedStats.HP);
+		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityName);
+		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityIcon);
+		App->gui->RemoveElem((UIElement**)&entitySelectedStats.lifeBar);
+		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityDamage);
+		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityMana);
+		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityMovementSpeed);
+		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityRange);
+		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entitySight);
+		App->gui->RemoveElem((UIElement**)&commandPatrolButton);
+		App->gui->RemoveElem((UIElement**)&commandStopButton);
 		entitySelectedStats.entitySelected = nullptr;
 	}
 
 	if (!groupSelectedStats.units.empty()) {
 
-		if (groupSelectedStats.entity1Icon != nullptr)
-			groupSelectedStats.entity1Icon->toRemove = true;
-		if (groupSelectedStats.entity2Icon != nullptr)
-			groupSelectedStats.entity2Icon->toRemove = true;
-		if (groupSelectedStats.entity3Icon != nullptr)
-			groupSelectedStats.entity3Icon->toRemove = true;
-		if (groupSelectedStats.entity4Icon != nullptr)
-			groupSelectedStats.entity4Icon->toRemove = true;
-		if (groupSelectedStats.entity5Icon != nullptr)
-			groupSelectedStats.entity5Icon->toRemove = true;
-		if (groupSelectedStats.entity6Icon != nullptr)
-			groupSelectedStats.entity6Icon->toRemove = true;
-		if (groupSelectedStats.entity7Icon != nullptr)
-			groupSelectedStats.entity7Icon->toRemove = true;
-		if (groupSelectedStats.entity8Icon != nullptr)
-			groupSelectedStats.entity8Icon->toRemove = true;
+			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity1Icon);
+			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity2Icon);
+			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity3Icon);
+			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity4Icon);
+			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity5Icon);
+			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity6Icon);
+			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity7Icon);
+			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity8Icon);
 
 		/*
 		groupSelectedStats.lifeBar1->toRemove = true;
@@ -1039,10 +1029,10 @@ void j1Player::DeleteEntitiesMenu()
 		groupSelectedStats.lifeBar8->toRemove = true;
 		*/
 
-		if (commandPatrolButton != nullptr)
-			commandPatrolButton->toRemove = true;
-		if (commandStopButton != nullptr)
-			commandStopButton->toRemove = true;
+			if (commandPatrolButton != nullptr)
+				App->gui->RemoveElem((UIElement**)&commandPatrolButton);
+			if (commandStopButton != nullptr)
+				App->gui->RemoveElem((UIElement**)&commandStopButton);
 
 		groupSelectedStats.units.clear();
 	}
@@ -1065,9 +1055,9 @@ void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) {
 }
 void j1Player::DeleteHoverInfoMenu()
 {
-	App->gui->DestroyElement((UIElement**)&hoverInfo.background);
-	App->gui->DestroyElement((UIElement**)&hoverInfo.cost);
-	App->gui->DestroyElement((UIElement**)&hoverInfo.info);
+	App->gui->RemoveElem((UIElement**)&hoverInfo.background);
+	App->gui->RemoveElem((UIElement**)&hoverInfo.cost);
+	App->gui->RemoveElem((UIElement**)&hoverInfo.info);
 }
 
 void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image)
@@ -1146,14 +1136,13 @@ void j1Player::CreateBarracksButtons()
 void j1Player::HandleBarracksUIElem()
 {
 	//Delete UI elements when not used
-	if (toSpawnUnitStats.frstInQueueIcon != nullptr) {
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueBar);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueBar);
-		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueBar);
-	}
+
+	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
+	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
+	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
 
 	uint unitInQueue = 1;
 	for each (ToSpawnUnit unit in toSpawnUnitQueue._Get_container()) { //Iterates every element in the queue

@@ -414,36 +414,36 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 }
 void j1Menu::DeteleMenu() {
 
-	App->gui->DestroyElement((UIElement**)&playButt);
-	App->gui->DestroyElement((UIElement**)&playLabel);
-	App->gui->DestroyElement((UIElement**)&exitButt);
-	App->gui->DestroyElement((UIElement**)&exitLabel);
-	App->gui->DestroyElement((UIElement**)&settingsButt);
-	App->gui->DestroyElement((UIElement**)&settingsLabel);
+	App->gui->RemoveElem((UIElement**)&playButt);
+	App->gui->RemoveElem((UIElement**)&playLabel);
+	App->gui->RemoveElem((UIElement**)&exitButt);
+	App->gui->RemoveElem((UIElement**)&exitLabel);
+	App->gui->RemoveElem((UIElement**)&settingsButt);
+	App->gui->RemoveElem((UIElement**)&settingsLabel);
 	
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&artifacts.back());
+		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
 
 }
 
 void j1Menu::DeleteSettings() {
 
-	App->gui->DestroyElement((UIElement**)&returnButt);
-	App->gui->DestroyElement((UIElement**)&returnLabel);
-	App->gui->DestroyElement((UIElement**)&fullScreenButt);
-	App->gui->DestroyElement((UIElement**)&fullScreenLabel);
-	App->gui->DestroyElement((UIElement**)&audioFX.name);
-	App->gui->DestroyElement((UIElement**)&audioFX.value);
-	App->gui->DestroyElement((UIElement**)&audioFX.slider);
-	App->gui->DestroyElement((UIElement**)&audioMusic.name);
-	App->gui->DestroyElement((UIElement**)&audioMusic.value);
-	App->gui->DestroyElement((UIElement**)&audioMusic.slider);
+	App->gui->RemoveElem((UIElement**)&returnButt);
+	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&fullScreenButt);
+	App->gui->RemoveElem((UIElement**)&fullScreenLabel);
+	App->gui->RemoveElem((UIElement**)&audioFX.name);
+	App->gui->RemoveElem((UIElement**)&audioFX.value);
+	App->gui->RemoveElem((UIElement**)&audioFX.slider);
+	App->gui->RemoveElem((UIElement**)&audioMusic.name);
+	App->gui->RemoveElem((UIElement**)&audioMusic.value);
+	App->gui->RemoveElem((UIElement**)&audioMusic.slider);
 
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&artifacts.back());
+		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
 
 }

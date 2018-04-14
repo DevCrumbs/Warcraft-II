@@ -77,8 +77,10 @@ DynamicEntity::~DynamicEntity()
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
 
-	if (lifeBar != nullptr)
-		App->gui->DestroyElement((UIElement**)&lifeBar);
+	if (lifeBar != nullptr) {
+		lifeBar->toRemove;
+		lifeBar = nullptr;
+	}
 }
 
 void DynamicEntity::Move(float dt) {}
