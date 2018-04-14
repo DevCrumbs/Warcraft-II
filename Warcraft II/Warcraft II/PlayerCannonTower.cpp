@@ -32,6 +32,7 @@ void PlayerCannonTower::Move(float dt)
 		CreateEntityCollider(EntitySide_Player);
 		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, playerCannonTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 		sightRadiusCollider->isTrigger = true;
+		entityCollider->isTrigger = true;
 		isColliderCreated = true;
 	}
 
