@@ -28,6 +28,8 @@ enum ColliderType;
 enum CollisionState;
 enum DistanceHeuristic;
 
+struct Particle;
+
 #define TIME_REMOVE_CORPSE 3.0
 
 enum UnitState
@@ -130,6 +132,7 @@ public:
 	// Direction
 	void SetUnitDirection(UnitDirection unitDirection);
 	UnitDirection GetUnitDirection() const;
+	UnitDirection GetDirection(fPoint direction) const;
 
 	void SetUnitDirectionByValue(fPoint unitDirection);
 	fPoint GetUnitDirectionByValue() const;
@@ -173,6 +176,8 @@ public:
 
 	// Spawn
 	bool isSpawned = false;
+
+	Particle* particle = nullptr;
 
 protected:
 
