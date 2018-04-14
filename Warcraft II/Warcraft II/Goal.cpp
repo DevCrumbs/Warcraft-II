@@ -10,6 +10,7 @@
 #include "j1Movement.h"
 #include "j1EntityFactory.h"
 #include "j1EntityFactory.h"
+#include "j1Particles.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -521,6 +522,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 	if (!targetInfo->IsTargetPresent()) {
 
 		if (targetInfo->target == nullptr) {
+
 			goalStatus = GoalStatus_Completed;
 			return goalStatus;
 		}
@@ -553,8 +555,202 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 	if (((DynamicEntity*)owner)->GetAnimation()->Finished()) {
 
-		targetInfo->target->ApplyDamage(owner->GetDamage());
-		((DynamicEntity*)owner)->GetAnimation()->Reset();
+		DynamicEntity* dyn = (DynamicEntity*)owner;
+
+		if (owner->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+
+			if (owner->particle == nullptr) {
+
+				orientation = { targetInfo->target->GetPos().x - owner->GetPos().x, targetInfo->target->GetPos().y - owner->GetPos().y };
+
+				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+
+				if (m > 0.0f) {
+					orientation.x /= m;
+					orientation.y /= m;
+				}
+
+				switch (owner->GetDirection(orientation)) {
+
+				case UnitDirection_DownRight:
+					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y + 16 });
+					break;
+				case UnitDirection_UpRight:
+					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.upRight, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y - 16 });
+					break;
+				case UnitDirection_Right:
+					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.right, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y });
+					break;
+				case UnitDirection_DownLeft:
+					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.downLeft, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y + 16 });
+					break;
+				case UnitDirection_UpLeft:
+					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y - 16 });
+					break;
+				case UnitDirection_Left:
+					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.left, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y });
+					break;
+				case UnitDirection_Down:
+					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.down, { (int)owner->GetPos().x, (int)owner->GetPos().y + 16 });
+					break;
+
+				case UnitDirection_Up:
+				case UnitDirection_NoDirection:
+				default:
+					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.up, { (int)owner->GetPos().x, (int)owner->GetPos().y - 16 });
+					break;
+				}
+
+				if (owner->particle != nullptr)
+					owner->particle->destination = orientation;
+
+				return goalStatus;
+			}
+		}
+		else if (owner->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
+
+			if (owner->particle == nullptr) {
+
+				orientation = { targetInfo->target->GetPos().x - owner->GetPos().x, targetInfo->target->GetPos().y - owner->GetPos().y };
+
+				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+
+				if (m > 0.0f) {
+					orientation.x /= m;
+					orientation.y /= m;
+				}
+
+				switch (owner->GetDirection(orientation)) {
+
+				case UnitDirection_DownRight:
+					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y + 16 });
+					break;
+				case UnitDirection_UpRight:
+					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y - 16 });
+					break;
+				case UnitDirection_Right:
+					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y });
+					break;
+				case UnitDirection_DownLeft:
+					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y + 16 });
+					break;
+				case UnitDirection_UpLeft:
+					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y - 16 });
+					break;
+				case UnitDirection_Left:
+					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y });
+					break;
+				case UnitDirection_Down:
+					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x, (int)owner->GetPos().y + 16 });
+					break;
+
+				case UnitDirection_Up:
+				case UnitDirection_NoDirection:
+				default:
+					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x, (int)owner->GetPos().y - 16 });
+					break;
+				}
+
+				if (owner->particle != nullptr)
+					owner->particle->destination = orientation;
+
+				return goalStatus;
+			}
+		}
+		else {
+
+			targetInfo->target->ApplyDamage(owner->GetDamage());
+			((DynamicEntity*)owner)->GetAnimation()->Reset();
+		}
+	}
+
+	if (owner->dynamicEntityType == EntityType_ELVEN_ARCHER || owner->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
+
+		if (owner->particle != nullptr) {
+
+			owner->particle->pos.x += owner->particle->destination.x * dt * 110.0f;
+			owner->particle->pos.y += owner->particle->destination.y * dt * 110.0f;
+
+			iPoint particleTile = App->map->WorldToMap(owner->particle->pos.x, owner->particle->pos.y);
+			DynamicEntity* dyn = (DynamicEntity*)targetInfo->target;
+
+			switch (owner->GetDirection(orientation)) {
+
+			case UnitDirection_DownRight:
+				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
+					owner->particle->isRemove = true;
+					owner->particle = nullptr;
+					targetInfo->target->ApplyDamage(owner->GetDamage());
+					((DynamicEntity*)owner)->GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_UpRight:
+				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
+					owner->particle->isRemove = true;
+					owner->particle = nullptr;
+					targetInfo->target->ApplyDamage(owner->GetDamage());
+					((DynamicEntity*)owner)->GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_Right:
+				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x) {
+					owner->particle->isRemove = true;
+					owner->particle = nullptr;
+					targetInfo->target->ApplyDamage(owner->GetDamage());
+					((DynamicEntity*)owner)->GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_DownLeft:
+				if (particleTile.x <= dyn->GetSingleUnit()->currTile.x && particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
+					owner->particle->isRemove = true;
+					owner->particle = nullptr;
+					targetInfo->target->ApplyDamage(owner->GetDamage());
+					((DynamicEntity*)owner)->GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_UpLeft:
+				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
+					owner->particle->isRemove = true;
+					owner->particle = nullptr;
+					targetInfo->target->ApplyDamage(owner->GetDamage());
+					((DynamicEntity*)owner)->GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_Left:
+				if (particleTile.x <= dyn->GetSingleUnit()->currTile.x) {
+					owner->particle->isRemove = true;
+					owner->particle = nullptr;
+					targetInfo->target->ApplyDamage(owner->GetDamage());
+					((DynamicEntity*)owner)->GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_Down:
+				if (particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
+					owner->particle->isRemove = true;
+					owner->particle = nullptr;
+					targetInfo->target->ApplyDamage(owner->GetDamage());
+					((DynamicEntity*)owner)->GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_Up:
+			case UnitDirection_NoDirection:
+			default:
+				if (particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
+					owner->particle->isRemove = true;
+					owner->particle = nullptr;
+					targetInfo->target->ApplyDamage(owner->GetDamage());
+					((DynamicEntity*)owner)->GetAnimation()->Reset();
+				}
+				break;
+			}
+		}
 	}
 
 	return goalStatus;

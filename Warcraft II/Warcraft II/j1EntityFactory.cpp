@@ -967,10 +967,10 @@ bool j1EntityFactory::Start()
 	trollAxethrowerInfo.maxLife = 30;
 	trollAxethrowerInfo.currLife = trollAxethrowerInfo.maxLife;
 
-	trollAxethrowerInfo.unitInfo.maxSpeed = 2;
+	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
 	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
-	trollAxethrowerInfo.unitInfo.attackRadius = 2;
-	trollAxethrowerInfo.unitInfo.sightRadius = 4;
+	trollAxethrowerInfo.unitInfo.attackRadius = 3;
+	trollAxethrowerInfo.unitInfo.sightRadius = 5;
 	trollAxethrowerInfo.unitInfo.damage = 5;
 	trollAxethrowerInfo.unitInfo.priority = 3;
 	// -----
@@ -979,7 +979,7 @@ bool j1EntityFactory::Start()
 	gruntInfo.maxLife = 30;
 	gruntInfo.currLife = gruntInfo.maxLife;
 
-	gruntInfo.unitInfo.maxSpeed = 2;
+	gruntInfo.unitInfo.maxSpeed = 50.0f;
 	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
 	gruntInfo.unitInfo.attackRadius = 2;
 	gruntInfo.unitInfo.sightRadius = 4;
@@ -991,10 +991,10 @@ bool j1EntityFactory::Start()
 	elvenArcherInfo.maxLife = 30;
 	elvenArcherInfo.currLife = elvenArcherInfo.maxLife;
 
-	elvenArcherInfo.unitInfo.maxSpeed = 2;
+	elvenArcherInfo.unitInfo.maxSpeed = 60.0f;
 	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
-	elvenArcherInfo.unitInfo.attackRadius = 2;
-	elvenArcherInfo.unitInfo.sightRadius = 4;
+	elvenArcherInfo.unitInfo.attackRadius = 3;
+	elvenArcherInfo.unitInfo.sightRadius = 5;
 	elvenArcherInfo.unitInfo.damage = 5;
 	elvenArcherInfo.unitInfo.priority = 3;
 	// -----
@@ -1003,7 +1003,7 @@ bool j1EntityFactory::Start()
 	footmanInfo.maxLife = 30;
 	footmanInfo.currLife = footmanInfo.maxLife;
 
-	footmanInfo.unitInfo.maxSpeed = 2;
+	footmanInfo.unitInfo.maxSpeed = 50.0f;
 	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
 	footmanInfo.unitInfo.attackRadius = 2;
 	footmanInfo.unitInfo.sightRadius = 4;
@@ -1315,13 +1315,17 @@ void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntit
 			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
 			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
 		}
-		else if (!isPlaceable) {
+		else if (!isPlaceable)
+		{
 			if(IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) 
 				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile); //0,0
+
 			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y}) ||  !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y })) 
 				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile); //32,0
+
 			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 }))
 				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile); //0,32
+
 			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1}))
 				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile); //32,32
 		}
@@ -1561,7 +1565,7 @@ SDL_Texture* j1EntityFactory::GetNeutralBuildingTexture() {
 }
 
 //It returns true if there's an entity in the tile (it considers the size of the entity)
-bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const 
+bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 {
 	//Dynamic entities
 	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
@@ -1607,10 +1611,8 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 				}
 			}
 		}
-
 		activeStatic++;
 	}
-
 	// We do also need to check the toSpawn list (just in case)
 	list<Entity*>::const_iterator toSpawn = toSpawnEntities.begin();
 	while (toSpawn != toSpawnEntities.end()) {
@@ -1623,14 +1625,28 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 		toSpawn++;
 	}
 
+
+
+
+	if (!App->pathfinding->IsOnBase({ App->player->GetMouseTilePos().x, App->player->GetMouseTilePos().y }))
+	{
+		LOG("OUT");
+		return true;
+	}
+	else
+		LOG("IN");
+
 	return false;
 }
+
 
 // Returns true if a building can NOT be built in that spot
 bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const
 {
 	//Dynamic entities
 	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+
+
 
 	while (activeDyn != activeDynamicEntities.end()) {
 	
@@ -1804,6 +1820,39 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		}
 		break;
 	}
+
+
+	switch (buildingSize)
+	{
+	case Small:
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				if (!App->pathfinding->IsOnBase({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
+					return true;
+			}
+		}
+		break;
+	case Medium:
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (!App->pathfinding->IsOnBase({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
+					return true;
+			}
+		}
+		break;
+	case Big:
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				if (!App->pathfinding->IsOnBase({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
+					return true;
+			}
+		}
+		break;
+	}
+
+
+
 
 	return false;
 }

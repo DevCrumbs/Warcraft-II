@@ -22,7 +22,6 @@ PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint m
 	texArea = &playerGuardTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 	App->audio->PlayFx(2, 0); //Construction sound
-
 }
 
 void PlayerGuardTower::Move(float dt)
@@ -31,6 +30,7 @@ void PlayerGuardTower::Move(float dt)
 		CreateEntityCollider(EntitySide_Player);
 		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, playerGuardTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 		sightRadiusCollider->isTrigger = true;
+		entityCollider->isTrigger = true;
 		isColliderCreated = true;
 	}
 
@@ -233,8 +233,10 @@ void PlayerGuardTower::CreateArrow()
 	}
 
 	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->pos.y, 2.0f));
-	arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->pos.x) / m;
-	arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->pos.y) / m;
+	if (m > 0) {
+		arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->pos.x) / m;
+		arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->pos.y) / m;
+	}
 }
 
 void PlayerGuardTower::CheckArrowMovement(float dt)

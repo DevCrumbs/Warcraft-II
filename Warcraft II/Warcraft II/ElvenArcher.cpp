@@ -13,6 +13,7 @@
 #include "j1PathManager.h"
 #include "Goal.h"
 #include "j1Audio.h"
+#include "j1Particles.h"
 
 #include "UILifeBar.h"
 
@@ -26,6 +27,7 @@ ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	// XML loading
 	/// Animations
 	ElvenArcherInfo info = (ElvenArcherInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER);
+	this->unitInfo = this->elvenArcherInfo.unitInfo;
 	this->elvenArcherInfo.up = info.up;
 	this->elvenArcherInfo.down = info.down;
 	this->elvenArcherInfo.left = info.left;
@@ -54,8 +56,8 @@ ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, co
 
 	// Collisions
 	CreateEntityCollider(EntitySide_Player);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
 	entityCollider->isTrigger = true;
 	sightRadiusCollider->isTrigger = true;
 	attackRadiusCollider->isTrigger = true;
@@ -182,6 +184,12 @@ void ElvenArcher::Move(float dt)
 
 				if (singleUnit->IsFittingTile()) {
 
+					if (particle != nullptr) {
+
+						particle->isRemove = true;
+						particle = nullptr;
+					}
+
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_AttackTarget(currTarget);
 
@@ -203,6 +211,97 @@ void ElvenArcher::Move(float dt)
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);
 	}
+
+	/*
+	if (!isDead && currTarget != nullptr) {
+
+		if (particle != nullptr) {
+			
+			particle->pos.x += particle->destination.x * dt * 1.0f;
+			particle->pos.y += particle->destination.y * dt * 1.0f;
+
+			iPoint particleTile = App->map->WorldToMap(particle->pos.x, particle->pos.y);
+			DynamicEntity* dyn = (DynamicEntity*)currTarget->target;
+
+			switch (GetDirection(particleOrientation)) {
+
+			case UnitDirection_DownRight:
+				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
+					particle->isRemove = true;
+					particle = nullptr;
+					currTarget->target->ApplyDamage(GetDamage());
+					GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_UpRight:
+				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
+					particle->isRemove = true;
+					particle = nullptr;
+					currTarget->target->ApplyDamage(GetDamage());
+					GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_Right:
+				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x) {
+					particle->isRemove = true;
+					particle = nullptr;
+					currTarget->target->ApplyDamage(GetDamage());
+					GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_DownLeft:
+				if (particleTile.x <= dyn->GetSingleUnit()->currTile.x && particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
+					particle->isRemove = true;
+					particle = nullptr;
+					currTarget->target->ApplyDamage(GetDamage());
+					GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_UpLeft:
+				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
+					particle->isRemove = true;
+					particle = nullptr;
+					currTarget->target->ApplyDamage(GetDamage());
+					GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_Left:
+				if (particleTile.x <= dyn->GetSingleUnit()->currTile.x) {
+					particle->isRemove = true;
+					particle = nullptr;
+					currTarget->target->ApplyDamage(GetDamage());
+					GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_Down:
+				if (particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
+					particle->isRemove = true;
+					particle = nullptr;
+					currTarget->target->ApplyDamage(GetDamage());
+					GetAnimation()->Reset();
+				}
+				break;
+
+			case UnitDirection_Up:
+			case UnitDirection_NoDirection:
+			default:
+				if (particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
+					particle->isRemove = true;
+					particle = nullptr;
+					currTarget->target->ApplyDamage(GetDamage());
+					GetAnimation()->Reset();
+				}
+				break;
+			}
+		}
+	}
+	*/
 
 	UnitStateMachine(dt);
 
@@ -234,7 +333,13 @@ void ElvenArcher::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr) {
 
-		fPoint offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+		fPoint offset = { 0.0f,0.0f };
+
+		if (animation == &elvenArcherInfo.deathDown || animation == &elvenArcherInfo.deathUp)
+			offset = { animation->GetCurrentFrame().w / 4.0f,0.0f };
+		else
+			offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+
 		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
 	}
 

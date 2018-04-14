@@ -35,6 +35,8 @@ bool j1Map::Awake(pugi::xml_node& config)
 	camera_blit = config.child("general").child("camera_blit").attribute("value").as_bool();
 	culing_offset = config.child("general").child("culing").attribute("value").as_int();
 
+	playerBase = { 0,0,50,50 };
+
 	return ret;
 }
 

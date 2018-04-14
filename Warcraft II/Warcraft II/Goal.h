@@ -13,6 +13,7 @@ using namespace std;
 class Entity;
 class DynamicEntity;
 struct TargetInfo;
+struct Particle;
 
 enum UnitDirection;
 
@@ -240,6 +241,7 @@ public:
 private:
 
 	TargetInfo* targetInfo = nullptr;
+	fPoint orientation = { 0,0 };
 };
 
 class Goal_LookAround :public AtomicGoal
