@@ -129,7 +129,7 @@ void TrollAxethrower::Move(float dt)
 		/// GOAL: AttackTarget
 		// Check if there are available targets
 		/// Prioritize a type of target (static or dynamic)
-
+		/*
 		if (singleUnit->IsFittingTile()) {
 
 			newTarget = GetBestTargetInfo();
@@ -159,7 +159,7 @@ void TrollAxethrower::Move(float dt)
 				}
 			}
 		}
-
+		*/
 		// ---------------------------------------------------------------------
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL
@@ -197,7 +197,9 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr) {
 
-		fPoint offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+		fPoint offset = { 0.0f,0.0f };
+		offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+
 		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
 	}
 
