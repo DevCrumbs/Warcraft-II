@@ -824,7 +824,7 @@ bool j1Map::LoadLogic()
 		layerIterator != data.layers.end(); ++layerIterator)
 	{
 		// Check if layer is a logic layer
-		if (!(*layerIterator)->properties.GetProperty("Logic", false))
+		if (!(*layerIterator)->properties.GetProperty("logic", false))
 			continue;
 		{
 			// Iterate layer
