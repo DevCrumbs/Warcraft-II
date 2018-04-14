@@ -91,6 +91,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	entities->active = false;
 	collision->active = false;
 	pathfinding->active = false;
+	pathmanager->active = false;
+	movement->active = false;
 }
 
 // Destructor

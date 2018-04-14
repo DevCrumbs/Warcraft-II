@@ -24,6 +24,7 @@
 #include "j1Menu.h"
 #include "j1Player.h"
 #include "j1Fonts.h"
+#include "j1PathManager.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
@@ -715,11 +716,16 @@ bool j1Scene::CleanUp()
 	App->entities->active = false;
 	App->collision->active = false;
 	App->pathfinding->active = false;
+	App->movement->active = false;
+	App->pathmanager->active = false;
 
 	App->map->UnLoad();
 	App->player->CleanUp();
 	App->entities->CleanUp();
 	App->collision->CleanUp();
+
+	App->movement->CleanUp();
+	App->pathmanager->CleanUp();
 	App->pathfinding->CleanUp();
 
 	active = false;

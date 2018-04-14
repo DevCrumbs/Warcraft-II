@@ -17,6 +17,8 @@
 #include "j1Particles.h"
 #include "j1FadeToBlack.h"
 #include "j1Menu.h"
+#include "j1PathManager.h"
+#include "j1Movement.h"
 
 #include "j1Gui.h"
 #include "UIImage.h"
@@ -200,6 +202,8 @@ bool j1Menu::CleanUp()
 	App->entities->active = true;
 	App->collision->active = true;
 	App->pathfinding->active = true;
+	App->pathmanager->active = true;
+	App->movement->active = true;
 
 	App->player->Start();
 	App->entities->Start();

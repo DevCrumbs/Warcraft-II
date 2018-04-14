@@ -401,7 +401,9 @@ void j1Player::CheckUnitSpawning()
 				barracksTile.x -= 1;
 
 				// Make sure that there are no entities on the spawn tile and that the tile is walkable
-				if (App->entities->IsEntityOnTile(barracksTile) != nullptr || !App->pathfinding->IsWalkable(barracksTile))
+				if (App->entities->IsEntityOnTile(barracksTile, EntityCategory_DYNAMIC_ENTITY) != nullptr 
+					|| App->entities->IsEntityOnTile(barracksTile, EntityCategory_STATIC_ENTITY) != nullptr 
+					|| !App->pathfinding->IsWalkable(barracksTile))
 
 					barracksTile = FindClosestValidTile(barracksTile);
 
@@ -1394,8 +1396,8 @@ iPoint j1Player::FindClosestValidTile(iPoint tile) const
 		curr = queue.front();
 		queue.pop();
 
-		if (!App->entities->IsEntityOnTile(curr) 
-			&& !App->entities->IsEntityOnTileBySize(curr)
+		if (!App->entities->IsEntityOnTile(curr, EntityCategory_DYNAMIC_ENTITY)
+			&& !App->entities->IsEntityOnTile(curr, EntityCategory_STATIC_ENTITY)
 			&& App->pathfinding->IsWalkable(curr))
 			return curr;
 
