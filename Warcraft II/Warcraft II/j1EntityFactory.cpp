@@ -1070,6 +1070,8 @@ bool j1EntityFactory::PreUpdate()
 		if ((*it)->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 			activeDynamicEntities.push_back((DynamicEntity*)(*it));
+			if ((*it)->entitySide == EntitySide_Player)
+				App->player->unitProduce++;
 			LOG("Spawning dynamic entity at tile %d,%d", x, y);
 		}
 		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) {
