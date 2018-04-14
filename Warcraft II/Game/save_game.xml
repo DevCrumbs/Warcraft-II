@@ -4,7 +4,7 @@
 	<window />
 	<textures />
 	<audio>
-		<volume default="0" />
+		<volume default="16" />
 	</audio>
 	<map />
 	<pathfinding />
@@ -22,6 +22,6 @@
 	<gui />
 	<fade />
 	<renderer>
-		<camera x="-2400" y="-6720" />
+		<camera x="0" y="0" />
 	</renderer>
 </game_state>

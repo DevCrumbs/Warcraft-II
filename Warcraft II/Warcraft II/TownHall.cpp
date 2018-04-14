@@ -3,9 +3,34 @@
 
 #include "TownHall.h"
 #include "j1Player.h"
+#include "j1Scene.h"
+#include "j1Pathfinding.h"
+#include "j1Map.h"
 
 TownHall::TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const TownHallInfo& townHallInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), townHallInfo(townHallInfo)
 {
+	buildingSize = Big;
+
+	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
+	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+	App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 0u;
+
+	App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 3)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 3)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 3)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 3)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 3) + buildingTile.x] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 1)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 2)] = 0u;
+	App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+	
 	texArea = &townHallInfo.townHallCompleteTexArea;
 	currLife = maxLife;
 	isBuilt = true;

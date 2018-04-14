@@ -7,7 +7,9 @@
 #include "StaticEntity.h"
 #include "j1Particles.h"
 #include "j1Map.h"
+#include "j1Scene.h"
 #include "j1EntityFactory.h"
+#include "j1Pathfinding.h"
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) {
 	this->entityType = EntityCategory_STATIC_ENTITY;
@@ -18,7 +20,81 @@ StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	constructionTime = 10;
 }
 
-StaticEntity::~StaticEntity() {}
+StaticEntity::~StaticEntity() 
+{
+	// Remove Colliders
+	if (sightRadiusCollider != nullptr)
+		sightRadiusCollider->isRemove = true;
+	sightRadiusCollider = nullptr;
+
+	if (fire != nullptr)
+		delete fire;
+	fire = nullptr;
+
+	iPoint buildingTile;
+
+	switch (buildingSize) {
+
+	case Small:
+		buildingTile = App->map->WorldToMap(pos.x, pos.y);
+		App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 372u;
+		App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 372u;
+		App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+		break;
+
+	case Medium:
+		buildingTile = App->map->WorldToMap(pos.x, pos.y);
+		App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 372u;
+		App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 372u;
+		App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+		break;
+
+	case Big:
+		buildingTile = App->map->WorldToMap(pos.x, pos.y);
+		App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 372u;
+		App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 372u;
+
+		App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 3)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 3)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 3)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 3)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 3) + buildingTile.x] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 1)] = 372u;
+		App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 2)] = 372u;
+		App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+		break;
+
+	case None:
+	default:
+		break;
+	}
+
+	// Set unwalkable tiles (SMALL)
+	/*
+	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+	App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+	App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+	*/
+	// ----
+}
 
 void StaticEntity::Draw(SDL_Texture* sprites)
 {
@@ -159,7 +235,7 @@ bool StaticEntity::GetIsFinishedBuilt() const
 ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic)
 {
 	vector<Collider*> colliders;
-	iPoint currTilePos = { (int)this->pos.x, (int)this->pos.y };
+	iPoint currTilePos = { (int)this->pos.x + 16, (int)this->pos.y + 16 };
 
 	int sign = 1;
 	for (int y = -(int)radius + 1; y < (int)radius; ++y) {
@@ -170,7 +246,7 @@ ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, ui
 		for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
 
 			//Valdivia: Idk if this is the correct way of doing it but it works
-			SDL_Rect rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			SDL_Rect rect = { currTilePos.x + x * App->map->data.tileWidth, currTilePos.y + y * App->map->data.tileHeight, App->map->data.tileWidth, App->map->data.tileHeight };
 			Collider* collider = App->collision->CreateCollider(rect);
 			
 			if (collider != nullptr)

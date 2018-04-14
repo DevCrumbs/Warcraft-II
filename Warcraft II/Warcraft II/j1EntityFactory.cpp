@@ -46,7 +46,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	crittersTexName = spritesheets.child("critters").attribute("name").as_string();
 	khadgarTexName = spritesheets.child("khadgar").attribute("name").as_string();
 	alleriaTexName = spritesheets.child("alleria").attribute("name").as_string();
-
+	elvenArcherTexName = spritesheets.child("elvenArcherAnimations").attribute("name").as_string();
+	trollAxethrowerTexName = spritesheets.child("trollAxethrowerAnimations").attribute("name").as_string();
 
 	//Debug Textures Properties
 	buildingPreviewTiles.opacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
@@ -89,13 +90,28 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = humanBuildings.child("scoutTower").child("sprites");
 	scoutTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	scoutTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
-
+	
+	//Player Guard Tower attributes
+	playerGuardTowerInfo.sightRadius = { humanBuildings.child("guardTower").child("attack").attribute("sightRadius").as_uint() };
+	playerGuardTowerInfo.damage = { humanBuildings.child("guardTower").child("attack").attribute("damage").as_uint() };
+	playerGuardTowerInfo.attackWaitTime = { humanBuildings.child("guardTower").child("attack").attribute("attackWaitTime").as_uint() };
+	playerGuardTowerInfo.arrowSpeed = { humanBuildings.child("guardTower").child("attack").attribute("arrowSpeed").as_uint() };
 	playerGuardTowerInfo.maxLife = { humanBuildings.child("guardTower").child("maxLife").attribute("value").as_int() };
+	
+	//Player Guard Tower animations
 	aux = humanBuildings.child("guardTower").child("sprites");
 	playerGuardTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	playerGuardTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
-
+	
+	//Player Cannon Tower attributes
+	playerCannonTowerInfo.sightRadius = { humanBuildings.child("canonTower").child("attack").attribute("sightRadius").as_uint() };
+	playerCannonTowerInfo.damage = { humanBuildings.child("canonTower").child("attack").attribute("damage").as_uint() };
+	playerCannonTowerInfo.attackWaitTime = { humanBuildings.child("canonTower").child("attack").attribute("attackWaitTime").as_uint() };
+	playerCannonTowerInfo.arrowSpeed = { humanBuildings.child("canonTower").child("attack").attribute("arrowSpeed").as_uint() };
 	playerCannonTowerInfo.maxLife = { humanBuildings.child("canonTower").child("maxLife").attribute("value").as_int() };
+	
+
+	//Player Cannon Tower animations
 	aux = humanBuildings.child("canonTower").child("sprites");
 	playerCannonTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	playerCannonTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
@@ -200,12 +216,25 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	watchTowerInfo.life = { orcishBuildings.child("watchTower").child("maxLife").attribute("value").as_uint() };
 	watchTowerInfo.completeTexArea = { orcishBuildings.child("watchTower").child("sprite").attribute("x").as_int(), orcishBuildings.child("watchTower").child("sprite").attribute("y").as_int(), orcishBuildings.child("watchTower").child("sprite").attribute("w").as_int(), orcishBuildings.child("watchTower").child("sprite").attribute("h").as_int() };
-	
+	watchTowerInfo.sightRadius = { orcishBuildings.child("watchTower").child("attack").attribute("sightRadius").as_uint() };
+	watchTowerInfo.damage = { orcishBuildings.child("watchTower").child("attack").attribute("damage").as_uint() };
+	watchTowerInfo.attackWaitTime = { orcishBuildings.child("watchTower").child("attack").attribute("attackWaitTime").as_uint() };
+	watchTowerInfo.arrowSpeed = { orcishBuildings.child("watchTower").child("attack").attribute("arrowSpeed").as_uint() };
+
 	enemyGuardTowerInfo.life = { orcishBuildings.child("guardTower").child("maxLife").attribute("value").as_uint() };
 	enemyGuardTowerInfo.completeTexArea = { orcishBuildings.child("guardTower").child("sprite").attribute("x").as_int(), orcishBuildings.child("guardTower").child("sprite").attribute("y").as_int(), orcishBuildings.child("guardTower").child("sprite").attribute("w").as_int(), orcishBuildings.child("guardTower").child("sprite").attribute("h").as_int() };
+	enemyGuardTowerInfo.sightRadius = { orcishBuildings.child("guardTower").child("attack").attribute("sightRadius").as_uint() };
+	enemyGuardTowerInfo.damage = { orcishBuildings.child("guardTower").child("attack").attribute("damage").as_uint() };
+	enemyGuardTowerInfo.attackWaitTime = { orcishBuildings.child("guardTower").child("attack").attribute("attackWaitTime").as_uint() };
+	enemyGuardTowerInfo.arrowSpeed = { orcishBuildings.child("guardTower").child("attack").attribute("arrowSpeed").as_uint() };
 
 	enemyCannonTowerInfo.life = { orcishBuildings.child("cannonTower").child("maxLife").attribute("value").as_uint() };
 	enemyCannonTowerInfo.completeTexArea = { orcishBuildings.child("cannonTower").child("sprite").attribute("x").as_int(), orcishBuildings.child("cannonTower").child("sprite").attribute("y").as_int(), orcishBuildings.child("cannonTower").child("sprite").attribute("w").as_int(), orcishBuildings.child("cannonTower").child("sprite").attribute("h").as_int() };
+	enemyCannonTowerInfo.sightRadius = { orcishBuildings.child("cannonTower").child("attack").attribute("sightRadius").as_uint() };
+	enemyCannonTowerInfo.damage = { orcishBuildings.child("cannonTower").child("attack").attribute("damage").as_uint() };
+	enemyCannonTowerInfo.attackWaitTime = { orcishBuildings.child("cannonTower").child("attack").attribute("attackWaitTime").as_uint() };
+	enemyCannonTowerInfo.arrowSpeed = { orcishBuildings.child("cannonTower").child("attack").attribute("arrowSpeed").as_uint() };
+
 
 	//Dynamic entities
 	//Humans
@@ -343,6 +372,136 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		footmanInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
+	//Elven Archer animations
+	pugi::xml_node elvenArcherAnimations = humanEntities.child("elvenArcher").child("animations");
+
+	//Up animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("up");
+	elvenArcherInfo.up.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.up.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("down");
+	elvenArcherInfo.down.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.down.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Left animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("left");
+	elvenArcherInfo.left.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.left.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Right animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("right");
+	elvenArcherInfo.right.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.right.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Up Left animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("upLeft");
+	elvenArcherInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Up Right animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("upRight");
+	elvenArcherInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down Left animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("downLeft");
+	elvenArcherInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down Right animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("downRight");
+	elvenArcherInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("attackUp");
+	elvenArcherInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("attackDown");
+	elvenArcherInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Left animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("attackLeft");
+	elvenArcherInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Right animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("attackRight");
+	elvenArcherInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up Left animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("attackUpLeft");
+	elvenArcherInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up Right animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("attackUpRight");
+	elvenArcherInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down Left animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("attackDownLeft");
+	elvenArcherInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down Right animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("attackDownRight");
+	elvenArcherInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Death Up animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("deathUp");
+	elvenArcherInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Death Down animation Elven Archer
+	currentAnimation = elvenArcherAnimations.child("deathDown");
+	elvenArcherInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
+	elvenArcherInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		elvenArcherInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
 	//Orcs
 	pugi::xml_node orcEntities = config.child("dynamicEntities").child("orcs");
 	gruntInfo.maxLife = gruntInfo.currLife = orcEntities.child("grunt").attribute("maxLife").as_int();
@@ -475,6 +634,136 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	gruntInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
+	//Troll Axethrower animations
+	pugi::xml_node trollAxethrowerAnimations = orcEntities.child("trollAxethrower").child("animations");
+
+	//Up animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("up");
+	trollAxethrowerInfo.up.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.up.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("down");
+	trollAxethrowerInfo.down.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.down.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Left animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("left");
+	trollAxethrowerInfo.left.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.left.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Right animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("right");
+	trollAxethrowerInfo.right.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.right.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Up Left animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("upLeft");
+	trollAxethrowerInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Up Right animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("upRight");
+	trollAxethrowerInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down Left animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("downLeft");
+	trollAxethrowerInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Down Right animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("downRight");
+	trollAxethrowerInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("attackUp");
+	trollAxethrowerInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("attackDown");
+	trollAxethrowerInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Left animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("attackLeft");
+	trollAxethrowerInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Right animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("attackRight");
+	trollAxethrowerInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up Left animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("attackUpLeft");
+	trollAxethrowerInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Up Right animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("attackUpRight");
+	trollAxethrowerInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down Left animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("attackDownLeft");
+	trollAxethrowerInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Down Right animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("attackDownRight");
+	trollAxethrowerInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Death Up animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("deathUp");
+	trollAxethrowerInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	//Attack Death Down animation Troll Axethrower
+	currentAnimation = trollAxethrowerAnimations.child("deathDown");
+	trollAxethrowerInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
+	trollAxethrowerInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		trollAxethrowerInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
 	//Prisoners
@@ -673,6 +962,66 @@ bool j1EntityFactory::Start()
 
 	LOG("Loading entities textures");
 
+	// Entities Info
+	// Troll Axethrower
+	trollAxethrowerInfo.maxLife = 30;
+	trollAxethrowerInfo.currLife = trollAxethrowerInfo.maxLife;
+
+	trollAxethrowerInfo.unitInfo.maxSpeed = 2;
+	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
+	trollAxethrowerInfo.unitInfo.attackRadius = 2;
+	trollAxethrowerInfo.unitInfo.sightRadius = 4;
+	trollAxethrowerInfo.unitInfo.damage = 5;
+	trollAxethrowerInfo.unitInfo.priority = 3;
+	// -----
+
+	// Grunt
+	gruntInfo.maxLife = 30;
+	gruntInfo.currLife = gruntInfo.maxLife;
+
+	gruntInfo.unitInfo.maxSpeed = 2;
+	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
+	gruntInfo.unitInfo.attackRadius = 2;
+	gruntInfo.unitInfo.sightRadius = 4;
+	gruntInfo.unitInfo.damage = 5;
+	gruntInfo.unitInfo.priority = 3;
+	// -----
+
+	// Elven Archer
+	elvenArcherInfo.maxLife = 30;
+	elvenArcherInfo.currLife = elvenArcherInfo.maxLife;
+
+	elvenArcherInfo.unitInfo.maxSpeed = 2;
+	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
+	elvenArcherInfo.unitInfo.attackRadius = 2;
+	elvenArcherInfo.unitInfo.sightRadius = 4;
+	elvenArcherInfo.unitInfo.damage = 5;
+	elvenArcherInfo.unitInfo.priority = 3;
+	// -----
+
+	// Footman
+	footmanInfo.maxLife = 30;
+	footmanInfo.currLife = footmanInfo.maxLife;
+
+	footmanInfo.unitInfo.maxSpeed = 2;
+	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+	footmanInfo.unitInfo.attackRadius = 2;
+	footmanInfo.unitInfo.sightRadius = 4;
+	footmanInfo.unitInfo.damage = 5;
+	footmanInfo.unitInfo.priority = 3;
+	// -----
+
+	// Critters
+	critterSheepInfo.currLife = 10;
+	critterSheepInfo.maxLife = critterSheepInfo.currLife;
+	critterSheepInfo.restoredHealth = 10;
+
+	critterBoarInfo.currLife = 20;
+	critterBoarInfo.maxLife = critterBoarInfo.currLife;
+	critterSheepInfo.restoredHealth = 15;
+
+	// -----
+
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
 	neutralBuildingsTex = App->tex->Load(neutralBuildingsTexName.data());
 	orcishBuildingsTex = App->tex->Load(orcishBuildingsTexName.data());
@@ -681,6 +1030,9 @@ bool j1EntityFactory::Start()
 	crittersTex = App->tex->Load(crittersTexName.data());
 	khadgarTex = App->tex->Load(khadgarTexName.data());
 	alleriaTex = App->tex->Load(alleriaTexName.data());
+
+	elvenArcherTex = App->tex->Load(elvenArcherTexName.data());
+	trollAxethrowerTex = App->tex->Load(trollAxethrowerTexName.data());
 
 	builtChickenFarmInfo = chickenFarmInfo;
 	builtChickenFarmInfo.isBuilt = true;
@@ -916,7 +1268,6 @@ void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoi
 	}
 	
 	HandleStaticEntityPreviewTiles(staticEntityType, mousePos);
-
 }
 
 //Handles when to return green or red tiles 
@@ -926,6 +1277,8 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 
 	case EntityType_CHICKEN_FARM:
 	case EntityType_SCOUT_TOWER:
+	case EntityType_PLAYER_GUARD_TOWER:
+	case EntityType_PLAYER_CANNON_TOWER:
 		DrawStaticEntityPreviewTiles(true, Small, mousePos);
 
 		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), Small)) 
@@ -963,14 +1316,14 @@ void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntit
 			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
 		}
 		else if (!isPlaceable) {
-			if(IsEntityOnTileBySize(mouseTilePos)) //0,0
-				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y})) //32,0
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 })) //0,32
-				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) //32,32
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
+			if(IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) 
+				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile); //0,0
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y}) ||  !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y })) 
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile); //32,0
+			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 }))
+				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile); //0,32
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1}))
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile); //32,32
 		}
 		break;
 	case Medium:
@@ -986,24 +1339,24 @@ void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntit
 			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
 		}
 		else if (!isPlaceable) {
-			if (IsEntityOnTileBySize(mouseTilePos)) //0,0
-				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y })) //32,0
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 })) //0,32
-				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) //32,32
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 })) //32,64
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 })) //64,32
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y})) //64,0
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x , mouseTilePos.y + 2 })) //0,64
-				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 })) //64,64
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile);
+			if (IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) 
+				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile); //0,0
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y }))
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile); //32,0
+			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 })) 
+				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile); //0,32
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile); //32,32
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 }))
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.redTile); //32,64
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 }))
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.redTile); //64,32
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y}) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y}))
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.redTile); //64,0
+			if (IsEntityOnTileBySize({ mouseTilePos.x , mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 2 }))
+				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.redTile); //0,64
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 })) 
+				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile); //64,64
 		}
 		break;
 	case Big:
@@ -1422,6 +1775,36 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			activeStatic++;
 	}
 
+	//Check if a building can be edificated, depending on the map walkability
+	switch (buildingSize)
+	{
+	case Small:
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				if (!App->pathfinding->IsWalkable({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
+					return true;
+			}
+		}
+		break;
+	case Medium:
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (!App->pathfinding->IsWalkable({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
+					return true;
+			}
+		}
+		break;
+	case Big:
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				if (!App->pathfinding->IsWalkable({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
+					return true;
+			}
+		}
+		break;
+	}
+
 	return false;
 }
 
@@ -1513,6 +1896,8 @@ bool j1EntityFactory::CleanUp()
 	App->tex->UnLoad(orcishBuildingsTex);
 	App->tex->UnLoad(khadgarTex);
 	App->tex->UnLoad(alleriaTex);
+	App->tex->UnLoad(elvenArcherTex);
+	App->tex->UnLoad(trollAxethrowerTex);
 
 	return ret;
 }
@@ -1858,6 +2243,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		Footman* footman = new Footman(pos, { 32,32 }, footmanInfo.currLife, footmanInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
 		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
 		footman->dynamicEntityType = EntityType_FOOTMAN;
+		footman->entitySide = EntitySide_Player;
 		footman->SetStringLife(footman->GetCurrLife(), footman->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)footman);
@@ -1867,7 +2253,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ELVEN_ARCHER:
 	{
+		ElvenArcher* elvenArcher = new ElvenArcher(pos, { 32,32 }, elvenArcherInfo.currLife, elvenArcherInfo.maxLife, unitInfo, (const ElvenArcherInfo&)entityInfo, listener);
+		elvenArcher->entityType = EntityCategory_DYNAMIC_ENTITY;
+		elvenArcher->dynamicEntityType = EntityType_ELVEN_ARCHER;
+		elvenArcher->entitySide = EntitySide_Player;
+		elvenArcher->SetStringLife(elvenArcher->GetCurrLife(), elvenArcher->GetMaxLife());
 
+		toSpawnEntities.push_back((Entity*)elvenArcher);
+		return (DynamicEntity*)elvenArcher;
 	}
 	break;
 
@@ -1912,6 +2305,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		Grunt* grunt = new Grunt(pos, { 32,32 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
 		grunt->entityType = EntityCategory_DYNAMIC_ENTITY;
 		grunt->dynamicEntityType = EntityType_GRUNT;
+		grunt->entitySide = EntitySide_Enemy;
 
 		toSpawnEntities.push_back((Entity*)grunt);
 		return (DynamicEntity*)grunt;
@@ -1920,7 +2314,13 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TROLL_AXETHROWER:
 	{
+		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, { 32,32 }, trollAxethrowerInfo.currLife, trollAxethrowerInfo.maxLife, unitInfo, (const TrollAxethrowerInfo&)entityInfo, listener);
+		trollAxethrower->entityType = EntityCategory_DYNAMIC_ENTITY;
+		trollAxethrower->dynamicEntityType = EntityType_TROLL_AXETHROWER;
+		trollAxethrower->entitySide = EntitySide_Enemy;
 
+		toSpawnEntities.push_back((Entity*)trollAxethrower);
+		return (DynamicEntity*)trollAxethrower;
 	}
 	break;
 
@@ -1932,7 +2332,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_SHEEP:
 	{
-		CritterSheep* critterSheep = new CritterSheep(pos, { 32,32 }, 10, 10, unitInfo, (const CritterSheepInfo&)entityInfo, listener);
+		CritterSheep* critterSheep = new CritterSheep(pos, { 32,32 }, critterSheepInfo.currLife, critterSheepInfo.maxLife, unitInfo, (const CritterSheepInfo&)entityInfo, listener);
 		critterSheep->entityType = EntityCategory_DYNAMIC_ENTITY;
 		critterSheep->entitySide = EntitySide_Neutral;
 		critterSheep->dynamicEntityType = EntityType_SHEEP;
@@ -1944,7 +2344,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_BOAR:
 	{
-		CritterBoar* critterBoar = new CritterBoar(pos, { 32,32 }, 20, 20, unitInfo, (const CritterBoarInfo&)entityInfo, listener);
+		CritterBoar* critterBoar = new CritterBoar(pos, { 32,32 }, critterBoarInfo.currLife, critterBoarInfo.maxLife, unitInfo, (const CritterBoarInfo&)entityInfo, listener);
 		critterBoar->entityType = EntityCategory_DYNAMIC_ENTITY;
 		critterBoar->entitySide = EntitySide_Neutral;
 		critterBoar->dynamicEntityType = EntityType_BOAR;
@@ -2003,7 +2403,7 @@ uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEG
 // Returns a pointer to the Entity that is on the tile or nullptr
 Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCategory, EntitySide entitySide) const
 {
-	if (entityCategory == EntityCategory_DYNAMIC_ENTITY) {
+	if (entityCategory == EntityCategory_DYNAMIC_ENTITY || entityCategory == EntityCategory_NONE) {
 
 		list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
 
@@ -2052,6 +2452,7 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 	// TODO: Add StaticEntities (and check them depending on the entityType parameter)
 
 	// We do also need to check the toSpawn list (just in case)
+	/*
 	list<Entity*>::const_iterator toSpawn = toSpawnEntities.begin();
 
 	while (toSpawn != toSpawnEntities.end()) {
@@ -2109,6 +2510,7 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 
 		toSpawn++;
 	}
+	*/
 
 	return nullptr;
 }

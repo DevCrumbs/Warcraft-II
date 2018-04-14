@@ -628,9 +628,18 @@ TargetInfo* DynamicEntity::GetBestTargetInfo() const
 
 		if (!(*it)->isRemoved) {
 
-			priorityTargetInfo.targetInfo = *it;
-			priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
-			queue.push(priorityTargetInfo);
+			// Only dynamic entities
+			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)(*it)->target;
+				
+				if (dynEnt->dynamicEntityType != EntityType_SHEEP && dynEnt->dynamicEntityType != EntityType_BOAR) {
+
+					priorityTargetInfo.targetInfo = *it;
+					priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
+					queue.push(priorityTargetInfo);
+				}
+			}
 		}
 
 		it++;

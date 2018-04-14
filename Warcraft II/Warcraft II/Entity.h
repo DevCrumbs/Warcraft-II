@@ -152,6 +152,7 @@ public:
 	void SetCurrLife(int currLife);
 	int GetCurrLife() const;
 	void ApplyDamage(int damage);
+	void ApplyHealth(int health);
 
 	string GetStringLife() const;
 	void SetStringLife(int currentLife, int maxLife);
@@ -174,6 +175,7 @@ public:
 
 	bool isRemove = false;
 	bool isSelected = false;
+	bool auxIsSelected = false; // to play fx
 
 protected:
 

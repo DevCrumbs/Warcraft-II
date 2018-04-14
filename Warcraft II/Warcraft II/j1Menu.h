@@ -66,7 +66,6 @@ public:
 	void CreateLoading();
 	void DeteleMenu();
 
-
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
@@ -74,12 +73,12 @@ public:
 
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim);
 
+	UICursor* mouseText = nullptr;
+
 private:
 	void ChargeGameSounds();
 
 private:
-
-	UICursor * mouseText;
 
 	//Main Menu
 	UIButton* playButt = nullptr;
@@ -97,7 +96,7 @@ private:
 	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 
-	Particle* parchment;
+	Particle* parchment = nullptr;
 
 	MenuActions menuActions;
 
@@ -114,6 +113,23 @@ private:
 	string stablesSound;
 	string repairBuildingSound;
 	string destroyBuildingSound;
+
+	string humanDeadSound;
+	string orcDeadSound;
+	string prisonerRescueSound;
+	string crittersBoarDead;
+	string crittersSheepDead;
+
+	string archerGoToPlaceSound;
+	string archerReadySound;
+	string archerSelectedSound;
+	string footmanGoToPlaceSound;
+	string footmanReadySound;
+	string footmanSelectedSound;
+
+	string axeThrowSound;
+	string bowFireSound;
+	string swordSound;
 
 public:
 	uint tab_button = 0;

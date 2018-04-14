@@ -82,6 +82,7 @@ public:
 	ENTITY_TYPE staticEntityType = EntityType_NONE;
 	StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
 	BuildingState buildingState = BuildingState_Normal;
+	StaticEntitySize buildingSize = None;
 
 protected:
 

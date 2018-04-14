@@ -1,9 +1,25 @@
 #include "GoldMine.h"
 #include "j1Player.h"
+#include "j1Pathfinding.h"
+#include "j1Map.h"
 #include "j1Scene.h"
 
 GoldMine::GoldMine(fPoint pos, iPoint size, int currLife, uint maxLife, const GoldMineInfo& goldMineInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), goldMineInfo(goldMineInfo)
 {
+	buildingSize = Medium;
+
+	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
+	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+	App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 0u;
+	App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+
 	texArea = &goldMineInfo.completeTexArea;
 	isBuilt = true;
 }

@@ -96,19 +96,17 @@ bool j1Scene::Start()
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = App->map->CreateNewMap();
+		ret = App->map->Load("verticalSliceMap.tmx");
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
 	// Create walkability map
 	if (ret)
 	{
-		int w, h;
-		uchar* data = NULL;
 		if (App->map->CreateWalkabilityMap(w, h, &data))
 			App->pathfinding->SetMap(w, h, data);
 
-		RELEASE_ARRAY(data);
+		//RELEASE_ARRAY(data);
 	}
 
 	//LoadInGameUI
@@ -129,8 +127,10 @@ bool j1Scene::Start()
 	App->audio->PlayMusic(mainThemeMusicName.data(), 2.0f);
 
 	// The camera is in the player base
-	App->render->camera.x = -2400;
-	App->render->camera.y = -6720;
+	//App->render->camera.x = -2400;
+	//App->render->camera.y = -6720;
+	App->render->camera.x = 0;
+	App->render->camera.y = 0;
 
 	return ret;
 }
@@ -160,11 +160,11 @@ bool j1Scene::PreUpdate()
 	unitInfo.damage = 2;
 	unitInfo.priority = 1; // TODO: change to 3 or so
 
-						   /// Footman
-	//FootmanInfo footmanInfo;
-
-	/// Grunt
+	 /// Footman
+	FootmanInfo footmanInfo;
 	GruntInfo gruntInfo;
+	ElvenArcherInfo elvenArcherInfo;
+	TrollAxethrowerInfo trollAxethrowerInfo;
 
 	/// Sheep
 	CritterSheepInfo critterSheepInfo;
@@ -188,7 +188,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = FindClosestValidTile(tile);
+			tile = App->player->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
@@ -197,7 +197,7 @@ bool j1Scene::PreUpdate()
 		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
 
 		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
+		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
 		//}
 	}
 
@@ -216,7 +216,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = FindClosestValidTile(tile);
+			tile = App->player->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) { // TODO: uncomment this line
@@ -225,7 +225,7 @@ bool j1Scene::PreUpdate()
 		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
 
 		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, this);
+		App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, this);
 		//}
 	}
 
@@ -331,15 +331,11 @@ bool j1Scene::Update(float dt)
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-
 	// ---------------------------------------------------------------------
-
-
-
 
 	// Draw
 	App->map->Draw(); // map
-	App->particles->Draw(); // particles (only paws)
+	App->particles->DrawPaws(); // paws particles
 	App->entities->Draw(); // entities
 
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
@@ -355,17 +351,30 @@ bool j1Scene::Update(float dt)
 	//App->collision->DebugDraw();
 
 	// Units ---------------------------------------------------------------------------------
-	
+
+	Entity* isEnemyOnTile = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy); // TODO Sandra: only player side
+
+	if (isEnemyOnTile != nullptr) {
+		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+		if (r.x != 374)
+			App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
+	}
+	else {
+		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+		if (r.x != 243)
+			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+	}
+
 	// Select units by mouse click
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 		startRectangle = mousePos;
 
-		Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY); // TODO Sandra: only player side
+		Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: only player side
 
 		if (entity != nullptr)
 			App->entities->SelectEntity(entity);
-		else
-			App->entities->UnselectAllEntities();
+		//else
+			//App->entities->UnselectAllEntities();
 	}
 
 	int width = mousePos.x - startRectangle.x;
@@ -389,7 +398,7 @@ bool j1Scene::Update(float dt)
 			mouseRect.h *= -1;
 		}
 
-		App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY); // TODO Sandra: add static entities, only player side
+		App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: add static entities, only player side
 	}
 
 	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
@@ -411,15 +420,17 @@ bool j1Scene::Update(float dt)
 		if (group != nullptr) {
 
 			/// COMMAND PATROL
+			/*
 			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 
 				App->entities->CommandToUnits(units, UnitCommand_Patrol);
-
+			*/
 			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
+			/*
 			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 
 				App->entities->CommandToUnits(units, UnitCommand_Stop);
-
+			*/
 			/// COMMAND ATTACK
 			/// Enemy
 			// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
@@ -547,7 +558,7 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
 		App->map->UnLoad();
-		App->map->CreateNewMap();
+		//App->map->CreateNewMap();
 	}
 
 //	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
@@ -628,7 +639,7 @@ bool j1Scene::CleanUp()
 	App->map->UnLoad();
 	App->tex->UnLoad(debugTex);
 
-
+	RELEASE_ARRAY(data);
 	DestroyAllUI();
 	//warcraftActive = false;
 
@@ -719,6 +730,7 @@ void j1Scene::DebugKeys()
 		god = !god;
 
 	// 1, 2, 3: camera blit
+	/*
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN && App->map->blitOffset < 15 && App->map->cameraBlit)
 		App->map->blitOffset += 7;
 
@@ -727,6 +739,7 @@ void j1Scene::DebugKeys()
 
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
 		App->map->cameraBlit = !App->map->cameraBlit;
+		*/
 }
 
 void j1Scene::CheckCameraMovement(float dt) {
@@ -1307,19 +1320,29 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		
 		if (UIelem == stablesButton) {
 			if (App->player->currentGold >= stablesCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_STABLES;
+				//App->audio->PlayFx(1, 0); //Button sound
+				//UnLoadBuildingMenu();
+				//alphaBuilding = EntityType_STABLES;
+				App->audio->PlayFx(3, 0); //Button error sound
 			}
 			else if(App->player->currentGold < stablesCost)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
 		
+		if (UIelem == elvenLumberButton) {
+			App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+		if (UIelem == blackSmithButton) {
+			App->audio->PlayFx(3, 0); //Button error sound
+		}
+		
 		if (UIelem == gryphonAviaryButton) {
 			if (App->player->currentGold >= gryphonAviaryCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_GRYPHON_AVIARY;
+				//App->audio->PlayFx(1, 0); //Button sound
+				//UnLoadBuildingMenu();
+				//alphaBuilding = EntityType_GRYPHON_AVIARY;
+				App->audio->PlayFx(3, 0); //Button error sound
 			}
 			else if(App->player->currentGold < gryphonAviaryCost)
 				App->audio->PlayFx(3, 0); //Button error sound
@@ -1327,12 +1350,17 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 		if (UIelem == mageTowerButton) {
 			if (App->player->currentGold >= mageTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_MAGE_TOWER;
+				//App->audio->PlayFx(1, 0); //Button sound
+				//UnLoadBuildingMenu();
+				//alphaBuilding = EntityType_MAGE_TOWER;
+				App->audio->PlayFx(3, 0); //Button error sound
 			}
 			else if(App->player->currentGold < mageTowerCost)
 				App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+		if (UIelem == churchButton) {
+			App->audio->PlayFx(3, 0); //Button error sound
 		}
 
 		if (UIelem == scoutTowerButton) {
@@ -1344,6 +1372,28 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			else if(App->player->currentGold < scoutTowerCost)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
+
+		if (UIelem == guardTowerButton) {
+			if (App->player->currentGold >= guardTowerCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
+			}
+			else if (App->player->currentGold < guardTowerCost)
+				App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+		if (UIelem == cannonTowerButton) {
+			if (App->player->currentGold >= cannonTowerCost) {
+				App->audio->PlayFx(1, 0); //Button sound
+				UnLoadBuildingMenu();
+				alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
+			}
+			else if (App->player->currentGold < cannonTowerCost)
+				App->audio->PlayFx(3, 0); //Button error sound
+		}
+
+
 
 		else if (UIelem == pauseMenuButt) {
 			App->audio->PlayFx(1, 0); //Button sound
@@ -1415,49 +1465,6 @@ ENTITY_TYPE j1Scene::GetAlphaBuilding() {
 
 void j1Scene::SetAplphaBuilding(ENTITY_TYPE alphaBuilding) {
 	this->alphaBuilding = alphaBuilding;
-}
-
-iPoint j1Scene::FindClosestValidTile(iPoint tile) const
-{
-	// Perform a BFS
-	queue<iPoint> queue;
-	list<iPoint> visited;
-
-	iPoint curr = tile;
-	queue.push(curr);
-
-	while (queue.size() > 0) {
-
-		curr = queue.front();
-		queue.pop();
-
-		if (!App->entities->IsEntityOnTile(curr) && App->pathfinding->IsWalkable(curr))
-			return curr;
-
-		iPoint neighbors[8];
-		neighbors[0].create(curr.x + 1, curr.y + 0);
-		neighbors[1].create(curr.x + 0, curr.y + 1);
-		neighbors[2].create(curr.x - 1, curr.y + 0);
-		neighbors[3].create(curr.x + 0, curr.y - 1);
-		neighbors[4].create(curr.x + 1, curr.y + 1);
-		neighbors[5].create(curr.x + 1, curr.y - 1);
-		neighbors[6].create(curr.x - 1, curr.y + 1);
-		neighbors[7].create(curr.x - 1, curr.y - 1);
-
-		for (uint i = 0; i < 8; ++i)
-		{
-			if (App->pathfinding->IsWalkable(neighbors[i])) {
-
-				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
-
-					queue.push(neighbors[i]);
-					visited.push_back(neighbors[i]);
-				}
-			}
-		}
-	}
-
-	return { -1,-1 };
 }
 
 // -------------------------------------------------------------

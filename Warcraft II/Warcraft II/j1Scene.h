@@ -105,11 +105,13 @@ public:
 	void LoadTerenasDialog(TerenasDialogEvents dialogEvent);
 	void UnLoadTerenasDialog();
 
-	iPoint FindClosestValidTile(iPoint tile) const;
-
 	bool LoadKeys(pugi::xml_node&);
 
 public:
+
+	// Walkability
+	int w = 0, h = 0;
+	uchar* data = NULL;
 
 	//Building costs
 	int keepCost = 500;
@@ -154,7 +156,10 @@ public:
 
 	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
 	TerenasAdvices terenasAdvices;
+
 private:
+
+	bool isAttackCursor = false;
 
 	// Draw rectangle
 	iPoint startRectangle = { 0,0 };

@@ -133,14 +133,11 @@ public:
 	// CycleOnce Dijkstra
 	PathfindingStatus CycleOnceDijkstra();
 
+private:
+
 	uint width = 0; // size of the map (w)
 	uint height = 0; // size of the map (h)
 	uchar* walkabilityMap = nullptr; // all map walkability values [0..255]
-
-private:
-
-
-//	uchar* walkabilityMap = nullptr; // all map walkability values [0..255]
 	DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan; // distance heuristic of choice
 
 	PathList open; // open list of PathNodes

@@ -8,13 +8,17 @@
 #include "j1App.h"
 #include "j1EntityFactory.h"
 #include "j1Scene.h"
+#include "j1Menu.h"
 #include "j1Gui.h"
+#include "j1Pathfinding.h"
 #include "j1Particles.h"
+#include "j1Audio.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UIImage.h"
 #include "UILifeBar.h"
+#include "UICursor.h"
 
 j1Player::j1Player() : j1Module()
 {
@@ -217,6 +221,7 @@ void j1Player::CheckIfPlaceBuilding()
 	float auxX = (int)GetMousePos().x;
 	float auxY = (int)GetMousePos().y;
 	fPoint buildingPos = { auxX, auxY };
+	iPoint buildingTile = App->map->WorldToMap(buildingPos.x, buildingPos.y);
 
 	ENTITY_TYPE alphaBuilding = App->scene->GetAlphaBuilding();
 
@@ -237,6 +242,16 @@ void j1Player::CheckIfPlaceBuilding()
 				chickenFarm.push_back(c);
 				AddGold(-App->scene->chickenFarmCost); //Discount gold
 				App->scene->hasGoldChanged = true;
+
+				// Set unwalkable tiles (SMALL)
+				/*
+				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+				*/
+				// ----
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -248,6 +263,21 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->stablesCost); //Discount gold
 				App->scene->hasGoldChanged = true;
+
+				// Set unwalkable tiles (MEDIUM)
+				/*
+				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 0u;
+				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+				*/
+				// -----
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -283,11 +313,56 @@ void j1Player::CheckIfPlaceBuilding()
 				scoutTower.push_back(s);
 				AddGold(-App->scene->scoutTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
+
+				// Set unwalkable tiles (SMALL)
+				/*
+				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+				*/
+				// ----
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
 			break;
 
+		case EntityType_PLAYER_GUARD_TOWER:
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+				guardTower = (StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_GUARD_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_GUARD_TOWER), unitInfo, this);
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				AddGold(-App->scene->guardTowerCost); //Discount gold
+				App->scene->hasGoldChanged = true;
+
+				// Set unwalkable tiles (SMALL)
+				/*
+				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+				*/
+				// ----
+			}
+			break;
+		case EntityType_PLAYER_CANNON_TOWER:
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+				cannonTower = (StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_CANNON_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_CANNON_TOWER), unitInfo, this);
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				AddGold(-App->scene->cannonTowerCost); //Discount gold
+				App->scene->hasGoldChanged = true;
+
+				// Set unwalkable tiles (SMALL)
+				/*
+				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+				*/
+				// ----
+			}
 		case EntityType_NONE:
 			break;
 
@@ -312,10 +387,17 @@ void j1Player::CheckIfPlaceBuilding()
 //This method checks for the spawning queue of the units and if they're ready to spawn or not
 void j1Player::CheckUnitSpawning()
 {
-	fPoint barracksPos = barracks->GetPos();
+	fPoint barracksPos = { -1,-1 };
+
+	if (barracks != nullptr)
+		barracksPos = barracks->GetPos();
+	else
+		return;
+
 	UnitInfo unitInfo;
-	fPoint mageTowerPos = { 0.0,0.0 };
-	fPoint gryphonAviaryPos = { 0.0,0.0 };
+	fPoint mageTowerPos = { 0.0f,0.0f };
+	fPoint gryphonAviaryPos = { 0.0f,0.0f };
+
 	if (mageTower != nullptr) {
 		mageTowerPos = mageTower->GetPos();
 	}
@@ -324,25 +406,52 @@ void j1Player::CheckUnitSpawning()
 	}
 
 	if (!toSpawnUnitQueue.empty()) {
+
 		if (toSpawnUnitQueue.front().toSpawnTimer.Read() > (spawningTime * 1000)) {
 			ENTITY_TYPE toSpawnEntity = toSpawnUnitQueue.front().entityType;
 
 			switch (toSpawnEntity) {
+
 			case EntityType_FOOTMAN:
-				App->entities->AddEntity(EntityType_FOOTMAN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo);
-				break;
+			{
+				iPoint barracksTile = App->map->WorldToMap(barracksPos.x, barracksPos.y);
+				barracksTile.x -= 1;
+
+				// Make sure that there are no entities on the spawn tile and that the tile is walkable
+				if (App->entities->IsEntityOnTile(barracksTile) != nullptr || !App->pathfinding->IsWalkable(barracksTile))
+
+					barracksTile = FindClosestValidTile(barracksTile);
+
+				// Make sure that the spawn tile is valid
+				if (barracksTile.x != -1 && barracksTile.y != -1) {
+
+					iPoint barracksTilePos = App->map->MapToWorld(barracksTile.x, barracksTile.y);
+					fPoint pos = { (float)barracksTilePos.x,(float)barracksTilePos.y };
+
+					App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
+					App->audio->PlayFx(21, 0);
+				}
+			}
+				
+			break;
+
 			case EntityType_ELVEN_ARCHER:
-				App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo);
+				App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
+				App->audio->PlayFx(18, 0);
 				break;
+
 			case EntityType_MAGE:
-				App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_MAGE), unitInfo);
+				App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_MAGE), unitInfo, this);
 				break;
+
 			case EntityType_PALADIN:
-				App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_PALADIN), unitInfo);
+				App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_PALADIN), unitInfo, this);
 				break;
+
 			case EntityType_GRYPHON_RIDER:
-				App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviaryPos.x + 30, gryphonAviaryPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo);
+				App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviaryPos.x + 30, gryphonAviaryPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, this);
 				break;
+
 			default:
 				break;
 			}
@@ -355,6 +464,8 @@ void j1Player::CheckUnitSpawning()
 bool j1Player::CleanUp()
 {
 	bool ret = true;
+
+	DeleteEntitiesMenu();
 
 	return ret;
 }
@@ -398,8 +509,8 @@ bool j1Player::Load(pugi::xml_node& save)
 }
 
 
-void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent) {
-
+void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent) 
+{
 	Entity* ent = (Entity*)staticEntity;
 	if(App->scene->GetPauseMenuActions() == PauseMenuActions_NOT_EXIST)
 		switch (entitiesEvent)
@@ -431,6 +542,16 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				MakeEntitiesMenu(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 }, ent);
 			}
 
+			else if (staticEntity->staticEntityType == EntityType_PLAYER_GUARD_TOWER) {
+				App->audio->PlayFx(5, 0); //Chicken farm sound
+				MakeEntitiesMenu(ent->GetStringLife(), "Guard Tower", { 394,76,50,41 }, ent);
+			}
+
+			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER) {
+				App->audio->PlayFx(5, 0); //Chicken farm sound
+				MakeEntitiesMenu(ent->GetStringLife(), "Cannon Tower", { 394,118,50,41 }, ent);
+			}
+
 			else if (staticEntity->staticEntityType == EntityType_STABLES) {
 				App->audio->PlayFx(9, 0); //Stables sound
 				MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
@@ -457,11 +578,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
+
 				App->audio->PlayFx(6, 0); //Gold mine sound
 				list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
 				if (pene.size() != 0) {
-						pene.front()->SetBlitState(false);
-					}
+					pene.front()->SetBlitState(false);
+				}
 				staticEntity->buildingState = BuildingState_Destroyed;
 			}
 
@@ -470,6 +592,9 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		
 			break;
 		case EntitiesEvent_HOVER:
+			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
+				App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+			}
 			if ((staticEntity->staticEntityType == EntityType_TOWN_HALL || staticEntity->staticEntityType == EntityType_BARRACKS) && ent->GetCurrLife() == ent->GetMaxLife())
 				hoverCheck = HoverCheck_Upgrate;
 			else if (ent->GetCurrLife() < ent->GetMaxLife())
@@ -486,7 +611,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			break;
 		case EntitiesEvent_LEAVE:
 			DestroyHoverButton(ent);
-
+			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 			break;
 		case EntitiesEvent_CREATED:
 			DeleteEntitiesMenu();
@@ -502,6 +627,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER)
 				MakeEntitiesMenu("NO_HP_TEXT", "Scout Tower", { 394,34,50,41 }, ent);
 
+			else if (staticEntity->staticEntityType == EntityType_PLAYER_GUARD_TOWER)
+				MakeEntitiesMenu("NO_HP_TEXT", "Guard Tower", { 394,76,50,41 }, ent);
+
+			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER)
+				MakeEntitiesMenu("NO_HP_TEXT", "Cannon Tower", { 394,118,50,41 }, ent);
+
 			else if (staticEntity->staticEntityType == EntityType_STABLES)
 				MakeEntitiesMenu("NO_HP_TEXT", "Stables", { 241,160,50,41 },ent);
 			break;
@@ -513,7 +644,9 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 }
 
 
-void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) {
+void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) 
+{
+	App->entities->UnselectAllEntities();
 
 	UILabel_Info labelInfo;
 	labelInfo.text = entityName_text;
@@ -662,15 +795,14 @@ void j1Player::MakeUnitMenu(Entity* entity)
 }
 
 void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
-{	
-
+{
 	list<DynamicEntity*>::iterator it;
 	it = units.begin();
 	int i = 0;
 	while (it != units.end()) {
+
 		if (units.size() == 1) {
 			MakeUnitMenu((*it));
-
 		}
 		else {
 			switch (i)
@@ -756,13 +888,13 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 		i++;
 	}
 	i = 0;
+
 	groupSelectedStats.units = units;
 	CreateAbilitiesButtons();
-	
 }
 
-void j1Player::DeleteEntitiesMenu() {
-
+void j1Player::DeleteEntitiesMenu()
+{
 	if (entitySelectedStats.entitySelected == barracks) {
 		App->gui->DestroyElement((UIElement**)&produceElvenArcherButton);
 		App->gui->DestroyElement((UIElement**)&produceFootmanButton);
@@ -817,7 +949,6 @@ void j1Player::DeleteEntitiesMenu() {
 		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar8);
 		groupSelectedStats.units.clear();
 	}
-	
 }
 
 void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) {
@@ -873,8 +1004,8 @@ void j1Player::CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar)
 	lifeBar = App->gui->CreateUILifeBar({ lifeBarPos.x, lifeBarPos.y }, barInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
 
-void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) {
-
+void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) 
+{
 	UIButton_Info InfoButton;
 	if (hoverCheck == HoverCheck_Repair) {
 		InfoButton.normalTexArea  = { 579,34,49,41 };
@@ -1010,13 +1141,13 @@ void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pres
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
 {
-
-	if(App->scene->GetPauseMenuActions() == PauseMenuActions_NOT_EXIST)
+	if (App->scene->GetPauseMenuActions() == PauseMenuActions_NOT_EXIST)
 		switch (UIevent)
 		{
 		case UI_EVENT_NONE:
 			break;
 		case UI_EVENT_MOUSE_ENTER:
+
 			if (UIelem == produceFootmanButton) {
 				DeleteHoverInfoMenu();
 				MakeHoverInfoMenu("Produces footman", "Cost: 500 gold");
@@ -1037,12 +1168,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				DeleteHoverInfoMenu();
 				MakeHoverInfoMenu("Produces gryphon", "Cost: 2500 gold");
 			}
-			if (UIelem == commandPatrolButton) {
-				// Command Patrol (SANDRA)
-			}
-			if (UIelem == commandStopButton) {
-				// Command Stop (SANDRA)
-			}
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
 			if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton || UIelem == produceMageButton || UIelem == produceGryphonRiderButton) {
@@ -1052,6 +1177,17 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		case UI_EVENT_MOUSE_RIGHT_CLICK:
 			break;
 		case UI_EVENT_MOUSE_LEFT_CLICK:
+
+			if (UIelem == commandPatrolButton) {
+				// Command Patrol (SANDRA)
+				if (groupSelectedStats.units.size() > 0)
+					App->entities->CommandToUnits(groupSelectedStats.units, UnitCommand_Patrol);
+			}
+			if (UIelem == commandStopButton) {
+				// Command Stop (SANDRA)
+				if (groupSelectedStats.units.size() > 0)
+					App->entities->CommandToUnits(groupSelectedStats.units, UnitCommand_Stop);
+			}
 
 			if (hoverCheck == HoverCheck_Repair) {
 				if (currentGold < 500) {
@@ -1180,4 +1316,49 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		default:
 			break;
 		}
+}
+
+iPoint j1Player::FindClosestValidTile(iPoint tile) const
+{
+	// Perform a BFS
+	queue<iPoint> queue;
+	list<iPoint> visited;
+
+	iPoint curr = tile;
+	queue.push(curr);
+
+	while (queue.size() > 0) {
+
+		curr = queue.front();
+		queue.pop();
+
+		if (!App->entities->IsEntityOnTile(curr) 
+			&& !App->entities->IsEntityOnTileBySize(curr)
+			&& App->pathfinding->IsWalkable(curr))
+			return curr;
+
+		iPoint neighbors[8];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
+		neighbors[4].create(curr.x + 1, curr.y + 1);
+		neighbors[5].create(curr.x + 1, curr.y - 1);
+		neighbors[6].create(curr.x - 1, curr.y + 1);
+		neighbors[7].create(curr.x - 1, curr.y - 1);
+
+		for (uint i = 0; i < 8; ++i)
+		{
+			if (App->pathfinding->IsWalkable(neighbors[i])) {
+
+				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+					queue.push(neighbors[i]);
+					visited.push_back(neighbors[i]);
+				}
+			}
+		}
+	}
+
+	return { -1,-1 };
 }
