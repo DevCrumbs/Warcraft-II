@@ -6,6 +6,7 @@
 #include "j1PathManager.h"
 #include "j1Map.h"
 #include "j1Movement.h"
+#include "j1Scene.h"
 
 #include "Entity.h"
 
@@ -312,7 +313,7 @@ bool Navgraph::SetNavgraph(j1PathFinding* currentSearch) const
 	if (currentSearch == nullptr)
 		return false;
 
-	currentSearch->SetMap(w, h, data);
+	currentSearch->SetMap(App->scene->w, App->scene->h, App->scene->data);
 
 	return true;
 }

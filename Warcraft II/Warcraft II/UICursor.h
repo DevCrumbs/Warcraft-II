@@ -29,6 +29,8 @@ public:
 	void HandleInput();
 	void DrawAbove() const;
 
+	SDL_Rect GetDefaultTexArea() const;
+
 public:
 	SDL_Rect default = { 0,0,0,0 };
 	SDL_Rect onClick = { 0,0,0,0 };

@@ -210,32 +210,6 @@ void Footman::Move(float dt)
 	if (!isStill || isHitting)
 		UpdateAnimationsSpeed(dt);
 
-	if (targets.size() > 0) {
-
-		if (currTarget == nullptr) {
-
-			// Face towards the closest target (to show the player that the unit is going to be attacked)
-			TargetInfo* targetInfo = GetBestTargetInfo();
-
-			if (targetInfo != nullptr) {
-
-				if (targetInfo->target != nullptr) {
-
-					fPoint orientation = { targetInfo->target->GetPos().x - pos.x, targetInfo->target->GetPos().y - pos.y };
-
-					float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-					if (m > 0.0f) {
-						orientation.x /= m;
-						orientation.y /= m;
-					}
-
-					SetUnitDirectionByValue(orientation);
-				}
-			}
-		}
-	}
-
 	ChangeAnimation();
 
 	if (!isDead && lastColliderUpdateTile != singleUnit->currTile) {
@@ -317,6 +291,32 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				targetInfo->isSightSatisfied = true;
 
 				targets.push_back(targetInfo);
+			}
+
+			if (targets.size() > 0) {
+
+				if (currTarget == nullptr) {
+
+					// Face towards the closest target (to show the player that the unit is going to be attacked)
+					TargetInfo* targetInfo = GetBestTargetInfo();
+
+					if (targetInfo != nullptr) {
+
+						if (targetInfo->target != nullptr) {
+
+							fPoint orientation = { targetInfo->target->GetPos().x - pos.x, targetInfo->target->GetPos().y - pos.y };
+
+							float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+
+							if (m > 0.0f) {
+								orientation.x /= m;
+								orientation.y /= m;
+							}
+
+							SetUnitDirectionByValue(orientation);
+						}
+					}
+				}
 			}
 		}
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)

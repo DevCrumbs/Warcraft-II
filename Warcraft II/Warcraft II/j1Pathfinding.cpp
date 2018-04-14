@@ -6,6 +6,7 @@
 #include "j1EntityFactory.h"
 #include "j1Map.h"
 #include "j1PathManager.h"
+#include "j1Scene.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -61,7 +62,8 @@ bool j1PathFinding::IsWalkable(const iPoint& pos) const
 int j1PathFinding::GetTileAt(const iPoint& pos) const
 {
 	if (CheckBoundaries(pos))
-		return walkabilityMap[(pos.y*width) + pos.x];
+		// Scene map
+		return App->scene->data[(pos.y*width) + pos.x];
 
 	return INVALID_WALK_CODE;
 }

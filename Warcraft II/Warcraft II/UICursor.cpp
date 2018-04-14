@@ -101,3 +101,8 @@ void UICursor::SetTexArea(SDL_Rect texAreaDefault, SDL_Rect texAreaOnClick)
 	this->default = texAreaDefault;
 	this->onClick = texAreaOnClick;
 }
+
+SDL_Rect UICursor::GetDefaultTexArea() const 
+{
+	return this->default;
+}

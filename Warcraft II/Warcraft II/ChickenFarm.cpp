@@ -1,10 +1,22 @@
 #include "ChickenFarm.h"
 #include "j1Player.h"
 #include "j1Scene.h"
-
+#include "j1Map.h"
+#include "j1Scene.h"
+#include "j1Pathfinding.h"
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
+	buildingSize = Small;
+
+	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
+	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+	//uint i = App->scene->data[App->scene->w * buildingTile.y + buildingTile.x];
+	App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+	App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+
 	isBuilt = chickenFarmInfo.isBuilt;
 
 	if (isBuilt)
@@ -15,6 +27,7 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		App->audio->PlayFx(2, 0); //Construction sound
 	}
 }
+
 ChickenFarm::~ChickenFarm() {
 	App->player->currentFood -= 4;
 	App->scene->hasFoodChanged = true;

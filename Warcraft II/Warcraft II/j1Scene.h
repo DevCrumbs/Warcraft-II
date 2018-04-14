@@ -109,6 +109,10 @@ public:
 
 public:
 
+	// Walkability
+	int w = 0, h = 0;
+	uchar* data = NULL;
+
 	//Building costs
 	int keepCost = 500;
 	int castleCost = 1500;
@@ -152,7 +156,10 @@ public:
 
 	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
 	TerenasAdvices terenasAdvices;
+
 private:
+
+	bool isAttackCursor = false;
 
 	// Draw rectangle
 	iPoint startRectangle = { 0,0 };

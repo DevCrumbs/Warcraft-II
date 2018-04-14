@@ -221,6 +221,7 @@ void j1Player::CheckIfPlaceBuilding()
 	float auxX = (int)GetMousePos().x;
 	float auxY = (int)GetMousePos().y;
 	fPoint buildingPos = { auxX, auxY };
+	iPoint buildingTile = App->map->WorldToMap(buildingPos.x, buildingPos.y);
 
 	ENTITY_TYPE alphaBuilding = App->scene->GetAlphaBuilding();
 
@@ -241,6 +242,16 @@ void j1Player::CheckIfPlaceBuilding()
 				chickenFarm.push_back(c);
 				AddGold(-App->scene->chickenFarmCost); //Discount gold
 				App->scene->hasGoldChanged = true;
+
+				// Set unwalkable tiles (SMALL)
+				/*
+				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+				*/
+				// ----
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -252,6 +263,21 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->stablesCost); //Discount gold
 				App->scene->hasGoldChanged = true;
+
+				// Set unwalkable tiles (MEDIUM)
+				/*
+				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 0u;
+				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+				*/
+				// -----
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -287,6 +313,16 @@ void j1Player::CheckIfPlaceBuilding()
 				scoutTower.push_back(s);
 				AddGold(-App->scene->scoutTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
+
+				// Set unwalkable tiles (SMALL)
+				/*
+				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+				*/
+				// ----
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -298,6 +334,16 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->guardTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
+
+				// Set unwalkable tiles (SMALL)
+				/*
+				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+				*/
+				// ----
 			}
 			break;
 		case EntityType_PLAYER_CANNON_TOWER:
@@ -306,6 +352,16 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->cannonTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
+
+				// Set unwalkable tiles (SMALL)
+				/*
+				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+				*/
+				// ----
 			}
 		case EntityType_NONE:
 			break;
