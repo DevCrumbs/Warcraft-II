@@ -21,6 +21,7 @@ struct UIImage;
 struct UISlider;
 class UISlider_Info;
 class UIInputText;
+class UIMinimap;
 
 enum ENTITY_TYPE;
 
@@ -165,6 +166,8 @@ public:
 	TerenasAdvices terenasAdvices;
 
 	j1Timer terenasDialogTimer;
+
+	UIMinimap* minimap = nullptr;
 
 
 private:

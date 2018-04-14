@@ -7,13 +7,13 @@
 
 #include "UIMinimap.h"
 
-UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j1Module* listener) : UIElement(localPos, parent, listener) 
+UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j1Module* listener) : UIElement({ 0,0 }, nullptr, nullptr, false)
 {
 	type = UIE_TYPE_MINIMAP;
 }
 
 
-UIMinimap::UIMinimap() : UIElement()
+UIMinimap::UIMinimap() : UIElement({ 0,0 }, nullptr, nullptr, false)
 {
 	type = UIE_TYPE_MINIMAP;
 
@@ -30,7 +30,9 @@ UIMinimap::~UIMinimap()
 
 void UIMinimap::Update(float dt)
 {
-	SDL_Rect camera = App->render->camera;
+	SDL_fRect camera = App->render->camera;
+
+	App->render->SetViewPort({ 0,0,150,150 });
 
 	//TODO 3 Draw the map (App->render->Blit()), (SDL_Texture* mapTexture, SDL_Rect minimapInfo).
 	///Remember to substract the camera coordinates to the minimap coordinates so it stays in the same screen position
@@ -42,8 +44,8 @@ void UIMinimap::Update(float dt)
 	for (list<Entity*>::iterator iterator = entities.begin(); iterator != entities.end(); ++iterator)
 	{
 		///Bonus code: Use this in TODO 4.1 to compute the entity rect
-		SDL_Rect rect{	(*iterator)->position.x * scaleFactor + minimapInfo.x,
-						(*iterator)->position.y * scaleFactor + minimapInfo.y,
+		SDL_Rect rect{	(*iterator)->pos.x * scaleFactor + minimapInfo.x,
+						(*iterator)->pos.y * scaleFactor + minimapInfo.y,
 						entityWidth * scaleFactor, entityHeight * scaleFactor };
 
 		/// To draw entities we will be using quads (App->render->DrawQuad()) use (*iterator)->minimapDrawColor to acces to the entity color (r, g, b, a)
@@ -60,6 +62,8 @@ void UIMinimap::Update(float dt)
 
 	/// We don't want the quad to be filled and it shouldn't use the camera (keep in mind the bools in App->render->DrawQuad())
 	App->render->DrawQuad(rect, 255, 255, 0, 255, false, false);
+
+	App->render->ResetViewPort();
 
 }
 
@@ -90,79 +94,79 @@ bool UIMinimap::LoadMap()
 
 	SDL_Renderer* renderer = nullptr;
 	SDL_Surface* mapSurface = nullptr;
+	// TODO 2 Save map into a texture (SDL_Texture* mapTexture)
 
-	if (App->map->isMapLoaded)
+	///TODO 2.1 Compute the scale factor (float scaleFactor) for the Minimap. Hint: mapSize * scaleFactor = minimapSize
+	float mapSize = App->map->data.width * App->map->data.tileWidth;
+	scaleFactor = minimapInfo.w / mapSize;
+	scaleFactor = minimapInfo.w / (float)(50 * 32);
+
+	///TODO 2.2 Create a RGB surface (SDL_Surface* mapSurface, SDL_CreateRGBSurface()). Hint: The size of the surface is the size of the minimap	
+	mapSurface = SDL_CreateRGBSurface(0, minimapInfo.w, minimapInfo.h, 32, 0, 0, 0, 0);
+	if (mapSurface == NULL)
+		SDL_Log("SDL_CreateRGBSurface() failed: %s", SDL_GetError());
+
+
+	///TODO 2.3 Create a renderer (SDL_Renderer* renderer) using the surface (SDL_Surface* mapSurface) (SDL_CreateSoftwareRenderer())
+	renderer = SDL_CreateSoftwareRenderer(mapSurface);
+
+	if (renderer == NULL)
+		LOG("Could not create the renderer! SDL_Error: %s\n", SDL_GetError());
+
+
+
+	char* path = "wastelandTiles.png";
+
+	SDL_Texture* tex = App->tex->Load(path, renderer);
+
+	for (list<MapLayer*>::const_iterator layer = App->map->data.layers.begin();
+		layer != App->map->data.layers.end(); ++layer)
 	{
+		if (!(*layer)->properties.GetProperty("Draw", false))
+			continue;
 
-		// TODO 2 Save map into a texture (SDL_Texture* mapTexture)
+		if (!ret)
+			break;
 
-		///TODO 2.1 Compute the scale factor (float scaleFactor) for the Minimap. Hint: mapSize * scaleFactor = minimapSize
-		float mapSize = App->map->data.width * App->map->data.tileWidth;
-		scaleFactor = minimapInfo.w / mapSize;
-
-
-		///TODO 2.2 Create a RGB surface (SDL_Surface* mapSurface, SDL_CreateRGBSurface()). Hint: The size of the surface is the size of the minimap	
-		mapSurface = SDL_CreateRGBSurface(0, minimapInfo.w, minimapInfo.h, 32, 0, 0, 0, 0);
-		 if (mapSurface == NULL)
-			SDL_Log("SDL_CreateRGBSurface() failed: %s", SDL_GetError());
-
-
-		 ///TODO 2.3 Create a renderer (SDL_Renderer* renderer) using the surface (SDL_Surface* mapSurface) (SDL_CreateSoftwareRenderer())
-		renderer = SDL_CreateSoftwareRenderer(mapSurface);
-
-		if (renderer == NULL)
-			LOG("Could not create the renderer! SDL_Error: %s\n", SDL_GetError());	
-		
-
-
-		char* path = TexturePath;
-		SDL_Texture* tex = App->tex->Load(path, renderer);
-
-		for (list<MapLayer*>::const_iterator layer = App->map->data.layers.begin();
-			layer != App->map->data.layers.end(); ++layer)
+		for (int i = 0; i < (*layer)->width; ++i)
 		{
-			if (!ret)
-				break;
-
-			for (int i = 0; i < (*layer)->width; ++i)
+			for (int j = 0; j < (*layer)->height; ++j)
 			{
-				for (int j = 0; j < (*layer)->height; ++j)
-				{
-					int tile_id = (*layer)->Get(i, j);
-					if (tile_id > 0) {
+				int tile_id = (*layer)->Get(i, j);
+				if (tile_id > 0) {
 
-						TileSet* tileset = App->map->GetTilesetFromTileId(tile_id);
+					TileSet* tileset = App->map->GetTilesetFromTileId(tile_id);
 
-						SDL_Rect rect = tileset->GetTileRect(tile_id);
+					SDL_Rect rect = tileset->GetTileRect(tile_id);
 
-						SDL_Rect* section = &rect;
-						iPoint world = App->map->MapToWorld(i, j);
-						world.x *= scaleFactor;
-						world.y *= scaleFactor;
-						ret = SaveInRenderer(tex, world.x, world.y, section, scaleFactor, renderer);
-					}
+					SDL_Rect* section = &rect;
+					iPoint world = App->map->MapToWorld(i, j);
+					world.x *= scaleFactor;
+					world.y *= scaleFactor;
+					ret = SaveInRenderer(tex, world.x, world.y, section, scaleFactor, renderer);
 				}
 			}
 		}
-		App->tex->UnLoad(tex);
-
-		///TODO 2.4 Read the renderer pixels (SDL_RenderReadPixels()) using the renderer (SDL_Renderer*) and the pixels (SDL_Surface*->pixels) and pitch (SDL_Surface*->pitch) of the surface 
-		SDL_RenderReadPixels(renderer, NULL, 0, mapSurface->pixels, mapSurface->pitch);
-
-
-		///TODO 2.5 Create a texture from the surface (SDL_Surface* mapSurface) (SDL_CreateTextureFromSurface()) and store it in the map texture (SDL_Texture* mapTexture)
-		mapTexture = SDL_CreateTextureFromSurface(App->render->renderer, mapSurface);
-
-
-		///FYI You can use this same method to take a screenshot of your game using SDL_SaveBMP(SDL_Surface* surface, const char*  file) at the post update :)
-
-		if (SDL_RenderClear(renderer) == 0)
-			renderer = nullptr;
-		else
-			LOG("Could not clear the renderer! SDL_Error: %s\n", SDL_GetError());
-
-		SDL_FreeSurface(mapSurface);
 	}
+	App->tex->UnLoad(tex);
+
+	///TODO 2.4 Read the renderer pixels (SDL_RenderReadPixels()) using the renderer (SDL_Renderer*) and the pixels (SDL_Surface*->pixels) and pitch (SDL_Surface*->pitch) of the surface 
+	SDL_RenderReadPixels(renderer, NULL, 0, mapSurface->pixels, mapSurface->pitch);
+
+
+	///TODO 2.5 Create a texture from the surface (SDL_Surface* mapSurface) (SDL_CreateTextureFromSurface()) and store it in the map texture (SDL_Texture* mapTexture)
+	mapTexture = SDL_CreateTextureFromSurface(App->render->renderer, mapSurface);
+
+
+	///FYI You can use this same method to take a screenshot of your game using SDL_SaveBMP(SDL_Surface* surface, const char*  file) at the post update :)
+
+	if (SDL_RenderClear(renderer) == 0)
+		renderer = nullptr;
+	else
+		LOG("Could not clear the renderer! SDL_Error: %s\n", SDL_GetError());
+
+	SDL_FreeSurface(mapSurface);
+
 	return ret;
 }
 

@@ -29,6 +29,7 @@
 #include "UIButton.h"
 #include "UIImage.h"
 #include "UICursor.h"
+#include "UIMinimap.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -97,7 +98,7 @@ bool j1Scene::Start()
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = App->map->Load("verticalSliceMap.tmx");
+		ret = App->map->Load("verticalSliceMap0.tmx");
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
@@ -132,6 +133,9 @@ bool j1Scene::Start()
 	//App->render->camera.y = -6720;
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
+
+	minimap = new UIMinimap();
+	minimap->SetMinimap({ 32,32,200,200 }, 32, 32);
 
 	return ret;
 }
@@ -353,7 +357,7 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	bool ret = true;
-
+	minimap->Update(dt);
 	// Save mouse position (world and map coords)
 	int x, y;
 	App->input->GetMousePosition(x, y);

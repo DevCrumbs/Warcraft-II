@@ -181,6 +181,8 @@ public:
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
+	TileSet* GetTilesetFromTileId(int id) const;
+
 private:
 
 	bool LoadMap();
@@ -193,7 +195,7 @@ private:
 	bool LoadObjectGroupDetails(pugi::xml_node& objectGroup_node, ObjectGroup* objectGroup);
 	bool LoadObject(pugi::xml_node& object_node, Object* object);
 
-	TileSet* GetTilesetFromTileId(int id) const;
+	
 
 public:
 
