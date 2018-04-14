@@ -517,6 +517,16 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				MakeEntitiesMenu(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 }, ent);
 			}
 
+			else if (staticEntity->staticEntityType == EntityType_PLAYER_GUARD_TOWER) {
+				App->audio->PlayFx(5, 0); //Chicken farm sound
+				MakeEntitiesMenu(ent->GetStringLife(), "Guard Tower", { 394,76,50,41 }, ent);
+			}
+
+			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER) {
+				App->audio->PlayFx(5, 0); //Chicken farm sound
+				MakeEntitiesMenu(ent->GetStringLife(), "Cannon Tower", { 394,118,50,41 }, ent);
+			}
+
 			else if (staticEntity->staticEntityType == EntityType_STABLES) {
 				App->audio->PlayFx(9, 0); //Stables sound
 				MakeEntitiesMenu(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
@@ -591,6 +601,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER)
 				MakeEntitiesMenu("NO_HP_TEXT", "Scout Tower", { 394,34,50,41 }, ent);
+
+			else if (staticEntity->staticEntityType == EntityType_PLAYER_GUARD_TOWER)
+				MakeEntitiesMenu("NO_HP_TEXT", "Guard Tower", { 394,76,50,41 }, ent);
+
+			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER)
+				MakeEntitiesMenu("NO_HP_TEXT", "Cannon Tower", { 394,118,50,41 }, ent);
 
 			else if (staticEntity->staticEntityType == EntityType_STABLES)
 				MakeEntitiesMenu("NO_HP_TEXT", "Stables", { 241,160,50,41 },ent);
