@@ -1092,7 +1092,7 @@ bool j1EntityFactory::PreUpdate()
 			info.ent = (*iterator);
 			DynamicEntity* dyn = (DynamicEntity*)(*iterator);
 				info.type = dyn->dynamicEntityType;
-			DynamicDrawOrder.push(info);
+			entityDrawOrder.push(info);
 		}
 	}
 
@@ -1104,7 +1104,7 @@ bool j1EntityFactory::PreUpdate()
 			info.ent = (*iterator);
 			StaticEntity* stc = (StaticEntity*)(*iterator);
 				info.type = stc->staticEntityType;
-			StaticDrawOrder.push(info);
+			entityDrawOrder.push(info);
 		}
 	}
 
@@ -1174,8 +1174,8 @@ void j1EntityFactory::Draw()
 	// Blit active entities
 
 	// Dynamic entities (one texture per dynamic entity)
-	for (EntitiesDraw_info info; !DynamicDrawOrder.empty(); DynamicDrawOrder.pop()) {
-		info = DynamicDrawOrder.top();
+	for (EntitiesDraw_info info; !entityDrawOrder.empty(); entityDrawOrder.pop()) {
+		info = entityDrawOrder.top();
 		switch (info.type) {
 			// Player
 		case EntityType_FOOTMAN:
@@ -1222,30 +1222,23 @@ void j1EntityFactory::Draw()
 			break;
 
 		default:
+			StaticEntity* ent = (StaticEntity*)info.ent;
+			switch (ent->staticEntityCategory) {
+			case StaticEntityCategory_HumanBuilding:
+				(info.ent)->Draw(humanBuildingsTex);
+				break;
+			case StaticEntityCategory_NeutralBuilding:
+				(info.ent)->Draw(neutralBuildingsTex);
+				break;
+			case StaticEntityCategory_OrcishBuilding:
+				(info.ent)->Draw(orcishBuildingsTex);
+				break;
+			dafault:
+				break;
+			}
 			break;
 		}
 	}
-
-	// Static entities (altas textures for every type of static entity)
-	for (EntitiesDraw_info info; !StaticDrawOrder.empty(); StaticDrawOrder.pop()) {
-		info = StaticDrawOrder.top();
-		switch (info.type) {
-
-		case StaticEntityCategory_HumanBuilding:
-			(info.ent)->Draw(humanBuildingsTex);
-			break;
-		case StaticEntityCategory_NeutralBuilding:
-			(info.ent)->Draw(neutralBuildingsTex);
-			break;
-		case StaticEntityCategory_OrcishBuilding:
-			(info.ent)->Draw(orcishBuildingsTex);
-			break;
-
-		default:
-			break;
-		}
-	}
-
 	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
 	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
 }
