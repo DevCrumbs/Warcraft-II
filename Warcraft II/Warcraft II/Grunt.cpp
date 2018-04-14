@@ -128,6 +128,7 @@ void Grunt::Move(float dt)
 		/// GOAL: AttackTarget
 		// Check if there are available targets
 		/// Prioritize a type of target (static or dynamic)
+		/*
 		if (singleUnit->IsFittingTile()) {
 
 			newTarget = GetBestTargetInfo();
@@ -151,7 +152,7 @@ void Grunt::Move(float dt)
 				}
 			}
 		}
-
+		*/
 		// ---------------------------------------------------------------------
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL
@@ -189,7 +190,12 @@ void Grunt::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr) {
 
-		fPoint offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+		fPoint offset = { 0.0f,0.0f };
+		if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp)
+			offset = { animation->GetCurrentFrame().w / 3.0f,0.0f };
+		else
+			offset = { animation->GetCurrentFrame().w / 3.0f, animation->GetCurrentFrame().h / 2.0f };
+
 		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
 	}
 

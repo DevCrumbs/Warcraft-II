@@ -333,7 +333,13 @@ void ElvenArcher::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr) {
 
-		fPoint offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+		fPoint offset = { 0.0f,0.0f };
+
+		if (animation == &elvenArcherInfo.deathDown || animation == &elvenArcherInfo.deathUp)
+			offset = { animation->GetCurrentFrame().w / 4.0f,0.0f };
+		else
+			offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+
 		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
 	}
 
