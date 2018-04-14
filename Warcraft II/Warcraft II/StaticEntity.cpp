@@ -160,7 +160,7 @@ bool StaticEntity::GetIsFinishedBuilt() const
 ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic)
 {
 	vector<Collider*> colliders;
-	iPoint currTilePos = { (int)this->pos.x, (int)this->pos.y };
+	iPoint currTilePos = { (int)this->pos.x + 16, (int)this->pos.y + 16 };
 
 	int sign = 1;
 	for (int y = -(int)radius + 1; y < (int)radius; ++y) {
@@ -171,7 +171,7 @@ ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, ui
 		for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
 
 			//Valdivia: Idk if this is the correct way of doing it but it works
-			SDL_Rect rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			SDL_Rect rect = { currTilePos.x + x * App->map->data.tileWidth, currTilePos.y + y * App->map->data.tileHeight, App->map->data.tileWidth, App->map->data.tileHeight };
 			Collider* collider = App->collision->CreateCollider(rect);
 			
 			if (collider != nullptr)
