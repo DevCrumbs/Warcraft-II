@@ -529,9 +529,7 @@ bool j1Map::Load(const char* file_name)
 		}
 	}
 	if (ret)
-		LoadLogic();
-
-
+		//LoadLogic();
 
 	mapLoaded = ret;
 
@@ -711,10 +709,11 @@ bool j1Map::LoadLogic()
 					pos.y = auxPos.y;
 
 					UnitInfo unitInfo;
-					ENTITY_TYPE entityType= (ENTITY_TYPE)(*layerIterator)->data[i];
+					ENTITY_TYPE entityType = (ENTITY_TYPE)(*layerIterator)->data[i];
 
 					switch (entityType)
 					{
+						// Static Entities
 					case EntityType_TOWN_HALL:
 						App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 						break;
@@ -724,10 +723,40 @@ bool j1Map::LoadLogic()
 					case EntityType_BARRACKS:
 						App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 						break;
-					default:
-						App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
+
+					case EntityType_GOLD_MINE:
+					case EntityType_RUNESTONE:
+					case EntityType_GREAT_HALL:
+					case EntityType_STRONGHOLD:
+					case EntityType_FORTRESS:
+					case EntityType_ENEMY_BARRACKS:
+					case EntityType_PIG_FARM:
+					case EntityType_TROLL_LUMBER_MILL:
+					case EntityType_ALTAR_OF_STORMS:
+					case EntityType_DRAGON_ROOST:
+					case EntityType_TEMPLE_OF_THE_DAMNED:
+					case EntityType_OGRE_MOUND:
+					case EntityType_ENEMY_BLACKSMITH:
+					case EntityType_WATCH_TOWER:
+					case EntityType_ENEMY_GUARD_TOWER:
+					case EntityType_ENEMY_CANNON_TOWER:
+						App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+					break;
+
+					// Dynamic entities
+					case EntityType_FOOTMAN:
+					case EntityType_ELVEN_ARCHER:
+					case EntityType_KHADGAR:
+					case EntityType_ALLERIA:
+						App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
 						break;
-						
+
+					case EntityType_GRUNT:
+					case EntityType_TROLL_AXETHROWER:
+					case EntityType_SHEEP:
+					case EntityType_BOAR:
+						App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+						break;
 					}
 				}
 			}

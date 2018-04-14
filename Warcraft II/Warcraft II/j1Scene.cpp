@@ -134,6 +134,8 @@ bool j1Scene::Start()
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
 
+	App->map->LoadLogic();
+
 	return ret;
 }
 
