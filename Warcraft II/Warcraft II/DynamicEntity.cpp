@@ -353,6 +353,45 @@ UnitDirection DynamicEntity::GetUnitDirection() const
 	return UnitDirection_NoDirection;
 }
 
+UnitDirection DynamicEntity::GetDirection(fPoint direction) const
+{
+	if (direction.x > 0.0f) {
+
+		if (direction.y > 0.0f)
+			return UnitDirection_DownRight;
+
+		else if (direction.y < 0.0f)
+			return UnitDirection_UpRight;
+
+		else
+			return UnitDirection_Right;
+	}
+	else if (direction.x < 0.0f) {
+
+		if (direction.y > 0.0f)
+			return UnitDirection_DownLeft;
+
+		else if (direction.y < 0.0f)
+			return UnitDirection_UpLeft;
+
+		else
+			return UnitDirection_Left;
+	}
+	else {
+
+		if (direction.y > 0.0f)
+			return UnitDirection_Down;
+
+		else if (direction.y < 0.0f)
+			return UnitDirection_Up;
+
+		else
+			return UnitDirection_NoDirection;
+	}
+
+	return UnitDirection_NoDirection;
+}
+
 void DynamicEntity::SetUnitDirectionByValue(fPoint unitDirection)
 {
 	direction = unitDirection;

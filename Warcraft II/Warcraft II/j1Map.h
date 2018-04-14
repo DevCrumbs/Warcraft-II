@@ -200,6 +200,11 @@ public:
 	MapData				data;
 	MapLayer*			collisionLayer = nullptr;
 
+	int					culing_offset = 0;
+	int					blit_offset = 0;
+	bool				camera_blit = false;
+
+	SDL_Rect			playerBase{ 0,0,0,0 };
 private:
 
 	pugi::xml_document	map_file;
@@ -207,12 +212,6 @@ private:
 	bool				map_loaded = false;
 
 	MapLayer*			aboveLayer = nullptr;
-
-public:
-
-	int					culing_offset = 0;
-	int					blit_offset = 0;
-	bool				camera_blit = false;
 };
 
 #endif // __j1MAP_H__

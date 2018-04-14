@@ -26,6 +26,7 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	// XML loading
 	/// Animations
 	GruntInfo info = (GruntInfo&)App->entities->GetUnitInfo(EntityType_GRUNT);
+	this->unitInfo = this->gruntInfo.unitInfo;
 	this->gruntInfo.up = info.up;
 	this->gruntInfo.down = info.down;
 	this->gruntInfo.left = info.left;
@@ -54,8 +55,8 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 
 	// Collisions
 	CreateEntityCollider(EntitySide_Enemy);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
 	entityCollider->isTrigger = true;
 	sightRadiusCollider->isTrigger = true;
 	attackRadiusCollider->isTrigger = true;
@@ -130,29 +131,28 @@ void Grunt::Move(float dt)
 		/*
 		if (singleUnit->IsFittingTile()) {
 
-		newTarget = GetBestTargetInfo();
+			newTarget = GetBestTargetInfo();
 
-		if (newTarget != nullptr) {
+			if (newTarget != nullptr) {
 
-		// A new target has found, update the attacking target
-		if (currTarget != newTarget) {
+				// A new target has found, update the attacking target
+				if (currTarget != newTarget) {
 
-		if (currTarget != nullptr) {
+					if (currTarget != nullptr) {
 
-		if (!currTarget->isRemoved) {
+						if (!currTarget->isRemoved) {
 
-		currTarget->target->RemoveAttackingUnit(this);
-		isHitting = false;
-		}
-		}
+							currTarget->target->RemoveAttackingUnit(this);
+							isHitting = false;
+						}
+					}
 
-		currTarget = newTarget;
-		brain->AddGoal_AttackTarget(currTarget);
-		}
-		}
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
 		}
 		*/
-
 		// ---------------------------------------------------------------------
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL
@@ -190,7 +190,12 @@ void Grunt::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr) {
 
-		fPoint offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+		fPoint offset = { 0.0f,0.0f };
+		if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp)
+			offset = { animation->GetCurrentFrame().w / 3.0f,0.0f };
+		else
+			offset = { animation->GetCurrentFrame().w / 3.0f, animation->GetCurrentFrame().h / 2.0f };
+
 		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
 	}
 

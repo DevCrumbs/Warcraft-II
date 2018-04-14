@@ -33,56 +33,59 @@ StaticEntity::~StaticEntity()
 
 	iPoint buildingTile;
 
-	switch (buildingSize) {
+	if (App->scene->active) {
 
-	case Small:
-		buildingTile = App->map->WorldToMap(pos.x, pos.y);
-		App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 372u;
-		App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 372u;
-		App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-		break;
+		switch (buildingSize) {
 
-	case Medium:
-		buildingTile = App->map->WorldToMap(pos.x, pos.y);
-		App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 372u;
-		App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 372u;
-		App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-		break;
+		case Small:
+			buildingTile = App->map->WorldToMap(pos.x, pos.y);
+			App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 372u;
+			App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 372u;
+			App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+			break;
 
-	case Big:
-		buildingTile = App->map->WorldToMap(pos.x, pos.y);
-		App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 372u;
-		App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 372u;
+		case Medium:
+			buildingTile = App->map->WorldToMap(pos.x, pos.y);
+			App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 372u;
+			App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 372u;
+			App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+			break;
 
-		App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 3)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 3)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 3)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 3)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 3) + buildingTile.x] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 1)] = 372u;
-		App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 2)] = 372u;
-		App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-		break;
+		case Big:
+			buildingTile = App->map->WorldToMap(pos.x, pos.y);
+			App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 372u;
+			App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 372u;
 
-	case None:
-	default:
-		break;
+			App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 3)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 3)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 3)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 3)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 3) + buildingTile.x] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 1)] = 372u;
+			App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 2)] = 372u;
+			App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
+			break;
+
+		case None:
+		default:
+			break;
+		}
 	}
 
 	// Set unwalkable tiles (SMALL)

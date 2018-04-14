@@ -32,6 +32,7 @@ void ScoutTower::Move(float dt)
 		CreateEntityCollider(EntitySide_Player);
 		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, scoutTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 		sightRadiusCollider->isTrigger = true;
+		entityCollider->isTrigger = true;
 		isColliderCreated = true;
 	}
 
@@ -234,8 +235,10 @@ void ScoutTower::CreateArrow()
 	}
 
 	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->pos.y, 2.0f));
-	arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->pos.x) / m;
-	arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->pos.y) / m;
+	if (m > 0) {
+		arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->pos.x) / m;
+		arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->pos.y) / m;
+	}
 }
 
 void ScoutTower::CheckArrowMovement(float dt)
@@ -310,8 +313,7 @@ void ScoutTower::CheckArrowMovement(float dt)
 
 	default:
 		break;
-	}
-		
+	}	
 }
 
 void ScoutTower::MoveArrowTowardsTarget(float dt)

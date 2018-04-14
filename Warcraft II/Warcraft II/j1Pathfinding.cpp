@@ -68,6 +68,20 @@ int j1PathFinding::GetTileAt(const iPoint& pos) const
 	return INVALID_WALK_CODE;
 }
 
+bool j1PathFinding::IsOnBase(const iPoint& pos)
+{
+	bool ret = false; 
+
+	SDL_Rect entityPos{ pos.x,pos.y, 32,32 };
+	SDL_Rect result{ 0,0,0,0 };
+
+	if (SDL_IntersectRect(&entityPos, &App->map->playerBase, &result))
+		ret = true;
+	
+
+	return ret;
+}
+
 // To request all tiles involved in the last generated path
 const vector<iPoint>* j1PathFinding::GetLastPath() const
 {
