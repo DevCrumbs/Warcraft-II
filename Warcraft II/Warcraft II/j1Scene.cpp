@@ -202,6 +202,26 @@ bool j1Scene::PreUpdate()
 		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
 		//}
 	}
+	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
+
+		iPoint tile = { 10,10 };
+
+		// Make sure that there are no entities on the spawn tile and that the tile is walkable
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = App->player->FindClosestValidTile(tile);
+
+		// Make sure that the spawn tile is valid
+		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
+		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, this);
+		//}
+	}
+
 
 	// 2: spawn a Grunt with priority 1
 	unitInfo.sightRadius = 5;

@@ -96,11 +96,11 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelInfo.text = "Buildings destroyed: ";
 	labelVector.push_back(App->gui->CreateUILabel({ 50 , 375 }, labelInfo));
 										   
-	labelInfo.text = "Rooms explored: ";   
-	labelVector.push_back(App->gui->CreateUILabel({ 50 , 475 }, labelInfo));
+	/*labelInfo.text = "Rooms explored: ";   
+	labelVector.push_back(App->gui->CreateUILabel({ 50 , 475 }, labelInfo));*/  //COMMING SOON 
 										    
 	labelInfo.text = "Total time: ";	    
-	labelVector.push_back(App->gui->CreateUILabel({ 50 , 525 }, labelInfo));
+	labelVector.push_back(App->gui->CreateUILabel({ 50 , 475 }, labelInfo));
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = { 328,384,100,40 };
@@ -112,7 +112,7 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	imageVector.push_back(App->gui->CreateUIImage({ 275, 325 }, imageInfo));
 	imageVector.push_back(App->gui->CreateUIImage({ 275, 375 }, imageInfo));
 	imageVector.push_back(App->gui->CreateUIImage({ 275, 475 }, imageInfo));
-	imageVector.push_back(App->gui->CreateUIImage({ 275, 525 }, imageInfo));
+	//imageVector.push_back(App->gui->CreateUIImage({ 275, 525 }, imageInfo));
 
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 
@@ -128,8 +128,8 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelInfo.text = to_string(App->player->buildDestroy);
 	labelVector.push_back(App->gui->CreateUILabel({ 275 , 375 }, labelInfo));
 	
-	labelInfo.text = to_string(roomsExploredCont);
-	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));
+	/*labelInfo.text = to_string(roomsExploredCont);
+	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));*/
 	
 	labelInfo.text = to_string((uint)App->player->startGameTimer.ReadSec() / 60) + ":" + to_string((uint)App->player->startGameTimer.ReadSec() % 60);
 	labelVector.push_back(App->gui->CreateUILabel({ 275 , 525 }, labelInfo));

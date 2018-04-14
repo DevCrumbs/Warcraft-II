@@ -1550,6 +1550,12 @@ const EntityInfo& j1EntityFactory::GetUnitInfo(ENTITY_TYPE dynamicEntityType)
 	case EntityType_BOAR:
 		return (EntityInfo&)critterBoarInfo;
 		break;
+	case EntityType_ALLERIA:
+		return (EntityInfo&)alleriaInfo;
+		break;
+	case EntityType_KHADGAR:
+		return (EntityInfo&)khadgarInfo;
+		break;
 
 	default:
 		return (const EntityInfo&)footmanInfo;
