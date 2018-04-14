@@ -45,7 +45,7 @@ class UISlider;
 
 // ---------------------------------------------------
 
-struct compare {
+struct compareUIPriority {
 	bool operator()(const UIElement* infoA, const UIElement* infoB)
 	{
 		return infoA->GetPriorityDraw() > infoB->GetPriorityDraw();
@@ -121,7 +121,7 @@ private:
 	const SDL_Texture* atlas = nullptr;
 
 	list<UIElement*> UIElementsList;
-	priority_queue<UIElement*, vector<UIElement*>, compare> drawOrder;
+	priority_queue<UIElement*, vector<UIElement*>, compareUIPriority> drawOrder;
 	// Alpha parameters
 	float totalTime = 0.0f;
 	float startTime = 0.0f;

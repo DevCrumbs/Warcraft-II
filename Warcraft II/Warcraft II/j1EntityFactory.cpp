@@ -1082,6 +1082,31 @@ bool j1EntityFactory::PreUpdate()
 	}
 	toSpawnEntities.clear();
 
+	for (std::list<DynamicEntity*>::iterator iterator = activeDynamicEntities.begin(); iterator != activeDynamicEntities.end(); iterator++) {
+		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
+		if (App->render->IsInScreen(r)) {
+			EntitiesDraw_info info;
+			info.priority = (*iterator)->GetPos().y + (*iterator)->GetSize().y;
+			info.ent = (*iterator);
+			DynamicEntity* dyn = (DynamicEntity*)(*iterator);
+				info.type = dyn->dynamicEntityType;
+			DynamicDrawOrder.push(info);
+		}
+	}
+
+		for (std::list<StaticEntity*>::iterator iterator = activeStaticEntities.begin(); iterator != activeStaticEntities.end(); iterator++) {
+		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
+		if (App->render->IsInScreen(r)) {
+			EntitiesDraw_info info;
+			info.priority = (*iterator)->GetPos().y + (*iterator)->GetSize().y;
+			info.ent = (*iterator);
+			StaticEntity* stc = (StaticEntity*)(*iterator);
+				info.type = stc->staticEntityType;
+			StaticDrawOrder.push(info);
+		}
+	}
+
+
 	return ret;
 }
 
@@ -1147,92 +1172,76 @@ void j1EntityFactory::Draw()
 	// Blit active entities
 
 	// Dynamic entities (one texture per dynamic entity)
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
-
-	while (dynEnt != activeDynamicEntities.end()) {
-		SDL_Rect r = { (*dynEnt)->GetPos().x, (*dynEnt)->GetPos().y, (*dynEnt)->GetSize().x, (*dynEnt)->GetSize().y };
-		if (!App->render->IsInScreen(r)){
-			dynEnt++;
-			continue;
-			}
-		switch ((*dynEnt)->dynamicEntityType) {
+	for (EntitiesDraw_info info; !DynamicDrawOrder.empty(); DynamicDrawOrder.pop()) {
+		info = DynamicDrawOrder.top();
+		switch (info.type) {
 			// Player
 		case EntityType_FOOTMAN:
-			(*dynEnt)->Draw(footmanTex);
+			(info.ent)->Draw(footmanTex);
 			break;
 		case EntityType_ELVEN_ARCHER:
-			(*dynEnt)->Draw(elvenArcherTex);
+			(info.ent)->Draw(elvenArcherTex);
 			break;
 		case EntityType_GRYPHON_RIDER:
-			(*dynEnt)->Draw(gryphonRiderTex);
+			(info.ent)->Draw(gryphonRiderTex);
 			break;
 		case EntityType_MAGE:
-			(*dynEnt)->Draw(mageTex);
+			(info.ent)->Draw(mageTex);
 			break;
 		case EntityType_PALADIN:
-			(*dynEnt)->Draw(paladinTex);
+			(info.ent)->Draw(paladinTex);
 			break;
 
 		case EntityType_TURALYON:
-			(*dynEnt)->Draw(turalyonTex);
+			(info.ent)->Draw(turalyonTex);
 			break;
 		case EntityType_KHADGAR:
-			(*dynEnt)->Draw(khadgarTex);
+			(info.ent)->Draw(khadgarTex);
 			break;
 		case EntityType_ALLERIA:
-			(*dynEnt)->Draw(alleriaTex);
+			(info.ent)->Draw(alleriaTex);
 			break;
 
 			// Enemy
 		case EntityType_GRUNT:
-			(*dynEnt)->Draw(gruntTex);
+			(info.ent)->Draw(gruntTex);
 			break;
 		case EntityType_TROLL_AXETHROWER:
-			(*dynEnt)->Draw(trollAxethrowerTex);
+			(info.ent)->Draw(trollAxethrowerTex);
 			break;
 		case EntityType_DRAGON:
-			(*dynEnt)->Draw(dragonTex);
+			(info.ent)->Draw(dragonTex);
 			break;
 
 			// Neutral
 		case EntityType_SHEEP:
 		case EntityType_BOAR:
-			(*dynEnt)->Draw(crittersTex);
+			(info.ent)->Draw(crittersTex);
 			break;
 
 		default:
 			break;
 		}
-
-		dynEnt++;
 	}
 
 	// Static entities (altas textures for every type of static entity)
-	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
-
-	while (statEnt != activeStaticEntities.end()) {
-		SDL_Rect r = { (*statEnt)->GetPos().x, (*statEnt)->GetPos().y, (*statEnt)->GetSize().x, (*statEnt)->GetSize().y };
-		if (!App->render->IsInScreen(r)) {
-			statEnt++;
-			continue;
-		}
-		switch ((*statEnt)->staticEntityCategory) {
+	for (EntitiesDraw_info info; !StaticDrawOrder.empty(); StaticDrawOrder.pop()) {
+		info = StaticDrawOrder.top();
+		switch (info.type) {
 
 		case StaticEntityCategory_HumanBuilding:
-			(*statEnt)->Draw(humanBuildingsTex);
+			(info.ent)->Draw(humanBuildingsTex);
 			break;
 		case StaticEntityCategory_NeutralBuilding:
-			(*statEnt)->Draw(neutralBuildingsTex);
+			(info.ent)->Draw(neutralBuildingsTex);
 			break;
 		case StaticEntityCategory_OrcishBuilding:
-			(*statEnt)->Draw(orcishBuildingsTex);
+			(info.ent)->Draw(orcishBuildingsTex);
 			break;
 
 		default:
 			break;
 		}
-
-		statEnt++;
 	}
 
 	if(App->scene->GetAlphaBuilding() != EntityType_NONE)

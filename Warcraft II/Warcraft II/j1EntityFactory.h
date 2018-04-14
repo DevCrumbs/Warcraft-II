@@ -50,6 +50,8 @@
 #include <string>
 #include <list>
 #include <algorithm>
+#include <queue>
+
 using namespace std;
 
 #define MAX_UNITS_SELECTED 8
@@ -64,6 +66,21 @@ struct EntityInfo;
 struct UnitInfo;
 
 enum ENTITY_TYPE;
+
+struct EntitiesDraw_info {
+	uint priority;
+	ENTITY_TYPE type;
+	Entity* ent;
+};
+
+//TODO 5: Create a struct that will compare entities information priorities
+struct compareEntPriority {
+	bool operator()(const EntitiesDraw_info& infoA, const EntitiesDraw_info& infoB)
+	{
+		return infoA.priority > infoB.priority;
+	}
+};
+
 
 class j1EntityFactory : public j1Module
 {
@@ -239,6 +256,9 @@ private:
 	//Preview tiles
 	BuildingPreviewTiles buildingPreviewTiles;
 	uint previewBuildingOpacity;
+
+	std::priority_queue<EntitiesDraw_info, std::vector<EntitiesDraw_info>, compareEntPriority> DynamicDrawOrder;
+	std::priority_queue<EntitiesDraw_info, std::vector<EntitiesDraw_info>, compareEntPriority> StaticDrawOrder;
 
 	TownHall* townHall = nullptr;
 };
