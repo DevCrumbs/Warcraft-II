@@ -100,6 +100,12 @@ void ElvenArcher::Move(float dt)
 
 			isDead = true;
 
+			if (particle != nullptr) {
+			
+				particle->isRemove = true;
+				particle = nullptr;
+			}
+
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
