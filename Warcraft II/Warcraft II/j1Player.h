@@ -248,7 +248,8 @@ private:
 
 	ToSpawnUnitsStats toSpawnUnitStats;
 
-	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton, *commandPatrolButton, *commandStopButton;
+	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr;
+	UIButton *producePaladinButton = nullptr, *commandPatrolButton = nullptr, *commandStopButton = nullptr;
 
 
 	list<UIElement*> UIMenuInfoList;

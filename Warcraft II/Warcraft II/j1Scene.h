@@ -175,16 +175,16 @@ private:
 	iPoint startRectangle = { 0,0 };
 
 	//UI
-	UIButton *buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
-	UILabel *buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
-	//Building costs
-	UILabel *chickenFarmCostLabel, *elvenLumberCostLabel, *blackSmithCostLabel, *stablesCostLabel, *gryphonAviaryCostLabel, *mageTowerCostLabel, *churchCostLabel, *scoutTowerCostLabel, *guardTowerCostLabel, *cannonTowerCostLabel;
+	UIButton *buildingButton = nullptr, *chickenFarmButton = nullptr, *elvenLumberButton = nullptr, *blackSmithButton = nullptr, *stablesButton = nullptr;
+	UIButton *gryphonAviaryButton = nullptr, *mageTowerButton = nullptr, *churchButton = nullptr, *scoutTowerButton = nullptr, *guardTowerButton = nullptr, *cannonTowerButton = nullptr;
+	list<UILabel*> buildingLabelsList;
+	UILabel *buildingLabel = nullptr;
 
-	UIImage *buildingMenu;
+	UIImage *buildingMenu = nullptr;
 
 	//Frame InGame
-	UIImage* inGameFrameImage;
-	UILabel* goldLabel, *foodLabel;
+	UIImage* inGameFrameImage = nullptr;
+	UILabel* goldLabel, *foodLabel = nullptr;
 
 	//Pause Menu
 	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
