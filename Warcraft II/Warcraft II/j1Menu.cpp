@@ -116,6 +116,8 @@ bool j1Menu::Start()
 	mouseInfo.onClick = { 275, 525, 28, 33 };
 	mouseInfo.onMine = { 310, 525, 28, 33 };
 	mouseInfo.onMineClick = { 338, 525, 28, 33 };
+	mouseInfo.onEnemies = { 374, 527, 28, 33 };
+	mouseInfo.onEnemiesClick = { 402, 527, 28, 33 };
 	mouseText = App->gui->CreateUICursor(mouseInfo, this);
 	return true;
 }
