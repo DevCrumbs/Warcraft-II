@@ -409,6 +409,8 @@ bool j1Player::CleanUp()
 {
 	bool ret = true;
 
+	DeleteEntitiesMenu();
+
 	return ret;
 }
 
