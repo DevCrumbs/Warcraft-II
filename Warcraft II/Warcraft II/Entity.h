@@ -160,7 +160,7 @@ public:
 
 	// Collision
 	ColliderGroup* GetEntityCollider() const;
-	bool CreateEntityCollider(EntitySide entitySide);
+	bool CreateEntityCollider(EntitySide entitySide, bool createOffset = false);
 	void UpdateEntityColliderPos();
 
 	// Attack

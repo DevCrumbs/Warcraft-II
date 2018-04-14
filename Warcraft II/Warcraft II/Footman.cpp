@@ -267,6 +267,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
+			// Static Entity
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
 
