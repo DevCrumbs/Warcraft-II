@@ -485,6 +485,7 @@ void ColliderGroup::CreateOffsetCollider()
 
 	Collider* left = GetCollider(true);
 	Collider* right = GetCollider(false, true);
+
 	Collider* top = GetCollider(false, false, true);
 	Collider* bottom = GetCollider(false, false, false, true);
 
@@ -494,6 +495,7 @@ void ColliderGroup::CreateOffsetCollider()
 	SDL_Rect colliderRect;
 	colliderRect.x = left->GetPos().x;
 	colliderRect.y = top->GetPos().y;
+
 	colliderRect.w = (right->GetPos().x + App->map->data.tileWidth) - left->GetPos().x;
 	colliderRect.h = (bottom->GetPos().y + App->map->data.tileHeight) - top->GetPos().y;
 

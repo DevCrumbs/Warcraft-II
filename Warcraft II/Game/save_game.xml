@@ -12,11 +12,11 @@
 	<particles />
 	<:anonymous />
 	<pathmanager />
-	<entities />
 	<fonts />
 	<menu />
 	<scene />
 	<scene />
+	<entities />
 	<finish />
 	<:anonymous />
 	<gui />

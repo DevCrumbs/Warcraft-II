@@ -257,8 +257,7 @@ private:
 	BuildingPreviewTiles buildingPreviewTiles;
 	uint previewBuildingOpacity;
 
-	std::priority_queue<EntitiesDraw_info, std::vector<EntitiesDraw_info>, compareEntPriority> DynamicDrawOrder;
-	std::priority_queue<EntitiesDraw_info, std::vector<EntitiesDraw_info>, compareEntPriority> StaticDrawOrder;
+	std::priority_queue<EntitiesDraw_info, std::vector<EntitiesDraw_info>, compareEntPriority> entityDrawOrder;
 
 	TownHall* townHall = nullptr;
 };

@@ -4,9 +4,14 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Pathfinding.h"
+#include "j1Collision.h"
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
+	entitySide = EntitySide_Enemy;
+	CreateEntityCollider(EntitySide_Enemy, true);
+	entityCollider->isTrigger = true;
+
 	buildingSize = Small;
 
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);

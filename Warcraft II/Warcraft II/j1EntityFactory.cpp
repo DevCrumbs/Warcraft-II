@@ -1092,7 +1092,7 @@ bool j1EntityFactory::PreUpdate()
 			info.ent = (*iterator);
 			DynamicEntity* dyn = (DynamicEntity*)(*iterator);
 				info.type = dyn->dynamicEntityType;
-			DynamicDrawOrder.push(info);
+			entityDrawOrder.push(info);
 		}
 	}
 
@@ -1104,7 +1104,7 @@ bool j1EntityFactory::PreUpdate()
 			info.ent = (*iterator);
 			StaticEntity* stc = (StaticEntity*)(*iterator);
 				info.type = stc->staticEntityType;
-			StaticDrawOrder.push(info);
+			entityDrawOrder.push(info);
 		}
 	}
 
@@ -1174,8 +1174,8 @@ void j1EntityFactory::Draw()
 	// Blit active entities
 
 	// Dynamic entities (one texture per dynamic entity)
-	for (EntitiesDraw_info info; !DynamicDrawOrder.empty(); DynamicDrawOrder.pop()) {
-		info = DynamicDrawOrder.top();
+	for (EntitiesDraw_info info; !entityDrawOrder.empty(); entityDrawOrder.pop()) {
+		info = entityDrawOrder.top();
 		switch (info.type) {
 			// Player
 		case EntityType_FOOTMAN:
@@ -1222,30 +1222,23 @@ void j1EntityFactory::Draw()
 			break;
 
 		default:
+			StaticEntity* ent = (StaticEntity*)info.ent;
+			switch (ent->staticEntityCategory) {
+			case StaticEntityCategory_HumanBuilding:
+				(info.ent)->Draw(humanBuildingsTex);
+				break;
+			case StaticEntityCategory_NeutralBuilding:
+				(info.ent)->Draw(neutralBuildingsTex);
+				break;
+			case StaticEntityCategory_OrcishBuilding:
+				(info.ent)->Draw(orcishBuildingsTex);
+				break;
+			dafault:
+				break;
+			}
 			break;
 		}
 	}
-
-	// Static entities (altas textures for every type of static entity)
-	for (EntitiesDraw_info info; !StaticDrawOrder.empty(); StaticDrawOrder.pop()) {
-		info = StaticDrawOrder.top();
-		switch (info.type) {
-
-		case StaticEntityCategory_HumanBuilding:
-			(info.ent)->Draw(humanBuildingsTex);
-			break;
-		case StaticEntityCategory_NeutralBuilding:
-			(info.ent)->Draw(neutralBuildingsTex);
-			break;
-		case StaticEntityCategory_OrcishBuilding:
-			(info.ent)->Draw(orcishBuildingsTex);
-			break;
-
-		default:
-			break;
-		}
-	}
-
 	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
 	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
 }
@@ -2495,51 +2488,197 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 {
 	if (entityCategory == EntityCategory_DYNAMIC_ENTITY || entityCategory == EntityCategory_NONE) {
 
-		list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+		if (activeDynamicEntities.size() > 0) {
 
-		while (activeDyn != activeDynamicEntities.end()) {
+			list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
 
-			// The unit cannot be dead
-			if (!(*activeDyn)->isDead) {
+			while (activeDyn != activeDynamicEntities.end()) {
 
-				iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
+				// The unit cannot be dead
+				if (!(*activeDyn)->isDead) {
+
+					iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
+
+					switch (entitySide) {
+
+					case EntitySide_Player:
+
+						if ((*activeDyn)->entitySide == EntitySide_Player)
+							if (tile.x == entityTile.x && tile.y == entityTile.y)
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_Enemy:
+
+						if ((*activeDyn)->entitySide == EntitySide_Enemy)
+							if (tile.x == entityTile.x && tile.y == entityTile.y)
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_Neutral:
+
+						if ((*activeDyn)->entitySide == EntitySide_Neutral)
+							if (tile.x == entityTile.x && tile.y == entityTile.y)
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_NoSide:
+
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)(*activeDyn);
+						break;
+					}
+				}
+
+				activeDyn++;
+			}
+		}
+	}
+
+	if (entityCategory == EntityCategory_STATIC_ENTITY) {
+
+		if (activeStaticEntities.size() > 0) {
+
+			list<StaticEntity*>::const_iterator activeStat = activeStaticEntities.begin();
+
+			while (activeStat != activeStaticEntities.end()) {
+
+				iPoint entityTile = App->map->WorldToMap((*activeStat)->GetPos().x, (*activeStat)->GetPos().y);
 
 				switch (entitySide) {
 
 				case EntitySide_Player:
 
-					if ((*activeDyn)->entitySide == EntitySide_Player)
-						if (tile.x == entityTile.x && tile.y == entityTile.y)
-							return (Entity*)(*activeDyn);
+					if ((*activeStat)->entitySide == EntitySide_Player) {
+
+						if ((*activeStat)->GetSize().x == 64 && (*activeStat)->GetSize().y == 64) { //Small
+							for (int i = 0; i < 2; i++) {
+								for (int j = 0; j < 2; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)(*activeStat);
+								}
+							}
+						}
+						else if ((*activeStat)->GetSize().x == 96 && (*activeStat)->GetSize().y == 96) { //Medium
+							for (int i = 0; i < 3; i++) {
+								for (int j = 0; j < 3; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)(*activeStat);
+								}
+							}
+						}
+						else if ((*activeStat)->GetSize().x == 128 && (*activeStat)->GetSize().y == 128) { //Big
+
+							for (int i = 0; i < 4; i++) {
+								for (int j = 0; j < 4; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)(*activeStat);
+								}
+							}
+						}
+
+					}
 					break;
 
 				case EntitySide_Enemy:
 
-					if ((*activeDyn)->entitySide == EntitySide_Enemy)
-						if (tile.x == entityTile.x && tile.y == entityTile.y)
-							return (Entity*)(*activeDyn);
+					if ((*activeStat)->entitySide == EntitySide_Enemy) {
+
+						if ((*activeStat)->GetSize().x == 64 && (*activeStat)->GetSize().y == 64) { //Small
+							for (int i = 0; i < 2; i++) {
+								for (int j = 0; j < 2; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)(*activeStat);
+								}
+							}
+						}
+						else if ((*activeStat)->GetSize().x == 96 && (*activeStat)->GetSize().y == 96) { //Medium
+							for (int i = 0; i < 3; i++) {
+								for (int j = 0; j < 3; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)(*activeStat);
+								}
+							}
+						}
+						else if ((*activeStat)->GetSize().x == 128 && (*activeStat)->GetSize().y == 128) { //Big
+
+							for (int i = 0; i < 4; i++) {
+								for (int j = 0; j < 4; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)(*activeStat);
+								}
+							}
+						}
+
+					}
 					break;
 
 				case EntitySide_Neutral:
 
-					if ((*activeDyn)->entitySide == EntitySide_Neutral)
-						if (tile.x == entityTile.x && tile.y == entityTile.y)
-							return (Entity*)(*activeDyn);
+					if ((*activeStat)->entitySide == EntitySide_Neutral) {
+
+						if ((*activeStat)->GetSize().x == 64 && (*activeStat)->GetSize().y == 64) { //Small
+							for (int i = 0; i < 2; i++) {
+								for (int j = 0; j < 2; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)(*activeStat);
+								}
+							}
+						}
+						else if ((*activeStat)->GetSize().x == 96 && (*activeStat)->GetSize().y == 96) { //Medium
+							for (int i = 0; i < 3; i++) {
+								for (int j = 0; j < 3; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)(*activeStat);
+								}
+							}
+						}
+						else if ((*activeStat)->GetSize().x == 128 && (*activeStat)->GetSize().y == 128) { //Big
+
+							for (int i = 0; i < 4; i++) {
+								for (int j = 0; j < 4; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)(*activeStat);
+								}
+							}
+						}
+
+					}
 					break;
 
 				case EntitySide_NoSide:
 
-					if (tile.x == entityTile.x && tile.y == entityTile.y)
-						return (Entity*)(*activeDyn);
+					if ((*activeStat)->GetSize().x == 64 && (*activeStat)->GetSize().y == 64) { //Small
+						for (int i = 0; i < 2; i++) {
+							for (int j = 0; j < 2; j++) {
+								if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+									return (Entity*)(*activeStat);
+							}
+						}
+					}
+					else if ((*activeStat)->GetSize().x == 96 && (*activeStat)->GetSize().y == 96) { //Medium
+						for (int i = 0; i < 3; i++) {
+							for (int j = 0; j < 3; j++) {
+								if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+									return (Entity*)(*activeStat);
+							}
+						}
+					}
+					else if ((*activeStat)->GetSize().x == 128 && (*activeStat)->GetSize().y == 128) { //Big
+
+						for (int i = 0; i < 4; i++) {
+							for (int j = 0; j < 4; j++) {
+								if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+									return (Entity*)(*activeStat);
+							}
+						}
+					}
 					break;
 				}
+				activeStat++;
 			}
-
-			activeDyn++;
 		}
 	}
-
-	// TODO: Add StaticEntities (and check them depending on the entityType parameter)
 
 	// We do also need to check the toSpawn list (just in case)
 	/*
