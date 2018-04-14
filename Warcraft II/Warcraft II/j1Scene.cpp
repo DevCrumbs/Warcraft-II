@@ -743,11 +743,9 @@ void j1Scene::DebugKeys()
 
 void j1Scene::CheckCameraMovement(float dt) {
 
+	mouse = App->player->GetMousePos();
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
 	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
-
-	downMargin = -10000;
-	rightMargin = -10000;
 
 	//Move with arrows
 	//UP
@@ -764,20 +762,18 @@ void j1Scene::CheckCameraMovement(float dt) {
 		App->render->camera.x -= camSpeed * dt;
 
 	//Move with mouse
-	//App->input->GetMousePosition(mouse.x, mouse.y);
-
 	////UP
-	//if (mouse.y <= camMovMargin/scale && App->render->camera.y <= 0)
-	//	App->render->camera.y += camSpeed * dt;
+	if (mouse.y <= (camMovMargin - App->render->camera.y) /scale && App->render->camera.y <= 0)
+		App->render->camera.y += camSpeed * dt;
 	////DOWN
-	//if (mouse.y >= (height - camMovMargin) / scale && App->render->camera.y >= downMargin)
-	//	App->render->camera.y -= camSpeed * dt;
+	if (mouse.y >= (height - (camMovMargin + 15) - App->render->camera.y) / scale && App->render->camera.y >= downMargin)
+		App->render->camera.y -= camSpeed * dt;
 	////LEFT
-	//if (mouse.x <= camMovMargin / scale && App->render->camera.x <= 0)
-	//	App->render->camera.x += camSpeed * dt;
+	if (mouse.x <= (camMovMargin - App->render->camera.x) / scale && App->render->camera.x <= 0)
+		App->render->camera.x += camSpeed * dt;
 	////RIGHT
-	//if (mouse.x >= (width - camMovMargin) / scale && App->render->camera.x >= rightMargin)
-	//	App->render->camera.x -= camSpeed * dt;
+	if (mouse.x >= (width - (camMovMargin + 15) - App->render->camera.x) / scale && App->render->camera.x >= rightMargin)
+		App->render->camera.x -= camSpeed * dt;
 
 }
 
