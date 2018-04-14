@@ -478,6 +478,29 @@ bool j1Scene::Update(float dt)
 					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
 			}
 
+			/// Buildings
+			Entity* building = App->entities->IsEntityOnTile(mouseTile, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
+
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr) {
+
+				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
+				list<DynamicEntity*>::const_iterator it = units.begin();
+
+				bool isTarget = true;
+
+				while (it != units.end()) {
+
+					if (!(*it)->SetCurrTarget(building))
+						isTarget = false;
+
+					it++;
+				}
+
+				if (isTarget)
+
+					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+			}
+
 			/// SET GOAL (COMMAND MOVE TO POSITION)
 			// Draw a shaped goal
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)

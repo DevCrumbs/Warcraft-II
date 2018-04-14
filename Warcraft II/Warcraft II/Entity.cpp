@@ -113,7 +113,7 @@ ColliderGroup* Entity::GetEntityCollider() const
 	return entityCollider;
 }
 
-bool Entity::CreateEntityCollider(EntitySide entitySide)
+bool Entity::CreateEntityCollider(EntitySide entitySide, bool createOffset)
 {
 	ColliderType collType = ColliderType_NoType;
 
@@ -145,6 +145,9 @@ bool Entity::CreateEntityCollider(EntitySide entitySide)
 
 	if (entityCollider != nullptr)
 		return true;
+
+	if (createOffset)
+		entityCollider->CreateOffsetCollider();
 
 	return false;
 }
