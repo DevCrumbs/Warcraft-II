@@ -66,7 +66,6 @@ public:
 	void CreateLoading();
 	void DeteleMenu();
 
-
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
@@ -74,7 +73,7 @@ public:
 
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim);
 
-	UICursor * mouseText;
+	UICursor* mouseText = nullptr;
 
 private:
 	void ChargeGameSounds();
@@ -97,7 +96,7 @@ private:
 	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 
-	Particle* parchment;
+	Particle* parchment = nullptr;
 
 	MenuActions menuActions;
 

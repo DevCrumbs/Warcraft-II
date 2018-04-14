@@ -131,7 +131,13 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	/*labelInfo.text = to_string(roomsExploredCont);
 	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));*/
 	
-	labelInfo.text = to_string((uint)App->player->startGameTimer.ReadSec() / 60) + ":" + to_string((uint)App->player->startGameTimer.ReadSec() % 60);
+	string min = to_string((uint)App->player->startGameTimer.ReadSec() / 60);
+	if ((uint)App->player->startGameTimer.ReadSec() / 60 < 10)
+		min = "0" + min;
+	string sec = to_string((uint)App->player->startGameTimer.ReadSec() % 60);
+	if ((uint)App->player->startGameTimer.ReadSec() % 60 < 10)
+		sec = "0" + sec;
+	labelInfo.text = min + ":" + sec;
 	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));
 
 	UIButton_Info buttonInfo;

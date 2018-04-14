@@ -64,24 +64,40 @@ void CritterSheep::Move(float dt)
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
-	if (currLife <= 0 && unitState != UnitState_Die && singleUnit->IsFittingTile()) {
-
-		RestoreHealth();
+	if (currLife <= 0
+		&& unitState != UnitState_Die
+		&& singleUnit->IsFittingTile()
+		&& !isDead) {
 
 		App->audio->PlayFx(16, 0);
 
 		isDead = true;
 
+		// Remove the entity from the unitsSelected list
+		App->entities->RemoveUnitFromUnitsSelected(this);
+
+		// Remove Movement (so other units can walk above them)
+		App->entities->InvalidateMovementEntity(this);
+
+		if (singleUnit != nullptr)
+			delete singleUnit;
+		singleUnit = nullptr;
+
+		// Invalidate colliders
+		entityCollider->isValid = false;
+
 		// If the player dies, remove all their goals
 		brain->RemoveAllSubgoals();
 	}
 
-	UpdatePaws();
+	if (!isDead) {
+		UpdatePaws();
 
-	// ---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 
-	// PROCESS THE CURRENTLY ACTIVE GOAL
-	brain->Process(dt);
+		// PROCESS THE CURRENTLY ACTIVE GOAL
+		brain->Process(dt);
+	}
 
 	UnitStateMachine(dt);
 
@@ -153,6 +169,11 @@ bool CritterSheep::ChangeAnimation()
 
 	// The unit is dead
 	if (isDead) {
+
+		if (unitState != UnitState_Die) {
+			unitState = UnitState_Die;
+			deadTimer.Start();
+		}
 
 		animation = &critterSheepInfo.deathDownLeft;
 		ret = true;
@@ -288,13 +309,4 @@ void CritterSheep::UpdatePaws()
 			lastPawTile = singleUnit->currTile;
 		}
 	}
-}
-
-bool CritterSheep::RestoreHealth()
-{
-	if (unitsAttacking.front() != nullptr) {
-		unitsAttacking.front()->ApplyHealth(critterSheepInfo.restoredHealth);
-		return true;
-	}
-	return false;
 }

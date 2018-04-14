@@ -84,16 +84,22 @@ void DynamicEntity::Move(float dt) {}
 
 void DynamicEntity::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr)
-		App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
-
+	if (animation != nullptr) {
+		if(dynamicEntityType == EntityType_TURALYON || dynamicEntityType == EntityType_KHADGAR || dynamicEntityType == EntityType_ALLERIA)
+			App->render->Blit(sprites, pos.x - 16, pos.y - 16, &(animation->GetCurrentFrame()));
+		else
+			App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
+	}
 	if (isSelected)
 		DebugDrawSelected();
 }
 
 void DynamicEntity::DebugDrawSelected()
 {
-	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
+	SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
+	if (dynamicEntityType == EntityType_TURALYON || dynamicEntityType == EntityType_KHADGAR || dynamicEntityType == EntityType_ALLERIA)
+		entitySize = { (int)pos.x - 16, (int)pos.y - 16, size.x, size.y };
+
 	App->render->DrawQuad(entitySize, 255, 255, 255, 255, false);
 }
 

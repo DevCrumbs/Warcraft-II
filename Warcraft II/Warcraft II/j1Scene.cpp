@@ -104,12 +104,10 @@ bool j1Scene::Start()
 	// Create walkability map
 	if (ret)
 	{
-		int w, h;
-		uchar* data = NULL;
 		if (App->map->CreateWalkabilityMap(w, h, &data))
 			App->pathfinding->SetMap(w, h, data);
 
-		RELEASE_ARRAY(data);
+		//RELEASE_ARRAY(data);
 	}
 
 	//LoadInGameUI
@@ -362,7 +360,6 @@ bool j1Scene::Update(float dt)
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-
 	// ---------------------------------------------------------------------
 
 	// Draw
@@ -383,12 +380,25 @@ bool j1Scene::Update(float dt)
 	//App->collision->DebugDraw();
 
 	// Units ---------------------------------------------------------------------------------
-	
+
+	Entity* isEnemyOnTile = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy); // TODO Sandra: only player side
+
+	if (isEnemyOnTile != nullptr) {
+		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+		if (r.x != 374)
+			App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
+	}
+	else {
+		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+		if (r.x != 243)
+			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+	}
+
 	// Select units by mouse click
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 		startRectangle = mousePos;
 
-		Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY); // TODO Sandra: only player side
+		Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: only player side
 
 		if (entity != nullptr)
 			App->entities->SelectEntity(entity);
@@ -417,7 +427,7 @@ bool j1Scene::Update(float dt)
 			mouseRect.h *= -1;
 		}
 
-		App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY); // TODO Sandra: add static entities, only player side
+		App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: add static entities, only player side
 	}
 
 	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
@@ -667,8 +677,9 @@ bool j1Scene::CleanUp()
 	App->map->UnLoad();
 	App->tex->UnLoad(debugTex);
 
-
 	UnLoadTerenasDialog();
+
+	RELEASE_ARRAY(data);
 	DestroyAllUI();
 	//warcraftActive = false;
 

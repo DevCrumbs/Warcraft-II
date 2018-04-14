@@ -9,6 +9,7 @@
 #include "j1PathManager.h"
 #include "j1Movement.h"
 #include "j1EntityFactory.h"
+#include "j1EntityFactory.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -519,8 +520,30 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 	if (!targetInfo->IsTargetPresent()) {
 
-		goalStatus = GoalStatus_Completed;
-		return goalStatus;
+		if (targetInfo->target == nullptr) {
+			goalStatus = GoalStatus_Completed;
+			return goalStatus;
+		}
+
+		// The target is dead
+		if (targetInfo->target->GetCurrLife() <= 0) {
+
+			if (targetInfo->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			
+				DynamicEntity* dyn = (DynamicEntity*)targetInfo->target;
+
+				if (dyn->dynamicEntityType == EntityType_SHEEP) {
+					CritterSheepInfo c = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
+					owner->ApplyHealth(c.restoredHealth);
+				}
+				else if (dyn->dynamicEntityType == EntityType_BOAR) {
+					CritterBoarInfo b = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
+					owner->ApplyHealth(b.restoredHealth);
+				}
+			}
+			goalStatus = GoalStatus_Completed;
+			return goalStatus;
+		}
 	}
 	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied) {
 
