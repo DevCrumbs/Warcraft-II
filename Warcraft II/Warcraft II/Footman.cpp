@@ -102,6 +102,10 @@ void Footman::Move(float dt)
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
+			brain->RemoveAllSubgoals();
+
+			unitState = UnitState_Idle;
+
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
 
@@ -115,7 +119,7 @@ void Footman::Move(float dt)
 			entityCollider->isValid = false;
 
 			// If the player dies, remove all their goals
-			unitCommand = UnitCommand_Stop;
+			//unitCommand = UnitCommand_Stop;
 		}
 	}
 

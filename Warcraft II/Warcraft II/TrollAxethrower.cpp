@@ -101,6 +101,11 @@ void TrollAxethrower::Move(float dt)
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
+			// Initialize the goals
+			brain->RemoveAllSubgoals();
+
+			unitState = UnitState_Idle;
+
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
 
@@ -112,9 +117,6 @@ void TrollAxethrower::Move(float dt)
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
-
-			// If the player dies, remove all their goals
-			unitCommand = UnitCommand_Stop;
 		}
 	}
 

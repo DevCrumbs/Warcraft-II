@@ -2827,13 +2827,14 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 						}
 					}
 				}
-			}
-			else {
 
-				// If the unit is in the unitsSelected list, remove it
-				if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
-					unitsSelected.remove(GetDynamicEntityByEntity(*it));
-					(*it)->isSelected = false;
+				else {
+
+					// If the unit is in the unitsSelected list, remove it
+					if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
+						unitsSelected.remove(GetDynamicEntityByEntity(*it));
+						(*it)->isSelected = false;
+					}
 				}
 			}
 		}

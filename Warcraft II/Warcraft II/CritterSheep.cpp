@@ -76,6 +76,9 @@ void CritterSheep::Move(float dt)
 		// Remove the entity from the unitsSelected list
 		App->entities->RemoveUnitFromUnitsSelected(this);
 
+		// If the player dies, remove all their goals
+		brain->RemoveAllSubgoals();
+
 		// Remove Movement (so other units can walk above them)
 		App->entities->InvalidateMovementEntity(this);
 
@@ -85,9 +88,6 @@ void CritterSheep::Move(float dt)
 
 		// Invalidate colliders
 		entityCollider->isValid = false;
-
-		// If the player dies, remove all their goals
-		brain->RemoveAllSubgoals();
 	}
 
 	if (!isDead) {
