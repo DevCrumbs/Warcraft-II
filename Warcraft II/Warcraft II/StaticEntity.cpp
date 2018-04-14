@@ -27,10 +27,6 @@ StaticEntity::~StaticEntity()
 		sightRadiusCollider->isRemove = true;
 	sightRadiusCollider = nullptr;
 
-	if (fire != nullptr)
-		delete fire;
-	fire = nullptr;
-
 	iPoint buildingTile;
 
 	if (App->scene->active) {
