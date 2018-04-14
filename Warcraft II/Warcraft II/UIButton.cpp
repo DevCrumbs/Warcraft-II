@@ -61,7 +61,7 @@ void UIButton::HandleInput()
 	case UI_EVENT_MOUSE_ENTER:
 
 		if (!MouseHover() && !tab) {
-			LOG("MOUSE LEAVE");
+			//LOG("MOUSE LEAVE");
 			nextEvent = false;
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;

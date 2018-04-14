@@ -13,6 +13,7 @@
 #include "j1PathManager.h"
 #include "Goal.h"
 #include "j1Audio.h"
+#include "j1Player.h"
 
 #include "UILifeBar.h"
 
@@ -96,6 +97,7 @@ void Grunt::Move(float dt)
 			App->audio->PlayFx(13, 0);
 
 			isDead = true;
+			App->player->enemiesKill++;
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
