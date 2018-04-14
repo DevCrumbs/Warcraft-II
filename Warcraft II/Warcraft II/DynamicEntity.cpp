@@ -79,9 +79,6 @@ DynamicEntity::~DynamicEntity()
 
 	if (lifeBar != nullptr)
 		App->gui->DestroyElement((UIElement**)&lifeBar);
-
-	if (entitySide == EntitySide_Enemy)
-		App->player->enemiesKill++;
 }
 
 void DynamicEntity::Move(float dt) {}
