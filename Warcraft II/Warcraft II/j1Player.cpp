@@ -164,16 +164,6 @@ bool j1Player::Update(float dt) {
 
 bool j1Player::PostUpdate() {
 
-	if (hoverButtonStruct.isCreated) {
-		SDL_Rect r;
-		r.x = (int)hoverButtonStruct.nextEntity->GetPos().x;
-		r.y = (int)hoverButtonStruct.nextEntity->GetPos().y;
-		r.w = hoverButtonStruct.nextEntity->GetSize().x;
-		r.h = hoverButtonStruct.nextEntity->GetSize().y;
-
-		CreateHoverButton(hoverCheck, r, (StaticEntity*)hoverButtonStruct.nextEntity);
-		hoverButtonStruct.isCreated = false;                                              
-	}
 
 	return true;
 }
@@ -634,15 +624,15 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else
 				hoverCheck = HoverCheck_None;
 
-			hoverButtonStruct.isCreated = true;
+			/*hoverButtonStruct.isCreated = true;
 			hoverButtonStruct.prevEntity = hoverButtonStruct.currentEntity;
 			hoverButtonStruct.nextEntity = staticEntity;
-
-			DestroyHoverButton(ent);
+			*/
+			//DestroyHoverButton(ent);
 
 			break;
 		case EntitiesEvent_LEAVE:
-			DestroyHoverButton(ent);
+			//DestroyHoverButton(ent);
 			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 			break;
 		case EntitiesEvent_CREATED:
@@ -1076,7 +1066,7 @@ void j1Player::CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar)
 	lifeBar = App->gui->CreateUILifeBar({ lifeBarPos.x, lifeBarPos.y }, barInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
 
-void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) 
+/*void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) 
 {
 	UIButton_Info InfoButton;
 	if (hoverCheck == HoverCheck_Repair) {
@@ -1100,14 +1090,14 @@ void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEnti
 		hoverButtonStruct.hoverButton->SetPriorityDraw(PriorityDraw_BUTTONSINGAME);
 	}
 }
-
-void j1Player::DestroyHoverButton(Entity* ent) {
+*/
+/*void j1Player::DestroyHoverButton(Entity* ent) {
 	if (hoverButtonStruct.currentEntity == ent || hoverButtonStruct.prevEntity == ent) {
 		App->gui->DestroyElement((UIElement**)&hoverButtonStruct.hoverButton);
 		hoverButtonStruct.currentEntity = nullptr;
 	}
 }
-
+*/
 void j1Player::CreateBarracksButtons()
 {
 	CreateSimpleButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 217, 2 }, produceFootmanButton);
@@ -1261,7 +1251,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->entities->CommandToUnits(groupSelectedStats.units, UnitCommand_Stop);
 			}
 
-			if (hoverCheck == HoverCheck_Repair) {
+			/*if (hoverCheck == HoverCheck_Repair) {
 				if (currentGold < 500) {
 					App->audio->PlayFx(3, 0); //Button error sound
 				}
@@ -1310,7 +1300,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						App->audio->PlayFx(3, 0); //Button error sound
 				}
 			}
-
+			*/
 			if (UIelem == produceFootmanButton) {
 				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize && currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
 					App->audio->PlayFx(1, 0); //Button sound
