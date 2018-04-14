@@ -644,6 +644,8 @@ bool j1Scene::PostUpdate()
 	{
 	case PauseMenuActions_NONE:
 		break;
+	case PauseMenuActions_NOT_EXIST:
+		break;
 	case PauseMenuActions_CREATED:
 		CreatePauseMenu();
 		pauseMenuActions = PauseMenuActions_NONE;
