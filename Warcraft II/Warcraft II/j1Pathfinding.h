@@ -121,6 +121,8 @@ public:
 	// Utility: return the walkability value of a tile
 	int GetTileAt(const iPoint& pos) const;
 
+	bool IsOnBase(const iPoint & pos);
+
 	// Initialize CycleOnceAStar
 	bool InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
 
