@@ -266,11 +266,6 @@ bool j1Particles::Update(float dt)
 			delete p;
 			active[i] = nullptr;
 		}
-		if (SDL_GetTicks() >= p->born)
-		{
-			if (p->particleType != ParticleType_Paws)
-				App->render->Blit(atlasTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()));
-		}
 	}
 
 	return ret;

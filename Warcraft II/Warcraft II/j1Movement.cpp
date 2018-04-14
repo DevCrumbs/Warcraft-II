@@ -27,7 +27,6 @@ bool j1Movement::Update(float dt)
 
 void j1Movement::DebugDraw() const
 {
-	/*
 	for (list<UnitGroup*>::const_iterator group = unitGroups.begin(); group != unitGroups.end(); ++group) {
 		for (list<SingleUnit*>::const_iterator unit = (*group)->units.begin(); unit != (*group)->units.end(); ++unit) {
 
@@ -62,7 +61,6 @@ void j1Movement::DebugDraw() const
 			}
 		}
 	}
-	*/
 }
 
 bool j1Movement::CleanUp()
