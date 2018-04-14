@@ -64,10 +64,10 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	/// Do not change this order -->
 	AddModule(pathfinding);
 	AddModule(collision);
-	AddModule(particles);
 	AddModule(movement);
 	AddModule(pathmanager);
 	AddModule(entities);
+	AddModule(particles);
 	/// <-- Do not change this order
 
 	AddModule(font);
