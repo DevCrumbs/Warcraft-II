@@ -693,7 +693,7 @@ bool j1Map::LoadLogic()
 		layerIterator != data.layers.end(); ++layerIterator)
 	{
 		// Check if layer is a logic layer
-		if ((*layerIterator)->properties.GetProperty("Logic", false) == false)
+		if (!(*layerIterator)->properties.GetProperty("Logic", false))
 			continue;
 		{
 			// Iterate layer
@@ -711,25 +711,12 @@ bool j1Map::LoadLogic()
 					pos.y = auxPos.y;
 
 					UnitInfo unitInfo;
-					ret = true;
-					ENTITY_TYPE entityType = (ENTITY_TYPE)((*layerIterator)->data[i]);
+					ENTITY_TYPE entityType= (ENTITY_TYPE)(*layerIterator)->data[i];
 
-					if ((*layerIterator)->data[i] = 403)
-						App->player->townHall = (StaticEntity*)App->entities->AddEntity(EntityType_TOWN_HALL, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-
-					else if ((*layerIterator)->data[i] = 405)
-						App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
-
-					else if ((*layerIterator)->data[i] = 404)
-						App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-					else
-						App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
-
-					/*
 					switch (entityType)
 					{
 					case EntityType_TOWN_HALL:
-						
+						App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 						break;
 					case EntityType_CHICKEN_FARM:
 						App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
@@ -742,7 +729,7 @@ bool j1Map::LoadLogic()
 						break;
 						
 					}
-				*/}
+				}
 			}
 		}
 	}
