@@ -146,8 +146,8 @@
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/FinalGrunt.png"/>
       <trollAxethrowerAnimations name = "data/assets/textures/units/orcishUnits/TrollAxethrower.png"/>
       <elvenArcherAnimations name = "data/assets/textures/units/humanUnits/archer.png"/>
-      <khadgarAnimarions name = "data/assets/textures/units/prisonersUnits/Khadgar.png"/>
-      <alleriaAnimarions name = "data/assets/textures/units/prisonersUnits/Alleria.png"/>
+      <khadgarAnimations name = "data/assets/textures/units/prisonersUnits/Khadgar.png"/>
+      <alleriaAnimations name = "data/assets/textures/units/prisonersUnits/Alleria.png"/>
       <critters name="data/assets/textures/units/neutralUnits/critters.png"/>
     </spritesheets>
 

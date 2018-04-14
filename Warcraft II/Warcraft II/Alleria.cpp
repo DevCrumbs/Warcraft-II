@@ -7,7 +7,7 @@ Alleria::Alleria(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 void Alleria::Move(float dt)
 {
-
+	HandleInput(entityEvent);
 }
 
 // Animations

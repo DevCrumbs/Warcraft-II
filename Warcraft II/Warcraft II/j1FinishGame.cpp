@@ -132,7 +132,7 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));*/
 	
 	labelInfo.text = to_string((uint)App->player->startGameTimer.ReadSec() / 60) + ":" + to_string((uint)App->player->startGameTimer.ReadSec() % 60);
-	labelVector.push_back(App->gui->CreateUILabel({ 275 , 525 }, labelInfo));
+	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));
 
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };

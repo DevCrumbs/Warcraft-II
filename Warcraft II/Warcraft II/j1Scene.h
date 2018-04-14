@@ -159,6 +159,8 @@ public:
 
 	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
 	TerenasAdvices terenasAdvices;
+	j1Timer terenasDialogTimer;
+
 private:
 
 	// Draw rectangle
@@ -217,7 +219,6 @@ private:
 
 	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
 
-	j1Timer terenasDialogTimer;
 };
 
 #endif //__j1SCENE1_H__

@@ -44,8 +44,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	footmanTexName = spritesheets.child("footmanAnimations").attribute("name").as_string();
 	gruntTexName = spritesheets.child("gruntAnimations").attribute("name").as_string();
 	crittersTexName = spritesheets.child("critters").attribute("name").as_string();
-	khadgarTexName = spritesheets.child("khadgar").attribute("name").as_string();
-	alleriaTexName = spritesheets.child("alleria").attribute("name").as_string();
+	khadgarTexName = spritesheets.child("khadgarAnimations").attribute("name").as_string();
+	alleriaTexName = spritesheets.child("alleriaAnimations").attribute("name").as_string();
 	elvenArcherTexName = spritesheets.child("elvenArcherAnimations").attribute("name").as_string();
 	trollAxethrowerTexName = spritesheets.child("trollAxethrowerAnimations").attribute("name").as_string();
 
@@ -768,7 +768,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	//Prisoners
 	//Khadgar
-	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
+	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisioners");
 
 	pugi::xml_node khadgarAnimations = prisionerEntities.child("khadgar").child("animations");
 	currentAnimation = khadgarAnimations.child("idle");

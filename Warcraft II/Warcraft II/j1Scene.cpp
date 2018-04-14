@@ -8,6 +8,7 @@
 #include "j1Input.h"
 #include "j1Textures.h"
 #include "j1FadeToBlack.h"
+#include "j1FinishGame.h"
 #include "j1Audio.h"
 #include "j1Collision.h"
 #include "j1Particles.h"
@@ -206,20 +207,28 @@ bool j1Scene::PreUpdate()
 
 		iPoint tile = { 10,10 };
 
-		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
 			tile = App->player->FindClosestValidTile(tile);
 
-		// Make sure that the spawn tile is valid
-		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; 
+		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
+
+		iPoint tile = { 10,10 };
+
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = App->player->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
 
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, this);
-		//}
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
+		App->entities->AddEntity(EntityType_KHADGAR, pos, App->entities->GetUnitInfo(EntityType_KHADGAR), unitInfo, App->player);
 	}
 
 
@@ -616,6 +625,7 @@ bool j1Scene::PostUpdate()
 	case PauseMenuActions_RETURN_MENU:
 		pauseMenuActions = PauseMenuActions_NONE;
 		App->fade->FadeToBlack(this, App->menu);
+		App->menu->active = true;
 			break;
 	case PauseMenuActions_SETTINGS_MENU:
 		DestroyPauseMenu();
@@ -637,6 +647,12 @@ bool j1Scene::PostUpdate()
 		}
 	}
 
+	if (App->player->imagePrisonersVector.size() >= 2) {
+		App->player->isWin = true;
+		App->fade->FadeToBlack(this, App->finish);
+		App->finish->active = true;
+	}
+
 	return ret;
 }
 
@@ -652,11 +668,11 @@ bool j1Scene::CleanUp()
 	App->tex->UnLoad(debugTex);
 
 
+	UnLoadTerenasDialog();
 	DestroyAllUI();
 	//warcraftActive = false;
 
 	// Set to nullptr the pointers to the UI elements
-	App->menu->active = true;
 	App->map->active = false;
 	App->player->active = false;
 	App->entities->active = false;

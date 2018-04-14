@@ -146,6 +146,9 @@ public:
 	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
 	void UpdateRhombusColliderPos(ColliderGroup* collider, uint radius, DistanceHeuristic distanceHeuristic);
 
+	void HandleInput(EntitiesEvent &EntityEvent);
+	bool MouseHover() const;
+
 	// Attack
 	/// Unit attacks a target
 	Entity* GetCurrTarget() const;

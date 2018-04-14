@@ -25,6 +25,7 @@ public:
 	void UpdateAnimations(float dt);
 
 private:
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	KhadgarInfo khadgarInfo;
 };

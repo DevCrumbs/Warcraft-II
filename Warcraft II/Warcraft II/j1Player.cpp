@@ -14,6 +14,7 @@
 #include "j1Particles.h"
 #include "j1Audio.h"
 
+
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UIImage.h"
@@ -174,7 +175,6 @@ bool j1Player::PostUpdate() {
 		hoverButtonStruct.isCreated = false;                                              
 	}
 
-
 	return true;
 }
 
@@ -198,6 +198,8 @@ iPoint j1Player::GetMousePos() const{
 void j1Player::AddGold(int sumGold)
 {
 	currentGold += sumGold;
+	if (sumGold > 0)
+		totalGold += sumGold;
 }
 
 int j1Player::GetCurrentGold() const
@@ -400,6 +402,46 @@ bool j1Player::CleanUp()
 {
 	bool ret = true;
 
+	App->gui->DestroyElement((UIElement**)&barracks);	   
+	App->gui->DestroyElement((UIElement**)&townHall);
+	App->gui->DestroyElement((UIElement**)&blacksmith);
+	App->gui->DestroyElement((UIElement**)&stables);
+	App->gui->DestroyElement((UIElement**)&church);
+	App->gui->DestroyElement((UIElement**)&mageTower);
+	App->gui->DestroyElement((UIElement**)&cannonTower);
+	App->gui->DestroyElement((UIElement**)&guardTower);
+	App->gui->DestroyElement((UIElement**)&gryphonAviary);
+
+	for (; !chickenFarm.empty(); chickenFarm.pop_back())
+	{
+		App->gui->DestroyElement((UIElement**)&chickenFarm.back());
+	}
+
+	for (; !scoutTower.empty(); scoutTower.pop_back())
+	{
+		App->gui->DestroyElement((UIElement**)&scoutTower.back());
+	}
+
+	for (; !UIMenuInfoList.empty(); UIMenuInfoList.pop_back())
+	{
+		App->gui->DestroyElement((UIElement**)&UIMenuInfoList.back());
+	}
+
+	for (; !goldMine.empty(); goldMine.pop_back())
+	{
+		App->gui->DestroyElement((UIElement**)&goldMine.back());
+	}
+
+	for (; !runestone.empty(); runestone.pop_back())
+	{
+		App->gui->DestroyElement((UIElement**)&runestone.back());
+	}
+
+	for (; !imagePrisonersVector.empty(); imagePrisonersVector.pop_back())
+	{
+		App->gui->DestroyElement((UIElement**)&imagePrisonersVector.back());
+	}
+
 	return ret;
 }
 
@@ -460,7 +502,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				MakeEntitiesMenu(ent->GetStringLife(), "Chicken Farm", { 241,34,50,41 }, ent);
 			}
 
-			else if (staticEntity->staticEntityType == EntityType_GRYPHON_AVIARY){
+			else if (staticEntity->staticEntityType == EntityType_GRYPHON_AVIARY) {
 				App->audio->PlayFx(7, 0); //Gryphon aviary sound
 				MakeEntitiesMenu(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 }, ent);
 			}
@@ -511,9 +553,9 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_RUNESTONE)
-				staticEntity->buildingState = BuildingState_Destroyed;
-		
-			break;
+				staticEntity->buildingState = BuildingState_Destroyed;				
+				
+				break;
 		case EntitiesEvent_HOVER:
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
 				App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
@@ -558,6 +600,46 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			break;
 		}
 
+}
+
+void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEvent entitiesEvent) {
+
+	switch (entitiesEvent)
+	{
+	case EntitiesEvent_NONE:
+		break;
+	case EntitiesEvent_RIGHT_CLICK:
+		break;
+	case EntitiesEvent_LEFT_CLICK:
+		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA) {
+			dynamicEntity->isRemove = true;
+			RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 245 });
+		}
+		else if (dynamicEntity->dynamicEntityType == EntityType_KHADGAR) {
+			dynamicEntity->isRemove = true;
+			RescuePrisoner(TerenasDialog_RESCUE_KHADGAR, { 796,159,52,42 }, { 8, 200 });
+		}
+		break;
+	case EntitiesEvent_HOVER:
+		break;
+	case EntitiesEvent_LEAVE:
+		break;
+	case EntitiesEvent_CREATED:
+		break;
+	default:
+		break;
+	}
+}
+void j1Player::RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos) {
+
+	App->scene->UnLoadTerenasDialog();
+	App->scene->terenasDialogTimer.Start();
+	App->scene->LoadTerenasDialog(dialogEvent);
+
+	UIImage_Info imageInfo;
+	imageInfo.texArea = iconText;
+	
+	imagePrisonersVector.push_back(App->gui->CreateUIImage(iconPos,imageInfo));
 }
 
 

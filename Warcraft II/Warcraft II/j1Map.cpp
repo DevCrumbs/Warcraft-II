@@ -714,7 +714,7 @@ bool j1Map::LoadLogic()
 					ret = true;
 					ENTITY_TYPE entityType = (ENTITY_TYPE)((*layerIterator)->data[i]);
 
-					if ((*layerIterator)->data[i] = 403)
+					/*if ((*layerIterator)->data[i] = 403)
 						App->player->townHall = (StaticEntity*)App->entities->AddEntity(EntityType_TOWN_HALL, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 
 					else if ((*layerIterator)->data[i] = 405)
@@ -724,7 +724,7 @@ bool j1Map::LoadLogic()
 						App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 					else
 						App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
-
+*/
 					/*
 					switch (entityType)
 					{

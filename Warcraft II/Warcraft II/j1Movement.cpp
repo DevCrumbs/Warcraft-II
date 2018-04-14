@@ -1345,9 +1345,9 @@ bool UnitGroup::AddUnit(SingleUnit* singleUnit)
 	// If the unit is not in the group, add it
 	if (!ret) {
 
-		singleUnit->group = this;
+		//singleUnit->group = this;
 
-		units.push_back(singleUnit);
+		//units.push_back(singleUnit);
 
 		ret = true;
 	}

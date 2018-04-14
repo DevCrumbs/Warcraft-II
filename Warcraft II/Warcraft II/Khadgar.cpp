@@ -7,7 +7,7 @@ Khadgar::Khadgar(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 void Khadgar::Move(float dt)
 {
-
+	HandleInput(entityEvent);
 }
 
 // Animations

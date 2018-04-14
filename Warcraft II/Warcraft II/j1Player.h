@@ -28,6 +28,7 @@ class Entity;
 
 class StaticEntity;
 enum ENTITY_TYPE;
+enum TerenasDialogEvents;
 
 struct HoverButton
 {
@@ -142,6 +143,7 @@ public:
 	bool Load(pugi::xml_node&);
 
 	void OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent);
+	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 
@@ -165,6 +167,8 @@ public:
 	void CreateMageTowerButtons();
 	void CreateAbilitiesButtons();
 
+	void RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos);
+
 public:
 
 	//Player
@@ -179,6 +183,8 @@ public:
 	StaticEntity* cannonTower = nullptr;
 	StaticEntity* guardTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
+
+	vector<UIImage*> imagePrisonersVector;
 
 	//Neutral
 	list<StaticEntity*> goldMine;
@@ -243,6 +249,7 @@ private:
 	ToSpawnUnitsStats toSpawnUnitStats;
 
 	UIButton *produceFootmanButton, *produceElvenArcherButton, *produceMageButton, *produceGryphonRiderButton, *producePaladinButton, *commandPatrolButton, *commandStopButton;
+
 
 	list<UIElement*> UIMenuInfoList;
 

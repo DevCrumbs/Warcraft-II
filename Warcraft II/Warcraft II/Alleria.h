@@ -26,6 +26,7 @@ public:
 	void UpdateAnimations(float dt);
 
 private:
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	AlleriaInfo alleriaInfo;
 };
