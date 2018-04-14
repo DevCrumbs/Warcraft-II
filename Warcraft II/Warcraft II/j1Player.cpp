@@ -677,12 +677,18 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 		break;
 	case EntitiesEvent_LEFT_CLICK:
 		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA) {
-			dynamicEntity->isRemove = true;
-			RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 245 });
+			iPoint pos = App->map->WorldToMap((int)dynamicEntity->GetPos().x, (int)dynamicEntity->GetPos().y);
+			if (App->entities->IsNearSoldiers(pos)) {
+				dynamicEntity->isRemove = true;
+				RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 245 });
+			}
 		}
 		else if (dynamicEntity->dynamicEntityType == EntityType_KHADGAR) {
-			dynamicEntity->isRemove = true;
-			RescuePrisoner(TerenasDialog_RESCUE_KHADGAR, { 796,159,52,42 }, { 8, 200 });
+			iPoint pos = App->map->WorldToMap((int)dynamicEntity->GetPos().x, (int)dynamicEntity->GetPos().y);
+			if (App->entities->IsNearSoldiers(pos)) {
+				dynamicEntity->isRemove = true;
+				RescuePrisoner(TerenasDialog_RESCUE_KHADGAR, { 796,159,52,42 }, { 8, 200 });
+			}
 		}
 		break;
 	case EntitiesEvent_HOVER:

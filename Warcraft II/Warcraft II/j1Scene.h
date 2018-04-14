@@ -45,12 +45,6 @@ enum PauseMenuActions {
 	PauseMenuActions_SLIDERFX,
 	PauseMenuActions_SLIDERMUSIC
 };
-enum FoodChange
-{
-	FoodChange_NONE,
-	FoodChange_ADD,
-	FoodChange_LESS
-};
 struct TerenasAdvices {
 	UIImage* terenasImage;
 	UILabel* text;
@@ -147,7 +141,7 @@ public:
 
 	bool hasGoldChanged = false;
 
-	FoodChange hasFoodChanged = FoodChange_NONE;
+	bool hasFoodChanged = false;
 
 	UIImage* entitiesStats;
 	ENTITY_TYPE GetAlphaBuilding();
