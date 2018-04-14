@@ -619,13 +619,20 @@ bool j1Scene::Update(float dt)
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
 
-	return ret;
-}
-
-// Called each loop iteration
-bool j1Scene::PostUpdate()
-{
-	bool ret = true;
+	if (hasGoldChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		if (buildingMenuOn) {
+			UnLoadBuildingMenu();
+			LoadBuildingMenu();
+		}
+		hasGoldChanged = false;
+	}
+	if (hasFoodChanged == true) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		hasFoodChanged = false;
+	}
 
 	switch (pauseMenuActions)
 	{
@@ -648,13 +655,12 @@ bool j1Scene::PostUpdate()
 		break;
 	case PauseMenuActions_RETURN_MENU:
 		pauseMenuActions = PauseMenuActions_NONE;
-		App->fade->FadeToBlack(this, App->menu);
-		App->menu->active = true;
-			break;
+		isFadeToMenu = true;
+		break;
 	case PauseMenuActions_SETTINGS_MENU:
 		DestroyPauseMenu();
 		CreateSettingsMenu();
-		pauseMenuActions = PauseMenuActions_NONE;		
+		pauseMenuActions = PauseMenuActions_NONE;
 		break;
 	case PauseMenuActions_SLIDERFX:
 		App->menu->UpdateSlider(AudioFXPause);
@@ -664,12 +670,18 @@ bool j1Scene::PostUpdate()
 	default:
 		break;
 	}
+
+	return ret;
+}
+
+// Called each loop iteration
+bool j1Scene::PostUpdate()
+{
+	bool ret = true;
+
 	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
 		ret = false;
-		if (parchmentImg != nullptr) {
-			parchmentImg->toRemove = true;
-			parchmentImg = nullptr;
-		}
+		App->gui->RemoveElem((UIElement**)&parchmentImg);
 	}
 
 	if (App->player->imagePrisonersVector.size() >= 2) {
@@ -678,21 +690,11 @@ bool j1Scene::PostUpdate()
 		App->finish->active = true;
 	}
 
-	if (hasGoldChanged) {
-		UnLoadResourcesLabels();
-		LoadResourcesLabels();
-		if (buildingMenuOn) {
-			UnLoadBuildingMenu();
-			LoadBuildingMenu();
-		}
-		hasGoldChanged = false;
+	if (isFadeToMenu) {
+		App->fade->FadeToBlack(this, App->menu);
+		App->menu->active = true;
+		isFadeToMenu = false;
 	}
-	if (hasFoodChanged == true) {
-		UnLoadResourcesLabels();
-		LoadResourcesLabels();
-		hasFoodChanged = false;
-	}
-
 	return ret;
 }
 
@@ -888,6 +890,7 @@ void j1Scene::LoadInGameUI()
 
 void j1Scene::LoadBuildingMenu()
 {
+	UnLoadTerenasDialog();
 	UIButton_Info buttonInfo;
 	UILabel_Info labelInfo;
 
@@ -895,7 +898,7 @@ void j1Scene::LoadBuildingMenu()
 	imageInfo.texArea = { 0,33,240,529 };
 	buildingMenu = App->gui->CreateUIImage({ -110, 0 }, imageInfo, this, buildingButton);
 	buildingMenuOn = true;
-	buildingMenu->SetPriorityDraw(PriorityDraw_UIINGAME);
+	buildingMenu->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
 	buttonInfo.normalTexArea = { 241,34,50,41 };
 	buttonInfo.hoverTexArea = { 292,34,50,41 };
@@ -906,6 +909,7 @@ void j1Scene::LoadBuildingMenu()
 	}
 	chickenFarmButton = App->gui->CreateUIButton({ 15, 55 }, buttonInfo, this, buildingMenu);
 
+	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
 	labelInfo.text = "Chicken Farm";
 	labelInfo.normalColor = White_;
@@ -1137,7 +1141,7 @@ void j1Scene::UnLoadBuildingMenu()
 
 	for (list<UILabel*>::iterator it = buildingLabelsList.begin(); it != buildingLabelsList.end();)
 	{
-		buildingLabelsList.back()->toRemove = true;
+		(*it)->toRemove = true;
 		buildingLabelsList.erase(it++);
 	}
 	buildingMenuOn = false;

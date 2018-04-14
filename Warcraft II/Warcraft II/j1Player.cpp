@@ -312,7 +312,7 @@ void j1Player::CheckIfPlaceBuilding()
 
 		case EntityType_PLAYER_GUARD_TOWER:
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
-				guardTower = (StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_GUARD_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_GUARD_TOWER), unitInfo, this);
+				guardTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_GUARD_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_GUARD_TOWER), unitInfo, this));
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->guardTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
@@ -330,7 +330,7 @@ void j1Player::CheckIfPlaceBuilding()
 			break;
 		case EntityType_PLAYER_CANNON_TOWER:
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
-				cannonTower = (StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_CANNON_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_CANNON_TOWER), unitInfo, this);
+				cannonTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_CANNON_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_CANNON_TOWER), unitInfo, this));
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->cannonTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
@@ -449,24 +449,14 @@ bool j1Player::CleanUp()
 {
 	bool ret = true;
 
-	barracks->isRemove = true;
-	barracks = nullptr;
-	townHall->isRemove = true;
-	townHall = nullptr;
-	blacksmith->isRemove = true;
-	blacksmith = nullptr;
-	stables->isRemove = true;
-	stables = nullptr;
-	church->isRemove = true;
-	church = nullptr;
-	mageTower->isRemove = true;
-	mageTower = nullptr;
-	cannonTower->isRemove = true;
-	cannonTower = nullptr;
-	guardTower->isRemove = true;
-	guardTower = nullptr;
-	gryphonAviary->isRemove = true;
-	gryphonAviary = nullptr;
+	if (barracks != nullptr) {
+		barracks->isRemove = true;
+		barracks = nullptr;
+	}
+	if (townHall) {
+		townHall->isRemove = true;
+		townHall = nullptr;
+	}
 
 	for (; !chickenFarm.empty(); chickenFarm.pop_back())
 	{
@@ -478,11 +468,20 @@ bool j1Player::CleanUp()
 		scoutTower.back()->isRemove = true;
 	}
 
+	for (; !cannonTower.empty(); cannonTower.pop_back())
+	{
+		cannonTower.back()->isRemove = true;
+	}
 
-	for (list<UIElement*>::iterator it = UIMenuInfoList.begin(); it != UIMenuInfoList.end();)
+	for (; !guardTower.empty(); guardTower.pop_back())
+	{
+		guardTower.back()->isRemove = true;
+	}
+
+
+	for (; !UIMenuInfoList.empty(); UIMenuInfoList.pop_back())
 	{
 		UIMenuInfoList.back()->toRemove = true;
-		UIMenuInfoList.erase(it++);
 	}
 
 	for (; !goldMine.empty(); goldMine.pop_back())
@@ -495,10 +494,9 @@ bool j1Player::CleanUp()
 		runestone.back()->isRemove = true;
 	}
 
-	for (vector<UIImage*>::iterator it = imagePrisonersVector.begin(); it != imagePrisonersVector.end();)
+	for (; !imagePrisonersVector.empty(); imagePrisonersVector.pop_back())
 	{
 		imagePrisonersVector.back()->toRemove = true;
-		imagePrisonersVector.erase(it++);
 	}
 	DeleteEntitiesMenu();
 
@@ -1138,11 +1136,11 @@ void j1Player::HandleBarracksUIElem()
 	//Delete UI elements when not used
 
 	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
-	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueBar);
 	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
-	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.sndInQueueBar);
 	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
-	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
+	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.trdInQueueBar);
 
 	uint unitInQueue = 1;
 	for each (ToSpawnUnit unit in toSpawnUnitQueue._Get_container()) { //Iterates every element in the queue

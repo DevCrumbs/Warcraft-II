@@ -142,25 +142,17 @@ bool j1Menu::Update(float dt)
 		}
 	}
 
-	return true;
-}
-
-// Called each loop iteration
-bool j1Menu::PostUpdate()
-{
-	bool ret = true;
-
 	switch (menuActions)
 	{
 	case MenuActions_NONE:
 		break;
 	case MenuActions_EXIT:
 		App->audio->PlayFx(1, 0); //Button sound
-		ret = false;
+		isExit = true;
 		break;
 	case MenuActions_PLAY:
 		App->audio->PlayFx(1, 0); //Button sound
-		App->fade->FadeToBlack(this, App->scene);
+		isFadetoScene = true;
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_SETTINGS:
@@ -185,7 +177,19 @@ bool j1Menu::PostUpdate()
 	default:
 		break;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	return true;
+}
+
+// Called each loop iteration
+bool j1Menu::PostUpdate()
+{
+	bool ret = true;
+
+	if (isFadetoScene) {
+		App->fade->FadeToBlack(this, App->scene);
+		isFadetoScene = false;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN || isExit)
 		ret = false;
 
 	return ret;
@@ -347,7 +351,7 @@ void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
 	static char vol_text[4];
 	sprintf_s(vol_text, 4, "%.0f", volume * 100);
 	sliderStruct.value->SetText(vol_text);
-	LOG("%f", volume);
+	//LOG("%f", volume);
 }
 
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {

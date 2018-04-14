@@ -98,7 +98,7 @@ void UIButton::HandleInput()
 		}
 
 		if (!nextEvent) {
-			LOG("MOUSE ENTER");
+			//LOG("MOUSE ENTER");
 			if (!button.isChecked)
 				ChangeSprite(hoverTexArea);
 			nextEvent = true;

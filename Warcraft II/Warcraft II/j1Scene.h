@@ -164,7 +164,7 @@ public:
 private:
 
 	bool isAttackCursor = false;
-
+	bool isFadeToMenu = false;
 	// Draw rectangle
 	iPoint startRectangle = { 0,0 };
 

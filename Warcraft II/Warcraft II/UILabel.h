@@ -63,7 +63,7 @@ public:
 private:
 	UILabel_Info label;
 	_TTF_Font* font = nullptr;
-	const SDL_Texture* tex = nullptr;
+	SDL_Texture* tex = nullptr;
 	SDL_Color color = { 255,255,255,255 };
 	UI_EVENT UIevent = UI_EVENT_NONE;
 	bool nextEvent = false;

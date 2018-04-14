@@ -78,7 +78,7 @@ DynamicEntity::~DynamicEntity()
 	attackRadiusCollider = nullptr;
 
 	if (lifeBar != nullptr) {
-		lifeBar->toRemove;
+		lifeBar->toRemove = true;
 		lifeBar = nullptr;
 	}
 }
