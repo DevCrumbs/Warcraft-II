@@ -90,9 +90,6 @@ bool j1Gui::Start()
 
 	// Load fonts
 
-
-
-
 	return ret;
 }
 
@@ -168,6 +165,7 @@ bool j1Gui::PostUpdate()
 	while (iterator != UIElementsList.end()) {
 
 		if ((*iterator)->HasToBeRemoved()) {
+
 			delete *iterator;
 			UIElementsList.remove(*iterator);
 		}

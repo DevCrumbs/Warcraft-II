@@ -605,7 +605,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 				App->audio->PlayFx(6, 0); //Gold mine sound
 				list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
-				if (pene.size() != 0) {
+				if (pene.size() > 0) {
 					pene.front()->SetBlitState(false);
 				}
 				staticEntity->buildingState = BuildingState_Destroyed;
