@@ -49,63 +49,81 @@ enum ENTITY_TYPE
 {
 	EntityType_NONE = 0,
 
-	// Player buildings
-	/// Production buildings
-	EntityType_TOWN_HALL = 403,
-	EntityType_CHICKEN_FARM = 405,
-	EntityType_BARRACKS = 404,
-	EntityType_ELVEN_LUMBER_MILL = 406,
-	EntityType_MAGE_TOWER = 407,
-	EntityType_GRYPHON_AVIARY = 408,
-	EntityType_STABLES = 409,
+	EntityType_GRUNT = 381,
+	EntityType_TROLL_AXETHROWER = 382,
+	EntityType_DRAGON = 385,
 
-	/// Defense buildings
-	EntityType_SCOUT_TOWER = 410,
-	EntityType_PLAYER_GUARD_TOWER = 411,
-	EntityType_PLAYER_CANNON_TOWER = 412,
-
-	// Neutral buildings
-	EntityType_GOLD_MINE = 400,
-	EntityType_RUNESTONE = 401,
-
-	// Enemy buildings
-	///Production buildings
-	EntityType_GREAT_HALL = 390, 
-	EntityType_STRONGHOLD = 391, 
-	EntityType_FORTRESS = 392, 
-	EntityType_ENEMY_BARRACKS = 393,
-	EntityType_PIG_FARM = 394,
-	EntityType_TROLL_LUMBER_MILL = 395, 
-	EntityType_ALTAR_OF_STORMS = 396, 
-	EntityType_DRAGON_ROOST = 397,
-	EntityType_TEMPLE_OF_THE_DAMNED = 398,
-	EntityType_OGRE_MOUND = 399, 
-	EntityType_ENEMY_BLACKSMITH = 421,
-
-	/// Defense buildings
 	EntityType_WATCH_TOWER = 387,
 	EntityType_ENEMY_GUARD_TOWER = 388,
 	EntityType_ENEMY_CANNON_TOWER = 389,
 
-	// Player types
-	EntityType_FOOTMAN = 413,
-	EntityType_ELVEN_ARCHER = 414,
+	EntityType_GREAT_HALL = 390,
+	EntityType_STRONGHOLD = 391,
+	EntityType_FORTRESS = 392,
+	EntityType_PIG_FARM = 393,
+	EntityType_ENEMY_BARRACKS = 394,
+	EntityType_TROLL_LUMBER_MILL = 395,
+	EntityType_ENEMY_BLACKSMITH = 396,
+	EntityType_OGRE_MOUND = 397,
+	EntityType_DRAGON_ROOST = 398,
+	EntityType_TEMPLE_OF_THE_DAMNED = 399,
+
+	EntityType_GOLD_MINE = 400,
+	EntityType_RUNESTONE = 401,
+
+	EntityType_SHEEP = 402,
+
+	EntityType_TOWN_HALL = 403,
+	EntityType_BARRACKS = 404,
+	EntityType_CHICKEN_FARM = 405,
+
+
+	EntityType_FOOTMAN = 406,
+	EntityType_ELVEN_ARCHER = 407,
+	EntityType_TURALYON = 408,
+	EntityType_ALLERIA = 409,
+	EntityType_KHADGAR = 410,
+
 	EntityType_GRYPHON_RIDER = 415,
 	EntityType_MAGE = 416,
 	EntityType_PALADIN = 417,
 
-	EntityType_TURALYON = 418,
-	EntityType_KHADGAR = 419,
-	EntityType_ALLERIA = 420,
+	// Player buildings
+	/// Production buildings
+
+
+	EntityType_ELVEN_LUMBER_MILL = 418,
+	EntityType_MAGE_TOWER = 419,
+	EntityType_GRYPHON_AVIARY = 420,
+	EntityType_STABLES = 421,
+
+	/// Defense buildings
+	EntityType_SCOUT_TOWER = 422,
+	EntityType_PLAYER_GUARD_TOWER = 423,
+	EntityType_PLAYER_CANNON_TOWER = 424,
+
+	// Neutral buildings
+
+
+	// Enemy buildings
+	///Production buildings
+
+	EntityType_ALTAR_OF_STORMS = 425,
+
+	/// Defense buildings
+
+
+
+	// Player types
+
 
 	// Enemy types
-	EntityType_GRUNT = 381,
-	EntityType_TROLL_AXETHROWER = 382,
-	EntityType_DRAGON = 383,
+
+
 
 	// Neutral types
-	EntityType_SHEEP,
-	EntityType_BOAR,
+
+	EntityType_BOAR = 426,
 
 	EntityType_MAX = 500
 };

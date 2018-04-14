@@ -1108,7 +1108,6 @@ bool j1EntityFactory::PreUpdate()
 		}
 	}
 
-
 	return ret;
 }
 
@@ -1166,7 +1165,6 @@ void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 		statEntity++;
 	}
-
 }
 
 void j1EntityFactory::Draw()
