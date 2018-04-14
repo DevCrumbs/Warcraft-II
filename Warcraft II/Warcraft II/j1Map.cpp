@@ -9,6 +9,8 @@
 #include "j1Scene.h"
 #include "j1Map.h"
 #include "j1Window.h"
+#include "j1EntityFactory.h"
+#include "j1Player.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -572,7 +574,7 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->height = node.attribute("height").as_uint();
 	LoadProperties(node, layer->properties);
 	layer->data = new uint[layer->width * layer->height];
-
+	layer->size_data = layer->width * layer->height;
 	memset(layer->data, 0, layer->width * layer->height);
 
 	int i = 0;
@@ -814,6 +816,89 @@ bool MapData::CheckIfEnter(string groupObject, string object, fPoint position)
 	fPoint objectSize = GetObjectSize(groupObject, object);
 
 	return (objectPos.x < position.x + 1 && objectPos.x + objectSize.x > position.x && objectPos.y < position.y + 1 && objectSize.y + objectPos.y > position.y);
+}
+
+bool j1Map::LoadLogic()
+{
+	bool ret = false;
+
+	// Iterate all layers
+	for (list<MapLayer*>::iterator layerIterator = data.layers.begin();
+		layerIterator != data.layers.end(); ++layerIterator)
+	{
+		// Check if layer is a logic layer
+		if (!(*layerIterator)->properties.GetProperty("Logic", false))
+			continue;
+		{
+			// Iterate layer
+			for (int i = 0; i < (*layerIterator)->size_data; ++i)
+			{
+				// Check if tile is not empty
+				if ((*layerIterator)->data[i] > 0)
+				{
+					int x = i % (*layerIterator)->width;
+					int y = i / (*layerIterator)->width;
+
+					iPoint auxPos = MapToWorld(x, y);
+					fPoint pos;
+					pos.x = auxPos.x;
+					pos.y = auxPos.y;
+
+					UnitInfo unitInfo;
+					ENTITY_TYPE entityType = (ENTITY_TYPE)(*layerIterator)->data[i];
+
+					switch (entityType)
+					{
+						// Static Entities
+					case EntityType_TOWN_HALL:
+						App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+						break;
+					case EntityType_CHICKEN_FARM:
+						App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
+						break;
+					case EntityType_BARRACKS:
+						App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+						break;
+
+					case EntityType_GOLD_MINE:
+					case EntityType_RUNESTONE:
+					case EntityType_GREAT_HALL:
+					case EntityType_STRONGHOLD:
+					case EntityType_FORTRESS:
+					case EntityType_ENEMY_BARRACKS:
+					case EntityType_PIG_FARM:
+					case EntityType_TROLL_LUMBER_MILL:
+					case EntityType_ALTAR_OF_STORMS:
+					case EntityType_DRAGON_ROOST:
+					case EntityType_TEMPLE_OF_THE_DAMNED:
+					case EntityType_OGRE_MOUND:
+					case EntityType_ENEMY_BLACKSMITH:
+					case EntityType_WATCH_TOWER:
+					case EntityType_ENEMY_GUARD_TOWER:
+					case EntityType_ENEMY_CANNON_TOWER:
+						App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+						break;
+
+						// Dynamic entities
+					case EntityType_FOOTMAN:
+					case EntityType_ELVEN_ARCHER:
+					case EntityType_KHADGAR:
+					case EntityType_ALLERIA:
+						App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
+						break;
+
+					case EntityType_GRUNT:
+					case EntityType_TROLL_AXETHROWER:
+					case EntityType_SHEEP:
+					case EntityType_BOAR:
+						App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+						break;
+					}
+				}
+			}
+		}
+	}
+	return ret;
 }
 
 ///*
