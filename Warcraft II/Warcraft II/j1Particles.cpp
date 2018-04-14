@@ -400,6 +400,8 @@ void j1Particles::UpdateAnimations(float dt)
 	sheepPawsInfo.upRight.speed = sheepPawsUpRightSpeed * dt;
 	sheepPawsInfo.downLeft.speed = sheepPawsDownLeftSpeed * dt;
 	sheepPawsInfo.downRight.speed = sheepPawsDownRightSpeed * dt;
+
+	trollAxe.animation.speed = 10.0f * dt;
 }
 
 BoarPawsInfo& j1Particles::GetBoarPawsInfo()

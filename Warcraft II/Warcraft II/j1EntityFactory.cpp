@@ -967,10 +967,10 @@ bool j1EntityFactory::Start()
 	trollAxethrowerInfo.maxLife = 30;
 	trollAxethrowerInfo.currLife = trollAxethrowerInfo.maxLife;
 
-	trollAxethrowerInfo.unitInfo.maxSpeed = 2;
+	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
 	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
-	trollAxethrowerInfo.unitInfo.attackRadius = 2;
-	trollAxethrowerInfo.unitInfo.sightRadius = 4;
+	trollAxethrowerInfo.unitInfo.attackRadius = 3;
+	trollAxethrowerInfo.unitInfo.sightRadius = 5;
 	trollAxethrowerInfo.unitInfo.damage = 5;
 	trollAxethrowerInfo.unitInfo.priority = 3;
 	// -----
@@ -979,7 +979,7 @@ bool j1EntityFactory::Start()
 	gruntInfo.maxLife = 30;
 	gruntInfo.currLife = gruntInfo.maxLife;
 
-	gruntInfo.unitInfo.maxSpeed = 2;
+	gruntInfo.unitInfo.maxSpeed = 50.0f;
 	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
 	gruntInfo.unitInfo.attackRadius = 2;
 	gruntInfo.unitInfo.sightRadius = 4;
@@ -991,10 +991,10 @@ bool j1EntityFactory::Start()
 	elvenArcherInfo.maxLife = 30;
 	elvenArcherInfo.currLife = elvenArcherInfo.maxLife;
 
-	elvenArcherInfo.unitInfo.maxSpeed = 2;
+	elvenArcherInfo.unitInfo.maxSpeed = 60.0f;
 	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
-	elvenArcherInfo.unitInfo.attackRadius = 2;
-	elvenArcherInfo.unitInfo.sightRadius = 4;
+	elvenArcherInfo.unitInfo.attackRadius = 3;
+	elvenArcherInfo.unitInfo.sightRadius = 5;
 	elvenArcherInfo.unitInfo.damage = 5;
 	elvenArcherInfo.unitInfo.priority = 3;
 	// -----
@@ -1003,7 +1003,7 @@ bool j1EntityFactory::Start()
 	footmanInfo.maxLife = 30;
 	footmanInfo.currLife = footmanInfo.maxLife;
 
-	footmanInfo.unitInfo.maxSpeed = 2;
+	footmanInfo.unitInfo.maxSpeed = 50.0f;
 	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
 	footmanInfo.unitInfo.attackRadius = 2;
 	footmanInfo.unitInfo.sightRadius = 4;
