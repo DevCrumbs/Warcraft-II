@@ -67,7 +67,6 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(movement);
 	AddModule(pathmanager);
 	AddModule(entities);
-	AddModule(particles);
 	/// <-- Do not change this order
 
 	AddModule(font);
@@ -75,9 +74,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(player);
 
 	AddModule(scene);
-
+	AddModule(particles);
 	AddModule(finish);
-
 	AddModule(console);
 	AddModule(gui);
 

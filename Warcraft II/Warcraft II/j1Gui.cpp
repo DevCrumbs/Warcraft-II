@@ -118,8 +118,6 @@ bool j1Gui::Update(float dt)
 
 	bool ret = true;
 
-	App->particles->Draw(); // the rest of the particles
-
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
 		isDebug = !isDebug;
 

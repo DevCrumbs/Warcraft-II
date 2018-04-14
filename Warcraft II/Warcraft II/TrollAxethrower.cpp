@@ -122,6 +122,12 @@ void TrollAxethrower::Move(float dt)
 
 	if (!isDead) {
 
+		if (currTarget == nullptr && particle != nullptr) {
+
+			particle->isRemove = true;
+			particle = nullptr;
+		}
+
 		/// GOAL: MoveToPosition
 		// The goal of the unit has been changed manually
 		if (singleUnit->isGoalChanged)
