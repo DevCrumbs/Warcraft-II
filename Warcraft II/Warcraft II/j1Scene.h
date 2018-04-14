@@ -46,8 +46,8 @@ enum PauseMenuActions {
 	PauseMenuActions_SLIDERMUSIC
 };
 struct TerenasAdvices {
-	UIImage* terenasImage;
-	UILabel* text;
+	UIImage* terenasImage = nullptr;
+	UILabel* text = nullptr;
 };
 
 class j1Scene : public j1Module
@@ -138,7 +138,7 @@ public:
 	bool hasGoldChanged = false;
 	bool hasFoodChanged = false;
 
-	UIImage* entitiesStats;
+	UIImage* entitiesStats = nullptr;
 	ENTITY_TYPE GetAlphaBuilding();
 	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
 
@@ -158,16 +158,16 @@ private:
 	iPoint startRectangle = { 0,0 };
 
 	//UI
-	UIButton *buildingButton, *chickenFarmButton, *elvenLumberButton, *blackSmithButton, *stablesButton, *gryphonAviaryButton, *mageTowerButton, *churchButton, *scoutTowerButton, *guardTowerButton, *cannonTowerButton;
-	UILabel *buildingLabel, *chickenFarmLabel, *elvenLumberLabel, *blackSmithLabel, *stablesLabel, *gryphonAviaryLabel, *mageTowerLabel, *churchLabel, *scoutTowerLabel, *guardTowerLabel, *cannonTowerLabel;
+	UIButton *buildingButton = nullptr, *chickenFarmButton = nullptr, *elvenLumberButton = nullptr, *blackSmithButton = nullptr, *stablesButton = nullptr, *gryphonAviaryButton = nullptr, *mageTowerButton = nullptr, *churchButton = nullptr, *scoutTowerButton = nullptr, *guardTowerButton = nullptr, *cannonTowerButton = nullptr;
+	UILabel *buildingLabel = nullptr, *chickenFarmLabel = nullptr, *elvenLumberLabel = nullptr, *blackSmithLabel = nullptr, *stablesLabel = nullptr, *gryphonAviaryLabel = nullptr, *mageTowerLabel = nullptr, *churchLabel = nullptr, *scoutTowerLabel = nullptr, *guardTowerLabel = nullptr, *cannonTowerLabel = nullptr;
 	//Building costs
-	UILabel *chickenFarmCostLabel, *elvenLumberCostLabel, *blackSmithCostLabel, *stablesCostLabel, *gryphonAviaryCostLabel, *mageTowerCostLabel, *churchCostLabel, *scoutTowerCostLabel, *guardTowerCostLabel, *cannonTowerCostLabel;
+	UILabel *chickenFarmCostLabel = nullptr, *elvenLumberCostLabel = nullptr, *blackSmithCostLabel = nullptr, *stablesCostLabel = nullptr, *gryphonAviaryCostLabel = nullptr, *mageTowerCostLabel = nullptr, *churchCostLabel = nullptr, *scoutTowerCostLabel = nullptr, *guardTowerCostLabel = nullptr, *cannonTowerCostLabel = nullptr;
 
-	UIImage *buildingMenu;
+	UIImage *buildingMenu = nullptr;
 
 	//Frame InGame
-	UIImage* inGameFrameImage;
-	UILabel* goldLabel, *foodLabel;
+	UIImage* inGameFrameImage = nullptr;
+	UILabel* goldLabel = nullptr, *foodLabel = nullptr;
 
 	//Pause Menu
 	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;

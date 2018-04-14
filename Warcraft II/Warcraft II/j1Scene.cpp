@@ -1269,7 +1269,7 @@ void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
 void j1Scene::UnLoadTerenasDialog()
 {
 	App->gui->DestroyElement((UIElement**)&terenasAdvices.text);
-	App->gui->DestroyElement((UIElement**)&terenasAdvices.terenasImage);
+	//App->gui->DestroyElement((UIElement**)&terenasAdvices.terenasImage);
 }
 
 
