@@ -29,11 +29,6 @@ public:
 	~PlayerCannonTower() {};
 
 	void Move(float dt);
-
-	// Animations
-	void LoadAnimationsSpeed();
-	void UpdateAnimations(float dt);
-
 	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
 
 	// State machine
@@ -45,6 +40,10 @@ public:
 	void CheckCannonBulletMovement(float dt);
 	void MoveCannonTowardsTarget(float dt);
 	void InflictDamageAndDestroyCannonBullet();
+
+	// Animations
+	void LoadAnimationsSpeed();
+	void UpdateAnimations(float dt);
 
 private:
 
