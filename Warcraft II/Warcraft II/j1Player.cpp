@@ -158,7 +158,6 @@ bool j1Player::Update(float dt) {
 	if (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected == barracks) 
 		HandleBarracksUIElem();	
 	
-
 	return true;
 }
 
@@ -544,6 +543,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		case EntitiesEvent_RIGHT_CLICK:
 			break;
 		case EntitiesEvent_LEFT_CLICK:
+
 			DeleteEntitiesMenu();
 
 			if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM) {
@@ -773,7 +773,11 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 
 void j1Player::MakeUnitMenu(Entity* entity)
 {
-	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_FOOTMAN) {
+	if (entity == nullptr)
+		return;
+
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_FOOTMAN) 
+	{
 		UIImage_Info imageInfo;
 		imageInfo.texArea = { 240,244, 50, 41 };
 		imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
@@ -816,7 +820,8 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		entitySelectedStats.entityMovementSpeed = App->gui->CreateUILabel({ 75, 50 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 	}
 
-	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_ELVEN_ARCHER) 
+	{
 		UIImage_Info imageInfo;
 		imageInfo.texArea = { 291,244, 50, 41 };
 		imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
@@ -856,12 +861,9 @@ void j1Player::MakeUnitMenu(Entity* entity)
 
 		labelInfo.text = "Movement Speed: 10";
 		entitySelectedStats.entityMovementSpeed = App->gui->CreateUILabel({ 75, 50 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
-	}
+	}	
 
-	
-
-	entitySelectedStats.entitySelected = entity;
-	
+	entitySelectedStats.entitySelected = entity;	
 }
 
 void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
@@ -965,7 +967,9 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 
 void j1Player::DeleteEntitiesMenu()
 {
-	if (entitySelectedStats.entitySelected == barracks) {
+	if (entitySelectedStats.entitySelected == barracks)
+	{
+		/*
 		App->gui->DestroyElement((UIElement**)&produceElvenArcherButton);
 		App->gui->DestroyElement((UIElement**)&produceFootmanButton);
 		App->gui->DestroyElement((UIElement**)&producePaladinButton);
@@ -975,48 +979,71 @@ void j1Player::DeleteEntitiesMenu()
 		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.frstInQueueBar);
 		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.sndInQueueBar);
 		App->gui->DestroyElement((UIElement**)&toSpawnUnitStats.trdInQueueBar);
+		*/
+
+		produceElvenArcherButton->toRemove = true;
+		produceFootmanButton->toRemove = true;
+		producePaladinButton->toRemove = true;
+		toSpawnUnitStats.frstInQueueIcon->toRemove = true;
+		toSpawnUnitStats.sndInQueueIcon->toRemove = true;
+		toSpawnUnitStats.trdInQueueIcon->toRemove = true;
+		toSpawnUnitStats.frstInQueueBar->toRemove = true;
+		toSpawnUnitStats.sndInQueueBar->toRemove = true;
+		toSpawnUnitStats.trdInQueueBar->toRemove = true;
 	}
 
-	else if (entitySelectedStats.entitySelected == gryphonAviary)
-		App->gui->DestroyElement((UIElement**)&produceGryphonRiderButton);
-	else if (entitySelectedStats.entitySelected == mageTower)
-		App->gui->DestroyElement((UIElement**)&produceMageButton);
-
 	if (entitySelectedStats.entitySelected != nullptr) {
-		App->gui->DestroyElement((UIElement**)&entitySelectedStats.HP);
-		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityName);
-		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityIcon);
-		App->gui->DestroyElement((UIElement**)&entitySelectedStats.lifeBar);
-		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityDamage);
-		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityMana);
-		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityMovementSpeed);
-		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entityRange);
-		App->gui->DestroyElement((UIElement**)&entitySelectedStats.entitySight);
-		App->gui->DestroyElement((UIElement**)&commandPatrolButton);
-		App->gui->DestroyElement((UIElement**)&commandStopButton);
+
+		entitySelectedStats.HP->toRemove = true;
+		entitySelectedStats.entityName->toRemove = true;
+		entitySelectedStats.entityIcon->toRemove = true;
+		entitySelectedStats.lifeBar->toRemove = true;
+		entitySelectedStats.entityDamage->toRemove = true;
+		entitySelectedStats.entityMana->toRemove = true;
+		entitySelectedStats.entityMovementSpeed->toRemove = true;
+		entitySelectedStats.entityRange->toRemove = true;
+		entitySelectedStats.entitySight->toRemove = true;
+		commandPatrolButton->toRemove = true;
+		commandStopButton->toRemove = true;
+
 		entitySelectedStats.entitySelected = nullptr;
 	}
 
 	if (!groupSelectedStats.units.empty()) {
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity1Icon);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity2Icon);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity3Icon);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity4Icon);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity5Icon);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity6Icon);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity7Icon);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.entity8Icon);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar1);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar2);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar3);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar4);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar5);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar6);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar7);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar8);
-		App->gui->DestroyElement((UIElement**)&commandPatrolButton);
-		App->gui->DestroyElement((UIElement**)&commandStopButton);
-		App->gui->DestroyElement((UIElement**)&groupSelectedStats.lifeBar8);
+
+		if (groupSelectedStats.entity1Icon != nullptr)
+			groupSelectedStats.entity1Icon->toRemove = true;
+		if (groupSelectedStats.entity2Icon != nullptr)
+			groupSelectedStats.entity2Icon->toRemove = true;
+		if (groupSelectedStats.entity3Icon != nullptr)
+			groupSelectedStats.entity3Icon->toRemove = true;
+		if (groupSelectedStats.entity4Icon != nullptr)
+			groupSelectedStats.entity4Icon->toRemove = true;
+		if (groupSelectedStats.entity5Icon != nullptr)
+			groupSelectedStats.entity5Icon->toRemove = true;
+		if (groupSelectedStats.entity6Icon != nullptr)
+			groupSelectedStats.entity6Icon->toRemove = true;
+		if (groupSelectedStats.entity7Icon != nullptr)
+			groupSelectedStats.entity7Icon->toRemove = true;
+		if (groupSelectedStats.entity8Icon != nullptr)
+			groupSelectedStats.entity8Icon->toRemove = true;
+
+		/*
+		groupSelectedStats.lifeBar1->toRemove = true;
+		groupSelectedStats.lifeBar2->toRemove = true;
+		groupSelectedStats.lifeBar3->toRemove = true;
+		groupSelectedStats.lifeBar4->toRemove = true;
+		groupSelectedStats.lifeBar5->toRemove = true;
+		groupSelectedStats.lifeBar6->toRemove = true;
+		groupSelectedStats.lifeBar7->toRemove = true;
+		groupSelectedStats.lifeBar8->toRemove = true;
+		*/
+
+		if (commandPatrolButton != nullptr)
+			commandPatrolButton->toRemove = true;
+		if (commandStopButton != nullptr)
+			commandStopButton->toRemove = true;
+
 		groupSelectedStats.units.clear();
 	}
 }
@@ -1053,6 +1080,7 @@ void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image
 }
 void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity * entity)
 {
+	/*
 	UILifeBar_Info lifeInfo;
 	lifeInfo.background = backgroundTexArea;
 	lifeInfo.bar = barTexArea;
@@ -1060,6 +1088,7 @@ void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea,
 	lifeInfo.maxWidth = lifeInfo.bar.w;
 	lifeInfo.lifeBarPosition = { 12, 10 };
 	lifeBar = App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	*/
 }
 
 void j1Player::CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar)
