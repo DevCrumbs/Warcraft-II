@@ -15,6 +15,8 @@ The player must command this expedition in an RTS dungeon crawler game in which 
 6: Spawn an enemy unit at mouse pos (Grunt)
 7: Spawn a sheep at mouse pos
 8: Spawn a boar at mouse pos
+9: Spawn Alleria
+0: Spawn Khadgar
 P: set command patrol to the units selected (click a tile to patrol there)
 S: stop the units selected
 Mouse Left click: select a group of units
