@@ -310,6 +310,7 @@ void Goal_AttackTarget::Terminate()
 	// -----
 
 	targetInfo = nullptr;
+
 	owner->SetUnitState(UnitState_Idle);
 }
 
