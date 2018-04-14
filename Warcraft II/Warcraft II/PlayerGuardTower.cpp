@@ -62,6 +62,10 @@ void PlayerGuardTower::Move(float dt)
 	//Check the arrow movement if the tower has to attack
 	if (attackingTarget != nullptr && arrowParticle != nullptr)
 		CheckArrowMovement(dt);
+	if (attackingTarget == nullptr && arrowParticle != nullptr) {
+		arrowParticle->isRemove = true;
+		arrowParticle = nullptr;
+	}
 
 	//Check if the tower has to change the attacking target
 	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {

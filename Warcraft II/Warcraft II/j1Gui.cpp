@@ -118,6 +118,8 @@ bool j1Gui::Update(float dt)
 
 	bool ret = true;
 
+	App->particles->Draw(); // the rest of the particles
+
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
 		isDebug = !isDebug;
 
@@ -141,8 +143,6 @@ bool j1Gui::Update(float dt)
 		else if (App->render->IsInScreen(info->GetLocalRect()))
 			info->Draw();
 	}
-
-	App->particles->Draw(); // the rest of the particles
 
 	return ret;
 }

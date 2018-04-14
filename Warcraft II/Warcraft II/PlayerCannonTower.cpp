@@ -63,6 +63,10 @@ void PlayerCannonTower::Move(float dt)
 	//Check the arrow movement if the tower has to attack
 	if (attackingTarget != nullptr && cannonParticle != nullptr)
 		CheckCannonBulletMovement(dt);
+	if (attackingTarget == nullptr && cannonParticle != nullptr) {
+		cannonParticle->isRemove = true;
+		cannonParticle = nullptr;
+	}
 
 	//Check if the tower has to change the attacking target
 	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {

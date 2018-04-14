@@ -58,6 +58,10 @@ void WatchTower::Move(float dt)
 	//Check the arrow movement if the tower has to attack
 	if (attackingTarget != nullptr && arrowParticle != nullptr)
 		CheckArrowMovement(dt);
+	else if (attackingTarget == nullptr && arrowParticle != nullptr) {
+		arrowParticle->isRemove = true;
+		arrowParticle = nullptr;
+	}
 
 	//Check if the tower has to change the attacking target
 	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
@@ -68,6 +72,7 @@ void WatchTower::Move(float dt)
 		if (!enemyAttackList.empty())
 			attackingTarget = enemyAttackList.front();
 	}
+
 }
 
 void WatchTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionState collisionState)
