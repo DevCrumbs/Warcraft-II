@@ -55,11 +55,8 @@ bool j1Player::Update(float dt) {
 			if (stables->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)stables;
 				ent->ApplyDamage(20);
-				if (!stables->CheckBuildingState()) {
-					stables->isRemove = true;
-					if (entitySelectedStats.entitySelected == ent)
-						DeleteEntitiesMenu();
-				}
+				if (!stables->CheckBuildingState() && entitySelectedStats.entitySelected == ent) 
+					DeleteEntitiesMenu();			
 				else if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
 					entitySelectedStats.lifeBar->DecreaseLife(20);
@@ -72,10 +69,8 @@ bool j1Player::Update(float dt) {
 			if (mageTower->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)mageTower;
 				ent->ApplyDamage(20);
-				if (!mageTower->CheckBuildingState()) {
-					mageTower->isRemove = true;
-					if (entitySelectedStats.entitySelected == ent)
-						DeleteEntitiesMenu();
+				if (!mageTower->CheckBuildingState() && entitySelectedStats.entitySelected == ent) {
+					DeleteEntitiesMenu();
 				}
 				else if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
@@ -90,7 +85,6 @@ bool j1Player::Update(float dt) {
 				Entity* ent = (Entity*)scoutTower.back();
 				ent->ApplyDamage(20);
 				if (!scoutTower.back()->CheckBuildingState()) {
-					scoutTower.back()->isRemove = true;
 					if (entitySelectedStats.entitySelected == ent)
 						DeleteEntitiesMenu();
 					scoutTower.pop_back();
@@ -107,24 +101,21 @@ bool j1Player::Update(float dt) {
 			if (gryphonAviary->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)gryphonAviary;
 				ent->ApplyDamage(20);
-				if (!gryphonAviary->CheckBuildingState()) {
-					gryphonAviary->isRemove = true;
-					if (entitySelectedStats.entitySelected == ent)
-						DeleteEntitiesMenu();
+				if (!gryphonAviary->CheckBuildingState() && entitySelectedStats.entitySelected == ent) {
+					DeleteEntitiesMenu();
 				}
 				else if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
 			}
-		
+
 	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 		if (!chickenFarm.empty()) 
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)chickenFarm.back();
 				ent->ApplyDamage(20);
 				if (!chickenFarm.back()->CheckBuildingState()) {
-					chickenFarm.back()->isRemove = true;
 					if (entitySelectedStats.entitySelected == ent)
 						DeleteEntitiesMenu();
 					chickenFarm.pop_back();
@@ -1166,7 +1157,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 
 			if (UIelem == produceFootmanButton) {
-				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
+				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize && currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
 					App->audio->PlayFx(1, 0); //Button sound
 					currentGold -= 500;
 					App->scene->hasGoldChanged = true;
@@ -1180,7 +1171,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->audio->PlayFx(3, 0); //Button error sound
 			}
 			if (UIelem == produceElvenArcherButton) {
-				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
+				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize && currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
 					App->audio->PlayFx(1, 0); //Button sound
 					currentGold -= 400;
 					App->scene->hasGoldChanged = true;

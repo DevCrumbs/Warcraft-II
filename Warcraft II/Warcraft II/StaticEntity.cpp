@@ -133,6 +133,7 @@ bool StaticEntity::CheckBuildingState() {
 			break;
 		case BuildingState_Destroyed:
 			fire->isRemove = true;
+			isRemove = true;
 			ret = false;
 			break;
 		default:
@@ -200,3 +201,4 @@ ColliderGroup * StaticEntity::GetSightRadiusCollider() const
 {
 	return sightRadiusCollider;
 }
+

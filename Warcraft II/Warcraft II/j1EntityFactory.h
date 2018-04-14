@@ -136,6 +136,9 @@ public:
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);
 
+	int GetPlayerSoldiers() const;
+	void SetPlayerSoldiers(int food);
+
 public:
 
 	list<Entity*> toSpawnEntities;

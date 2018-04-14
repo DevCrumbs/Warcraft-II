@@ -532,10 +532,12 @@ bool j1Scene::Update(float dt)
 		}
 		hasGoldChanged = false;
 	}
-	if (hasFoodChanged) {
+	if (hasFoodChanged != FoodChange_NONE) {
 		UnLoadResourcesLabels();
 		LoadResourcesLabels();
-		hasFoodChanged = false;
+		if (hasFoodChanged == FoodChange_LESS)
+			App->entities->SetPlayerSoldiers(App->player->currentFood);
+		hasFoodChanged = FoodChange_NONE;
 	}
 
 	if (terenasDialogTimer.Read() >= 30000 && terenasDialogEvent != TerenasDialog_NONE) {

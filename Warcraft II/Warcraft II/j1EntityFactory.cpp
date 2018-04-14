@@ -2753,6 +2753,36 @@ void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 }
 ///_SANDRA
 
+int j1EntityFactory::GetPlayerSoldiers() const {
+	int ret = 0;
+
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	while (it != activeDynamicEntities.end()) {
+
+		if ((*it)->entitySide == EntitySide_Player)
+			ret++;
+		it++;
+	}
+	return ret;
+}
+
+void j1EntityFactory::SetPlayerSoldiers(int food) {
+	int cont = 0;
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	while (it != activeDynamicEntities.end()) {
+
+		if ((*it)->entitySide == EntitySide_Player) {
+			cont++;
+			if (cont > food)
+				(*it)->isDead = true;
+		}
+
+		it++;
+	}
+}
+
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
@@ -2801,3 +2831,5 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 	return ret;
 }
+
+
