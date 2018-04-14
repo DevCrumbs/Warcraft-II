@@ -126,6 +126,12 @@ void ElvenArcher::Move(float dt)
 
 	if (!isDead) {
 
+		if (currTarget == nullptr && particle != nullptr) {
+
+			particle->isRemove = true;
+			particle = nullptr;
+		}
+
 		if (auxIsSelected != isSelected) {
 
 			auxIsSelected = isSelected;

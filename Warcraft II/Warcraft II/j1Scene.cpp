@@ -815,7 +815,7 @@ void j1Scene::CheckCameraMovement(float dt) {
 
 	//Move with arrows
 	//UP
-	if (App->input->GetKey(buttonMoveUp) == KEY_REPEAT && App->render->camera.y <= 0)
+	/*if (App->input->GetKey(buttonMoveUp) == KEY_REPEAT && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	//DOWN
 	if (App->input->GetKey(buttonMoveDown) == KEY_REPEAT && App->render->camera.y >= downMargin)
@@ -826,7 +826,7 @@ void j1Scene::CheckCameraMovement(float dt) {
 	//RIGHT
 	if (App->input->GetKey(buttonMoveRight) == KEY_REPEAT && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
-
+*/
 	//Move with mouse
 	////UP
 	if (mouse.y <= (camMovMargin - App->render->camera.y) /scale && App->render->camera.y <= 0)
