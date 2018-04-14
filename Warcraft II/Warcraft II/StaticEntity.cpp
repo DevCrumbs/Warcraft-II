@@ -170,7 +170,7 @@ ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, ui
 		for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
 
 			//Valdivia: Idk if this is the correct way of doing it but it works
-			SDL_Rect rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
+			SDL_Rect rect = { currTilePos.x + x * App->map->data.tileWidth, currTilePos.y + y * App->map->data.tileHeight, App->map->data.tileWidth, App->map->data.tileHeight };
 			Collider* collider = App->collision->CreateCollider(rect);
 			
 			if (collider != nullptr)
