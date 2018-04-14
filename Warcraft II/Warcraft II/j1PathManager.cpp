@@ -305,7 +305,8 @@ j1PathFinding* PathPlanner::GetCurrentSearch() const
 
 bool Navgraph::CreateNavgraph()
 {
-	return App->map->CreateWalkabilityMap(w, h, &data);
+	return App->map->LoadWalkabilityMap(w, h, &data);
+
 }
 
 bool Navgraph::SetNavgraph(j1PathFinding* currentSearch) const

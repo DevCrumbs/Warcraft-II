@@ -624,7 +624,7 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 {
 	bool ret = true;
-
+	test++;
 	list<MapLayer*>::const_iterator item;
 	item = data.layers.begin();
 
@@ -659,12 +659,26 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 			}
 		}
 
-		*buffer = map;
-		width = data.width;
-		height = data.height;
+		*buffer = walkMap = map;
+		width = walkWidth = data.width;
+		height = walkHeight = data.height;
 		ret = true;
 
 		break;
+	}
+
+	return ret;
+}
+
+bool j1Map::LoadWalkabilityMap(int& width, int& height, uchar** buffer) const
+{
+	bool ret = false;
+	if (walkMap != nullptr)
+	{
+		*buffer = walkMap;
+		width = walkWidth;
+		height = walkHeight;
+		ret = true;
 	}
 
 	return ret;
