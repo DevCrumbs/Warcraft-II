@@ -121,7 +121,8 @@ bool j1Scene::Start()
 	}
 
 	//Calculate camera movement in pixels through the percentatge given
-	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
+	camMovMargin = 10;
+		//camMovMargin * ((width + height) / 2) / 100;
 
 	alphaBuilding = EntityType_NONE;
 	pauseMenuActions = PauseMenuActions_NOT_EXIST;
@@ -716,6 +717,7 @@ bool j1Scene::CleanUp()
 	App->pathfinding->active = false;
 	App->movement->active = false;
 	App->pathmanager->active = false;
+	active = false;
 
 	App->map->UnLoad();
 	App->player->CleanUp();
@@ -725,8 +727,6 @@ bool j1Scene::CleanUp()
 	App->movement->CleanUp();
 	App->pathmanager->CleanUp();
 	App->pathfinding->CleanUp();
-
-	active = false;
 
 	return ret;
 }
@@ -836,13 +836,13 @@ void j1Scene::CheckCameraMovement(float dt) {
 	if (mouse.y <= (camMovMargin - App->render->camera.y) /scale && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	////DOWN
-	if (mouse.y >= (height - (camMovMargin + 15) - App->render->camera.y) / scale && App->render->camera.y >= downMargin)
+	if (mouse.y >= (height - (camMovMargin + 30) - App->render->camera.y) / scale && App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	////LEFT
 	if (mouse.x <= (camMovMargin - App->render->camera.x) / scale && App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	////RIGHT
-	if (mouse.x >= (width - (camMovMargin + 15) - App->render->camera.x) / scale && App->render->camera.x >= rightMargin)
+	if (mouse.x >= (width - (camMovMargin + 30) - App->render->camera.x) / scale && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
 
 }

@@ -109,6 +109,7 @@ void ElvenArcher::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
+			App->entities->InvalidateAttackEntity(this);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
@@ -124,13 +125,13 @@ void ElvenArcher::Move(float dt)
 		}
 	}
 
+	if (currTarget == nullptr && particle != nullptr) {
+
+		particle->isRemove = true;
+		particle = nullptr;
+	}
+
 	if (!isDead) {
-
-		if (currTarget == nullptr && particle != nullptr) {
-
-			particle->isRemove = true;
-			particle = nullptr;
-		}
 
 		if (auxIsSelected != isSelected) {
 

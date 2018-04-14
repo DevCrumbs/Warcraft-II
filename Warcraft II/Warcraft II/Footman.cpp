@@ -108,6 +108,7 @@ void Footman::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
+			App->entities->InvalidateAttackEntity(this);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;

@@ -108,6 +108,7 @@ void TrollAxethrower::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
+			App->entities->InvalidateAttackEntity(this);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
@@ -120,13 +121,13 @@ void TrollAxethrower::Move(float dt)
 		}
 	}
 
+	if (currTarget == nullptr && particle != nullptr) {
+
+		particle->isRemove = true;
+		particle = nullptr;
+	}
+
 	if (!isDead) {
-
-		if (currTarget == nullptr && particle != nullptr) {
-
-			particle->isRemove = true;
-			particle = nullptr;
-		}
 
 		/// GOAL: MoveToPosition
 		// The goal of the unit has been changed manually
@@ -137,7 +138,6 @@ void TrollAxethrower::Move(float dt)
 		/// GOAL: AttackTarget
 		// Check if there are available targets
 		/// Prioritize a type of target (static or dynamic)
-		/*
 		if (singleUnit->IsFittingTile()) {
 
 			newTarget = GetBestTargetInfo();
@@ -167,7 +167,7 @@ void TrollAxethrower::Move(float dt)
 				}
 			}
 		}
-		*/
+
 		// ---------------------------------------------------------------------
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL
