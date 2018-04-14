@@ -719,6 +719,7 @@ bool j1Scene::CleanUp()
 	App->pathfinding->active = false;
 	App->movement->active = false;
 	App->pathmanager->active = false;
+	active = false;
 
 	App->map->UnLoad();
 	App->player->CleanUp();
@@ -728,8 +729,6 @@ bool j1Scene::CleanUp()
 	App->movement->CleanUp();
 	App->pathmanager->CleanUp();
 	App->pathfinding->CleanUp();
-
-	active = false;
 
 	return ret;
 }
