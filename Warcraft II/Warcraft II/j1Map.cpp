@@ -1,20 +1,29 @@
+#include <math.h>
+#include <time.h>
+
+#include "Brofiler\Brofiler.h"
+
 #include "Defs.h"
 #include "p2Log.h"
 
 #include "j1App.h"
 
+#include "j1Collision.h"
 #include "j1Input.h"
 #include "j1Render.h"
 #include "j1Textures.h"
 #include "j1Scene.h"
 #include "j1Map.h"
 #include "j1Window.h"
+#include "j1Audio.h"
+#include "j1EntityFactory.h"
+#include "Entity.h"
+#include "StaticEntity.h"
+#include "j1Player.h"
+#include "j1Pathfinding.h"
 
-#include "Brofiler\Brofiler.h"
 
-#include <math.h>
-
-j1Map::j1Map() : j1Module(), map_loaded(false)
+j1Map::j1Map() : j1Module(), mapLoaded(false)
 {
 	name.assign("map");
 }
@@ -58,6 +67,7 @@ void j1Map::Draw()
 			-App->render->camera.y / App->win->GetScale());
 		iPoint endTile = WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
 			-App->render->camera.y / App->win->GetScale() + App->render->camera.h);
+		
 		int i = startTile.x;
 		if (i < 0 && endTile.x >= 0)
 			i = 0;
@@ -88,7 +98,6 @@ void j1Map::Draw()
 
 	}
 }
-
 
 TileSet* j1Map::GetTilesetFromTileId(int id) const
 {
@@ -519,8 +528,12 @@ bool j1Map::Load(const char* file_name)
 			item_group++;
 		}
 	}
+	if (ret)
+		LoadLogic();
 
-	map_loaded = ret;
+
+
+	mapLoaded = ret;
 
 	return ret;
 }
@@ -569,9 +582,10 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->width = node.attribute("width").as_uint();
 	layer->height = node.attribute("height").as_uint();
 	LoadProperties(node, layer->properties);
-	layer->data = new uint[layer->width * layer->height];
+	layer->sizeData = layer->width * layer->height;
 
-	memset(layer->data, 0, layer->width * layer->height);
+	layer->data = new uint[layer->sizeData];
+	memset(layer->data, 0, layer->sizeData);
 
 	int i = 0;
 
@@ -668,6 +682,73 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 
 	return ret;
 }
+
+
+bool j1Map::LoadLogic()
+{
+	bool ret = false;
+
+	// Iterate all layers
+	for (list<MapLayer*>::iterator layerIterator = data.layers.begin();
+		layerIterator != data.layers.end(); ++layerIterator)
+	{
+		// Check if layer is a logic layer
+		if ((*layerIterator)->properties.GetProperty("Logic", false) == false)
+			continue;
+		{
+			// Iterate layer
+			for (int i = 0; i < (*layerIterator)->sizeData; ++i)
+			{
+				// Check if tile is not empty
+				if ((*layerIterator)->data[i] > 0)
+				{
+					int x = i % (*layerIterator)->width;
+					int y = i / (*layerIterator)->width;
+
+					iPoint auxPos = MapToWorld(x, y);
+					fPoint pos;
+					pos.x = auxPos.x;
+					pos.y = auxPos.y;
+
+					UnitInfo unitInfo;
+					ret = true;
+					ENTITY_TYPE entityType = (ENTITY_TYPE)((*layerIterator)->data[i]);
+
+					if ((*layerIterator)->data[i] = 403)
+						App->player->townHall = (StaticEntity*)App->entities->AddEntity(EntityType_TOWN_HALL, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+
+					else if ((*layerIterator)->data[i] = 405)
+						App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
+
+					else if ((*layerIterator)->data[i] = 404)
+						App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+					else
+						App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
+
+					/*
+					switch (entityType)
+					{
+					case EntityType_TOWN_HALL:
+						
+						break;
+					case EntityType_CHICKEN_FARM:
+						App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player));
+						break;
+					case EntityType_BARRACKS:
+						App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+						break;
+					default:
+						App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo);
+						break;
+						
+					}
+				*/}
+			}
+		}
+	}
+	return ret;
+}
+
 
 bool Properties::GetProperty(const char* value, bool default_value) const
 {
