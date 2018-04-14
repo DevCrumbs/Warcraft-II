@@ -1897,7 +1897,7 @@ bool j1EntityFactory::PostUpdate()
 		if ((*dynEnt)->isRemove) {
 
 			delete *dynEnt;
-			activeDynamicEntities.erase(dynEnt);
+			activeDynamicEntities.remove(*dynEnt);
 
 			dynEnt = activeDynamicEntities.begin();
 			continue;
@@ -1914,7 +1914,7 @@ bool j1EntityFactory::PostUpdate()
 		if ((*statEntity)->isRemove) {
 
 			delete *statEntity;
-			activeStaticEntities.erase(statEntity);
+			activeStaticEntities.remove(*statEntity);
 
 			statEntity = activeStaticEntities.begin();
 			continue;
@@ -2806,8 +2806,7 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 		}
 
 		if (entitySide == EntitySide_NoSide
-			|| (entitySide == EntitySide_Player && (*it)->entitySide == EntitySide_Player)
-			|| (entitySide == EntitySide_Enemy && (*it)->entitySide == EntitySide_Enemy)) {
+			|| (entitySide == EntitySide_Player && (*it)->entitySide == EntitySide_Player)) {
 
 			if (entityCategory == EntityCategory_NONE
 				|| (entityCategory == EntityCategory_DYNAMIC_ENTITY && (*it)->entityType == EntityCategory_DYNAMIC_ENTITY)) {
@@ -2827,13 +2826,13 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 						}
 					}
 				}
-			}
-			else {
+				else {
 
-				// If the unit is in the unitsSelected list, remove it
-				if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
-					unitsSelected.remove(GetDynamicEntityByEntity(*it));
-					(*it)->isSelected = false;
+					// If the unit is in the unitsSelected list, remove it
+					if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
+						unitsSelected.remove(GetDynamicEntityByEntity(*it));
+						(*it)->isSelected = false;
+					}
 				}
 			}
 		}
