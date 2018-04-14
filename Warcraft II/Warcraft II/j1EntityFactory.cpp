@@ -2975,7 +2975,7 @@ void j1EntityFactory::InvalidateAttackEntity(Entity* entity)
 
 	while (it != activeDynamicEntities.end()) {
 
-		if ((*it)->IsEntityInTargetsList(entity))
+		//if ((*it)->IsEntityInTargetsList(entity))
 
 			// The dead entity was a target of another entity
 			(*it)->InvalidateTarget(entity);
