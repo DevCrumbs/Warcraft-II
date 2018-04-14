@@ -263,14 +263,14 @@
               <frame x="640" y="160" w="80" h="80"/>
             </attackLeft>
             <deathUp speed="1" loop="0">
-              <frame x="4" y="522" w="69" h="54"/>
-              <frame x="74" y="525" w="69" h="54"/>
-              <frame x="2" y="568" w="69" h="54"/>
+              <frame x="0" y="720" w="80" h="80"/>
+              <frame x="80" y="720" w="80" h="80"/>
+              <frame x="160" y="720" w="80" h="80"/>
             </deathUp>
             <deathDown speed="1" loop="0">
-              <frame x="144" y="253" w="69" h="54"/>
-              <frame x="221" y="253" w="69" h="54"/>
-              <frame x="289" y="253" w="69" h="54"/>
+              <frame x="0" y="640" w="80" h="80"/>
+              <frame x="80" y="640" w="80" h="80"/>
+              <frame x="160" y="640" w="80" h="80"/>
             </deathDown>
 
           </animations>
