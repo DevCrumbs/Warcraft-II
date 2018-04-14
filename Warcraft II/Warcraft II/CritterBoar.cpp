@@ -25,6 +25,7 @@ CritterBoar::CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	// XML loading
 	/// Animations
 	CritterBoarInfo info = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
+	this->unitInfo = this->critterBoarInfo.unitInfo;
 
 	this->critterBoarInfo.up = info.up;
 	this->critterBoarInfo.down = info.down;

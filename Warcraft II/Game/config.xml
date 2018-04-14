@@ -1161,7 +1161,7 @@
   <particles>
     <spritesheets>
       <atlas name = "data/assets/textures/particles/atlas.png"/>
-      <paws name="data/assets/textures/sprites/paws.png"/>
+      <paws name="data/assets/textures/particles/paws.png"/>
     </spritesheets>
 
     <towerArrows>

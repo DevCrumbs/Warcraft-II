@@ -1028,10 +1028,17 @@ bool j1EntityFactory::Start()
 	critterSheepInfo.maxLife = critterSheepInfo.currLife;
 	critterSheepInfo.restoredHealth = 10;
 
+	critterSheepInfo.unitInfo.maxSpeed = 30.0f;
+	critterSheepInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+	critterSheepInfo.unitInfo.priority = 1;
+
 	critterBoarInfo.currLife = 20;
 	critterBoarInfo.maxLife = critterBoarInfo.currLife;
-	critterSheepInfo.restoredHealth = 15;
+	critterBoarInfo.restoredHealth = 15;
 
+	critterBoarInfo.unitInfo.maxSpeed = 30.0f;
+	critterBoarInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+	critterBoarInfo.unitInfo.priority = 1;
 	// -----
 
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());

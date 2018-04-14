@@ -22,10 +22,11 @@ EnemyGuardTower::EnemyGuardTower(fPoint pos, iPoint size, int currLife, uint max
 	texArea = &enemyGuardTowerInfo.completeTexArea;
 
 	//Colliders
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
+	entityCollider->isTrigger = true;
 	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, enemyGuardTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 	sightRadiusCollider->isTrigger = true;
-	entityCollider->isTrigger = true;
+
 }
 
 void EnemyGuardTower::Move(float dt)

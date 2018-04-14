@@ -25,7 +25,7 @@ CritterSheep::CritterSheep(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	// XML loading
 	/// Animations
 	CritterSheepInfo info = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
-
+	this->unitInfo = this->critterSheepInfo.unitInfo;
 	this->critterSheepInfo.up = info.up;
 	this->critterSheepInfo.down = info.down;
 	this->critterSheepInfo.left = info.left;

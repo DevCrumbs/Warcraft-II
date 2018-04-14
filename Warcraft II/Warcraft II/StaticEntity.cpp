@@ -37,6 +37,7 @@ StaticEntity::~StaticEntity()
 
 		switch (buildingSize) {
 
+			/*
 		case Small:
 			buildingTile = App->map->WorldToMap(pos.x, pos.y);
 			App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 372u;
@@ -85,6 +86,7 @@ StaticEntity::~StaticEntity()
 		case None:
 		default:
 			break;
+			*/
 		}
 	}
 
