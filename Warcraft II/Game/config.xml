@@ -692,14 +692,14 @@
               <frame x="330" y="464" w="55" h="58"/>
             </attackLeft>
             <deathUp speed="1" loop="0">
-              <frame x="55" y="520" w="55" h="58"/>
-              <frame x="165" y="520" w="55" h="58"/>
-              <frame x="275" y="520" w="55" h="58"/>
+              <frame x="55" y="552" w="55" h="58"/>
+              <frame x="165" y="552" w="55" h="58"/>
+              <frame x="275" y="552" w="55" h="58"/>
             </deathUp>
             <deathDown speed="1" loop="0">
-              <frame x="0" y="520" w="55" h="58"/>
-              <frame x="110" y="520" w="55" h="58"/>
-              <frame x="220" y="520" w="55" h="58"/>
+              <frame x="0" y="552" w="55" h="58"/>
+              <frame x="110" y="552" w="55" h="58"/>
+              <frame x="220" y="552" w="55" h="58"/>
             </deathDown>           
           </animations>         
         </trollAxethrower>
