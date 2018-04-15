@@ -167,29 +167,43 @@ bool j1Scene::LoadNewMap(int map)
 		switch (map)
 		{
 		case 0:
-		case 1:
-		case 4:
-			cameraPos = App->map->MapToWorld(13, 148);
+			cameraPos = App->map->MapToWorld(13, 78);
 			App->render->camera.x = -cameraPos.x;
 			App->render->camera.y = -cameraPos.y;
 
-			basePos = App->map->MapToWorld(5, 140);
+			basePos = App->map->MapToWorld(5, 70);
+			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
+			break;
+		case 1:
+			cameraPos = App->map->MapToWorld(13, 128);
+			App->render->camera.x = -cameraPos.x;
+			App->render->camera.y = -cameraPos	.y;
+
+			basePos = App->map->MapToWorld(5, 120);
 			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
 			break;
 		case 2:
-			cameraPos = App->map->MapToWorld(82, 132);
+			cameraPos = App->map->MapToWorld(63, 78);
 			App->render->camera.x = -cameraPos.x;
 			App->render->camera.y = -cameraPos.y;
 
-			basePos = App->map->MapToWorld(75, 120);
+			basePos = App->map->MapToWorld(55, 70);
 			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
 			break;
 		case 3:
-			cameraPos = App->map->MapToWorld(82, 80);
+			cameraPos = App->map->MapToWorld(63, 78);
 			App->render->camera.x = -cameraPos.x;
 			App->render->camera.y = -cameraPos.y;
 
-			basePos = App->map->MapToWorld(75, 70);
+			basePos = App->map->MapToWorld(55, 70);
+			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
+			break;
+		case 4:
+			cameraPos = App->map->MapToWorld(13, 128);
+			App->render->camera.x = -cameraPos.x;
+			App->render->camera.y = -cameraPos.y;
+
+			basePos = App->map->MapToWorld(5, 120);
 			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
 			break;
 		default:
