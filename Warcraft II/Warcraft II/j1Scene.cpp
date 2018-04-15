@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include"Brofiler\Brofiler.h"
 
 #include "Defs.h"
@@ -62,7 +64,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	warcraftMap = maps.child("warcraft").attribute("name").as_string();
 	warcraftActive = maps.child("warcraft").attribute("active").as_bool();
 	warcraftTexName = maps.child("warcraft").attribute("tex").as_string();
-
+	numMaps = maps.child("warcraft").attribute("numMaps").as_int();
 	//Music
 	pugi::xml_node audio = config.child("audioPaths");
 
@@ -99,7 +101,8 @@ bool j1Scene::Start()
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = App->map->Load("verticalSliceMap.tmx");
+		ret = LoadNewMap();
+	//	ret = App->map->Load("verticalSliceMap.tmx");
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
@@ -130,14 +133,69 @@ bool j1Scene::Start()
 
 	App->audio->PlayMusic(mainThemeMusicName.data(), 2.0f);
 
-	// The camera is in the player base
-	//App->render->camera.x = -2400;
-	//App->render->camera.y = -6720;
-	App->render->camera.x = 0;
-	App->render->camera.y = 0;
-
 	App->map->LoadLogic();
 
+	return ret;
+}
+
+bool j1Scene::LoadNewMap(int map) 
+{
+	bool ret = true;
+
+	if (map == -1) 
+	{
+		srand(time(NULL));
+		map = rand() % numMaps;
+
+		static char path[25];
+		sprintf_s(path, 25, "verticalSliceMap%i.tmx", map);
+
+		ret = App->map->Load(path);
+	}
+	else
+	{
+		static char path[25];
+		sprintf_s(path, 25, "verticalSliceMap%i.tmx", map);
+
+		ret = App->map->Load(path);
+	}
+
+	if (ret)
+	{
+		iPoint cameraPos{ 0,0 };
+		iPoint basePos{ 0,0 };
+		switch (map)
+		{
+		case 0:
+		case 1:
+		case 4:
+			cameraPos = App->map->MapToWorld(13, 148);
+			App->render->camera.x = -cameraPos.x;
+			App->render->camera.y = -cameraPos.y;
+
+			basePos = App->map->MapToWorld(5, 140);
+			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
+			break;
+		case 2:
+			cameraPos = App->map->MapToWorld(82, 132);
+			App->render->camera.x = -cameraPos.x;
+			App->render->camera.y = -cameraPos.y;
+
+			basePos = App->map->MapToWorld(75, 120);
+			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
+			break;
+		case 3:
+			cameraPos = App->map->MapToWorld(82, 80);
+			App->render->camera.x = -cameraPos.x;
+			App->render->camera.y = -cameraPos.y;
+
+			basePos = App->map->MapToWorld(75, 70);
+			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
+			break;
+		default:
+			break;
+		}
+	}
 	return ret;
 }
 
