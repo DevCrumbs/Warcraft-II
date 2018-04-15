@@ -4,6 +4,7 @@
 #include "p2Log.h"
 
 #include "j1App.h"
+#include "j1Render.h"
 
 #include "j1Window.h"
 
@@ -124,9 +125,11 @@ void j1Window::SetFullscreen() {
 	if (fullscreen) {
 		fullscreen = false;
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_SHOWN);
+//		SDL_RenderSetViewport(App->render->renderer, &App->render->viewport);
 	}
 	else {
 		fullscreen = true;
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		//SDL_RenderSetViewport(App->render->renderer, &App->render->viewport);
 	}
 }
