@@ -673,7 +673,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 						App->player->AddGold(1000);
 						break;
 					case 3:
-						App->player->AddGold(1500);
+						App->player->AddGold(1250);
 						break;
 					}
 
