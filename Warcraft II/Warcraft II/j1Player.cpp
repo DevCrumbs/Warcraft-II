@@ -678,6 +678,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					}
 
 					App->scene->hasGoldChanged = true;
+					App->scene->UnLoadTerenasDialog();
 					staticEntity->buildingState = BuildingState_Destroyed;
 				}
 				else {
@@ -696,6 +697,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 						(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
 						it++;
 					}
+					App->scene->UnLoadTerenasDialog();
 					staticEntity->buildingState = BuildingState_Destroyed;
 				}
 				else {
