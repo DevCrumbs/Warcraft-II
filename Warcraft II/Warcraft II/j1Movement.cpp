@@ -420,8 +420,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 						//singleUnit->path.erase(singleUnit->path.begin());
 						singleUnit->movementState = MovementState_IncreaseWaypoint;
 
-						if (singleUnit->unit->isSelected)
-							LOG("%s: MOVED AWAY %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
+//						if (singleUnit->unit->isSelected)
+//							LOG("%s: MOVED AWAY %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
 
 						/// COLLISION RESOLVED
 						//if (singleUnit->coll == CollisionType_TowardsCell) {
@@ -441,8 +441,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 					// If the unit cannot change its nextTile, ask the waitUnit to move
 					singleUnit->reversePriority = true;
 
-					if (singleUnit->unit->isSelected)
-						LOG("%s: reversed its priority", singleUnit->waitUnit->unit->GetColorName().data());
+//					if (singleUnit->unit->isSelected)
+//						LOG("%s: reversed its priority", singleUnit->waitUnit->unit->GetColorName().data());
 
 					break;
 				}
@@ -477,8 +477,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 							singleUnit->waitUnit->isSearching = false;
 
-							if (singleUnit->unit->isSelected)
-								LOG("%s: MOVED AWAY %s", singleUnit->unit->GetColorName().data(), singleUnit->waitUnit->unit->GetColorName().data());
+//							if (singleUnit->unit->isSelected)
+//								LOG("%s: MOVED AWAY %s", singleUnit->unit->GetColorName().data(), singleUnit->waitUnit->unit->GetColorName().data());
 
 							/// COLLISION RESOLVED
 							//if (singleUnit->coll == CollisionType_TowardsCell) {
@@ -551,8 +551,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 							//singleUnit->path.erase(singleUnit->path.begin());
 							singleUnit->movementState = MovementState_IncreaseWaypoint;
 
-							if (singleUnit->unit->isSelected)
-								LOG("%s: MOVED AWAY %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
+//							if (singleUnit->unit->isSelected)
+//								LOG("%s: MOVED AWAY %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
 
 							/// COLLISION RESOLVED
 							singleUnit->ResetUnitCollisionParameters();
@@ -566,8 +566,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 						// If the unit cannot change its nextTile, ask the waitUnit to move
 						singleUnit->reversePriority = true;
 
-						if (singleUnit->unit->isSelected)
-							LOG("%s: reversed its priority", singleUnit->waitUnit->unit->GetColorName().data());
+//						if (singleUnit->unit->isSelected)
+//							LOG("%s: reversed its priority", singleUnit->waitUnit->unit->GetColorName().data());
 
 						break;
 					}
@@ -586,8 +586,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 					singleUnit->ResetUnitCollisionParameters();
 
-					if (singleUnit->unit->isSelected)
-						LOG("%s: RESOLVED ITS CELL", singleUnit->unit->GetColorName().data());
+//					if (singleUnit->unit->isSelected)
+//						LOG("%s: RESOLVED ITS CELL", singleUnit->unit->GetColorName().data());
 
 					break;
 				}
@@ -599,8 +599,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 					singleUnit->ResetUnitCollisionParameters();
 
-					if (singleUnit->unit->isSelected)
-						LOG("%s: RESOLVED SAME CELL", singleUnit->unit->GetColorName().data());
+//					if (singleUnit->unit->isSelected)
+//						LOG("%s: RESOLVED SAME CELL", singleUnit->unit->GetColorName().data());
 
 					break;
 				}
@@ -612,8 +612,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 					singleUnit->ResetUnitCollisionParameters();
 
-					if (singleUnit->unit->isSelected)
-						LOG("%s: RESOLVED CROSSING", singleUnit->unit->GetColorName().data());
+//					if (singleUnit->unit->isSelected)
+//						LOG("%s: RESOLVED CROSSING", singleUnit->unit->GetColorName().data());
 
 					break;
 				}
@@ -677,8 +677,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 						//singleUnit->path.erase(singleUnit->path.begin());
 						singleUnit->movementState = MovementState_IncreaseWaypoint;
 
-						if (singleUnit->unit->isSelected)
-							LOG("%s: MOVED AWAY TOWARDS %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
+//						if (singleUnit->unit->isSelected)
+//							LOG("%s: MOVED AWAY TOWARDS %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
 
 						/// COLLISION RESOLVED
 						//if (singleUnit->waitUnit->coll == CollisionType_NoCollision)
@@ -695,8 +695,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 					// If the unit cannot change its nextTile, change the collision with the waitUnit
 					singleUnit->reversePriority = true;
 
-					if (singleUnit->unit->isSelected)
-						LOG("%s: reversed its priority TOWARDS", singleUnit->waitUnit->unit->GetColorName().data());
+//					if (singleUnit->unit->isSelected)
+//						LOG("%s: reversed its priority TOWARDS", singleUnit->waitUnit->unit->GetColorName().data());
 				}
 				break;
 			}
@@ -818,7 +818,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 								(*units)->SetCollisionParameters(CollisionType_TowardsCell, singleUnit, (*units)->nextTile);
 								//singleUnit->wait = true;
 
-								LOG("%s: TOWARDS with %s", (*units)->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
+//								LOG("%s: TOWARDS with %s", (*units)->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
 							}
 						}
 						else {
@@ -831,7 +831,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 								singleUnit->SetCollisionParameters(CollisionType_TowardsCell, *units, singleUnit->nextTile);
 								//(*units)->wait = true;
 
-								LOG("%s: TOWARDS with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
+//								LOG("%s: TOWARDS with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
 							}
 						}
 					}
@@ -853,8 +853,8 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 							singleUnit->coll = CollisionType_ItsCell;
 							singleUnit->wait = true;
 
-							if (singleUnit->unit->isSelected)
-								LOG("%s: ITS CELL with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
+//							if (singleUnit->unit->isSelected)
+//								LOG("%s: ITS CELL with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
 						}
 					}
 
@@ -890,8 +890,8 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 								singleUnit->coll = CollisionType_SameCell;
 								singleUnit->wait = true;
 
-								if (singleUnit->unit->isSelected)
-									LOG("%s: SAME CELL with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
+//								if (singleUnit->unit->isSelected)
+//									LOG("%s: SAME CELL with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
 							}
 						}
 						else {
@@ -902,8 +902,8 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 							(*units)->coll = CollisionType_SameCell;
 							(*units)->wait = true;
 
-							if ((*units)->unit->isSelected)
-								LOG("%s: SAME CELL with %s", (*units)->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
+//							if ((*units)->unit->isSelected)
+//								LOG("%s: SAME CELL with %s", (*units)->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
 						}
 					}
 
@@ -951,7 +951,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										singleUnit->SetCollisionParameters(CollisionType_DiagonalCrossing, *units, myUp);
 
-										LOG("%s: Up CROSSING", singleUnit->unit->GetColorName().data());
+	//									LOG("%s: Up CROSSING", singleUnit->unit->GetColorName().data());
 									}
 								}
 								else {
@@ -960,7 +960,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										(*units)->SetCollisionParameters(CollisionType_DiagonalCrossing, singleUnit, up);
 
-										LOG("%s: Up CROSSING", (*units)->unit->GetColorName().data());
+//										LOG("%s: Up CROSSING", (*units)->unit->GetColorName().data());
 									}
 								}
 							}
@@ -978,7 +978,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										singleUnit->SetCollisionParameters(CollisionType_DiagonalCrossing, *units, myDown);
 
-										LOG("%s: Down CROSSING", singleUnit->unit->GetColorName().data());
+//										LOG("%s: Down CROSSING", singleUnit->unit->GetColorName().data());
 									}
 								}
 								else {
@@ -987,7 +987,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										(*units)->SetCollisionParameters(CollisionType_DiagonalCrossing, singleUnit, down);
 
-										LOG("%s: Down CROSSING", (*units)->unit->GetColorName().data());
+//										LOG("%s: Down CROSSING", (*units)->unit->GetColorName().data());
 									}
 								}
 							}
@@ -1005,7 +1005,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										singleUnit->SetCollisionParameters(CollisionType_DiagonalCrossing, *units, myLeft);
 
-										LOG("%s: Left CROSSING", singleUnit->unit->GetColorName().data());
+//										LOG("%s: Left CROSSING", singleUnit->unit->GetColorName().data());
 									}
 								}
 								else {
@@ -1014,7 +1014,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										(*units)->SetCollisionParameters(CollisionType_DiagonalCrossing, singleUnit, left);
 
-										LOG("%s: Left CROSSING", (*units)->unit->GetColorName().data());
+//										LOG("%s: Left CROSSING", (*units)->unit->GetColorName().data());
 									}
 								}
 							}
@@ -1032,7 +1032,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										singleUnit->SetCollisionParameters(CollisionType_DiagonalCrossing, *units, myRight);
 
-										LOG("%s: Right CROSSING", singleUnit->unit->GetColorName().data());
+//										LOG("%s: Right CROSSING", singleUnit->unit->GetColorName().data());
 									}
 								}
 								else {
@@ -1041,7 +1041,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										(*units)->SetCollisionParameters(CollisionType_DiagonalCrossing, singleUnit, right);
 
-										LOG("%s: Right CROSSING", (*units)->unit->GetColorName().data());
+//										LOG("%s: Right CROSSING", (*units)->unit->GetColorName().data());
 									}
 								}
 							}

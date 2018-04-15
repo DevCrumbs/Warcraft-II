@@ -390,7 +390,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+		//	LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is within the SIGHT radius
 
@@ -449,7 +449,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+		//	LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is within the ATTACK radius
 
@@ -475,7 +475,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+		//	LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is NO longer within the SIGHT radius
 
@@ -508,7 +508,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+	//		LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is NO longer within the ATTACK radius
 

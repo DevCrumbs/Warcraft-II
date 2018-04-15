@@ -40,6 +40,7 @@ bool j1Window::Awake(pugi::xml_node& config)
 	{
 		//Create window
 		Uint32 flags = SDL_WINDOW_SHOWN;
+
 		fullscreen = config.child("fullscreen").attribute("value").as_bool();
 		bool borderless = config.child("borderless").attribute("value").as_bool();
 		bool resizable = config.child("resizable").attribute("value").as_bool();

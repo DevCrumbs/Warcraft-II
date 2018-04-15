@@ -278,7 +278,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 			// Static Entity
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+			//LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is within the SIGHT radius
 
@@ -338,7 +338,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+		//	LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is within the ATTACK radius
 
@@ -365,7 +365,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+		//	LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is NO longer within the SIGHT radius
 
@@ -399,7 +399,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+		//	LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is NO longer within the ATTACK radius
 

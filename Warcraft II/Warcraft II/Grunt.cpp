@@ -232,7 +232,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 		if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
+		//	LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Alliance is within the SIGHT radius
 
@@ -264,7 +264,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 		else if (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
+	//		LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Alliance is within the ATTACK radius
 
@@ -289,7 +289,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 		if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
+		//	LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Alliance is NO longer within the SIGHT radius
 
@@ -321,7 +321,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 		else if (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
+//LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Alliance is NO longer within the ATTACK radius
 
