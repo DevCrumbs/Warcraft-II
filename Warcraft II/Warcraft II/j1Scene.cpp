@@ -1289,7 +1289,7 @@ void j1Scene::LoadResourcesLabels()
 
 void j1Scene::UpdateResourcesLabels()
 {
-	//goldLabel->SetText(to_string(App->player->currentGold));
+	goldLabel->SetText(to_string(App->player->currentGold));
 	foodLabel->SetText(to_string(App->player->currentFood));
 }
 void j1Scene::UnLoadResourcesLabels()

@@ -976,37 +976,37 @@ bool j1EntityFactory::Start()
 
 	// Entities Info
 	// Troll Axethrower
-	trollAxethrowerInfo.maxLife = 30;
+	trollAxethrowerInfo.maxLife = 40;
 	trollAxethrowerInfo.currLife = trollAxethrowerInfo.maxLife;
 
 	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
 	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
 	trollAxethrowerInfo.unitInfo.attackRadius = 3;
-	trollAxethrowerInfo.unitInfo.sightRadius = 6;
+	trollAxethrowerInfo.unitInfo.sightRadius = 12;
 	trollAxethrowerInfo.unitInfo.damage = 6;
 	trollAxethrowerInfo.unitInfo.priority = 3;
 	// -----
 
 	// Grunt
-	gruntInfo.maxLife = 30;
+	gruntInfo.maxLife = 40;
 	gruntInfo.currLife = gruntInfo.maxLife;
 
 	gruntInfo.unitInfo.maxSpeed = 50.0f;
 	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
 	gruntInfo.unitInfo.attackRadius = 2;
-	gruntInfo.unitInfo.sightRadius = 5;
+	gruntInfo.unitInfo.sightRadius = 12;
 	gruntInfo.unitInfo.damage = 5;
 	gruntInfo.unitInfo.priority = 3;
 	// -----
 
 	// Elven Archer
-	elvenArcherInfo.maxLife = 50;
+	elvenArcherInfo.maxLife = 30;
 	elvenArcherInfo.currLife = elvenArcherInfo.maxLife;
 
 	elvenArcherInfo.unitInfo.maxSpeed = 80.0f;
 	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
-	elvenArcherInfo.unitInfo.attackRadius = 3;
-	elvenArcherInfo.unitInfo.sightRadius = 5;
+	elvenArcherInfo.unitInfo.attackRadius = 5;
+	elvenArcherInfo.unitInfo.sightRadius = 12;
 	elvenArcherInfo.unitInfo.damage = 5;
 	elvenArcherInfo.unitInfo.priority = 2;
 	// -----
