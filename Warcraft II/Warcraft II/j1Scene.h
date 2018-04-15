@@ -64,6 +64,8 @@ public:
 	// Called before the first frame
 	bool Start();
 
+	bool LoadNewMap(int map = -1);
+
 	// Called before all Updates
 	bool PreUpdate();
 
@@ -127,6 +129,8 @@ public:
 	int scoutTowerCost = 400;
 	int guardTowerCost = 600;
 	int cannonTowerCost = 800;
+
+	int numMaps = 0;
 
 	// Camera
 	float up = false, down = false, left = false, right = false;

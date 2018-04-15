@@ -171,7 +171,8 @@ bool j1Gui::PostUpdate()
 		if ((*iterator)->HasToBeRemoved()) {
 
 			delete *iterator;
-			UIElementsList.remove(*iterator);
+			UIElementsList.remove(*iterator++);
+			continue;
 		}
 
 		iterator++;
