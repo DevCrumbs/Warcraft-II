@@ -231,6 +231,24 @@ bool j1Particles::Start()
 	trollAxe.life = 800;
 	paws.life = 800;
 
+	sheepPawsInfo.up.speed = 1.0f;
+	sheepPawsInfo.down.speed = 1.0f;
+	sheepPawsInfo.left.speed = 1.0f;
+	sheepPawsInfo.right.speed = 1.0f;
+	sheepPawsInfo.upLeft.speed = 1.0f;
+	sheepPawsInfo.upRight.speed = 1.0f;
+	sheepPawsInfo.downLeft.speed = 1.0f;
+	sheepPawsInfo.downRight.speed = 1.0f;
+
+	boarPawsInfo.up.speed = 1.0f;
+	boarPawsInfo.down.speed = 1.0f;
+	boarPawsInfo.left.speed = 1.0f;
+	boarPawsInfo.right.speed = 1.0f;
+	boarPawsInfo.upLeft.speed = 1.0f;
+	boarPawsInfo.upRight.speed = 1.0f;
+	boarPawsInfo.downLeft.speed = 1.0f;
+	boarPawsInfo.downRight.speed = 1.0f;
+
 	LoadAnimationsSpeed();
 
 	atlasTex = App->tex->Load(atlasTexName.data());
