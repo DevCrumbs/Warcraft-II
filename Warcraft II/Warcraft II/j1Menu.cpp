@@ -124,6 +124,8 @@ bool j1Menu::Start()
 	mouseInfo.onEnemiesClick = { 402, 527, 28, 33 };
 	mouseText = App->gui->CreateUICursor(mouseInfo, this);
 
+	
+
 	return true;
 }
 
@@ -212,6 +214,16 @@ bool j1Menu::CleanUp()
 }
 
 void j1Menu::CreateMenu() {
+
+	UIImage_Info info;
+	info.texArea = { 0,954,776,600 };
+	mainMenuImg = App->gui->CreateUIImage({ 0,0 }, info, this, nullptr);
+	menuImgAnim.speed = 5;
+	menuImgAnim.PushBack({ 0,954,776,600 });
+	menuImgAnim.PushBack({ 829,951,776,600 });
+	menuImgAnim.PushBack({ 0,1564,776,600 });
+	menuImgAnim.PushBack({ 876,1563,776,600 });
+	mainMenuImg->StartAnimation(menuImgAnim);
 
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
@@ -410,6 +422,7 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 }
 void j1Menu::DeteleMenu() {
 
+	App->gui->RemoveElem((UIElement**)&mainMenuImg);
 	App->gui->RemoveElem((UIElement**)&playButt);
 	App->gui->RemoveElem((UIElement**)&playLabel);
 	App->gui->RemoveElem((UIElement**)&exitButt);
