@@ -12,13 +12,14 @@
 
 struct UIMinimap_Info 
 {
-
-
 	bool draggable = false;
 	bool interactive = false;
 	bool interactionFromFather = false;
 
+	int entityWidth = 0;
+	int entityHeight = 0;
 
+	SDL_Rect minimapInfo = { 0,0,0,0 };
 };
 
 enum MINIMAP_TYPE
@@ -54,8 +55,6 @@ public:
 
 
 private:
-
-
 
 	UI_EVENT UIevent = UI_EVENT_NONE;
 	SDL_Rect normalTexArea = { 0,0,0,0 };

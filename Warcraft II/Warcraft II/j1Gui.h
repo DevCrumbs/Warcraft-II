@@ -35,6 +35,7 @@ struct UIButton_Info;
 struct UICursor_Info;
 struct UILifeBar_Info;
 struct UISlider_Info;
+struct UIMinimap_Info;
 class UIImage;
 class UILabel;
 class UIButton;
@@ -42,7 +43,7 @@ class UICursor;
 class UILifeBar;
 class UIInputText;
 class UISlider;
-
+class UIMinimap;
 // ---------------------------------------------------
 
 struct compareUIPriority {
@@ -88,6 +89,7 @@ public:
 	UILifeBar* CreateUILifeBar(iPoint localPos, UILifeBar_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr, bool isInWorld = false);
 	UIInputText* CreateUIInputText(iPoint localPos, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UICursor* CreateUICursor(UICursor_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
+	UIMinimap * CreateUIMinimap(UIMinimap_Info & info, j1Module * listener = nullptr, UIElement * parent = nullptr);
 
 	bool DestroyElement(UIElement** elem);
 	bool ClearAllUI();

@@ -20,6 +20,7 @@
 #include "UIInputText.h"
 #include "UILifeBar.h"
 #include "UISlider.h"
+#include "UIMinimap.h"
 
 j1Gui::j1Gui() : j1Module()
 {
@@ -295,6 +296,21 @@ UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIEleme
 
 	return cursor;
 }
+
+UIMinimap* j1Gui::CreateUIMinimap(UIMinimap_Info& info, j1Module* listener, UIElement* parent)
+{
+	iPoint localPos = { 0,0 };
+
+	UIMinimap* minimap = new UIMinimap(localPos, parent, info, listener);
+
+	if (parent == nullptr)
+		parent = (UIElement*)App->win->window;
+
+	addedElementUI.push_back((UIElement*)minimap);
+
+	return minimap;
+}
+
 
 bool j1Gui::DestroyElement(UIElement** elem)
 {

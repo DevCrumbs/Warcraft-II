@@ -10,6 +10,13 @@
 UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j1Module* listener) : UIElement({ 0,0 }, nullptr, nullptr, false)
 {
 	type = UIE_TYPE_MINIMAP;
+	
+	minimapInfo = info.minimapInfo;
+
+	entityWidth = info.entityWidth;
+	entityHeight = info.entityWidth;
+
+	LoadMap();
 }
 
 

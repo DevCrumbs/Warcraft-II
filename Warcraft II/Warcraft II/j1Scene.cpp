@@ -134,8 +134,14 @@ bool j1Scene::Start()
 	App->render->camera.x = 0;
 	App->render->camera.y = 0;
 
-	minimap = new UIMinimap();
-	minimap->SetMinimap({ 30,31,160,161 }, 32, 32);
+	UIMinimap_Info info;
+
+	info.entityHeight = 32;
+	info.entityHeight = 32;
+	info.minimapInfo = { 30,31,160,161 };
+
+	minimap = App->gui->CreateUIMinimap(info);
+//	minimap->SetMinimap({ 30,31,160,161 }, 32, 32);
 
 	return ret;
 }
@@ -633,7 +639,7 @@ bool j1Scene::Update(float dt)
 	if (parchmentImg != nullptr)
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
-	minimap->Update(dt);
+
 	return ret;
 }
 
