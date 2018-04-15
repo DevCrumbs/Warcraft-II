@@ -215,16 +215,6 @@ bool j1Menu::CleanUp()
 
 void j1Menu::CreateMenu() {
 
-	UIImage_Info info;
-	info.texArea = { 0,954,776,600 };
-	mainMenuImg = App->gui->CreateUIImage({ 0,0 }, info, this, nullptr);
-	menuImgAnim.speed = 5;
-	menuImgAnim.PushBack({ 0,954,776,600 });
-	menuImgAnim.PushBack({ 829,951,776,600 });
-	menuImgAnim.PushBack({ 0,1564,776,600 });
-	menuImgAnim.PushBack({ 876,1563,776,600 });
-	mainMenuImg->StartAnimation(menuImgAnim);
-
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	playButt = App->gui->CreateUIButton({ 600, 350 }, buttonInfo, this, nullptr);
@@ -246,10 +236,26 @@ void j1Menu::CreateMenu() {
 	labelInfo.text = "Settings";
 	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, settingsButt);
 
+
 	artifacts.push_back(AddArtifact({ 50,450 }, App->gui->bookText, App->gui->bookAnim));
 	artifacts.push_back(AddArtifact({ 175,500 }, App->gui->skullText, App->gui->skullAnim));
 	artifacts.push_back(AddArtifact({ 300,500 }, App->gui->eyeText, App->gui->eyeAnim));
 	artifacts.push_back(AddArtifact({ 425,450 }, App->gui->scepterText, App->gui->scepterAnim));
+
+	UIImage_Info logoInfo;
+	logoInfo.texArea = { 1039,740,345,141 };
+	logoImg = App->gui->CreateUIImage({ 95,370 }, logoInfo, this, nullptr);
+
+	UIImage_Info menuImgInfo;
+	menuImgInfo.texArea = { 0,954,776,600 };
+	mainMenuImg = App->gui->CreateUIImage({ 0,0 }, menuImgInfo, this, nullptr);
+	menuImgAnim.speed = 5;
+	menuImgAnim.PushBack({ 0,954,776,600 });
+	menuImgAnim.PushBack({ 829,951,776,600 });
+	menuImgAnim.PushBack({ 0,1564,776,600 });
+	menuImgAnim.PushBack({ 876,1563,776,600 });
+	mainMenuImg->StartAnimation(menuImgAnim);
+
 
 }
 
@@ -423,6 +429,7 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 void j1Menu::DeteleMenu() {
 
 	App->gui->RemoveElem((UIElement**)&mainMenuImg);
+	App->gui->RemoveElem((UIElement**)&logoImg);
 	App->gui->RemoveElem((UIElement**)&playButt);
 	App->gui->RemoveElem((UIElement**)&playLabel);
 	App->gui->RemoveElem((UIElement**)&exitButt);
