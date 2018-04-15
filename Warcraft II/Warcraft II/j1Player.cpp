@@ -419,8 +419,27 @@ void j1Player::CheckUnitSpawning()
 			break;
 
 			case EntityType_ELVEN_ARCHER:
-				App->entities->AddEntity(EntityType_ELVEN_ARCHER, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
-				App->audio->PlayFx(18, 0);
+			{
+				iPoint barracksTile = App->map->WorldToMap(barracksPos.x, barracksPos.y);
+				barracksTile.x -= 1;
+
+				// Make sure that there are no entities on the spawn tile and that the tile is walkable
+				if (App->entities->IsEntityOnTile(barracksTile, EntityCategory_DYNAMIC_ENTITY) != nullptr
+					|| App->entities->IsEntityOnTile(barracksTile, EntityCategory_STATIC_ENTITY) != nullptr
+					|| !App->pathfinding->IsWalkable(barracksTile))
+
+					barracksTile = FindClosestValidTile(barracksTile);
+
+				// Make sure that the spawn tile is valid
+				if (barracksTile.x != -1 && barracksTile.y != -1) {
+
+					iPoint barracksTilePos = App->map->MapToWorld(barracksTile.x, barracksTile.y);
+					fPoint pos = { (float)barracksTilePos.x,(float)barracksTilePos.y };
+
+					App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
+					App->audio->PlayFx(21, 0);
+				}
+			}
 				break;
 
 			case EntityType_MAGE:

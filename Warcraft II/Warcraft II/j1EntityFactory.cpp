@@ -3029,7 +3029,7 @@ bool j1EntityFactory::IsNearSoldiers(iPoint pos) {
 
 	while (it != activeDynamicEntities.end()) {
 
-		if ((*it)->entitySide == EntitySide_Player) {
+		if ((*it)->entitySide == EntitySide_Player && !(*it)->isDead) {
 			if (pos.DistanceManhattan((*it)->GetSingleUnit()->currTile) < 5)
 				return true;
 		}
