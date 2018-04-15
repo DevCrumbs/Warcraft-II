@@ -86,7 +86,7 @@ bool j1Scene::Start()
 {
 	bool ret = true;
 	App->audio->active = true;
-
+	isStarted = false;
 	// Save camera info
 	App->win->GetWindowSize(width, height);
 	scale = App->win->GetScale();
@@ -762,6 +762,14 @@ bool j1Scene::PostUpdate()
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
 	}
+	
+	if (App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) {
+		App->player->isWin = false;
+		App->fade->FadeToBlack(this, App->finish);
+		App->finish->active = true;
+	}
+	else
+		isStarted = true;
 
 	if (isFadeToMenu) {
 		App->fade->FadeToBlack(this, App->menu);
