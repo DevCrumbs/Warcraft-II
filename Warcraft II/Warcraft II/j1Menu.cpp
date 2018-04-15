@@ -142,6 +142,10 @@ bool j1Menu::Update(float dt)
 		}
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+		App->audio->PlayFx(14, 0);
+	}
+
 	switch (menuActions)
 	{
 	case MenuActions_NONE:

@@ -112,8 +112,6 @@
 
     <audioPaths>
       <mainTheme path= "mainTheme.ogg"/>
-      <victoryScreen path= "victoryScreen.ogg"/>
-      <defeatScreen path= "defeatScreen.ogg"/>
     </audioPaths>
     
     <maps>
@@ -1321,6 +1319,11 @@
     <spritesheets>
       <atlas name = "data/assets/textures/backgrounds/finishGame.png"/>
     </spritesheets>
+
+    <audioPaths>
+      <victoryScreen path= "victoryScreen.ogg"/>
+      <defeatScreen path= "defeatScreen.ogg"/>
+    </audioPaths>
     
   </finish>
 </config>
