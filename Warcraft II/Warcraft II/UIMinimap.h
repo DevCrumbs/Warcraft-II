@@ -37,7 +37,7 @@ public:
 	~UIMinimap();
 
 	void Update(float dt);
-;
+	;
 
 	bool SetMinimap(SDL_Rect pos, int entityW, int entityH);
 	bool LoadMap();
@@ -70,6 +70,9 @@ private:
 	SDL_Texture* mapTexture = nullptr;
 
 	list<Entity*> entities;
+
+	int maxOffsetX = 0;
+	int maxOffsetY = 0;
 
 };
 

@@ -38,8 +38,6 @@ void UIMinimap::Update(float dt)
 	int offsetX = camera.x * scaleFactor + 40;
 	int offsetY = camera.y * scaleFactor + 40;
 
-	int maxOffsetX = ((App->map->data.width * App->map->data.tileWidth) * scaleFactor) - 160;
-	int maxOffsetY = ((App->map->data.height * App->map->data.tileHeight) * scaleFactor) - 161;
 
 	if (offsetX > 0)
 		offsetX = 0;
@@ -108,8 +106,8 @@ bool UIMinimap::LoadMap()
 	SDL_Surface* minimapSurface = nullptr;
 
 	///-----------------	Compute the scale factor 
-	float mapSize = App->map->data.width * App->map->data.tileWidth;
-	scaleFactor = minimapInfo.w / mapSize;
+//	float mapSize = App->map->data.width * App->map->data.tileWidth;
+//	scaleFactor = minimapInfo.w / mapSize;
 	scaleFactor = minimapInfo.w / (float)(50 * 32);
 
 	///-----------------	 Create a RGB surface
@@ -199,7 +197,8 @@ bool UIMinimap::LoadMap()
 	mapTexture = SDL_CreateTextureFromSurface(App->render->renderer, minimapSurface);
 	SDL_SaveBMP(minimapSurface, "aqui.png");
 
-	
+	maxOffsetX = ((App->map->data.width * App->map->data.tileWidth) * scaleFactor) - minimapInfo.w;
+	maxOffsetY = ((App->map->data.height * App->map->data.tileHeight) * scaleFactor) - minimapInfo.h;
 
 	return ret;
 }
