@@ -29,14 +29,16 @@ void GoldMine::Move(float dt)
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 
-	if (buildingState == BuildingState_Destroyed) {
-		if (startTimer) {
+	if (buildingState == BuildingState_Destroyed)
+		texArea = &goldMineInfo.inProgressTexArea;
+
+		/*if (startTimer) {
 			constructionTimer.Start();
 			startTimer = false;
 		}
 		else 
 			UpdateAnimations(dt);
-	}
+	}*/
 }
 
 // Animations
@@ -46,7 +48,7 @@ void GoldMine::LoadAnimationsSpeed()
 }
 void GoldMine::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	/*if (constructionTimer.Read() >= constructionTime * 1000) {
 		buildingState = BuildingState_Building;
 		texArea = &goldMineInfo.inProgressTexArea;
 		startTimer = true;
@@ -66,5 +68,5 @@ void GoldMine::UpdateAnimations(float dt)
 			break;
 		}
 		App->scene->hasGoldChanged = true;
-	}
+	}*/
 }

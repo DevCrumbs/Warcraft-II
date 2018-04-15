@@ -3023,14 +3023,14 @@ int j1EntityFactory::GetPlayerSoldiers() const {
 	return ret;
 }
 
-bool j1EntityFactory::IsNearSoldiers(iPoint pos) {
+bool j1EntityFactory::IsNearSoldiers(iPoint pos, uint distance) {
 	bool ret = false;
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
 	while (it != activeDynamicEntities.end()) {
 
 		if ((*it)->entitySide == EntitySide_Player && !(*it)->isDead) {
-			if (pos.DistanceManhattan((*it)->GetSingleUnit()->currTile) < 5)
+			if (pos.DistanceManhattan((*it)->GetSingleUnit()->currTile) < distance)
 				return true;
 		}
 
