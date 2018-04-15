@@ -384,6 +384,8 @@ PathfindingStatus j1PathFinding::CycleOnceAStar()
 	// If the open list is empty, the path has not been found
 	if (open.pathNodeList.size() == 0)
 		return PathfindingStatus_PathNotFound;
+	else if (close.pathNodeList.size() == DEFAULT_PATH_LENGTH)
+		return PathfindingStatus_PathNotFound;
 
 	// Move the lowest score cell from open list to the closed list
 	PathNode* curr = (PathNode*)open.GetNodeLowestScore();

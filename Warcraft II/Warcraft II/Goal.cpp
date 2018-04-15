@@ -675,8 +675,8 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 		if (owner->particle != nullptr) {
 
-			owner->particle->pos.x += owner->particle->destination.x * dt * 110.0f;
-			owner->particle->pos.y += owner->particle->destination.y * dt * 110.0f;
+			owner->particle->pos.x += owner->particle->destination.x * dt * 130.0f;
+			owner->particle->pos.y += owner->particle->destination.y * dt * 130.0f;
 
 			iPoint particleTile = App->map->WorldToMap(owner->particle->pos.x, owner->particle->pos.y);
 			DynamicEntity* dyn = (DynamicEntity*)targetInfo->target;
