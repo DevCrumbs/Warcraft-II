@@ -99,7 +99,7 @@ void TrollAxethrower::Move(float dt)
 
 			isDead = true;
 			App->player->enemiesKill++;
-			App->player->currentGold += 100;
+			App->player->currentGold += 50;
 			App->scene->hasGoldChanged = true;
 			
 			if (particle != nullptr) {

@@ -669,16 +669,16 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					int random = rand() % 4;
 					switch (random) {
 					case 0:
-						App->player->AddGold(500);
+						App->player->AddGold(400);
 						break;
 					case 1:
-						App->player->AddGold(650);
+						App->player->AddGold(500);
 						break;
 					case 2:
-						App->player->AddGold(700);
+						App->player->AddGold(550);
 						break;
 					case 3:
-						App->player->AddGold(750);
+						App->player->AddGold(650);
 						break;
 					}
 
