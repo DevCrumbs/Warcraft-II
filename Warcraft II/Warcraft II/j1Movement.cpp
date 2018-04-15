@@ -1341,17 +1341,18 @@ UnitGroup::~UnitGroup()
 bool UnitGroup::AddUnit(SingleUnit* singleUnit)
 {
 	bool ret = false;
+	if(singleUnit != nullptr) {
+		ret = IsUnitInGroup(singleUnit);
 
-	ret = IsUnitInGroup(singleUnit);
+		// If the unit is not in the group, add it
+		if (!ret) {
 
-	// If the unit is not in the group, add it
-	if (!ret) {
+			singleUnit->group = this;
 
-		singleUnit->group = this;
+			units.push_back(singleUnit);
 
-		units.push_back(singleUnit);
-
-		ret = true;
+			ret = true;
+		}
 	}
 
 	return ret;
