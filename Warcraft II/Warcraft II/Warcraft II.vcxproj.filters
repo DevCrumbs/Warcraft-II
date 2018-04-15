@@ -333,6 +333,9 @@
     <ClInclude Include="CritterSheep.h">
       <Filter>Modules\Entities\DynamicEntities\Critters</Filter>
     </ClInclude>
+    <ClInclude Include="UIMinimap.h">
+      <Filter>Modules\UIElements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -571,6 +574,9 @@
     </ClCompile>
     <ClCompile Include="CritterSheep.cpp">
       <Filter>Modules\Entities\DynamicEntities\Critters</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMinimap.cpp">
+      <Filter>Modules\UIElements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

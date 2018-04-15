@@ -34,6 +34,8 @@
 #include "UIImage.h"
 #include "UICursor.h"
 #include "UISlider.h"
+#include "UIMinimap.h"
+
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -119,6 +121,7 @@ bool j1Scene::Start()
 		//debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
+
 		ret = LoadNewMap();
 	//	ret = App->map->Load("verticalSliceMap.tmx");
 		//debugTex = App->tex->Load(warcraftTexName.data());
@@ -229,6 +232,15 @@ bool j1Scene::LoadNewMap(int map)
 		}
 		basePos = cameraPos;
 	}
+
+	UIMinimap_Info info;
+
+	info.entityHeight = 32;
+	info.entityHeight = 32;
+	info.minimapInfo = { 30,31,160,161 };
+
+	minimap = App->gui->CreateUIMinimap(info);
+//	minimap->SetMinimap({ 30,31,160,161 }, 32, 32);
 
 	return ret;
 }
@@ -1413,6 +1425,7 @@ void j1Scene::DestroyAllUI()
 	App->gui->RemoveElem((UIElement**)&buildingButton);
 	App->gui->RemoveElem((UIElement**)&buildingLabel);
 	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
+	App->gui->RemoveElem((UIElement**)&minimap);
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()

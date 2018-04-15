@@ -115,7 +115,8 @@ DynamicEntity::~DynamicEntity()
 	while (it != targets.end()) {
 	
 		delete *it;
-		it++;
+		targets.remove(*it++);
+
 	}
 	targets.clear();
 }
