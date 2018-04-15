@@ -135,7 +135,7 @@ bool j1Scene::Start()
 	App->render->camera.y = 0;
 
 	minimap = new UIMinimap();
-	minimap->SetMinimap({ 32,32,200,200 }, 32, 32);
+	minimap->SetMinimap({ 30,31,160,161 }, 32, 32);
 
 	return ret;
 }
@@ -357,7 +357,7 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	bool ret = true;
-	minimap->Update(dt);
+
 	// Save mouse position (world and map coords)
 	int x, y;
 	App->input->GetMousePosition(x, y);
@@ -633,7 +633,7 @@ bool j1Scene::Update(float dt)
 	if (parchmentImg != nullptr)
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
-
+	minimap->Update(dt);
 	return ret;
 }
 
