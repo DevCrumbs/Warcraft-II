@@ -129,10 +129,6 @@ bool j1Gui::Update(float dt)
 
 		(*UI_elem_it)->Update(dt);
 
-		/*
-		if (iterator->data->drag && update_drag)
-			(*UI_elem_it)->UpdateDragging(dt);*/
-
 		UI_elem_it++;
 	}
 
@@ -149,8 +145,6 @@ bool j1Gui::Update(float dt)
 
 void j1Gui::Draw() 
 {
-	list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin();
-
 	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
 		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
 			info->Draw();

@@ -154,7 +154,7 @@ public:
 	bool Load(pugi::xml_node& save);
 
 	int GetPlayerSoldiers() const;
-	bool IsNearSoldiers(iPoint pos);
+	bool IsNearSoldiers(iPoint pos, uint distance);
 
 public:
 
