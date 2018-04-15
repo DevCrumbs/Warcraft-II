@@ -218,6 +218,8 @@ public:
 
 	EntitySelectedStats entitySelectedStats;
 
+	bool isUnitSpawning = false;
+
 private:
 
 	double timer = 0.0f; // game time

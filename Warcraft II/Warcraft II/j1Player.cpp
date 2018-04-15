@@ -425,6 +425,7 @@ void j1Player::CheckUnitSpawning()
 					fPoint pos = { (float)barracksTilePos.x,(float)barracksTilePos.y };
 
 					App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
+					isUnitSpawning = false;
 					App->audio->PlayFx(21, 0);
 				}
 			}
@@ -450,6 +451,7 @@ void j1Player::CheckUnitSpawning()
 					fPoint pos = { (float)barracksTilePos.x,(float)barracksTilePos.y };
 
 					App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
+					isUnitSpawning = false;
 					App->audio->PlayFx(18, 0);
 				}
 			}
@@ -670,13 +672,13 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 						App->player->AddGold(500);
 						break;
 					case 1:
-						App->player->AddGold(750);
+						App->player->AddGold(650);
 						break;
 					case 2:
-						App->player->AddGold(1000);
+						App->player->AddGold(700);
 						break;
 					case 3:
-						App->player->AddGold(1250);
+						App->player->AddGold(750);
 						break;
 					}
 
@@ -1303,6 +1305,7 @@ void j1Player::HandleBarracksUIElem()
 			}
 			CreateToSpawnUnitLifeBar({ 72, 40 }, toSpawnUnitStats.frstInQueueBar); //To spawn unit lifeBar timer
 			toSpawnUnitStats.frstInQueueBar->SetLife(unit.toSpawnTimer.ReadSec());
+			isUnitSpawning = true;
 			break;
 		case 2:
 			switch (unit.entityType) {

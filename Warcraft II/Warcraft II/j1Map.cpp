@@ -538,6 +538,11 @@ bool j1Map::LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set)
 	}
 	else
 	{
+		if (tilesetPath.empty())
+		{
+			tilesetPath = PATH(folder.data(), image.attribute("source").as_string());
+		}
+
 		set->texture = App->tex->Load(PATH(folder.data(), image.attribute("source").as_string()));
 		int w, h;
 		SDL_QueryTexture(set->texture, NULL, NULL, &w, &h);

@@ -819,7 +819,8 @@ bool j1Scene::PostUpdate()
 	}
 	// -----
 	
-	if ((App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) || App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
+	if (((App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) && !App->player->isUnitSpawning)|| App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
+
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
