@@ -153,7 +153,7 @@ public:
 
 	bool hasFoodChanged = false;
 
-	UIImage* entitiesStats;
+	UIImage* entitiesStats = nullptr;
 	ENTITY_TYPE GetAlphaBuilding();
 	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
 

@@ -287,17 +287,10 @@ void j1App::FinishUpdate()
 	else
 		godMode = "off";
 
-	static char title[256];
-
-	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u | capFrames: %s | Vsync: %s",
-		fps, avgFPS, actualFrameMs, capOnOff.data(), vSyncOnOff.data());
-
 	if (App->scene->pause) {
 		auxiliarDt = dt;
 		dt = 0.0f;
 	}
-
-	App->win->SetTitle(title);
 }
 
 // Call modules before each loop iteration
