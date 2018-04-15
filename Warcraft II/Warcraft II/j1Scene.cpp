@@ -157,6 +157,8 @@ bool j1Scene::Start()
 
 	App->map->LoadLogic();
 
+	isStartedFinalTransition = false;
+
 	return ret;
 }
 
@@ -490,8 +492,9 @@ bool j1Scene::Update(float dt)
 	// Units ---------------------------------------------------------------------------------
 
 	Entity* isEnemyOnTile = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy); // TODO Sandra: only player side
+	Entity* isCritterOnTile = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
 
-	if (isEnemyOnTile != nullptr) {
+	if (isEnemyOnTile != nullptr || isCritterOnTile != nullptr) {
 		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
 		if (r.x != 374)
 			App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
@@ -791,11 +794,30 @@ bool j1Scene::PostUpdate()
 		return false;
 	}
 
-	if (App->player->imagePrisonersVector.size() >= 2 || App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
+	if (App->player->imagePrisonersVector.size() >= 2) {
+
+		App->player->isWin = true;
+
+		if (!isStartedFinalTransition) {
+		
+			finalTransition.Start();
+			isStartedFinalTransition = true;
+		}
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
+	
 		App->player->isWin = true;
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
 	}
+
+	// Final transition timer (when win is achieved)
+	if (App->player->isWin && finalTransition.ReadSec() >= 5.0f) {
+
+		App->fade->FadeToBlack(this, App->finish);
+		App->finish->active = true;
+	}
+	// -----
 	
 	if ((App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) || App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
 		App->player->isWin = false;
