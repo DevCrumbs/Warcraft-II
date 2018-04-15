@@ -245,7 +245,6 @@ private:
 	queue<ToSpawnUnit> toSpawnUnitQueue;
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;
-
 };
 
 #endif //__j1PLAYER_H__

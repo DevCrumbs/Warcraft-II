@@ -537,6 +537,38 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 	case UnitState_Patrol:
 
+		// Check if there are available targets
+		/// Prioritize a type of target (static or dynamic)
+		if (singleUnit->IsFittingTile()) {
+
+			newTarget = GetBestTargetInfo();
+
+			if (newTarget != nullptr) {
+
+				// A new target has found, update the attacking target
+				if (currTarget != newTarget) {
+
+					if (currTarget != nullptr) {
+
+						if (particle != nullptr) {
+
+							particle->isRemove = true;
+							particle = nullptr;
+						}
+
+						if (!currTarget->isRemoved) {
+
+							currTarget->target->RemoveAttackingUnit(this);
+							isHitting = false;
+						}
+					}
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
+		}
+
 		break;
 
 	case UnitState_AttackTarget:

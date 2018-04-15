@@ -14,7 +14,6 @@
 #include "j1Particles.h"
 #include "j1Audio.h"
 
-
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UIImage.h"
@@ -56,8 +55,8 @@ bool j1Player::Start()
 	return ret;
 }
 
-bool j1Player::Update(float dt) {
-
+bool j1Player::Update(float dt) 
+{
 	CheckIfPlaceBuilding();
 	CheckUnitSpawning();
 
@@ -144,6 +143,7 @@ bool j1Player::Update(float dt) {
 		AddGold(500);
 		App->scene->hasGoldChanged = true;
 	}
+
 	//Life Bar on building 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
