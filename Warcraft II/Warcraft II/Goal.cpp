@@ -562,6 +562,8 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 			if (owner->particle == nullptr) {
 
+				App->audio->PlayFx(24, 0);
+
 				orientation = { targetInfo->target->GetPos().x - owner->GetPos().x, targetInfo->target->GetPos().y - owner->GetPos().y };
 
 				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
@@ -612,6 +614,8 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 			if (owner->particle == nullptr) {
 
+				App->audio->PlayFx(23, 0);
+
 				orientation = { targetInfo->target->GetPos().x - owner->GetPos().x, targetInfo->target->GetPos().y - owner->GetPos().y };
 
 				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
@@ -660,11 +664,9 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		}
 		else {
 
+			App->audio->PlayFx(25, 0);
+
 			targetInfo->target->ApplyDamage(owner->GetDamage());
-			if (targetInfo->target->entitySide == EntitySide_Player) {
-			
-			
-			}
 			((DynamicEntity*)owner)->GetAnimation()->Reset();
 		}
 	}

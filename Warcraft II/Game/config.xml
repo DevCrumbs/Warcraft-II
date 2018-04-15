@@ -94,10 +94,10 @@
         <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"
                        chickenFarm ="buildings/farm.wav" goldMine = "buildings/goldMine.wav" gryphAviar = "buildings/gryphonAviary.wav"
                        mageTower ="buildings/mageTower.wav" stables= "buildings/stables.wav" repair = "buildings/buildingRepair.wav"
-                       destroyBuilding = "buildingDestroy"/>
+                       destroyBuilding = "buildings/buildingDestroy.wav"/>
         <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
         
-        <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" prisonerRescue="PrisonerRescue.wav"/>
+        <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" prisonerRescue="Units/PrisonerRescue.wav"/>
         <archerPaths goToPlace ="Units/Archer/GoToPlace1.wav" ready="Units/Archer/Ready.wav" selected="Units/Archer/Selected1.wav"/>
         <footmanPaths goToPlace ="Units/Footman/GoToPlace1.wav" ready="Units/Footman/Ready.wav" selected="Units/Footman/Selected1.wav"/>
         <crittersPaths boarDead ="Units/Critters/BoarDead.wav" sheepDead="Units/Critters/SheepDead.wav"/>
