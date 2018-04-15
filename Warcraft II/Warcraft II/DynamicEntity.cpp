@@ -93,6 +93,9 @@ DynamicEntity::~DynamicEntity()
 		lifeBar = nullptr;
 	}
 
+	color = ColorWhite;
+	colorName = "White";
+
 	// ----
 
 	if (particle != nullptr) {
