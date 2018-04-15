@@ -38,15 +38,18 @@ void UIMinimap::Update(float dt)
 	int offsetX = camera.x * scaleFactor + 40;
 	int offsetY = camera.y * scaleFactor + 40;
 
+	int maxOffsetX = ((App->map->data.width * App->map->data.tileWidth) * scaleFactor) - 160;
+	int maxOffsetY = ((App->map->data.height * App->map->data.tileHeight) * scaleFactor) - 161;
+
 	if (offsetX > 0)
 		offsetX = 0;
-	else if (offsetX < -223)
-		offsetX = -223;
+	else if (offsetX < -maxOffsetX)
+		offsetX = -maxOffsetX;
 
 	if (offsetY > 0)
 		offsetY = 0;
-	else if (offsetY < -415)
-		offsetY = -415;
+	else if (offsetY < -maxOffsetY)
+		offsetY = -maxOffsetY;
 
 
 	App->render->Blit(mapTexture, offsetX,offsetY, NULL, 0);
