@@ -762,7 +762,7 @@ bool j1Scene::PostUpdate()
 		App->finish->active = true;
 	}
 	
-	if (App->player->currentFood < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) {
+	if (App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) {
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
