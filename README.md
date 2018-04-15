@@ -2,16 +2,24 @@
 
 # Warcraft II: The Stolen Artifacts
 
-Warcraft II: The Stolen Artifacts is an expansion that derives from the videogame Warcraft II: Tides of Darkness. The game is set after the events of Tides of Darkness, in which a small group of the Azeroth's army must expedition to a now destroyed Draenor to find the legendary alliance expeditioners that became trapped in Draenor, and defeat the evil Ner’zhul, by retrieving one of the four artifacts that he stole from Azeroth.
+Warcraft II: The Stolen Artifacts is an expansion that derives from the videogame Warcraft II: Tides of Darkness. 
+The game is set after the events of Tides of Darkness, in which a small group of the Azeroth's army must expedition to a now destroyed Draenor 
+to find the legendary alliance expeditioners that became trapped in Draenor, and defeat the evil Ner’zhul, 
+by retrieving one of the four artifacts that he stole from Azeroth.
 
-The player must command this expedition in an RTS dungeon crawler game in which they must recover the remaints of that legendary expedition in order to defeat Ner’zhul. Every time the expedition enters Draenor the construction of the land, and the path they will have to take will be different, so the game will be different every run the player makes.
+The player must command this expedition in an RTS dungeon crawler game in which they must recover the remaints of that legendary expedition in order to defeat Ner’zhul. 
+Every time the expedition enters Draenor the construction of the land, and the path they will have to take will be different, 
+so the game will be different every run the player makes.
 
-* **GitHub repository**: [DevCrumbs](https://github.com/DevCrumbs/Warcraft-II)
-* **Wiki**: [DevCrumbs wiki homepage](https://github.com/DevCrumbs/Warcraft-II/wiki)
+* **GitHub repository**: 
+[DevCrumbs](https://github.com/DevCrumbs/Warcraft-II)
+* **Wiki**: 
+[DevCrumbs wiki homepage](https://github.com/DevCrumbs/Warcraft-II/wiki)
 
 # Version 0.5
 
-The goal of the player is to rescue two prisoners - Khadgar and Alleria. The prisoners are hidden somewhere in a dungeon full of enemies. In order to complete this objective, the player will have to create troops and command them towards the victory.
+The goal of the player in this demo version is to rescue two prisoners - Khadgar and Alleria. The prisoners are hidden somewhere in a dungeon full of enemies. 
+In order to complete this objective, the player will have to create troops and command them towards the victory.
 
 # Controls
 
@@ -20,10 +28,33 @@ Space: go to player base
 P: set command patrol to the units selected (click a tile to patrol there)
 S: stop the units selected
 
+For the units:
 Mouse Left click: select a group of units
 Mouse Right click: send a group of units to a destination
 Mouse Right click on an enemy or a critter: attack the enemy/critter
 Mouse Right click on a Gold Mine or Runestone: (if there is a unit nearby) collect the gold / heal the units.
+
+For the buildings:
+After opening the building dropdown in the top right of the screen:
+Mouse Left click: Place a building somwhere.
+Mouse Right click: Delete the preview building from the view of the player.
+
+# About the buildings
+
+When the player selects a building in the buildings dropdown, a preview of the building will be shown where
+the players mouse is. If the building can be placed where the mouse is, it will be indicated with green tiles, if not
+it will be indicated with red tiles. The player can only place a building in the players base
+and where there are walkable tiles in the map, and where there's not another unit or building in the map
+
+The player can build:
+
+Chicken farms: 500 gold
+They give the player 4 units of food.
+
+Scout Tower: 400 gold
+Guard Tower: 600 gold
+Cannon Tower: 800 gold
+They attack enemy entities and enemy buildings.
 
 # Debug controls
 
