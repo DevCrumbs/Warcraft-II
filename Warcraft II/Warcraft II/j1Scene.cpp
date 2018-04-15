@@ -442,7 +442,7 @@ bool j1Scene::Update(float dt)
 
 	// Draw
 	App->map->Draw(); // map
-	App->particles->DrawPaws(); // paws particles
+	//App->particles->DrawPaws(); // paws particles
 	App->entities->Draw(); // entities
 
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
@@ -693,8 +693,7 @@ bool j1Scene::Update(float dt)
 			pauseMenuActions = PauseMenuActions_CREATED;
 
 	if (hasGoldChanged) {
-		UnLoadResourcesLabels();
-		LoadResourcesLabels();
+		UpdateResourcesLabels();
 		if (buildingMenuOn) {
 			UnLoadBuildingMenu();
 			LoadBuildingMenu();
@@ -702,8 +701,7 @@ bool j1Scene::Update(float dt)
 		hasGoldChanged = false;
 	}
 	if (hasFoodChanged == true) {
-		UnLoadResourcesLabels();
-		LoadResourcesLabels();
+		UpdateResourcesLabels();
 		hasFoodChanged = false;
 	}
 
@@ -1219,7 +1217,8 @@ void j1Scene::UnLoadBuildingMenu()
 
 	for (list<UILabel*>::iterator it = buildingLabelsList.begin(); it != buildingLabelsList.end(); ++it)
 	{
-		(*it)->toRemove = true;
+		if ((*it) != nullptr)
+			(*it)->toRemove = true;
 	}
 	buildingLabelsList.clear();
 
@@ -1238,6 +1237,11 @@ void j1Scene::LoadResourcesLabels()
 	foodLabel = App->gui->CreateUILabel({ 334, 0 }, labelInfo, this, inGameFrameImage);
 }
 
+void j1Scene::UpdateResourcesLabels()
+{
+	goldLabel->SetText(to_string(App->player->currentGold));
+	foodLabel->SetText(to_string(App->player->currentFood));
+}
 void j1Scene::UnLoadResourcesLabels()
 {
 	App->gui->RemoveElem((UIElement**)&goldLabel);
@@ -1341,9 +1345,8 @@ void j1Scene::CreateSettingsMenu() {
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
 }
 
-void j1Scene::DestroySettingsMenu() {
-
-
+void j1Scene::DestroySettingsMenu() 
+{
 	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&returnLabel);
 	App->gui->RemoveElem((UIElement**)&fullScreenButt);
@@ -1357,7 +1360,8 @@ void j1Scene::DestroySettingsMenu() {
 
 }
 
-void j1Scene::DestroyAllUI() {
+void j1Scene::DestroyAllUI() 
+{
 	if (parchmentImg != nullptr) {
 		App->gui->RemoveElem((UIElement**)&parchmentImg);
 	}
@@ -1441,7 +1445,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 				if (!buildingMenuOn)
 					LoadBuildingMenu();
-
 				else
 					UnLoadBuildingMenu();
 			}

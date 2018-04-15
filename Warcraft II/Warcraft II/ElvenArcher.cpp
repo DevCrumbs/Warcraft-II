@@ -369,10 +369,11 @@ void ElvenArcher::DebugDrawSelected()
 	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
 	App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
 
-	for (uint i = 0; i < unitInfo.priority; ++i) {
-		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-	}
+	//for (uint i = 0; i < unitInfo.priority; ++i) {
+		//const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
+	//const SDL_Rect entitySize = { pos.x , pos.y, size.x, size.y };
+	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	//}
 }
 
 void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)

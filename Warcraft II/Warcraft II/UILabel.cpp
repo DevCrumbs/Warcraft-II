@@ -33,7 +33,8 @@ void UILabel::Update(float dt)
 
 UILabel::~UILabel()
 {
-	App->tex->UnLoad((SDL_Texture*)tex);
+	if (tex != nullptr)
+		App->tex->UnLoad(tex);
 }
 
 void UILabel::Draw() const
@@ -48,10 +49,13 @@ void UILabel::Draw() const
 		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
 	}
 
-	if (texArea.w > 0)
-		App->render->Blit(tex, blitPos.x, blitPos.y, &texArea);
-	else
-		App->render->Blit(tex, blitPos.x, blitPos.y);
+	if (tex != nullptr) {
+
+		if (texArea.w > 0)
+			App->render->Blit(tex, blitPos.x, blitPos.y, &texArea);
+		else
+			App->render->Blit(tex, blitPos.x, blitPos.y);
+	}
 
 	if (App->gui->isDebug)
 		DebugDraw(blitPos);
@@ -181,7 +185,9 @@ void UILabel::HandleInput()
 
 void UILabel::SetText(string text)
 {
-	App->tex->UnLoad(tex);
+	if (tex != nullptr)
+		App->tex->UnLoad(tex);
+
 	tex = App->font->Print(text.data(), color, font);
 }
 
@@ -193,7 +199,10 @@ string UILabel::GetText()
 void UILabel::SetColor(SDL_Color color, bool normal, bool hover, bool pressed)
 {
 	this->color = color;
-	App->tex->UnLoad(tex);
+
+	if (tex != nullptr)
+		App->tex->UnLoad(tex);
+
 	tex = App->font->Print(label.text.data(), color, font);
 
 	if (normal)
