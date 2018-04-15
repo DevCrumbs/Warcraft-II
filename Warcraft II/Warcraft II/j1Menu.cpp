@@ -138,6 +138,7 @@ bool j1Menu::Update(float dt)
 {
 	App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 100, 100, 100, 255);
 
+	/*
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 		if (parchment != nullptr) {
 			parchment->isRemove = true;
@@ -148,6 +149,7 @@ bool j1Menu::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
 		App->audio->PlayFx(14, 0);
 	}
+	*/
 
 	switch (menuActions)
 	{
@@ -196,7 +198,7 @@ bool j1Menu::PostUpdate()
 		App->fade->FadeToBlack(this, App->scene);
 		isFadetoScene = false;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN || isExit)
+	if (isExit)
 		ret = false;
 
 	return ret;
