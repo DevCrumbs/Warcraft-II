@@ -96,6 +96,7 @@ public:
 	void LoadBuildingMenu();
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
+	void UpdateResourcesLabels();
 	void UnLoadResourcesLabels();
 	void CreatePauseMenu();
     void DestroyPauseMenu();

@@ -91,7 +91,7 @@ void CritterSheep::Move(float dt)
 	}
 
 	if (!isDead) {
-		UpdatePaws();
+		//UpdatePaws();
 
 		// ---------------------------------------------------------------------
 

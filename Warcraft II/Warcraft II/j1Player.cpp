@@ -632,13 +632,33 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
 
 				App->audio->PlayFx(6, 0); //Gold mine sound
-				list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
+				/*list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
 				if (pene.size() > 0) {
 					pene.front()->SetBlitState(false);
-				}
-				staticEntity->buildingState = BuildingState_Destroyed;
-			}
+				}*/
+				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
+				if (App->entities->IsNearSoldiers(pos, 7)) {
 
+					int random = rand() % 4;
+					switch (random) {
+					case 0:
+						App->player->AddGold(1500);
+						break;
+					case 1:
+						App->player->AddGold(2000);
+						break;
+					case 2:
+						App->player->AddGold(2500);
+						break;
+					case 3:
+						App->player->AddGold(3000);
+						break;
+					}
+
+					App->scene->hasGoldChanged = true;
+					staticEntity->buildingState = BuildingState_Destroyed;
+				}
+			}
 			else if (staticEntity->staticEntityType == EntityType_RUNESTONE)
 				staticEntity->buildingState = BuildingState_Destroyed;				
 				
@@ -706,14 +726,14 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 	case EntitiesEvent_LEFT_CLICK:
 		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA) {
 			iPoint pos = App->map->WorldToMap((int)dynamicEntity->GetPos().x, (int)dynamicEntity->GetPos().y);
-			if (App->entities->IsNearSoldiers(pos)) {
+			if (App->entities->IsNearSoldiers(pos, 5)) {
 				dynamicEntity->isRemove = true;
 				RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 245 });
 			}
 		}
 		else if (dynamicEntity->dynamicEntityType == EntityType_KHADGAR) {
 			iPoint pos = App->map->WorldToMap((int)dynamicEntity->GetPos().x, (int)dynamicEntity->GetPos().y);
-			if (App->entities->IsNearSoldiers(pos)) {
+			if (App->entities->IsNearSoldiers(pos, 5)) {
 				dynamicEntity->isRemove = true;
 				RescuePrisoner(TerenasDialog_RESCUE_KHADGAR, { 796,159,52,42 }, { 8, 200 });
 			}

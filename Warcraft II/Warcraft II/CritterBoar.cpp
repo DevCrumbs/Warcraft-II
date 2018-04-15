@@ -92,7 +92,7 @@ void CritterBoar::Move(float dt)
 	}
 
 	if (!isDead) {
-		UpdatePaws();
+		//UpdatePaws();
 
 		// ---------------------------------------------------------------------
 

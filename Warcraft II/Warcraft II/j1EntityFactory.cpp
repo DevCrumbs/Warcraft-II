@@ -982,8 +982,8 @@ bool j1EntityFactory::Start()
 	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
 	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
 	trollAxethrowerInfo.unitInfo.attackRadius = 3;
-	trollAxethrowerInfo.unitInfo.sightRadius = 5;
-	trollAxethrowerInfo.unitInfo.damage = 5;
+	trollAxethrowerInfo.unitInfo.sightRadius = 6;
+	trollAxethrowerInfo.unitInfo.damage = 6;
 	trollAxethrowerInfo.unitInfo.priority = 3;
 	// -----
 
@@ -994,33 +994,33 @@ bool j1EntityFactory::Start()
 	gruntInfo.unitInfo.maxSpeed = 50.0f;
 	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
 	gruntInfo.unitInfo.attackRadius = 2;
-	gruntInfo.unitInfo.sightRadius = 4;
+	gruntInfo.unitInfo.sightRadius = 5;
 	gruntInfo.unitInfo.damage = 5;
 	gruntInfo.unitInfo.priority = 3;
 	// -----
 
 	// Elven Archer
-	elvenArcherInfo.maxLife = 30;
+	elvenArcherInfo.maxLife = 50;
 	elvenArcherInfo.currLife = elvenArcherInfo.maxLife;
 
-	elvenArcherInfo.unitInfo.maxSpeed = 60.0f;
+	elvenArcherInfo.unitInfo.maxSpeed = 80.0f;
 	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
 	elvenArcherInfo.unitInfo.attackRadius = 3;
 	elvenArcherInfo.unitInfo.sightRadius = 5;
 	elvenArcherInfo.unitInfo.damage = 5;
-	elvenArcherInfo.unitInfo.priority = 3;
+	elvenArcherInfo.unitInfo.priority = 2;
 	// -----
 
 	// Footman
-	footmanInfo.maxLife = 30;
+	footmanInfo.maxLife = 60;
 	footmanInfo.currLife = footmanInfo.maxLife;
 
-	footmanInfo.unitInfo.maxSpeed = 50.0f;
+	footmanInfo.unitInfo.maxSpeed = 70.0f;
 	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
 	footmanInfo.unitInfo.attackRadius = 2;
 	footmanInfo.unitInfo.sightRadius = 4;
 	footmanInfo.unitInfo.damage = 5;
-	footmanInfo.unitInfo.priority = 3;
+	footmanInfo.unitInfo.priority = 2;
 	// -----
 
 	// Critters
@@ -1034,7 +1034,7 @@ bool j1EntityFactory::Start()
 
 	critterBoarInfo.currLife = 20;
 	critterBoarInfo.maxLife = critterBoarInfo.currLife;
-	critterBoarInfo.restoredHealth = 15;
+	critterBoarInfo.restoredHealth = 20;
 
 	critterBoarInfo.unitInfo.maxSpeed = 30.0f;
 	critterBoarInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
@@ -2911,8 +2911,8 @@ bool j1EntityFactory::RemoveUnitFromUnitsSelected(Entity* entity)
 // Updates the selection color of all entities
 void j1EntityFactory::SetUnitsSelectedColor()
 {
-	SDL_Color colors[10] = { ColorYellow, ColorDarkGreen, ColorBrightBlue, ColorOrange, ColorPink, ColorPurple, ColorGrey, ColorBlack, ColorOlive, ColorViolet };
-	string colorNames[10] = { "Yellow", "DarkGreen", "BrightBlue", "Orange", "Pink", "Purple", "Grey", "Black", "Olive", "Violet" };
+	//SDL_Color colors[10] = { ColorYellow, ColorDarkGreen, ColorBrightBlue, ColorOrange, ColorPink, ColorPurple, ColorGrey, ColorBlack, ColorOlive, ColorViolet };
+	//string colorNames[10] = { "Yellow", "DarkGreen", "BrightBlue", "Orange", "Pink", "Purple", "Grey", "Black", "Olive", "Violet" };
 
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 	uint i = 0;
@@ -2922,7 +2922,8 @@ void j1EntityFactory::SetUnitsSelectedColor()
 		// If the unit is selected, change its color
 		if ((*it)->isSelected) {
 
-			GetDynamicEntityByEntity(*it)->SetColor(colors[i], colorNames[i]);
+			GetDynamicEntityByEntity(*it)->SetColor(ColorWhite, "White");
+			//GetDynamicEntityByEntity(*it)->SetColor(colors[i], colorNames[i]);
 			i++;
 		}
 		else {
@@ -2975,14 +2976,15 @@ void j1EntityFactory::InvalidateAttackEntity(Entity* entity)
 
 	while (it != activeDynamicEntities.end()) {
 
-		//if ((*it)->IsEntityInTargetsList(entity))
+		if (!(*it)->isDead) {
+			//if ((*it)->IsEntityInTargetsList(entity))
 
-			// The dead entity was a target of another entity
+				// The dead entity was a target of another entity
 			(*it)->InvalidateTarget(entity);
 
-		// The dead entity may be attacking another unit
-		(*it)->RemoveAttackingUnit(entity);
-
+			// The dead entity may be attacking another unit
+			(*it)->RemoveAttackingUnit(entity);
+		}
 		it++;
 	}
 }
@@ -3023,14 +3025,14 @@ int j1EntityFactory::GetPlayerSoldiers() const {
 	return ret;
 }
 
-bool j1EntityFactory::IsNearSoldiers(iPoint pos) {
+bool j1EntityFactory::IsNearSoldiers(iPoint pos, uint distance) {
 	bool ret = false;
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
 	while (it != activeDynamicEntities.end()) {
 
 		if ((*it)->entitySide == EntitySide_Player && !(*it)->isDead) {
-			if (pos.DistanceManhattan((*it)->GetSingleUnit()->currTile) < 5)
+			if (pos.DistanceManhattan((*it)->GetSingleUnit()->currTile) < distance)
 				return true;
 		}
 
