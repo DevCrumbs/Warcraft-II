@@ -692,7 +692,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
 				if (App->entities->IsNearSoldiers(pos, 7)) {
 					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
-					while (it != App->entities->activeDynamicEntities.end()) {
+					while (it != App->entities->activeDynamicEntities.end() && (*it)->entitySide == EntitySide_Player) {
 						(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
 						it++;
 					}
