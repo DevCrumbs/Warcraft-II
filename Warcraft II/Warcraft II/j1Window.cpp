@@ -126,9 +126,11 @@ void j1Window::SetFullscreen() {
 	if (fullscreen) {
 		fullscreen = false;
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_SHOWN);
+//		SDL_RenderSetViewport(App->render->renderer, &App->render->viewport);
 	}
 	else {
 		fullscreen = true;
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+		//SDL_RenderSetViewport(App->render->renderer, &App->render->viewport);
 	}
 }
