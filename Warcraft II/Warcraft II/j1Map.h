@@ -216,9 +216,11 @@ public:
 
 	SDL_Rect			playerBase{ 0,0,0,0 };
 
-mutable	uchar*				walkMap = nullptr;
-mutable	int                 walkWidth = 0;
-mutable	int					walkHeight = 0;
+	string				tilesetPath;
+
+	mutable	uchar*		walkMap = nullptr;
+	mutable	int         walkWidth = 0;
+	mutable	int			walkHeight = 0;
 private:
 
 	pugi::xml_document	map_file;

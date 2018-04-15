@@ -176,6 +176,9 @@ public:
 
 private:
 
+	j1Timer finalTransition;
+	bool isStartedFinalTransition = false;
+
 	bool isStarted = false;
 	bool isAttackCursor = false;
 	bool isFadeToMenu = false;
