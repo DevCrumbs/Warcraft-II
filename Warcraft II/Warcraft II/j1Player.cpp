@@ -42,11 +42,22 @@ bool j1Player::Start()
 {
 	bool ret = true;
 
+	currentGold = totalGold = 0;
+	currentFood = 0;
+	unitProduce = 0u;
+	enemiesKill = 0u;
+	buildDestroy = 0u;
+	isWin = false;
+
+	totalEnemiesKilled = 0;
+	totalUnitsDead = 0;
+
 	startGameTimer.Start();
 	return ret;
 }
 
 bool j1Player::Update(float dt) {
+
 	CheckIfPlaceBuilding();
 	CheckUnitSpawning();
 
@@ -480,42 +491,50 @@ bool j1Player::CleanUp()
 	{
 		chickenFarm.back()->isRemove = true;
 	}
+	chickenFarm.clear();
 
 	for (; !scoutTower.empty(); scoutTower.pop_back())
 	{
 		scoutTower.back()->isRemove = true;
 	}
+	scoutTower.clear();
 
 	for (; !cannonTower.empty(); cannonTower.pop_back())
 	{
 		cannonTower.back()->isRemove = true;
 	}
+	cannonTower.clear();
 
 	for (; !guardTower.empty(); guardTower.pop_back())
 	{
 		guardTower.back()->isRemove = true;
 	}
-
+	guardTower.clear();
 
 	for (; !UIMenuInfoList.empty(); UIMenuInfoList.pop_back())
 	{
 		UIMenuInfoList.back()->toRemove = true;
 	}
+	UIMenuInfoList.clear();
 
 	for (; !goldMine.empty(); goldMine.pop_back())
 	{
 		goldMine.back()->isRemove = true;
 	}
+	goldMine.clear();
 
 	for (; !runestone.empty(); runestone.pop_back())
 	{
 		runestone.back()->isRemove = true;
 	}
+	runestone.clear();
 
 	for (; !imagePrisonersVector.empty(); imagePrisonersVector.pop_back())
 	{
 		imagePrisonersVector.back()->toRemove = true;
 	}
+	imagePrisonersVector.clear();
+
 	DeleteEntitiesMenu();
 
 	return ret;
