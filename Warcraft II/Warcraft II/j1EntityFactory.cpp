@@ -1041,17 +1041,20 @@ bool j1EntityFactory::Start()
 	critterBoarInfo.unitInfo.priority = 1;
 	// -----
 
+	// Load textures
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
 	neutralBuildingsTex = App->tex->Load(neutralBuildingsTexName.data());
 	orcishBuildingsTex = App->tex->Load(orcishBuildingsTexName.data());
-	footmanTex = App->tex->Load(footmanTexName.data());
-	gruntTex = App->tex->Load(gruntTexName.data());
-	crittersTex = App->tex->Load(crittersTexName.data());
-	khadgarTex = App->tex->Load(khadgarTexName.data());
-	alleriaTex = App->tex->Load(alleriaTexName.data());
 
 	elvenArcherTex = App->tex->Load(elvenArcherTexName.data());
 	trollAxethrowerTex = App->tex->Load(trollAxethrowerTexName.data());
+	footmanTex = App->tex->Load(footmanTexName.data());
+	gruntTex = App->tex->Load(gruntTexName.data());
+
+	crittersTex = App->tex->Load(crittersTexName.data());
+
+	khadgarTex = App->tex->Load(khadgarTexName.data());
+	alleriaTex = App->tex->Load(alleriaTexName.data());
 
 	builtChickenFarmInfo = chickenFarmInfo;
 	builtChickenFarmInfo.isBuilt = true;
@@ -1939,7 +1942,9 @@ bool j1EntityFactory::CleanUp()
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		delete *dynEnt;
+		if ((*dynEnt) != nullptr)
+			delete *dynEnt;
+
 		dynEnt++;
 	}
 	activeDynamicEntities.clear();
@@ -1949,7 +1954,9 @@ bool j1EntityFactory::CleanUp()
 
 	while (statEnt != activeStaticEntities.end()) {
 
-		delete *statEnt;
+		if ((*statEnt) != nullptr)
+			delete *statEnt;
+
 		statEnt++;
 	}
 	activeStaticEntities.clear();
@@ -1958,22 +1965,63 @@ bool j1EntityFactory::CleanUp()
 	list<Entity*>::const_iterator it = toSpawnEntities.begin();
 
 	while (it != toSpawnEntities.end()) {
-		delete *it;
+
+		if ((*it) != nullptr)
+			delete *it;
+
 		it++;
 	}
 	toSpawnEntities.clear();
 
+	// Remove units selected
+	list<DynamicEntity*>::const_iterator unitSel = unitsSelected.begin();
+	unitsSelected.clear();
+
 	// Free all textures
-	App->tex->UnLoad(footmanTex);
-	App->tex->UnLoad(gruntTex);
-	App->tex->UnLoad(crittersTex);
-	App->tex->UnLoad(humanBuildingsTex);
-	App->tex->UnLoad(neutralBuildingsTex);
-	App->tex->UnLoad(orcishBuildingsTex);
-	App->tex->UnLoad(khadgarTex);
-	App->tex->UnLoad(alleriaTex);
-	App->tex->UnLoad(elvenArcherTex);
-	App->tex->UnLoad(trollAxethrowerTex);
+	if (footmanTex != nullptr)
+		App->tex->UnLoad(footmanTex);
+
+	if (gruntTex != nullptr)
+		App->tex->UnLoad(gruntTex);
+
+	if (elvenArcherTex != nullptr)
+		App->tex->UnLoad(elvenArcherTex);
+
+	if (gryphonRiderTex != nullptr)
+		App->tex->UnLoad(gryphonRiderTex);
+
+	if (paladinTex != nullptr)
+		App->tex->UnLoad(paladinTex);
+
+	if (alleriaTex != nullptr)
+		App->tex->UnLoad(alleriaTex);
+
+	if (khadgarTex != nullptr)
+		App->tex->UnLoad(khadgarTex);
+
+	if (turalyonTex != nullptr)
+		App->tex->UnLoad(turalyonTex);
+
+	if (gruntTex != nullptr)
+		App->tex->UnLoad(gruntTex);
+
+	if (trollAxethrowerTex != nullptr)
+		App->tex->UnLoad(trollAxethrowerTex);
+
+	if (dragonTex != nullptr)
+		App->tex->UnLoad(dragonTex);
+
+	if (crittersTex != nullptr)
+		App->tex->UnLoad(crittersTex);
+
+	if (humanBuildingsTex != nullptr)
+		App->tex->UnLoad(humanBuildingsTex);
+
+	if (orcishBuildingsTex != nullptr)
+		App->tex->UnLoad(orcishBuildingsTex);
+
+	if (neutralBuildingsTex != nullptr)
+		App->tex->UnLoad(neutralBuildingsTex);
 
 	return ret;
 }

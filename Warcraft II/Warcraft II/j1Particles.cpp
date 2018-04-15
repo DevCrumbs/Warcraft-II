@@ -20,7 +20,7 @@ j1Particles::j1Particles()
 	name.assign("particles");
 
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
-		active[i] = nullptr;
+		activeParticles[i] = nullptr;
 }
 
 j1Particles::~j1Particles()
@@ -234,13 +234,14 @@ bool j1Particles::CleanUp()
 
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
-		if (active[i] != nullptr)
+		if (activeParticles[i] != nullptr)
 		{
-			delete active[i];
-			active[i] = nullptr;
+			delete activeParticles[i];
+			activeParticles[i] = nullptr;
 		}
 	}
 
+	// UnLoad textures
 	App->tex->UnLoad(pawsTex);
 	App->tex->UnLoad(atlasTex);
 
@@ -256,7 +257,7 @@ bool j1Particles::Update(float dt)
 
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
-		Particle* p = active[i];
+		Particle* p = activeParticles[i];
 
 		if (p == nullptr)
 			continue;
@@ -264,7 +265,7 @@ bool j1Particles::Update(float dt)
 		if (!p->Update(dt))
 		{
 			delete p;
-			active[i] = nullptr;
+			activeParticles[i] = nullptr;
 		}
 		if (SDL_GetTicks() >= p->born)
 		{
@@ -280,7 +281,7 @@ void j1Particles::Draw()
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
-		Particle* p = active[i];
+		Particle* p = activeParticles[i];
 
 		if (p == nullptr)
 			continue;
@@ -297,7 +298,7 @@ void j1Particles::DrawPaws()
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
-		Particle* p = active[i];
+		Particle* p = activeParticles[i];
 
 		if (p == nullptr)
 			continue;
@@ -314,7 +315,7 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, Collide
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
-		if (active[i] == nullptr)
+		if (activeParticles[i] == nullptr)
 		{
 			Particle* p = new Particle(particle);
 
@@ -322,7 +323,7 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, Collide
 			p->pos = { (float)pos.x, (float)pos.y };
 			p->speed = speed;
 
-			active[i] = p;
+			activeParticles[i] = p;
 
 			return p;
 		}
@@ -334,10 +335,10 @@ void j1Particles::OnCollision(Collider* c1, Collider* c2, CollisionState collisi
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
 		// Always destroy particles that collide
-		if (active[i] != nullptr && active[i]->collider == c1)
+		if (activeParticles[i] != nullptr && activeParticles[i]->collider == c1)
 		{
-			delete active[i];
-			active[i] = nullptr;
+			delete activeParticles[i];
+			activeParticles[i] = nullptr;
 			break;
 		}
 	}
@@ -347,7 +348,7 @@ bool j1Particles::IsParticleOnTile(iPoint tile) const
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
-		Particle* p = active[i];
+		Particle* p = activeParticles[i];
 
 		if (p == nullptr)
 			continue;

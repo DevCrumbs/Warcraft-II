@@ -21,6 +21,9 @@ Entity::~Entity()
 	if (entityCollider != nullptr)
 		entityCollider->isRemove = true;
 	entityCollider = nullptr;
+
+	// Attack
+	unitsAttacking.clear();
 }
 
 void Entity::Draw(SDL_Texture* sprites)

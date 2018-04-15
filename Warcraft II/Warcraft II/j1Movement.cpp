@@ -74,6 +74,8 @@ bool j1Movement::CleanUp()
 	while (it != unitGroups.end()) {
 
 		delete *it;
+		unitGroups.remove(*it);
+
 		it++;
 	}
 	unitGroups.clear();
@@ -195,7 +197,7 @@ bool j1Movement::RemoveGroup(UnitGroup* unitGroup)
 		delete *it;
 
 		// Remove the group from the list of groups
-		unitGroups.erase(it);
+		unitGroups.remove(*it);
 
 		ret = true;
 	}
@@ -1341,7 +1343,9 @@ UnitGroup::~UnitGroup()
 bool UnitGroup::AddUnit(SingleUnit* singleUnit)
 {
 	bool ret = false;
+
 	if(singleUnit != nullptr) {
+
 		ret = IsUnitInGroup(singleUnit);
 
 		// If the unit is not in the group, add it
@@ -1576,6 +1580,7 @@ SingleUnit::SingleUnit(DynamicEntity* unit, UnitGroup* group) :unit(unit), group
 SingleUnit::~SingleUnit()
 {
 	group->RemoveUnit(this);
+
 	group = nullptr;
 	unit = nullptr;
 	waitUnit = nullptr;

@@ -661,6 +661,10 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		else {
 
 			targetInfo->target->ApplyDamage(owner->GetDamage());
+			if (targetInfo->target->entitySide == EntitySide_Player) {
+			
+			
+			}
 			((DynamicEntity*)owner)->GetAnimation()->Reset();
 		}
 	}
@@ -682,6 +686,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 					owner->particle->isRemove = true;
 					owner->particle = nullptr;
 					targetInfo->target->ApplyDamage(owner->GetDamage());
+
 					((DynamicEntity*)owner)->GetAnimation()->Reset();
 				}
 				break;

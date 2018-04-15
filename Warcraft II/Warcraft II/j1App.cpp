@@ -70,15 +70,16 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	/// <-- Do not change this order
 
 	AddModule(font);
-	AddModule(menu);
 	AddModule(player);
-
 	AddModule(scene);
+
 	AddModule(particles);
+
 	AddModule(finish);
+	AddModule(menu);
+
 	AddModule(console);
 	AddModule(gui);
-
 	AddModule(fade);
 
 	// render last to swap buffer
@@ -93,6 +94,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	pathfinding->active = false;
 	pathmanager->active = false;
 	movement->active = false;
+	particles->active = false;
 }
 
 // Destructor

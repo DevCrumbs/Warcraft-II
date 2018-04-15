@@ -31,6 +31,8 @@ j1FinishGame::~j1FinishGame()
 // Load assets
 bool j1FinishGame::Start()
 {
+	App->finish->active = true;
+
 	// Get screen size
 	App->render->camera.x = App->render->camera.y = 0;
 	uint width = 0, height = 0, scale = 0;
@@ -55,9 +57,11 @@ bool j1FinishGame::Update(float dt)
 	return true;
 }
 
-bool j1FinishGame::CleanUp() {
+bool j1FinishGame::CleanUp() 
+{
 	DeleteScene();
-	App->menu->active = true;
+	active = false;
+
 	return true;
 }
 

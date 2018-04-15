@@ -103,6 +103,8 @@ bool j1Menu::Awake(pugi::xml_node& config)
 // Called before the first frame
 bool j1Menu::Start()
 {
+	active = true;
+
 	App->audio->PlayMusic(mainMenuMusicName.data(), 0.0f);
 
 	//If it is the first code iteration, change all the sounds
@@ -121,6 +123,7 @@ bool j1Menu::Start()
 	mouseInfo.onEnemies = { 374, 527, 28, 33 };
 	mouseInfo.onEnemiesClick = { 402, 527, 28, 33 };
 	mouseText = App->gui->CreateUICursor(mouseInfo, this);
+
 	return true;
 }
 
@@ -198,25 +201,7 @@ bool j1Menu::PostUpdate()
 // Called before quitting
 bool j1Menu::CleanUp()
 {
-	if (active) {
-
-		DeteleMenu();
-
-		App->map->active = true;
-		App->scene->active = true;
-		App->player->active = true;
-		App->entities->active = true;
-		App->collision->active = true;
-		App->pathfinding->active = true;
-		App->pathmanager->active = true;
-		App->movement->active = true;
-
-		App->player->Start();
-		App->entities->Start();
-		App->collision->Start();
-		App->pathfinding->Start();
-	}
-
+	DeteleMenu();
 	active = false;
 
 	return true;

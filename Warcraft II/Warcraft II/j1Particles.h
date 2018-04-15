@@ -11,7 +11,7 @@
 #include <string>
 using namespace std;
 
-#define MAX_ACTIVE_PARTICLES 1000 // if max particles are exceeded, they should not be created nor printed (not crush!)
+#define MAX_ACTIVE_PARTICLES 5000 // if max particles are exceeded, they should not be created nor printed (not crush!)
 
 struct SDL_Texture;
 
@@ -108,7 +108,7 @@ private:
 	string atlasTexName;
 	SDL_Texture* atlasTex = nullptr;
 
-	Particle* active[MAX_ACTIVE_PARTICLES];
+	Particle* activeParticles[MAX_ACTIVE_PARTICLES];
 	uint lastParticle = 0;
 
 	string pawsTexName;
@@ -128,6 +128,7 @@ private:
 
 
 public:
+
 	Particle lowFire;
 	Particle hardFire;
 

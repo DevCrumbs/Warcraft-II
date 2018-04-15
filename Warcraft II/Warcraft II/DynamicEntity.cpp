@@ -14,6 +14,7 @@
 #include "j1PathManager.h"
 #include "Goal.h"
 #include "j1Player.h"
+#include "j1Particles.h"
 
 #include "UILifeBar.h"
 
@@ -49,7 +50,12 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 
 DynamicEntity::~DynamicEntity()
 {
-	animation = nullptr;
+	// Remove Goals
+	brain->RemoveAllSubgoals();
+
+	if (brain != nullptr)
+		delete brain;
+	brain = nullptr;
 
 	// Remove Movement
 	if (navgraph != nullptr)
@@ -60,10 +66,14 @@ DynamicEntity::~DynamicEntity()
 		delete pathPlanner;
 	pathPlanner = nullptr;
 
-	// Remove Goals
-	if (brain != nullptr)
-		delete brain;
-	brain = nullptr;
+	if (singleUnit != nullptr)
+		delete singleUnit;
+	singleUnit = nullptr;
+
+	animation = nullptr;
+
+	isDead = true;
+	isSpawned = true;
 
 	// Remove Attack
 	currTarget = nullptr;
@@ -78,9 +88,38 @@ DynamicEntity::~DynamicEntity()
 	attackRadiusCollider = nullptr;
 
 	if (lifeBar != nullptr) {
+
 		lifeBar->toRemove = true;
 		lifeBar = nullptr;
 	}
+
+	// ----
+
+	if (particle != nullptr) {
+
+		particle->isRemove = true;
+		particle = nullptr;
+	}
+
+	// Attack
+	isStill = true;
+
+	if (currTarget != nullptr)
+		currTarget = nullptr;
+
+	if (newTarget != nullptr)
+		newTarget = nullptr;
+
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+	
+		delete *it;
+		targets.remove(*it);
+
+		it++;
+	}
+	targets.clear();
 }
 
 void DynamicEntity::Move(float dt) {}

@@ -14,6 +14,7 @@
 #include "j1Audio.h"
 #include "j1Collision.h"
 #include "j1Particles.h"
+#include "j1Particles.h"
 #include "j1Render.h"
 #include "j1Window.h"
 #include "j1Map.h"
@@ -85,7 +86,23 @@ bool j1Scene::Awake(pugi::xml_node& config)
 bool j1Scene::Start()
 {
 	bool ret = true;
+
+	active = true;
+
 	App->audio->active = true;
+	App->map->active = true;
+	App->player->active = true;
+	App->entities->active = true;
+	App->collision->active = true;
+	App->pathfinding->active = true;
+	App->pathmanager->active = true;
+	App->movement->active = true;
+	App->particles->active = true;
+
+	App->player->Start();
+	App->collision->Start();
+	App->particles->Start();
+	App->entities->Start();
 
 	// Save camera info
 	App->win->GetWindowSize(width, height);
@@ -752,8 +769,9 @@ bool j1Scene::PostUpdate()
 	bool ret = true;
 
 	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
-		ret = false;
+
 		App->gui->RemoveElem((UIElement**)&parchmentImg);
+		return false;
 	}
 
 	if (App->player->imagePrisonersVector.size() >= 2) {
@@ -784,22 +802,25 @@ bool j1Scene::CleanUp()
 	//warcraftActive = false;
 
 	// Set to nullptr the pointers to the UI elements
+	active = false;
+	App->audio->active = false;
 	App->map->active = false;
 	App->player->active = false;
 	App->entities->active = false;
 	App->collision->active = false;
 	App->pathfinding->active = false;
-	App->movement->active = false;
 	App->pathmanager->active = false;
-	active = false;
+	App->movement->active = false;
+	App->particles->active = false;
 
 	App->map->UnLoad();
 	App->player->CleanUp();
+	App->particles->CleanUp();
 	App->entities->CleanUp();
-	App->collision->CleanUp();
 	App->movement->CleanUp();
 	App->pathmanager->CleanUp();
 	App->pathfinding->CleanUp();
+	App->collision->CleanUp();
 
 	RELEASE_ARRAY(data);
 
