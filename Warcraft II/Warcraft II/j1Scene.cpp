@@ -700,7 +700,7 @@ bool j1Scene::Update(float dt)
 		terenasDialogEvent = TerenasDialog_NONE;
 		UnLoadTerenasDialog();
 	}
-	if (terenasDialogTimer.Read() >= 7000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
+	if (terenasDialogTimer.Read() >= 5000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
 		terenasDialogEvent = TerenasDialog_NONE;
 		UnLoadTerenasDialog();
 	}

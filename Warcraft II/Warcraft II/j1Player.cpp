@@ -808,6 +808,7 @@ void j1Player::RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText
 	if (App->scene->terenasDialogEvent != dialogEvent) {
 		App->scene->UnLoadTerenasDialog();
 		App->scene->terenasDialogTimer.Start();
+		App->scene->terenasDialogEvent = dialogEvent;
 		App->scene->LoadTerenasDialog(dialogEvent);
 	}
 
