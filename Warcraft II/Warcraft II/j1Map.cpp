@@ -900,9 +900,17 @@ bool j1Map::LoadLogic()
 
 					case EntityType_GRUNT:
 					case EntityType_TROLL_AXETHROWER:
+						App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+						break;
+
 					case EntityType_SHEEP:
 					case EntityType_BOAR:
-						App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+						int type = rand() % 2;
+
+						if (type == 0)
+							App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+						else
+							App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
 						break;
 					}
 				}
