@@ -467,15 +467,6 @@ bool j1Player::CleanUp()
 {
 	bool ret = true;
 
-	if (barracks != nullptr) {
-		barracks->isRemove = true;
-		barracks = nullptr;
-	}
-	if (townHall) {
-		townHall->isRemove = true;
-		townHall = nullptr;
-	}
-
 	for (; !chickenFarm.empty(); chickenFarm.pop_back())
 	{
 		chickenFarm.back()->isRemove = true;
@@ -495,8 +486,7 @@ bool j1Player::CleanUp()
 	{
 		guardTower.back()->isRemove = true;
 	}
-
-
+	
 	for (; !UIMenuInfoList.empty(); UIMenuInfoList.pop_back())
 	{
 		UIMenuInfoList.back()->toRemove = true;
@@ -517,6 +507,16 @@ bool j1Player::CleanUp()
 		imagePrisonersVector.back()->toRemove = true;
 	}
 	DeleteEntitiesMenu();
+
+	if (barracks != nullptr) {
+		barracks->isRemove = true;
+		barracks = nullptr;
+	}
+	if (townHall) {
+		townHall->isRemove = true;
+		townHall = nullptr;
+	}
+
 
 	return ret;
 }
@@ -1016,8 +1016,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 
 void j1Player::DeleteEntitiesMenu()
 {
-	if (entitySelectedStats.entitySelected == barracks)
-	{
+	if (entitySelectedStats.entitySelected == barracks) {
 		App->gui->RemoveElem((UIElement**)&produceElvenArcherButton);
 		App->gui->RemoveElem((UIElement**)&produceFootmanButton);
 		App->gui->RemoveElem((UIElement**)&producePaladinButton);
