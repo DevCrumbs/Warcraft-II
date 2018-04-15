@@ -138,7 +138,7 @@ bool j1Menu::PreUpdate()
 // Called each loop iteration
 bool j1Menu::Update(float dt)
 {
-	App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 100, 100, 100, 255);
+	App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 70, 70, 70, 255);
 
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 		if (parchment != nullptr) {

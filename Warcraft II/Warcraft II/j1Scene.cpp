@@ -121,7 +121,6 @@ bool j1Scene::Start()
 		//debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-
 		ret = LoadNewMap();
 	//	ret = App->map->Load("verticalSliceMap.tmx");
 		//debugTex = App->tex->Load(warcraftTexName.data());
@@ -171,8 +170,11 @@ bool j1Scene::LoadNewMap(int map)
 		srand(time(NULL));
 		map = rand() % numMaps;
 
+
 		static char path[25];
 		sprintf_s(path, 25, "verticalSliceMap%i.tmx", map);
+
+		LOG(path);
 
 		ret = App->map->Load(path);
 	}

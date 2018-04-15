@@ -85,7 +85,7 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 		labelInfo.text = "Congratulations! You have defeated the Horde!";
 		labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorBlue;
 	}
-	else {
+	else if (!isWin) {
 		App->audio->PlayMusic(defeatMusicPath.data(), 0.0f); //Music
 		labelInfo.text = "Oh, no! You have been defeated by the Horde!";
 		labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorRed;
