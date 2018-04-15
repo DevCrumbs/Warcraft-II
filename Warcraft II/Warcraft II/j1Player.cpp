@@ -1312,7 +1312,6 @@ void j1Player::HandleBarracksUIElem()
 			}
 			CreateToSpawnUnitLifeBar({ 72, 40 }, toSpawnUnitStats.frstInQueueBar); //To spawn unit lifeBar timer
 			toSpawnUnitStats.frstInQueueBar->SetLife(unit.toSpawnTimer.ReadSec());
-			isUnitSpawning = true;
 			break;
 		case 2:
 			switch (unit.entityType) {
@@ -1348,6 +1347,7 @@ void j1Player::HandleBarracksUIElem()
 			break;
 		}
 		unitInQueue++;
+		isUnitSpawning = true;
 	}
 }
 
