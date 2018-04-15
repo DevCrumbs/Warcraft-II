@@ -252,8 +252,9 @@ void j1App::FinishUpdate()
 		if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN && !App->menu->active)
 			toCap = !toCap;
 	*/
-	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
-		toCap = !toCap;
+	//if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+		//toCap = !toCap;
+
 	// Cap frames
 	if (!App->render->vsync && toCap) {
 		float toVsync = 1000 / capFrames;

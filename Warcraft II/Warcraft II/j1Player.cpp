@@ -62,6 +62,8 @@ bool j1Player::Update(float dt)
 
 	//check if lifeBar info change
 	CheckLifeBarUpdate();
+
+	/*
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		if (stables != nullptr) {
 			if (stables->GetIsFinishedBuilt()) {
@@ -121,8 +123,9 @@ bool j1Player::Update(float dt)
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
 			}
+	*/
 
-	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
+	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 		if (!chickenFarm.empty()) 
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)chickenFarm.back();
@@ -138,7 +141,7 @@ bool j1Player::Update(float dt)
 				}
 			}
 		
-	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_REPEAT) {
+	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN) {
 		App->audio->PlayFx(6, 0); //Gold mine sound
 		AddGold(500);
 		App->scene->hasGoldChanged = true;

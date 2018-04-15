@@ -16,7 +16,8 @@
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UIImage.h"
-
+#include "UICursor.h"
+#include "j1Menu.h"
 
 
 
@@ -54,6 +55,8 @@ bool j1FinishGame::Start()
 	LoadSceneOne(App->player->isWin);
 
 	bg = App->tex->Load(bgTexName.data());
+
+	App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 
 	//DeleteScreen();
 	return true;
