@@ -455,7 +455,7 @@ void j1Player::CheckUnitSpawning()
 					fPoint pos = { (float)barracksTilePos.x,(float)barracksTilePos.y };
 
 					App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
-					App->audio->PlayFx(21, 0);
+					App->audio->PlayFx(18, 0);
 				}
 			}
 				break;
