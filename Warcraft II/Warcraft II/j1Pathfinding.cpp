@@ -18,7 +18,7 @@ j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), hei
 // Destructor
 j1PathFinding::~j1PathFinding()
 {
-	RELEASE_ARRAY(walkabilityMap);
+	//RELEASE_ARRAY(walkabilityMap);
 
 	trigger = nullptr;
 }
@@ -29,7 +29,7 @@ bool j1PathFinding::CleanUp()
 	LOG("Freeing pathfinding library");
 
 	last_path.clear();
-	RELEASE_ARRAY(walkabilityMap);
+	//RELEASE_ARRAY(walkabilityMap);
 	return true;
 }
 
@@ -39,16 +39,16 @@ void j1PathFinding::SetMap(uint width, uint height, uchar* data)
 	this->width = width;
 	this->height = height;
 
-	RELEASE_ARRAY(walkabilityMap);
-	walkabilityMap = new uchar[width*height];
-	memcpy(walkabilityMap, data, width*height);
+	//RELEASE_ARRAY(walkabilityMap);
+	//walkabilityMap = new uchar[width*height];
+	//memcpy(walkabilityMap, data, width*height);
 }
 
 // Utility: return true if pos is inside the map boundaries
 bool j1PathFinding::CheckBoundaries(const iPoint& pos) const
 {
-	return (pos.x >= 0 && pos.x <= (int)(width - 1) &&
-		pos.y >= 0 && pos.y <= (int)(height - 1));
+	return (pos.x >= 0 && pos.x <= (int)(App->scene->w - 1) &&
+		pos.y >= 0 && pos.y <= (int)(App->scene->h - 1));
 }
 
 // Utility: returns true if the tile is walkable
@@ -63,7 +63,7 @@ int j1PathFinding::GetTileAt(const iPoint& pos) const
 {
 	if (CheckBoundaries(pos))
 		// Scene map
-		return App->scene->data[(pos.y*width) + pos.x];
+		return App->scene->data[(pos.y*App->scene->w) + pos.x];
 
 	return INVALID_WALK_CODE;
 }
