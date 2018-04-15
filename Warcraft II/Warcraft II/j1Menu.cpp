@@ -71,7 +71,7 @@ bool j1Menu::Awake(pugi::xml_node& config)
 	mageTowerSound = buildingSounds.attribute("mageTower").as_string();
 	stablesSound = buildingSounds.attribute("stables").as_string();
 	repairBuildingSound = buildingSounds.attribute("repair").as_string();
-	destroyBuildingSound = buildingSounds.attribute("buildingDestroy").as_string(); 
+	destroyBuildingSound = buildingSounds.attribute("destroyBuilding").as_string(); 
 
 	pugi::xml_node unitsSounds = sounds.child("unitsPaths");
 	humanDeadSound = unitsSounds.attribute("humanDeadSound").as_string();
@@ -446,33 +446,34 @@ void j1Menu::DeleteSettings() {
 
 void j1Menu::ChargeGameSounds()
 {
-	App->audio->LoadFx(mainButtonSound.data()); //1 Normal bttn sound
-	App->audio->LoadFx(buildingConstructionSound.data()); //2 Construction building
-	App->audio->LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
-	App->audio->LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
-	App->audio->LoadFx(chickenFarmSound.data()); //5 chicken farm sound
-	App->audio->LoadFx(goldMineSound.data()); //6 gold mine sound
-	App->audio->LoadFx(gryphonAviarySound.data()); //7 gryphon aviary sound
-	App->audio->LoadFx(mageTowerSound.data()); //8 mage tower sound
-	App->audio->LoadFx(stablesSound.data()); //9 stables sound
-	App->audio->LoadFx(repairBuildingSound.data()); //10 repair building sound
-	App->audio->LoadFx(destroyBuildingSound.data()); //11 destroy building sound
+	bool ret = false;
 
-	App->audio->LoadFx(humanDeadSound.data()); //12
-	App->audio->LoadFx(orcDeadSound.data()); //13
-	App->audio->LoadFx(prisonerRescueSound.data()); //14
-	App->audio->LoadFx(crittersBoarDead.data()); //15
-	App->audio->LoadFx(crittersSheepDead.data()); //16
-	App->audio->LoadFx(archerGoToPlaceSound.data()); //17
-	App->audio->LoadFx(archerReadySound.data()); //18
-	App->audio->LoadFx(archerSelectedSound.data()); //19
-	App->audio->LoadFx(footmanGoToPlaceSound.data()); //20
-	App->audio->LoadFx(footmanReadySound.data()); //21
-	App->audio->LoadFx(footmanSelectedSound.data()); //22
-	App->audio->LoadFx(axeThrowSound.data()); //23
-	App->audio->LoadFx(bowFireSound.data()); //24
-	App->audio->LoadFx(swordSound.data()); //25
+	ret = App->audio->LoadFx(mainButtonSound.data()); //1 Normal bttn sound
+	ret = App->audio->LoadFx(buildingConstructionSound.data()); //2 Construction building
+	ret = App->audio->LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
+	ret = App->audio->LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
+	ret = App->audio->LoadFx(chickenFarmSound.data()); //5 chicken farm sound
+	ret = App->audio->LoadFx(goldMineSound.data()); //6 gold mine sound
+	ret = App->audio->LoadFx(gryphonAviarySound.data()); //7 gryphon aviary sound
+	ret = App->audio->LoadFx(mageTowerSound.data()); //8 mage tower sound
+	ret = App->audio->LoadFx(stablesSound.data()); //9 stables sound
+	ret = App->audio->LoadFx(repairBuildingSound.data()); //10 repair building sound
+	ret = App->audio->LoadFx(destroyBuildingSound.data()); //11 destroy building sound
+
+	ret = App->audio->LoadFx(humanDeadSound.data()); //12
+	ret = App->audio->LoadFx(orcDeadSound.data()); //13
+	ret = App->audio->LoadFx(prisonerRescueSound.data()); //14
+	ret = App->audio->LoadFx(crittersBoarDead.data()); //15
+	ret = App->audio->LoadFx(crittersSheepDead.data()); //16
+	ret = App->audio->LoadFx(archerGoToPlaceSound.data()); //17
+	ret = App->audio->LoadFx(archerReadySound.data()); //18
+	ret = App->audio->LoadFx(archerSelectedSound.data()); //19
+	ret = App->audio->LoadFx(footmanGoToPlaceSound.data()); //20
+	ret = App->audio->LoadFx(footmanReadySound.data()); //21
+	ret = App->audio->LoadFx(footmanSelectedSound.data()); //22
+	ret = App->audio->LoadFx(axeThrowSound.data()); //23
+	ret = App->audio->LoadFx(bowFireSound.data()); //24
+	ret = App->audio->LoadFx(swordSound.data()); //25
 
 	App->isSoundCharged = true;
 }
-

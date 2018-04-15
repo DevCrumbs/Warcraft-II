@@ -148,7 +148,7 @@ void PlayerCannonTower::TowerStateMachine(float dt)
 				attackTimer.Start();
 				DetermineCannonBulletDirection();
 				CreateCannonBullet();
-				//App->audio->PlayFx(24, 0); //Arrow sound
+				App->audio->PlayFx(24, 0); //Arrow sound
 			}
 		}
 	}

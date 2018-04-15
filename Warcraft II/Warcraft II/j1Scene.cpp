@@ -91,7 +91,6 @@ bool j1Scene::Start()
 
 	active = true;
 
-	App->audio->active = true;
 	App->map->active = true;
 	App->player->active = true;
 	App->entities->active = true;
