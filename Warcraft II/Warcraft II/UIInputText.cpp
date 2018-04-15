@@ -28,14 +28,13 @@ void UIInputText::Update(float dt) {
 			App->input->isPresed = false;
 		}
 
-		/*
 		if (App->input->GetKey(SDL_SCANCODE_BACKSPACE) == KEY_DOWN) {
 			if (!text.empty()) {
 				text.pop_back();
 				App->font->CalcSize(text.data(), r.w, r.h);
 				texture = App->font->Print(text.data());
 			}
-		}*/
+		}
 		App->render->Blit(texture, original_pos.x, original_pos.y, &r);
 	}
 }

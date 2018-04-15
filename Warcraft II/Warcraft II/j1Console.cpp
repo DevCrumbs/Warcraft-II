@@ -23,9 +23,8 @@ bool j1Console::Start()
 }
 
 
-bool j1Console::Update(float dt) 
-{
-	/*
+bool j1Console::Update(float dt) {
+
 	if (App->input->GetKey(SDL_SCANCODE_GRAVE) == KEY_DOWN) {
 		if (!isConsole) {
 			isConsole = true;
@@ -48,7 +47,7 @@ bool j1Console::Update(float dt)
 			inputText->CleanText();
 		}
 	}
-	*/
+
 
 	return true;
 }

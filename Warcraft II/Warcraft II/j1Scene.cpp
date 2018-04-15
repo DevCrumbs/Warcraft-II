@@ -73,7 +73,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 
 	mainThemeMusicName = audio.child("mainTheme").attribute("path").as_string();
 
-	//LoadKeys(config.child("buttons"));
+	LoadKeys(config.child("buttons"));
 
 	//Load camera attributes
 	pugi::xml_node camera = config.child("camera");
@@ -295,26 +295,7 @@ bool j1Scene::PreUpdate()
 	unitInfo.attackRadius = 2;
 	unitInfo.maxSpeed = 80.0f;
 
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
-
-		iPoint tile = { 10,10 };
-
-		// Make sure that there are no entities on the spawn tile and that the tile is walkable
-		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-			tile = App->player->FindClosestValidTile(tile);
-
-		// Make sure that the spawn tile is valid
-		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
-
-		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
-
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
-		//}
-	}
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN) {
 
 		iPoint tile = { 10,10 };
 
@@ -333,26 +314,7 @@ bool j1Scene::PreUpdate()
 		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
 		//}
 	}
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
-
-		iPoint tile = { 10,10 };
-
-		// Make sure that there are no entities on the spawn tile and that the tile is walkable
-		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-			tile = App->player->FindClosestValidTile(tile);
-
-		// Make sure that the spawn tile is valid
-		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
-
-		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
-
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, this);
-		//}
-	}
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 
 		iPoint tile = { 10,10 };
 
@@ -362,49 +324,11 @@ bool j1Scene::PreUpdate()
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
-		App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, App->player);
-	}
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN) {
-
-		iPoint tile = { 10,10 };
-
-		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-			tile = App->player->FindClosestValidTile(tile);
-
-		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
-		App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(EntityType_SHEEP), unitInfo, App->player);
-	}
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN) {
-
-		iPoint tile = { 10,10 };
-
-		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-			tile = App->player->FindClosestValidTile(tile);
-
-		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
-		App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
-	}
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
-
-		iPoint tile = { 10,10 };
-
-		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-			tile = App->player->FindClosestValidTile(tile);
-
-		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; 
 		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
 	}
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN) {
+
+	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
 
 		iPoint tile = { 10,10 };
 
@@ -416,6 +340,35 @@ bool j1Scene::PreUpdate()
 
 		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
 		App->entities->AddEntity(EntityType_KHADGAR, pos, App->entities->GetUnitInfo(EntityType_KHADGAR), unitInfo, App->player);
+	}
+
+
+	// 2: spawn a Grunt with priority 1
+	unitInfo.sightRadius = 5;
+	unitInfo.attackRadius = 2;
+	unitInfo.maxSpeed = 50.0f;
+
+	maxLife = 20;
+	currLife = (int)maxLife;
+
+	if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN) {
+
+		iPoint tile = { 15,11 };
+
+		// Make sure that there are no entities on the spawn tile and that the tile is walkable
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = App->player->FindClosestValidTile(tile);
+
+		// Make sure that the spawn tile is valid
+		//if (tile.x != -1 && tile.y != -1) { // TODO: uncomment this line
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
+		App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, this);
+		//}
 	}
 
 	/*
@@ -484,6 +437,28 @@ bool j1Scene::PreUpdate()
 	}
 	*/
 
+	fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
+
+	// 3: spawn a Sheep
+	unitInfo.sightRadius = 0;
+	unitInfo.attackRadius = 0;
+	unitInfo.priority = 1;
+	maxLife = 10;
+	currLife = (int)maxLife;
+
+	if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+		App->entities->AddEntity(EntityType_SHEEP, pos, (EntityInfo&)critterSheepInfo, unitInfo, this);
+
+	// 4: spawn a Boar
+	unitInfo.sightRadius = 0;
+	unitInfo.attackRadius = 0;
+	unitInfo.priority = 2;
+	maxLife = 20;
+	currLife = (int)maxLife;
+
+	if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+		App->entities->AddEntity(EntityType_BOAR, pos, (EntityInfo&)critterBoarInfo, unitInfo, this);
+
 	return ret;
 }
 
@@ -500,15 +475,11 @@ bool j1Scene::Update(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 	// ---------------------------------------------------------------------
 
-	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
-		isDebug = !isDebug;
-
 	// Draw
 	App->map->Draw(); // map
 	App->particles->DrawPaws(); // paws particles
 	App->entities->Draw(); // entities
 
-	/*
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		debugDrawAttack = !debugDrawAttack;
 
@@ -517,7 +488,6 @@ bool j1Scene::Update(float dt)
 
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
-		*/
 
 	//App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 
@@ -745,6 +715,18 @@ bool j1Scene::Update(float dt)
 		//App->map->CreateNewMap();
 	}
 
+//	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
+	//	App->win->scale += 0.05f;
+
+//	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
+//		App->win->scale -= 0.05f;
+
+	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
+	}
+
 	if (parchmentImg != nullptr)
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
@@ -823,7 +805,7 @@ bool j1Scene::PostUpdate()
 			isStartedFinalTransition = true;
 		}
 	}
-	else if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
+	else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
 	
 		App->player->isWin = true;
 		App->fade->FadeToBlack(this, App->finish);
@@ -838,7 +820,7 @@ bool j1Scene::PostUpdate()
 	}
 	// -----
 	
-	if (((App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) && !App->player->isUnitSpawning) || (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)) {
+	if (((App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) && !App->player->isUnitSpawning)|| App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
 
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
@@ -909,10 +891,10 @@ void j1Scene::DebugKeys()
 
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 		debugDrawMap = !debugDrawMap;
-*/
+	*/
 
 	// F1: start from the beginning of the first level
-	//if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
 		/*
 		if (index == 0)
 			App->entities->playerData->position = App->entities->playerData->startPos;
@@ -921,17 +903,17 @@ void j1Scene::DebugKeys()
 
 		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
-	//}
+	}
 
 	// F2: start from the beginning of the current level
-	//if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
 		/*
 		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
-	//}
+	}
 
 	// F4: change between maps
-	//if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN) {
 		/*
 		if (index == 0)
 			index = 1;
@@ -940,25 +922,25 @@ void j1Scene::DebugKeys()
 
 		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
-	//}
+	}
 
 	// F5: save the current state
-	//if (App->input->GetKey(buttonSaveGame) == KEY_DOWN) {
-	//	App->SaveGame();
-	//}
+	if (App->input->GetKey(buttonSaveGame) == KEY_DOWN) {
+		App->SaveGame();
+	}
 
 	// F6: load the previous state
-	//if (App->input->GetKey(buttonLoadGame) == KEY_DOWN) {
-	//	App->LoadGame();
-	//}
+	if (App->input->GetKey(buttonLoadGame) == KEY_DOWN) {
+		App->LoadGame();
+	}
 
 	// F7: fullscreen
 	if (App->input->GetKey(buttonFullScreen) == KEY_DOWN)
 		App->win->SetFullscreen();
 
 	// F10: God mode
-	//if (App->input->GetKey(buttonGodMode) == KEY_DOWN)
-		//god = !god;
+	if (App->input->GetKey(buttonGodMode) == KEY_DOWN)
+		god = !god;
 
 	// 1, 2, 3: camera blit
 	/*
@@ -971,6 +953,7 @@ void j1Scene::DebugKeys()
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
 		App->map->cameraBlit = !App->map->cameraBlit;
 		*/
+
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{

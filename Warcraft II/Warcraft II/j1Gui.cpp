@@ -121,8 +121,8 @@ bool j1Gui::Update(float dt)
 
 	bool ret = true;
 
-	//if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
-		//isDebug = !isDebug;
+	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
+		isDebug = !isDebug;
 
 	list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin();
 

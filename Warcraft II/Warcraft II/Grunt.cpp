@@ -98,9 +98,7 @@ void Grunt::Move(float dt)
 
 			isDead = true;
 			App->player->enemiesKill++;
-
-			App->player->currentGold += 10;
-
+			App->player->currentGold += 25;
 			App->scene->hasGoldChanged = true;
 
 			// Remove the entity from the unitsSelected list
