@@ -85,8 +85,7 @@ void PlayerGuardTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, Colli
 	case CollisionState_OnEnter:
 
 		//Every time a enemy enters range it is added to the attack queue
-		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
+		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)) {
 
 			LOG("Tower enter");
 			enemyAttackList.push_back(c2->entity);
@@ -103,8 +102,7 @@ void PlayerGuardTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, Colli
 	case CollisionState_OnExit:
 
 		//Every time the enemy dies or exits sight this enemy is deleted from the atack queue
-		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
+		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)) {
 
 			LOG("Tower exit");
 
