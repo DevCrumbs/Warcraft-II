@@ -42,11 +42,22 @@ bool j1Player::Start()
 {
 	bool ret = true;
 
+	currentGold = totalGold = 0;
+	currentFood = 0;
+	unitProduce = 0u;
+	enemiesKill = 0u;
+	buildDestroy = 0u;
+	isWin = false;
+
+	totalEnemiesKilled = 0;
+	totalUnitsDead = 0;
+
 	startGameTimer.Start();
 	return ret;
 }
 
 bool j1Player::Update(float dt) {
+
 	CheckIfPlaceBuilding();
 	CheckUnitSpawning();
 
@@ -471,41 +482,50 @@ bool j1Player::CleanUp()
 	{
 		chickenFarm.back()->isRemove = true;
 	}
+	chickenFarm.clear();
 
 	for (; !scoutTower.empty(); scoutTower.pop_back())
 	{
 		scoutTower.back()->isRemove = true;
 	}
+	scoutTower.clear();
 
 	for (; !cannonTower.empty(); cannonTower.pop_back())
 	{
 		cannonTower.back()->isRemove = true;
 	}
+	cannonTower.clear();
 
 	for (; !guardTower.empty(); guardTower.pop_back())
 	{
 		guardTower.back()->isRemove = true;
 	}
-	
+	guardTower.clear();
+
 	for (; !UIMenuInfoList.empty(); UIMenuInfoList.pop_back())
 	{
 		UIMenuInfoList.back()->toRemove = true;
 	}
+	UIMenuInfoList.clear();
 
 	for (; !goldMine.empty(); goldMine.pop_back())
 	{
 		goldMine.back()->isRemove = true;
 	}
+	goldMine.clear();
 
 	for (; !runestone.empty(); runestone.pop_back())
 	{
 		runestone.back()->isRemove = true;
 	}
+	runestone.clear();
 
 	for (; !imagePrisonersVector.empty(); imagePrisonersVector.pop_back())
 	{
 		imagePrisonersVector.back()->toRemove = true;
 	}
+	imagePrisonersVector.clear();
+
 	DeleteEntitiesMenu();
 
 	if (barracks != nullptr) {
@@ -631,14 +651,14 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 			else if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
 
-				App->audio->PlayFx(6, 0); //Gold mine sound
-				/*list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
-				if (pene.size() > 0) {
-					pene.front()->SetBlitState(false);
-				}*/
 				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
 				if (App->entities->IsNearSoldiers(pos, 7)) {
 
+					App->audio->PlayFx(6, 0); //Gold mine sound
+					/*list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
+					if (pene.size() > 0) {
+						pene.front()->SetBlitState(false);
+					}*/
 					int random = rand() % 4;
 					switch (random) {
 					case 0:
@@ -658,9 +678,31 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					App->scene->hasGoldChanged = true;
 					staticEntity->buildingState = BuildingState_Destroyed;
 				}
+				else {
+					App->scene->UnLoadTerenasDialog();
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
 			}
-			else if (staticEntity->staticEntityType == EntityType_RUNESTONE)
-				staticEntity->buildingState = BuildingState_Destroyed;				
+			else if (staticEntity->staticEntityType == EntityType_RUNESTONE && staticEntity->buildingState == BuildingState_Normal) {
+
+				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
+				if (App->entities->IsNearSoldiers(pos, 7)) {
+					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
+					while (it != App->entities->activeDynamicEntities.end()) {
+						(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
+						it++;
+					}
+					staticEntity->buildingState = BuildingState_Destroyed;
+				}
+				else {
+					App->scene->UnLoadTerenasDialog();
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_RUNESTONE;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
+			}
 				
 				break;
 		case EntitiesEvent_HOVER:
@@ -1045,14 +1087,14 @@ void j1Player::DeleteEntitiesMenu()
 
 	if (!groupSelectedStats.units.empty()) {
 
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity1Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity2Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity3Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity4Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity5Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity6Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity7Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity8Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity1Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity2Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity3Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity4Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity5Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity6Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity7Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity8Icon);
 
 		/*
 		groupSelectedStats.lifeBar1->toRemove = true;
@@ -1065,10 +1107,10 @@ void j1Player::DeleteEntitiesMenu()
 		groupSelectedStats.lifeBar8->toRemove = true;
 		*/
 
-			if (commandPatrolButton != nullptr)
-				App->gui->RemoveElem((UIElement**)&commandPatrolButton);
-			if (commandStopButton != nullptr)
-				App->gui->RemoveElem((UIElement**)&commandStopButton);
+		if (commandPatrolButton != nullptr)
+			App->gui->RemoveElem((UIElement**)&commandPatrolButton);
+		if (commandStopButton != nullptr)
+			App->gui->RemoveElem((UIElement**)&commandStopButton);
 
 		groupSelectedStats.units.clear();
 	}
@@ -1364,32 +1406,59 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 			*/
 			if (UIelem == produceFootmanButton) {
-				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize && currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
-					App->audio->PlayFx(1, 0); //Button sound
-					currentGold -= 500;
-					App->scene->hasGoldChanged = true;
-					//Timer for the spawning
-					j1Timer spawnTimer;
-					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_FOOTMAN);
-					toSpawnUnitQueue.push(toSpawnUnit);
-					toSpawnUnitQueue.back().toSpawnTimer.Start();
+				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
+					if (currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
+						App->audio->PlayFx(1, 0); //Button sound
+						currentGold -= 500;
+						App->scene->hasGoldChanged = true;
+						//Timer for the spawning
+						j1Timer spawnTimer;
+						ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_FOOTMAN);
+						toSpawnUnitQueue.push(toSpawnUnit);
+						toSpawnUnitQueue.back().toSpawnTimer.Start();
+					}
+					else {
+						App->scene->UnLoadTerenasDialog();
+						App->scene->terenasDialogTimer.Start();
+						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
+						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+						}
 				}
-				else if (currentGold < footmanCost)
+				else if (currentGold < footmanCost) {
 					App->audio->PlayFx(3, 0); //Button error sound
+					App->scene->UnLoadTerenasDialog();
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_GOLD;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
+				
 			}
 			if (UIelem == produceElvenArcherButton) {
-				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize && currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
-					App->audio->PlayFx(1, 0); //Button sound
-					currentGold -= 400;
-					App->scene->hasGoldChanged = true;
-					//Timer for the spawning
-					j1Timer spawnTimer;
-					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
-					toSpawnUnitQueue.push(toSpawnUnit);
-					toSpawnUnitQueue.back().toSpawnTimer.Start();
+				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
+					if (currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
+						App->audio->PlayFx(1, 0); //Button sound
+						currentGold -= 400;
+						App->scene->hasGoldChanged = true;
+						//Timer for the spawning
+						j1Timer spawnTimer;
+						ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
+						toSpawnUnitQueue.push(toSpawnUnit);
+						toSpawnUnitQueue.back().toSpawnTimer.Start();
+					}
+					else {
+						App->scene->UnLoadTerenasDialog();
+						App->scene->terenasDialogTimer.Start();
+						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
+						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					}
 				}
-				else if (currentGold < elvenArcherCost)
+				else if (currentGold < elvenArcherCost) {
 					App->audio->PlayFx(3, 0); //Button error sound
+					App->scene->UnLoadTerenasDialog();
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_GOLD;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
 				if (currentGold >= mageCost  && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
