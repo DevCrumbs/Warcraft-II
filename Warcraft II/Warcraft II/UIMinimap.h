@@ -75,6 +75,9 @@ private:
 	int maxOffsetX = 0;
 	int maxOffsetY = 0;
 
+	list<DynamicEntity*>* activeDynamicEntities;
+	list<StaticEntity*>* activeStaticEntities;
+
 };
 
 #endif
