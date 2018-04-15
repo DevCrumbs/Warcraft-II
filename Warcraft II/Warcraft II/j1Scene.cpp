@@ -696,7 +696,11 @@ bool j1Scene::Update(float dt)
 
 	//Checks if resources have changed to update building menu and gold label
 
-	if (terenasDialogTimer.Read() >= 30000 && terenasDialogEvent != TerenasDialog_NONE) {
+	if (terenasDialogTimer.Read() >= 25000 && terenasDialogEvent == TerenasDialog_START) {
+		terenasDialogEvent = TerenasDialog_NONE;
+		UnLoadTerenasDialog();
+	}
+	if (terenasDialogTimer.Read() >= 7000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
 		terenasDialogEvent = TerenasDialog_NONE;
 		UnLoadTerenasDialog();
 	}

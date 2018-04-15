@@ -681,7 +681,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					App->scene->UnLoadTerenasDialog();
 					staticEntity->buildingState = BuildingState_Destroyed;
 				}
-				else {
+				else if(App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE){
 					App->scene->UnLoadTerenasDialog();
 					App->scene->terenasDialogTimer.Start();
 					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
@@ -693,14 +693,16 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
 				if (App->entities->IsNearSoldiers(pos, 7)) {
 					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
-					while (it != App->entities->activeDynamicEntities.end() && (*it)->entitySide == EntitySide_Player) {
-						(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
+					while (it != App->entities->activeDynamicEntities.end()) {
+						if ((*it)->entitySide == EntitySide_Player) {
+							(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
+						}
 						it++;
 					}
 					App->scene->UnLoadTerenasDialog();
 					staticEntity->buildingState = BuildingState_Destroyed;
 				}
-				else {
+				else if (App->scene->terenasDialogEvent != TerenasDialog_RUNESTONE) {
 					App->scene->UnLoadTerenasDialog();
 					App->scene->terenasDialogTimer.Start();
 					App->scene->terenasDialogEvent = TerenasDialog_RUNESTONE;
@@ -799,6 +801,7 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 }
 void j1Player::RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos) {
 
+	if(App->scene->terenasDialogEvent != dialogEvent)
 	App->scene->UnLoadTerenasDialog();
 	App->scene->terenasDialogTimer.Start();
 	App->scene->LoadTerenasDialog(dialogEvent);
@@ -1473,8 +1476,11 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_FOOTMAN);
 						toSpawnUnitQueue.push(toSpawnUnit);
 						toSpawnUnitQueue.back().toSpawnTimer.Start();
+						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
+							App->scene->UnLoadTerenasDialog();
+						}
 					}
-					else {
+					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD){
 						App->scene->UnLoadTerenasDialog();
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
@@ -1483,10 +1489,12 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 				else if (currentGold < footmanCost) {
 					App->audio->PlayFx(3, 0); //Button error sound
-					App->scene->UnLoadTerenasDialog();
-					App->scene->terenasDialogTimer.Start();
-					App->scene->terenasDialogEvent = TerenasDialog_GOLD;
-					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
+						App->scene->UnLoadTerenasDialog();
+						App->scene->terenasDialogTimer.Start();
+						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
+						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					}
 				}
 				
 			}
@@ -1501,8 +1509,11 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
 						toSpawnUnitQueue.push(toSpawnUnit);
 						toSpawnUnitQueue.back().toSpawnTimer.Start();
+						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
+							App->scene->UnLoadTerenasDialog();
+						}
 					}
-					else {
+					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
 						App->scene->UnLoadTerenasDialog();
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
@@ -1511,10 +1522,12 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 				else if (currentGold < elvenArcherCost) {
 					App->audio->PlayFx(3, 0); //Button error sound
-					App->scene->UnLoadTerenasDialog();
-					App->scene->terenasDialogTimer.Start();
-					App->scene->terenasDialogEvent = TerenasDialog_GOLD;
-					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
+						App->scene->UnLoadTerenasDialog();
+						App->scene->terenasDialogTimer.Start();
+						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
+						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					}
 				}
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
