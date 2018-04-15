@@ -33,7 +33,7 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 }
 
 ChickenFarm::~ChickenFarm() {
-	App->player->currentFood -= 4;
+	App->player->currentFood -= 3;
 	App->scene->hasFoodChanged = true;
 };
 
@@ -47,7 +47,7 @@ void ChickenFarm::Move(float dt)
 	
 	if (constructionTimer.Read() >= (constructionTime * 1000) && isBuilt == false) {
 		isBuilt = true;
-		App->player->currentFood += 4;
+		App->player->currentFood += 3;
 		App->scene->hasFoodChanged = true;
 
 	}
