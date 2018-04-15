@@ -694,9 +694,8 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				if (App->entities->IsNearSoldiers(pos, 7)) {
 					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
 					while (it != App->entities->activeDynamicEntities.end()) {
-						if ((*it)->entitySide == EntitySide_Player) {
+						if ((*it)->entitySide == EntitySide_Player) 
 							(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
-						}
 						it++;
 					}
 					App->scene->UnLoadTerenasDialog();

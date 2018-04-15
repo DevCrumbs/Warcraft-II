@@ -791,13 +791,13 @@ bool j1Scene::PostUpdate()
 		return false;
 	}
 
-	if (App->player->imagePrisonersVector.size() >= 2) {
+	if (App->player->imagePrisonersVector.size() >= 2 || App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
 		App->player->isWin = true;
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
 	}
 	
-	if (App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) {
+	if ((App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) || App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
@@ -1289,7 +1289,7 @@ void j1Scene::LoadResourcesLabels()
 
 void j1Scene::UpdateResourcesLabels()
 {
-	goldLabel->SetText(to_string(App->player->currentGold));
+	//goldLabel->SetText(to_string(App->player->currentGold));
 	foodLabel->SetText(to_string(App->player->currentFood));
 }
 void j1Scene::UnLoadResourcesLabels()
