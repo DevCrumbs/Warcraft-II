@@ -56,7 +56,7 @@ void UIElement::Draw() const
 		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
 	}
 
-	if (texArea.w != 0)
+	if (texArea.w != 0 && App->gui->GetAtlas() != nullptr)
 	{
 		if (!isInWorld)
 			App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);

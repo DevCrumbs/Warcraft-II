@@ -25,6 +25,7 @@ CritterBoar::CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	// XML loading
 	/// Animations
 	CritterBoarInfo info = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
+	this->unitInfo = this->critterBoarInfo.unitInfo;
 
 	this->critterBoarInfo.up = info.up;
 	this->critterBoarInfo.down = info.down;
@@ -76,6 +77,9 @@ void CritterBoar::Move(float dt)
 		// Remove the entity from the unitsSelected list
 		App->entities->RemoveUnitFromUnitsSelected(this);
 
+		// If the player dies, remove all their goals
+		brain->RemoveAllSubgoals();
+
 		// Remove Movement (so other units can walk above them)
 		App->entities->InvalidateMovementEntity(this);
 
@@ -85,9 +89,6 @@ void CritterBoar::Move(float dt)
 
 		// Invalidate colliders
 		entityCollider->isValid = false;
-
-		// If the player dies, remove all their goals
-		brain->RemoveAllSubgoals();
 	}
 
 	if (!isDead) {

@@ -10,7 +10,7 @@
 #include <string>
 using namespace std;
 
-#define MS_PATHFINDING 2.0
+#define MS_PATHFINDING 8.0
 
 // Modules
 class j1Window;

@@ -64,10 +64,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	/// Do not change this order -->
 	AddModule(pathfinding);
 	AddModule(collision);
-	AddModule(particles);
 	AddModule(movement);
 	AddModule(pathmanager);
-
+	AddModule(entities);
 	/// <-- Do not change this order
 
 	AddModule(font);
@@ -75,9 +74,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(player);
 
 	AddModule(scene);
-	AddModule(entities);
+	AddModule(particles);
 	AddModule(finish);
-
 	AddModule(console);
 	AddModule(gui);
 
@@ -93,6 +91,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	entities->active = false;
 	collision->active = false;
 	pathfinding->active = false;
+	pathmanager->active = false;
+	movement->active = false;
 }
 
 // Destructor

@@ -24,7 +24,6 @@ enum MenuActions
 	MenuActions_SLIDERFX,
 	MenuActions_SLIDERMUSIC
 };
-
 struct SliderStruct
 {
 	UISlider* slider = nullptr;
@@ -131,6 +130,8 @@ private:
 	string bowFireSound;
 	string swordSound;
 
+	bool isExit = false;
+	bool isFadetoScene = false;
 public:
 	uint tab_button = 0;
 	

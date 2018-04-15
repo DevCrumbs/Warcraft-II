@@ -16,7 +16,6 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
 	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-	//uint i = App->scene->data[App->scene->w * buildingTile.y + buildingTile.x];
 	App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
 	App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
 	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
@@ -35,7 +34,7 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 
 ChickenFarm::~ChickenFarm() {
 	App->player->currentFood -= 4;
-	App->scene->hasFoodChanged = FoodChange_LESS;
+	App->scene->hasFoodChanged = true;
 };
 
 void ChickenFarm::Move(float dt)
@@ -49,7 +48,7 @@ void ChickenFarm::Move(float dt)
 	if (constructionTimer.Read() >= (constructionTime * 1000) && isBuilt == false) {
 		isBuilt = true;
 		App->player->currentFood += 4;
-		App->scene->hasFoodChanged = FoodChange_ADD;
+		App->scene->hasFoodChanged = true;
 
 	}
 }

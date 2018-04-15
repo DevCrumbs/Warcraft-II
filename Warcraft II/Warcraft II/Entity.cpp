@@ -143,11 +143,14 @@ bool Entity::CreateEntityCollider(EntitySide entitySide, bool createOffset)
 	collider.push_back(App->collision->CreateCollider(rect));
 	entityCollider = App->collision->CreateAndAddColliderGroup(collider, collType, App->entities, this);
 
-	if (entityCollider != nullptr)
-		return true;
+	if (entityCollider != nullptr) {
 
-	if (createOffset)
-		entityCollider->CreateOffsetCollider();
+		if (createOffset) {
+			entityCollider->CreateOffsetCollider();
+		}
+
+		return true;
+	}
 
 	return false;
 }

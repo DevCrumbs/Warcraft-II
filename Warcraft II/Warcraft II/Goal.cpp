@@ -279,7 +279,7 @@ void Goal_AttackTarget::Terminate()
 		return;
 
 	/// The target has been removed from another unit!!!
-	if (targetInfo->isRemoved) {
+	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		// Remove the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
@@ -310,6 +310,7 @@ void Goal_AttackTarget::Terminate()
 	// -----
 
 	targetInfo = nullptr;
+
 	owner->SetUnitState(UnitState_Idle);
 }
 

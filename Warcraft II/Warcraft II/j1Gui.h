@@ -90,6 +90,7 @@ public:
 	UICursor* CreateUICursor(UICursor_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 
 	bool DestroyElement(UIElement** elem);
+	bool RemoveElem(UIElement ** elem);
 	bool ClearAllUI();
 	bool ClearMapTextures();
 

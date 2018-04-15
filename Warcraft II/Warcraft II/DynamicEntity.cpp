@@ -13,6 +13,7 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 #include "Goal.h"
+#include "j1Player.h"
 
 #include "UILifeBar.h"
 
@@ -76,8 +77,10 @@ DynamicEntity::~DynamicEntity()
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
 
-	if (lifeBar != nullptr)
-		App->gui->DestroyElement((UIElement**)&lifeBar);
+	if (lifeBar != nullptr) {
+		lifeBar->toRemove = true;
+		lifeBar = nullptr;
+	}
 }
 
 void DynamicEntity::Move(float dt) {}

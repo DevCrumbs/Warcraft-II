@@ -22,7 +22,7 @@ WatchTower::WatchTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	texArea = &watchTowerInfo.completeTexArea;
 
 	//Colliders
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, watchTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 	sightRadiusCollider->isTrigger = true;
 	entityCollider->isTrigger = true;

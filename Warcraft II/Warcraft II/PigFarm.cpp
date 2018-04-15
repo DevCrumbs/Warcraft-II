@@ -17,7 +17,7 @@ PigFarm::PigFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const PigF
 
 	texArea = &pigFarmInfo.completeTexArea;
 
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	entityCollider->isTrigger = true;
 }
 

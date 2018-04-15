@@ -14,6 +14,7 @@
 #include "Goal.h"
 #include "j1Audio.h"
 #include "j1Particles.h"
+#include "j1Player.h"
 
 #include "UILifeBar.h"
 
@@ -97,12 +98,26 @@ void TrollAxethrower::Move(float dt)
 			App->audio->PlayFx(13, 0);
 
 			isDead = true;
+			App->player->enemiesKill++;
+
+
+			if (particle != nullptr) {
+
+				particle->isRemove = true;
+				particle = nullptr;
+			}
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
+			// Initialize the goals
+			brain->RemoveAllSubgoals();
+
+			unitState = UnitState_Idle;
+
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
+			App->entities->InvalidateAttackEntity(this);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
@@ -112,10 +127,13 @@ void TrollAxethrower::Move(float dt)
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
-
-			// If the player dies, remove all their goals
-			unitCommand = UnitCommand_Stop;
 		}
+	}
+
+	if (currTarget == nullptr && particle != nullptr) {
+
+		particle->isRemove = true;
+		particle = nullptr;
 	}
 
 	if (!isDead) {
@@ -129,7 +147,6 @@ void TrollAxethrower::Move(float dt)
 		/// GOAL: AttackTarget
 		// Check if there are available targets
 		/// Prioritize a type of target (static or dynamic)
-		/*
 		if (singleUnit->IsFittingTile()) {
 
 			newTarget = GetBestTargetInfo();
@@ -159,7 +176,7 @@ void TrollAxethrower::Move(float dt)
 				}
 			}
 		}
-		*/
+
 		// ---------------------------------------------------------------------
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL

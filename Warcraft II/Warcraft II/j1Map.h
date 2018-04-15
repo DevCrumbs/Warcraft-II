@@ -172,6 +172,8 @@ public:
 	// Load new map
 	bool Load(const char* path);
 
+	bool LoadLogic();
+
 	// Unload map
 	bool UnLoad();
 
@@ -180,6 +182,8 @@ public:
 	iPoint WorldToMap(int x, int y) const;
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
+
+	bool LoadWalkabilityMap(int & width, int & height, uchar ** buffer) const;
 
 private:
 
@@ -197,6 +201,8 @@ private:
 
 public:
 
+	mutable	int test = 0;
+
 	MapData				data;
 	MapLayer*			collisionLayer = nullptr;
 
@@ -205,6 +211,10 @@ public:
 	bool				camera_blit = false;
 
 	SDL_Rect			playerBase{ 0,0,0,0 };
+
+mutable	uchar*				walkMap = nullptr;
+mutable	int                 walkWidth = 0;
+mutable	int					walkHeight = 0;
 private:
 
 	pugi::xml_document	map_file;

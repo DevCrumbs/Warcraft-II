@@ -8,7 +8,7 @@
 	
   <renderer>
     <vsync value="false"/>
-    <CapFrames value="6000"/>
+    <CapFrames value="60"/>
   </renderer>
 
   <window>
@@ -119,7 +119,7 @@
     <maps>
       <orthogonal name="orthogonal_walk.tmx" active="0"/>
       <isometric name="iso_walk.tmx" active="0" tex="data/assets/textures/maps/isometricDebugTex.png"/>
-      <warcraft name="warcraft_walk.tmx" active="1" tex="data/assets/textures/maps/warcraftDebugTex.png"/>
+      <warcraft name="warcraft_walk.tmx" active="1" tex="data/assets/textures/maps/warcraftDebugTex.png" numMaps = "5"/>
     </maps>
 
     <buttons
@@ -1102,7 +1102,7 @@
 
       <pigFarm>
         <maxLife value ="400"/>
-        <sprite x="15" y="516" w="64" h="64"/>
+        <sprite x="81" y="516" w="64" h="64"/>
       </pigFarm>
 
       <trollLumberMill>
@@ -1161,7 +1161,7 @@
   <particles>
     <spritesheets>
       <atlas name = "data/assets/textures/particles/atlas.png"/>
-      <paws name="data/assets/textures/sprites/paws.png"/>
+      <paws name="data/assets/textures/particles/paws.png"/>
     </spritesheets>
 
     <towerArrows>

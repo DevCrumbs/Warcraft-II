@@ -1028,10 +1028,17 @@ bool j1EntityFactory::Start()
 	critterSheepInfo.maxLife = critterSheepInfo.currLife;
 	critterSheepInfo.restoredHealth = 10;
 
+	critterSheepInfo.unitInfo.maxSpeed = 30.0f;
+	critterSheepInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+	critterSheepInfo.unitInfo.priority = 1;
+
 	critterBoarInfo.currLife = 20;
 	critterBoarInfo.maxLife = critterBoarInfo.currLife;
-	critterSheepInfo.restoredHealth = 15;
+	critterBoarInfo.restoredHealth = 15;
 
+	critterBoarInfo.unitInfo.maxSpeed = 30.0f;
+	critterBoarInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+	critterBoarInfo.unitInfo.priority = 1;
 	// -----
 
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
@@ -1108,7 +1115,6 @@ bool j1EntityFactory::PreUpdate()
 		}
 	}
 
-
 	return ret;
 }
 
@@ -1166,7 +1172,6 @@ void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 		statEntity++;
 	}
-
 }
 
 void j1EntityFactory::Draw()
@@ -2822,13 +2827,14 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 						}
 					}
 				}
-			}
-			else {
 
-				// If the unit is in the unitsSelected list, remove it
-				if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
-					unitsSelected.remove(GetDynamicEntityByEntity(*it));
-					(*it)->isSelected = false;
+				else {
+
+					// If the unit is in the unitsSelected list, remove it
+					if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
+						unitsSelected.remove(GetDynamicEntityByEntity(*it));
+						(*it)->isSelected = false;
+					}
 				}
 			}
 		}
@@ -2969,7 +2975,7 @@ void j1EntityFactory::InvalidateAttackEntity(Entity* entity)
 
 	while (it != activeDynamicEntities.end()) {
 
-		if ((*it)->IsEntityInTargetsList(entity))
+		//if ((*it)->IsEntityInTargetsList(entity))
 
 			// The dead entity was a target of another entity
 			(*it)->InvalidateTarget(entity);
@@ -3017,20 +3023,21 @@ int j1EntityFactory::GetPlayerSoldiers() const {
 	return ret;
 }
 
-void j1EntityFactory::SetPlayerSoldiers(int food) {
-	int cont = 0;
+bool j1EntityFactory::IsNearSoldiers(iPoint pos) {
+	bool ret = false;
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
 	while (it != activeDynamicEntities.end()) {
 
-		if ((*it)->entitySide == EntitySide_Player) {
-			cont++;
-			if (cont > food)
-				(*it)->isDead = true;
+		if ((*it)->entitySide == EntitySide_Player && !(*it)->isDead) {
+			if (pos.DistanceManhattan((*it)->GetSingleUnit()->currTile) < 5)
+				return true;
 		}
 
 		it++;
 	}
+
+	return ret;
 }
 
 // -------------------------------------------------------------

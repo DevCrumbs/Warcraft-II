@@ -72,7 +72,7 @@ bool j1PathFinding::IsOnBase(const iPoint& pos)
 {
 	bool ret = false; 
 
-	SDL_Rect entityPos{ pos.x,pos.y, 32,32 };
+	SDL_Rect entityPos{ pos.x * 32,pos.y* 32, 32,32 };
 	SDL_Rect result{ 0,0,0,0 };
 
 	if (SDL_IntersectRect(&entityPos, &App->map->playerBase, &result))

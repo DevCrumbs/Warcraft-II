@@ -157,15 +157,15 @@ void j1FinishGame::DeleteScene() {
 	
 	for (; !labelVector.empty(); labelVector.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&labelVector.back());
+		App->gui->RemoveElem((UIElement**)&labelVector.back());
 	}
 
 	for (; !imageVector.empty(); imageVector.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&imageVector.back());
+		App->gui->RemoveElem((UIElement**)&imageVector.back());
 	}
-	App->gui->DestroyElement((UIElement**)&continueButt);
-	App->gui->DestroyElement((UIElement**)&returnButt);
+	App->gui->RemoveElem((UIElement**)&continueButt);
+	App->gui->RemoveElem((UIElement**)&returnButt);
 
 }
 

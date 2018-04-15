@@ -45,12 +45,6 @@ enum PauseMenuActions {
 	PauseMenuActions_SLIDERFX,
 	PauseMenuActions_SLIDERMUSIC
 };
-enum FoodChange
-{
-	FoodChange_NONE,
-	FoodChange_ADD,
-	FoodChange_LESS
-};
 struct TerenasAdvices {
 	UIImage* terenasImage;
 	UILabel* text;
@@ -69,6 +63,8 @@ public:
 
 	// Called before the first frame
 	bool Start();
+
+	bool LoadNewMap(int map = -1);
 
 	// Called before all Updates
 	bool PreUpdate();
@@ -134,6 +130,8 @@ public:
 	int guardTowerCost = 600;
 	int cannonTowerCost = 800;
 
+	int numMaps = 0;
+
 	// Camera
 	float up = false, down = false, left = false, right = false;
 	uint width = 0;
@@ -147,7 +145,7 @@ public:
 
 	bool hasGoldChanged = false;
 
-	FoodChange hasFoodChanged = FoodChange_NONE;
+	bool hasFoodChanged = false;
 
 	UIImage* entitiesStats;
 	ENTITY_TYPE GetAlphaBuilding();
@@ -170,7 +168,7 @@ public:
 private:
 
 	bool isAttackCursor = false;
-
+	bool isFadeToMenu = false;
 	// Draw rectangle
 	iPoint startRectangle = { 0,0 };
 

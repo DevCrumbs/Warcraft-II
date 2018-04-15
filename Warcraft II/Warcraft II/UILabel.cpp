@@ -100,7 +100,7 @@ void UILabel::HandleInput()
 	case UI_EVENT_MOUSE_ENTER:
 
 		if (!MouseHover()) {
-			LOG("MOUSE LEAVE");
+			//LOG("MOUSE LEAVE");
 			nextEvent = false;
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
@@ -181,7 +181,7 @@ void UILabel::HandleInput()
 
 void UILabel::SetText(string text)
 {
-	App->tex->UnLoad((SDL_Texture*)tex);
+	App->tex->UnLoad(tex);
 	tex = App->font->Print(text.data(), color, font);
 }
 
@@ -193,7 +193,7 @@ string UILabel::GetText()
 void UILabel::SetColor(SDL_Color color, bool normal, bool hover, bool pressed)
 {
 	this->color = color;
-	App->tex->UnLoad((SDL_Texture*)tex);
+	App->tex->UnLoad(tex);
 	tex = App->font->Print(label.text.data(), color, font);
 
 	if (normal)

@@ -158,8 +158,8 @@ public:
 	void CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity* entity);
 	void CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar);
 
-	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
-	void DestroyHoverButton(Entity* ent);
+	//void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
+	//void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateBarracksButtons();
 	void HandleBarracksUIElem();
@@ -174,14 +174,14 @@ public:
 	//Player
 	list<StaticEntity*> chickenFarm;
 	list<StaticEntity*> scoutTower;
+	list<StaticEntity*> cannonTower;
+	list<StaticEntity*> guardTower;
 	StaticEntity* barracks = nullptr;
 	StaticEntity* townHall = nullptr;
 	StaticEntity* blacksmith = nullptr;
 	StaticEntity* stables = nullptr;
 	StaticEntity* church = nullptr;
 	StaticEntity* mageTower = nullptr;
-	StaticEntity* cannonTower = nullptr;
-	StaticEntity* guardTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
 
 	vector<UIImage*> imagePrisonersVector;
@@ -196,7 +196,7 @@ public:
 
 	int currentGold = 0; // amount of gold that the player has at the current moment
 	uint totalGold = 0u; // total gold earned during the game
-	int currentFood = 8; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
+	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
 
 	//Units costs
 	int footmanCost = 500;
@@ -238,7 +238,7 @@ private:
 	uint activeUnits = 0; // units that the player has at the current moment
 	uint maxUnits = 0; // max units that the player can have at the current moment (it depends on the Chicken Farms built)
 
-	HoverButton hoverButtonStruct;
+	//HoverButton hoverButtonStruct;
 
 	HoverInfo hoverInfo;
 

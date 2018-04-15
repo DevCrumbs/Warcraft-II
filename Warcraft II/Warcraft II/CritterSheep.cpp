@@ -25,7 +25,7 @@ CritterSheep::CritterSheep(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	// XML loading
 	/// Animations
 	CritterSheepInfo info = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
-
+	this->unitInfo = this->critterSheepInfo.unitInfo;
 	this->critterSheepInfo.up = info.up;
 	this->critterSheepInfo.down = info.down;
 	this->critterSheepInfo.left = info.left;
@@ -76,6 +76,9 @@ void CritterSheep::Move(float dt)
 		// Remove the entity from the unitsSelected list
 		App->entities->RemoveUnitFromUnitsSelected(this);
 
+		// If the player dies, remove all their goals
+		brain->RemoveAllSubgoals();
+
 		// Remove Movement (so other units can walk above them)
 		App->entities->InvalidateMovementEntity(this);
 
@@ -85,9 +88,6 @@ void CritterSheep::Move(float dt)
 
 		// Invalidate colliders
 		entityCollider->isValid = false;
-
-		// If the player dies, remove all their goals
-		brain->RemoveAllSubgoals();
 	}
 
 	if (!isDead) {

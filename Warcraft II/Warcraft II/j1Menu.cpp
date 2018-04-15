@@ -17,6 +17,8 @@
 #include "j1Particles.h"
 #include "j1FadeToBlack.h"
 #include "j1Menu.h"
+#include "j1PathManager.h"
+#include "j1Movement.h"
 
 #include "j1Gui.h"
 #include "UIImage.h"
@@ -140,25 +142,17 @@ bool j1Menu::Update(float dt)
 		}
 	}
 
-	return true;
-}
-
-// Called each loop iteration
-bool j1Menu::PostUpdate()
-{
-	bool ret = true;
-
 	switch (menuActions)
 	{
 	case MenuActions_NONE:
 		break;
 	case MenuActions_EXIT:
 		App->audio->PlayFx(1, 0); //Button sound
-		ret = false;
+		isExit = true;
 		break;
 	case MenuActions_PLAY:
 		App->audio->PlayFx(1, 0); //Button sound
-		App->fade->FadeToBlack(this, App->scene);
+		isFadetoScene = true;
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_SETTINGS:
@@ -183,7 +177,19 @@ bool j1Menu::PostUpdate()
 	default:
 		break;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	return true;
+}
+
+// Called each loop iteration
+bool j1Menu::PostUpdate()
+{
+	bool ret = true;
+
+	if (isFadetoScene) {
+		App->fade->FadeToBlack(this, App->scene);
+		isFadetoScene = false;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN || isExit)
 		ret = false;
 
 	return ret;
@@ -200,6 +206,8 @@ bool j1Menu::CleanUp()
 	App->entities->active = true;
 	App->collision->active = true;
 	App->pathfinding->active = true;
+	App->pathmanager->active = true;
+	App->movement->active = true;
 
 	App->player->Start();
 	App->entities->Start();
@@ -343,7 +351,7 @@ void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
 	static char vol_text[4];
 	sprintf_s(vol_text, 4, "%.0f", volume * 100);
 	sliderStruct.value->SetText(vol_text);
-	LOG("%f", volume);
+	//LOG("%f", volume);
 }
 
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -410,36 +418,36 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 }
 void j1Menu::DeteleMenu() {
 
-	App->gui->DestroyElement((UIElement**)&playButt);
-	App->gui->DestroyElement((UIElement**)&playLabel);
-	App->gui->DestroyElement((UIElement**)&exitButt);
-	App->gui->DestroyElement((UIElement**)&exitLabel);
-	App->gui->DestroyElement((UIElement**)&settingsButt);
-	App->gui->DestroyElement((UIElement**)&settingsLabel);
+	App->gui->RemoveElem((UIElement**)&playButt);
+	App->gui->RemoveElem((UIElement**)&playLabel);
+	App->gui->RemoveElem((UIElement**)&exitButt);
+	App->gui->RemoveElem((UIElement**)&exitLabel);
+	App->gui->RemoveElem((UIElement**)&settingsButt);
+	App->gui->RemoveElem((UIElement**)&settingsLabel);
 	
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&artifacts.back());
+		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
 
 }
 
 void j1Menu::DeleteSettings() {
 
-	App->gui->DestroyElement((UIElement**)&returnButt);
-	App->gui->DestroyElement((UIElement**)&returnLabel);
-	App->gui->DestroyElement((UIElement**)&fullScreenButt);
-	App->gui->DestroyElement((UIElement**)&fullScreenLabel);
-	App->gui->DestroyElement((UIElement**)&audioFX.name);
-	App->gui->DestroyElement((UIElement**)&audioFX.value);
-	App->gui->DestroyElement((UIElement**)&audioFX.slider);
-	App->gui->DestroyElement((UIElement**)&audioMusic.name);
-	App->gui->DestroyElement((UIElement**)&audioMusic.value);
-	App->gui->DestroyElement((UIElement**)&audioMusic.slider);
+	App->gui->RemoveElem((UIElement**)&returnButt);
+	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&fullScreenButt);
+	App->gui->RemoveElem((UIElement**)&fullScreenLabel);
+	App->gui->RemoveElem((UIElement**)&audioFX.name);
+	App->gui->RemoveElem((UIElement**)&audioFX.value);
+	App->gui->RemoveElem((UIElement**)&audioFX.slider);
+	App->gui->RemoveElem((UIElement**)&audioMusic.name);
+	App->gui->RemoveElem((UIElement**)&audioMusic.value);
+	App->gui->RemoveElem((UIElement**)&audioMusic.slider);
 
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&artifacts.back());
+		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
 
 }

@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include"Brofiler\Brofiler.h"
 
 #include "Defs.h"
@@ -24,11 +26,13 @@
 #include "j1Menu.h"
 #include "j1Player.h"
 #include "j1Fonts.h"
+#include "j1PathManager.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UIImage.h"
 #include "UICursor.h"
+#include "UISlider.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -60,7 +64,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	warcraftMap = maps.child("warcraft").attribute("name").as_string();
 	warcraftActive = maps.child("warcraft").attribute("active").as_bool();
 	warcraftTexName = maps.child("warcraft").attribute("tex").as_string();
-
+	numMaps = maps.child("warcraft").attribute("numMaps").as_int();
 	//Music
 	pugi::xml_node audio = config.child("audioPaths");
 
@@ -97,7 +101,8 @@ bool j1Scene::Start()
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = App->map->Load("verticalSliceMap.tmx");
+		ret = LoadNewMap();
+	//	ret = App->map->Load("verticalSliceMap.tmx");
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
@@ -120,19 +125,77 @@ bool j1Scene::Start()
 	}
 
 	//Calculate camera movement in pixels through the percentatge given
-	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
+	camMovMargin = 10;
+		//camMovMargin * ((width + height) / 2) / 100;
 
 	alphaBuilding = EntityType_NONE;
 	pauseMenuActions = PauseMenuActions_NOT_EXIST;
 
 	App->audio->PlayMusic(mainThemeMusicName.data(), 2.0f);
 
-	// The camera is in the player base
-	//App->render->camera.x = -2400;
-	//App->render->camera.y = -6720;
-	App->render->camera.x = 0;
-	App->render->camera.y = 0;
+	App->map->LoadLogic();
 
+	return ret;
+}
+
+bool j1Scene::LoadNewMap(int map) 
+{
+	bool ret = true;
+
+	if (map == -1) 
+	{
+		srand(time(NULL));
+		map = rand() % numMaps;
+
+		static char path[25];
+		sprintf_s(path, 25, "verticalSliceMap%i.tmx", map);
+
+		ret = App->map->Load(path);
+	}
+	else
+	{
+		static char path[25];
+		sprintf_s(path, 25, "verticalSliceMap%i.tmx", map);
+
+		ret = App->map->Load(path);
+	}
+
+	if (ret)
+	{
+		iPoint cameraPos{ 0,0 };
+		iPoint basePos{ 0,0 };
+		switch (map)
+		{
+		case 0:
+		case 1:
+		case 4:
+			cameraPos = App->map->MapToWorld(13, 148);
+			App->render->camera.x = -cameraPos.x;
+			App->render->camera.y = -cameraPos.y;
+
+			basePos = App->map->MapToWorld(5, 140);
+			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
+			break;
+		case 2:
+			cameraPos = App->map->MapToWorld(82, 132);
+			App->render->camera.x = -cameraPos.x;
+			App->render->camera.y = -cameraPos.y;
+
+			basePos = App->map->MapToWorld(75, 120);
+			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
+			break;
+		case 3:
+			cameraPos = App->map->MapToWorld(82, 80);
+			App->render->camera.x = -cameraPos.x;
+			App->render->camera.y = -cameraPos.y;
+
+			basePos = App->map->MapToWorld(75, 70);
+			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
+			break;
+		default:
+			break;
+		}
+	}
 	return ret;
 }
 
@@ -352,6 +415,7 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
+
 	bool ret = true;
 
 	// Save mouse position (world and map coords)
@@ -376,7 +440,7 @@ bool j1Scene::Update(float dt)
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
 
-	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
+	//App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 
 	// Units ---------------------------------------------------------------------------------
 
@@ -586,22 +650,6 @@ bool j1Scene::Update(float dt)
 	CheckCameraMovement(dt);
 
 	//Checks if resources have changed to update building menu and gold label
-	if (hasGoldChanged) {
-		UnLoadResourcesLabels();
-		LoadResourcesLabels();
-		if (buildingMenuOn) {
-			UnLoadBuildingMenu();
-			LoadBuildingMenu();
-		}
-		hasGoldChanged = false;
-	}
-	if (hasFoodChanged != FoodChange_NONE) {
-		UnLoadResourcesLabels();
-		LoadResourcesLabels();
-		if (hasFoodChanged == FoodChange_LESS)
-			App->entities->SetPlayerSoldiers(App->player->currentFood);
-		hasFoodChanged = FoodChange_NONE;
-	}
 
 	if (terenasDialogTimer.Read() >= 30000 && terenasDialogEvent != TerenasDialog_NONE) {
 		terenasDialogEvent = TerenasDialog_NONE;
@@ -630,17 +678,26 @@ bool j1Scene::Update(float dt)
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
 
-	return ret;
-}
-
-// Called each loop iteration
-bool j1Scene::PostUpdate()
-{
-	bool ret = true;
+	if (hasGoldChanged) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		if (buildingMenuOn) {
+			UnLoadBuildingMenu();
+			LoadBuildingMenu();
+		}
+		hasGoldChanged = false;
+	}
+	if (hasFoodChanged == true) {
+		UnLoadResourcesLabels();
+		LoadResourcesLabels();
+		hasFoodChanged = false;
+	}
 
 	switch (pauseMenuActions)
 	{
 	case PauseMenuActions_NONE:
+		break;
+	case PauseMenuActions_NOT_EXIST:
 		break;
 	case PauseMenuActions_CREATED:
 		CreatePauseMenu();
@@ -648,7 +705,8 @@ bool j1Scene::PostUpdate()
 		break;
 	case PauseMenuActions_DESTROY:
 		if (parchmentImg != nullptr) {
-			App->gui->DestroyElement((UIElement**)&parchmentImg);
+			parchmentImg->toRemove = true;
+			parchmentImg = nullptr;
 		}
 		DestroyPauseMenu();
 		DestroySettingsMenu();
@@ -656,13 +714,12 @@ bool j1Scene::PostUpdate()
 		break;
 	case PauseMenuActions_RETURN_MENU:
 		pauseMenuActions = PauseMenuActions_NONE;
-		App->fade->FadeToBlack(this, App->menu);
-		App->menu->active = true;
-			break;
+		isFadeToMenu = true;
+		break;
 	case PauseMenuActions_SETTINGS_MENU:
 		DestroyPauseMenu();
 		CreateSettingsMenu();
-		pauseMenuActions = PauseMenuActions_NONE;		
+		pauseMenuActions = PauseMenuActions_NONE;
 		break;
 	case PauseMenuActions_SLIDERFX:
 		App->menu->UpdateSlider(AudioFXPause);
@@ -672,11 +729,18 @@ bool j1Scene::PostUpdate()
 	default:
 		break;
 	}
+
+	return ret;
+}
+
+// Called each loop iteration
+bool j1Scene::PostUpdate()
+{
+	bool ret = true;
+
 	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
 		ret = false;
-		if (parchmentImg != nullptr) {
-			App->gui->DestroyElement((UIElement**)&parchmentImg);
-		}
+		App->gui->RemoveElem((UIElement**)&parchmentImg);
 	}
 
 	if (App->player->imagePrisonersVector.size() >= 2) {
@@ -685,6 +749,11 @@ bool j1Scene::PostUpdate()
 		App->finish->active = true;
 	}
 
+	if (isFadeToMenu) {
+		App->fade->FadeToBlack(this, App->menu);
+		App->menu->active = true;
+		isFadeToMenu = false;
+	}
 	return ret;
 }
 
@@ -711,14 +780,18 @@ bool j1Scene::CleanUp()
 	App->entities->active = false;
 	App->collision->active = false;
 	App->pathfinding->active = false;
+	App->movement->active = false;
+	App->pathmanager->active = false;
+	active = false;
 
 	App->map->UnLoad();
 	App->player->CleanUp();
 	App->entities->CleanUp();
 	App->collision->CleanUp();
-	App->pathfinding->CleanUp();
 
-	active = false;
+	App->movement->CleanUp();
+	App->pathmanager->CleanUp();
+	App->pathfinding->CleanUp();
 
 	return ret;
 }
@@ -811,7 +884,7 @@ void j1Scene::CheckCameraMovement(float dt) {
 
 	//Move with arrows
 	//UP
-	if (App->input->GetKey(buttonMoveUp) == KEY_REPEAT && App->render->camera.y <= 0)
+	/*if (App->input->GetKey(buttonMoveUp) == KEY_REPEAT && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	//DOWN
 	if (App->input->GetKey(buttonMoveDown) == KEY_REPEAT && App->render->camera.y >= downMargin)
@@ -822,19 +895,19 @@ void j1Scene::CheckCameraMovement(float dt) {
 	//RIGHT
 	if (App->input->GetKey(buttonMoveRight) == KEY_REPEAT && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
-
+*/
 	//Move with mouse
 	////UP
 	if (mouse.y <= (camMovMargin - App->render->camera.y) /scale && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	////DOWN
-	if (mouse.y >= (height - (camMovMargin + 15) - App->render->camera.y) / scale && App->render->camera.y >= downMargin)
+	if (mouse.y >= (height - (camMovMargin + 30) - App->render->camera.y) / scale && App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	////LEFT
 	if (mouse.x <= (camMovMargin - App->render->camera.x) / scale && App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	////RIGHT
-	if (mouse.x >= (width - (camMovMargin + 15) - App->render->camera.x) / scale && App->render->camera.x >= rightMargin)
+	if (mouse.x >= (width - (camMovMargin + 30) - App->render->camera.x) / scale && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
 
 }
@@ -876,6 +949,7 @@ void j1Scene::LoadInGameUI()
 
 void j1Scene::LoadBuildingMenu()
 {
+	UnLoadTerenasDialog();
 	UIButton_Info buttonInfo;
 	UILabel_Info labelInfo;
 
@@ -883,7 +957,7 @@ void j1Scene::LoadBuildingMenu()
 	imageInfo.texArea = { 0,33,240,529 };
 	buildingMenu = App->gui->CreateUIImage({ -110, 0 }, imageInfo, this, buildingButton);
 	buildingMenuOn = true;
-	buildingMenu->SetPriorityDraw(PriorityDraw_UIINGAME);
+	buildingMenu->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
 	buttonInfo.normalTexArea = { 241,34,50,41 };
 	buttonInfo.hoverTexArea = { 292,34,50,41 };
@@ -894,6 +968,7 @@ void j1Scene::LoadBuildingMenu()
 	}
 	chickenFarmButton = App->gui->CreateUIButton({ 15, 55 }, buttonInfo, this, buildingMenu);
 
+	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
 	labelInfo.text = "Chicken Farm";
 	labelInfo.normalColor = White_;
@@ -1111,22 +1186,29 @@ void j1Scene::LoadBuildingMenu()
 
 void j1Scene::UnLoadBuildingMenu()
 {
-	App->gui->DestroyElement((UIElement**)&buildingMenu);
-	App->gui->DestroyElement((UIElement**)&chickenFarmButton);
-	App->gui->DestroyElement((UIElement**)&elvenLumberButton);
-	App->gui->DestroyElement((UIElement**)&blackSmithButton);
-	App->gui->DestroyElement((UIElement**)&stablesButton);
-	App->gui->DestroyElement((UIElement**)&churchButton);
-	App->gui->DestroyElement((UIElement**)&gryphonAviaryButton);
-	App->gui->DestroyElement((UIElement**)&mageTowerButton);
-	App->gui->DestroyElement((UIElement**)&scoutTowerButton);
-	App->gui->DestroyElement((UIElement**)&guardTowerButton);
-	App->gui->DestroyElement((UIElement**)&cannonTowerButton);
+	App->gui->RemoveElem((UIElement**)&buildingMenu);
+	App->gui->RemoveElem((UIElement**)&chickenFarmButton);
+	App->gui->RemoveElem((UIElement**)&elvenLumberButton);
+	App->gui->RemoveElem((UIElement**)&blackSmithButton);
+	App->gui->RemoveElem((UIElement**)&stablesButton);
+	App->gui->RemoveElem((UIElement**)&churchButton);
+	App->gui->RemoveElem((UIElement**)&gryphonAviaryButton);
+	App->gui->RemoveElem((UIElement**)&mageTowerButton);
+	App->gui->RemoveElem((UIElement**)&scoutTowerButton);
+	App->gui->RemoveElem((UIElement**)&guardTowerButton);
+	App->gui->RemoveElem((UIElement**)&cannonTowerButton);
 
-	for (; !buildingLabelsList.empty(); buildingLabelsList.pop_back())
+	/*for (; !buildingLabelsList.empty(); buildingLabelsList.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&buildingLabelsList.back());
+		buildingLabelsList.back()->toRemove = true;
+	}*/
+
+	for (list<UILabel*>::iterator it = buildingLabelsList.begin(); it != buildingLabelsList.end(); ++it)
+	{
+		(*it)->toRemove = true;
 	}
+	buildingLabelsList.clear();
+
 	buildingMenuOn = false;
 }
 
@@ -1144,8 +1226,8 @@ void j1Scene::LoadResourcesLabels()
 
 void j1Scene::UnLoadResourcesLabels()
 {
-	App->gui->DestroyElement((UIElement**)&goldLabel);
-	App->gui->DestroyElement((UIElement**)&foodLabel);
+	App->gui->RemoveElem((UIElement**)&goldLabel);
+	App->gui->RemoveElem((UIElement**)&foodLabel);
 }
 
 void j1Scene::CreatePauseMenu() {
@@ -1183,13 +1265,12 @@ void j1Scene::CreatePauseMenu() {
 
 void j1Scene::DestroyPauseMenu() {
 
-	App->gui->DestroyElement((UIElement**)&settingsButt);
-	App->gui->DestroyElement((UIElement**)&ReturnMenuButt);
-	App->gui->DestroyElement((UIElement**)&continueButt);
-	App->gui->DestroyElement((UIElement**)&settingsLabel);
-	App->gui->DestroyElement((UIElement**)&continueLabel);
-	App->gui->DestroyElement((UIElement**)&ReturnMenuLabel);
-
+	App->gui->RemoveElem((UIElement**)&settingsButt);
+	App->gui->RemoveElem((UIElement**)&ReturnMenuButt);
+	App->gui->RemoveElem((UIElement**)&continueButt);
+	App->gui->RemoveElem((UIElement**)&settingsLabel);
+	App->gui->RemoveElem((UIElement**)&continueLabel);
+	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
 }
 
 void j1Scene::CreateSettingsMenu() {
@@ -1248,33 +1329,34 @@ void j1Scene::CreateSettingsMenu() {
 
 void j1Scene::DestroySettingsMenu() {
 
-	App->gui->DestroyElement((UIElement**)&returnButt);
-	App->gui->DestroyElement((UIElement**)&returnLabel);
-	App->gui->DestroyElement((UIElement**)&fullScreenButt);
-	App->gui->DestroyElement((UIElement**)&fullScreenLabel);
-	App->gui->DestroyElement((UIElement**)&AudioFXPause.slider);
-	App->gui->DestroyElement((UIElement**)&AudioFXPause.name);
-	App->gui->DestroyElement((UIElement**)&AudioFXPause.value);
-	App->gui->DestroyElement((UIElement**)&AudioMusicPause.slider);
-	App->gui->DestroyElement((UIElement**)&AudioMusicPause.name);
-	App->gui->DestroyElement((UIElement**)&AudioMusicPause.value);
+
+	App->gui->RemoveElem((UIElement**)&returnButt);
+	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&fullScreenButt);
+	App->gui->RemoveElem((UIElement**)&fullScreenLabel);
+	App->gui->RemoveElem((UIElement**)&AudioFXPause.slider);
+	App->gui->RemoveElem((UIElement**)&AudioFXPause.name);
+	App->gui->RemoveElem((UIElement**)&AudioFXPause.value);
+	App->gui->RemoveElem((UIElement**)&AudioMusicPause.slider);
+	App->gui->RemoveElem((UIElement**)&AudioMusicPause.name);
+	App->gui->RemoveElem((UIElement**)&AudioMusicPause.value);
 
 }
 
 void j1Scene::DestroyAllUI() {
 	if (parchmentImg != nullptr) {
-		App->gui->DestroyElement((UIElement**)&parchmentImg);
+		App->gui->RemoveElem((UIElement**)&parchmentImg);
 	}
 	DestroyPauseMenu();
 	DestroySettingsMenu();
 	UnLoadBuildingMenu();
 	UnLoadResourcesLabels();
-	App->gui->DestroyElement((UIElement**)&pauseMenuButt);
-	App->gui->DestroyElement((UIElement**)&pauseMenuLabel);
-	App->gui->DestroyElement((UIElement**)&entitiesStats);
-	App->gui->DestroyElement((UIElement**)&buildingButton);
-	App->gui->DestroyElement((UIElement**)&buildingLabel);
-	App->gui->DestroyElement((UIElement**)&inGameFrameImage);
+	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
+	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
+	App->gui->RemoveElem((UIElement**)&entitiesStats);
+	App->gui->RemoveElem((UIElement**)&buildingButton);
+	App->gui->RemoveElem((UIElement**)&buildingLabel);
+	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()
@@ -1285,42 +1367,44 @@ PauseMenuActions j1Scene::GetPauseMenuActions()
 void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
 {
 	UIImage_Info imageInfo;
+	imageInfo.texArea = {734,34,70,100};
+	terenasAdvices.terenasImage = App->gui->CreateUIImage({ 695,32 }, imageInfo, this);
 	UILabel_Info labelInfo;
 	if (dialogEvent == TerenasDialog_START) {
 		labelInfo.fontName = FONT_NAME_WARCRAFT14;
 		labelInfo.textWrapLength = 340;
 		labelInfo.interactive = false;
 		labelInfo.text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
 	}
 	else if (dialogEvent == TerenasDialog_RESCUE_ALLERIA) {
 		labelInfo.fontName = FONT_NAME_WARCRAFT14;
 		labelInfo.textWrapLength = 350;
 		labelInfo.interactive = false;
 		labelInfo.text = "Congratulations! You have freed Alleria. I thank you in the name of Azeroth. For the alliance!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
 	}
 	else if (dialogEvent == TerenasDialog_RESCUE_KHADGAR) {
 		labelInfo.fontName = FONT_NAME_WARCRAFT14;
 		labelInfo.textWrapLength = 350;
 		labelInfo.interactive = false;
 		labelInfo.text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
 	}
 	else if (dialogEvent == TerenasDialog_RESCUE_TURALYON) {
 		labelInfo.fontName = FONT_NAME_WARCRAFT14;
 		labelInfo.textWrapLength = 350;
 		labelInfo.interactive = false;
 		labelInfo.text = "Congratulations! You have freed Turalyon. I thank you in the name of Azeroth. For the alliance!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
+		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
 	}
 
 }
 
 void j1Scene::UnLoadTerenasDialog()
 {
-	App->gui->DestroyElement((UIElement**)&terenasAdvices.text);
-	App->gui->DestroyElement((UIElement**)&terenasAdvices.terenasImage);
+	App->gui->RemoveElem((UIElement**)&terenasAdvices.text);
+	App->gui->RemoveElem((UIElement**)&terenasAdvices.terenasImage);
 }
 
 

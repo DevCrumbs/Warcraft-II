@@ -90,9 +90,6 @@ bool j1Gui::Start()
 
 	// Load fonts
 
-
-
-
 	return ret;
 }
 
@@ -101,9 +98,14 @@ bool j1Gui::PreUpdate()
 {
 	bool ret = true;
 
-	UIElementsList.clear();
+	list<UIElement*>::const_iterator add = addedElementUI.begin();
 
-	UIElementsList = addedElementUI;
+	while (add != addedElementUI.end()) {
+	
+		UIElementsList.push_back(*add);
+		add++;
+	}
+	addedElementUI.clear();
 
 	for (std::list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); iterator++) {
 		drawOrder.push(*iterator);
@@ -118,14 +120,13 @@ bool j1Gui::Update(float dt)
 
 	bool ret = true;
 
-	App->particles->Draw(); // the rest of the particles
-
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
 		isDebug = !isDebug;
 
 	list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin();
 
 	while (UI_elem_it != UIElementsList.end()) {
+
 		(*UI_elem_it)->Update(dt);
 
 		/*
@@ -134,10 +135,9 @@ bool j1Gui::Update(float dt)
 
 		UI_elem_it++;
 	}
-	
-	UI_elem_it = UIElementsList.begin();
 
-	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
+	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
+		info = drawOrder.top();
 		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
 			info->Draw();
 		else if (App->render->IsInScreen(info->GetLocalRect()))
@@ -169,8 +169,10 @@ bool j1Gui::PostUpdate()
 	while (iterator != UIElementsList.end()) {
 
 		if ((*iterator)->HasToBeRemoved()) {
+
 			delete *iterator;
-			UIElementsList.remove(*iterator);
+			UIElementsList.remove(*iterator++);
+			continue;
 		}
 
 		iterator++;
@@ -301,9 +303,24 @@ bool j1Gui::DestroyElement(UIElement** elem)
 	bool ret = false;
 
 	if (*elem != nullptr) {
-		addedElementUI.remove(*elem);
+
+		delete *elem;
+		UIElementsList.remove(*elem);
 		*elem = nullptr;
 	}
+
+	return ret;
+}
+
+bool j1Gui::RemoveElem(UIElement** elem)
+{
+	bool ret = false;
+
+	if (*elem != nullptr) {
+		(*elem)->toRemove = true;
+		*elem = nullptr;
+	}
+
 	return ret;
 }
 
