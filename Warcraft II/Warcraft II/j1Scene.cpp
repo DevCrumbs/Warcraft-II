@@ -462,7 +462,7 @@ bool j1Scene::Update(float dt)
 
 	// Draw
 	App->map->Draw(); // map
-	//App->particles->DrawPaws(); // paws particles
+	App->particles->DrawPaws(); // paws particles
 	App->entities->Draw(); // entities
 
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
