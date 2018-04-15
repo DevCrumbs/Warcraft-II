@@ -196,9 +196,13 @@ public:
 	bool isSelected = false;
 	bool auxIsSelected = false; // to play fx
 
+	fPoint pos = { 0.0f,0.0f };
+
+	SDL_Color minimapDrawColor{ 0,0,0,0 };
+
 protected:
 
-	fPoint pos = { 0.0f,0.0f };
+
 	iPoint size = { 0,0 };
 
 	int currLife = 0;
