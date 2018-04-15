@@ -126,7 +126,8 @@ bool j1Gui::Update(float dt)
 
 	list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin();
 
-	while (UI_elem_it != UIElementsList.end()) {
+	while (UI_elem_it != UIElementsList.end())
+	{
 		if ((*UI_elem_it) != nullptr);
 			if ((*UI_elem_it)->type != UIE_TYPE_NO_TYPE)
 				(*UI_elem_it)->Update(dt);
