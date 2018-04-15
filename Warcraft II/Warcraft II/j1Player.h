@@ -220,24 +220,6 @@ private:
 	uint totalEnemiesKilled = 0;
 	uint totalUnitsDead = 0;
 
-	// Buildings
-	uint nTownHall = 1;
-	uint nBarracks = 1;
-	uint nChickenFarm = 2;
-	uint nGoldMine = 10;
-
-	uint nStables = 0;
-	uint nGryphonAviary = 0;
-	uint nMageTower = 0;
-	uint nScoutTower = 0;
-	uint nGuardTower = 0;
-	uint nCannonTower = 0;
-
-	// Units
-	uint totalUnits = 0; // total units created during the game
-	uint activeUnits = 0; // units that the player has at the current moment
-	uint maxUnits = 0; // max units that the player can have at the current moment (it depends on the Chicken Farms built)
-
 	//HoverButton hoverButtonStruct;
 
 	HoverInfo hoverInfo;
