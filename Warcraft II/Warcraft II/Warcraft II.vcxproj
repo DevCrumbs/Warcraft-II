@@ -198,6 +198,7 @@
     <ClInclude Include="UIInputText.h" />
     <ClInclude Include="UILabel.h" />
     <ClInclude Include="UILifeBar.h" />
+    <ClInclude Include="UIMinimap.h" />
     <ClInclude Include="UISlider.h" />
     <ClInclude Include="WatchTower.h" />
   </ItemGroup>
@@ -277,6 +278,7 @@
     <ClCompile Include="UIInputText.cpp" />
     <ClCompile Include="UILabel.cpp" />
     <ClCompile Include="UILifeBar.cpp" />
+    <ClCompile Include="UIMinimap.cpp" />
     <ClCompile Include="UISlider.cpp" />
     <ClCompile Include="WatchTower.cpp" />
   </ItemGroup>

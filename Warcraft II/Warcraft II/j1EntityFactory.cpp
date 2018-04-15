@@ -1900,7 +1900,7 @@ bool j1EntityFactory::PostUpdate()
 		if ((*dynEnt)->isRemove) {
 
 			delete *dynEnt;
-			activeDynamicEntities.erase(dynEnt);
+			activeDynamicEntities.remove(*dynEnt);
 
 			dynEnt = activeDynamicEntities.begin();
 			continue;
@@ -1917,7 +1917,7 @@ bool j1EntityFactory::PostUpdate()
 		if ((*statEntity)->isRemove) {
 
 			delete *statEntity;
-			activeStaticEntities.erase(statEntity);
+			activeStaticEntities.remove(*statEntity);
 
 			statEntity = activeStaticEntities.begin();
 			continue;
