@@ -516,6 +516,7 @@ bool j1Player::CleanUp()
 	{
 		imagePrisonersVector.back()->toRemove = true;
 	}
+
 	DeleteEntitiesMenu();
 
 	return ret;
@@ -631,14 +632,14 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 			else if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
 
-				App->audio->PlayFx(6, 0); //Gold mine sound
-				/*list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
-				if (pene.size() > 0) {
-					pene.front()->SetBlitState(false);
-				}*/
 				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
 				if (App->entities->IsNearSoldiers(pos, 7)) {
 
+					App->audio->PlayFx(6, 0); //Gold mine sound
+					/*list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
+					if (pene.size() > 0) {
+						pene.front()->SetBlitState(false);
+					}*/
 					int random = rand() % 4;
 					switch (random) {
 					case 0:
@@ -660,6 +661,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				}
 			}
 			else if (staticEntity->staticEntityType == EntityType_RUNESTONE)
+
 				staticEntity->buildingState = BuildingState_Destroyed;				
 				
 				break;
@@ -1046,14 +1048,14 @@ void j1Player::DeleteEntitiesMenu()
 
 	if (!groupSelectedStats.units.empty()) {
 
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity1Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity2Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity3Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity4Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity5Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity6Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity7Icon);
-			App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity8Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity1Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity2Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity3Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity4Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity5Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity6Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity7Icon);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity8Icon);
 
 		/*
 		groupSelectedStats.lifeBar1->toRemove = true;
@@ -1066,10 +1068,10 @@ void j1Player::DeleteEntitiesMenu()
 		groupSelectedStats.lifeBar8->toRemove = true;
 		*/
 
-			if (commandPatrolButton != nullptr)
-				App->gui->RemoveElem((UIElement**)&commandPatrolButton);
-			if (commandStopButton != nullptr)
-				App->gui->RemoveElem((UIElement**)&commandStopButton);
+		if (commandPatrolButton != nullptr)
+			App->gui->RemoveElem((UIElement**)&commandPatrolButton);
+		if (commandStopButton != nullptr)
+			App->gui->RemoveElem((UIElement**)&commandStopButton);
 
 		groupSelectedStats.units.clear();
 	}
