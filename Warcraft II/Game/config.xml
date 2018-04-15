@@ -1102,7 +1102,7 @@
 
       <pigFarm>
         <maxLife value ="400"/>
-        <sprite x="15" y="516" w="64" h="64"/>
+        <sprite x="81" y="516" w="64" h="64"/>
       </pigFarm>
 
       <trollLumberMill>
