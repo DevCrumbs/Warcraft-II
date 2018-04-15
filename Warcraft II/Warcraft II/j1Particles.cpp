@@ -219,6 +219,18 @@ bool j1Particles::Start()
 	towerArrowParticles.downLeft.particleType = ParticleType_NoType;
 	towerArrowParticles.downRight.particleType = ParticleType_NoType;
 
+	towerArrowParticles.up.life = 800;
+	towerArrowParticles.down.life = 800;
+	towerArrowParticles.left.life = 800;
+	towerArrowParticles.right.life = 800;
+	towerArrowParticles.upLeft.life = 800;
+	towerArrowParticles.upRight.life = 800;
+	towerArrowParticles.downLeft.life = 800;
+	towerArrowParticles.downRight.life = 800;
+	cannonBullet.life = 800;
+	trollAxe.life = 800;
+	paws.life = 800;
+
 	LoadAnimationsSpeed();
 
 	atlasTex = App->tex->Load(atlasTexName.data());
@@ -461,11 +473,11 @@ bool Particle::Update(float dt)
 	ret = false;
 	*/
 
-	//if (life == 0)
-	//{
-		//if ((SDL_GetTicks() - born) > life)
-		//ret = false;
-	//}
+	if (life > 0)
+	{
+		if ((SDL_GetTicks() - born) > life)
+			ret = false;
+	}
 
 	if (isRemove)
 		ret = false;
