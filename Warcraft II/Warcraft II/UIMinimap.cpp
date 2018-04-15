@@ -184,10 +184,7 @@ bool UIMinimap::LoadMap()
 		LOG("Could not create the renderer! SDL_Error: %s\n", SDL_GetError());
 
 
-
-	char* path = "wastelandTiles.png";
-
-	SDL_Texture* tex = App->tex->Load(path, renderer);
+	SDL_Texture* tex = App->tex->Load(App->map->tilesetPath.data(), renderer);
 
 	for (list<MapLayer*>::const_iterator layer = App->map->data.layers.begin();
 		layer != App->map->data.layers.end(); ++layer)
