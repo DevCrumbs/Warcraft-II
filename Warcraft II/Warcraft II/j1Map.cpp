@@ -47,11 +47,13 @@ void j1Map::Draw()
 	BROFILER_CATEGORY("Draw(notAbove)", Profiler::Color::Azure);
 
 
+	/*
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		App->render->camera.x = 0;
 		App->render->camera.y = 0;
 	}
+	*/
 
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
 	{
