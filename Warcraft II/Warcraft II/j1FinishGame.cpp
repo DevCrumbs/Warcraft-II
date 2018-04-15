@@ -10,6 +10,7 @@
 #include "j1Scene.h"
 #include "j1Player.h"
 #include "j1FadeToBlack.h"
+#include "j1Audio.h"
 
 
 #include "UILabel.h"
@@ -27,6 +28,15 @@ j1FinishGame::j1FinishGame()
 
 j1FinishGame::~j1FinishGame()
 {}
+
+bool j1FinishGame::Awake(pugi::xml_node& config) {
+
+	//Music paths
+	victoryMusicPath = config.child("audioPaths").child("victoryScreen").attribute("path").as_string();
+	defeatMusicPath = config.child("audioPaths").child("defeatScreen").attribute("path").as_string();
+
+	return true;
+}
 
 // Load assets
 bool j1FinishGame::Start()
@@ -72,10 +82,12 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
 	if (isWin) {
+		App->audio->PlayMusic(victoryMusicPath.data(), 0.0f); //Music
 		labelInfo.text = "Congratulations! You have defeated the Horde!";
 		labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorBlue;
 	}
 	else {
+		App->audio->PlayMusic(defeatMusicPath.data(), 0.0f); //Music
 		labelInfo.text = "Oh, no! You have been defeated by the Horde!";
 		labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorRed;
 	}

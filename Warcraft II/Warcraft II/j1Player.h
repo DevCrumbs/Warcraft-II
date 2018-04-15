@@ -102,6 +102,7 @@ struct EntitySelectedStats
 	UILifeBar* lifeBar = nullptr;
 
 	Entity* entitySelected = nullptr;
+	Entity* getEntityDamage = nullptr;
 };
 
 class j1Player : public j1Module
@@ -213,6 +214,8 @@ public:
 	uint enemiesKill = 0u;
 	uint buildDestroy = 0u;
 
+	EntitySelectedStats entitySelectedStats;
+
 private:
 
 	double timer = 0.0f; // game time
@@ -223,8 +226,6 @@ private:
 	//HoverButton hoverButtonStruct;
 
 	HoverInfo hoverInfo;
-
-	EntitySelectedStats entitySelectedStats;
 
 	GroupSelectedStats groupSelectedStats;
 

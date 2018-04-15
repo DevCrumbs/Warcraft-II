@@ -61,6 +61,13 @@ bool j1Player::Update(float dt) {
 	CheckIfPlaceBuilding();
 	CheckUnitSpawning();
 
+	if(entitySelectedStats.getEntityDamage != nullptr)
+		if (entitySelectedStats.getEntityDamage == entitySelectedStats.entitySelected) {
+			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
+			entitySelectedStats.getEntityDamage = nullptr;
+		}
+
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		if (stables != nullptr) {
 			if (stables->GetIsFinishedBuilt()) {
@@ -478,15 +485,6 @@ bool j1Player::CleanUp()
 {
 	bool ret = true;
 
-	if (barracks != nullptr) {
-		barracks->isRemove = true;
-		barracks = nullptr;
-	}
-	if (townHall) {
-		townHall->isRemove = true;
-		townHall = nullptr;
-	}
-
 	for (; !chickenFarm.empty(); chickenFarm.pop_back())
 	{
 		chickenFarm.back()->isRemove = true;
@@ -536,6 +534,16 @@ bool j1Player::CleanUp()
 	imagePrisonersVector.clear();
 
 	DeleteEntitiesMenu();
+
+	if (barracks != nullptr) {
+		barracks->isRemove = true;
+		barracks = nullptr;
+	}
+	if (townHall) {
+		townHall->isRemove = true;
+		townHall = nullptr;
+	}
+
 
 	return ret;
 }
@@ -677,10 +685,31 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					App->scene->hasGoldChanged = true;
 					staticEntity->buildingState = BuildingState_Destroyed;
 				}
+				else {
+					App->scene->UnLoadTerenasDialog();
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
 			}
-			else if (staticEntity->staticEntityType == EntityType_RUNESTONE)
+			else if (staticEntity->staticEntityType == EntityType_RUNESTONE && staticEntity->buildingState == BuildingState_Normal) {
 
-				staticEntity->buildingState = BuildingState_Destroyed;				
+				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
+				if (App->entities->IsNearSoldiers(pos, 7)) {
+					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
+					while (it != App->entities->activeDynamicEntities.end()) {
+						(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
+						it++;
+					}
+					staticEntity->buildingState = BuildingState_Destroyed;
+				}
+				else {
+					App->scene->UnLoadTerenasDialog();
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_RUNESTONE;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
+			}
 				
 				break;
 		case EntitiesEvent_HOVER:
@@ -855,7 +884,8 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		UILifeBar_Info lifeInfo;
 		lifeInfo.background = { 289,346,145,23 };
 		lifeInfo.bar = { 300,373,128,8 };
-		lifeInfo.maxLife = lifeInfo.life = entity->GetMaxLife();
+		lifeInfo.maxLife = entity->GetMaxLife();
+		lifeInfo.life = entity->GetCurrLife();
 		lifeInfo.maxWidth = lifeInfo.bar.w;
 		lifeInfo.lifeBarPosition = { 12, 10 };
 		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
@@ -899,7 +929,8 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		UILifeBar_Info lifeInfo;
 		lifeInfo.background = { 289,346,145,23 };
 		lifeInfo.bar = { 300,373,128,8 };
-		lifeInfo.maxLife = lifeInfo.life = entity->GetMaxLife();
+		lifeInfo.maxLife = entity->GetMaxLife();
+		lifeInfo.life = entity->GetCurrLife();
 		lifeInfo.maxWidth = lifeInfo.bar.w;
 		lifeInfo.lifeBarPosition = { 12, 10 };
 		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
@@ -1036,8 +1067,7 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 
 void j1Player::DeleteEntitiesMenu()
 {
-	if (entitySelectedStats.entitySelected == barracks)
-	{
+	if (entitySelectedStats.entitySelected == barracks) {
 		App->gui->RemoveElem((UIElement**)&produceElvenArcherButton);
 		App->gui->RemoveElem((UIElement**)&produceFootmanButton);
 		App->gui->RemoveElem((UIElement**)&producePaladinButton);
@@ -1385,32 +1415,59 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 			*/
 			if (UIelem == produceFootmanButton) {
-				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize && currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
-					App->audio->PlayFx(1, 0); //Button sound
-					currentGold -= 500;
-					App->scene->hasGoldChanged = true;
-					//Timer for the spawning
-					j1Timer spawnTimer;
-					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_FOOTMAN);
-					toSpawnUnitQueue.push(toSpawnUnit);
-					toSpawnUnitQueue.back().toSpawnTimer.Start();
+				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
+					if (currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
+						App->audio->PlayFx(1, 0); //Button sound
+						currentGold -= 500;
+						App->scene->hasGoldChanged = true;
+						//Timer for the spawning
+						j1Timer spawnTimer;
+						ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_FOOTMAN);
+						toSpawnUnitQueue.push(toSpawnUnit);
+						toSpawnUnitQueue.back().toSpawnTimer.Start();
+					}
+					else {
+						App->scene->UnLoadTerenasDialog();
+						App->scene->terenasDialogTimer.Start();
+						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
+						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+						}
 				}
-				else if (currentGold < footmanCost)
+				else if (currentGold < footmanCost) {
 					App->audio->PlayFx(3, 0); //Button error sound
+					App->scene->UnLoadTerenasDialog();
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_GOLD;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
+				
 			}
 			if (UIelem == produceElvenArcherButton) {
-				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize && currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
-					App->audio->PlayFx(1, 0); //Button sound
-					currentGold -= 400;
-					App->scene->hasGoldChanged = true;
-					//Timer for the spawning
-					j1Timer spawnTimer;
-					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
-					toSpawnUnitQueue.push(toSpawnUnit);
-					toSpawnUnitQueue.back().toSpawnTimer.Start();
+				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
+					if (currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
+						App->audio->PlayFx(1, 0); //Button sound
+						currentGold -= 400;
+						App->scene->hasGoldChanged = true;
+						//Timer for the spawning
+						j1Timer spawnTimer;
+						ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
+						toSpawnUnitQueue.push(toSpawnUnit);
+						toSpawnUnitQueue.back().toSpawnTimer.Start();
+					}
+					else {
+						App->scene->UnLoadTerenasDialog();
+						App->scene->terenasDialogTimer.Start();
+						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
+						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					}
 				}
-				else if (currentGold < elvenArcherCost)
+				else if (currentGold < elvenArcherCost) {
 					App->audio->PlayFx(3, 0); //Button error sound
+					App->scene->UnLoadTerenasDialog();
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_GOLD;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
 				if (currentGold >= mageCost  && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {

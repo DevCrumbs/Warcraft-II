@@ -23,9 +23,8 @@ void Runestone::Move(float dt)
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 
-	if (buildingState == BuildingState_Destroyed) {
-			UpdateAnimations(dt);
-	}
+	if (buildingState == BuildingState_Destroyed)
+		texArea = &runestoneInfo.inProgressTexArea;
 }
 
 // Animations
@@ -35,6 +34,6 @@ void Runestone::LoadAnimationsSpeed()
 }
 void Runestone::UpdateAnimations(float dt)
 {
-	buildingState = BuildingState_Normal;
-	texArea = &runestoneInfo.inProgressTexArea;
+	//buildingState = BuildingState_Normal;
+	//texArea = &runestoneInfo.inProgressTexArea;
 }

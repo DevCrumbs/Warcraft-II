@@ -19,7 +19,7 @@ public:
 	j1FinishGame();
 	~j1FinishGame();
 
-	bool Awake(pugi::xml_node& config) { return true; }
+	bool Awake(pugi::xml_node& config);
 	bool Start();
 	bool Update(float dt);
 	bool CleanUp();
@@ -48,6 +48,10 @@ private:
 	//Values
 
 	uint roomsExploredCont = 0u;
+
+	//Music paths
+	string victoryMusicPath;
+	string defeatMusicPath;
 
 
 };

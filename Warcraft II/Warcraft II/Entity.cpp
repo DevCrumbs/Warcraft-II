@@ -8,6 +8,7 @@
 #include "j1Collision.h"
 #include "j1Map.h"
 #include "j1EntityFactory.h"
+#include "j1Player.h"
 
 Entity::Entity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) : pos(pos), size(size), currLife(currLife), maxLife(maxLife), listener(listener)
 {
@@ -89,6 +90,8 @@ void Entity::ApplyDamage(int damage)
 	if (currLife < 0)
 		currLife = 0;
 	SetStringLife(currLife, maxLife);
+	if (entitySide == EntitySide_Player)
+		App->player->entitySelectedStats.getEntityDamage = this;
 }
 
 void Entity::ApplyHealth(int health) 
