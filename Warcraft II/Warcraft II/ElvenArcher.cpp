@@ -186,11 +186,14 @@ void ElvenArcher::Move(float dt)
 			// The goal of the unit has been changed manually (to patrol)
 			if (singleUnit->isGoalChanged) {
 
-				brain->RemoveAllSubgoals();
-				brain->AddGoal_Patrol(singleUnit->currTile, singleUnit->goal);
+				if (singleUnit->IsFittingTile()) {
 
-				unitState = UnitState_Patrol;
-				unitCommand = UnitCommand_NoCommand;
+					brain->RemoveAllSubgoals();
+					brain->AddGoal_Patrol(singleUnit->currTile, singleUnit->goal);
+
+					unitState = UnitState_Patrol;
+					unitCommand = UnitCommand_NoCommand;
+				}
 			}
 
 			break;
@@ -536,6 +539,38 @@ void ElvenArcher::UnitStateMachine(float dt)
 		break;
 
 	case UnitState_Patrol:
+
+		// Check if there are available targets
+		/// Prioritize a type of target (static or dynamic)
+		if (singleUnit->IsFittingTile()) {
+
+			newTarget = GetBestTargetInfo();
+
+			if (newTarget != nullptr) {
+
+				// A new target has found, update the attacking target
+				if (currTarget != newTarget) {
+
+					if (currTarget != nullptr) {
+
+						if (particle != nullptr) {
+
+							particle->isRemove = true;
+							particle = nullptr;
+						}
+
+						if (!currTarget->isRemoved) {
+
+							currTarget->target->RemoveAttackingUnit(this);
+							isHitting = false;
+						}
+					}
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
+		}
 
 		break;
 

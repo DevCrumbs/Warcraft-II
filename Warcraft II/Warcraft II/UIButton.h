@@ -64,7 +64,6 @@ private:
 	SDL_Rect normalTexArea = { 0,0,0,0 };
 	SDL_Rect hoverTexArea = { 0,0,0,0 };
 	SDL_Rect pressedTexArea = { 0,0,0,0 };
-
 };
 
 #endif //__UIButton_H__

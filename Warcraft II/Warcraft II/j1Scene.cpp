@@ -561,17 +561,15 @@ bool j1Scene::Update(float dt)
 		if (group != nullptr) {
 
 			/// COMMAND PATROL
-			/*
 			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 
 				App->entities->CommandToUnits(units, UnitCommand_Patrol);
-			*/
+
 			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
-			/*
 			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 
 				App->entities->CommandToUnits(units, UnitCommand_Stop);
-			*/
+
 			/// COMMAND ATTACK
 			/// Enemy
 			// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
