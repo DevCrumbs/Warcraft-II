@@ -124,7 +124,7 @@ bool j1Menu::Start()
 	mouseInfo.onEnemiesClick = { 402, 527, 28, 33 };
 	mouseText = App->gui->CreateUICursor(mouseInfo, this);
 
-	
+	mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 
 	return true;
 }
