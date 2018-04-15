@@ -52,6 +52,12 @@ CritterBoar::CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	entityCollider->isTrigger = true;
 }
 
+CritterBoar::~CritterBoar() 
+{
+	if (lastPaw != nullptr)
+		lastPaw = nullptr;
+}
+
 void CritterBoar::Move(float dt)
 {
 	// Save mouse position (world and map coords)

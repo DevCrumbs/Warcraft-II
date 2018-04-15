@@ -32,7 +32,7 @@ class CritterBoar :public DynamicEntity
 public:
 
 	CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const CritterBoarInfo& critterBoarInfo, j1Module* listener);
-	~CritterBoar() {};
+	~CritterBoar();
 	void Move(float dt);
 	void Draw(SDL_Texture* sprites);
 	void DebugDrawSelected();

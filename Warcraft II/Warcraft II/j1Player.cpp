@@ -61,13 +61,8 @@ bool j1Player::Update(float dt) {
 	CheckIfPlaceBuilding();
 	CheckUnitSpawning();
 
-	if(entitySelectedStats.getEntityDamage != nullptr)
-		if (entitySelectedStats.getEntityDamage == entitySelectedStats.entitySelected) {
-			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
-			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
-			entitySelectedStats.getEntityDamage = nullptr;
-		}
-
+	//check if lifeBar info change
+	CheckLifeBarUpdate();
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		if (stables != nullptr) {
 			if (stables->GetIsFinishedBuilt()) {
@@ -1067,6 +1062,54 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 	CreateAbilitiesButtons();
 }
 
+void j1Player::CheckLifeBarUpdate(){
+	if (getEntityDamage != nullptr) {
+		if (getEntityDamage == entitySelectedStats.entitySelected) {
+			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
+			getEntityDamage = nullptr;
+		}
+		else {
+			int cont = 0;
+			for (list<DynamicEntity*>::iterator it = groupSelectedStats.units.begin(); it != groupSelectedStats.units.end(); ++it)
+			{
+				Entity* ent = (Entity*)(*it);
+				if (getEntityDamage == ent) {
+					switch (cont)
+					{
+					case 0:
+						groupSelectedStats.lifeBar1->SetLife(ent->GetCurrLife());
+						break;
+					case 1:
+						groupSelectedStats.lifeBar2->SetLife(ent->GetCurrLife());
+						break;
+					case 2:
+						groupSelectedStats.lifeBar3->SetLife(ent->GetCurrLife());
+						break;
+					case 3:
+						groupSelectedStats.lifeBar4->SetLife(ent->GetCurrLife());
+						break;
+					case 4:
+						groupSelectedStats.lifeBar5->SetLife(ent->GetCurrLife());
+						break;
+					case 5:
+						groupSelectedStats.lifeBar6->SetLife(ent->GetCurrLife());
+						break;
+					case 6:
+						groupSelectedStats.lifeBar7->SetLife(ent->GetCurrLife());
+						break;
+					case 7:
+						groupSelectedStats.lifeBar8->SetLife(ent->GetCurrLife());
+						break;
+					}
+					getEntityDamage = nullptr;
+				}
+				cont++;
+			}
+		}
+	}
+
+}
 void j1Player::DeleteEntitiesMenu()
 {
 	if (entitySelectedStats.entitySelected == barracks) {
@@ -1107,16 +1150,16 @@ void j1Player::DeleteEntitiesMenu()
 		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity7Icon);
 		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity8Icon);
 
-		/*
-		groupSelectedStats.lifeBar1->toRemove = true;
-		groupSelectedStats.lifeBar2->toRemove = true;
-		groupSelectedStats.lifeBar3->toRemove = true;
-		groupSelectedStats.lifeBar4->toRemove = true;
-		groupSelectedStats.lifeBar5->toRemove = true;
-		groupSelectedStats.lifeBar6->toRemove = true;
-		groupSelectedStats.lifeBar7->toRemove = true;
-		groupSelectedStats.lifeBar8->toRemove = true;
-		*/
+		
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar1);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar2);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar3);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar4);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar5);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar6);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar7);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar8);
+		
 
 		if (commandPatrolButton != nullptr)
 			App->gui->RemoveElem((UIElement**)&commandPatrolButton);
@@ -1159,15 +1202,16 @@ void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image
 }
 void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity * entity)
 {
-	/*
+
 	UILifeBar_Info lifeInfo;
 	lifeInfo.background = backgroundTexArea;
 	lifeInfo.bar = barTexArea;
 	lifeInfo.maxLife = entity->GetMaxLife();
+	lifeInfo.life = entity->GetCurrLife();
 	lifeInfo.maxWidth = lifeInfo.bar.w;
-	lifeInfo.lifeBarPosition = { 12, 10 };
+	lifeInfo.lifeBarPosition = { 2, 2 };
 	lifeBar = App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
-	*/
+	
 }
 
 void j1Player::CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar)

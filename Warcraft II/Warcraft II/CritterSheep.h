@@ -32,7 +32,7 @@ class CritterSheep :public DynamicEntity
 public:
 
 	CritterSheep(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const CritterSheepInfo& gruntInfo, j1Module* listener);
-	~CritterSheep() {};
+	~CritterSheep();
 	void Move(float dt);
 	void Draw(SDL_Texture* sprites);
 	void DebugDrawSelected();

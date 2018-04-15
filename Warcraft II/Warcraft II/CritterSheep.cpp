@@ -51,6 +51,12 @@ CritterSheep::CritterSheep(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	entityCollider->isTrigger = true;
 }
 
+CritterSheep::~CritterSheep() 
+{
+	if (lastPaw != nullptr)
+		lastPaw = nullptr;
+}
+
 void CritterSheep::Move(float dt)
 {
 	// Save mouse position (world and map coords)
@@ -91,7 +97,7 @@ void CritterSheep::Move(float dt)
 	}
 
 	if (!isDead) {
-		//UpdatePaws();
+		UpdatePaws();
 
 		// ---------------------------------------------------------------------
 
