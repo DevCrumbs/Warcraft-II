@@ -61,6 +61,13 @@ bool j1Player::Update(float dt) {
 	CheckIfPlaceBuilding();
 	CheckUnitSpawning();
 
+	if(entitySelectedStats.getEntityDamage != nullptr)
+		if (entitySelectedStats.getEntityDamage == entitySelectedStats.entitySelected) {
+			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
+			entitySelectedStats.getEntityDamage = nullptr;
+		}
+
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		if (stables != nullptr) {
 			if (stables->GetIsFinishedBuilt()) {
@@ -855,7 +862,8 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		UILifeBar_Info lifeInfo;
 		lifeInfo.background = { 289,346,145,23 };
 		lifeInfo.bar = { 300,373,128,8 };
-		lifeInfo.maxLife = lifeInfo.life = entity->GetMaxLife();
+		lifeInfo.maxLife = entity->GetMaxLife();
+		lifeInfo.life = entity->GetCurrLife();
 		lifeInfo.maxWidth = lifeInfo.bar.w;
 		lifeInfo.lifeBarPosition = { 12, 10 };
 		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
@@ -899,7 +907,8 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		UILifeBar_Info lifeInfo;
 		lifeInfo.background = { 289,346,145,23 };
 		lifeInfo.bar = { 300,373,128,8 };
-		lifeInfo.maxLife = lifeInfo.life = entity->GetMaxLife();
+		lifeInfo.maxLife = entity->GetMaxLife();
+		lifeInfo.life = entity->GetCurrLife();
 		lifeInfo.maxWidth = lifeInfo.bar.w;
 		lifeInfo.lifeBarPosition = { 12, 10 };
 		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
