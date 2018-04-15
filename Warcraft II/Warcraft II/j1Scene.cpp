@@ -1078,7 +1078,7 @@ void j1Scene::LoadBuildingMenu()
 	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 65 }, labelInfo, this, buildingMenu));
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 500 gold";
+	labelInfo.text = "Cost: 250 gold";
 	if (App->player->currentGold < chickenFarmCost) {
 		labelInfo.normalColor = BloodyRed_;
 		labelInfo.hoverColor = BloodyRed_;
