@@ -119,6 +119,7 @@ bool j1Scene::Start()
 	LoadInGameUI();
 
 	if (terenasDialogEvent == TerenasDialog_NONE) {
+		UnLoadTerenasDialog();
 		terenasDialogTimer.Start();
 		terenasDialogEvent = TerenasDialog_START;
 		LoadTerenasDialog(terenasDialogEvent);
@@ -762,7 +763,7 @@ bool j1Scene::PostUpdate()
 		App->finish->active = true;
 	}
 	
-	if (App->player->currentFood < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) {
+	if (App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) {
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
@@ -1431,7 +1432,35 @@ void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
 		labelInfo.text = "Congratulations! You have freed Turalyon. I thank you in the name of Azeroth. For the alliance!";
 		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
 	}
-
+	else if (dialogEvent == TerenasDialog_GOLD_MINE) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 320;
+		labelInfo.interactive = false;
+		labelInfo.text = "To get gold, come next to the mine with a unit and click it!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_RUNESTONE) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 320;
+		labelInfo.interactive = false;
+		labelInfo.text = "To get healed, come next to the runestone with a unit and click it!";
+		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_FOOD) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 320;
+		labelInfo.interactive = false;
+		labelInfo.text = "To produce units you need to have enough food to feed them. Build more farms.";
+		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
+	}
+	else if (dialogEvent == TerenasDialog_GOLD) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 320;
+		labelInfo.interactive = false;
+		labelInfo.text = "To produce units you need to have enough gold. Get more from mines.";
+		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
+	}
+	
 }
 
 void j1Scene::UnLoadTerenasDialog()
