@@ -47,7 +47,6 @@ bool j1Player::Start()
 }
 
 bool j1Player::Update(float dt) {
-
 	CheckIfPlaceBuilding();
 	CheckUnitSpawning();
 
@@ -127,7 +126,7 @@ bool j1Player::Update(float dt) {
 				}
 			}
 		
-	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_REPEAT) {
 		App->audio->PlayFx(6, 0); //Gold mine sound
 		AddGold(500);
 		App->scene->hasGoldChanged = true;
@@ -852,7 +851,8 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
 		entitySelectedStats.entityName = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-		labelInfo.text = "50 HP";
+		entity->SetStringLife(entity->GetCurrLife(), entity->GetMaxLife());
+		labelInfo.text = entity->GetStringLife();
 		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
 		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 

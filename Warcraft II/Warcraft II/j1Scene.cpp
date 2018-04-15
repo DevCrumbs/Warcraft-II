@@ -357,6 +357,7 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
+
 	bool ret = true;
 
 	// Save mouse position (world and map coords)
@@ -1139,11 +1140,17 @@ void j1Scene::UnLoadBuildingMenu()
 	App->gui->RemoveElem((UIElement**)&guardTowerButton);
 	App->gui->RemoveElem((UIElement**)&cannonTowerButton);
 
-	for (list<UILabel*>::iterator it = buildingLabelsList.begin(); it != buildingLabelsList.end();)
+	/*for (; !buildingLabelsList.empty(); buildingLabelsList.pop_back())
+	{
+		buildingLabelsList.back()->toRemove = true;
+	}*/
+
+	for (list<UILabel*>::iterator it = buildingLabelsList.begin(); it != buildingLabelsList.end(); ++it)
 	{
 		(*it)->toRemove = true;
-		buildingLabelsList.erase(it++);
 	}
+	buildingLabelsList.clear();
+
 	buildingMenuOn = false;
 }
 
