@@ -219,7 +219,7 @@ public:
 	EntitySelectedStats entitySelectedStats;
 
 	bool isUnitSpawning = false;
-
+	bool isMouseOnMine = false;
 private:
 
 	double timer = 0.0f; // game time

@@ -532,7 +532,8 @@ bool j1Scene::Update(float dt)
 	else {
 		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
 		if (r.x != 243)
-			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+			if(!App->player->isMouseOnMine)
+				App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 	}
 
 	// Select units by mouse click

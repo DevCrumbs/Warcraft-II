@@ -672,16 +672,16 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					int random = rand() % 4;
 					switch (random) {
 					case 0:
-						App->player->AddGold(500);
+						App->player->AddGold(400);
 						break;
 					case 1:
-						App->player->AddGold(650);
+						App->player->AddGold(500);
 						break;
 					case 2:
-						App->player->AddGold(700);
+						App->player->AddGold(550);
 						break;
 					case 3:
-						App->player->AddGold(750);
+						App->player->AddGold(650);
 						break;
 					}
 
@@ -721,6 +721,11 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		case EntitiesEvent_HOVER:
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
 				App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+				App->player->isMouseOnMine = true;
+			}
+			if (staticEntity->staticEntityType == EntityType_RUNESTONE) {
+				App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+				App->player->isMouseOnMine = true;
 			}
 			if ((staticEntity->staticEntityType == EntityType_TOWN_HALL || staticEntity->staticEntityType == EntityType_BARRACKS) && ent->GetCurrLife() == ent->GetMaxLife())
 				hoverCheck = HoverCheck_Upgrate;
@@ -739,6 +744,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		case EntitiesEvent_LEAVE:
 			//DestroyHoverButton(ent);
 			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+			App->player->isMouseOnMine = false;
 			break;
 		case EntitiesEvent_CREATED:
 			DeleteEntitiesMenu();
@@ -1309,7 +1315,6 @@ void j1Player::HandleBarracksUIElem()
 			}
 			CreateToSpawnUnitLifeBar({ 72, 40 }, toSpawnUnitStats.frstInQueueBar); //To spawn unit lifeBar timer
 			toSpawnUnitStats.frstInQueueBar->SetLife(unit.toSpawnTimer.ReadSec());
-			isUnitSpawning = true;
 			break;
 		case 2:
 			switch (unit.entityType) {
@@ -1345,6 +1350,7 @@ void j1Player::HandleBarracksUIElem()
 			break;
 		}
 		unitInQueue++;
+		isUnitSpawning = true;
 	}
 }
 
