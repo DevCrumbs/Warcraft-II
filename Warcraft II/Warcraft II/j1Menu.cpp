@@ -198,21 +198,24 @@ bool j1Menu::PostUpdate()
 // Called before quitting
 bool j1Menu::CleanUp()
 {
-	DeteleMenu();
+	if (active) {
 
-	App->map->active = true;
-	App->scene->active = true;
-	App->player->active = true;
-	App->entities->active = true;
-	App->collision->active = true;
-	App->pathfinding->active = true;
-	App->pathmanager->active = true;
-	App->movement->active = true;
+		DeteleMenu();
 
-	App->player->Start();
-	App->entities->Start();
-	App->collision->Start();
-	App->pathfinding->Start();
+		App->map->active = true;
+		App->scene->active = true;
+		App->player->active = true;
+		App->entities->active = true;
+		App->collision->active = true;
+		App->pathfinding->active = true;
+		App->pathmanager->active = true;
+		App->movement->active = true;
+
+		App->player->Start();
+		App->entities->Start();
+		App->collision->Start();
+		App->pathfinding->Start();
+	}
 
 	active = false;
 

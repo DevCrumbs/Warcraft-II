@@ -94,16 +94,16 @@ bool j1Scene::Start()
 	// Load an orthogonal, isometric or warcraft-based map
 	if (orthogonalActive) {
 		ret = App->map->Load(orthogonalMap.data());
-		debugTex = App->tex->Load(orthogonalTexName.data());
+		//debugTex = App->tex->Load(orthogonalTexName.data());
 	}
 	else if (isometricActive) {
 		ret = App->map->Load(isometricMap.data());
-		debugTex = App->tex->Load(isometricTexName.data());
+		//debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
 		ret = LoadNewMap();
 	//	ret = App->map->Load("verticalSliceMap.tmx");
-		debugTex = App->tex->Load(warcraftTexName.data());
+		//debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
 	// Create walkability map
@@ -778,12 +778,8 @@ bool j1Scene::CleanUp()
 	LOG("Freeing scene");
 
 	App->audio->PauseMusic();
-	App->map->UnLoad();
-	App->tex->UnLoad(debugTex);
+	//App->tex->UnLoad(debugTex);
 
-	UnLoadTerenasDialog();
-
-	RELEASE_ARRAY(data);
 	DestroyAllUI();
 	//warcraftActive = false;
 
@@ -801,10 +797,11 @@ bool j1Scene::CleanUp()
 	App->player->CleanUp();
 	App->entities->CleanUp();
 	App->collision->CleanUp();
-
 	App->movement->CleanUp();
 	App->pathmanager->CleanUp();
 	App->pathfinding->CleanUp();
+
+	RELEASE_ARRAY(data);
 
 	return ret;
 }
@@ -1373,10 +1370,12 @@ void j1Scene::DestroyAllUI()
 	if (parchmentImg != nullptr) {
 		App->gui->RemoveElem((UIElement**)&parchmentImg);
 	}
+
 	DestroyPauseMenu();
 	DestroySettingsMenu();
 	UnLoadBuildingMenu();
 	UnLoadResourcesLabels();
+	UnLoadTerenasDialog();
 	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
 	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
 	App->gui->RemoveElem((UIElement**)&entitiesStats);
