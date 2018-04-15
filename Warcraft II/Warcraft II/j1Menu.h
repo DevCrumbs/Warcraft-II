@@ -80,6 +80,7 @@ private:
 private:
 
 	//Main Menu
+	UIImage* mainMenuImg = nullptr;
 	UIButton* playButt = nullptr;
 	UILabel*  playLabel = nullptr;
 	UIButton* exitButt = nullptr;
@@ -87,7 +88,7 @@ private:
 	UIButton* settingsButt = nullptr;
 	UILabel*  settingsLabel = nullptr;
 	vector<UIImage*> artifacts;
-
+	Animation menuImgAnim;
 
 	//Settings
 	SliderStruct audioFX;
