@@ -165,6 +165,7 @@ public:
 
 	j1Timer terenasDialogTimer;
 
+	iPoint basePos{ 0,0 };
 
 private:
 

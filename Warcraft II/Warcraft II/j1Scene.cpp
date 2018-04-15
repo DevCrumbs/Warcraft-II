@@ -163,7 +163,6 @@ bool j1Scene::LoadNewMap(int map)
 	if (ret)
 	{
 		iPoint cameraPos{ 0,0 };
-		iPoint basePos{ 0,0 };
 		switch (map)
 		{
 		case 0:
@@ -209,7 +208,9 @@ bool j1Scene::LoadNewMap(int map)
 		default:
 			break;
 		}
+		basePos = cameraPos;
 	}
+
 	return ret;
 }
 
@@ -883,6 +884,13 @@ void j1Scene::DebugKeys()
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
 		App->map->cameraBlit = !App->map->cameraBlit;
 		*/
+
+
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		App->render->camera.x = -basePos.x;
+		App->render->camera.y = -basePos.y;
+	}
 }
 
 void j1Scene::CheckCameraMovement(float dt) {
