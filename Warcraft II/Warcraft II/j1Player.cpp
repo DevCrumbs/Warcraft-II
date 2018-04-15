@@ -529,6 +529,9 @@ bool j1Player::CleanUp()
 	imagePrisonersVector.clear();
 
 	DeleteEntitiesMenu();
+	if (hoverInfo.background != nullptr) {
+		DeleteHoverInfoMenu();
+	}
 
 	if (barracks != nullptr) {
 		barracks->isRemove = true;
