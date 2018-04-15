@@ -799,6 +799,19 @@ bool j1Scene::Update(float dt)
 		break;
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
+		App->audio->PlayFx(1, 0); //Button sound
+		if (parchmentImg == nullptr) {
+			UIImage_Info parchmentInfo;
+			parchmentInfo.texArea = App->gui->parchmentArea;
+			parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
+			parchmentImg->StartAnimation(App->gui->parchmentAnim);
+			parchmentImg->SetPriorityDraw(PriorityDraw_PAUSEMENU);
+		}
+		else {
+			pauseMenuActions = PauseMenuActions_DESTROY;
+		}
+	}
 	return ret;
 }
 

@@ -367,7 +367,8 @@ void Goal_Wander::Activate()
 	maxDistance = 5;
 	goalStatus = GoalStatus_Active;
 
-	AddSubgoal(new Goal_LookAround(owner));
+	if(owner != nullptr)
+		AddSubgoal(new Goal_LookAround(owner));
 
 	Navgraph* navgraph = owner->GetNavgraph();
 
