@@ -169,6 +169,7 @@ public:
 
 private:
 
+	bool isStarted = false;
 	bool isAttackCursor = false;
 	bool isFadeToMenu = false;
 	// Draw rectangle
