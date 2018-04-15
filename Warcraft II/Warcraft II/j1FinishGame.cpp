@@ -53,7 +53,6 @@ bool j1FinishGame::Start()
 	screen = { 0, 0, static_cast<int>(width * scale), static_cast<int>(height * scale) };
 	LoadSceneOne(App->player->isWin);
 
-
 	bg = App->tex->Load(bgTexName.data());
 
 	//DeleteScreen();
@@ -238,11 +237,13 @@ void j1FinishGame::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
 		if (UIelem == continueButt) {
+			App->audio->PlayFx(1, 0); //Button sound
 			DeleteScene();
 			LoadSceneTwo();
 		}
 
 		if (UIelem == returnButt) {
+			App->audio->PlayFx(1, 0); //Button sound
 			App->fade->FadeToBlack(this, App->menu);
 		}
 		break;

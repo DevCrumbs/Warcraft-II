@@ -13,15 +13,15 @@
 	<pathmanager />
 	<entities />
 	<fonts />
-	<menu />
 	<scene />
 	<scene />
 	<particles />
 	<finish />
+	<menu />
 	<:anonymous />
 	<gui />
 	<fade />
 	<renderer>
-		<camera x="-643.869019" y="-4314.54932" />
+		<camera x="-1616.61426" y="-447.108795" />
 	</renderer>
 </game_state>

@@ -461,7 +461,6 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-
 	bool ret = true;
 
 	// Save mouse position (world and map coords)
@@ -474,7 +473,7 @@ bool j1Scene::Update(float dt)
 
 	// Draw
 	App->map->Draw(); // map
-	//App->particles->DrawPaws(); // paws particles
+	App->particles->DrawPaws(); // paws particles
 	App->entities->Draw(); // entities
 
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
@@ -697,7 +696,11 @@ bool j1Scene::Update(float dt)
 
 	//Checks if resources have changed to update building menu and gold label
 
-	if (terenasDialogTimer.Read() >= 30000 && terenasDialogEvent != TerenasDialog_NONE) {
+	if (terenasDialogTimer.Read() >= 25000 && terenasDialogEvent == TerenasDialog_START) {
+		terenasDialogEvent = TerenasDialog_NONE;
+		UnLoadTerenasDialog();
+	}
+	if (terenasDialogTimer.Read() >= 7000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
 		terenasDialogEvent = TerenasDialog_NONE;
 		UnLoadTerenasDialog();
 	}
@@ -788,13 +791,13 @@ bool j1Scene::PostUpdate()
 		return false;
 	}
 
-	if (App->player->imagePrisonersVector.size() >= 2) {
+	if (App->player->imagePrisonersVector.size() >= 2 || App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
 		App->player->isWin = true;
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
 	}
 	
-	if (App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) {
+	if ((App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) || App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
@@ -825,7 +828,6 @@ bool j1Scene::CleanUp()
 
 	// Set to nullptr the pointers to the UI elements
 	active = false;
-	App->audio->active = false;
 	App->map->active = false;
 	App->player->active = false;
 	App->entities->active = false;

@@ -102,7 +102,6 @@ struct EntitySelectedStats
 	UILifeBar* lifeBar = nullptr;
 
 	Entity* entitySelected = nullptr;
-	Entity* getEntityDamage = nullptr;
 };
 
 class j1Player : public j1Module
@@ -151,6 +150,7 @@ public:
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void MakeUnitMenu(Entity* entity);
 	void MakeUnitsMenu(list<DynamicEntity*> units);
+	void CheckLifeBarUpdate();
 	void DeleteEntitiesMenu();
 	void MakeHoverInfoMenu(string unitProduce, string gold);
 	void DeleteHoverInfoMenu();
@@ -190,6 +190,8 @@ public:
 	//Neutral
 	list<StaticEntity*> goldMine;
 	list<StaticEntity*> runestone;
+	//Update lifeBar
+	Entity* getEntityDamage = nullptr;
 
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;

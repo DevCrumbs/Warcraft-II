@@ -61,13 +61,8 @@ bool j1Player::Update(float dt) {
 	CheckIfPlaceBuilding();
 	CheckUnitSpawning();
 
-	if(entitySelectedStats.getEntityDamage != nullptr)
-		if (entitySelectedStats.getEntityDamage == entitySelectedStats.entitySelected) {
-			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
-			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
-			entitySelectedStats.getEntityDamage = nullptr;
-		}
-
+	//check if lifeBar info change
+	CheckLifeBarUpdate();
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		if (stables != nullptr) {
 			if (stables->GetIsFinishedBuilt()) {
@@ -534,6 +529,9 @@ bool j1Player::CleanUp()
 	imagePrisonersVector.clear();
 
 	DeleteEntitiesMenu();
+	if (hoverInfo.background != nullptr) {
+		DeleteHoverInfoMenu();
+	}
 
 	if (barracks != nullptr) {
 		barracks->isRemove = true;
@@ -669,23 +667,24 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					int random = rand() % 4;
 					switch (random) {
 					case 0:
-						App->player->AddGold(1500);
+						App->player->AddGold(500);
 						break;
 					case 1:
-						App->player->AddGold(2000);
+						App->player->AddGold(750);
 						break;
 					case 2:
-						App->player->AddGold(2500);
+						App->player->AddGold(1000);
 						break;
 					case 3:
-						App->player->AddGold(3000);
+						App->player->AddGold(1250);
 						break;
 					}
 
 					App->scene->hasGoldChanged = true;
+					App->scene->UnLoadTerenasDialog();
 					staticEntity->buildingState = BuildingState_Destroyed;
 				}
-				else {
+				else if(App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE){
 					App->scene->UnLoadTerenasDialog();
 					App->scene->terenasDialogTimer.Start();
 					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
@@ -698,12 +697,14 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				if (App->entities->IsNearSoldiers(pos, 7)) {
 					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
 					while (it != App->entities->activeDynamicEntities.end()) {
-						(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
+						if ((*it)->entitySide == EntitySide_Player) 
+							(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
 						it++;
 					}
+					App->scene->UnLoadTerenasDialog();
 					staticEntity->buildingState = BuildingState_Destroyed;
 				}
-				else {
+				else if (App->scene->terenasDialogEvent != TerenasDialog_RUNESTONE) {
 					App->scene->UnLoadTerenasDialog();
 					App->scene->terenasDialogTimer.Start();
 					App->scene->terenasDialogEvent = TerenasDialog_RUNESTONE;
@@ -802,9 +803,11 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 }
 void j1Player::RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos) {
 
-	App->scene->UnLoadTerenasDialog();
-	App->scene->terenasDialogTimer.Start();
-	App->scene->LoadTerenasDialog(dialogEvent);
+	if (App->scene->terenasDialogEvent != dialogEvent) {
+		App->scene->UnLoadTerenasDialog();
+		App->scene->terenasDialogTimer.Start();
+		App->scene->LoadTerenasDialog(dialogEvent);
+	}
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = iconText;
@@ -1067,6 +1070,54 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 	CreateAbilitiesButtons();
 }
 
+void j1Player::CheckLifeBarUpdate(){
+	if (getEntityDamage != nullptr) {
+		if (getEntityDamage == entitySelectedStats.entitySelected) {
+			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
+			getEntityDamage = nullptr;
+		}
+		else {
+			int cont = 0;
+			for (list<DynamicEntity*>::iterator it = groupSelectedStats.units.begin(); it != groupSelectedStats.units.end(); ++it)
+			{
+				Entity* ent = (Entity*)(*it);
+				if (getEntityDamage == ent) {
+					switch (cont)
+					{
+					case 0:
+						groupSelectedStats.lifeBar1->SetLife(ent->GetCurrLife());
+						break;
+					case 1:
+						groupSelectedStats.lifeBar2->SetLife(ent->GetCurrLife());
+						break;
+					case 2:
+						groupSelectedStats.lifeBar3->SetLife(ent->GetCurrLife());
+						break;
+					case 3:
+						groupSelectedStats.lifeBar4->SetLife(ent->GetCurrLife());
+						break;
+					case 4:
+						groupSelectedStats.lifeBar5->SetLife(ent->GetCurrLife());
+						break;
+					case 5:
+						groupSelectedStats.lifeBar6->SetLife(ent->GetCurrLife());
+						break;
+					case 6:
+						groupSelectedStats.lifeBar7->SetLife(ent->GetCurrLife());
+						break;
+					case 7:
+						groupSelectedStats.lifeBar8->SetLife(ent->GetCurrLife());
+						break;
+					}
+					getEntityDamage = nullptr;
+				}
+				cont++;
+			}
+		}
+	}
+
+}
 void j1Player::DeleteEntitiesMenu()
 {
 	if (entitySelectedStats.entitySelected == barracks) {
@@ -1107,16 +1158,16 @@ void j1Player::DeleteEntitiesMenu()
 		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity7Icon);
 		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity8Icon);
 
-		/*
-		groupSelectedStats.lifeBar1->toRemove = true;
-		groupSelectedStats.lifeBar2->toRemove = true;
-		groupSelectedStats.lifeBar3->toRemove = true;
-		groupSelectedStats.lifeBar4->toRemove = true;
-		groupSelectedStats.lifeBar5->toRemove = true;
-		groupSelectedStats.lifeBar6->toRemove = true;
-		groupSelectedStats.lifeBar7->toRemove = true;
-		groupSelectedStats.lifeBar8->toRemove = true;
-		*/
+		
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar1);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar2);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar3);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar4);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar5);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar6);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar7);
+		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar8);
+		
 
 		if (commandPatrolButton != nullptr)
 			App->gui->RemoveElem((UIElement**)&commandPatrolButton);
@@ -1159,15 +1210,16 @@ void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image
 }
 void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity * entity)
 {
-	/*
+
 	UILifeBar_Info lifeInfo;
 	lifeInfo.background = backgroundTexArea;
 	lifeInfo.bar = barTexArea;
 	lifeInfo.maxLife = entity->GetMaxLife();
+	lifeInfo.life = entity->GetCurrLife();
 	lifeInfo.maxWidth = lifeInfo.bar.w;
-	lifeInfo.lifeBarPosition = { 12, 10 };
+	lifeInfo.lifeBarPosition = { 2, 2 };
 	lifeBar = App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
-	*/
+	
 }
 
 void j1Player::CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar)
@@ -1427,8 +1479,11 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_FOOTMAN);
 						toSpawnUnitQueue.push(toSpawnUnit);
 						toSpawnUnitQueue.back().toSpawnTimer.Start();
+						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
+							App->scene->UnLoadTerenasDialog();
+						}
 					}
-					else {
+					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD){
 						App->scene->UnLoadTerenasDialog();
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
@@ -1437,10 +1492,12 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 				else if (currentGold < footmanCost) {
 					App->audio->PlayFx(3, 0); //Button error sound
-					App->scene->UnLoadTerenasDialog();
-					App->scene->terenasDialogTimer.Start();
-					App->scene->terenasDialogEvent = TerenasDialog_GOLD;
-					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
+						App->scene->UnLoadTerenasDialog();
+						App->scene->terenasDialogTimer.Start();
+						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
+						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					}
 				}
 				
 			}
@@ -1455,8 +1512,11 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
 						toSpawnUnitQueue.push(toSpawnUnit);
 						toSpawnUnitQueue.back().toSpawnTimer.Start();
+						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
+							App->scene->UnLoadTerenasDialog();
+						}
 					}
-					else {
+					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
 						App->scene->UnLoadTerenasDialog();
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
@@ -1465,10 +1525,12 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 				else if (currentGold < elvenArcherCost) {
 					App->audio->PlayFx(3, 0); //Button error sound
-					App->scene->UnLoadTerenasDialog();
-					App->scene->terenasDialogTimer.Start();
-					App->scene->terenasDialogEvent = TerenasDialog_GOLD;
-					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
+						App->scene->UnLoadTerenasDialog();
+						App->scene->terenasDialogTimer.Start();
+						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
+						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					}
 				}
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
