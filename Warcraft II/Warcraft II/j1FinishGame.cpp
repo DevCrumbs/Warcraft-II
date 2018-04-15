@@ -214,7 +214,7 @@ void j1FinishGame::LoadSceneTwo() {
 	labelInfo.hoverColor = labelInfo.pressedColor = White_;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.textWrapLength = 600;
-	string s = "If you want to know which artifact you would have gained, do not forget to play th full game when it is relased! The enemy base awaits for your troops...";
+	string s = "If you want to know which artifact you would have gained, do not forget to play the full game when it is relased! The enemy base awaits for your troops...";
 	labelInfo.text = s;
 	labelVector.push_back(App->gui->CreateUILabel({ 750, 400 }, labelInfo));
 
