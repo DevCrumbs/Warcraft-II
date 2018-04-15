@@ -529,6 +529,9 @@ bool j1Player::CleanUp()
 	imagePrisonersVector.clear();
 
 	DeleteEntitiesMenu();
+	if (hoverInfo.background != nullptr) {
+		DeleteHoverInfoMenu();
+	}
 
 	if (barracks != nullptr) {
 		barracks->isRemove = true;
@@ -800,10 +803,11 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 }
 void j1Player::RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos) {
 
-	if(App->scene->terenasDialogEvent != dialogEvent)
-	App->scene->UnLoadTerenasDialog();
-	App->scene->terenasDialogTimer.Start();
-	App->scene->LoadTerenasDialog(dialogEvent);
+	if (App->scene->terenasDialogEvent != dialogEvent) {
+		App->scene->UnLoadTerenasDialog();
+		App->scene->terenasDialogTimer.Start();
+		App->scene->LoadTerenasDialog(dialogEvent);
+	}
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = iconText;
