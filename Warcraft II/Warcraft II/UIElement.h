@@ -106,8 +106,9 @@ public:
 	bool drag = false;
 	bool toRemove = false;
 
-protected:
 	UIE_TYPE type = UIE_TYPE_NO_TYPE;
+protected:
+
 	UIE_HORIZONTAL_POS horizontal = HORIZONTAL_POS_LEFT;
 	UIE_VERTICAL_POS vertical = VERTICAL_POS_TOP;
 
