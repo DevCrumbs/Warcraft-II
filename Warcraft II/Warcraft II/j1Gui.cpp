@@ -137,10 +137,13 @@ bool j1Gui::Update(float dt)
 
 	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
 		info = drawOrder.top();
-		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
-			info->Draw();
-		else if (App->render->IsInScreen(info->GetLocalRect()))
-			info->Draw();
+		if (info != nullptr) {
+			if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+				info->Draw();
+			else if (App->render->IsInScreen(info->GetLocalRect())) {
+				info->Draw();
+			}
+		}
 	}
 
 	return ret;
