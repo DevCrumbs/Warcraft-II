@@ -53,7 +53,6 @@ bool j1FinishGame::Start()
 	screen = { 0, 0, static_cast<int>(width * scale), static_cast<int>(height * scale) };
 	LoadSceneOne(App->player->isWin);
 
-
 	bg = App->tex->Load(bgTexName.data());
 
 	//DeleteScreen();

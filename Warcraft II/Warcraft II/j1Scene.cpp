@@ -461,7 +461,6 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-
 	bool ret = true;
 
 	// Save mouse position (world and map coords)
@@ -825,7 +824,6 @@ bool j1Scene::CleanUp()
 
 	// Set to nullptr the pointers to the UI elements
 	active = false;
-	App->audio->active = false;
 	App->map->active = false;
 	App->player->active = false;
 	App->entities->active = false;
