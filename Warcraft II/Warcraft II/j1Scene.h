@@ -116,8 +116,8 @@ public:
 	void LoadInGameUI();
 	void LoadBuildingMenu();
 	void CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect buttonHoverTexArea, SDL_Rect buttonPressedTexArea,
-		iPoint buttonPos, string buildingName, string buildingCost, iPoint namePos, iPoint costPos, int cost, MenuBuildingButton elem);
-	void DeleteBuildingElements(MenuBuildingButton elem);
+		iPoint buttonPos, string buildingName, string buildingCost, iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
+	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
 	void UpdateResourcesLabels();
