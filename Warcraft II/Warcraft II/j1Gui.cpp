@@ -182,16 +182,22 @@ bool j1Gui::PostUpdate()
 	list<UIElement*>::const_iterator iterator = UIElementsList.begin();
 
 	while (iterator != UIElementsList.end()) {
-
-		if ((*iterator)->HasToBeRemoved()) {
-
- 			delete *iterator;
+	
+		if ((*iterator)->type != UIE_TYPE_NO_TYPE) {
+			if ((*iterator)->HasToBeRemoved()) {
+				delete *iterator;
+				UIElementsList.erase(iterator);
+				iterator = UIElementsList.begin();
+				continue;
+			}
+		}
+		else {
 			UIElementsList.erase(iterator);
 			iterator = UIElementsList.begin();
 			continue;
 		}
-
 		iterator++;
+
 	}
 
 	return ret;
