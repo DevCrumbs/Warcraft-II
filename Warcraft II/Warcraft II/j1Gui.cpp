@@ -109,7 +109,8 @@ bool j1Gui::PreUpdate()
 	addedElementUI.clear();
 
 	for (std::list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); iterator++) {
-		drawOrder.push(*iterator);
+		if ((*iterator)->type != UIE_TYPE_NO_TYPE)
+			drawOrder.push(*iterator);
 	}
 	
 	return ret;
@@ -137,7 +138,7 @@ bool j1Gui::Update(float dt)
 
 	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
 		info = drawOrder.top();
-		if (info != nullptr) {
+		if (info->type != UIE_TYPE_NO_TYPE) {
 			if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
 				info->Draw();
 			else if (App->render->IsInScreen(info->GetLocalRect())) {
