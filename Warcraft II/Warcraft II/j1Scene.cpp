@@ -121,7 +121,7 @@ bool j1Scene::Start()
 		//debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = LoadNewMap();
+		ret = LoadNewMap(0);
 	//	ret = App->map->Load("verticalSliceMap.tmx");
 		//debugTex = App->tex->Load(warcraftTexName.data());
 	}
@@ -1071,7 +1071,8 @@ void j1Scene::LoadBuildingMenu()
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = { 0,33,240,529 };
-	buildingMenu = App->gui->CreateUIImage({ -110, 0 }, imageInfo, this, buildingButton);
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_RIGHT;
+	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this);
 	buildingMenuOn = true;
 	buildingMenu->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
@@ -1085,7 +1086,7 @@ void j1Scene::LoadBuildingMenu()
 	chickenFarmButton = App->gui->CreateUIButton({ 15, 55 }, buttonInfo, this, buildingMenu);
 
 	labelInfo.interactive = false;
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.text = "Chicken Farm";
 	labelInfo.normalColor = White_;
 	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 65 }, labelInfo, this, buildingMenu));

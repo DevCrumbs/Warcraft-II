@@ -39,7 +39,7 @@ public:
 	int GetLife() const;
 
 private:
-	UILifeBar_Info life_bar;
+	UILifeBar_Info lifeBar;
 	bool isInWorld = false;
 
 	SDL_Rect bar = { 0,0,0,0 };

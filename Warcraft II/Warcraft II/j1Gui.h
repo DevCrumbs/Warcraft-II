@@ -49,7 +49,8 @@ class UIMinimap;
 struct compareUIPriority {
 	bool operator()(const UIElement* infoA, const UIElement* infoB)
 	{
-		return infoA->GetPriorityDraw() > infoB->GetPriorityDraw();
+		if (infoA != nullptr && infoB != nullptr)
+			return infoA->GetPriorityDraw() > infoB->GetPriorityDraw();
 	}
 };
 class j1Gui : public j1Module
@@ -112,11 +113,16 @@ public:
 	//NTree<UIElement*>* UIElementsTree; Don't delete yet
 	bool isDebug = false;
 	Animation parchmentAnim;
-	SDL_Rect parchmentArea;
+	SDL_Rect parchmentArea{ 0,0,0,0 };
 
 	//artifacts
 	Animation scepterAnim, bookAnim, skullAnim, eyeAnim;
-	SDL_Rect scepterText, bookText, skullText, eyeText;
+
+	SDL_Rect scepterText{ 0,0,0,0 };
+	SDL_Rect bookText{ 0,0,0,0 };
+	SDL_Rect skullText{ 0,0,0,0 };
+	SDL_Rect eyeText{ 0,0,0,0 };
+
 
 private:
 
