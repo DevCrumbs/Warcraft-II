@@ -20,7 +20,6 @@ struct UIButton;
 struct UIImage;
 struct UISlider;
 class UISlider_Info;
-class UIInputText;
 class UIMinimap;
 
 enum ENTITY_TYPE;

@@ -134,16 +134,29 @@ bool j1Gui::Update(float dt)
 		UI_elem_it++;
 	}
 
-	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
-		info = drawOrder.top();
+	//for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
+	//	info = drawOrder.top();
+	//	if (info->type != UIE_TYPE_NO_TYPE) {
+	//		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+	//			info->Draw();
+	//		else if (App->render->IsInScreen(info->GetLocalRect())) {
+	//			info->Draw();
+	//		}
+	//	}
+	//}
 
-		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
-			info->Draw();
-		else if (App->render->IsInScreen(info->GetLocalRect())) {
-			if (info->type != UIE_TYPE_NO_TYPE)
+	UIElement* info = nullptr;
+	while (!drawOrder.empty())
+	{
+		info = drawOrder.top();
+		if (info->type != UIE_TYPE_NO_TYPE) {
+			if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
 				info->Draw();
-	
+			else if (App->render->IsInScreen(info->GetLocalRect())) {
+				info->Draw();
+			}
 		}
+		drawOrder.pop();
 	}
 
 	return ret;
@@ -151,7 +164,8 @@ bool j1Gui::Update(float dt)
 
 void j1Gui::Draw() 
 {
-	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
+	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
+		info = drawOrder.top();
 		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
 			info->Draw();
 		else if (App->render->IsInScreen(info->GetLocalRect()))
@@ -170,8 +184,8 @@ bool j1Gui::PostUpdate()
 
 		if ((*iterator)->HasToBeRemoved()) {
 
-			delete *iterator;
-			UIElementsList.remove(*iterator);
+ 			delete *iterator;
+			UIElementsList.erase(iterator);
 			iterator = UIElementsList.begin();
 			continue;
 		}
