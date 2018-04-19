@@ -89,9 +89,7 @@ void Entity::ApplyDamage(int damage)
 	currLife -= damage;
 	if (currLife < 0)
 		currLife = 0;
-	SetStringLife(currLife, maxLife);
-	if (entitySide == EntitySide_Player)
-		App->player->getEntityDamage = this;
+	SetStringLife(currLife, maxLife);	
 }
 
 void Entity::ApplyHealth(int health) 
@@ -101,9 +99,6 @@ void Entity::ApplyHealth(int health)
 	else
 		currLife += health;
 	SetStringLife(currLife, maxLife);
-	if (entitySide == EntitySide_Player)
-		App->player->getEntityDamage = this;
-
 }
 
 string Entity::GetStringLife() const

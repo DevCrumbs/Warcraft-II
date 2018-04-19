@@ -57,11 +57,16 @@ bool j1Player::Start()
 
 bool j1Player::Update(float dt) 
 {
-	CheckIfPlaceBuilding();
-	CheckUnitSpawning();
+	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
+		(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
+	}
+	//Check if a building needs to be placed
+	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
+		CheckIfPlaceBuilding();
 
-	//check if lifeBar info change
-	CheckLifeBarUpdate();
+	//Check if the units need to spawn
+	if (!toSpawnUnitQueue.empty())
+		CheckUnitSpawning();
 
 	/*
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
@@ -170,8 +175,6 @@ bool j1Player::Update(float dt)
 		}
 	}
 	//Handle the apparence and disapparence of to spawn units UI elements
-	if (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected == barracks) 
-		HandleBarracksUIElem();	
 	
 	return true;
 }
@@ -404,8 +407,8 @@ void j1Player::CheckUnitSpawning()
 
 	if (!toSpawnUnitQueue.empty()) {
 
-		if (toSpawnUnitQueue.front().toSpawnTimer.Read() > (spawningTime * 1000)) {
-			ENTITY_TYPE toSpawnEntity = toSpawnUnitQueue.front().entityType;
+		if (toSpawnUnitQueue.front()->toSpawnTimer.Read() > (spawningTime * 1000)) {
+			ENTITY_TYPE toSpawnEntity = toSpawnUnitQueue.front()->entityType;
 
 			switch (toSpawnEntity) {
 
@@ -475,8 +478,19 @@ void j1Player::CheckUnitSpawning()
 			default:
 				break;
 			}
+			delete toSpawnUnitQueue.front();
 			toSpawnUnitQueue.pop();
+
+			list<GroupSpawning>::iterator lastElem = toSpawnUnitStats.begin();
+			App->gui->RemoveElem((UIElement**)&lastElem->entityIcon);
+			App->gui->RemoveElem((UIElement**)&lastElem->entityLifeBar);
+
+			toSpawnUnitStats.erase(toSpawnUnitStats.begin());
 		}
+	}
+	for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) 
+	{
+		(*iterator).entityLifeBar->SetLife((*iterator).owner->toSpawnTimer.ReadSec());
 	}
 }
 
@@ -987,161 +1001,42 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 {
 	list<DynamicEntity*>::iterator it;
 	it = units.begin();
-	int i = 0;
+	int cont = 0;
 	while (it != units.end()) {
-
+		UIImage* image = nullptr;
+		UILifeBar* lifeBar = nullptr;
 		if (units.size() == 1) {
 			MakeUnitMenu((*it));
 		}
 		else {
-			switch (i)
-			{
-			case 0:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 2,18 }, { 649, 160, 46, 30 }, groupSelectedStats.entity1Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 2,18 }, { 696, 160, 46, 30 }, groupSelectedStats.entity1Icon);
-				}
-				CreateGroupLifeBar({ 1,33 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar1, (Entity*)(*it));
-				break;
-			case 1:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 57,18 }, { 649, 160, 46, 30 }, groupSelectedStats.entity2Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 57,18 }, { 696, 160, 46, 30 }, groupSelectedStats.entity2Icon);
-				}
-				CreateGroupLifeBar({ 56,33 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar2, (Entity*)(*it));
-				break;
-			case 2:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 111,18 }, { 649, 160, 46, 30 }, groupSelectedStats.entity3Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 111,18 }, { 696, 160, 46, 30 }, groupSelectedStats.entity3Icon);
-				}
-				CreateGroupLifeBar({ 110,33 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar3, (Entity*)(*it));
-				break;
-			case 3:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 166,18 }, { 649, 160, 46, 30 }, groupSelectedStats.entity4Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 166,18 }, { 696, 160, 46, 30 }, groupSelectedStats.entity4Icon);
-				}
-				CreateGroupLifeBar({ 165,33 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar4, (Entity*)(*it));
-				break;
-			case 4:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 2, 57 }, { 649, 160, 46, 30 }, groupSelectedStats.entity5Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 2, 57 }, { 696, 160, 46, 30 }, groupSelectedStats.entity5Icon);
-				}
-				CreateGroupLifeBar({ 1,72 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar5, (Entity*)(*it));
-				break;
-			case 5:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 57,57 }, { 649, 160, 46, 30 }, groupSelectedStats.entity6Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 57,57 }, { 696, 160, 46, 30 }, groupSelectedStats.entity6Icon);
-				}
-				CreateGroupLifeBar({ 56,72 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar6, (Entity*)(*it));
-				break;
-			case 6:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 111,57 }, { 649, 160, 46, 30 }, groupSelectedStats.entity7Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 111,57 }, { 696, 160, 46, 30 }, groupSelectedStats.entity7Icon);
-				}
-				CreateGroupLifeBar({ 110,72 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar7, (Entity*)(*it));
-				break;
-			case 7:
-				if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-					CreateGroupIcon({ 166,57 }, { 649, 160, 46, 30 }, groupSelectedStats.entity8Icon);
-				}
-				else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-					CreateGroupIcon({ 166,57 }, { 696, 160, 46, 30 }, groupSelectedStats.entity8Icon);
-				}
-				CreateGroupLifeBar({ 165,72 }, { 240,362,47,7 }, { 242,358,42,3 }, groupSelectedStats.lifeBar8, (Entity*)(*it));
-				break;
-			default:
-				break;
+				
+			if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+				image = CreateGroupIcon({ 55 * (cont % 4) + 2, 39 * (cont / 4) + 18 }, { 649, 160, 46, 30 });
 			}
-		}
-		
+			else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+				image = CreateGroupIcon({ 55 * (cont % 4) + 2, 39 * (cont / 4) + 18 }, { 696, 160, 46, 30 });
+			}
+			lifeBar = CreateGroupLifeBar({ 55 * (cont % 4) + 1, 39 * (cont / 4) + 33 }, { 240,362,47,7 }, { 242,358,42,3 }, (Entity*)(*it));
+			
+			groupElementsList.push_back({(*it), image, lifeBar});
+		}		
 		it++;
-		i++;
+		cont++;
 	}
-	i = 0;
 
-	groupSelectedStats.units = units;
 	CreateAbilitiesButtons();
 }
 
-void j1Player::CheckLifeBarUpdate(){
-	if (getEntityDamage != nullptr) {
-		if (getEntityDamage == entitySelectedStats.entitySelected) {
-			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
-			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
-			getEntityDamage = nullptr;
-		}
-		else {
-			int cont = 0;
-			for (list<DynamicEntity*>::iterator it = groupSelectedStats.units.begin(); it != groupSelectedStats.units.end(); ++it)
-			{
-				Entity* ent = (Entity*)(*it);
-				if (getEntityDamage == ent) {
-					switch (cont)
-					{
-					case 0:
-						groupSelectedStats.lifeBar1->SetLife(ent->GetCurrLife());
-						break;
-					case 1:
-						groupSelectedStats.lifeBar2->SetLife(ent->GetCurrLife());
-						break;
-					case 2:
-						groupSelectedStats.lifeBar3->SetLife(ent->GetCurrLife());
-						break;
-					case 3:
-						groupSelectedStats.lifeBar4->SetLife(ent->GetCurrLife());
-						break;
-					case 4:
-						groupSelectedStats.lifeBar5->SetLife(ent->GetCurrLife());
-						break;
-					case 5:
-						groupSelectedStats.lifeBar6->SetLife(ent->GetCurrLife());
-						break;
-					case 6:
-						groupSelectedStats.lifeBar7->SetLife(ent->GetCurrLife());
-						break;
-					case 7:
-						groupSelectedStats.lifeBar8->SetLife(ent->GetCurrLife());
-						break;
-					}
-					getEntityDamage = nullptr;
-				}
-				cont++;
-			}
-		}
-	}
-
-}
 void j1Player::DeleteEntitiesMenu()
 {
 	if (entitySelectedStats.entitySelected == barracks) {
 		App->gui->RemoveElem((UIElement**)&produceElvenArcherButton);
 		App->gui->RemoveElem((UIElement**)&produceFootmanButton);
 		App->gui->RemoveElem((UIElement**)&producePaladinButton);
-		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
-		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
-		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
-		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueBar);
-		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.sndInQueueBar);
-		App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.trdInQueueBar);
+		for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) {
+			App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
+			App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
+		}
 	}
 
 	if (entitySelectedStats.entitySelected != nullptr) {
@@ -1159,35 +1054,18 @@ void j1Player::DeleteEntitiesMenu()
 		entitySelectedStats.entitySelected = nullptr;
 	}
 
-	if (!groupSelectedStats.units.empty()) {
+	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
+		App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
+		App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
+	}
 
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity1Icon);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity2Icon);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity3Icon);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity4Icon);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity5Icon);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity6Icon);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity7Icon);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.entity8Icon);
-
-		
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar1);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar2);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar3);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar4);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar5);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar6);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar7);
-		App->gui->RemoveElem((UIElement**)&groupSelectedStats.lifeBar8);
-		
-
+	if (!groupElementsList.empty()) {
 		if (commandPatrolButton != nullptr)
 			App->gui->RemoveElem((UIElement**)&commandPatrolButton);
 		if (commandStopButton != nullptr)
 			App->gui->RemoveElem((UIElement**)&commandStopButton);
-
-		groupSelectedStats.units.clear();
 	}
+	groupElementsList.clear();
 }
 
 void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) {
@@ -1212,17 +1090,16 @@ void j1Player::DeleteHoverInfoMenu()
 	App->gui->RemoveElem((UIElement**)&hoverInfo.info);
 }
 
-void j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image)
+UIImage* j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea)
 {
 	UIImage_Info imageInfo;
 	imageInfo.texArea = texArea;
 	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
 	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	image = App->gui->CreateUIImage(iconPos, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	return App->gui->CreateUIImage(iconPos, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
-void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity * entity)
+UILifeBar* j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, Entity * entity)
 {
-
 	UILifeBar_Info lifeInfo;
 	lifeInfo.background = backgroundTexArea;
 	lifeInfo.bar = barTexArea;
@@ -1230,20 +1107,21 @@ void j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea,
 	lifeInfo.life = entity->GetCurrLife();
 	lifeInfo.maxWidth = lifeInfo.bar.w;
 	lifeInfo.lifeBarPosition = { 2, 2 };
-	lifeBar = App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
-	
+	return App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);	
 }
 
-void j1Player::CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar)
+UILifeBar* j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea)
 {
 	UILifeBar_Info barInfo;
-	barInfo.background = { 241,362,46,7 };
-	barInfo.bar = { 243,358,42,3 };
+	//barInfo.background = { 241,362,46,7 };
+	//barInfo.bar =			{ 243,358,42,3 };
+	barInfo.background = backgroundTexArea;
+	barInfo.bar = barTexArea;
 	barInfo.maxLife = spawningTime;
 	barInfo.life = (barInfo.maxLife);
 	barInfo.maxWidth = barInfo.bar.w;
 	barInfo.lifeBarPosition = { 2, 2 };
-	lifeBar = App->gui->CreateUILifeBar({ lifeBarPos.x, lifeBarPos.y }, barInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+	return App->gui->CreateUILifeBar({ lifeBarPos.x, lifeBarPos.y }, barInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
 
 /*void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) 
@@ -1289,68 +1167,52 @@ void j1Player::CreateBarracksButtons()
 void j1Player::HandleBarracksUIElem()
 {
 	//Delete UI elements when not used
+	bool isVul = true;
+	int cont = 0;
+	if (toSpawnUnitQueue.size() <= 3)
+	{
+		for each (ToSpawnUnit* unit in toSpawnUnitQueue._Get_container())
+		{ //Iterates every element in the queue
+			if (!toSpawnUnitStats.empty())
+			{
+				isVul = false;
+				for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator)
+				{
+					if ((*iterator).owner != unit)
+					{
+						isVul = true;
+						break;
+					}
+				}
+			}
 
-	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueIcon);
-	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.frstInQueueBar);
-	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.sndInQueueIcon);
-	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.sndInQueueBar);
-	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.trdInQueueIcon);
-	App->gui->RemoveElem((UIElement**)&toSpawnUnitStats.trdInQueueBar);
+			if (isVul)
+			{
+				UIImage_Info info;
+				UIImage* image = nullptr;
+				UILifeBar* lifeBar = nullptr;
 
-	uint unitInQueue = 1;
-	for each (ToSpawnUnit unit in toSpawnUnitQueue._Get_container()) { //Iterates every element in the queue
-		UIImage_Info info;
-		switch (unitInQueue) {
-		case 1:
-			switch (unit.entityType) {
-			case EntityType_FOOTMAN:
-				CreateGroupIcon({ 72, 20 }, { 649,160,39,30 }, toSpawnUnitStats.frstInQueueIcon);
-				break;
-			case EntityType_ELVEN_ARCHER:
-				CreateGroupIcon({ 72, 20 }, { 696,160,39,30 }, toSpawnUnitStats.frstInQueueIcon);
-				break;
-			default:
-				CreateGroupIcon({ 72, 20 }, { 649,160,39,30 }, toSpawnUnitStats.frstInQueueIcon); //Footman
-				break;
+				switch (unit->entityType) {
+				case EntityType_FOOTMAN:
+					image = CreateGroupIcon({ 48 * cont + 72, 20 }, { 649,160,39,30 });
+					break;
+				case EntityType_ELVEN_ARCHER:
+					image = CreateGroupIcon({ 48 * cont + 72, 20 }, { 696,160,39,30 });
+					break;
+				default:
+					break;
+				}
+				lifeBar = CreateGroupLifeBar({ 48 * cont + 72, 40 }, { 241, 362, 46, 7 }, { 243, 358, 42, 3 }); //To spawn unit lifeBar timer
+				lifeBar->SetLife(unit->toSpawnTimer.ReadSec());
+
+
+				isUnitSpawning = true;
+
+				toSpawnUnitStats.push_back({ unit, image, lifeBar });
 			}
-			CreateToSpawnUnitLifeBar({ 72, 40 }, toSpawnUnitStats.frstInQueueBar); //To spawn unit lifeBar timer
-			toSpawnUnitStats.frstInQueueBar->SetLife(unit.toSpawnTimer.ReadSec());
-			break;
-		case 2:
-			switch (unit.entityType) {
-			case EntityType_FOOTMAN:
-				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
-				break;
-			case EntityType_ELVEN_ARCHER:
-				CreateGroupIcon({ 120, 20 }, { 696,160,39,30 }, toSpawnUnitStats.sndInQueueIcon);
-				break;
-			default:
-				CreateGroupIcon({ 120, 20 }, { 649,160,39,30 }, toSpawnUnitStats.sndInQueueIcon); //Footman
-				break;
-			}
-			CreateToSpawnUnitLifeBar({ 120, 40 }, toSpawnUnitStats.sndInQueueBar); //To spawn unit lifeBar timer
-			toSpawnUnitStats.sndInQueueBar->SetLife(unit.toSpawnTimer.ReadSec());
-			break;
-		case 3:
-			switch (unit.entityType) {
-			case EntityType_FOOTMAN:
-				CreateGroupIcon({ 168, 20 }, { 649,160,39,30 }, toSpawnUnitStats.trdInQueueIcon);
-				break;
-			case EntityType_ELVEN_ARCHER:
-				CreateGroupIcon({ 168, 20 }, { 696,160,39,30 }, toSpawnUnitStats.trdInQueueIcon);
-				break;
-			default:
-				CreateGroupIcon({ 168, 20 }, { 649,160,39,30 }, toSpawnUnitStats.trdInQueueIcon); //Footman
-				break;
-			}
-			CreateToSpawnUnitLifeBar({ 168, 40 }, toSpawnUnitStats.trdInQueueBar); //To spawn unit lifeBar timer
-			toSpawnUnitStats.trdInQueueBar->SetLife(unit.toSpawnTimer.ReadSec());
-			break;
-		default:
-			break;
+
+			cont++;
 		}
-		unitInQueue++;
-		isUnitSpawning = true;
 	}
 }
 
@@ -1422,13 +1284,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			if (UIelem == commandPatrolButton) {
 				// Command Patrol (SANDRA)
-				if (groupSelectedStats.units.size() > 0)
-					App->entities->CommandToUnits(groupSelectedStats.units, UnitCommand_Patrol);
+				if (App->scene->units.size() > 0)
+					App->entities->CommandToUnits(App->scene->units, UnitCommand_Patrol);
 			}
 			if (UIelem == commandStopButton) {
 				// Command Stop (SANDRA)
-				if (groupSelectedStats.units.size() > 0)
-					App->entities->CommandToUnits(groupSelectedStats.units, UnitCommand_Stop);
+				if (App->scene->units.size() > 0)
+					App->entities->CommandToUnits(App->scene->units, UnitCommand_Stop);
 			}
 
 			/*if (hoverCheck == HoverCheck_Repair) {
@@ -1489,12 +1351,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						App->scene->hasGoldChanged = true;
 						//Timer for the spawning
 						j1Timer spawnTimer;
-						ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_FOOTMAN);
+						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_FOOTMAN);
 						toSpawnUnitQueue.push(toSpawnUnit);
-						toSpawnUnitQueue.back().toSpawnTimer.Start();
+						toSpawnUnitQueue.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
 							App->scene->UnLoadTerenasDialog();
 						}
+						HandleBarracksUIElem();
 					}
 					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD){
 						App->scene->UnLoadTerenasDialog();
@@ -1512,7 +1375,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
 					}
 				}
-				
 			}
 			if (UIelem == produceElvenArcherButton) {
 				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
@@ -1522,12 +1384,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						App->scene->hasGoldChanged = true;
 						//Timer for the spawning
 						j1Timer spawnTimer;
-						ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
+						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
 						toSpawnUnitQueue.push(toSpawnUnit);
-						toSpawnUnitQueue.back().toSpawnTimer.Start();
+						toSpawnUnitQueue.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
 							App->scene->UnLoadTerenasDialog();
 						}
+						HandleBarracksUIElem();
 					}
 					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
 						App->scene->UnLoadTerenasDialog();
@@ -1552,9 +1415,9 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					currentGold -= 1200;
 					//Timer for the spawning
 					j1Timer spawnTimer;
-					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_MAGE);
+					ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_MAGE);
 					toSpawnUnitQueue.push(toSpawnUnit);
-					toSpawnUnitQueue.back().toSpawnTimer.Start();
+					toSpawnUnitQueue.back()->toSpawnTimer.Start();
 				}
 				else if (currentGold < mageCost)
 					App->audio->PlayFx(3, 0); //Button error sound
@@ -1565,9 +1428,9 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					currentGold -= 800;
 					//Timer for the spawning
 					j1Timer spawnTimer;
-					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_PALADIN);
+					ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_PALADIN);
 					toSpawnUnitQueue.push(toSpawnUnit);
-					toSpawnUnitQueue.back().toSpawnTimer.Start();
+					toSpawnUnitQueue.back()->toSpawnTimer.Start();
 				}
 				else if (currentGold < paladinCost)
 					App->audio->PlayFx(3, 0); //Button error sound
@@ -1578,9 +1441,9 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					currentGold -= 2500;
 					//Timer for the spawning
 					j1Timer spawnTimer;
-					ToSpawnUnit toSpawnUnit(spawnTimer, EntityType_GRYPHON_RIDER);
+					ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_GRYPHON_RIDER);
 					toSpawnUnitQueue.push(toSpawnUnit);
-					toSpawnUnitQueue.back().toSpawnTimer.Start();
+					toSpawnUnitQueue.back()->toSpawnTimer.Start();
 				}
 				else if (currentGold < gryphonRiderCost)
 					App->audio->PlayFx(3, 0); //Button error sound

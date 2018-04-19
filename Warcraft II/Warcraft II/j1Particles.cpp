@@ -227,9 +227,9 @@ bool j1Particles::Start()
 	towerArrowParticles.upRight.life = 800;
 	towerArrowParticles.downLeft.life = 800;
 	towerArrowParticles.downRight.life = 800;
-	cannonBullet.life = 800;
-	trollAxe.life = 800;
-	paws.life = 800;
+	cannonBullet.life = 700;
+	trollAxe.life = 600;
+	paws.life = 500;
 
 	sheepPawsInfo.up.speed = 1.0f;
 	sheepPawsInfo.down.speed = 1.0f;
