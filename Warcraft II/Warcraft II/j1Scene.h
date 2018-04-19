@@ -194,6 +194,8 @@ public:
 
 	UIMinimap* minimap = nullptr;
 
+	list<DynamicEntity*> units;
+
 private:
 
 	j1Timer finalTransition;

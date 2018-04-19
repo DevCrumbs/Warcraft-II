@@ -574,10 +574,9 @@ bool j1Scene::Update(float dt)
 		App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: add static entities, only player side
 	}
 
-	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+	units = App->entities->GetLastUnitsSelected();
 
 	if (units.size() > 0) {
-
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 			App->player->DeleteEntitiesMenu();
 			App->player->MakeUnitsMenu(units);
@@ -1381,7 +1380,6 @@ void j1Scene::UnLoadTerenasDialog()
 	App->gui->RemoveElem((UIElement**)&terenasAdvices.text);
 	App->gui->RemoveElem((UIElement**)&terenasAdvices.terenasImage);
 }
-
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 {

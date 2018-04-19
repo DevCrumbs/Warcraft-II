@@ -48,36 +48,11 @@ struct HoverInfo
 	UIImage* background = nullptr;
 };
 
-struct GroupSelectedStats
-{
-	UIImage* entity1Icon = nullptr;
-	UIImage* entity2Icon = nullptr;
-	UIImage* entity3Icon = nullptr;
-	UIImage* entity4Icon = nullptr;
-	UIImage* entity5Icon = nullptr;
-	UIImage* entity6Icon = nullptr;
-	UIImage* entity7Icon = nullptr;
-	UIImage* entity8Icon = nullptr;
-	UILifeBar* lifeBar1 = nullptr;
-	UILifeBar* lifeBar2 = nullptr;
-	UILifeBar* lifeBar3 = nullptr;
-	UILifeBar* lifeBar4 = nullptr;
-	UILifeBar* lifeBar5 = nullptr;
-	UILifeBar* lifeBar6 = nullptr;
-	UILifeBar* lifeBar7 = nullptr;
-	UILifeBar* lifeBar8 = nullptr;
+struct GroupSelectedElements {
+	Entity* owner = nullptr;
 
-	list<DynamicEntity*> units;
-};
-
-struct ToSpawnUnitsStats 
-{
-	UIImage* frstInQueueIcon = nullptr;
-	UIImage* sndInQueueIcon = nullptr;
-	UIImage* trdInQueueIcon = nullptr;
-	UILifeBar* frstInQueueBar = nullptr;
-	UILifeBar* sndInQueueBar = nullptr;
-	UILifeBar* trdInQueueBar = nullptr;
+	UIImage* entityIcon = nullptr;
+	UILifeBar* entityLifeBar = nullptr;
 };
 
 struct ToSpawnUnit {
@@ -87,6 +62,13 @@ struct ToSpawnUnit {
 	}
 	j1Timer toSpawnTimer;
 	ENTITY_TYPE entityType;
+};
+
+struct GroupSpawning {
+	ToSpawnUnit* owner = nullptr;
+
+	UIImage* entityIcon = nullptr;
+	UILifeBar* entityLifeBar = nullptr;
 };
 
 struct EntitySelectedStats
@@ -150,15 +132,14 @@ public:
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void MakeUnitMenu(Entity* entity);
 	void MakeUnitsMenu(list<DynamicEntity*> units);
-	void CheckLifeBarUpdate();
 	void DeleteEntitiesMenu();
 	void MakeHoverInfoMenu(string unitProduce, string gold);
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
-	void CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image);
-	void CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity* entity);
-	void CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar);
-
+	UIImage* CreateGroupIcon(iPoint iconPos, SDL_Rect texArea);
+	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, Entity* entity);
+	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea);
+	
 	//void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	//void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
@@ -191,7 +172,7 @@ public:
 	list<StaticEntity*> goldMine;
 	list<StaticEntity*> runestone;
 	//Update lifeBar
-	Entity* getEntityDamage = nullptr;
+	//Entity* getEntityDamage = nullptr;
 
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
@@ -231,9 +212,9 @@ private:
 
 	HoverInfo hoverInfo;
 
-	GroupSelectedStats groupSelectedStats;
+	list<GroupSelectedElements> groupElementsList;
 
-	ToSpawnUnitsStats toSpawnUnitStats;
+	list<GroupSpawning> toSpawnUnitStats;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr;
 	UIButton *producePaladinButton = nullptr, *commandPatrolButton = nullptr, *commandStopButton = nullptr;
@@ -242,7 +223,7 @@ private:
 	list<UIElement*> UIMenuInfoList;
 
 	//Spawning units from barracks queues and variables
-	queue<ToSpawnUnit> toSpawnUnitQueue;
+	queue<ToSpawnUnit*> toSpawnUnitQueue;
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;
 };
