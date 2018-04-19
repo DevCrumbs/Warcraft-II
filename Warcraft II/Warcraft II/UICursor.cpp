@@ -5,7 +5,7 @@
 
 UICursor::UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Module* listener, bool isInWorld) : UIElement(localPos, parent, listener, isInWorld), cursor(info)
 {
-	type = UIE_TYPE::UIE_TYPE_CURSOR;
+	type = UIE_TYPE_CURSOR;
 
 	default = App->gui->GetRectFromAtlas(cursor.default);
 	onClick = App->gui->GetRectFromAtlas(cursor.onClick);

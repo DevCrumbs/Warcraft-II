@@ -121,7 +121,7 @@ bool j1Scene::Start()
 		//debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = LoadNewMap();
+		ret = LoadNewMap(0);
 	//	ret = App->map->Load("verticalSliceMap.tmx");
 		//debugTex = App->tex->Load(warcraftTexName.data());
 	}
@@ -1071,12 +1071,74 @@ void j1Scene::LoadBuildingMenu()
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = { 0,33,240,529 };
-	buildingMenu = App->gui->CreateUIImage({ -110, 0 }, imageInfo, this, buildingButton);
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_RIGHT;
+	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this);
 	buildingMenuOn = true;
 	buildingMenu->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
+<<<<<<< HEAD
 	CreateBuildingElements({ 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 }, { 15, 55 }, "Chicken Farm", 
 						   "Cost: 250 gold", { 75, 65 }, { 75, 82 }, chickenFarmCost, buildingMenuButtons.chickenFarm);
+=======
+	buttonInfo.normalTexArea = { 241,34,50,41 };
+	buttonInfo.hoverTexArea = { 292,34,50,41 };
+	buttonInfo.pressedTexArea = { 343,34,50,41 };
+	if (App->player->currentGold < chickenFarmCost) {
+		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
+		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
+	}
+	chickenFarmButton = App->gui->CreateUIButton({ 15, 55 }, buttonInfo, this, buildingMenu);
+
+	labelInfo.interactive = false;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.text = "Chicken Farm";
+	labelInfo.normalColor = White_;
+	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 65 }, labelInfo, this, buildingMenu));
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.text = "Cost: 250 gold";
+	if (App->player->currentGold < chickenFarmCost) {
+		labelInfo.normalColor = BloodyRed_;
+		labelInfo.hoverColor = BloodyRed_;
+		labelInfo.pressedColor = BloodyRed_;
+	}
+	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 82 }, labelInfo, this, buildingMenu));
+
+	buttonInfo.normalTexArea = { 343,76,50,41 };
+	buttonInfo.hoverTexArea = { 343,76,50,41 };
+	buttonInfo.pressedTexArea = { 343,76,50,41 };
+	if (App->player->currentGold < elvenLumberCost) {
+		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
+		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
+	}
+	elvenLumberButton = App->gui->CreateUIButton({ 15, 100 }, buttonInfo, this, buildingMenu);
+
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Elven Lumber Mill";
+	labelInfo.normalColor = White_;
+	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 110}, labelInfo, this, buildingMenu));
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.text = "Coming Soon...";
+	labelInfo.normalColor = BloodyRed_;
+	labelInfo.hoverColor = BloodyRed_;
+	labelInfo.pressedColor = BloodyRed_;
+	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 127 }, labelInfo, this, buildingMenu));
+
+	buttonInfo.normalTexArea = { 343,118,50,41 };
+	buttonInfo.hoverTexArea = { 343,118,50,41 };
+	buttonInfo.pressedTexArea = { 343,118,50,41 };
+	if (App->player->currentGold < blacksmithCost) {
+		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
+		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
+	}
+	blackSmithButton = App->gui->CreateUIButton({ 15, 145 }, buttonInfo, this, buildingMenu);
+
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
+	labelInfo.text = "Blacksmith";
+	labelInfo.normalColor = White_;
+	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 155 }, labelInfo, this, buildingMenu));
+>>>>>>> b8a5eb3d09f815cbf4f6702af7cba0d641fcddb4
 
 	CreateBuildingElements({ 343,160,50,41 }, { 343,160,50,41 }, { 343,160,50,41 }, { 15, 100 }, "Stables",
 						   "Comming soon", { 75, 110 }, { 75, 127 }, stablesCost, buildingMenuButtons.stables);
