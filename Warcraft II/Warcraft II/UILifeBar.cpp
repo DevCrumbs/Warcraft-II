@@ -4,12 +4,12 @@
 #include "p2Log.h"
 #include "j1Window.h"
 
-UILifeBar::UILifeBar(iPoint local_pos, UIElement* parent, UILifeBar_Info& info, j1Module* listener, bool isInWorld) : UIElement(local_pos, parent, listener, isInWorld), life_bar(info)
+UILifeBar::UILifeBar(iPoint local_pos, UIElement* parent, UILifeBar_Info& info, j1Module* listener, bool isInWorld) : UIElement(local_pos, parent, listener, isInWorld), lifeBar(info)
 {
-	type = UIE_TYPE::UIE_TYPE_LIFE_BAR;
+	type = UIE_TYPE_LIFE_BAR;
 
-	bar = App->gui->GetRectFromAtlas(life_bar.bar);
-	background = App->gui->GetRectFromAtlas(life_bar.background);
+	bar = App->gui->GetRectFromAtlas(lifeBar.bar);
+	background = App->gui->GetRectFromAtlas(lifeBar.background);
 
 	this->isInWorld = isInWorld;
 	priority = PriorityDraw_IMAGE;
@@ -20,10 +20,10 @@ void UILifeBar::Update(float dt)
 {
 	int l;
 
-	if (life_bar.maxLife > 0) {
+	if (lifeBar.maxLife > 0) {
 
-		l = life_bar.life * 100 / life_bar.maxLife; //Pass life to %
-		bar.w = l * life_bar.maxWidth / 100;//Pass % to width
+		l = lifeBar.life * 100 / lifeBar.maxLife; //Pass life to %
+		bar.w = l * lifeBar.maxWidth / 100;//Pass % to width
 	}
 }
 
@@ -41,11 +41,11 @@ void UILifeBar::Draw() const
 
 	if (isInWorld) {
 		
-		App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x + life_bar.lifeBarPosition.x, GetLocalPos().y + life_bar.lifeBarPosition.y, &bar);
+		App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x + lifeBar.lifeBarPosition.x, GetLocalPos().y + lifeBar.lifeBarPosition.y, &bar);
 		App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &background);
 	}
 	else if (!isInWorld) {
-		App->render->Blit(App->gui->GetAtlas(), blit_pos.x + life_bar.lifeBarPosition.x, blit_pos.y + life_bar.lifeBarPosition.y, &bar);
+		App->render->Blit(App->gui->GetAtlas(), blit_pos.x + lifeBar.lifeBarPosition.x, blit_pos.y + lifeBar.lifeBarPosition.y, &bar);
 		App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &background);
 	}
 	//else
@@ -65,24 +65,24 @@ void UILifeBar::DebugDraw(iPoint blit_pos) const
 
 void UILifeBar::SetLife(const int life)
 {
-	life_bar.life = life;
+	lifeBar.life = life;
 }
 
 void UILifeBar::IncreaseLife(const int life)
 {
-	life_bar.life += life;
-	if (life_bar.life > background.w)
-		life_bar.life = background.w;
+	lifeBar.life += life;
+	if (lifeBar.life > background.w)
+		lifeBar.life = background.w;
 }
 
 void UILifeBar::DecreaseLife(const int life)
 {
-	life_bar.life -= life;
-	if (life_bar.life < 0)
-		life_bar.life = 0;
+	lifeBar.life -= life;
+	if (lifeBar.life < 0)
+		lifeBar.life = 0;
 }
 
 int UILifeBar::GetLife() const
 {
-	return life_bar.life;
+	return lifeBar.life;
 }

@@ -128,21 +128,21 @@ bool j1Gui::Update(float dt)
 
 	while (UI_elem_it != UIElementsList.end())
 	{
-		if ((*UI_elem_it) != nullptr);
-			if ((*UI_elem_it)->type != UIE_TYPE_NO_TYPE)
-				(*UI_elem_it)->Update(dt);
+		if ((*UI_elem_it)->type != UIE_TYPE_NO_TYPE)
+			(*UI_elem_it)->Update(dt);
 
 		UI_elem_it++;
 	}
 
 	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
 		info = drawOrder.top();
-		if (info != nullptr) {
-			if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+
+		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+			info->Draw();
+		else if (App->render->IsInScreen(info->GetLocalRect())) {
+			if (info->type != UIE_TYPE_NO_TYPE)
 				info->Draw();
-			else if (App->render->IsInScreen(info->GetLocalRect())) {
-				info->Draw();
-			}
+	
 		}
 	}
 
