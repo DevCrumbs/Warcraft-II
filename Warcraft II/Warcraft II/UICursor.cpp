@@ -22,6 +22,18 @@ UICursor::UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Mo
 	SDL_ShowCursor(0);
 }
 
+UICursor::~UICursor()
+{
+	this->default = { 0,0,0,0 };
+	onClick = { 0,0,0,0 };
+	onMine = { 0,0,0,0 };
+	onMineClick = { 0,0,0,0 };
+	onEnemies = { 0,0,0,0 };
+	onEnemiesClick = { 0,0,0,0 };
+
+	UIevent = UI_EVENT_NONE;
+}
+
 void UICursor::Update(float dt)
 {
 	SetMousePosition();

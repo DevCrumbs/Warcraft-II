@@ -18,6 +18,17 @@ UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Modul
 	SetOrientation();
 }
 
+UIImage::~UIImage()
+{
+	totalTime = 0.0f;
+	startTime = 0.0f;
+	reset = true;
+
+	anim = nullptr;
+	speed = 0.0f;
+	startAimation = false;
+}
+
 void UIImage::Update(float dt)
 {
 	if (startAimation && animToPlay.Finished() && !animToPlay.loop) {

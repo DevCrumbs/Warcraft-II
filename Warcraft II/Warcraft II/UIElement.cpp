@@ -18,7 +18,30 @@ UIElement::UIElement(iPoint localPos, UIElement* parent, j1Module* listener, boo
 	scale = App->win->GetScale();
 }
 
-UIElement::~UIElement() {}
+UIElement::~UIElement() 
+{
+	drag = false;
+	toRemove = false;
+
+	type = UIE_TYPE_NO_TYPE;
+
+	horizontal = HORIZONTAL_POS_LEFT;
+	vertical = VERTICAL_POS_TOP;
+
+	listener = nullptr;
+
+	draggable = false;
+	interactive = true;
+	isInWorld = false;
+	mouseClickPos = { 0,0 };
+
+	texArea = { 0,0,0,0 };
+	width = 0, height = 0;
+	priority = PriorityDraw_NONE;
+
+	localPos = { 0,0 };
+	parent = nullptr;
+}
 
 void UIElement::Update(float dt) {}
 
