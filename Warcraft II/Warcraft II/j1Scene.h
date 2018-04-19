@@ -50,8 +50,24 @@ enum PauseMenuActions {
 	PauseMenuActions_SLIDERMUSIC
 };
 struct TerenasAdvices {
-	UIImage* terenasImage;
-	UILabel* text;
+	UIImage* terenasImage = nullptr;
+	UILabel* text = nullptr;
+};
+
+struct MenuBuildingButton {
+	UIButton* icon = nullptr;
+	UILabel* name = nullptr;
+	UILabel* cost = nullptr;
+};
+
+struct BuildingMenu {
+	MenuBuildingButton chickenFarm;
+	MenuBuildingButton stables;
+	MenuBuildingButton gryphonAviary;
+	MenuBuildingButton mageTower;
+	MenuBuildingButton scoutTower;
+	MenuBuildingButton guardTower;
+	MenuBuildingButton cannonTower;
 };
 
 class j1Scene : public j1Module
@@ -98,6 +114,9 @@ public:
 
 	void LoadInGameUI();
 	void LoadBuildingMenu();
+	void CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect buttonHoverTexArea, SDL_Rect buttonPressedTexArea,
+		iPoint buttonPos, string buildingName, string buildingCost, iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
+	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
 	void UpdateResourcesLabels();
@@ -187,11 +206,9 @@ private:
 	iPoint startRectangle = { 0,0 };
 
 	//UI
-	UIButton *buildingButton = nullptr, *chickenFarmButton = nullptr, *elvenLumberButton = nullptr, *blackSmithButton = nullptr, *stablesButton = nullptr;
-	UIButton *gryphonAviaryButton = nullptr, *mageTowerButton = nullptr, *churchButton = nullptr, *scoutTowerButton = nullptr, *guardTowerButton = nullptr, *cannonTowerButton = nullptr;
-	list<UILabel*> buildingLabelsList;
+	BuildingMenu buildingMenuButtons;
+	UIButton *buildingButton = nullptr;
 	UILabel *buildingLabel = nullptr;
-
 	UIImage *buildingMenu = nullptr;
 
 	//Frame InGame

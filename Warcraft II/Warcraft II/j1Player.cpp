@@ -57,10 +57,16 @@ bool j1Player::Start()
 
 bool j1Player::Update(float dt) 
 {
+
+	//Check if a building needs to be placed
+	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
 	CheckIfPlaceBuilding();
+
+	//Check if the units need to spawn
+	if (!toSpawnUnitQueue.empty())
 	CheckUnitSpawning();
 
-	//check if lifeBar info change
+	//Check if lifeBar info change
 	CheckLifeBarUpdate();
 
 	/*

@@ -109,7 +109,8 @@ bool j1Gui::PreUpdate()
 	addedElementUI.clear();
 
 	for (std::list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); iterator++) {
-		drawOrder.push(*iterator);
+		if ((*iterator)->type != UIE_TYPE_NO_TYPE)
+			drawOrder.push(*iterator);
 	}
 	
 	return ret;
