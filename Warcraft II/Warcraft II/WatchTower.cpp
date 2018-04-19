@@ -203,113 +203,108 @@ void WatchTower::CreateArrow()
 	switch (arrowDirection) {
 
 	case UP:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.up, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.up, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, {(float) watchTowerInfo.arrowSpeed,(float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case DOWN:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.down, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.down, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.left, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.left, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.right, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.right, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed,(float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case UP_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case UP_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case DOWN_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case DOWN_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed,(float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	default:
 		break;
 	}
 
-	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->pos.y, 2.0f));
-	if (m > 0) {
-		arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->pos.x) / m;
-		arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->pos.y) / m;
-	}
 }
 
 void WatchTower::CheckArrowMovement(float dt)
 {
-	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
-	iPoint arrowTilePos = App->map->WorldToMap((int)arrowParticle->pos.x, (int)arrowParticle->pos.y);
-
-	switch (arrowDirection) {
-	case UP:
-		if (arrowTilePos.y > targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case DOWN:
-		if (arrowTilePos.y < targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case LEFT:
-		if (arrowTilePos.x > targetTilePos.x)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case RIGHT:
-		if (arrowTilePos.x < targetTilePos.x)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case UP_LEFT:
-		if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y > targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case UP_RIGHT:
-		if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y > targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case DOWN_LEFT:
-		if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y < targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case DOWN_RIGHT:
-		if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y < targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	default:
-		break;
-	}
+	//iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
+	//iPoint arrowTilePos = App->map->WorldToMap((int)arrowParticle->pos.x, (int)arrowParticle->pos.y);
+	//
+	//switch (arrowDirection) {
+	//case UP:
+	//	if (arrowTilePos.y > targetTilePos.y)
+	//		MoveArrowTowardsTarget(dt);
+	//
+	//	else if (arrowTilePos.y <= targetTilePos.y)
+	//		InflictDamageAndDestroyArrow();
+	//	break;
+	//
+	//case DOWN:
+	//	if (arrowTilePos.y < targetTilePos.y)
+	//		MoveArrowTowardsTarget(dt);
+	//
+	//	else if (arrowTilePos.y >= targetTilePos.y)
+	//		InflictDamageAndDestroyArrow();
+	//	break;
+	//
+	//case LEFT:
+	//	if (arrowTilePos.x > targetTilePos.x)
+	//		MoveArrowTowardsTarget(dt);
+	//
+	//	else if (arrowTilePos.x <= targetTilePos.x)
+	//		InflictDamageAndDestroyArrow();
+	//	break;
+	//
+	//case RIGHT:
+	//	if (arrowTilePos.x < targetTilePos.x)
+	//		MoveArrowTowardsTarget(dt);
+	//
+	//	else if (arrowTilePos.x >= targetTilePos.x)
+	//		InflictDamageAndDestroyArrow();
+	//	break;
+	//
+	//case UP_LEFT:
+	//	if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y > targetTilePos.y)
+	//		MoveArrowTowardsTarget(dt);
+	//
+	//	else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
+	//		InflictDamageAndDestroyArrow();
+	//	break;
+	//
+	//case UP_RIGHT:
+	//	if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y > targetTilePos.y)
+	//		MoveArrowTowardsTarget(dt);
+	//
+	//	else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
+	//		InflictDamageAndDestroyArrow();
+	//	break;
+	//
+	//case DOWN_LEFT:
+	//	if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y < targetTilePos.y)
+	//		MoveArrowTowardsTarget(dt);
+	//
+	//	else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
+	//		InflictDamageAndDestroyArrow();
+	//	break;
+	//
+	//case DOWN_RIGHT:
+	//	if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y < targetTilePos.y)
+	//		MoveArrowTowardsTarget(dt);
+	//
+	//	else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
+	//		InflictDamageAndDestroyArrow();
+	//	break;
+	//
+	//default:
+	//	break;
+	//}
 
 }
 

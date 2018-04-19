@@ -1,3 +1,4 @@
+#include "Defs.h"
 #include "p2Log.h"
 
 #include "j1App.h"
@@ -210,14 +211,16 @@ bool j1Particles::Start()
 	LOG("Loading particles");
 
 	paws.particleType = ParticleType_Paws;
-	towerArrowParticles.up.particleType = ParticleType_NoType;
-	towerArrowParticles.down.particleType = ParticleType_NoType;
-	towerArrowParticles.left.particleType = ParticleType_NoType;
-	towerArrowParticles.right.particleType = ParticleType_NoType;
-	towerArrowParticles.upLeft.particleType = ParticleType_NoType;
-	towerArrowParticles.upRight.particleType = ParticleType_NoType;
-	towerArrowParticles.downLeft.particleType = ParticleType_NoType;
-	towerArrowParticles.downRight.particleType = ParticleType_NoType;
+	towerArrowParticles.up.particleType = ParticleType_Projectile;
+	towerArrowParticles.down.particleType = ParticleType_Projectile;
+	towerArrowParticles.left.particleType = ParticleType_Projectile;
+	towerArrowParticles.right.particleType = ParticleType_Projectile;
+	towerArrowParticles.upLeft.particleType = ParticleType_Projectile;
+	towerArrowParticles.upRight.particleType = ParticleType_Projectile;
+	towerArrowParticles.downLeft.particleType = ParticleType_Projectile;
+	towerArrowParticles.downRight.particleType = ParticleType_Projectile;
+	cannonBullet.particleType = ParticleType_Projectile;
+	trollAxe.particleType = ParticleType_Projectile;
 
 	towerArrowParticles.up.life = 800;
 	towerArrowParticles.down.life = 800;
@@ -287,21 +290,17 @@ bool j1Particles::Update(float dt)
 
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
-		Particle* p = activeParticles[i];
+		Particle* currPart = activeParticles[i];
 
-		if (p == nullptr)
+		if (currPart == nullptr)
 			continue;
 
-		if (!p->Update(dt))
+		if (!currPart->Update(dt))
 		{
-			delete p;
+			delete currPart;
 			activeParticles[i] = nullptr;
 		}
-		if (SDL_GetTicks() >= p->born)
-		{
-			if (p->particleType != ParticleType_Paws)
-				App->render->Blit(atlasTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()));
-		}
+
 	}
 
 	return ret;
@@ -341,21 +340,40 @@ void j1Particles::DrawPaws()
 	}
 }
 
-Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, ColliderType colliderType, Uint32 delay, fPoint speed)
+Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, Uint32 delay, fPoint speed, fPoint destination, uint damage)
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
 		if (activeParticles[i] == nullptr)
 		{
-			Particle* p = new Particle(particle);
+			Particle* currPart = new Particle(particle);
 
-			p->born = SDL_GetTicks() + delay;
-			p->pos = { (float)pos.x, (float)pos.y };
-			p->speed = speed;
+			currPart->born = SDL_GetTicks() + delay;
+			currPart->pos = { (float)pos.x, (float)pos.y };
+			currPart->speed = speed;
+			currPart->destination = destination;
+			currPart->damage = damage;
 
-			activeParticles[i] = p;
+			activeParticles[i] = currPart;
 
-			return p;
+			switch (currPart->particleType) {
+
+			case ParticleType_Projectile:
+			{
+				float m = sqrtf(pow(currPart->destination.x - currPart->pos.x, 2.0f) + pow(currPart->destination.y - currPart->pos.y, 2.0f));
+				if (m > 0) {
+					currPart->orientation.x = (currPart->destination.x - currPart->pos.x) / m;
+					currPart->orientation.y = (currPart->destination.y - currPart->pos.y) / m;
+				}
+			}
+			break;
+
+			default:
+				break;
+			}
+
+
+			return currPart;
 		}
 	}
 }
@@ -472,24 +490,42 @@ bool Particle::Update(float dt)
 {
 	bool ret = true;
 
-	if (particleType == ParticleType_Paws) {
+	switch (particleType) {
+
+	case ParticleType_Projectile:
+	{
+		iPoint destTile = App->map->WorldToMap(destination.x, destination.y);
+		iPoint thisTile = App->map->WorldToMap(pos.x, pos.y);
+		LOG("thisTile", thisTile);
+		LOG("destTile", destTile);
+		if (thisTile == destTile) {
+
+			Entity* entity = App->entities->IsEntityOnTile(thisTile);
+			if (entity != nullptr)
+				entity->ApplyDamage(damage);
+				
+			return false;
+		}
+
+		else {
+			pos.x += orientation.x * dt * speed.x;
+			pos.y += orientation.y * dt * speed.y;
+			return true;
+		}
+	}
+
+		break;
+	
+	case ParticleType_Paws:
 
 		if (animation.Finished() && isRemove)
 			return false;
+		else
+			return true;
 
-		return true;
+		break;
+	
 	}
-
-	/*
-	if (life > 0)
-	{
-	if ((SDL_GetTicks() - born) > life)
-	ret = false;
-	}
-	else
-	if (anim.Finished() || life == 0)
-	ret = false;
-	*/
 
 	if (life > 0)
 	{

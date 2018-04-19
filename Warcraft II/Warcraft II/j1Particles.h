@@ -23,6 +23,8 @@ enum ParticleType {
 
 	ParticleType_NoType,
 
+	ParticleType_Projectile,
+
 	ParticleType_Paws,
 
 	ParticleType_MaxTypes
@@ -52,6 +54,8 @@ struct Particle
 	fPoint speed = { 0.0f,0.0f };
 	Uint32 born = 0;
 	Uint32 life = 0;
+	uint damage = 0;
+	fPoint orientation = { 0.0f,0.0f };
 
 	iPoint collisionSize = { 0,0 };
 	fPoint destination = { 0,0 };
@@ -92,7 +96,7 @@ public:
 	void DrawPaws();
 	bool CleanUp();
 
-	Particle* AddParticle(const Particle& particle, iPoint pos, ColliderType colliderType = ColliderType_NoType, Uint32 delay = 0, fPoint speed = { 0,0 });
+	Particle* AddParticle(const Particle& particle, iPoint pos, Uint32 delay = 0, fPoint speed = { 0,0 }, fPoint destination = {-1, -1}, uint damage = 0);
 	void OnCollision(Collider* c1, Collider* c2, CollisionState collisionState);
 
 	bool IsParticleOnTile(iPoint tile) const;
