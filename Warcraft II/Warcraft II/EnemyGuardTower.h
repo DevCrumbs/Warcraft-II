@@ -2,7 +2,6 @@
 #define __EnemyGuardTower_H__
 
 #include "StaticEntity.h"
-#include "ScoutTower.h"
 #include <list>
 
 struct EnemyGuardTowerInfo
@@ -33,7 +32,6 @@ public:
 	void TowerStateMachine(float dt);
 
 	//Arrows
-	void DetermineArrowDirection();
 	void CreateArrow();
 
 	// Animations
@@ -53,7 +51,6 @@ private:
 
 	//Arrow
 	Particle* arrowParticle = nullptr;
-	ArrowDirection arrowDirection = NO_DIRECTION;
 };
 
 #endif //__EnemyGuardTower_H__

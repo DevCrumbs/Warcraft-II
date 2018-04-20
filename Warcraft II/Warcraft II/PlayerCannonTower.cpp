@@ -67,13 +67,10 @@ void PlayerCannonTower::Move(float dt)
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
 		isBuilt = true;
 
-	//Check the arrow movement if the tower has to attack
-	if (attackingTarget != nullptr && cannonParticle != nullptr)
-		CheckCannonBulletMovement(dt);
-	if (attackingTarget == nullptr && cannonParticle != nullptr) {
-		cannonParticle->isRemove = true;
-		cannonParticle = nullptr;
-	}
+	//if (attackingTarget == nullptr && cannonParticle != nullptr) {
+	//	cannonParticle->isRemove = true;
+	//	cannonParticle = nullptr;
+	//}
 
 	//Check if the tower has to change the attacking target
 	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
@@ -148,9 +145,7 @@ void PlayerCannonTower::TowerStateMachine(float dt)
 	{
 		if (attackingTarget != nullptr) {
 			if (attackTimer.Read() >= (playerCannonTowerInfo.attackWaitTime * 1000)) {
-
 				attackTimer.Start();
-				DetermineCannonBulletDirection();
 				CreateCannonBullet();
 				App->audio->PlayFx(24, 0); //Arrow sound
 			}
@@ -163,152 +158,11 @@ void PlayerCannonTower::TowerStateMachine(float dt)
 	}
 }
 
-//Cannon bullet
-void PlayerCannonTower::DetermineCannonBulletDirection()
-{
-	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
-	iPoint towerTilePos = App->map->WorldToMap((int)this->GetPos().x, (int)this->GetPos().y);
-
-	//Up
-	if (targetTilePos.x == towerTilePos.x  && targetTilePos.y < towerTilePos.y
-		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y < towerTilePos.y)
-		cannonDirection = UP;
-
-	//Down
-	else if (targetTilePos.x == towerTilePos.x  && targetTilePos.y > towerTilePos.y
-		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y > towerTilePos.y)
-		cannonDirection = DOWN;
-
-	//Left
-	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y
-		|| targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y + 1)
-		cannonDirection = LEFT;
-
-	//Right
-	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y
-		|| targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y + 1)
-		cannonDirection = RIGHT;
-
-	//Up Left
-	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y < towerTilePos.y)
-		cannonDirection = UP_LEFT;
-
-	//Up Right
-	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y < towerTilePos.y)
-		cannonDirection = UP_RIGHT;
-
-	//Down Left
-	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y > towerTilePos.y)
-		cannonDirection = DOWN_LEFT;
-
-	//Down Right
-	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y > towerTilePos.y)
-		cannonDirection = DOWN_RIGHT;
-}
-
 void PlayerCannonTower::CreateCannonBullet()
 {
-	cannonParticle = App->particles->AddParticle(App->particles->playerCannonBullet, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
-
-	/*
-	float m = sqrtf(pow(attackingTarget->GetPos().x - cannonParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - cannonParticle->pos.y, 2.0f));
-	if (m > 0) {
-		cannonParticle->destination.x = (attackingTarget->GetPos().x - cannonParticle->pos.x) / m;
-		cannonParticle->destination.y = (attackingTarget->GetPos().y - cannonParticle->pos.y) / m;
-	}
-	*/
+	cannonParticle = App->particles->AddParticle(App->particles->playerCannonBullet, 
+	{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), playerCannonTowerInfo.arrowSpeed, playerCannonTowerInfo.damage);
 }
-
-void PlayerCannonTower::CheckCannonBulletMovement(float dt)
-{
-	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
-	iPoint arrowTilePos = App->map->WorldToMap((int)cannonParticle->pos.x, (int)cannonParticle->pos.y);
-
-	switch (cannonDirection) {
-	case UP:
-		if (arrowTilePos.y > targetTilePos.y)
-			MoveCannonTowardsTarget(dt);
-
-		else if (arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyCannonBullet();
-		break;
-
-	case DOWN:
-		if (arrowTilePos.y < targetTilePos.y)
-			MoveCannonTowardsTarget(dt);
-
-		else if (arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyCannonBullet();
-		break;
-
-	case LEFT:
-		if (arrowTilePos.x > targetTilePos.x)
-			MoveCannonTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x)
-			InflictDamageAndDestroyCannonBullet();
-		break;
-
-	case RIGHT:
-		if (arrowTilePos.x < targetTilePos.x)
-			MoveCannonTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x)
-			InflictDamageAndDestroyCannonBullet();
-		break;
-
-	case UP_LEFT:
-		if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y > targetTilePos.y)
-			MoveCannonTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyCannonBullet();
-		break;
-
-	case UP_RIGHT:
-		if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y > targetTilePos.y)
-			MoveCannonTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyCannonBullet();
-		break;
-
-	case DOWN_LEFT:
-		if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y < targetTilePos.y)
-			MoveCannonTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyCannonBullet();
-		break;
-
-	case DOWN_RIGHT:
-		if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y < targetTilePos.y)
-			MoveCannonTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyCannonBullet();
-		break;
-
-	default:
-		break;
-	}
-}
-
-void PlayerCannonTower::MoveCannonTowardsTarget(float dt)
-{
-	/*
-	cannonParticle->pos.x += cannonParticle->destination.x * dt * playerCannonTowerInfo.arrowSpeed;
-	cannonParticle->pos.y += cannonParticle->destination.y * dt * playerCannonTowerInfo.arrowSpeed;
-	*/
-}
-
-void PlayerCannonTower::InflictDamageAndDestroyCannonBullet()
-{
-	attackingTarget->ApplyDamage(playerCannonTowerInfo.damage);
-	cannonParticle->isRemove = true;
-	cannonParticle = nullptr;
-}
-
 
 // Animations
 void PlayerCannonTower::LoadAnimationsSpeed()

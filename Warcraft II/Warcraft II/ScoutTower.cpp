@@ -67,10 +67,11 @@ void ScoutTower::Move(float dt)
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
 		isBuilt = true;
 
-	if (attackingTarget == nullptr && arrowParticle != nullptr) {
-		arrowParticle->isRemove = true;
-		arrowParticle = nullptr;
-	}
+	////Delete arrow if it is fired when an enemy is already dead 
+	//if (attackingTarget == nullptr && arrowParticle != nullptr) {
+	//	arrowParticle->isRemove = true;
+	//	arrowParticle = nullptr;
+	//}
 
 	//Check if the tower has to change the attacking target
 	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
@@ -145,9 +146,7 @@ void ScoutTower::TowerStateMachine(float dt)
 	{
 		if (attackingTarget != nullptr) {
 			if (attackTimer.Read() >= (scoutTowerInfo.attackWaitTime * 1000)) {
-
 				attackTimer.Start();
-				DetermineArrowDirection();
 				CreateArrow();
 				App->audio->PlayFx(24, 0); //Arrow sound
 			}
@@ -160,87 +159,10 @@ void ScoutTower::TowerStateMachine(float dt)
 	}
 }
 
-//Arrows
-void ScoutTower::DetermineArrowDirection()
-{
-	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
-	iPoint towerTilePos = App->map->WorldToMap((int)this->GetPos().x, (int)this->GetPos().y);
-
-	//Up
-	if (targetTilePos.x == towerTilePos.x  && targetTilePos.y < towerTilePos.y
-		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y < towerTilePos.y) 
-		arrowDirection = UP;
-	
-	//Down
-	else if (targetTilePos.x == towerTilePos.x  && targetTilePos.y > towerTilePos.y
-		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y > towerTilePos.y) 
-		arrowDirection = DOWN;
-
-	//Left
-	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y
-		|| targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y + 1) 
-		arrowDirection = LEFT;
-	
-	//Right
-	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y
-		|| targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y + 1) 
-		arrowDirection = RIGHT;
-	
-	//Up Left
-	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y < towerTilePos.y) 
-		arrowDirection = UP_LEFT;
-	
-	//Up Right
-	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y < towerTilePos.y) 
-		arrowDirection = UP_RIGHT;
-	
-	//Down Left
-	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y > towerTilePos.y) 
-		arrowDirection = DOWN_LEFT;
-	
-	//Down Right
-	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y > towerTilePos.y) 
-		arrowDirection = DOWN_RIGHT;
-}
-
 void ScoutTower::CreateArrow()
 {
-	switch (arrowDirection) {
-	case UP:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows,
-		{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), scoutTowerInfo.arrowSpeed, scoutTowerInfo.damage);
-		break;
-	case DOWN:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, 
-		{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), scoutTowerInfo.arrowSpeed, scoutTowerInfo.damage);
-		break;
-	case LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows,
-		{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), scoutTowerInfo.arrowSpeed, scoutTowerInfo.damage);
-		break;																		 							
-	case RIGHT:																		 							
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows,	 							
-		{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), scoutTowerInfo.arrowSpeed, scoutTowerInfo.damage);
-		break;																		 							
-	case UP_LEFT:																	 							
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, 	 							
-		{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), scoutTowerInfo.arrowSpeed, scoutTowerInfo.damage);
-		break;																		 							
-	case UP_RIGHT:																	 							
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, 	 							
-		{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), scoutTowerInfo.arrowSpeed, scoutTowerInfo.damage);
-		break;																		 							
-	case DOWN_LEFT:																	 							
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, 	 							
-		{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), scoutTowerInfo.arrowSpeed, scoutTowerInfo.damage);
-		break;																									
-	case DOWN_RIGHT:																							
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, 								
-		{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), scoutTowerInfo.arrowSpeed, scoutTowerInfo.damage);
-		break;
-	default:
-		break;
-	}
+	arrowParticle = App->particles->AddParticle(App->particles->playerArrows,
+	{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), scoutTowerInfo.arrowSpeed, scoutTowerInfo.damage);
 }
 
 

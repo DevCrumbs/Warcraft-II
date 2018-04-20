@@ -65,13 +65,10 @@ void PlayerGuardTower::Move(float dt)
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
 		isBuilt = true;
 
-	//Check the arrow movement if the tower has to attack
-	if (attackingTarget != nullptr && arrowParticle != nullptr)
-		CheckArrowMovement(dt);
-	if (attackingTarget == nullptr && arrowParticle != nullptr) {
-		arrowParticle->isRemove = true;
-		arrowParticle = nullptr;
-	}
+	//if (attackingTarget == nullptr && arrowParticle != nullptr) {
+	//	arrowParticle->isRemove = true;
+	//	arrowParticle = nullptr;
+	//}
 
 	//Check if the tower has to change the attacking target
 	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
@@ -148,7 +145,6 @@ void PlayerGuardTower::TowerStateMachine(float dt)
 			if (attackTimer.Read() >= (playerGuardTowerInfo.attackWaitTime * 1000)) {
 
 				attackTimer.Start();
-				DetermineArrowDirection();
 				CreateArrow();
 				App->audio->PlayFx(24, 0); //Arrow sound
 			}
@@ -161,178 +157,19 @@ void PlayerGuardTower::TowerStateMachine(float dt)
 	}
 }
 
-//Arrows
-void PlayerGuardTower::DetermineArrowDirection()
-{
-	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
-	iPoint towerTilePos = App->map->WorldToMap((int)this->GetPos().x, (int)this->GetPos().y);
-
-	//Up
-	if (targetTilePos.x == towerTilePos.x  && targetTilePos.y < towerTilePos.y
-		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y < towerTilePos.y)
-		arrowDirection = UP;
-
-	//Down
-	else if (targetTilePos.x == towerTilePos.x  && targetTilePos.y > towerTilePos.y
-		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y > towerTilePos.y)
-		arrowDirection = DOWN;
-
-	//Left
-	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y
-		|| targetTilePos.x < towerTilePos.x && targetTilePos.y == towerTilePos.y + 1)
-		arrowDirection = LEFT;
-
-	//Right
-	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y
-		|| targetTilePos.x > towerTilePos.x && targetTilePos.y == towerTilePos.y + 1)
-		arrowDirection = RIGHT;
-
-	//Up Left
-	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y < towerTilePos.y)
-		arrowDirection = UP_LEFT;
-
-	//Up Right
-	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y < towerTilePos.y)
-		arrowDirection = UP_RIGHT;
-
-	//Down Left
-	else if (targetTilePos.x < towerTilePos.x && targetTilePos.y > towerTilePos.y)
-		arrowDirection = DOWN_LEFT;
-
-	//Down Right
-	else if (targetTilePos.x > towerTilePos.x && targetTilePos.y > towerTilePos.y)
-		arrowDirection = DOWN_RIGHT;
-}
-
 void PlayerGuardTower::CreateArrow()
 {
-	switch (arrowDirection) {
-
-	case UP:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
-		break;
-	case DOWN:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
-		break;
-	case LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
-		break;
-	case RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
-		break;
-	case UP_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
-		break;
-	case UP_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
-		break;
-	case DOWN_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
-		break;
-	case DOWN_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->playerArrows, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
-		break;
-	default:
-		break;
-	}
+	arrowParticle = App->particles->AddParticle(App->particles->playerArrows, 
+	{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), playerGuardTowerInfo.arrowSpeed, playerGuardTowerInfo.damage);
 }
 
-void PlayerGuardTower::CheckArrowMovement(float dt)
-{
-	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
-	iPoint arrowTilePos = App->map->WorldToMap((int)arrowParticle->pos.x, (int)arrowParticle->pos.y);
-
-	switch (arrowDirection) {
-	case UP:
-		if (arrowTilePos.y > targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case DOWN:
-		if (arrowTilePos.y < targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case LEFT:
-		if (arrowTilePos.x > targetTilePos.x)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case RIGHT:
-		if (arrowTilePos.x < targetTilePos.x)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case UP_LEFT:
-		if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y > targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case UP_RIGHT:
-		if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y > targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case DOWN_LEFT:
-		if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y < targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case DOWN_RIGHT:
-		if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y < targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	default:
-		break;
-	}
-
-}
-
-void PlayerGuardTower::MoveArrowTowardsTarget(float dt)
-{
-	/*
-	arrowParticle->pos.x += arrowParticle->destination.x * dt * playerGuardTowerInfo.arrowSpeed;
-	arrowParticle->pos.y += arrowParticle->destination.y * dt * playerGuardTowerInfo.arrowSpeed;
-	*/
-}
-
-void PlayerGuardTower::InflictDamageAndDestroyArrow()
-{
-	attackingTarget->ApplyDamage(playerGuardTowerInfo.damage);
-	arrowParticle->isRemove = true;
-	arrowParticle = nullptr;
-}
 
 // Animations
 void PlayerGuardTower::LoadAnimationsSpeed()
 {
 
 }
+
 void PlayerGuardTower::UpdateAnimations(float dt)
 {
 	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
