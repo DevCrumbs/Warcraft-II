@@ -1040,6 +1040,7 @@ void j1Scene::LoadInGameUI()
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.text = "Buildings";
+	labelInfo.interactive = false;
 	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, buildingButton);
 
 
@@ -1051,6 +1052,7 @@ void j1Scene::LoadInGameUI()
 
 
 	UIImage_Info entitiesInfo;
+	entitiesInfo.draggable = false;
 	entitiesInfo.texArea = { 0, 565, 371, 82 };
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
 	entitiesStats->SetPriorityDraw(PriorityDraw_UIINGAME);
@@ -1069,6 +1071,7 @@ void j1Scene::LoadBuildingMenu()
 	UILabel_Info labelInfo;
 
 	UIImage_Info imageInfo;
+	imageInfo.draggable = false;
 	imageInfo.texArea = { 0,33,240,529 };
 	imageInfo.horizontalOrientation = HORIZONTAL_POS_RIGHT;
 	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this);
@@ -1153,6 +1156,7 @@ void j1Scene::UnLoadBuildingMenu()
 void j1Scene::LoadResourcesLabels()
 {
 	UILabel_Info labelInfo;
+	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = to_string(App->player->currentGold);
 	goldLabel = App->gui->CreateUILabel({ 224, 0 }, labelInfo, this, inGameFrameImage);
