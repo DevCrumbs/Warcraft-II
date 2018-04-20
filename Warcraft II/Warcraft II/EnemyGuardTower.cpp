@@ -56,10 +56,7 @@ void EnemyGuardTower::Move(float dt)
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
 		isBuilt = true;
 
-	//Check the arrow movement if the tower has to attack
-	if (attackingTarget != nullptr && arrowParticle != nullptr)
-		CheckArrowMovement(dt);
-	else if (attackingTarget == nullptr && arrowParticle != nullptr) {
+	if (attackingTarget == nullptr && arrowParticle != nullptr) {
 		arrowParticle->isRemove = true;
 		arrowParticle = nullptr;
 	}
@@ -200,134 +197,39 @@ void EnemyGuardTower::DetermineArrowDirection()
 
 void EnemyGuardTower::CreateArrow()
 {
+
+	iPoint targetEnemyTile = App->map->WorldToMap(attackingTarget->GetPos().x, attackingTarget->GetPos().y);
+
 	switch (arrowDirection) {
 
 	case UP:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.up, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.up, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case DOWN:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.down, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.down, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.left, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.left, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.right, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.right, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case UP_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.upLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.upLeft, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case UP_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.upRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.upRight, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case DOWN_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.downLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.downLeft, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case DOWN_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.downRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.downRight, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	default:
 		break;
 	}
 
-	/*
-	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->pos.y, 2.0f));
-	if (m > 0) {
-		arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->pos.x) / m;
-		arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->pos.y) / m;
-	}
-	*/
-}
-
-void EnemyGuardTower::CheckArrowMovement(float dt)
-{
-	iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
-	iPoint arrowTilePos = App->map->WorldToMap((int)arrowParticle->pos.x, (int)arrowParticle->pos.y);
-
-	switch (arrowDirection) {
-	case UP:
-		if (arrowTilePos.y > targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case DOWN:
-		if (arrowTilePos.y < targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case LEFT:
-		if (arrowTilePos.x > targetTilePos.x)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case RIGHT:
-		if (arrowTilePos.x < targetTilePos.x)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case UP_LEFT:
-		if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y > targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case UP_RIGHT:
-		if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y > targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case DOWN_LEFT:
-		if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y < targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	case DOWN_RIGHT:
-		if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y < targetTilePos.y)
-			MoveArrowTowardsTarget(dt);
-
-		else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
-			InflictDamageAndDestroyArrow();
-		break;
-
-	default:
-		break;
-	}
-
-}
-
-void EnemyGuardTower::MoveArrowTowardsTarget(float dt)
-{
-	/*
-	arrowParticle->pos.x += arrowParticle->destination.x * dt * enemyGuardTowerInfo.arrowSpeed;
-	arrowParticle->pos.y += arrowParticle->destination.y * dt * enemyGuardTowerInfo.arrowSpeed;
-	*/
-}
-
-void EnemyGuardTower::InflictDamageAndDestroyArrow()
-{
-	attackingTarget->ApplyDamage(enemyGuardTowerInfo.damage);
-	arrowParticle->isRemove = true;
-	arrowParticle = nullptr;
 }
 
 // Animations

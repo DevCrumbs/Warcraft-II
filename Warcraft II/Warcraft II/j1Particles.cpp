@@ -520,15 +520,19 @@ bool Particle::Update(float dt)
 		if (currPartTile == destinationTile) {
 
 			//Apply damage and kill the particle if it reaches its target
+			Entity* entity = App->entities->IsEntityOnTile(currPartTile);
+
 			if (particleType == ParticleType_Player_Projectile) {
-				Entity* entity = App->entities->IsEntityOnTile(currPartTile, EntityCategory_NONE, EntitySide_Enemy);
-				if (entity != nullptr)
-					entity->ApplyDamage(damage);
+				if (entity != nullptr) {
+					if (entity->entitySide == EntitySide_Enemy || entity->entitySide == EntitySide_Neutral)
+						entity->ApplyDamage(damage);
+				}
 			}
 			else if (particleType == ParticleType_Enemy_Projectile) {
-				Entity* entity = App->entities->IsEntityOnTile(currPartTile, EntityCategory_NONE, EntitySide_Player);
-				if (entity != nullptr)
-					entity->ApplyDamage(damage);
+				if (entity != nullptr) {
+					if (entity->entitySide == EntitySide_Player || entity->entitySide == EntitySide_Neutral)
+						entity->ApplyDamage(damage);
+				}
 			}
 			return false;
 		}

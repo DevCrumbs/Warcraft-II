@@ -32,11 +32,7 @@ public:
 	void TowerStateMachine(float dt);
 
 	//Cannon bullet
-	void DetermineCannonBulletDirection();
 	void CreateCannonBullet();
-	void CheckCannonBulletMovement(float dt);
-	void MoveCannonTowardsTarget(float dt);
-	void InflictDamageAndDestroyCannonBullet();
 
 	// Animations
 	void LoadAnimationsSpeed();
