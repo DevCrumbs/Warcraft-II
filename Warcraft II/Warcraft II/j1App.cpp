@@ -241,20 +241,6 @@ void j1App::FinishUpdate()
 	uint32 framesOnLastUpdate = 0;
 	frameCount++;
 
-	/*
-	if (App->entities->playerData != nullptr) {
-		if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN
-			&& (App->entities->playerData->animationPlayer == &App->entities->playerData->player.idle || App->entities->playerData->animationPlayer == &App->entities->playerData->player.idle2)
-			&& !App->menu->active)
-			toCap = !toCap;
-	}
-	else
-		if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN && !App->menu->active)
-			toCap = !toCap;
-	*/
-	//if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
-		//toCap = !toCap;
-
 	// Cap frames
 	if (!App->render->vsync && toCap) {
 		float toVsync = 1000 / capFrames;
@@ -287,10 +273,17 @@ void j1App::FinishUpdate()
 	else
 		godMode = "off";
 
+	static char title[256];
+
+	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u",
+		fps, avgFPS, lastFrameMs);
+
 	if (App->scene->pause) {
 		auxiliarDt = dt;
 		dt = 0.0f;
 	}
+
+	App->win->SetTitle(title);
 }
 
 // Call modules before each loop iteration

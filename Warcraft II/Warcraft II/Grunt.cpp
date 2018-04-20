@@ -137,6 +137,7 @@ void Grunt::Move(float dt)
 		/// GOAL: AttackTarget
 		// Check if there are available targets
 		/// Prioritize a type of target (static or dynamic)
+		/*
 		if (singleUnit->IsFittingTile()) {
 
 			newTarget = GetBestTargetInfo();
@@ -160,7 +161,7 @@ void Grunt::Move(float dt)
 				}
 			}
 		}
-
+		*/
 		// ---------------------------------------------------------------------
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL

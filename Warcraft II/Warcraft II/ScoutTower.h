@@ -51,9 +51,6 @@ public:
 	//Arrows
 	void DetermineArrowDirection();
 	void CreateArrow();
-	void CheckArrowMovement(float dt);
-	void MoveArrowTowardsTarget(float dt);
-	void InflictDamageAndDestroyArrow();
 	
 
 	// Animations

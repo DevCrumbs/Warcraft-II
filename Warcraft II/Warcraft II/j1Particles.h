@@ -23,38 +23,37 @@ enum ParticleType {
 
 	ParticleType_NoType,
 
+	ParticleType_Player_Projectile,
+
+	ParticleType_Enemy_Projectile,
+
 	ParticleType_Paws,
 
 	ParticleType_MaxTypes
 };
 
-struct SheepPawsInfo {
+struct PawsInfo {
 
 	Animation up, down, left, right;
 	Animation upLeft, upRight, downLeft, downRight;
 };
 
-struct BoarPawsInfo {
+struct Particle {
 
-	Animation up, down, left, right;
-	Animation upLeft, upRight, downLeft, downRight;
-};
-
-struct Particle
-{
 	ParticleType particleType = ParticleType_NoType;
 
-	Collider* collider = nullptr;
 	Animation animation;
 
-	uint fx = 0;
 	fPoint pos = { 0.0f,0.0f };
-	fPoint speed = { 0.0f,0.0f };
-	Uint32 born = 0;
-	Uint32 life = 0;
+	iPoint destinationTile = { 0,0 };
 
-	iPoint collisionSize = { 0,0 };
-	fPoint destination = { 0,0 };
+	float speed = 0.0f;
+	Uint32 life = 0;
+	uint damage = 0;
+
+	fPoint orientation = { 0.0f,0.0f };
+	Uint32 born = 0;
+	double angle = 0.0f;
 
 	bool isRemove = false;
 
@@ -62,18 +61,6 @@ struct Particle
 	Particle(const Particle& p);
 	~Particle();
 	bool Update(float dt);
-};
-
-struct TowerArrowParticles {
-
-	Particle up;
-	Particle down;
-	Particle left;
-	Particle right;
-	Particle upLeft;
-	Particle downLeft;
-	Particle upRight;
-	Particle downRight;
 };
 
 class j1Particles : public j1Module
@@ -92,16 +79,14 @@ public:
 	void DrawPaws();
 	bool CleanUp();
 
-	Particle* AddParticle(const Particle& particle, iPoint pos, ColliderType colliderType = ColliderType_NoType, Uint32 delay = 0, fPoint speed = { 0,0 });
-	void OnCollision(Collider* c1, Collider* c2, CollisionState collisionState);
+	Particle* AddParticle(const Particle& particle, iPoint pos, iPoint destinationTile = { -1,-1 }, float speed = 0.0f, uint damage = 0, Uint32 delay = 0);
 
 	bool IsParticleOnTile(iPoint tile) const;
 
 	void UpdateAnimations(const float dt);
 	void LoadAnimationsSpeed();
 
-	BoarPawsInfo& GetBoarPawsInfo();
-	SheepPawsInfo& GetSheepPawsInfo();
+	PawsInfo& GetPawsInfo(bool isSheep = false, bool isBoar = false);
 
 private:
 
@@ -114,8 +99,8 @@ private:
 	string pawsTexName;
 	SDL_Texture* pawsTex = nullptr;
 
-	BoarPawsInfo boarPawsInfo;
-	SheepPawsInfo sheepPawsInfo;
+	PawsInfo boarPawsInfo;
+	PawsInfo sheepPawsInfo;
 
 	// Animations speed
 	/// Boar Paws
@@ -126,16 +111,30 @@ private:
 	float sheepPawsUpSpeed = 0.0f, sheepPawsDownSpeed = 0.0f, sheepPawsLeftSpeed = 0.0f, sheepPawsRightSpeed = 0.0f;
 	float sheepPawsUpLeftSpeed = 0.0f, sheepPawsUpRightSpeed = 0.0f, sheepPawsDownLeftSpeed = 0.0f, sheepPawsDownRightSpeed = 0.0f;
 
+	/// Troll Axe
+	float trollAxeSpeed = 0.0f;
+
+	/// Fire Speed
+	float lowFireSpeed = 0.0f;
+	float hardFireSpeed = 0.0f;
 
 public:
 
+	// Fire
 	Particle lowFire;
 	Particle hardFire;
 
-	TowerArrowParticles towerArrowParticles;
-	Particle cannonBullet;
-	Particle trollAxe;
 
+	// Arrows, axes and cannon bullets
+	Particle playerArrows;
+	Particle enemyArrows;
+
+	Particle playerCannonBullet;
+	Particle enemyCannonBullet;
+
+	Particle trollAxe;
+	
+	// Paws
 	Particle paws;
 };
 
