@@ -405,6 +405,8 @@ void j1Player::CheckUnitSpawning()
 		gryphonAviaryPos = gryphonAviary->GetPos();
 	}
 
+	list<GroupSpawning>::iterator lastElem;
+
 	if (!toSpawnUnitQueue.empty()) {
 
 		if (toSpawnUnitQueue.front()->toSpawnTimer.Read() > (spawningTime * 1000)) {
@@ -482,7 +484,9 @@ void j1Player::CheckUnitSpawning()
 			delete toSpawnUnitQueue.front();
 			toSpawnUnitQueue.pop();
 
-			list<GroupSpawning>::iterator lastElem = toSpawnUnitStats.begin();
+			lastElem = toSpawnUnitStats.begin();
+			LOG("Size before erase: %i", toSpawnUnitStats.size());
+
 			App->gui->RemoveElem((UIElement**)&lastElem->entityIcon);
 			App->gui->RemoveElem((UIElement**)&lastElem->entityLifeBar);
 
