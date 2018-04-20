@@ -488,8 +488,8 @@ bool Particle::Update(float dt)
 	{
         iPoint destinationPos = App->map->MapToWorld(destinationTile.x, destinationTile.y);
 
-		SDL_Rect rectA = { (int)pos.x - App->map->data.tileWidth / 2, (int)pos.y - App->map->data.tileHeight / 2, App->map->data.tileWidth, App->map->data.tileHeight };
-		SDL_Rect rectB = { destinationPos.x - App->map->data.tileWidth / 2, destinationPos.y - App->map->data.tileHeight / 2,  App->map->data.tileWidth, App->map->data.tileHeight };
+		SDL_Rect rectA = { (int)pos.x - App->map->data.tileWidth / 4, (int)pos.y - App->map->data.tileHeight / 4, App->map->data.tileWidth / 2, App->map->data.tileHeight / 2 };
+		SDL_Rect rectB = { destinationPos.x - App->map->data.tileWidth / 4, destinationPos.y - App->map->data.tileHeight / 4,  App->map->data.tileWidth / 2, App->map->data.tileHeight / 2 };
 
 		if (SDL_HasIntersection(&rectA, &rectB)) {
 
