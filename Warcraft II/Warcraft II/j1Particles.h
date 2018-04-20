@@ -81,8 +81,6 @@ public:
 
 	Particle* AddParticle(const Particle& particle, iPoint pos, iPoint destinationTile = { -1,-1 }, float speed = 0.0f, uint damage = 0, Uint32 delay = 0);
 
-	bool IsParticleOnTile(iPoint tile) const;
-
 	void UpdateAnimations(const float dt);
 	void LoadAnimationsSpeed();
 

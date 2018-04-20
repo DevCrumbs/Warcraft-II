@@ -362,7 +362,10 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, iPoint 
 				}
 
 				// Calculate the angle of the particle
-				currPart->angle = 360.0f + (atan2(currPart->orientation.y, currPart->orientation.x) * 180.0f / (float)M_PI);
+				currPart->angle = (atan2(currPart->orientation.y, currPart->orientation.x) * 180.0f / (float)M_PI);
+
+				if (currPart->angle >= 360.0f)
+					currPart->angle = 0.0f;
 			}
 			break;
 
@@ -373,24 +376,6 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, iPoint 
 			return currPart;
 		}
 	}
-}
-
-bool j1Particles::IsParticleOnTile(iPoint tile) const
-{
-	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
-	{
-		Particle* p = activeParticles[i];
-
-		if (p == nullptr)
-			continue;
-
-		iPoint particleTile = App->map->WorldToMap(p->pos.x, p->pos.y);
-
-		if (particleTile == tile)
-			return true;
-	}
-
-	return false;
 }
 
 void j1Particles::LoadAnimationsSpeed()
