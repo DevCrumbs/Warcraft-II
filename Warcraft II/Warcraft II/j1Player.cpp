@@ -484,16 +484,19 @@ void j1Player::CheckUnitSpawning()
 			delete toSpawnUnitQueue.front();
 			toSpawnUnitQueue.pop();
 
-			lastElem = toSpawnUnitStats.begin();
-			LOG("Size before erase: %i", toSpawnUnitStats.size());
+			if (!toSpawnUnitStats.empty())
+			{
+				lastElem = toSpawnUnitStats.begin();
+				LOG("Size before erase: %i", toSpawnUnitStats.size());
 
-			App->gui->RemoveElem((UIElement**)&lastElem->entityIcon);
-			App->gui->RemoveElem((UIElement**)&lastElem->entityLifeBar);
+				App->gui->RemoveElem((UIElement**)&lastElem->entityIcon);
+				App->gui->RemoveElem((UIElement**)&lastElem->entityLifeBar);
 
-			toSpawnUnitStats.erase(toSpawnUnitStats.begin());
-			LOG("Size after erase: %i", toSpawnUnitStats.size());
+				toSpawnUnitStats.erase(toSpawnUnitStats.begin());
+				LOG("Size after erase: %i", toSpawnUnitStats.size());
 
-			UpdateSpawnUnitsStats();
+				UpdateSpawnUnitsStats();
+			}
 		}
 	}
 	for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) 
@@ -1059,6 +1062,7 @@ void j1Player::DeleteEntitiesMenu()
 			App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
 			App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
 		}
+		toSpawnUnitStats.clear();
 	}
 
 	if (entitySelectedStats.entitySelected != nullptr) {
