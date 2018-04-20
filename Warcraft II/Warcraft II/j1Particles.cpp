@@ -57,32 +57,17 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 		hardFire.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	// Tower arrows
+	// Arrows
 	pugi::xml_node towerArrows = config.child("towerArrows");
-	playerArrows.up.animation.PushBack({ towerArrows.child("up").attribute("x").as_int(), towerArrows.child("up").attribute("y").as_int(), towerArrows.child("up").attribute("w").as_int(), towerArrows.child("up").attribute("h").as_int() });
-	playerArrows.down.animation.PushBack({ towerArrows.child("down").attribute("x").as_int(), towerArrows.child("down").attribute("y").as_int(), towerArrows.child("down").attribute("w").as_int(), towerArrows.child("down").attribute("h").as_int() });
-	playerArrows.left.animation.PushBack({ towerArrows.child("left").attribute("x").as_int(), towerArrows.child("left").attribute("y").as_int(), towerArrows.child("left").attribute("w").as_int(), towerArrows.child("left").attribute("h").as_int() });
-	playerArrows.right.animation.PushBack({ towerArrows.child("right").attribute("x").as_int(), towerArrows.child("right").attribute("y").as_int(), towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() });
-	playerArrows.upLeft.animation.PushBack({ towerArrows.child("upLeft").attribute("x").as_int(), towerArrows.child("upLeft").attribute("y").as_int(), towerArrows.child("upLeft").attribute("w").as_int(), towerArrows.child("upLeft").attribute("h").as_int() });
-	playerArrows.upRight.animation.PushBack({ towerArrows.child("upRight").attribute("x").as_int(), towerArrows.child("upRight").attribute("y").as_int(), towerArrows.child("upRight").attribute("w").as_int(), towerArrows.child("upRight").attribute("h").as_int() });
-	playerArrows.downLeft.animation.PushBack({ towerArrows.child("downLeft").attribute("x").as_int(), towerArrows.child("downLeft").attribute("y").as_int(), towerArrows.child("downLeft").attribute("w").as_int(), towerArrows.child("downLeft").attribute("h").as_int() });
-	playerArrows.downRight.animation.PushBack({ towerArrows.child("downRight").attribute("x").as_int(), towerArrows.child("downRight").attribute("y").as_int(), towerArrows.child("downRight").attribute("w").as_int(), towerArrows.child("downRight").attribute("h").as_int() });
+	playerArrows.animation.PushBack({ towerArrows.child("right").attribute("x").as_int(), towerArrows.child("right").attribute("y").as_int(), towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() });
+	enemyArrows.animation.PushBack({ towerArrows.child("right").attribute("x").as_int(), towerArrows.child("right").attribute("y").as_int(), towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() });
 
-	enemyArrows.up.animation.PushBack({ towerArrows.child("up").attribute("x").as_int(), towerArrows.child("up").attribute("y").as_int(), towerArrows.child("up").attribute("w").as_int(), towerArrows.child("up").attribute("h").as_int() });
-	enemyArrows.down.animation.PushBack({ towerArrows.child("down").attribute("x").as_int(), towerArrows.child("down").attribute("y").as_int(), towerArrows.child("down").attribute("w").as_int(), towerArrows.child("down").attribute("h").as_int() });
-	enemyArrows.left.animation.PushBack({ towerArrows.child("left").attribute("x").as_int(), towerArrows.child("left").attribute("y").as_int(), towerArrows.child("left").attribute("w").as_int(), towerArrows.child("left").attribute("h").as_int() });
-	enemyArrows.right.animation.PushBack({ towerArrows.child("right").attribute("x").as_int(), towerArrows.child("right").attribute("y").as_int(), towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() });
-	enemyArrows.upLeft.animation.PushBack({ towerArrows.child("upLeft").attribute("x").as_int(), towerArrows.child("upLeft").attribute("y").as_int(), towerArrows.child("upLeft").attribute("w").as_int(), towerArrows.child("upLeft").attribute("h").as_int() });
-	enemyArrows.upRight.animation.PushBack({ towerArrows.child("upRight").attribute("x").as_int(), towerArrows.child("upRight").attribute("y").as_int(), towerArrows.child("upRight").attribute("w").as_int(), towerArrows.child("upRight").attribute("h").as_int() });
-	enemyArrows.downLeft.animation.PushBack({ towerArrows.child("downLeft").attribute("x").as_int(), towerArrows.child("downLeft").attribute("y").as_int(), towerArrows.child("downLeft").attribute("w").as_int(), towerArrows.child("downLeft").attribute("h").as_int() });
-	enemyArrows.downRight.animation.PushBack({ towerArrows.child("downRight").attribute("x").as_int(), towerArrows.child("downRight").attribute("y").as_int(), towerArrows.child("downRight").attribute("w").as_int(), towerArrows.child("downRight").attribute("h").as_int() });
-
-	//Cannon from the cannon tower
+	// Cannon from the cannon tower
 	pugi::xml_node bulletsCannon = config.child("cannon");
 	playerCannonBullet.animation.PushBack({ bulletsCannon.attribute("x").as_int(), bulletsCannon.attribute("y").as_int(), bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() });
 	enemyCannonBullet.animation.PushBack({ bulletsCannon.attribute("x").as_int(), bulletsCannon.attribute("y").as_int(), bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() });
 
-	//Troll's axe
+	// Troll's axe
 	pugi::xml_node trollAxeAnimation = config.child("trollAxe");
 	trollAxe.animation.speed = trollAxeAnimation.attribute("speed").as_float();
 	trollAxe.animation.loop = trollAxeAnimation.attribute("loop").as_bool();
@@ -221,45 +206,12 @@ bool j1Particles::Start()
 	LOG("Loading particles");
 
 	paws.particleType = ParticleType_Paws;
-	playerArrows.up.particleType = ParticleType_Player_Projectile;
-	playerArrows.down.particleType = ParticleType_Player_Projectile;
-	playerArrows.left.particleType = ParticleType_Player_Projectile;
-	playerArrows.right.particleType = ParticleType_Player_Projectile;
-	playerArrows.upLeft.particleType = ParticleType_Player_Projectile;
-	playerArrows.upRight.particleType = ParticleType_Player_Projectile;
-	playerArrows.downLeft.particleType = ParticleType_Player_Projectile;
-	playerArrows.downRight.particleType = ParticleType_Player_Projectile;
-	enemyArrows.up.particleType = ParticleType_Enemy_Projectile;
-	enemyArrows.down.particleType = ParticleType_Enemy_Projectile;
-	enemyArrows.left.particleType = ParticleType_Enemy_Projectile;
-	enemyArrows.right.particleType = ParticleType_Enemy_Projectile;
-	enemyArrows.upLeft.particleType = ParticleType_Enemy_Projectile;
-	enemyArrows.upRight.particleType = ParticleType_Enemy_Projectile;
-	enemyArrows.downLeft.particleType = ParticleType_Enemy_Projectile;
-	enemyArrows.downRight.particleType = ParticleType_Enemy_Projectile;
+	trollAxe.particleType = ParticleType_Enemy_Projectile;
+	playerArrows.particleType = ParticleType_Player_Projectile;
+	enemyArrows.particleType = ParticleType_Enemy_Projectile;	
 	playerCannonBullet.particleType = ParticleType_Player_Projectile;
 	enemyCannonBullet.particleType = ParticleType_Enemy_Projectile;
-	trollAxe.particleType = ParticleType_Enemy_Projectile;
 
-	playerArrows.up.life = 800;
-	playerArrows.down.life = 800;
-	playerArrows.left.life = 800;
-	playerArrows.right.life = 800;
-	playerArrows.upLeft.life = 800;
-	playerArrows.upRight.life = 800;
-	playerArrows.downLeft.life = 800;
-	playerArrows.downRight.life = 800;
-	enemyArrows.up.life = 800;
-	enemyArrows.down.life = 800;
-	enemyArrows.left.life = 800;
-	enemyArrows.right.life = 800;
-	enemyArrows.upLeft.life = 800;
-	enemyArrows.upRight.life = 800;
-	enemyArrows.downLeft.life = 800;
-	enemyArrows.downRight.life = 800;
-	playerCannonBullet.life = 800;
-	enemyCannonBullet.life = 800;
-	trollAxe.life = 800;
 	paws.life = 800;
 
 	sheepPawsInfo.up.speed = 1.0f;
@@ -329,6 +281,11 @@ bool j1Particles::Update(float dt)
 			activeParticles[i] = nullptr;
 		}
 
+		if (SDL_GetTicks() >= currPart->born)
+		{
+			if (currPart->particleType != ParticleType_Paws)
+				App->render->Blit(atlasTex, currPart->pos.x, currPart->pos.y, &(currPart->animation.GetCurrentFrame()), 1.0f, currPart->angle);
+		}
 	}
 
 	return ret;
@@ -346,7 +303,7 @@ void j1Particles::Draw()
 		if (SDL_GetTicks() >= p->born)
 		{
 			if (p->particleType != ParticleType_Paws)
-				App->render->Blit(atlasTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()));
+				App->render->Blit(atlasTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()), 1.0f, p->angle);
 		}
 	}
 }
@@ -363,7 +320,7 @@ void j1Particles::DrawPaws()
 		if (SDL_GetTicks() >= p->born)
 		{
 			if (p->particleType == ParticleType_Paws)
-				App->render->Blit(pawsTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()));
+				App->render->Blit(pawsTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()), 1.0f, p->angle);
 		}
 	}
 }
@@ -391,6 +348,7 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, iPoint 
 			{
 				iPoint currPartTile = App->map->WorldToMap(currPart->pos.x, currPart->pos.y);
 
+				// Calculate the orientation of the particle
 				currPart->orientation.x = currPart->destinationTile.x - currPartTile.x;
 				currPart->orientation.y = currPart->destinationTile.y - currPartTile.y;
 
@@ -401,6 +359,9 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, iPoint 
 					currPart->orientation.x /= m;
 					currPart->orientation.y /= m;
 				}
+
+				// Calculate the angle of the particle
+				currPart->angle = 360.0f + (atan2(currPart->orientation.y, currPart->orientation.x) * 180.0f / (float)M_PI);
 			}
 			break;
 
@@ -452,6 +413,13 @@ void j1Particles::LoadAnimationsSpeed()
 	sheepPawsUpRightSpeed = sheepPawsInfo.upRight.speed;
 	sheepPawsDownLeftSpeed = sheepPawsInfo.downLeft.speed;
 	sheepPawsDownRightSpeed = sheepPawsInfo.downRight.speed;
+
+	/// Troll Axe
+	trollAxeSpeed = trollAxe.speed;
+
+	/// Fire Speed
+	lowFireSpeed = lowFire.speed;
+	hardFireSpeed = hardFire.speed;
 }
 
 void j1Particles::UpdateAnimations(float dt)
@@ -476,7 +444,12 @@ void j1Particles::UpdateAnimations(float dt)
 	sheepPawsInfo.downLeft.speed = sheepPawsDownLeftSpeed * dt;
 	sheepPawsInfo.downRight.speed = sheepPawsDownRightSpeed * dt;
 
-	trollAxe.animation.speed = 10.0f * dt;
+	/// Troll Axe
+	trollAxe.speed = trollAxeSpeed * dt;
+
+	/// Fire Speed
+	lowFire.speed = lowFireSpeed * dt;
+	hardFire.speed = hardFireSpeed * dt;
 }
 
 PawsInfo& j1Particles::GetPawsInfo(bool isSheep, bool isBoar)
@@ -499,7 +472,7 @@ Particle::Particle()
 Particle::Particle(const Particle& p) :
 	animation(p.animation), pos(p.pos), destinationTile(p.destinationTile),
 	speed(p.speed), particleType(p.particleType), born(p.born), life(p.life),
-	damage(p.damage), orientation(p.orientation), isRemove(p.isRemove)
+	damage(p.damage), orientation(p.orientation), isRemove(p.isRemove), angle(p.angle)
 {}
 
 Particle::~Particle() {}
@@ -513,14 +486,15 @@ bool Particle::Update(float dt)
 	case ParticleType_Player_Projectile:
 	case ParticleType_Enemy_Projectile:
 	{
-        iPoint currPartTile = App->map->WorldToMap(pos.x, pos.y);
+        iPoint destinationPos = App->map->MapToWorld(destinationTile.x, destinationTile.y);
 
-		LOG("Dest tile: %i, %i", currPartTile.x, currPartTile.y);
+		SDL_Rect rectA = { (int)pos.x - App->map->data.tileWidth / 2, (int)pos.y - App->map->data.tileHeight / 2, App->map->data.tileWidth, App->map->data.tileHeight };
+		SDL_Rect rectB = { destinationPos.x - App->map->data.tileWidth / 2, destinationPos.y - App->map->data.tileHeight / 2,  App->map->data.tileWidth, App->map->data.tileHeight };
 
-		if (currPartTile == destinationTile) {
+		if (SDL_HasIntersection(&rectA, &rectB)) {
 
 			//Apply damage and kill the particle if it reaches its target
-			Entity* entity = App->entities->IsEntityOnTile(currPartTile);
+			Entity* entity = App->entities->IsEntityOnTile(destinationTile);
 
 			if (particleType == ParticleType_Player_Projectile) {
 				if (entity != nullptr) {
@@ -534,11 +508,12 @@ bool Particle::Update(float dt)
 						entity->ApplyDamage(damage);
 				}
 			}
+
 			return false;
 		}
 
-			pos.x += orientation.x * dt * speed;
-			pos.y += orientation.y * dt * speed;
+		pos.x += orientation.x * dt * speed;
+		pos.y += orientation.y * dt * speed;
 
 		return true;
 	}

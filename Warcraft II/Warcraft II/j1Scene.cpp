@@ -507,7 +507,7 @@ bool j1Scene::Update(float dt)
 	App->map->Draw(); // map
 	App->particles->DrawPaws(); // paws particles
 	App->entities->Draw(); // entities
-	App->particles->Draw();
+	//App->particles->Draw();
 
 	/*
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)

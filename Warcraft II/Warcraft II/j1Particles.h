@@ -53,6 +53,7 @@ struct Particle {
 
 	fPoint orientation = { 0.0f,0.0f };
 	Uint32 born = 0;
+	double angle = 0.0f;
 
 	bool isRemove = false;
 
@@ -60,18 +61,6 @@ struct Particle {
 	Particle(const Particle& p);
 	~Particle();
 	bool Update(float dt);
-};
-
-struct TowerArrowParticles {
-
-	Particle up;
-	Particle down;
-	Particle left;
-	Particle right;
-	Particle upLeft;
-	Particle downLeft;
-	Particle upRight;
-	Particle downRight;
 };
 
 class j1Particles : public j1Module
@@ -122,18 +111,30 @@ private:
 	float sheepPawsUpSpeed = 0.0f, sheepPawsDownSpeed = 0.0f, sheepPawsLeftSpeed = 0.0f, sheepPawsRightSpeed = 0.0f;
 	float sheepPawsUpLeftSpeed = 0.0f, sheepPawsUpRightSpeed = 0.0f, sheepPawsDownLeftSpeed = 0.0f, sheepPawsDownRightSpeed = 0.0f;
 
+	/// Troll Axe
+	float trollAxeSpeed = 0.0f;
+
+	/// Fire Speed
+	float lowFireSpeed = 0.0f;
+	float hardFireSpeed = 0.0f;
 
 public:
 
+	// Fire
 	Particle lowFire;
 	Particle hardFire;
 
-	TowerArrowParticles playerArrows;
-	TowerArrowParticles enemyArrows;
+
+	// Arrows, axes and cannon bullets
+	Particle playerArrows;
+	Particle enemyArrows;
+
 	Particle playerCannonBullet;
 	Particle enemyCannonBullet;
-	Particle trollAxe;
 
+	Particle trollAxe;
+	
+	// Paws
 	Particle paws;
 };
 

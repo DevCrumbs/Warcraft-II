@@ -203,28 +203,36 @@ void WatchTower::CreateArrow()
 	switch (arrowDirection) {
 
 	case UP:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.up, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
 		break;
 	case DOWN:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.down, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
 		break;
 	case LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.left, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
 		break;
 	case RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.right, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
 		break;
 	case UP_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.upLeft, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
 		break;
 	case UP_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.upRight, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
 		break;
 	case DOWN_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.downLeft, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
 		break;
 	case DOWN_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.downRight, { (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
 		break;
 	default:
 		break;
