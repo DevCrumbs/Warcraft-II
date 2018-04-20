@@ -19,7 +19,6 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
 	App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
 	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-	App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
 
 	isBuilt = chickenFarmInfo.isBuilt;
 

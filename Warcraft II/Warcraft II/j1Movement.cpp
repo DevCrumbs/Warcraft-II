@@ -27,7 +27,6 @@ bool j1Movement::Update(float dt)
 
 void j1Movement::DebugDraw() const
 {
-	/*
 	for (list<UnitGroup*>::const_iterator group = unitGroups.begin(); group != unitGroups.end(); ++group) {
 		for (list<SingleUnit*>::const_iterator unit = (*group)->units.begin(); unit != (*group)->units.end(); ++unit) {
 
@@ -62,7 +61,6 @@ void j1Movement::DebugDraw() const
 			}
 		}
 	}
-	*/
 }
 
 bool j1Movement::CleanUp()
@@ -255,7 +253,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 		singleUnit->unit->SetIsStill(true);
 
 		// The goal of a unit cannot be the goal of another unit
-		if (!IsValidTile(singleUnit, singleUnit->goal, false, false, true))
+		if (!IsValidTile(singleUnit, singleUnit->goal, false, false, true) || !App->pathfinding->IsWalkable(singleUnit->goal))
 
 			singleUnit->isGoalNeeded = true;
 
@@ -735,6 +733,18 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 		}
 
 		singleUnit->unit->SetIsStill(false);
+
+		// The walkability map has been updated
+		if (singleUnit->isWalkabilityUpdated) {
+
+			if (singleUnit->IsFittingTile()) {
+
+				singleUnit->movementState = MovementState_WaitForPath;
+				singleUnit->isWalkabilityUpdated = false;
+
+				break;
+			}
+		}
 
 		// Add the movePos to the unit's current position
 		singleUnit->unit->AddToPos(movePos);
@@ -1221,7 +1231,7 @@ iPoint j1Movement::FindNewValidTile(SingleUnit* singleUnit, bool checkOnlyFront)
 		curr = queue.top();
 		queue.pop();
 
-		if (singleUnit->unit->GetNavgraph()->IsWalkable(curr.point) && IsValidTile(singleUnit, curr.point, true, true))
+		if (App->pathfinding->IsWalkable(curr.point) && IsValidTile(singleUnit, curr.point, true, true))
 			return curr.point;
 	}
 
@@ -1294,7 +1304,7 @@ bool j1Movement::IsOppositeDirection(SingleUnit* singleUnitA, SingleUnit* single
 	}
 }
 
-bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor)
+bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor) const
 {
 	iPoint neighbors[8] = { { -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 } };
 
@@ -1314,6 +1324,42 @@ bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor)
 	}
 
 	return false;
+}
+
+void j1Movement::UpdateUnitsWalkability(vector<iPoint> updatedTiles) const
+{
+	if (updatedTiles.size() == 0)
+		return;
+
+	list<UnitGroup*>::const_iterator groups;
+	list<SingleUnit*>::const_iterator units;
+
+	for (groups = unitGroups.begin(); groups != unitGroups.end(); ++groups) {
+		for (units = (*groups)->units.begin(); units != (*groups)->units.end(); ++units) {
+
+			// If a path of a unit contains an updated tile, request a new path
+			if ((*units)->path.size() > 0) {
+
+				bool isUpdated = false;
+
+				for (uint i = 0; i < (*units)->path.size(); ++i) {
+
+					for (uint j = 0; j < updatedTiles.size(); ++j) {
+
+						if ((*units)->path[i] == updatedTiles[j]) {
+						
+							isUpdated = true;
+							(*units)->isWalkabilityUpdated = true;
+						}
+						if (isUpdated)
+							break;
+					}
+					if (isUpdated)
+						break;
+				}
+			}
+		}
+	}
 }
 
 // UnitGroup struct ---------------------------------------------------------------------------------
@@ -1669,6 +1715,7 @@ bool SingleUnit::GetReadyForNewMove()
 		movementState = MovementState_WaitForPath;
 
 		isGoalChanged = false;
+		isWalkabilityUpdated = false;
 
 		ret = true;
 	}

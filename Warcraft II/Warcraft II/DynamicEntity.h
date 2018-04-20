@@ -20,7 +20,6 @@ struct ColliderGroup;
 struct SingleUnit;
 
 class PathPlanner;
-class Navgraph;
 class Goal_Think;
 class UILifeBar;
 
@@ -115,7 +114,6 @@ public:
 	// Movement
 	SingleUnit* GetSingleUnit() const;
 	PathPlanner* GetPathPlanner() const;
-	Navgraph* GetNavgraph() const;
 
 	void SetIsStill(bool isStill);
 	bool IsStill() const;
@@ -200,7 +198,6 @@ protected:
 
 	SingleUnit* singleUnit = nullptr;
 	PathPlanner* pathPlanner = nullptr;
-	Navgraph* navgraph = nullptr;
 
 	bool isStill = true; // if true, the unit is still. Else, the unit is moving
 

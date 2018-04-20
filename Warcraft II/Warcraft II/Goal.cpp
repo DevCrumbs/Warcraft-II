@@ -370,8 +370,6 @@ void Goal_Wander::Activate()
 	if(owner != nullptr)
 		AddSubgoal(new Goal_LookAround(owner));
 
-	Navgraph* navgraph = owner->GetNavgraph();
-
 	iPoint destinationTile = { -1,-1 };
 
 	int sign = rand() % 2;
@@ -428,9 +426,7 @@ void Goal_MoveToPosition::Activate()
 
 	owner->SetHitting(false);
 
-	Navgraph* v = owner->GetNavgraph();
-
-	if (!owner->GetNavgraph()->IsWalkable(destinationTile)) {
+	if (!App->pathfinding->IsWalkable(destinationTile)) {
 
 		goalStatus = GoalStatus_Failed;
 		return;

@@ -26,7 +26,6 @@ GreatHall::GreatHall(fPoint pos, iPoint size, int currLife, uint maxLife, const 
 	App->scene->data[App->scene->w * (buildingTile.y + 3) + buildingTile.x] = 0u;
 	App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 1)] = 0u;
 	App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 2)] = 0u;
-	App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
 
 	texArea = &greatHallInfo.completeTexArea;
 
