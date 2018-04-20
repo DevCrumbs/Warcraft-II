@@ -847,6 +847,7 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	App->entities->UnselectAllEntities();
 
 	UILabel_Info labelInfo;
+	labelInfo.interactive = false;
 	labelInfo.text = entityName_text;
 	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
@@ -922,6 +923,7 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 		UILabel_Info labelInfo;
+		labelInfo.interactive = false;
 		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
 		labelInfo.text = "Footman";
 		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
@@ -967,6 +969,7 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		entitySelectedStats.lifeBar = App->gui->CreateUILifeBar({ 65, 50 }, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 		UILabel_Info labelInfo;
+		labelInfo.interactive = false;
 		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
 		labelInfo.text = "Elven Archer";
 		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
@@ -1073,14 +1076,15 @@ void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) {
 	UIImage_Info backgroundImageInfo;
 	backgroundImageInfo.texArea = { 241, 384, 85, 38 };
 	hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
-	UILabel_Info infoLabelInfo;
-	infoLabelInfo.text = unitProduce;
-	infoLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-	hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, infoLabelInfo, nullptr, hoverInfo.background);
-	UILabel_Info costLabelInfo;
-	costLabelInfo.text = gold;
-	costLabelInfo.fontName = FONT_NAME_WARCRAFT9;
-	hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, costLabelInfo, nullptr, hoverInfo.background);
+	UILabel_Info labelInfo;
+	labelInfo.interactive = false;
+	labelInfo.text = unitProduce;
+	labelInfo.fontName = FONT_NAME_WARCRAFT9;
+	hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, labelInfo, nullptr, hoverInfo.background);
+
+	labelInfo.text = gold;
+	labelInfo.fontName = FONT_NAME_WARCRAFT9;
+	hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, labelInfo, nullptr, hoverInfo.background);
 
 }
 void j1Player::DeleteHoverInfoMenu()
