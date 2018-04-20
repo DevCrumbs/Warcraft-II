@@ -7,7 +7,7 @@
 
 #include "UIMinimap.h"
 
-UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j1Module* listener) : UIElement({ 0,0 }, nullptr, nullptr, false)
+UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j1Module* listener) : UIElement({ info.minimapInfo.x,info.minimapInfo.y }, nullptr, nullptr, false)
 {
 	type = UIE_TYPE_MINIMAP;
 	
@@ -15,6 +15,14 @@ UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j
 
 	entityWidth = info.entityWidth;
 	entityHeight = info.entityWidth;
+
+	entityWidth = 32 * 4;
+	entityHeight = 32 * 4;
+
+	width = info.minimapInfo.w;
+	height = info.minimapInfo.h;
+
+	entities = &App->entities->activeDynamicEntities;
 
 	LoadMap();
 }
@@ -28,49 +36,53 @@ UIMinimap::UIMinimap() : UIElement({ 0,0 }, nullptr, nullptr, false)
 
 UIMinimap::~UIMinimap()
 {
-
 	SDL_DestroyTexture(mapTexture);
-
-	entities.clear();
-
 }
 
 void UIMinimap::Update(float dt)
 {
+	movingMap = false;
+
 	SDL_fRect camera = App->render->camera;
 
 	App->render->SetViewPort(minimapInfo);
 
-	///-----------------	 Draw the map
-	int offsetX = camera.x * scaleFactor + 40;
-	int offsetY = camera.y * scaleFactor + 40;
+	HandleInput(dt);
+
+	//prevOffsetX = offsetX;
+	//prevOffsetY = offsetY;
+
+	//offsetX = camera.x * scaleFactor + 40;
+	//offsetY = camera.y * scaleFactor + 40;
 
 
-	if (offsetX > 0)
-		offsetX = 0;
-	else if (offsetX < -maxOffsetX)
-		offsetX = -maxOffsetX;
 
-	if (offsetY > 0)
-		offsetY = 0;
-	else if (offsetY < -maxOffsetY)
-		offsetY = -maxOffsetY;
+	//if (offsetX > 0)
+	//	offsetX = 0;
+	//else if (offsetX < -maxOffsetX)
+	//	offsetX = -maxOffsetX;
+
+	//if (offsetY > 0)
+	//	offsetY = 0;
+	//else if (offsetY < -maxOffsetY)
+	//	offsetY = -maxOffsetY;
 
 
+///-----------------	 Draw the map
 	App->render->Blit(mapTexture, offsetX,offsetY, NULL, 0);
 
 
 	///-----------------	 Draw all entities in the minimap
-	for (list<Entity*>::iterator iterator = entities.begin(); iterator != entities.end(); ++iterator)
+	for (list<DynamicEntity*>::iterator iterator = entities->begin(); iterator != entities->end(); ++iterator)
 	{
 		
-		SDL_Rect rect{	(*iterator)->pos.x * scaleFactor + minimapInfo.x,
-						(*iterator)->pos.y * scaleFactor + minimapInfo.y,
+		SDL_Rect rect{	(*iterator)->pos.x * scaleFactor /*+ minimapInfo.x*/,
+						(*iterator)->pos.y * scaleFactor /*+ minimapInfo.y*/,
 						entityWidth * scaleFactor, entityHeight * scaleFactor };
 
 		
-		App->render->DrawQuad(rect, (*iterator)->minimapDrawColor.r, (*iterator)->minimapDrawColor.g,
-							 (*iterator)->minimapDrawColor.b, (*iterator)->minimapDrawColor.a, true, false);
+		App->render->DrawQuad(rect, 0, 0,
+							255, 255, true, false);
 	}
 
 
@@ -82,6 +94,59 @@ void UIMinimap::Update(float dt)
 
 	App->render->ResetViewPort();
 
+}
+
+void UIMinimap::HandleInput(float dt) 
+{
+	if (MouseHover())
+	{
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+		{
+			iPoint newCameraPos = MinimapToMap();
+			App->render->camera.x = -newCameraPos.x + App->render->camera.w / 2;
+			App->render->camera.y = -newCameraPos.y + App->render->camera.h / 2;
+
+			if (App->render->camera.x > 0)
+				App->render->camera.x = 0;
+			if (App->render->camera.y > 0)
+				App->render->camera.y = 0;
+		}
+	}
+
+}
+
+iPoint UIMinimap::GetMousePos() 
+{
+	iPoint ret{ 0,0 };
+
+	iPoint screenPos = GetScreenPos();
+	int x = 0, y = 0;
+
+	App->input->GetMousePosition(x, y);
+
+	ret.x = x - screenPos.x;
+	ret.y = y - screenPos.y;
+
+	return ret;
+}
+
+iPoint UIMinimap::MinimapToMap(iPoint pos)
+{
+	iPoint minimapPos{ 0,0 };
+	iPoint mapPos{ 0,0 };
+
+	minimapPos.x = pos.x - offsetX;
+	minimapPos.y = pos.y - offsetY;
+
+	mapPos.x = minimapPos.x / scaleFactor;
+	mapPos.y = minimapPos.y / scaleFactor;
+
+	return mapPos;
+}
+
+iPoint UIMinimap::MinimapToMap()
+{
+	return MinimapToMap(GetMousePos());
 }
 
 bool UIMinimap::SetMinimap(SDL_Rect pos, int entityW, int entityH)
@@ -115,7 +180,7 @@ bool UIMinimap::LoadMap()
 	///-----------------	Compute the scale factor 
 //	float mapSize = App->map->data.width * App->map->data.tileWidth;
 //	scaleFactor = minimapInfo.w / mapSize;
-	scaleFactor = minimapInfo.w / (float)(50 * 32);
+	scaleFactor = minimapInfo.h / (float)(App->map->data.height * App->map->data.tileHeight);
 
 	///-----------------	 Create a RGB surface
 	mapSurface = SDL_CreateRGBSurface(0, App->map->data.width * App->map->data.tileWidth, App->map->data.height * App->map->data.tileHeight, 32, 0, 0, 0, 0);
@@ -202,7 +267,6 @@ bool UIMinimap::LoadMap()
 	SDL_RenderReadPixels(rendererAux, NULL, 0, minimapSurface->pixels, minimapSurface->pitch);
 
 	mapTexture = SDL_CreateTextureFromSurface(App->render->renderer, minimapSurface);
-	SDL_SaveBMP(minimapSurface, "aqui.png");
 
 	maxOffsetX = ((App->map->data.width * App->map->data.tileWidth) * scaleFactor) - minimapInfo.w;
 	maxOffsetY = ((App->map->data.height * App->map->data.tileHeight) * scaleFactor) - minimapInfo.h;
@@ -245,15 +309,4 @@ bool UIMinimap::SaveInRenderer(const SDL_Texture* texture, int x, int y, const S
 	return ret;
 }
 
-bool UIMinimap::AddEntity(Entity* entity)
-{
-	bool ret = false;
-
-	if (entity != nullptr)
-	{
-		this->entities.push_back(entity);
-		ret = true;
-	}
-	return ret;
-}
 
