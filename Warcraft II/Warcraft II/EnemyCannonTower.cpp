@@ -154,11 +154,8 @@ void EnemyCannonTower::TowerStateMachine(float dt)
 
 void EnemyCannonTower::CreateCannonBullet()
 {
-	iPoint targetEnemyTile = App->map->WorldToMap(attackingTarget->GetPos().x, attackingTarget->GetPos().y);
-
 	cannonParticle = App->particles->AddParticle(App->particles->enemyCannonBullet, 
-	{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, targetEnemyTile, enemyCannonTowerInfo.arrowSpeed, enemyCannonTowerInfo.damage);
-	
+	{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), enemyCannonTowerInfo.arrowSpeed, enemyCannonTowerInfo.damage);
 }
 
 // Animations
@@ -166,6 +163,7 @@ void EnemyCannonTower::LoadAnimationsSpeed()
 {
 
 }
+
 void EnemyCannonTower::UpdateAnimations(float dt)
 {
 

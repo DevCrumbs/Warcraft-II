@@ -45,7 +45,8 @@ struct Particle {
 	Animation animation;
 
 	fPoint pos = { 0.0f,0.0f };
-	iPoint destinationTile = { 0,0 };
+	iPoint size = { 0,0 };
+	fPoint destination = { 0.0f,0.0f };
 
 	float speed = 0.0f;
 	Uint32 life = 0;
@@ -79,7 +80,7 @@ public:
 	void DrawPaws();
 	bool CleanUp();
 
-	Particle* AddParticle(const Particle& particle, iPoint pos, iPoint destinationTile = { -1,-1 }, float speed = 0.0f, uint damage = 0, Uint32 delay = 0);
+	Particle* AddParticle(const Particle& particle, iPoint pos, fPoint destination = { 0.0f,0.0f }, float speed = 0.0f, uint damage = 0, Uint32 delay = 0);
 
 	void UpdateAnimations(const float dt);
 	void LoadAnimationsSpeed();

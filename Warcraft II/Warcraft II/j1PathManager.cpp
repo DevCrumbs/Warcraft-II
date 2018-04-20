@@ -132,11 +132,9 @@ bool PathPlanner::RequestAStar(iPoint origin, iPoint destination)
 
 	// Set the walkability map
 	//ret = navgraph.SetNavgraph(currentSearch);
-	ret = true;
 
 	// Invalidate if origin or destination are non-walkable
-	if (ret)
-		ret = currentSearch->InitializeAStar(origin, destination);
+	ret = currentSearch->InitializeAStar(origin, destination);
 
 	if (ret)
 		App->pathmanager->Register(this);
@@ -180,12 +178,11 @@ bool PathPlanner::RequestDijkstra(iPoint origin, FindActiveTrigger::ActiveTrigge
 		break;
 	}
 
+	// Set the walkability map
 	//navgraph.SetNavgraph(currentSearch);
 
-	ret = true;
 	// Invalidate if origin is non-walkable
-	if (ret)
-		ret = currentSearch->InitializeDijkstra(origin, trigger, isPathRequested);
+	ret = currentSearch->InitializeDijkstra(origin, trigger, isPathRequested);
 
 	if (ret)
 		App->pathmanager->Register(this);

@@ -194,41 +194,39 @@ void EnemyGuardTower::DetermineArrowDirection()
 
 void EnemyGuardTower::CreateArrow()
 {
-	iPoint targetEnemyTile = App->map->WorldToMap(attackingTarget->GetPos().x, attackingTarget->GetPos().y);
-
 	switch (arrowDirection) {
 
 	case UP:
 		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
-		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, attackingTarget->GetPos(), enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case DOWN:
 		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
-		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, attackingTarget->GetPos(), enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case LEFT:
 		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
-		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, attackingTarget->GetPos(), enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case RIGHT:
 		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
-		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, attackingTarget->GetPos(), enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case UP_LEFT:
 		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
-		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, attackingTarget->GetPos(), enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case UP_RIGHT:
 		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
-		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, attackingTarget->GetPos(), enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case DOWN_LEFT:
 		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
-		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, attackingTarget->GetPos(), enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	case DOWN_RIGHT:
 		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
-		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, targetEnemyTile, enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
+		{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, attackingTarget->GetPos(), enemyGuardTowerInfo.arrowSpeed, enemyGuardTowerInfo.damage);
 		break;
 	default:
 		break;

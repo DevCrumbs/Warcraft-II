@@ -202,9 +202,9 @@ void Grunt::Draw(SDL_Texture* sprites)
 
 		fPoint offset = { 0.0f,0.0f };
 		if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp)
-			offset = { animation->GetCurrentFrame().w / 3.0f,animation->GetCurrentFrame().h / 3.0f };
+			offset = { animation->GetCurrentFrame().w / 3.0f,animation->GetCurrentFrame().h / 5.0f };
 		else
-			offset = { animation->GetCurrentFrame().w / 3.0f, animation->GetCurrentFrame().h / 2.0f };
+			offset = { animation->GetCurrentFrame().w / 3.0f, animation->GetCurrentFrame().h / 3.0f };
 
 		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
 	}

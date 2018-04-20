@@ -10,7 +10,7 @@
 
 #include "Brofiler\Brofiler.h"
 
-j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), height(0)
+j1PathFinding::j1PathFinding() : j1Module(), width(0), height(0)
 {
 	name.assign("pathfinding");
 }
@@ -18,8 +18,6 @@ j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), hei
 // Destructor
 j1PathFinding::~j1PathFinding()
 {
-	//RELEASE_ARRAY(walkabilityMap);
-
 	trigger = nullptr;
 }
 
@@ -29,7 +27,6 @@ bool j1PathFinding::CleanUp()
 	LOG("Freeing pathfinding library");
 
 	last_path.clear();
-	//RELEASE_ARRAY(walkabilityMap);
 	return true;
 }
 
@@ -38,10 +35,6 @@ void j1PathFinding::SetMap(uint width, uint height, uchar* data)
 {
 	this->width = width;
 	this->height = height;
-
-	//RELEASE_ARRAY(walkabilityMap);
-	//walkabilityMap = new uchar[width*height];
-	//memcpy(walkabilityMap, data, width*height);
 }
 
 // Utility: return true if pos is inside the map boundaries

@@ -50,22 +50,29 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		lowFire.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
+	lowFire.size = { fireAnimation.child("low").child("frame").attribute("w").as_int(), fireAnimation.child("low").child("frame").attribute("h").as_int() };
+
 	currentAnimation = fireAnimation.child("hard");
 	hardFire.animation.speed = currentAnimation.attribute("speed").as_float();
 	hardFire.animation.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		hardFire.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
+	hardFire.size = { fireAnimation.child("hard").child("frame").attribute("w").as_int(), fireAnimation.child("hard").child("frame").attribute("h").as_int() };
 
 	// Arrows
 	pugi::xml_node towerArrows = config.child("towerArrows");
 	playerArrows.animation.PushBack({ towerArrows.child("right").attribute("x").as_int(), towerArrows.child("right").attribute("y").as_int(), towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() });
 	enemyArrows.animation.PushBack({ towerArrows.child("right").attribute("x").as_int(), towerArrows.child("right").attribute("y").as_int(), towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() });
+	playerArrows.size = { towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() };
+	enemyArrows.size = { towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() };
 
 	// Cannon from the cannon tower
 	pugi::xml_node bulletsCannon = config.child("cannon");
 	playerCannonBullet.animation.PushBack({ bulletsCannon.attribute("x").as_int(), bulletsCannon.attribute("y").as_int(), bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() });
 	enemyCannonBullet.animation.PushBack({ bulletsCannon.attribute("x").as_int(), bulletsCannon.attribute("y").as_int(), bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() });
+	playerCannonBullet.size = { bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() };
+	enemyCannonBullet.size = { bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() };
 
 	// Troll's axe
 	pugi::xml_node trollAxeAnimation = config.child("trollAxe");
@@ -74,6 +81,7 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	for (currentAnimation = trollAxeAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxe.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
+	trollAxe.size = { trollAxeAnimation.child("frame").attribute("w").as_int(), trollAxeAnimation.child("frame").attribute("h").as_int() };
 
 	// Sheep Paws
 	pugi::xml_node sheepPawsAnimation = config.child("animations").child("sheepPaws");
@@ -326,7 +334,7 @@ void j1Particles::DrawPaws()
 	}
 }
 
-Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, iPoint destinationTile, float speed, uint damage, Uint32 delay)
+Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, fPoint destination, float speed, uint damage, Uint32 delay)
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
@@ -336,7 +344,7 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, iPoint 
 
 			currPart->born = SDL_GetTicks() + delay;
 			currPart->pos = { (float)pos.x, (float)pos.y };
-			currPart->destinationTile = destinationTile;
+			currPart->destination = destination;
 			currPart->speed = speed;
 			currPart->damage = damage;
 
@@ -347,11 +355,9 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, iPoint 
 			case ParticleType_Player_Projectile:
 			case ParticleType_Enemy_Projectile:
 			{
-				iPoint currPartTile = App->map->WorldToMap(currPart->pos.x, currPart->pos.y);
-
 				// Calculate the orientation of the particle
-				currPart->orientation.x = currPart->destinationTile.x - currPartTile.x;
-				currPart->orientation.y = currPart->destinationTile.y - currPartTile.y;
+				currPart->orientation.x = currPart->destination.x - pos.x;
+				currPart->orientation.y = currPart->destination.y - pos.y;
 
 				float m = sqrtf(pow(currPart->orientation.x, 2.0f) + pow(currPart->orientation.y, 2.0f));
 
@@ -451,14 +457,28 @@ PawsInfo& j1Particles::GetPawsInfo(bool isSheep, bool isBoar)
 
 Particle::Particle()
 {
-	pos.SetToZero();
+	particleType = ParticleType_NoType;
+
+	pos = { 0.0f,0.0f };
+	size = { 0,0 };
+	destination = { 0.0f,0.0f };
+
 	speed = 0.0f;
+	life = 0;
+	damage = 0;
+
+	orientation = { 0.0f,0.0f };
+	born = 0;
+	angle = 0.0f;
+
+	isRemove = false;
 }
 
 Particle::Particle(const Particle& p) :
-	animation(p.animation), pos(p.pos), destinationTile(p.destinationTile),
+	animation(p.animation), pos(p.pos), destination(p.destination),
 	speed(p.speed), particleType(p.particleType), born(p.born), life(p.life),
-	damage(p.damage), orientation(p.orientation), isRemove(p.isRemove), angle(p.angle)
+	damage(p.damage), orientation(p.orientation), isRemove(p.isRemove), angle(p.angle),
+	size(p.size)
 {}
 
 Particle::~Particle() {}
@@ -472,14 +492,14 @@ bool Particle::Update(float dt)
 	case ParticleType_Player_Projectile:
 	case ParticleType_Enemy_Projectile:
 	{
-        iPoint destinationPos = App->map->MapToWorld(destinationTile.x, destinationTile.y);
+		iPoint destinationTile = App->map->WorldToMap(destination.x, destination.y);
 
-		SDL_Rect rectA = { (int)pos.x - App->map->data.tileWidth / 4, (int)pos.y - App->map->data.tileHeight / 4, App->map->data.tileWidth / 2, App->map->data.tileHeight / 2 };
-		SDL_Rect rectB = { destinationPos.x - App->map->data.tileWidth / 4, destinationPos.y - App->map->data.tileHeight / 4,  App->map->data.tileWidth / 2, App->map->data.tileHeight / 2 };
+		const SDL_Rect rectA = { (int)pos.x, (int)pos.y, size.x, size.y };
+		const SDL_Rect rectB = { destination.x, destination.y,  App->map->data.tileWidth, App->map->data.tileHeight };
 
 		if (SDL_HasIntersection(&rectA, &rectB)) {
 
-			//Apply damage and kill the particle if it reaches its target
+			// Apply damage and kill the particle if it reaches its target
 			Entity* entity = App->entities->IsEntityOnTile(destinationTile);
 
 			if (particleType == ParticleType_Player_Projectile) {
