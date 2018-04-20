@@ -23,7 +23,10 @@ enum ParticleType {
 
 	ParticleType_NoType,
 
-	ParticleType_Projectile, // arrows, axes and cannon balls
+	ParticleType_Player_Projectile,
+
+	ParticleType_Enemy_Projectile,
+
 	ParticleType_Paws,
 
 	ParticleType_MaxTypes
@@ -108,6 +111,12 @@ private:
 	float sheepPawsUpSpeed = 0.0f, sheepPawsDownSpeed = 0.0f, sheepPawsLeftSpeed = 0.0f, sheepPawsRightSpeed = 0.0f;
 	float sheepPawsUpLeftSpeed = 0.0f, sheepPawsUpRightSpeed = 0.0f, sheepPawsDownLeftSpeed = 0.0f, sheepPawsDownRightSpeed = 0.0f;
 
+	/// Troll Axe
+	float trollAxeSpeed = 0.0f;
+
+	/// Fire Speed
+	float lowFireSpeed = 0.0f;
+	float hardFireSpeed = 0.0f;
 
 public:
 
@@ -115,9 +124,14 @@ public:
 	Particle lowFire;
 	Particle hardFire;
 
+
 	// Arrows, axes and cannon bullets
-	Particle arrow;
-	Particle cannonBullet;
+	Particle playerArrows;
+	Particle enemyArrows;
+
+	Particle playerCannonBullet;
+	Particle enemyCannonBullet;
+
 	Particle trollAxe;
 	
 	// Paws
