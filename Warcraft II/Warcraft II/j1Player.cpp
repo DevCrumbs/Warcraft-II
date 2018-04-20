@@ -478,6 +478,7 @@ void j1Player::CheckUnitSpawning()
 			default:
 				break;
 			}
+			
 			delete toSpawnUnitQueue.front();
 			toSpawnUnitQueue.pop();
 
@@ -486,11 +487,25 @@ void j1Player::CheckUnitSpawning()
 			App->gui->RemoveElem((UIElement**)&lastElem->entityLifeBar);
 
 			toSpawnUnitStats.erase(toSpawnUnitStats.begin());
+			LOG("Size after erase: %i", toSpawnUnitStats.size());
+
+			UpdateSpawnUnitsStats();
 		}
 	}
 	for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) 
 	{
 		(*iterator).entityLifeBar->SetLife((*iterator).owner->toSpawnTimer.ReadSec());
+	}
+}
+
+void j1Player::UpdateSpawnUnitsStats()
+{
+	int cont = 0;
+	for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator)
+	{
+		(*iterator).entityIcon->SetLocalPos({ 48 * cont + 72, 10 });
+		(*iterator).entityLifeBar->SetLocalPos({ 48 * cont + 72, 40 });
+		cont++;
 	}
 }
 
@@ -1168,52 +1183,47 @@ void j1Player::HandleBarracksUIElem()
 {
 	//Delete UI elements when not used
 	bool isVul = true;
-	int cont = 0;
-	if (toSpawnUnitQueue.size() <= 3)
+	int cont = toSpawnUnitStats.size();
+	LOG("Original cont = %i", cont);
+	if (cont <= 3)
 	{
-		for each (ToSpawnUnit* unit in toSpawnUnitQueue._Get_container())
+		for (list<ToSpawnUnit*>::iterator newUnit = newUnitsToSpawn.begin(); newUnit != newUnitsToSpawn.end(); ++newUnit)
 		{ //Iterates every element in the queue
-			if (!toSpawnUnitStats.empty())
-			{
-				isVul = false;
-				for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator)
-				{
-					if ((*iterator).owner != unit)
-					{
-						isVul = true;
-						break;
-					}
-				}
+			if (!(cont <= 3))
+				break;
+
+			UIImage_Info info;
+			UIImage* image = nullptr;
+			UILifeBar* lifeBar = nullptr;
+
+			switch ((*newUnit)->entityType) {
+			case EntityType_FOOTMAN:
+				image = CreateGroupIcon({ 48 * cont + 72, 20 }, { 649,160,39,30 });
+				break;
+			case EntityType_ELVEN_ARCHER:
+				image = CreateGroupIcon({ 48 * cont + 72, 20 }, { 696,160,39,30 });
+				break;
+			default:
+				break;
 			}
-
-			if (isVul)
-			{
-				UIImage_Info info;
-				UIImage* image = nullptr;
-				UILifeBar* lifeBar = nullptr;
-
-				switch (unit->entityType) {
-				case EntityType_FOOTMAN:
-					image = CreateGroupIcon({ 48 * cont + 72, 20 }, { 649,160,39,30 });
-					break;
-				case EntityType_ELVEN_ARCHER:
-					image = CreateGroupIcon({ 48 * cont + 72, 20 }, { 696,160,39,30 });
-					break;
-				default:
-					break;
-				}
-				lifeBar = CreateGroupLifeBar({ 48 * cont + 72, 40 }, { 241, 362, 46, 7 }, { 243, 358, 42, 3 }); //To spawn unit lifeBar timer
-				lifeBar->SetLife(unit->toSpawnTimer.ReadSec());
+			lifeBar = CreateGroupLifeBar({ 48 * cont + 72, 40 }, { 241, 362, 46, 7 }, { 243, 358, 42, 3 }); //To spawn unit lifeBar timer
+			lifeBar->SetLife((*newUnit)->toSpawnTimer.ReadSec());
 
 
-				isUnitSpawning = true;
+			isUnitSpawning = true;
 
-				toSpawnUnitStats.push_back({ unit, image, lifeBar });
-			}
+			toSpawnUnitStats.push_back({ (*newUnit), image, lifeBar });
+
+			LOG("Cont = %i", cont);
+
 
 			cont++;
 		}
 	}
+	else {
+		LOG("WTF is going on");
+	}
+	newUnitsToSpawn.clear();
 }
 
 void j1Player::CreateGryphonAviaryButtons()
@@ -1353,6 +1363,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						j1Timer spawnTimer;
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_FOOTMAN);
 						toSpawnUnitQueue.push(toSpawnUnit);
+						newUnitsToSpawn.push_back(toSpawnUnit);
 						toSpawnUnitQueue.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
 							App->scene->UnLoadTerenasDialog();
@@ -1386,6 +1397,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						j1Timer spawnTimer;
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
 						toSpawnUnitQueue.push(toSpawnUnit);
+						newUnitsToSpawn.push_back(toSpawnUnit);
 						toSpawnUnitQueue.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
 							App->scene->UnLoadTerenasDialog();
@@ -1417,6 +1429,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					j1Timer spawnTimer;
 					ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_MAGE);
 					toSpawnUnitQueue.push(toSpawnUnit);
+					newUnitsToSpawn.push_back(toSpawnUnit);
 					toSpawnUnitQueue.back()->toSpawnTimer.Start();
 				}
 				else if (currentGold < mageCost)
@@ -1430,6 +1443,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					j1Timer spawnTimer;
 					ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_PALADIN);
 					toSpawnUnitQueue.push(toSpawnUnit);
+					newUnitsToSpawn.push_back(toSpawnUnit);
 					toSpawnUnitQueue.back()->toSpawnTimer.Start();
 				}
 				else if (currentGold < paladinCost)
@@ -1443,6 +1457,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					j1Timer spawnTimer;
 					ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_GRYPHON_RIDER);
 					toSpawnUnitQueue.push(toSpawnUnit);
+					newUnitsToSpawn.push_back(toSpawnUnit);
 					toSpawnUnitQueue.back()->toSpawnTimer.Start();
 				}
 				else if (currentGold < gryphonRiderCost)

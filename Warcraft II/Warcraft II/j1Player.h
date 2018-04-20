@@ -109,6 +109,8 @@ public:
 	iPoint GetMousePos() const;
 	void CheckUnitSpawning();
 
+	void UpdateSpawnUnitsStats();
+
 	iPoint FindClosestValidTile(iPoint tile) const;
 
 
@@ -215,6 +217,7 @@ private:
 	list<GroupSelectedElements> groupElementsList;
 
 	list<GroupSpawning> toSpawnUnitStats;
+	list<ToSpawnUnit*> newUnitsToSpawn;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr;
 	UIButton *producePaladinButton = nullptr, *commandPatrolButton = nullptr, *commandStopButton = nullptr;
