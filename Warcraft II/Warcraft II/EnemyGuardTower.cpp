@@ -203,28 +203,28 @@ void EnemyGuardTower::CreateArrow()
 	switch (arrowDirection) {
 
 	case UP:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.up, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->arrow, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case DOWN:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.down, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->arrow, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.left, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->arrow, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.right, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->arrow, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case UP_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->arrow, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case UP_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->arrow, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case DOWN_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->arrow, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	case DOWN_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+		arrowParticle = App->particles->AddParticle(App->particles->arrow, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 		break;
 	default:
 		break;

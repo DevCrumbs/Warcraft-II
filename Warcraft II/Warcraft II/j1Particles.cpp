@@ -57,22 +57,15 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 		hardFire.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	// Tower arrows
+	// Arrows
 	pugi::xml_node towerArrows = config.child("towerArrows");
-	towerArrowParticles.up.animation.PushBack({ towerArrows.child("up").attribute("x").as_int(), towerArrows.child("up").attribute("y").as_int(), towerArrows.child("up").attribute("w").as_int(), towerArrows.child("up").attribute("h").as_int() });
-	towerArrowParticles.down.animation.PushBack({ towerArrows.child("down").attribute("x").as_int(), towerArrows.child("down").attribute("y").as_int(), towerArrows.child("down").attribute("w").as_int(), towerArrows.child("down").attribute("h").as_int() });
-	towerArrowParticles.left.animation.PushBack({ towerArrows.child("left").attribute("x").as_int(), towerArrows.child("left").attribute("y").as_int(), towerArrows.child("left").attribute("w").as_int(), towerArrows.child("left").attribute("h").as_int() });
-	towerArrowParticles.right.animation.PushBack({ towerArrows.child("right").attribute("x").as_int(), towerArrows.child("right").attribute("y").as_int(), towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() });
-	towerArrowParticles.upLeft.animation.PushBack({ towerArrows.child("upLeft").attribute("x").as_int(), towerArrows.child("upLeft").attribute("y").as_int(), towerArrows.child("upLeft").attribute("w").as_int(), towerArrows.child("upLeft").attribute("h").as_int() });
-	towerArrowParticles.upRight.animation.PushBack({ towerArrows.child("upRight").attribute("x").as_int(), towerArrows.child("upRight").attribute("y").as_int(), towerArrows.child("upRight").attribute("w").as_int(), towerArrows.child("upRight").attribute("h").as_int() });
-	towerArrowParticles.downLeft.animation.PushBack({ towerArrows.child("downLeft").attribute("x").as_int(), towerArrows.child("downLeft").attribute("y").as_int(), towerArrows.child("downLeft").attribute("w").as_int(), towerArrows.child("downLeft").attribute("h").as_int() });
-	towerArrowParticles.downRight.animation.PushBack({ towerArrows.child("downRight").attribute("x").as_int(), towerArrows.child("downRight").attribute("y").as_int(), towerArrows.child("downRight").attribute("w").as_int(), towerArrows.child("downRight").attribute("h").as_int() });
+	arrow.animation.PushBack({ towerArrows.child("right").attribute("x").as_int(), towerArrows.child("up").attribute("y").as_int(), towerArrows.child("up").attribute("w").as_int(), towerArrows.child("up").attribute("h").as_int() });
 
-	//Cannon from the cannon tower
+	// Cannon from the cannon tower
 	pugi::xml_node bulletsCannon = config.child("cannon");
 	cannonBullet.animation.PushBack({ bulletsCannon.attribute("x").as_int(), bulletsCannon.attribute("y").as_int(), bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() });
 
-	//Troll's axe
+	// Troll's axe
 	pugi::xml_node trollAxeAnimation = config.child("trollAxe");
 	trollAxe.animation.speed = trollAxeAnimation.attribute("speed").as_float();
 	trollAxe.animation.loop = trollAxeAnimation.attribute("loop").as_bool();
@@ -211,27 +204,10 @@ bool j1Particles::Start()
 	LOG("Loading particles");
 
 	paws.particleType = ParticleType_Paws;
-	towerArrowParticles.up.particleType = ParticleType_Projectile;
-	towerArrowParticles.down.particleType = ParticleType_Projectile;
-	towerArrowParticles.left.particleType = ParticleType_Projectile;
-	towerArrowParticles.right.particleType = ParticleType_Projectile;
-	towerArrowParticles.upLeft.particleType = ParticleType_Projectile;
-	towerArrowParticles.upRight.particleType = ParticleType_Projectile;
-	towerArrowParticles.downLeft.particleType = ParticleType_Projectile;
-	towerArrowParticles.downRight.particleType = ParticleType_Projectile;
+	arrow.particleType = ParticleType_Projectile;
 	cannonBullet.particleType = ParticleType_Projectile;
 	trollAxe.particleType = ParticleType_Projectile;
 
-	towerArrowParticles.up.life = 800;
-	towerArrowParticles.down.life = 800;
-	towerArrowParticles.left.life = 800;
-	towerArrowParticles.right.life = 800;
-	towerArrowParticles.upLeft.life = 800;
-	towerArrowParticles.upRight.life = 800;
-	towerArrowParticles.downLeft.life = 800;
-	towerArrowParticles.downRight.life = 800;
-	cannonBullet.life = 800;
-	trollAxe.life = 800;
 	paws.life = 800;
 
 	sheepPawsInfo.up.speed = 1.0f;
@@ -318,7 +294,7 @@ void j1Particles::Draw()
 		if (SDL_GetTicks() >= p->born)
 		{
 			if (p->particleType != ParticleType_Paws)
-				App->render->Blit(atlasTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()));
+				App->render->Blit(atlasTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()), 1.0f, p->angle);
 		}
 	}
 }
@@ -335,7 +311,7 @@ void j1Particles::DrawPaws()
 		if (SDL_GetTicks() >= p->born)
 		{
 			if (p->particleType == ParticleType_Paws)
-				App->render->Blit(pawsTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()));
+				App->render->Blit(pawsTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()), 1.0f, p->angle);
 		}
 	}
 }
@@ -362,6 +338,7 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, iPoint 
 			{
 				iPoint currPartTile = App->map->WorldToMap(currPart->pos.x, currPart->pos.y);
 
+				// Calculate the orientation of the particle
 				currPart->orientation.x = currPart->destinationTile.x - currPartTile.x;
 				currPart->orientation.y = currPart->destinationTile.y - currPartTile.y;
 
@@ -372,6 +349,9 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, iPoint 
 					currPart->orientation.x /= m;
 					currPart->orientation.y /= m;
 				}
+
+				// Calculate the angle of the particle
+				currPart->angle = 360.0f + (atan2(currPart->orientation.y, currPart->orientation.x) * 180.0f / (float)M_PI);
 			}
 			break;
 
@@ -470,7 +450,7 @@ Particle::Particle()
 Particle::Particle(const Particle& p) :
 	animation(p.animation), pos(p.pos), destinationTile(p.destinationTile),
 	speed(p.speed), particleType(p.particleType), born(p.born), life(p.life),
-	damage(p.damage), orientation(p.orientation), isRemove(p.isRemove)
+	damage(p.damage), orientation(p.orientation), isRemove(p.isRemove), angle(p.angle)
 {}
 
 Particle::~Particle() {}
