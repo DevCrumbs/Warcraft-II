@@ -206,6 +206,7 @@ bool j1Particles::Start()
 	LOG("Loading particles");
 
 	paws.particleType = ParticleType_Paws;
+
 	trollAxe.particleType = ParticleType_Enemy_Projectile;
 	playerArrows.particleType = ParticleType_Player_Projectile;
 	enemyArrows.particleType = ParticleType_Enemy_Projectile;	

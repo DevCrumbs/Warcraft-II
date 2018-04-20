@@ -33,13 +33,13 @@ private:
 
 public:
 
-	list<string> memory;
+	//list<string> memory;
 
-	UIInputText* inputText;
-	bool isConsole = false;
-	bool exit = false;
+	//UIInputText* inputText;
+	//bool isConsole = false;
+	//bool exit = false;
 
-	string		name;
+	//string		name;
 };
 
 #endif //__j1CONSOLE_H__

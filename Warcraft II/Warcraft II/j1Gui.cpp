@@ -109,7 +109,8 @@ bool j1Gui::PreUpdate()
 	addedElementUI.clear();
 
 	for (std::list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); iterator++) {
-		drawOrder.push(*iterator);
+		if ((*iterator)->type != UIE_TYPE_NO_TYPE)
+			drawOrder.push(*iterator);
 	}
 	
 	return ret;
@@ -128,22 +129,35 @@ bool j1Gui::Update(float dt)
 
 	while (UI_elem_it != UIElementsList.end())
 	{
-		if ((*UI_elem_it) != nullptr);
-			if ((*UI_elem_it)->type != UIE_TYPE_NO_TYPE)
-				(*UI_elem_it)->Update(dt);
+		if ((*UI_elem_it)->type != UIE_TYPE_NO_TYPE)
+			(*UI_elem_it)->Update(dt);
 
 		UI_elem_it++;
 	}
 
-	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
+	//for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
+	//	info = drawOrder.top();
+	//	if (info->type != UIE_TYPE_NO_TYPE) {
+	//		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+	//			info->Draw();
+	//		else if (App->render->IsInScreen(info->GetLocalRect())) {
+	//			info->Draw();
+	//		}
+	//	}
+	//}
+
+	UIElement* info = nullptr;
+	while (!drawOrder.empty())
+	{
 		info = drawOrder.top();
-		if (info != nullptr) {
+		if (info->type != UIE_TYPE_NO_TYPE) {
 			if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
 				info->Draw();
 			else if (App->render->IsInScreen(info->GetLocalRect())) {
 				info->Draw();
 			}
 		}
+		drawOrder.pop();
 	}
 
 	return ret;
@@ -151,7 +165,8 @@ bool j1Gui::Update(float dt)
 
 void j1Gui::Draw() 
 {
-	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
+	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
+		info = drawOrder.top();
 		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
 			info->Draw();
 		else if (App->render->IsInScreen(info->GetLocalRect()))
@@ -167,16 +182,22 @@ bool j1Gui::PostUpdate()
 	list<UIElement*>::const_iterator iterator = UIElementsList.begin();
 
 	while (iterator != UIElementsList.end()) {
-
-		if ((*iterator)->HasToBeRemoved()) {
-
-			delete *iterator;
-			UIElementsList.remove(*iterator);
+	
+		if ((*iterator)->type != UIE_TYPE_NO_TYPE) {
+			if ((*iterator)->HasToBeRemoved()) {
+				delete *iterator;
+				UIElementsList.erase(iterator);
+				iterator = UIElementsList.begin();
+				continue;
+			}
+		}
+		else {
+			UIElementsList.erase(iterator);
 			iterator = UIElementsList.begin();
 			continue;
 		}
-
 		iterator++;
+
 	}
 
 	return ret;

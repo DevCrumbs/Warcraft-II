@@ -28,6 +28,7 @@ class UIImage : public UIElement
 {
 public:
 	UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener = nullptr, bool isInWorld = false);
+	~UIImage();
 	void Draw() const;
 	void DebugDraw(iPoint blitPos) const;
 	void SetColor(const SDL_Color color);

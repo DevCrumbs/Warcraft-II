@@ -323,12 +323,14 @@ void ElvenArcher::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
-	// Update unit LifeBar
+
+	// Update Unit LifeBar
 	if (lifeBar != nullptr) {
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
 	}
+	
 }
 
 void ElvenArcher::Draw(SDL_Texture* sprites)

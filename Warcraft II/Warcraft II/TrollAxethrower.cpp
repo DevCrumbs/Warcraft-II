@@ -191,6 +191,7 @@ void TrollAxethrower::Move(float dt)
 	}
 
 	//Update Unit LifeBar
+	
 	if (lifeBar != nullptr) {
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
