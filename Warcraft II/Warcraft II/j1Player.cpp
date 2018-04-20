@@ -503,7 +503,7 @@ void j1Player::UpdateSpawnUnitsStats()
 	int cont = 0;
 	for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator)
 	{
-		(*iterator).entityIcon->SetLocalPos({ 48 * cont + 72, 10 });
+		(*iterator).entityIcon->SetLocalPos({ 48 * cont + 72, 5 });
 		(*iterator).entityLifeBar->SetLocalPos({ 48 * cont + 72, 40 });
 		cont++;
 	}
