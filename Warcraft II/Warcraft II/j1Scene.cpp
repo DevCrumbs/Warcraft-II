@@ -121,7 +121,7 @@ bool j1Scene::Start()
 		//debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = LoadNewMap(0);
+		ret = LoadNewMap(5);
 	//	ret = App->map->Load("verticalSliceMap.tmx");
 		//debugTex = App->tex->Load(warcraftTexName.data());
 	}
@@ -229,6 +229,14 @@ bool j1Scene::LoadNewMap(int map)
 			App->render->camera.y = -cameraPos.y;
 
 			basePos = App->map->MapToWorld(5, 120);
+			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
+			break;
+		case 5:
+			cameraPos = App->map->MapToWorld(13, 78);
+			App->render->camera.x = -cameraPos.x;
+			App->render->camera.y = -cameraPos.y;
+
+			basePos = App->map->MapToWorld(5, 70);
 			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
 			break;
 		default:
