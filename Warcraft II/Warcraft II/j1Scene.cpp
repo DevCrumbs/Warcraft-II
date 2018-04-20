@@ -128,12 +128,7 @@ bool j1Scene::Start()
 
 	// Create walkability map
 	if (ret)
-	{
-		if (App->map->CreateWalkabilityMap(w, h, &data))
-			App->pathfinding->SetMap(w, h, data);
-
-		//RELEASE_ARRAY(data);
-	}
+		App->map->CreateWalkabilityMap(w, h, &data);
 
 	//LoadInGameUI
 	LoadInGameUI();
@@ -525,10 +520,13 @@ bool j1Scene::Update(float dt)
 
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
+*/
 
+	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+		debugDrawMovement = !debugDrawMovement;
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
-		*/
+
 
 	//App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 

@@ -95,7 +95,9 @@ public:
 	// Returns true if another unit has any of the booleans passed as arguments to true
 	bool IsAnyUnitDoingSomething(SingleUnit* singleUnit, bool isSearching = false) const;
 
-	bool IsNeighborTile(iPoint tile, iPoint neighbor);
+	bool IsNeighborTile(iPoint tile, iPoint neighbor) const;
+
+	void UpdateUnitsWalkability(vector<iPoint> updatedTiles) const;
 
 private:
 
@@ -203,6 +205,9 @@ struct SingleUnit
 	/// Goal planning
 	bool isGoalNeeded = false; // if true, it means that the unit needs to search for a new goal using Dijkstra
 	bool isSearching = false; // if true, it means that the unit is searching a tile using Dijkstra
+
+	/// Modified walkability
+	bool isWalkabilityUpdated = false;
 
 	bool reversePriority = false; // if true, the priority of the unit is not taken into account
 

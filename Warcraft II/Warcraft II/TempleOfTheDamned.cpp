@@ -18,7 +18,6 @@ TempleOfTheDamned::TempleOfTheDamned(fPoint pos, iPoint size, int currLife, uint
 	App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 0u;
 	App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 0u;
 	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 0u;
-	App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
 
 	texArea = &templeOfTheDamnedInfo.completeTexArea;
 
