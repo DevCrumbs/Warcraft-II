@@ -200,6 +200,7 @@ void WatchTower::DetermineArrowDirection()
 
 void WatchTower::CreateArrow()
 {
+	/*
 	switch (arrowDirection) {
 
 	case UP:
@@ -229,7 +230,7 @@ void WatchTower::CreateArrow()
 	default:
 		break;
 	}
-
+	*/
 }
 
 void WatchTower::CheckArrowMovement(float dt)
@@ -310,8 +311,10 @@ void WatchTower::CheckArrowMovement(float dt)
 
 void WatchTower::MoveArrowTowardsTarget(float dt)
 {
+	/*
 	arrowParticle->pos.x += arrowParticle->destination.x * dt * watchTowerInfo.arrowSpeed;
 	arrowParticle->pos.y += arrowParticle->destination.y * dt * watchTowerInfo.arrowSpeed;
+	*/
 }
 
 void WatchTower::InflictDamageAndDestroyArrow()

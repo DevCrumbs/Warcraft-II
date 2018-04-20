@@ -204,11 +204,13 @@ void PlayerCannonTower::CreateCannonBullet()
 {
 	cannonParticle = App->particles->AddParticle(App->particles->cannonBullet, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 
+	/*
 	float m = sqrtf(pow(attackingTarget->GetPos().x - cannonParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - cannonParticle->pos.y, 2.0f));
 	if (m > 0) {
 		cannonParticle->destination.x = (attackingTarget->GetPos().x - cannonParticle->pos.x) / m;
 		cannonParticle->destination.y = (attackingTarget->GetPos().y - cannonParticle->pos.y) / m;
 	}
+	*/
 }
 
 void PlayerCannonTower::CheckCannonBulletMovement(float dt)
@@ -288,8 +290,10 @@ void PlayerCannonTower::CheckCannonBulletMovement(float dt)
 
 void PlayerCannonTower::MoveCannonTowardsTarget(float dt)
 {
+	/*
 	cannonParticle->pos.x += cannonParticle->destination.x * dt * playerCannonTowerInfo.arrowSpeed;
 	cannonParticle->pos.y += cannonParticle->destination.y * dt * playerCannonTowerInfo.arrowSpeed;
+	*/
 }
 
 void PlayerCannonTower::InflictDamageAndDestroyCannonBullet()

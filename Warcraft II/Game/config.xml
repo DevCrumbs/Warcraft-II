@@ -333,35 +333,35 @@
               <frame x="120" y="225" w="60" h="75"/>
               <frame x="120" y="300" w="60" h="75"/>
             </right>
-            <attackUp speed="2" loop="0">
+            <attackUp speed="1" loop="0">
               <frame x="1" y="375" w="60" h="75"/>
               <frame x="1" y="450" w="60" h="75"/>
             </attackUp>
-            <attackUpRight speed="2" loop="0">
+            <attackUpRight speed="1" loop="0">
               <frame x="60" y="375" w="60" h="75"/>
               <frame x="60" y="450" w="60" h="75"/>
             </attackUpRight>
-            <attackUpLeft speed="2" loop="0">
+            <attackUpLeft speed="1" loop="0">
               <frame x="480" y="375" w="60" h="75"/>
               <frame x="480" y="450" w="60" h="75"/>
             </attackUpLeft>
-            <attackDown speed="2" loop="0">
+            <attackDown speed="1" loop="0">
               <frame x="240" y="375" w="60" h="75"/>
               <frame x="240" y="450" w="60" h="75"/>
             </attackDown>
-            <attackDownRight speed="2" loop="0">
+            <attackDownRight speed="1" loop="0">
               <frame x="180" y="375" w="60" h="75"/>
               <frame x="180" y="450" w="60" h="75"/>
             </attackDownRight>
-            <attackDownLeft speed="2" loop="0">
+            <attackDownLeft speed="1" loop="0">
               <frame x="360" y="375" w="60" h="75"/>
               <frame x="360" y="450" w="60" h="75"/>
             </attackDownLeft>
-            <attackRight speed="2" loop="0">
+            <attackRight speed="1" loop="0">
               <frame x="120" y="375" w="60" h="75"/>
               <frame x="120" y="450" w="60" h="75"/>
             </attackRight>
-            <attackLeft speed="2" loop="0">
+            <attackLeft speed="1" loop="0">
               <frame x="420" y="375" w="60" h="75"/>
               <frame x="420" y="450" w="60" h="75"/>
             </attackLeft>

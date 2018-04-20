@@ -340,7 +340,7 @@ void j1Particles::DrawPaws()
 	}
 }
 
-Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, Uint32 delay, fPoint speed, fPoint destination, uint damage)
+Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, iPoint destinationTile, float speed, uint damage, Uint32 delay)
 {
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
@@ -350,8 +350,8 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, Uint32 
 
 			currPart->born = SDL_GetTicks() + delay;
 			currPart->pos = { (float)pos.x, (float)pos.y };
+			currPart->destinationTile = destinationTile;
 			currPart->speed = speed;
-			currPart->destination = destination;
 			currPart->damage = damage;
 
 			activeParticles[i] = currPart;
@@ -360,10 +360,17 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, Uint32 
 
 			case ParticleType_Projectile:
 			{
-				float m = sqrtf(pow(currPart->destination.x - currPart->pos.x, 2.0f) + pow(currPart->destination.y - currPart->pos.y, 2.0f));
+				iPoint currPartTile = App->map->WorldToMap(currPart->pos.x, currPart->pos.y);
+
+				currPart->orientation.x = currPart->destinationTile.x - currPartTile.x;
+				currPart->orientation.y = currPart->destinationTile.y - currPartTile.y;
+
+				float m = sqrtf(pow(currPart->orientation.x, 2.0f) + pow(currPart->orientation.y, 2.0f));
+
 				if (m > 0) {
-					currPart->orientation.x = (currPart->destination.x - currPart->pos.x) / m;
-					currPart->orientation.y = (currPart->destination.y - currPart->pos.y) / m;
+
+					currPart->orientation.x /= m;
+					currPart->orientation.y /= m;
 				}
 			}
 			break;
@@ -372,22 +379,7 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, Uint32 
 				break;
 			}
 
-
 			return currPart;
-		}
-	}
-}
-
-void j1Particles::OnCollision(Collider* c1, Collider* c2, CollisionState collisionState)
-{
-	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
-	{
-		// Always destroy particles that collide
-		if (activeParticles[i] != nullptr && activeParticles[i]->collider == c1)
-		{
-			delete activeParticles[i];
-			activeParticles[i] = nullptr;
-			break;
 		}
 	}
 }
@@ -458,14 +450,12 @@ void j1Particles::UpdateAnimations(float dt)
 	trollAxe.animation.speed = 10.0f * dt;
 }
 
-BoarPawsInfo& j1Particles::GetBoarPawsInfo()
+PawsInfo& j1Particles::GetPawsInfo(bool isSheep, bool isBoar)
 {
-	return boarPawsInfo;
-}
-
-SheepPawsInfo& j1Particles::GetSheepPawsInfo()
-{
-	return sheepPawsInfo;
+	if (isSheep)
+		return sheepPawsInfo;
+	else
+		return boarPawsInfo;
 }
 
 // -------------------------------------------------------------
@@ -474,17 +464,16 @@ SheepPawsInfo& j1Particles::GetSheepPawsInfo()
 Particle::Particle()
 {
 	pos.SetToZero();
-	speed.SetToZero();
+	speed = 0.0f;
 }
 
 Particle::Particle(const Particle& p) :
-	animation(p.animation), pos(p.pos), speed(p.speed), particleType(p.particleType),
-	fx(p.fx), born(p.born), life(p.life), collisionSize(p.collisionSize)
+	animation(p.animation), pos(p.pos), destinationTile(p.destinationTile),
+	speed(p.speed), particleType(p.particleType), born(p.born), life(p.life),
+	damage(p.damage), orientation(p.orientation), isRemove(p.isRemove)
 {}
 
-Particle::~Particle()
-{
-}
+Particle::~Particle() {}
 
 bool Particle::Update(float dt)
 {
@@ -494,28 +483,26 @@ bool Particle::Update(float dt)
 
 	case ParticleType_Projectile:
 	{
-		iPoint destTile = App->map->WorldToMap(destination.x, destination.y);
-		iPoint thisTile = App->map->WorldToMap(pos.x, pos.y);
-		LOG("thisTile", thisTile);
-		LOG("destTile", destTile);
-		if (thisTile == destTile) {
+		iPoint currPartTile = App->map->WorldToMap(pos.x, pos.y);
 
-			Entity* entity = App->entities->IsEntityOnTile(thisTile);
+		// Has the particle arrived at its destination?
+		if (currPartTile == destinationTile) {
+
+			Entity* entity = App->entities->IsEntityOnTile(currPartTile, EntityCategory_NONE, EntitySide_Enemy);
+
 			if (entity != nullptr)
 				entity->ApplyDamage(damage);
-				
+
 			return false;
 		}
 
-		else {
-			pos.x += orientation.x * dt * speed.x;
-			pos.y += orientation.y * dt * speed.y;
-			return true;
-		}
-	}
+		pos.x += orientation.x * dt * speed;
+		pos.y += orientation.y * dt * speed;
 
-		break;
-	
+		return true;
+	}
+	break;
+
 	case ParticleType_Paws:
 
 		if (animation.Finished() && isRemove)
@@ -524,18 +511,19 @@ bool Particle::Update(float dt)
 			return true;
 
 		break;
-	
+
+	default:
+		break;
 	}
 
+	// Remove the particle depending on its life
 	if (life > 0)
-	{
 		if ((SDL_GetTicks() - born) > life)
 			ret = false;
-	}
 
+	// Remove the particle depending on its isRemove
 	if (isRemove)
 		ret = false;
 
 	return ret;
 }
-

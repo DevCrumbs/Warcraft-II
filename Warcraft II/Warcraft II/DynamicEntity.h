@@ -180,8 +180,6 @@ public:
 	// Spawn
 	bool isSpawned = false;
 
-	Particle* particle = nullptr;
-
 protected:
 
 	UnitInfo unitInfo;

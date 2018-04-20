@@ -232,11 +232,13 @@ void ScoutTower::CreateArrow()
 		break;
 	}
 
+	/*
 	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->pos.y, 2.0f));
 	if (m > 0) {
 		arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->pos.x) / m;
 		arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->pos.y) / m;
 	}
+	*/
 }
 
 void ScoutTower::CheckArrowMovement(float dt)
@@ -316,8 +318,10 @@ void ScoutTower::CheckArrowMovement(float dt)
 
 void ScoutTower::MoveArrowTowardsTarget(float dt)
 {
+	/*
 	arrowParticle->pos.x += arrowParticle->destination.x * dt * scoutTowerInfo.arrowSpeed;
 	arrowParticle->pos.y += arrowParticle->destination.y * dt * scoutTowerInfo.arrowSpeed;
+	*/
 }
 
 void ScoutTower::InflictDamageAndDestroyArrow()

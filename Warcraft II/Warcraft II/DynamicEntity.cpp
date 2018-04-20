@@ -98,12 +98,6 @@ DynamicEntity::~DynamicEntity()
 
 	// ----
 
-	if (particle != nullptr) {
-
-		particle->isRemove = true;
-		particle = nullptr;
-	}
-
 	// Attack
 	isStill = true;
 
