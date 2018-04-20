@@ -58,10 +58,10 @@ void EnemyCannonTower::Move(float dt)
 		isBuilt = true;
 
 
-   if (attackingTarget == nullptr && cannonParticle != nullptr) {
-		cannonParticle->isRemove = true;
-		cannonParticle = nullptr;
-	}
+    //if (attackingTarget == nullptr && cannonParticle != nullptr) {
+	//	cannonParticle->isRemove = true;
+	//	cannonParticle = nullptr;
+	//}
 
 	//Check if the tower has to change the attacking target
 	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
@@ -138,7 +138,6 @@ void EnemyCannonTower::TowerStateMachine(float dt)
 	{
 		if (attackingTarget != nullptr) {
 			if (attackTimer.Read() >= (enemyCannonTowerInfo.attackWaitTime * 1000)) {
-
 				attackTimer.Start();
 				CreateCannonBullet();
 				App->audio->PlayFx(24, 0); //Arrow sound

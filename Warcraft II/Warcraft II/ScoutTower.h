@@ -23,18 +23,6 @@ struct ScoutTowerInfo
 	uint arrowSpeed = 0;
 };
 
-enum ArrowDirection {
-	NO_DIRECTION,
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	UP_LEFT,
-	UP_RIGHT,
-	DOWN_LEFT,
-	DOWN_RIGHT
-};
-
 class ScoutTower :public StaticEntity
 {
 public:
@@ -49,7 +37,6 @@ public:
 	void TowerStateMachine(float dt);
 
 	//Arrows
-	void DetermineArrowDirection();
 	void CreateArrow();
 	
 
@@ -70,7 +57,6 @@ private:
 
 	//Arrow
 	Particle* arrowParticle = nullptr;
-	ArrowDirection arrowDirection = NO_DIRECTION;
 
 	bool isColliderCreated = false;
 };
