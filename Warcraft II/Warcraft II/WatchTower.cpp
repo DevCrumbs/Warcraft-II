@@ -197,7 +197,6 @@ void WatchTower::DetermineArrowDirection()
 
 void WatchTower::CreateArrow()
 {
-
 	iPoint targetEnemyTile = App->map->WorldToMap(attackingTarget->GetPos().x, attackingTarget->GetPos().y);
 	
 	switch (arrowDirection) {

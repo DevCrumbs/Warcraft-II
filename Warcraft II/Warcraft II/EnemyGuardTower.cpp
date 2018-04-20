@@ -194,8 +194,8 @@ void EnemyGuardTower::DetermineArrowDirection()
 
 void EnemyGuardTower::CreateArrow()
 {
-
 	iPoint targetEnemyTile = App->map->WorldToMap(attackingTarget->GetPos().x, attackingTarget->GetPos().y);
+
 	switch (arrowDirection) {
 
 	case UP:
