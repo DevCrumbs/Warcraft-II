@@ -201,7 +201,7 @@ void EnemyCannonTower::DetermineCannonBulletDirection()
 
 void EnemyCannonTower::CreateCannonBullet()
 {
-	cannonParticle = App->particles->AddParticle(App->particles->cannonBullet, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
+	cannonParticle = App->particles->AddParticle(App->particles->enemyCannonBullet, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 });
 
 	float m = sqrtf(pow(attackingTarget->GetPos().x - cannonParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - cannonParticle->pos.y, 2.0f));
 	if (m > 0) {

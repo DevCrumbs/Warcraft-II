@@ -577,31 +577,31 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				switch (owner->GetDirection(orientation)) {
 
 				case UnitDirection_DownRight:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y + 16 });
+					owner->particle = App->particles->AddParticle(App->particles->playerArrows.downRight, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y + 16 });
 					break;
 				case UnitDirection_UpRight:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.upRight, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y - 16 });
+					owner->particle = App->particles->AddParticle(App->particles->playerArrows.upRight, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y - 16 });
 					break;
 				case UnitDirection_Right:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.right, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y });
+					owner->particle = App->particles->AddParticle(App->particles->playerArrows.right, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y });
 					break;
 				case UnitDirection_DownLeft:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.downLeft, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y + 16 });
+					owner->particle = App->particles->AddParticle(App->particles->playerArrows.downLeft, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y + 16 });
 					break;
 				case UnitDirection_UpLeft:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y - 16 });
+					owner->particle = App->particles->AddParticle(App->particles->playerArrows.upLeft, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y - 16 });
 					break;
 				case UnitDirection_Left:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.left, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y });
+					owner->particle = App->particles->AddParticle(App->particles->playerArrows.left, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y });
 					break;
 				case UnitDirection_Down:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.down, { (int)owner->GetPos().x, (int)owner->GetPos().y + 16 });
+					owner->particle = App->particles->AddParticle(App->particles->playerArrows.down, { (int)owner->GetPos().x, (int)owner->GetPos().y + 16 });
 					break;
 
 				case UnitDirection_Up:
 				case UnitDirection_NoDirection:
 				default:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.up, { (int)owner->GetPos().x, (int)owner->GetPos().y - 16 });
+					owner->particle = App->particles->AddParticle(App->particles->playerArrows.up, { (int)owner->GetPos().x, (int)owner->GetPos().y - 16 });
 					break;
 				}
 

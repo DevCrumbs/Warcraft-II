@@ -23,7 +23,9 @@ enum ParticleType {
 
 	ParticleType_NoType,
 
-	ParticleType_Projectile,
+	ParticleType_Player_Projectile,
+
+	ParticleType_Enemy_Projectile,
 
 	ParticleType_Paws,
 
@@ -136,8 +138,10 @@ public:
 	Particle lowFire;
 	Particle hardFire;
 
-	TowerArrowParticles towerArrowParticles;
-	Particle cannonBullet;
+	TowerArrowParticles playerArrows;
+	TowerArrowParticles enemyArrows;
+	Particle playerCannonBullet;
+	Particle enemyCannonBullet;
 	Particle trollAxe;
 
 	Particle paws;

@@ -57,8 +57,9 @@ void WatchTower::Move(float dt)
 		isBuilt = true;
 
 	//Check the arrow movement if the tower has to attack
-	if (attackingTarget != nullptr && arrowParticle != nullptr)
-		CheckArrowMovement(dt);
+	//if (attackingTarget != nullptr && arrowParticle != nullptr)
+	//	CheckArrowMovement(dt);
+
 	else if (attackingTarget == nullptr && arrowParticle != nullptr) {
 		arrowParticle->isRemove = true;
 		arrowParticle = nullptr;
@@ -163,7 +164,7 @@ void WatchTower::DetermineArrowDirection()
 
 	//Up
 	if (targetTilePos.x == towerTilePos.x  && targetTilePos.y < towerTilePos.y
-		|| targetTilePos.x == towerTilePos.x + 1 && targetTilePos.y < towerTilePos.y)
+		|| targetTilePos.x == towerTilePos.x + 1  && targetTilePos.y < towerTilePos.y)
 		arrowDirection = UP;
 
 	//Down
@@ -203,28 +204,28 @@ void WatchTower::CreateArrow()
 	switch (arrowDirection) {
 
 	case UP:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.up, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, {(float) watchTowerInfo.arrowSpeed,(float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.up, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, {(float) watchTowerInfo.arrowSpeed,(float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case DOWN:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.down, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.down, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.left, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.left, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.right, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed,(float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.right, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed,(float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case UP_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.upLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case UP_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.upRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.upRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case DOWN_LEFT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.downLeft, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed, (float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	case DOWN_RIGHT:
-		arrowParticle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed,(float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
+		arrowParticle = App->particles->AddParticle(App->particles->enemyArrows.downRight, { (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, 0, { (float)watchTowerInfo.arrowSpeed,(float)watchTowerInfo.arrowSpeed }, attackingTarget->GetPos(), watchTowerInfo.damage);
 		break;
 	default:
 		break;
@@ -308,18 +309,18 @@ void WatchTower::CheckArrowMovement(float dt)
 
 }
 
-void WatchTower::MoveArrowTowardsTarget(float dt)
-{
-	arrowParticle->pos.x += arrowParticle->destination.x * dt * watchTowerInfo.arrowSpeed;
-	arrowParticle->pos.y += arrowParticle->destination.y * dt * watchTowerInfo.arrowSpeed;
-}
-
-void WatchTower::InflictDamageAndDestroyArrow()
-{
-	attackingTarget->ApplyDamage(watchTowerInfo.damage);
-	arrowParticle->isRemove = true;
-	arrowParticle = nullptr;
-}
+//void WatchTower::MoveArrowTowardsTarget(float dt)
+//{
+//	arrowParticle->pos.x += arrowParticle->destination.x * dt * watchTowerInfo.arrowSpeed;
+//	arrowParticle->pos.y += arrowParticle->destination.y * dt * watchTowerInfo.arrowSpeed;
+//}
+//
+//void WatchTower::InflictDamageAndDestroyArrow()
+//{
+//	attackingTarget->ApplyDamage(watchTowerInfo.damage);
+//	arrowParticle->isRemove = true;
+//	arrowParticle = nullptr;
+//}
 
 
 // Animations
