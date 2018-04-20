@@ -79,7 +79,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	pugi::xml_node camera = config.child("camera");
 
 	camSpeed = camera.attribute("speed").as_float();
-	camMovMargin = camera.attribute("movMarginPcnt").as_int();
+	camMovMargin = camera.attribute("movMarginPcnt").as_float();
 
 	return ret;
 }
@@ -146,8 +146,10 @@ bool j1Scene::Start()
 	}
 
 	//Calculate camera movement in pixels through the percentatge given
-	camMovMargin = 10;
-		//camMovMargin * ((width + height) / 2) / 100;
+	if (!isCamMovMarginCharged) {
+		camMovMargin = camMovMargin * ((width + height) / 2) / 100;
+		isCamMovMarginCharged = true;
+	}
 
 	alphaBuilding = EntityType_NONE;
 	pauseMenuActions = PauseMenuActions_NOT_EXIST;

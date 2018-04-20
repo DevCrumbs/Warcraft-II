@@ -241,7 +241,8 @@ private:
 
 	//Camera attributes
 	float camSpeed = 0.0f;
-	int camMovMargin = 0;
+	float camMovMargin = 0.0f;
+	bool isCamMovMarginCharged = false;
 
 	SDL_Scancode buttonSaveGame =	SDL_SCANCODE_UNKNOWN;
 	SDL_Scancode buttonLoadGame =	SDL_SCANCODE_UNKNOWN;

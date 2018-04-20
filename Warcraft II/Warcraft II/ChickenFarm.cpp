@@ -23,8 +23,11 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 
 	isBuilt = chickenFarmInfo.isBuilt;
 
-	if (isBuilt)
+	if (isBuilt) {
 		texArea = &chickenFarmInfo.completeTexArea;
+		App->player->currentFood += 3;
+		App->scene->hasFoodChanged = true;
+	}
 	else if (!isBuilt) {
 		texArea = &chickenFarmInfo.constructionPlanks1;
 		this->constructionTimer.Start();
