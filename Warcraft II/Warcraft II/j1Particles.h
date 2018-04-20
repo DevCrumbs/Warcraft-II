@@ -32,35 +32,27 @@ enum ParticleType {
 	ParticleType_MaxTypes
 };
 
-struct SheepPawsInfo {
+struct PawsInfo {
 
 	Animation up, down, left, right;
 	Animation upLeft, upRight, downLeft, downRight;
 };
 
-struct BoarPawsInfo {
+struct Particle {
 
-	Animation up, down, left, right;
-	Animation upLeft, upRight, downLeft, downRight;
-};
-
-struct Particle
-{
 	ParticleType particleType = ParticleType_NoType;
 
-	Collider* collider = nullptr;
 	Animation animation;
 
-	uint fx = 0;
 	fPoint pos = { 0.0f,0.0f };
-	fPoint speed = { 0.0f,0.0f };
-	Uint32 born = 0;
+	iPoint destinationTile = { 0,0 };
+
+	float speed = 0.0f;
 	Uint32 life = 0;
 	uint damage = 0;
-	fPoint orientation = { 0.0f,0.0f };
 
-	iPoint collisionSize = { 0,0 };
-	fPoint destination = { 0,0 };
+	fPoint orientation = { 0.0f,0.0f };
+	Uint32 born = 0;
 
 	bool isRemove = false;
 
@@ -98,16 +90,14 @@ public:
 	void DrawPaws();
 	bool CleanUp();
 
-	Particle* AddParticle(const Particle& particle, iPoint pos, Uint32 delay = 0, fPoint speed = { 0,0 }, fPoint destination = {-1, -1}, uint damage = 0);
-	void OnCollision(Collider* c1, Collider* c2, CollisionState collisionState);
+	Particle* AddParticle(const Particle& particle, iPoint pos, iPoint destinationTile = { -1,-1 }, float speed = 0.0f, uint damage = 0, Uint32 delay = 0);
 
 	bool IsParticleOnTile(iPoint tile) const;
 
 	void UpdateAnimations(const float dt);
 	void LoadAnimationsSpeed();
 
-	BoarPawsInfo& GetBoarPawsInfo();
-	SheepPawsInfo& GetSheepPawsInfo();
+	PawsInfo& GetPawsInfo(bool isSheep = false, bool isBoar = false);
 
 private:
 
@@ -120,8 +110,8 @@ private:
 	string pawsTexName;
 	SDL_Texture* pawsTex = nullptr;
 
-	BoarPawsInfo boarPawsInfo;
-	SheepPawsInfo sheepPawsInfo;
+	PawsInfo boarPawsInfo;
+	PawsInfo sheepPawsInfo;
 
 	// Animations speed
 	/// Boar Paws

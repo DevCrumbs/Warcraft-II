@@ -100,12 +100,6 @@ void ElvenArcher::Move(float dt)
 
 			isDead = true;
 
-			if (particle != nullptr) {
-			
-				particle->isRemove = true;
-				particle = nullptr;
-			}
-
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
@@ -129,12 +123,6 @@ void ElvenArcher::Move(float dt)
 			// If the player dies, remove all their goals
 			//unitCommand = UnitCommand_Stop;
 		}
-	}
-
-	if (currTarget == nullptr && particle != nullptr) {
-
-		particle->isRemove = true;
-		particle = nullptr;
 	}
 
 	if (!isDead) {
@@ -203,12 +191,6 @@ void ElvenArcher::Move(float dt)
 			if (currTarget != nullptr) {
 
 				if (singleUnit->IsFittingTile()) {
-
-					if (particle != nullptr) {
-
-						particle->isRemove = true;
-						particle = nullptr;
-					}
 
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_AttackTarget(currTarget);
@@ -341,7 +323,7 @@ void ElvenArcher::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
-	// Update Unit LifeBar
+	// Update unit LifeBar
 	if (lifeBar != nullptr) {
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
@@ -551,13 +533,7 @@ void ElvenArcher::UnitStateMachine(float dt)
 				// A new target has found, update the attacking target
 				if (currTarget != newTarget) {
 
-					if (currTarget != nullptr) {
-
-						if (particle != nullptr) {
-
-							particle->isRemove = true;
-							particle = nullptr;
-						}
+					if (currTarget != nullptr) {					
 
 						if (!currTarget->isRemoved) {
 
@@ -891,4 +867,9 @@ bool ElvenArcher::ChangeAnimation()
 		return ret;
 	}
 	return ret;
+}
+
+float ElvenArcher::GetArrowSpeed() const
+{
+	return elvenArcherInfo.arrowSpeed;
 }

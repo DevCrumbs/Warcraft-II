@@ -201,6 +201,7 @@ void WatchTower::DetermineArrowDirection()
 
 void WatchTower::CreateArrow()
 {
+	/*
 	switch (arrowDirection) {
 
 	case UP:
@@ -230,97 +231,8 @@ void WatchTower::CreateArrow()
 	default:
 		break;
 	}
-
+	*/
 }
-
-void WatchTower::CheckArrowMovement(float dt)
-{
-	//iPoint targetTilePos = App->map->WorldToMap((int)attackingTarget->GetPos().x, (int)attackingTarget->GetPos().y);
-	//iPoint arrowTilePos = App->map->WorldToMap((int)arrowParticle->pos.x, (int)arrowParticle->pos.y);
-	//
-	//switch (arrowDirection) {
-	//case UP:
-	//	if (arrowTilePos.y > targetTilePos.y)
-	//		MoveArrowTowardsTarget(dt);
-	//
-	//	else if (arrowTilePos.y <= targetTilePos.y)
-	//		InflictDamageAndDestroyArrow();
-	//	break;
-	//
-	//case DOWN:
-	//	if (arrowTilePos.y < targetTilePos.y)
-	//		MoveArrowTowardsTarget(dt);
-	//
-	//	else if (arrowTilePos.y >= targetTilePos.y)
-	//		InflictDamageAndDestroyArrow();
-	//	break;
-	//
-	//case LEFT:
-	//	if (arrowTilePos.x > targetTilePos.x)
-	//		MoveArrowTowardsTarget(dt);
-	//
-	//	else if (arrowTilePos.x <= targetTilePos.x)
-	//		InflictDamageAndDestroyArrow();
-	//	break;
-	//
-	//case RIGHT:
-	//	if (arrowTilePos.x < targetTilePos.x)
-	//		MoveArrowTowardsTarget(dt);
-	//
-	//	else if (arrowTilePos.x >= targetTilePos.x)
-	//		InflictDamageAndDestroyArrow();
-	//	break;
-	//
-	//case UP_LEFT:
-	//	if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y > targetTilePos.y)
-	//		MoveArrowTowardsTarget(dt);
-	//
-	//	else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
-	//		InflictDamageAndDestroyArrow();
-	//	break;
-	//
-	//case UP_RIGHT:
-	//	if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y > targetTilePos.y)
-	//		MoveArrowTowardsTarget(dt);
-	//
-	//	else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y <= targetTilePos.y)
-	//		InflictDamageAndDestroyArrow();
-	//	break;
-	//
-	//case DOWN_LEFT:
-	//	if (arrowTilePos.x > targetTilePos.x && arrowTilePos.y < targetTilePos.y)
-	//		MoveArrowTowardsTarget(dt);
-	//
-	//	else if (arrowTilePos.x <= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
-	//		InflictDamageAndDestroyArrow();
-	//	break;
-	//
-	//case DOWN_RIGHT:
-	//	if (arrowTilePos.x < targetTilePos.x && arrowTilePos.y < targetTilePos.y)
-	//		MoveArrowTowardsTarget(dt);
-	//
-	//	else if (arrowTilePos.x >= targetTilePos.x || arrowTilePos.y >= targetTilePos.y)
-	//		InflictDamageAndDestroyArrow();
-	//	break;
-	//
-	//default:
-	//	break;
-	//}
-
-}
-
-//void WatchTower::MoveArrowTowardsTarget(float dt)
-//{
-//	arrowParticle->pos.x += arrowParticle->destination.x * dt * watchTowerInfo.arrowSpeed;
-//	arrowParticle->pos.y += arrowParticle->destination.y * dt * watchTowerInfo.arrowSpeed;
-//}
-//
-//void WatchTower::InflictDamageAndDestroyArrow()
-//{
-//	attackingTarget->ApplyDamage(watchTowerInfo.damage);
-//	arrowParticle->isRemove = true;
-//	arrowParticle = nullptr;
-//}
 
 
 // Animations

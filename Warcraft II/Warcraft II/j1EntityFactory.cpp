@@ -978,6 +978,7 @@ bool j1EntityFactory::Start()
 	// Troll Axethrower
 	trollAxethrowerInfo.maxLife = 40;
 	trollAxethrowerInfo.currLife = trollAxethrowerInfo.maxLife;
+	trollAxethrowerInfo.axeSpeed = 80.0f;
 
 	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
 	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
@@ -1002,6 +1003,7 @@ bool j1EntityFactory::Start()
 	// Elven Archer
 	elvenArcherInfo.maxLife = 30;
 	elvenArcherInfo.currLife = elvenArcherInfo.maxLife;
+	elvenArcherInfo.arrowSpeed = 120.0f;
 
 	elvenArcherInfo.unitInfo.maxSpeed = 80.0f;
 	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;

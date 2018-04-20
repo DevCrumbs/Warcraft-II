@@ -265,43 +265,43 @@ void CritterBoar::UpdatePaws()
 
 				case UnitDirection_Up:
 
-					lastPaw->animation = App->particles->GetBoarPawsInfo().up;
+					lastPaw->animation = App->particles->GetPawsInfo(false, true).up;
 					break;
 
 				case UnitDirection_NoDirection:
 				case UnitDirection_Down:
 
-					lastPaw->animation = App->particles->GetBoarPawsInfo().down;
+					lastPaw->animation = App->particles->GetPawsInfo(false, true).down;
 					break;
 
 				case UnitDirection_Left:
 
-					lastPaw->animation = App->particles->GetBoarPawsInfo().left;
+					lastPaw->animation = App->particles->GetPawsInfo(false, true).left;
 					break;
 
 				case UnitDirection_Right:
 
-					lastPaw->animation = App->particles->GetBoarPawsInfo().right;
+					lastPaw->animation = App->particles->GetPawsInfo(false, true).right;
 					break;
 
 				case UnitDirection_UpLeft:
 
-					lastPaw->animation = App->particles->GetBoarPawsInfo().upLeft;
+					lastPaw->animation = App->particles->GetPawsInfo(false, true).upLeft;
 					break;
 
 				case UnitDirection_UpRight:
 
-					lastPaw->animation = App->particles->GetBoarPawsInfo().upRight;
+					lastPaw->animation = App->particles->GetPawsInfo(false, true).upRight;
 					break;
 
 				case UnitDirection_DownLeft:
 
-					lastPaw->animation = App->particles->GetBoarPawsInfo().downLeft;
+					lastPaw->animation = App->particles->GetPawsInfo(false, true).downLeft;
 					break;
 
 				case UnitDirection_DownRight:
 
-					lastPaw->animation = App->particles->GetBoarPawsInfo().downRight;
+					lastPaw->animation = App->particles->GetPawsInfo(false, true).downRight;
 					break;
 				}
 			}

@@ -230,11 +230,13 @@ void PlayerGuardTower::CreateArrow()
 		break;
 	}
 
+	/*
 	float m = sqrtf(pow(attackingTarget->GetPos().x - arrowParticle->pos.x, 2.0f) + pow(attackingTarget->GetPos().y - arrowParticle->pos.y, 2.0f));
 	if (m > 0) {
 		arrowParticle->destination.x = (attackingTarget->GetPos().x - arrowParticle->pos.x) / m;
 		arrowParticle->destination.y = (attackingTarget->GetPos().y - arrowParticle->pos.y) / m;
 	}
+	*/
 }
 
 void PlayerGuardTower::CheckArrowMovement(float dt)
@@ -315,8 +317,10 @@ void PlayerGuardTower::CheckArrowMovement(float dt)
 
 void PlayerGuardTower::MoveArrowTowardsTarget(float dt)
 {
+	/*
 	arrowParticle->pos.x += arrowParticle->destination.x * dt * playerGuardTowerInfo.arrowSpeed;
 	arrowParticle->pos.y += arrowParticle->destination.y * dt * playerGuardTowerInfo.arrowSpeed;
+	*/
 }
 
 void PlayerGuardTower::InflictDamageAndDestroyArrow()

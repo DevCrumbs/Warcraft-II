@@ -103,12 +103,6 @@ void TrollAxethrower::Move(float dt)
 			App->player->currentGold += 15;
 
 			App->scene->hasGoldChanged = true;
-			
-			if (particle != nullptr) {
-
-				particle->isRemove = true;
-				particle = nullptr;
-			}
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
@@ -133,12 +127,6 @@ void TrollAxethrower::Move(float dt)
 		}
 	}
 
-	if (currTarget == nullptr && particle != nullptr) {
-
-		particle->isRemove = true;
-		particle = nullptr;
-	}
-
 	if (!isDead) {
 
 		/// GOAL: MoveToPosition
@@ -150,6 +138,7 @@ void TrollAxethrower::Move(float dt)
 		/// GOAL: AttackTarget
 		// Check if there are available targets
 		/// Prioritize a type of target (static or dynamic)
+		/*
 		if (singleUnit->IsFittingTile()) {
 
 			newTarget = GetBestTargetInfo();
@@ -160,12 +149,6 @@ void TrollAxethrower::Move(float dt)
 				if (currTarget != newTarget) {
 
 					if (currTarget != nullptr) {
-
-						if (particle != nullptr) {
-
-							particle->isRemove = true;
-							particle = nullptr;
-						}
 
 						if (!currTarget->isRemoved) {
 
@@ -179,6 +162,7 @@ void TrollAxethrower::Move(float dt)
 				}
 			}
 		}
+		*/
 
 		// ---------------------------------------------------------------------
 
@@ -684,4 +668,9 @@ bool TrollAxethrower::ChangeAnimation()
 		return ret;
 	}
 	return ret;
+}
+
+float TrollAxethrower::GetAxeSpeed() const 
+{
+	return trollAxethrowerInfo.axeSpeed;
 }
