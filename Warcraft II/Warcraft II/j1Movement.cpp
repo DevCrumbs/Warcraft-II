@@ -1807,10 +1807,10 @@ void SingleUnit::ResetUnitParameters(bool isGoalReset)
 	
 		goal = { -1,-1 };
 		shapedGoal = { -1,-1 };
-
-		// Walkability map
-		isWalkabilityUpdated = false;
 	}
+
+	// Walkability map
+	isWalkabilityUpdated = false;
 }
 
 // Resets the collision parameters of the unit
