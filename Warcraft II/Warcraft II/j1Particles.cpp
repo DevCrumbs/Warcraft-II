@@ -500,8 +500,19 @@ bool Particle::Update(float dt)
 
 		if (SDL_HasIntersection(&rectA, &rectB)) {
 
+			//Apply damage in dynamic entities on the way of the particle, if the particle is a cannon bullet
+			Entity* entity = App->entities->IsEntityOnTile(App->map->WorldToMap(pos.x, pos.y));
+			if(particleType == ParticleType_Cannon_Projectile) {
+				if (entity != nullptr) {
+					if (entity->entitySide == EntitySide_Player ||
+						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy)
+						entity->ApplyDamage(damage);
+					return false;
+				}
+			}
+
 			// Apply damage and kill the particle if it reaches its target
-			Entity* entity = App->entities->IsEntityOnTile(destinationTile);
+			entity = App->entities->IsEntityOnTile(destinationTile);
 			if (entity != nullptr) {
 				if (particleType == ParticleType_Player_Projectile) {
 					if (entity->entitySide == EntitySide_Enemy || entity->entitySide == EntitySide_Neutral)
