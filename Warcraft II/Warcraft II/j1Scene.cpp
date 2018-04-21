@@ -514,13 +514,13 @@ bool j1Scene::Update(float dt)
 	App->entities->Draw(); // entities
 	//App->particles->Draw();
 
-	/*
+	
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		debugDrawAttack = !debugDrawAttack;
 
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
-*/
+
 
 	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		debugDrawMovement = !debugDrawMovement;

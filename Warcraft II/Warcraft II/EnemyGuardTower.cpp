@@ -62,10 +62,11 @@ void EnemyGuardTower::Move(float dt)
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
 		isBuilt = true;
 
-	//if (attackingTarget == nullptr && arrowParticle != nullptr) {
-	//	arrowParticle->isRemove = true;
-	//	arrowParticle = nullptr;
-	//}
+	//Delete arrow if it is fired when an enemy is already dead 
+	if (attackingTarget == nullptr && arrowParticle != nullptr) {
+		arrowParticle->isRemove = true;
+		arrowParticle = nullptr;
+	}
 
 	//Check if the tower has to change the attacking target
 	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
