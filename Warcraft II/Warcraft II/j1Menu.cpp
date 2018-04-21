@@ -108,23 +108,27 @@ bool j1Menu::Start()
 	App->audio->PlayMusic(mainMenuMusicName.data(), 0.0f);
 
 	//If it is the first code iteration, change all the sounds
-	if(!App->isSoundCharged)
+	if(!isSoundCharged)
 	ChargeGameSounds();
 
 	App->render->camera.x = App->render->camera.y = 0;
 
 	CreateMenu();
 
-	UICursor_Info mouseInfo;
-	mouseInfo.default = { 243, 525, 28, 33 };
-	mouseInfo.onClick = { 275, 525, 28, 33 };
-	mouseInfo.onMine = { 310, 525, 28, 33 };
-	mouseInfo.onMineClick = { 338, 525, 28, 33 };
-	mouseInfo.onEnemies = { 374, 527, 28, 33 };
-	mouseInfo.onEnemiesClick = { 402, 527, 28, 33 };
-	mouseText = App->gui->CreateUICursor(mouseInfo, this);
+	if (!isMouseTextCreated) {
+		UICursor_Info mouseInfo;
+		mouseInfo.default = { 243, 525, 28, 33 };
+		mouseInfo.onClick = { 275, 525, 28, 33 };
+		mouseInfo.onMine = { 310, 525, 28, 33 };
+		mouseInfo.onMineClick = { 338, 525, 28, 33 };
+		mouseInfo.onEnemies = { 374, 527, 28, 33 };
+		mouseInfo.onEnemiesClick = { 402, 527, 28, 33 };
+		mouseText = App->gui->CreateUICursor(mouseInfo, this);
 
-	mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+		mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+
+		isMouseTextCreated = true;
+	}
 
 	return true;
 }
@@ -498,5 +502,5 @@ void j1Menu::ChargeGameSounds()
 	ret = App->audio->LoadFx(bowFireSound.data()); //24
 	ret = App->audio->LoadFx(swordSound.data()); //25
 
-	App->isSoundCharged = true;
+	isSoundCharged = true;
 }
