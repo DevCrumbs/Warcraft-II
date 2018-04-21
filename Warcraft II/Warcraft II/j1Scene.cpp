@@ -121,7 +121,7 @@ bool j1Scene::Start()
 		//debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = LoadNewMap(5);
+		ret = LoadNewMap(1);
 	//	ret = App->map->Load("verticalSliceMap.tmx");
 		//debugTex = App->tex->Load(warcraftTexName.data());
 	}
@@ -1006,20 +1006,22 @@ void j1Scene::CheckCameraMovement(float dt) {
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
 	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
 
+
+	//NOT MOVING WITH App->input->GetKey(buttonMoveUp) == KEY_REPEAT
 	//Move with arrows
 	//UP
-	/*if (App->input->GetKey(buttonMoveUp) == KEY_REPEAT && App->render->camera.y <= 0)
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	//DOWN
-	if (App->input->GetKey(buttonMoveDown) == KEY_REPEAT && App->render->camera.y >= downMargin)
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	//LEFT
-	if (App->input->GetKey(buttonMoveLeft) == KEY_REPEAT && App->render->camera.x <= 0)
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	//RIGHT
-	if (App->input->GetKey(buttonMoveRight) == KEY_REPEAT && App->render->camera.x >= rightMargin)
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
-*/
+
 	//Move with mouse
 	////UP
 	if (mouse.y <= (camMovMargin - App->render->camera.y) /scale && App->render->camera.y <= 0)
