@@ -98,7 +98,7 @@ public:
 	bool IsNeighborTile(iPoint tile, iPoint neighbor) const;
 
 	// Returns the closest walkable and valid neighbor of the tiled passed as an argument
-	iPoint FindClosestValidTile(iPoint tile, bool isDouble = false) const;
+	iPoint FindClosestValidTile(iPoint tile) const;
 
 	void UpdateUnitsWalkability(vector<iPoint> updatedTiles) const;
 

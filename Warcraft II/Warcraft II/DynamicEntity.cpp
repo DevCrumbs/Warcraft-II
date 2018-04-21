@@ -260,17 +260,6 @@ bool DynamicEntity::IsStill() const
 	return isStill;
 }
 
-// Blit
-void DynamicEntity::SetBlitState(bool blitting) const
-{
-	blitting = isBlitting; 
-}
-
-bool DynamicEntity::GetBlitState() const
-{
-	return isBlitting;
-}
-
 // Animations
 void DynamicEntity::LoadAnimationsSpeed() {}
 
@@ -842,4 +831,26 @@ bool TargetInfo::IsTargetPresent() const
 		return false;
 
 	return true;
+}
+
+// Blit
+void DynamicEntity::SetBlitState(bool isBlit)
+{
+	this->isBlit = isBlit;
+}
+
+bool DynamicEntity::GetBlitState() const
+{
+	return isBlit;
+}
+
+// Valid
+void DynamicEntity::SetIsValid(bool isValid) 
+{
+	this->isValid = isValid;
+}
+
+bool DynamicEntity::GetIsValid() const 
+{
+	return isValid;
 }

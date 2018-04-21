@@ -1185,7 +1185,17 @@ void j1EntityFactory::Draw()
 
 	// Dynamic entities (one texture per dynamic entity)
 	for (EntitiesDraw_info info; !entityDrawOrder.empty(); entityDrawOrder.pop()) {
+
 		info = entityDrawOrder.top();
+
+		if (info.ent->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+			DynamicEntity* dynEnt = (DynamicEntity*)info.ent;
+
+			if (!dynEnt->GetBlitState())
+				continue;
+		}
+
 		switch (info.type) {
 			// Player
 		case EntityType_FOOTMAN:
@@ -1249,8 +1259,9 @@ void j1EntityFactory::Draw()
 			break;
 		}
 	}
-	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
-	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
+
+	if (App->scene->GetAlphaBuilding() != EntityType_NONE)
+		DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
 }
 
 void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos)
@@ -2821,10 +2832,14 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 	if (find(unitsSelected.begin(), unitsSelected.end(), entity) == unitsSelected.end()) {
 
 		DynamicEntity* unit = GetDynamicEntityByEntity(entity);
-		unitsSelected.push_back(unit);
-		(entity)->isSelected = true;
 
-		ret = true;
+		if (unit->GetIsValid()) {
+
+			unitsSelected.push_back(unit);
+			(entity)->isSelected = true;
+
+			ret = true;
+		}
 	}
 
 	// TODO: Add StaticEntities
@@ -2870,8 +2885,12 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 
 						// If the unit isn't in the unitsSelected list, add it
 						if (find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
-							unitsSelected.push_back(GetDynamicEntityByEntity(*it));
-							(*it)->isSelected = true;
+
+							if ((*it)->GetIsValid()) {
+
+								unitsSelected.push_back(GetDynamicEntityByEntity(*it));
+								(*it)->isSelected = true;
+							}
 						}
 					}
 				}

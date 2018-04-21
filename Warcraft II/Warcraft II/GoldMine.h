@@ -7,6 +7,7 @@ struct GoldMineInfo
 {
 	SDL_Rect completeTexArea = { 0,0,0,0 };
 	SDL_Rect inProgressTexArea = { 0,0,0,0 };
+
 	int maxLife = 0;
 	iPoint size{ 0,0 };
 	uint life = 0u;
@@ -22,9 +23,12 @@ public:
 
 	void Move(float dt);
 
-	// Animations
-	void LoadAnimationsSpeed();
-	void UpdateAnimations(float dt);
+	// Gather gold
+	bool IsUnitGatheringGold() const;
+	void SetUnitGatheringGold(bool isUnitGatheringGold);
+
+	// Tex area
+	void SwapTexArea();
 
 private:
 
@@ -33,6 +37,9 @@ private:
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	bool startTimer = true;
+
+	// Gather gold
+	bool isUnitGatheringGold = false;
 };
 
 #endif //__GoldMine_H__

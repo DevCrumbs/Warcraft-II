@@ -49,42 +49,24 @@ void GoldMine::Move(float dt)
 
 	if (buildingState == BuildingState_Destroyed)
 		texArea = &goldMineInfo.inProgressTexArea;
-
-		/*if (startTimer) {
-			constructionTimer.Start();
-			startTimer = false;
-		}
-		else 
-			UpdateAnimations(dt);
-	}*/
 }
 
-// Animations
-void GoldMine::LoadAnimationsSpeed()
+// Gather gold
+bool GoldMine::IsUnitGatheringGold() const 
 {
-
+	return isUnitGatheringGold;
 }
-void GoldMine::UpdateAnimations(float dt)
+
+void GoldMine::SetUnitGatheringGold(bool isUnitGatheringGold) 
 {
-	/*if (constructionTimer.Read() >= constructionTime * 1000) {
-		buildingState = BuildingState_Building;
+	this->isUnitGatheringGold = isUnitGatheringGold;
+}
+
+// Tex area
+void GoldMine::SwapTexArea()
+{
+	if (texArea == &goldMineInfo.completeTexArea)
 		texArea = &goldMineInfo.inProgressTexArea;
-		startTimer = true;
-		int random = rand() % 4;
-		switch (random) {
-		case 0:
-			App->player->AddGold(1500);
-			break;
-		case 1:
-			App->player->AddGold(2000);
-			break;
-		case 2:
-			App->player->AddGold(2500);
-			break;
-		case 3:
-			App->player->AddGold(3000);
-			break;
-		}
-		App->scene->hasGoldChanged = true;
-	}*/
+	else
+		texArea = &goldMineInfo.completeTexArea;
 }

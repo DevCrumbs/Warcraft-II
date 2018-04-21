@@ -8,6 +8,7 @@
 #include "j1Gui.h"
 
 struct UILifeBar_Info {
+
 	SDL_Rect background = {0, 0, 0, 0};
 	SDL_Rect bar =        {0, 0, 0, 0};
 						  
@@ -19,7 +20,6 @@ struct UILifeBar_Info {
 	int maxWidth = 0;
 	iPoint lifeBarPosition = { 0,0 };
 	iPoint bgPosition = { 0,0 };
-
 };
 
 // ---------------------------------------------------

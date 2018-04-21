@@ -97,6 +97,7 @@ void Grunt::Move(float dt)
 			App->audio->PlayFx(13, 0);
 
 			isDead = true;
+			isValid = false;
 			App->player->enemiesKill++;
 
 			App->player->currentGold += 10;
@@ -126,7 +127,7 @@ void Grunt::Move(float dt)
 		}
 	}
 
-	if (!isDead) {
+	if (!isDead && isValid) {
 
 		/// GOAL: MoveToPosition
 		// The goal of the unit has been changed manually
@@ -162,13 +163,10 @@ void Grunt::Move(float dt)
 			}
 		}
 		*/
-		// ---------------------------------------------------------------------
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
 	}
 
-	// ---------------------------------------------------------------------
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 

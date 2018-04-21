@@ -257,7 +257,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 			if (!App->pathfinding->IsWalkable(singleUnit->goal))
 
-				singleUnit->goal = FindClosestValidTile(singleUnit->goal, true);
+				singleUnit->goal = FindClosestValidTile(singleUnit->goal);
 
 			if (singleUnit->goal.x != -1 && singleUnit->goal.y != -1) {
 
@@ -1337,7 +1337,7 @@ bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor) const
 }
 
 // Returns the closest walkable and valid neighbor of the tiled passed as an argument
-iPoint j1Movement::FindClosestValidTile(iPoint tile, bool isDouble) const
+iPoint j1Movement::FindClosestValidTile(iPoint tile) const
 {
 	// Perform a BFS
 	queue<iPoint> queue;
@@ -1354,60 +1354,24 @@ iPoint j1Movement::FindClosestValidTile(iPoint tile, bool isDouble) const
 		if (!App->entities->IsEntityOnTile(curr) && App->pathfinding->IsWalkable(curr))
 			return curr;
 
-		if (!isDouble) {
+		iPoint neighbors[8];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
+		neighbors[4].create(curr.x + 1, curr.y + 1);
+		neighbors[5].create(curr.x + 1, curr.y - 1);
+		neighbors[6].create(curr.x - 1, curr.y + 1);
+		neighbors[7].create(curr.x - 1, curr.y - 1);
 
-			iPoint neighbors[8];
-			neighbors[0].create(curr.x + 1, curr.y + 0);
-			neighbors[1].create(curr.x + 0, curr.y + 1);
-			neighbors[2].create(curr.x - 1, curr.y + 0);
-			neighbors[3].create(curr.x + 0, curr.y - 1);
-			neighbors[4].create(curr.x + 1, curr.y + 1);
-			neighbors[5].create(curr.x + 1, curr.y - 1);
-			neighbors[6].create(curr.x - 1, curr.y + 1);
-			neighbors[7].create(curr.x - 1, curr.y - 1);
+		for (uint i = 0; i < 8; ++i)
+		{
+			if (App->pathfinding->IsWalkable(neighbors[i])) {
 
-			for (uint i = 0; i < 8; ++i)
-			{
-				if (App->pathfinding->IsWalkable(neighbors[i])) {
+				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
 
-					if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
-
-						queue.push(neighbors[i]);
-						visited.push_back(neighbors[i]);
-					}
-				}
-			}
-		}
-		else {
-
-			iPoint neighbors[16];
-			neighbors[0].create(curr.x + 1, curr.y + 0);
-			neighbors[1].create(curr.x + 0, curr.y + 1);
-			neighbors[2].create(curr.x - 1, curr.y + 0);
-			neighbors[3].create(curr.x + 0, curr.y - 1);
-			neighbors[4].create(curr.x + 1, curr.y + 1);
-			neighbors[5].create(curr.x + 1, curr.y - 1);
-			neighbors[6].create(curr.x - 1, curr.y + 1);
-			neighbors[7].create(curr.x - 1, curr.y - 1);
-
-			neighbors[8].create(curr.x + 2, curr.y + 1);
-			neighbors[9].create(curr.x + 1, curr.y + 2);
-			neighbors[10].create(curr.x - 2, curr.y + 1);
-			neighbors[11].create(curr.x + 1, curr.y - 2);
-			neighbors[12].create(curr.x + 2, curr.y + 2);
-			neighbors[13].create(curr.x + 2, curr.y - 2);
-			neighbors[14].create(curr.x - 2, curr.y + 2);
-			neighbors[15].create(curr.x - 2, curr.y - 2);
-
-			for (uint i = 0; i < 16; ++i)
-			{
-				if (App->pathfinding->IsWalkable(neighbors[i])) {
-
-					if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
-
-						queue.push(neighbors[i]);
-						visited.push_back(neighbors[i]);
-					}
+					queue.push(neighbors[i]);
+					visited.push_back(neighbors[i]);
 				}
 			}
 		}
@@ -1775,7 +1739,7 @@ bool SingleUnit::GetReadyForNewMove()
 		// Resets the movement information of the unit
 		ResetUnitParameters(); /// Do not reset goal parameters
 
-							   // Resets the collision information of the unit
+		// Resets the collision information of the unit
 		ResetUnitCollisionParameters();
 
 		// -----

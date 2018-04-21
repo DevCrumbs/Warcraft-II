@@ -12,6 +12,9 @@
 #include "j1EntityFactory.h"
 #include "j1Particles.h"
 
+#include "j1Player.h"
+#include "j1Scene.h"
+
 #include "Brofiler\Brofiler.h"
 
 Goal::Goal(DynamicEntity* owner, GoalType goalType) :owner(owner), goalType(goalType) {}
@@ -186,6 +189,11 @@ void Goal_Think::AddGoal_MoveToPosition(iPoint destinationTile)
 void Goal_Think::AddGoal_Patrol(iPoint originTile, iPoint destinationTile)
 {
 	AddSubgoal(new Goal_Patrol(owner, originTile, destinationTile));
+}
+
+void Goal_Think::AddGoal_GatherGold(GoldMine* goldMine) 
+{
+	AddSubgoal(new Goal_GatherGold(owner, goldMine));
 }
 
 // Goal_AttackTarget ---------------------------------------------------------------------
@@ -411,6 +419,70 @@ void Goal_Wander::Terminate()
 	RemoveAllSubgoals();
 
 	maxDistance = 0;
+
+	owner->SetUnitState(UnitState_Idle);
+}
+
+// Goal_GatherGold ---------------------------------------------------------------------
+
+Goal_GatherGold::Goal_GatherGold(DynamicEntity* owner, GoldMine* goldMine) :CompositeGoal(owner, GoalType_GatherGold), goldMine(goldMine) {}
+
+void Goal_GatherGold::Activate()
+{
+	// 1. The selected group of units move near the Gold Mine
+	// 2. Only one unit of the group (the unit nearest to the mine) enters the mine and gathers the gold (it takes a bit of time to gather the gold)
+
+	goalStatus = GoalStatus_Active;
+
+	if (goldMine == nullptr) {
+	
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+	else if (goldMine->buildingState == BuildingState_Destroyed) {
+	
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+
+	AddSubgoal(new Goal_PickNugget(owner, goldMine));
+
+	// The goal tile is the tile in front of the entrance of the mine
+	iPoint goldMineTile = App->map->WorldToMap(goldMine->GetPos().x, goldMine->GetPos().y);
+	goldMineTile.x -= 1;
+	goldMineTile.y += 2;
+
+	iPoint unitGoal = goldMineTile;
+
+	// If the tile in front of the entrance of the mine is not walkable, find another tile next to the mine
+	if (!App->pathfinding->IsWalkable(goldMineTile)) {
+
+		unitGoal = App->movement->FindClosestValidTile(goldMineTile);
+
+		if (unitGoal.x == -1 || unitGoal.y == -1) {
+
+			goalStatus = GoalStatus_Failed;
+			return;
+		}
+	}
+
+	AddSubgoal(new Goal_MoveToPosition(owner, unitGoal));
+}
+
+GoalStatus Goal_GatherGold::Process(float dt)
+{
+	ActivateIfInactive();
+
+	goalStatus = ProcessSubgoals(dt);
+
+	return goalStatus;
+}
+
+void Goal_GatherGold::Terminate()
+{
+	RemoveAllSubgoals();
+
+	goldMine = nullptr;
 
 	owner->SetUnitState(UnitState_Idle);
 }
@@ -813,4 +885,114 @@ void Goal_LookAround::Terminate()
 	secondsToChange = 0.0f;
 	secondsUntilNextChange = 0.0f;
 	isChanged = false;
+}
+
+// Goal_PickNugget ---------------------------------------------------------------------
+
+Goal_PickNugget::Goal_PickNugget(DynamicEntity* owner, GoldMine* goldMine) :AtomicGoal(owner, GoalType_PickNugget), goldMine(goldMine) {}
+
+void Goal_PickNugget::Activate()
+{
+	goalStatus = GoalStatus_Active;
+
+	if (goldMine == nullptr) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+	else if (goldMine->buildingState == BuildingState_Destroyed) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+
+	if (!goldMine->IsUnitGatheringGold())
+
+		goldMine->SetUnitGatheringGold(true);
+
+	// Another unit has already entered the mine and is gathering the gold
+	else {
+	
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+
+	// Determine the amount of gold and the time (depending on the gold)
+	int random = rand() % 4;
+
+	switch (random) {
+
+	case 0:
+		gold = 550;
+		secondsGathering = 5.0f;
+		break;
+	case 1:
+		gold = 600;
+		secondsGathering = 6.0f;
+		break;
+	case 2:
+		gold = 650;
+		secondsGathering = 6.5f;
+		break;
+	case 3:
+		gold = 700;
+		secondsGathering = 7.0f;
+		break;
+
+	default:
+		gold = 800;
+		secondsGathering = 8.0f;
+		break;
+	}
+
+	App->audio->PlayFx(6, 3); // Gold Mine FX
+
+	owner->SetBlitState(false);
+	owner->SetIsValid(false);
+
+	msAnimation = 600.0f;
+
+	timerGathering.Start();
+	timerAnimation.Start();
+}
+
+GoalStatus Goal_PickNugget::Process(float dt)
+{
+	ActivateIfInactive();
+
+	if (goalStatus == GoalStatus_Failed)
+		return goalStatus;
+
+	if (timerAnimation.ReadMs() >= msAnimation) {
+	
+		goldMine->SwapTexArea();
+		timerAnimation.Start();
+	}
+
+	// Wait for the unit to pick the gold
+	if (timerGathering.ReadSec() >= secondsGathering)
+
+		goalStatus = GoalStatus_Completed;
+
+	return goalStatus;
+}
+
+void Goal_PickNugget::Terminate()
+{
+	if (goalStatus == GoalStatus_Completed) {
+
+		// Give gold to the player
+		App->player->AddGold(gold);
+		App->scene->hasGoldChanged = true;
+		goldMine->buildingState = BuildingState_Destroyed;
+
+		owner->SetBlitState(true);
+		owner->SetIsValid(true);
+	}
+
+	goldMine = nullptr;
+	gold = 0;
+	secondsGathering = 0.0f;
+
+	msAnimation = 0.0f;
 }

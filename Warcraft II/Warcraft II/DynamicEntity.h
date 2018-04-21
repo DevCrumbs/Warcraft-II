@@ -118,10 +118,6 @@ public:
 	void SetIsStill(bool isStill);
 	bool IsStill() const;
 
-	// Blit
-	void SetBlitState(bool isBlitting) const;
-	bool GetBlitState() const;
-
 	// Animations
 	virtual void LoadAnimationsSpeed();
 	virtual void UpdateAnimationsSpeed(float dt);
@@ -168,6 +164,14 @@ public:
 	bool SetUnitCommand(UnitCommand unitCommand);
 	UnitCommand GetUnitCommand() const;
 
+	// Blit
+	void SetBlitState(bool isBlit);
+	bool GetBlitState() const;
+
+	// Valid
+	void SetIsValid(bool isValid);
+	bool GetIsValid() const;
+
 public:
 
 	ENTITY_TYPE dynamicEntityType = EntityType_NONE;
@@ -208,6 +212,9 @@ protected:
 
 	bool isHitting = false; // if true, the unit is hitting their target
 
+	// Interact with the map
+	bool isGatherGold = false;
+
 	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;
 	ColliderGroup* attackRadiusCollider = nullptr;
@@ -216,14 +223,17 @@ protected:
 	// Death
 	j1Timer deadTimer;
 
-	//Blit
-	bool isBlitting = false;
+	// Blit
+	bool isBlit = true;
+
+	// Valid
+	bool isValid = true;
 
 	// Selection color
 	SDL_Color color = ColorWhite;
 	string colorName = "White";
 
-	//LifeBar
+	// LifeBar
 	UILifeBar* lifeBar = nullptr;
 	int lifeBarMarginX = 0;
 	int lifeBarMarginY = 0;

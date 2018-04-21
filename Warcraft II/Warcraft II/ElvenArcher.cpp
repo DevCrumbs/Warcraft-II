@@ -99,6 +99,7 @@ void ElvenArcher::Move(float dt)
 			App->audio->PlayFx(12, 0);
 
 			isDead = true;
+			isValid = false;
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
@@ -125,7 +126,7 @@ void ElvenArcher::Move(float dt)
 		}
 	}
 
-	if (!isDead) {
+	if (!isDead && isValid) {
 
 		if (auxIsSelected != isSelected) {
 
@@ -207,103 +208,10 @@ void ElvenArcher::Move(float dt)
 
 			break;
 		}
-
-		// ---------------------------------------------------------------------
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
 	}
 
-	/*
-	if (!isDead && currTarget != nullptr) {
-
-		if (particle != nullptr) {
-			
-			particle->pos.x += particle->destination.x * dt * 1.0f;
-			particle->pos.y += particle->destination.y * dt * 1.0f;
-
-			iPoint particleTile = App->map->WorldToMap(particle->pos.x, particle->pos.y);
-			DynamicEntity* dyn = (DynamicEntity*)currTarget->target;
-
-			switch (GetDirection(particleOrientation)) {
-
-			case UnitDirection_DownRight:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_UpRight:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Right:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_DownLeft:
-				if (particleTile.x <= dyn->GetSingleUnit()->currTile.x && particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_UpLeft:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Left:
-				if (particleTile.x <= dyn->GetSingleUnit()->currTile.x) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Down:
-				if (particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Up:
-			case UnitDirection_NoDirection:
-			default:
-				if (particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-			}
-		}
-	}
-	*/
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 

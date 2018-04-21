@@ -14,6 +14,7 @@ class Entity;
 class DynamicEntity;
 struct TargetInfo;
 struct Particle;
+struct GoldMine;
 
 enum UnitDirection;
 
@@ -26,11 +27,13 @@ enum GoalType {
 	GoalType_AttackTarget,
 	GoalType_Wander,
 	GoalType_Patrol,
+	GoalType_GatherGold,
 
 	// Atomic Goals
 	GoalType_MoveToPosition,
 	GoalType_HitTarget,
 	GoalType_LookAround,
+	GoalType_PickNugget,
 
 	GoalType_MaxTypes,
 
@@ -161,6 +164,7 @@ public:
 	void AddGoal_AttackTarget(TargetInfo* targetInfo);
 	void AddGoal_MoveToPosition(iPoint destinationTile);
 	void AddGoal_Patrol(iPoint originTile, iPoint destinationTile);
+	void AddGoal_GatherGold(GoldMine* goldMine);
 };
 
 class Goal_AttackTarget :public CompositeGoal
@@ -209,6 +213,21 @@ public:
 private:
 
 	uint maxDistance = 0;
+};
+
+class Goal_GatherGold :public CompositeGoal
+{
+public:
+
+	Goal_GatherGold(DynamicEntity* owner, GoldMine* goldMine);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	GoldMine* goldMine = nullptr;
 };
 
 // Atomic Goals ---------------------------------------------------------------------
@@ -262,6 +281,28 @@ private:
 	bool isChanged = false;
 
 	j1Timer timer;
+};
+
+class Goal_PickNugget :public AtomicGoal
+{
+public:
+
+	Goal_PickNugget(DynamicEntity* owner, GoldMine* goldMine);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	GoldMine* goldMine = nullptr;
+
+	uint gold = 0;
+	float secondsGathering = 0.0f;
+	j1Timer timerGathering;
+
+	double msAnimation = 0.0f;
+	j1PerfTimer timerAnimation;
 };
 
 #endif //__GOAL_H__

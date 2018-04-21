@@ -14,6 +14,7 @@
 #include "j1Particles.h"
 #include "j1Audio.h"
 #include "j1Movement.h"
+#include "Goal.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
@@ -635,10 +636,72 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		switch (entitiesEvent)
 		{
+
 		case EntitiesEvent_NONE:
 			break;
+
 		case EntitiesEvent_RIGHT_CLICK:
+
+			// Gold Mine (right click to send a unit to gather gold)
+			if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
+
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+				if (units.size() > 0) {
+
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					while (it != units.end()) {
+
+						(*it)->GetBrain()->RemoveAllSubgoals();
+						(*it)->GetBrain()->AddGoal_GatherGold((GoldMine*)staticEntity);
+
+						(*it)->SetUnitState(UnitState_Walk);
+
+						it++;
+					}
+				}
+
+				/*
+				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
+				if (App->entities->IsNearSoldiers(pos, 7)) {
+
+
+				//App->scene->UnLoadTerenasDialog();
+
+				}
+				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
+				App->scene->UnLoadTerenasDialog();
+				App->scene->terenasDialogTimer.Start();
+				App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
+				App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
+				*/
+			}
+
+			// Runestone (right click to send a unit to heal the group)
+			else if (staticEntity->staticEntityType == EntityType_RUNESTONE && staticEntity->buildingState == BuildingState_Normal) {
+
+				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
+				if (App->entities->IsNearSoldiers(pos, 7)) {
+					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
+					while (it != App->entities->activeDynamicEntities.end()) {
+						if ((*it)->entitySide == EntitySide_Player)
+							(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
+						it++;
+					}
+					App->scene->UnLoadTerenasDialog();
+					staticEntity->buildingState = BuildingState_Destroyed;
+				}
+				else if (App->scene->terenasDialogEvent != TerenasDialog_RUNESTONE) {
+					App->scene->UnLoadTerenasDialog();
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_RUNESTONE;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
+			}
 			break;
+
 		case EntitiesEvent_LEFT_CLICK:
 
 			DeleteEntitiesMenu();
@@ -696,64 +759,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal) {
 				App->audio->PlayFx(1, 0); //Button sound
 				MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
-			}
-
-			else if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
-
-				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
-				if (App->entities->IsNearSoldiers(pos, 7)) {
-
-					App->audio->PlayFx(6, 0); //Gold mine sound
-					/*list<DynamicEntity*> pene = App->entities->GetLastUnitsSelected();
-					if (pene.size() > 0) {
-						pene.front()->SetBlitState(false);
-					}*/
-					int random = rand() % 4;
-					switch (random) {
-					case 0:
-						App->player->AddGold(550);
-						break;
-					case 1:
-						App->player->AddGold(600);
-						break;
-					case 2:
-						App->player->AddGold(650);
-						break;
-					case 3:
-						App->player->AddGold(700);
-						break;
-					}
-
-					App->scene->hasGoldChanged = true;
-					App->scene->UnLoadTerenasDialog();
-					staticEntity->buildingState = BuildingState_Destroyed;
-				}
-				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
-					App->scene->UnLoadTerenasDialog();
-					App->scene->terenasDialogTimer.Start();
-					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
-					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
-				}
-			}
-			else if (staticEntity->staticEntityType == EntityType_RUNESTONE && staticEntity->buildingState == BuildingState_Normal) {
-
-				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
-				if (App->entities->IsNearSoldiers(pos, 7)) {
-					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
-					while (it != App->entities->activeDynamicEntities.end()) {
-						if ((*it)->entitySide == EntitySide_Player)
-							(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
-						it++;
-					}
-					App->scene->UnLoadTerenasDialog();
-					staticEntity->buildingState = BuildingState_Destroyed;
-				}
-				else if (App->scene->terenasDialogEvent != TerenasDialog_RUNESTONE) {
-					App->scene->UnLoadTerenasDialog();
-					App->scene->terenasDialogTimer.Start();
-					App->scene->terenasDialogEvent = TerenasDialog_RUNESTONE;
-					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
-				}
 			}
 			break;
 
