@@ -1675,22 +1675,22 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 // Returns true if a building can NOT be built in that spot
 bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const
 {
-	//Dynamic entities
+	// Dynamic entities
 	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
-
-
 
 	while (activeDyn != activeDynamicEntities.end()) {
 	
 		iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
+		iPoint entityNextTile = (*activeDyn)->GetSingleUnit()->nextTile;
 
-		//This checks the tile of the dynamic entity and its surroundings
+		// This checks the tile of the dynamic entity and its surroundings
 		switch (buildingSize)
 		{
 		case Small:
 			for (int i = -1; i < 1; i++) {
 				for (int j = -1; j < 1; j++) {
-					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						|| (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
@@ -1698,7 +1698,8 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		case Medium:
 			for (int i = -2; i < 1; i++) {
 				for (int j = -2; j < 1; j++) {
-					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						|| (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
@@ -1706,7 +1707,8 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		case Big:
 			for (int i = -3; i < 1; i++) {
 				for (int j = -3; j < 1; j++) {
-					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						|| (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
@@ -1718,112 +1720,112 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		activeDyn++;
 	}
 
-	//Static entities
+	// Static entities
 	list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
 
 	while (activeStatic != activeStaticEntities.end()) {
 
-			iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPos().x, (*activeStatic)->GetPos().y);
-			
-			//This checks all of the tiles that conform of the static entity and their surrounding tiles
-			if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
-				switch (buildingSize)
-				{
-				case Small:
-					for (int i = -1; i < 2; i++) {
-						for (int j = -1; j < 2; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-							}
-						}
-					break;
-				case Medium:
-					for (int i = -2; i < 2; i++) {
-						for (int j = -2; j < 2; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Big:
-					for (int i = -3; i < 2; i++) {
-						for (int j = -3; j < 2; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				default:
-					break;
-				}
-			}
-			else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
-				switch (buildingSize)
-				{
-				case Small:
-					for (int i = -1; i < 3; i++) {
-						for (int j = -1; j < 3; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Medium:
-					for (int i = -2; i < 3; i++) {
-						for (int j = -2; j < 3; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Big:
-					for (int i = -3; i < 3; i++) {
-						for (int j = -3; j < 3; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				default:
-					break;
-				}
-			}
-			else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
-				switch (buildingSize)
-				{
-				case Small:
-					for (int i = -1; i < 4; i++) {
-						for (int j = -1; j < 4; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Medium:
-					for (int i = -2; i < 4; i++) {
-						for (int j = -2; j < 4; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Big:
-					for (int i = -3; i < 4; i++) {
-						for (int j = -3; j < 4; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				default:
-					break;
-				}
-			}
+		iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPos().x, (*activeStatic)->GetPos().y);
 
-			activeStatic++;
+		//This checks all of the tiles that conform of the static entity and their surrounding tiles
+		if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
+			switch (buildingSize)
+			{
+			case Small:
+				for (int i = -1; i < 2; i++) {
+					for (int j = -1; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Medium:
+				for (int i = -2; i < 2; i++) {
+					for (int j = -2; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Big:
+				for (int i = -3; i < 2; i++) {
+					for (int j = -3; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
+			switch (buildingSize)
+			{
+			case Small:
+				for (int i = -1; i < 3; i++) {
+					for (int j = -1; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Medium:
+				for (int i = -2; i < 3; i++) {
+					for (int j = -2; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Big:
+				for (int i = -3; i < 3; i++) {
+					for (int j = -3; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+			switch (buildingSize)
+			{
+			case Small:
+				for (int i = -1; i < 4; i++) {
+					for (int j = -1; j < 4; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Medium:
+				for (int i = -2; i < 4; i++) {
+					for (int j = -2; j < 4; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Big:
+				for (int i = -3; i < 4; i++) {
+					for (int j = -3; j < 4; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		activeStatic++;
 	}
 
-	//Check if a building can be edificated, depending on the map walkability
+	// Check if a building can be edificated, depending on the map walkability
 	switch (buildingSize)
 	{
 	case Small:
@@ -1853,7 +1855,6 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		break;
 	}
 
-
 	switch (buildingSize)
 	{
 	case Small:
@@ -1882,9 +1883,6 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		}
 		break;
 	}
-
-
-
 
 	return false;
 }

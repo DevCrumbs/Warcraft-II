@@ -114,16 +114,16 @@ bool j1Scene::Start()
 	// Load an orthogonal, isometric or warcraft-based map
 	if (orthogonalActive) {
 		ret = App->map->Load(orthogonalMap.data());
-		//debugTex = App->tex->Load(orthogonalTexName.data());
+		debugTex = App->tex->Load(orthogonalTexName.data());
 	}
 	else if (isometricActive) {
 		ret = App->map->Load(isometricMap.data());
-		//debugTex = App->tex->Load(isometricTexName.data());
+		debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
 		ret = LoadNewMap(1);
 	//	ret = App->map->Load("verticalSliceMap.tmx");
-		//debugTex = App->tex->Load(warcraftTexName.data());
+		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
 	// Create walkability map
@@ -265,6 +265,7 @@ bool j1Scene::PreUpdate()
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+	LOG("MouseTile: %i, %i", mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
 
@@ -528,7 +529,7 @@ bool j1Scene::Update(float dt)
 		App->movement->DebugDraw(); // debug draw movement
 
 
-	//App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
+	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 
 	// Units ---------------------------------------------------------------------------------
 
@@ -547,189 +548,195 @@ bool j1Scene::Update(float dt)
 				App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 	}
 
-	// Select units by mouse click
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
-		startRectangle = mousePos;
+	// *****UNITS*****
+	/// Units cannot be clicked if a building is being placed
+	if (GetAlphaBuilding() == EntityType_NONE) {
 
-		Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: only player side
+		// Select units by mouse click
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+			startRectangle = mousePos;
 
-		if (entity != nullptr)
-			App->entities->SelectEntity(entity);
-		//else
-			//App->entities->UnselectAllEntities();
-	}
+			Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: only player side
 
-	int width = mousePos.x - startRectangle.x;
-	int height = mousePos.y - startRectangle.y;
-
-	/// SELECT UNITS
-	// Select units by rectangle drawing
-	if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
-
-		// Draw the rectangle
-		SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
-		App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
-
-		// Select units within the rectangle
-		if (width < 0) {
-			mouseRect.x = mousePos.x;
-			mouseRect.w *= -1;
-		}
-		if (height < 0) {
-			mouseRect.y = mousePos.y;
-			mouseRect.h *= -1;
+			if (entity != nullptr)
+				App->entities->SelectEntity(entity);
+			//else
+				//App->entities->UnselectAllEntities();
 		}
 
-		App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: add static entities, only player side
-	}
+		int width = mousePos.x - startRectangle.x;
+		int height = mousePos.y - startRectangle.y;
 
-	units = App->entities->GetLastUnitsSelected();
+		/// SELECT UNITS
+		// Select units by rectangle drawing
+		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
-	if (units.size() > 0) {
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
-			App->player->DeleteEntitiesMenu();
-			App->player->MakeUnitsMenu(units);
+			// Draw the rectangle
+			SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
+			App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
+
+			// Select units within the rectangle
+			if (width < 0) {
+				mouseRect.x = mousePos.x;
+				mouseRect.w *= -1;
+			}
+			if (height < 0) {
+				mouseRect.y = mousePos.y;
+				mouseRect.h *= -1;
+			}
+
+			App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: add static entities, only player side
 		}
 
-		UnitGroup* group = App->movement->GetGroupByUnits(units);
+		units = App->entities->GetLastUnitsSelected();
 
-		if (group == nullptr)
-
-			// Selected units will now behave as a group
-			group = App->movement->CreateGroupFromUnits(units);
-
-		if (group != nullptr) {
-
-			/// COMMAND PATROL
-			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
-
-				App->entities->CommandToUnits(units, UnitCommand_Patrol);
-
-			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
-			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
-
-				App->entities->CommandToUnits(units, UnitCommand_Stop);
-
-			/// COMMAND ATTACK
-			/// Enemy
-			// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
-			Entity* target = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
-
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr) {
-
-				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
-				list<DynamicEntity*>::const_iterator it = units.begin();
-
-				bool isTarget = true;
-
-				while (it != units.end()) {
-
-					if (!(*it)->SetCurrTarget(target))
-						isTarget = false;
-
-					it++;
-				}
-
-				if (isTarget)
-
-					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+		if (units.size() > 0) {
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+				App->player->DeleteEntitiesMenu();
+				App->player->MakeUnitsMenu(units);
 			}
 
-			/// Critter
-			Entity* critter = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
+			UnitGroup* group = App->movement->GetGroupByUnits(units);
 
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr) {
+			if (group == nullptr)
 
-				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
-				list<DynamicEntity*>::const_iterator it = units.begin();
+				// Selected units will now behave as a group
+				group = App->movement->CreateGroupFromUnits(units);
 
-				bool isTarget = true;
+			if (group != nullptr) {
 
-				while (it != units.end()) {
+				/// COMMAND PATROL
+				if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 
-					if (!(*it)->SetCurrTarget(critter))
-						isTarget = false;
+					App->entities->CommandToUnits(units, UnitCommand_Patrol);
 
-					it++;
-				}
+				/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
+				if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 
-				if (isTarget)
+					App->entities->CommandToUnits(units, UnitCommand_Stop);
 
-					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
-			}
+				/// COMMAND ATTACK
+				/// Enemy
+				// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
+				Entity* target = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
 
-			/// Buildings
-			Entity* building = App->entities->IsEntityOnTile(mouseTile, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr) {
 
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr) {
-
-				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
-				list<DynamicEntity*>::const_iterator it = units.begin();
-
-				bool isTarget = true;
-
-				while (it != units.end()) {
-
-					if (!(*it)->SetCurrTarget(building))
-						isTarget = false;
-
-					it++;
-				}
-
-				if (isTarget)
-
-					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
-			}
-
-			/// SET GOAL (COMMAND MOVE TO POSITION)
-			// Draw a shaped goal
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
-
-				group->DrawShapedGoal(mouseTile);
-
-			// Set a normal or shaped goal
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
-
-				bool isGoal = false;
-
-				if (group->GetShapedGoalSize() <= 1) {
-
-					group->ClearShapedGoal();
-
-					if (group->SetGoal(mouseTile)) /// normal goal
-
-						isGoal = true;
-				}
-				else if (group->SetShapedGoal()) /// shaped goal
-
-					isGoal = true;
-
-				if (isGoal) {
-
-					uint isPatrol = 0;
-
+					// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
 					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					bool isTarget = true;
 
 					while (it != units.end()) {
 
-						if ((*it)->GetUnitCommand() == UnitCommand_Patrol)
-							isPatrol++;
+						if (!(*it)->SetCurrTarget(target))
+							isTarget = false;
 
 						it++;
 					}
 
-					/// If all units are in the Patrol command or the AttackTarget command, do not set the MoveToPosition command
-					bool isFull = false;
+					if (isTarget)
 
-					if (isPatrol == units.size() || target != nullptr || critter != nullptr)
-						isFull = true;
+						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+				}
 
-					if (!isFull)
-						App->entities->CommandToUnits(units, UnitCommand_MoveToPosition);
+				/// Critter
+				Entity* critter = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
+
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr) {
+
+					// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					bool isTarget = true;
+
+					while (it != units.end()) {
+
+						if (!(*it)->SetCurrTarget(critter))
+							isTarget = false;
+
+						it++;
+					}
+
+					if (isTarget)
+
+						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+				}
+
+				/// Buildings
+				Entity* building = App->entities->IsEntityOnTile(mouseTile, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
+
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr) {
+
+					// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					bool isTarget = true;
+
+					while (it != units.end()) {
+
+						if (!(*it)->SetCurrTarget(building))
+							isTarget = false;
+
+						it++;
+					}
+
+					if (isTarget)
+
+						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+				}
+
+				/// SET GOAL (COMMAND MOVE TO POSITION)
+				// Draw a shaped goal
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+
+					group->DrawShapedGoal(mouseTile);
+
+				// Set a normal or shaped goal
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
+
+					bool isGoal = false;
+
+					if (group->GetShapedGoalSize() <= 1) {
+
+						group->ClearShapedGoal();
+
+						if (group->SetGoal(mouseTile)) /// normal goal
+
+							isGoal = true;
+					}
+					else if (group->SetShapedGoal()) /// shaped goal
+
+						isGoal = true;
+
+					if (isGoal) {
+
+						uint isPatrol = 0;
+
+						list<DynamicEntity*>::const_iterator it = units.begin();
+
+						while (it != units.end()) {
+
+							if ((*it)->GetUnitCommand() == UnitCommand_Patrol)
+								isPatrol++;
+
+							it++;
+						}
+
+						/// If all units are in the Patrol command or the AttackTarget command, do not set the MoveToPosition command
+						bool isFull = false;
+
+						if (isPatrol == units.size() || target != nullptr || critter != nullptr)
+							isFull = true;
+
+						if (!isFull)
+							App->entities->CommandToUnits(units, UnitCommand_MoveToPosition);
+					}
 				}
 			}
 		}
 	}
+	//_*****UNITS*****
 	
 	// ---------------------------------------------------------------------------------
 
