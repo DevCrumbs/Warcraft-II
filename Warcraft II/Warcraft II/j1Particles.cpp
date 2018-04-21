@@ -220,6 +220,8 @@ bool j1Particles::Start()
 	enemyArrows.particleType = ParticleType_Enemy_Projectile;	
 	playerCannonBullet.particleType = ParticleType_Player_Projectile;
 	enemyCannonBullet.particleType = ParticleType_Enemy_Projectile;
+	lowFire.particleType = ParticleType_Fire;
+	hardFire.particleType = ParticleType_Fire;
 
 	paws.life = 800;
 
@@ -532,6 +534,9 @@ bool Particle::Update(float dt)
 		else
 			return true;
 
+		break;
+
+	case ParticleType_Fire:
 		break;
 
 	default:

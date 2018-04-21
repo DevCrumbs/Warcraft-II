@@ -29,6 +29,8 @@ enum ParticleType {
 
 	ParticleType_Paws,
 
+	ParticleType_Fire,
+
 	ParticleType_MaxTypes
 };
 
@@ -122,7 +124,6 @@ public:
 	// Fire
 	Particle lowFire;
 	Particle hardFire;
-
 
 	// Arrows, axes and cannon bullets
 	Particle playerArrows;
