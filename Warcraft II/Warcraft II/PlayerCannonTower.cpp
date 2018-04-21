@@ -70,10 +70,11 @@ void PlayerCannonTower::Move(float dt)
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
 		isBuilt = true;
 
-	//if (attackingTarget == nullptr && cannonParticle != nullptr) {
-	//	cannonParticle->isRemove = true;
-	//	cannonParticle = nullptr;
-	//}
+	//Delete arrow if it is fired when an enemy is already dead 
+	if (attackingTarget == nullptr && cannonParticle != nullptr) {
+		cannonParticle->isRemove = true;
+		cannonParticle = nullptr;
+	}
 
 	//Check if the tower has to change the attacking target
 	if (attackingTarget != nullptr && attackingTarget->GetCurrLife() <= 0) {
@@ -163,8 +164,8 @@ void PlayerCannonTower::TowerStateMachine(float dt)
 
 void PlayerCannonTower::CreateCannonBullet()
 {
-	cannonParticle = App->particles->AddParticle(App->particles->playerCannonBullet, 
-	{ (int)this->GetPos().x + 16, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), playerCannonTowerInfo.arrowSpeed, playerCannonTowerInfo.damage);
+	cannonParticle = App->particles->AddParticle(App->particles->cannonBullet, 
+	{ (int)this->GetPos().x + 32, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), playerCannonTowerInfo.arrowSpeed, playerCannonTowerInfo.damage);
 }
 
 // Animations

@@ -515,13 +515,13 @@ bool j1Scene::Update(float dt)
 	App->entities->Draw(); // entities
 	//App->particles->Draw();
 
-	/*
+	
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		debugDrawAttack = !debugDrawAttack;
 
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
-*/
+
 
 	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		debugDrawMovement = !debugDrawMovement;
@@ -785,6 +785,19 @@ bool j1Scene::Update(float dt)
 		break;
 	case PauseMenuActions_CREATED:
 		CreatePauseMenu();
+
+		if (buildingMenuOn)
+			UnLoadBuildingMenu();
+
+		if (alphaBuilding != EntityType_NONE) {
+			alphaBuilding = EntityType_NONE;
+			if (alphaBuilding != EntityType_MAX)
+			{
+				SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+				SDL_SetTextureAlphaMod(App->entities->GetNeutralBuildingTexture(), 255);
+			}
+		}
+
 		pauseMenuActions = PauseMenuActions_NONE;
 		break;
 	case PauseMenuActions_DESTROY:

@@ -69,10 +69,8 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 
 	// Cannon from the cannon tower
 	pugi::xml_node bulletsCannon = config.child("cannon");
-	playerCannonBullet.animation.PushBack({ bulletsCannon.attribute("x").as_int(), bulletsCannon.attribute("y").as_int(), bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() });
-	enemyCannonBullet.animation.PushBack({ bulletsCannon.attribute("x").as_int(), bulletsCannon.attribute("y").as_int(), bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() });
-	playerCannonBullet.size = { bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() };
-	enemyCannonBullet.size = { bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() };
+	cannonBullet.animation.PushBack({ bulletsCannon.attribute("x").as_int(), bulletsCannon.attribute("y").as_int(), bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() });
+	cannonBullet.size = { bulletsCannon.attribute("w").as_int(), bulletsCannon.attribute("h").as_int() };
 
 	// Troll's axe
 	pugi::xml_node trollAxeAnimation = config.child("trollAxe");
@@ -218,8 +216,7 @@ bool j1Particles::Start()
 	trollAxe.particleType = ParticleType_Enemy_Projectile;
 	playerArrows.particleType = ParticleType_Player_Projectile;
 	enemyArrows.particleType = ParticleType_Enemy_Projectile;	
-	playerCannonBullet.particleType = ParticleType_Player_Projectile;
-	enemyCannonBullet.particleType = ParticleType_Enemy_Projectile;
+	cannonBullet.particleType = ParticleType_Cannon_Projectile;
 	lowFire.particleType = ParticleType_Fire;
 	hardFire.particleType = ParticleType_Fire;
 
@@ -286,7 +283,7 @@ bool j1Particles::Update(float dt)
 		if (currPart == nullptr)
 			continue;
 
-		if (!currPart->Update(dt))
+		if (!currPart->Update(dt) && currPart != nullptr) //Idk if this fix will work
 		{
 			delete currPart;
 			activeParticles[i] = nullptr;
@@ -356,6 +353,7 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, fPoint 
 
 			case ParticleType_Player_Projectile:
 			case ParticleType_Enemy_Projectile:
+			case ParticleType_Cannon_Projectile:
 			{
 				// Calculate the orientation of the particle
 				currPart->orientation.x = currPart->destination.x - pos.x;
@@ -493,6 +491,7 @@ bool Particle::Update(float dt)
 
 	case ParticleType_Player_Projectile:
 	case ParticleType_Enemy_Projectile:
+	case ParticleType_Cannon_Projectile:
 	{
 		iPoint destinationTile = App->map->WorldToMap(destination.x, destination.y);
 
@@ -501,27 +500,43 @@ bool Particle::Update(float dt)
 
 		if (SDL_HasIntersection(&rectA, &rectB)) {
 
-			// Apply damage and kill the particle if it reaches its target
-			Entity* entity = App->entities->IsEntityOnTile(destinationTile);
-
-			if (particleType == ParticleType_Player_Projectile) {
+			//Apply damage in dynamic entities on the way of the particle, if the particle is a cannon bullet
+			Entity* entity = App->entities->IsEntityOnTile(App->map->WorldToMap(pos.x, pos.y));
+			if(particleType == ParticleType_Cannon_Projectile) {
 				if (entity != nullptr) {
+					if (entity->entitySide == EntitySide_Player ||
+						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy)
+						entity->ApplyDamage(damage);
+					return false;
+				}
+			}
+
+			// Apply damage and kill the particle if it reaches its target
+			entity = App->entities->IsEntityOnTile(destinationTile);
+			if (entity != nullptr) {
+				if (particleType == ParticleType_Player_Projectile) {
 					if (entity->entitySide == EntitySide_Enemy || entity->entitySide == EntitySide_Neutral)
 						entity->ApplyDamage(damage);
+					return false;
 				}
-			}
-			else if (particleType == ParticleType_Enemy_Projectile) {
-				if (entity != nullptr) {
+				else if (particleType == ParticleType_Enemy_Projectile) {
 					if (entity->entitySide == EntitySide_Player || entity->entitySide == EntitySide_Neutral)
 						entity->ApplyDamage(damage);
+					return false;
+				}
+				else if (particleType == ParticleType_Cannon_Projectile) {
+					if (entity->entitySide == EntitySide_Player ||
+						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy)
+						entity->ApplyDamage(damage);
+					return false;
 				}
 			}
-
-			return false;
 		}
-
 		pos.x += orientation.x * dt * speed;
 		pos.y += orientation.y * dt * speed;
+
+		if (isRemove)
+			return false;
 
 		return true;
 	}

@@ -72,10 +72,17 @@ public:
 
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim);
 
+private:
+
+	void ChargeGameSounds();
+
+public:
+
 	UICursor* mouseText = nullptr;
 
-private:
-	void ChargeGameSounds();
+	uint tab_button = 0;
+
+	bool debug = false;
 
 private:
 
@@ -134,11 +141,9 @@ private:
 
 	bool isExit = false;
 	bool isFadetoScene = false;
-public:
-	uint tab_button = 0;
-	
+	bool isMouseTextCreated = false;
+	bool isSoundCharged = false;
 
-	bool debug = false;
 };
 
 #endif
