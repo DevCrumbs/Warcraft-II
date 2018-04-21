@@ -1,4 +1,8 @@
+#include "Defs.h"
+#include "p2Log.h"
+
 #include "ChickenFarm.h"
+
 #include "j1Player.h"
 #include "j1Scene.h"
 #include "j1Map.h"
@@ -9,12 +13,7 @@
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
-	entitySide = EntitySide_Enemy;
-	CreateEntityCollider(EntitySide_Enemy, true);
-	entityCollider->isTrigger = true;
-
-	buildingSize = Small;
-
+	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
 	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
@@ -26,6 +25,7 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
 	walkability.push_back({ buildingTile.x + 1, buildingTile.y + 1 });
 	App->movement->UpdateUnitsWalkability(walkability);
+	// -----
 
 	isBuilt = chickenFarmInfo.isBuilt;
 
@@ -39,6 +39,12 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		this->constructionTimer.Start();
 		App->audio->PlayFx(2, 0); //Construction sound
 	}
+
+	entitySide = EntitySide_Enemy;
+	CreateEntityCollider(EntitySide_Enemy, true);
+	entityCollider->isTrigger = true;
+
+	buildingSize = Small;
 }
 
 ChickenFarm::~ChickenFarm() {

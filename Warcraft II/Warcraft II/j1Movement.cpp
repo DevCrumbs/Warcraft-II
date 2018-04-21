@@ -740,6 +740,13 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 				// Update the unit's currTile with the nextTile
 				singleUnit->currTile = singleUnit->nextTile;
 
+				// The walkability map has been updated
+				if (singleUnit->isWalkabilityUpdated) {
+
+					singleUnit->movementState = MovementState_WaitForPath;
+					break;
+				}
+
 				// Set the unit's movement state to IncreaseWaypoint
 				singleUnit->movementState = MovementState_IncreaseWaypoint;
 
@@ -748,16 +755,6 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 		}
 
 		singleUnit->unit->SetIsStill(false);
-
-		// The walkability map has been updated
-		if (singleUnit->isWalkabilityUpdated) {
-
-			if (singleUnit->IsFittingTile()) {
-
-				singleUnit->movementState = MovementState_WaitForPath;
-				break;
-			}
-		}
 
 		// Add the movePos to the unit's current position
 		singleUnit->unit->AddToPos(movePos);

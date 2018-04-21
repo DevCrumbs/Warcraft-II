@@ -2,6 +2,7 @@
 #include "p2Log.h"
 
 #include "EnemyCannonTower.h"
+
 #include "j1Collision.h"
 #include "j1Particles.h"
 #include "j1Pathfinding.h"
@@ -13,6 +14,7 @@ EnemyCannonTower::EnemyCannonTower(fPoint pos, iPoint size, int currLife, uint m
 {
 	buildingSize = Small;
 
+	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
 	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
@@ -24,15 +26,15 @@ EnemyCannonTower::EnemyCannonTower(fPoint pos, iPoint size, int currLife, uint m
 	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
 	walkability.push_back({ buildingTile.x + 1, buildingTile.y + 1});
 	App->movement->UpdateUnitsWalkability(walkability);
+	// -----
 
 	texArea = &enemyCannonTowerInfo.completeTexArea;
 
-	//Colliders
+	// Colliders
 	CreateEntityCollider(EntitySide_Enemy);
 	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, enemyCannonTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 	sightRadiusCollider->isTrigger = true;
 	entityCollider->isTrigger = true;
-
 }
 
 void EnemyCannonTower::Move(float dt)

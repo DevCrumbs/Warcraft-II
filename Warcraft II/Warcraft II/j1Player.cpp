@@ -627,10 +627,12 @@ bool j1Player::Load(pugi::xml_node& save)
 }
 
 
-void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent) 
+void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent)
 {
 	Entity* ent = (Entity*)staticEntity;
-	if(App->scene->GetPauseMenuActions() == PauseMenuActions_NOT_EXIST)
+
+	if (App->scene->GetPauseMenuActions() == PauseMenuActions_NOT_EXIST && App->scene->GetAlphaBuilding() == EntityType_NONE) {
+
 		switch (entitiesEvent)
 		{
 		case EntitiesEvent_NONE:
@@ -726,7 +728,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					App->scene->UnLoadTerenasDialog();
 					staticEntity->buildingState = BuildingState_Destroyed;
 				}
-				else if(App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE){
+				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
 					App->scene->UnLoadTerenasDialog();
 					App->scene->terenasDialogTimer.Start();
 					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
@@ -739,7 +741,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				if (App->entities->IsNearSoldiers(pos, 7)) {
 					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
 					while (it != App->entities->activeDynamicEntities.end()) {
-						if ((*it)->entitySide == EntitySide_Player) 
+						if ((*it)->entitySide == EntitySide_Player)
 							(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
 						it++;
 					}
@@ -753,8 +755,8 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
 				}
 			}
-				
-				break;
+			break;
+
 		case EntitiesEvent_HOVER:
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
 				App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
@@ -787,7 +789,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			DeleteEntitiesMenu();
 			if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM)
 				MakeEntitiesMenu("NO_HP_TEXT", "Chicken Farm", { 241,34,50,41 }, ent);
-		
+
 			else if (staticEntity->staticEntityType == EntityType_GRYPHON_AVIARY)
 				MakeEntitiesMenu("NO_HP_TEXT", "Gryphon Aviary", { 394,160,50,41 }, ent);
 
@@ -804,13 +806,13 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				MakeEntitiesMenu("NO_HP_TEXT", "Cannon Tower", { 394,118,50,41 }, ent);
 
 			else if (staticEntity->staticEntityType == EntityType_STABLES)
-				MakeEntitiesMenu("NO_HP_TEXT", "Stables", { 241,160,50,41 },ent);
+				MakeEntitiesMenu("NO_HP_TEXT", "Stables", { 241,160,50,41 }, ent);
 			break;
-		
+
 		default:
 			break;
 		}
-
+	}
 }
 
 void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEvent entitiesEvent) {

@@ -2,6 +2,7 @@
 #include "p2Log.h"
 
 #include "PlayerCannonTower.h"
+
 #include "j1Collision.h"
 #include "j1Particles.h"
 #include "j1Pathfinding.h"
@@ -14,6 +15,7 @@ PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint
 {
 	buildingSize = Small;
 
+	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
 	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
@@ -25,6 +27,7 @@ PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint
 	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
 	walkability.push_back({ buildingTile.x + 1, buildingTile.y + 1 });
 	App->movement->UpdateUnitsWalkability(walkability);
+	// -----
 
 	texArea = &playerCannonTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
