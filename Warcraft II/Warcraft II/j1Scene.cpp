@@ -785,6 +785,19 @@ bool j1Scene::Update(float dt)
 		break;
 	case PauseMenuActions_CREATED:
 		CreatePauseMenu();
+
+		if (buildingMenuOn)
+			UnLoadBuildingMenu();
+
+		if (alphaBuilding != EntityType_NONE) {
+			alphaBuilding = EntityType_NONE;
+			if (alphaBuilding != EntityType_MAX)
+			{
+				SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+				SDL_SetTextureAlphaMod(App->entities->GetNeutralBuildingTexture(), 255);
+			}
+		}
+
 		pauseMenuActions = PauseMenuActions_NONE;
 		break;
 	case PauseMenuActions_DESTROY:

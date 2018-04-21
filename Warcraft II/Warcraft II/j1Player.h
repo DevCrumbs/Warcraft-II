@@ -29,6 +29,7 @@ class Entity;
 class StaticEntity;
 enum ENTITY_TYPE;
 enum TerenasDialogEvents;
+struct UnitInfo;
 
 struct HoverButton
 {
@@ -107,7 +108,9 @@ public:
 	void CheckIfPlaceBuilding();
 	iPoint GetMouseTilePos() const;
 	iPoint GetMousePos() const;
+
 	void CheckUnitSpawning();
+	void SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
 
 	void UpdateSpawnUnitsStats();
 

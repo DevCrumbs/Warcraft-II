@@ -396,8 +396,8 @@ void j1Player::CheckUnitSpawning()
 		return;
 
 	UnitInfo unitInfo;
-	fPoint mageTowerPos = { 0.0f,0.0f };
-	fPoint gryphonAviaryPos = { 0.0f,0.0f };
+	fPoint mageTowerPos = { -1,-1 };
+	fPoint gryphonAviaryPos = { -1,-1 };
 
 	if (mageTower != nullptr) {
 		mageTowerPos = mageTower->GetPos();
@@ -416,54 +416,13 @@ void j1Player::CheckUnitSpawning()
 			switch (toSpawnEntity) {
 
 			case EntityType_FOOTMAN:
-			{
-				iPoint barracksTile = App->map->WorldToMap(barracksPos.x, barracksPos.y);
-				barracksTile.x -= 1;
-
-				// Make sure that there are no entities on the spawn tile and that the tile is walkable
-				if (App->entities->IsEntityOnTile(barracksTile, EntityCategory_DYNAMIC_ENTITY) != nullptr 
-					|| App->entities->IsEntityOnTile(barracksTile, EntityCategory_STATIC_ENTITY) != nullptr 
-					|| !App->pathfinding->IsWalkable(barracksTile))
-
-					barracksTile = App->movement->FindClosestValidTile(barracksTile);
-
-				// Make sure that the spawn tile is valid
-				if (barracksTile.x != -1 && barracksTile.y != -1) {
-
-					iPoint barracksTilePos = App->map->MapToWorld(barracksTile.x, barracksTile.y);
-					fPoint pos = { (float)barracksTilePos.x,(float)barracksTilePos.y };
-
-					App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
-					isUnitSpawning = false;
-					App->audio->PlayFx(21, 0);
-				}
-			}
-				
+				SpawnUnit(barracksPos, EntityType_FOOTMAN, unitInfo);
+				App->audio->PlayFx(21, 0);
 			break;
 
 			case EntityType_ELVEN_ARCHER:
-			{
-				iPoint barracksTile = App->map->WorldToMap(barracksPos.x, barracksPos.y);
-				barracksTile.x -= 1;
-
-				// Make sure that there are no entities on the spawn tile and that the tile is walkable
-				if (App->entities->IsEntityOnTile(barracksTile, EntityCategory_DYNAMIC_ENTITY) != nullptr
-					|| App->entities->IsEntityOnTile(barracksTile, EntityCategory_STATIC_ENTITY) != nullptr
-					|| !App->pathfinding->IsWalkable(barracksTile))
-
-					barracksTile = App->movement->FindClosestValidTile(barracksTile);
-
-				// Make sure that the spawn tile is valid
-				if (barracksTile.x != -1 && barracksTile.y != -1) {
-
-					iPoint barracksTilePos = App->map->MapToWorld(barracksTile.x, barracksTile.y);
-					fPoint pos = { (float)barracksTilePos.x,(float)barracksTilePos.y };
-
-					App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, (EntityInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
-					isUnitSpawning = false;
-					App->audio->PlayFx(18, 0);
-				}
-			}
+				SpawnUnit(barracksPos, EntityType_ELVEN_ARCHER, unitInfo);
+				App->audio->PlayFx(18, 0);
 				break;
 
 			case EntityType_MAGE:
@@ -503,6 +462,29 @@ void j1Player::CheckUnitSpawning()
 	for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) 
 	{
 		(*iterator).entityLifeBar->SetLife((*iterator).owner->toSpawnTimer.ReadSec());
+	}
+}
+
+void j1Player::SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo)
+{
+	iPoint buildingTile = App->map->WorldToMap(spawningBuildingPos.x, spawningBuildingPos.y);
+	buildingTile.x -= 1;
+
+	// Make sure that there are no entities on the spawn tile and that the tile is walkable
+	if (App->entities->IsEntityOnTile(buildingTile, EntityCategory_DYNAMIC_ENTITY) != nullptr
+		|| App->entities->IsEntityOnTile(buildingTile, EntityCategory_STATIC_ENTITY) != nullptr
+		|| !App->pathfinding->IsWalkable(buildingTile))
+
+		buildingTile = App->movement->FindClosestValidTile(buildingTile);
+
+	// Make sure that the spawn tile is valid
+	if (buildingTile.x != -1 && buildingTile.y != -1) {
+
+		iPoint buildingTilePos = App->map->MapToWorld(buildingTile.x, buildingTile.y);
+		fPoint pos = { (float)buildingTilePos.x,(float)buildingTilePos.y };
+
+		App->entities->AddEntity(spawningEntity, pos, (EntityInfo&)App->entities->GetUnitInfo(spawningEntity), unitInfo, this);
+		isUnitSpawning = false;
 	}
 }
 
