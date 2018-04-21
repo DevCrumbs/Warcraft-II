@@ -5,6 +5,7 @@
 #include "j1Scene.h"
 #include "j1Pathfinding.h"
 #include "j1Collision.h"
+#include "j1Movement.h"
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
@@ -14,11 +15,17 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 
 	buildingSize = Small;
 
+	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
 	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
+	walkability.push_back({ buildingTile.x, buildingTile.y });
 	App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
+	walkability.push_back({ buildingTile.x + 1, buildingTile.y });
 	App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
+	walkability.push_back({ buildingTile.x, buildingTile.y + 1 });
 	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
+	walkability.push_back({ buildingTile.x + 1, buildingTile.y + 1 });
+	App->movement->UpdateUnitsWalkability(walkability);
 
 	isBuilt = chickenFarmInfo.isBuilt;
 

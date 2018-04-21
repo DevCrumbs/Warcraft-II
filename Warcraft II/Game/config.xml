@@ -1182,7 +1182,7 @@
     </trollAxe>
     
     <fire>
-        <low speed = "5" loop = "1">
+        <low speed = "10" loop = "1">
            <frame x="  2" y="3" w="30" h="30" />
            <frame x=" 34" y="3" w="30" h="30" />
            <frame x=" 66" y="3" w="30" h="30" />
@@ -1191,7 +1191,7 @@
            <frame x="163" y="3" w="30" h="30" />
        </low>
          
-       <hard speed = "5" loop = "1">
+       <hard speed = "10" loop = "1">
          <frame x="  0" y="38" w="50" h="50" />
          <frame x=" 55" y="38" w="50" h="50" />
          <frame x="112" y="38" w="50" h="50" />

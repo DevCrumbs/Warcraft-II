@@ -354,8 +354,7 @@ bool FindActiveTrigger::isSatisfied(iPoint tile) const
 
 	case ActiveTriggerType_Goal:
 
-		if (App->movement->IsValidTile(dynamicEntity->GetSingleUnit(), tile, isCheckingCurrTile, isCheckingNextTile, isCheckingGoalTile)
-			&& App->pathfinding->IsWalkable(tile))
+		if (App->movement->IsValidTile(dynamicEntity->GetSingleUnit(), tile, isCheckingCurrTile, isCheckingNextTile, isCheckingGoalTile))
 			isSatisfied = true;
 
 		break;

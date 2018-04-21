@@ -407,11 +407,11 @@ void j1Particles::LoadAnimationsSpeed()
 	sheepPawsDownRightSpeed = sheepPawsInfo.downRight.speed;
 
 	/// Troll Axe
-	trollAxeSpeed = trollAxe.speed;
+	trollAxeSpeed = trollAxe.animation.speed;
 
 	/// Fire Speed
-	lowFireSpeed = lowFire.speed;
-	hardFireSpeed = hardFire.speed;
+	lowFireSpeed = lowFire.animation.speed;
+	hardFireSpeed = hardFire.animation.speed;
 }
 
 void j1Particles::UpdateAnimations(float dt)
@@ -437,11 +437,11 @@ void j1Particles::UpdateAnimations(float dt)
 	sheepPawsInfo.downRight.speed = sheepPawsDownRightSpeed * dt;
 
 	/// Troll Axe
-	trollAxe.speed = trollAxeSpeed * dt;
+	trollAxe.animation.speed = trollAxeSpeed * dt;
 
 	/// Fire Speed
-	lowFire.speed = lowFireSpeed * dt;
-	hardFire.speed = hardFireSpeed * dt;
+	lowFire.animation.speed = lowFireSpeed * dt;
+	hardFire.animation.speed = hardFireSpeed * dt;
 }
 
 PawsInfo& j1Particles::GetPawsInfo(bool isSheep, bool isBoar)

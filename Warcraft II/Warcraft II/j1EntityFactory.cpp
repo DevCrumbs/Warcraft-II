@@ -2961,8 +2961,8 @@ bool j1EntityFactory::RemoveUnitFromUnitsSelected(Entity* entity)
 // Updates the selection color of all entities
 void j1EntityFactory::SetUnitsSelectedColor()
 {
-	//SDL_Color colors[10] = { ColorYellow, ColorDarkGreen, ColorBrightBlue, ColorOrange, ColorPink, ColorPurple, ColorGrey, ColorBlack, ColorOlive, ColorViolet };
-	//string colorNames[10] = { "Yellow", "DarkGreen", "BrightBlue", "Orange", "Pink", "Purple", "Grey", "Black", "Olive", "Violet" };
+	SDL_Color colors[10] = { ColorYellow, ColorDarkGreen, ColorBrightBlue, ColorOrange, ColorPink, ColorPurple, ColorGrey, ColorBlack, ColorOlive, ColorViolet };
+	string colorNames[10] = { "Yellow", "DarkGreen", "BrightBlue", "Orange", "Pink", "Purple", "Grey", "Black", "Olive", "Violet" };
 
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 	uint i = 0;
@@ -2972,8 +2972,8 @@ void j1EntityFactory::SetUnitsSelectedColor()
 		// If the unit is selected, change its color
 		if ((*it)->isSelected) {
 
-			GetDynamicEntityByEntity(*it)->SetColor(ColorWhite, "White");
-			//GetDynamicEntityByEntity(*it)->SetColor(colors[i], colorNames[i]);
+			//GetDynamicEntityByEntity(*it)->SetColor(ColorWhite, "White");
+			GetDynamicEntityByEntity(*it)->SetColor(colors[i], colorNames[i]);
 			i++;
 		}
 		else {

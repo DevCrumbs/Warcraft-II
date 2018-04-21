@@ -307,7 +307,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
@@ -326,7 +326,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
@@ -345,7 +345,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
@@ -363,7 +363,7 @@ bool j1Scene::PreUpdate()
 
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 
@@ -376,7 +376,7 @@ bool j1Scene::PreUpdate()
 
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 
@@ -389,7 +389,7 @@ bool j1Scene::PreUpdate()
 
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 
@@ -402,7 +402,7 @@ bool j1Scene::PreUpdate()
 
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 
@@ -415,7 +415,7 @@ bool j1Scene::PreUpdate()
 
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 

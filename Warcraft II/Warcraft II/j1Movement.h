@@ -97,6 +97,9 @@ public:
 
 	bool IsNeighborTile(iPoint tile, iPoint neighbor) const;
 
+	// Returns the closest walkable and valid neighbor of the tiled passed as an argument
+	iPoint FindClosestValidTile(iPoint tile, bool isDouble = false) const;
+
 	void UpdateUnitsWalkability(vector<iPoint> updatedTiles) const;
 
 private:
@@ -166,8 +169,14 @@ struct SingleUnit
 	/// endPos is the tile that the unit would reach during this move
 	bool IsTileReached(iPoint nextPos, fPoint endPos) const;
 
+	// Returns true if the unit is fitting a tile
+	bool IsFittingTile() const;
+
+	// Prepares the unit for its next movement cycle
+	bool GetReadyForNewMove();
+
 	// Resets the parameters of the unit (general info)
-	void ResetUnitParameters();
+	void ResetUnitParameters(bool isGoalReset = false);
 
 	// Resets the collision parameters of the unit
 	void ResetUnitCollisionParameters();
@@ -175,14 +184,7 @@ struct SingleUnit
 	// When detected a collision, to set the collision parameters of the unit
 	void SetCollisionParameters(CollisionType collisionType, SingleUnit* waitUnit, iPoint waitTile);
 
-	// Prepares the unit for its next movement cycle
-	bool GetReadyForNewMove();
-
-	// Sets the state of the unit to UnitState_Walk
-	void WakeUp();
-
-	bool IsFittingTile() const;
-
+	// To set the goal tile of the unit
 	void SetGoal(iPoint goal);
 
 	// -----
@@ -190,7 +192,6 @@ struct SingleUnit
 	DynamicEntity* unit = nullptr;
 	UnitGroup* group = nullptr;
 	MovementState movementState = MovementState_NoState;
-	bool wakeUp = false; // sets a unit's unitState to UnitState_Walk
 
 	vector<iPoint> path; // path to the unit's goal
 	iPoint currTile = { -1,-1 }; // position of the unit in map coords
@@ -213,7 +214,6 @@ struct SingleUnit
 
 	// COLLISION AVOIDANCE
 	bool wait = false;
-	/// If a unit is not in the UnitState_Walk and another unit needs this unit to move away, set wakeUp to true
 	iPoint waitTile = { -1,-1 }; // conflict tile (tile where the collision has been found)
 	SingleUnit* waitUnit = nullptr; // conflict unit (unit whom the collision has been found with)
 	CollisionType coll = CollisionType_NoCollision; // type of collision

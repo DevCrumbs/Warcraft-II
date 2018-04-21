@@ -111,9 +111,6 @@ public:
 
 	void UpdateSpawnUnitsStats();
 
-	iPoint FindClosestValidTile(iPoint tile) const;
-
-
 	void AddGold(int sumGold);
 	int GetCurrentGold() const;
 

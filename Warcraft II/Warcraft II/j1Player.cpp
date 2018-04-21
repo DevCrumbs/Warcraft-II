@@ -13,6 +13,7 @@
 #include "j1Pathfinding.h"
 #include "j1Particles.h"
 #include "j1Audio.h"
+#include "j1Movement.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
@@ -424,7 +425,7 @@ void j1Player::CheckUnitSpawning()
 					|| App->entities->IsEntityOnTile(barracksTile, EntityCategory_STATIC_ENTITY) != nullptr 
 					|| !App->pathfinding->IsWalkable(barracksTile))
 
-					barracksTile = FindClosestValidTile(barracksTile);
+					barracksTile = App->movement->FindClosestValidTile(barracksTile);
 
 				// Make sure that the spawn tile is valid
 				if (barracksTile.x != -1 && barracksTile.y != -1) {
@@ -450,7 +451,7 @@ void j1Player::CheckUnitSpawning()
 					|| App->entities->IsEntityOnTile(barracksTile, EntityCategory_STATIC_ENTITY) != nullptr
 					|| !App->pathfinding->IsWalkable(barracksTile))
 
-					barracksTile = FindClosestValidTile(barracksTile);
+					barracksTile = App->movement->FindClosestValidTile(barracksTile);
 
 				// Make sure that the spawn tile is valid
 				if (barracksTile.x != -1 && barracksTile.y != -1) {
@@ -1485,49 +1486,4 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		default:
 			break;
 		}
-}
-
-iPoint j1Player::FindClosestValidTile(iPoint tile) const
-{
-	// Perform a BFS
-	queue<iPoint> queue;
-	list<iPoint> visited;
-
-	iPoint curr = tile;
-	queue.push(curr);
-
-	while (queue.size() > 0) {
-
-		curr = queue.front();
-		queue.pop();
-
-		if (!App->entities->IsEntityOnTile(curr, EntityCategory_DYNAMIC_ENTITY)
-			&& !App->entities->IsEntityOnTile(curr, EntityCategory_STATIC_ENTITY)
-			&& App->pathfinding->IsWalkable(curr))
-			return curr;
-
-		iPoint neighbors[8];
-		neighbors[0].create(curr.x + 1, curr.y + 0);
-		neighbors[1].create(curr.x + 0, curr.y + 1);
-		neighbors[2].create(curr.x - 1, curr.y + 0);
-		neighbors[3].create(curr.x + 0, curr.y - 1);
-		neighbors[4].create(curr.x + 1, curr.y + 1);
-		neighbors[5].create(curr.x + 1, curr.y - 1);
-		neighbors[6].create(curr.x - 1, curr.y + 1);
-		neighbors[7].create(curr.x - 1, curr.y - 1);
-
-		for (uint i = 0; i < 8; ++i)
-		{
-			if (App->pathfinding->IsWalkable(neighbors[i])) {
-
-				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
-
-					queue.push(neighbors[i]);
-					visited.push_back(neighbors[i]);
-				}
-			}
-		}
-	}
-
-	return { -1,-1 };
 }

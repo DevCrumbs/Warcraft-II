@@ -469,7 +469,7 @@ GoalStatus Goal_MoveToPosition::Process(float dt)
 
 void Goal_MoveToPosition::Terminate()
 {
-	owner->GetSingleUnit()->ResetUnitParameters();
+	owner->GetSingleUnit()->ResetUnitParameters(true); /// Do also reset goal parameters
 
 	owner->SetIsStill(true);
 }
