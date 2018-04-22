@@ -499,12 +499,6 @@ bool j1Scene::Update(float dt)
 	bool ret = true;
 
 
-	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_REPEAT) {
-		if (buildingMenuOn) 
-			UnLoadBuildingMenu();
-		else
-			LoadBuildingMenu();
-	}
 	// Save mouse position (world and map coords)
 	int x, y;
 	App->input->GetMousePosition(x, y);
