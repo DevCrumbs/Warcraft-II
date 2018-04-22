@@ -673,14 +673,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 							(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
 						it++;
 					}
-					App->scene->UnLoadTerenasDialog();
 					staticEntity->buildingState = BuildingState_Destroyed;
-				}
-				else if (App->scene->terenasDialogEvent != TerenasDialog_RUNESTONE) {
-					App->scene->UnLoadTerenasDialog();
-					App->scene->terenasDialogTimer.Start();
-					App->scene->terenasDialogEvent = TerenasDialog_RUNESTONE;
-					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
 				}
 			}
 			break;
