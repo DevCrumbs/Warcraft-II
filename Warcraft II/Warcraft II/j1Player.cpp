@@ -686,7 +686,8 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		case EntitiesEvent_LEFT_CLICK:
 
-			DeleteEntitiesMenu();
+			if (staticEntity->staticEntityType != EntityType_RUNESTONE && staticEntity->staticEntityType != EntityType_GOLD_MINE)
+				DeleteEntitiesMenu();
 
 			if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM) {
 				App->audio->PlayFx(5, 0); //Chicken farm sound
