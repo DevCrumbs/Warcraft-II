@@ -33,12 +33,8 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 	singleUnit = new SingleUnit(this, nullptr);
 	App->movement->CreateGroupFromUnit(this);
 
-	/// Walkability map
-	navgraph = new Navgraph();
-	navgraph->CreateNavgraph();
-
 	/// PathPlanner
-	pathPlanner = new PathPlanner(this, *navgraph);
+	pathPlanner = new PathPlanner(this);
 
 	// Goals
 	brain = new Goal_Think(this);
@@ -58,10 +54,6 @@ DynamicEntity::~DynamicEntity()
 	brain = nullptr;
 
 	// Remove Movement
-	if (navgraph != nullptr)
-		delete navgraph;
-	navgraph = nullptr;
-
 	if (pathPlanner != nullptr)
 		delete pathPlanner;
 	pathPlanner = nullptr;
@@ -97,12 +89,6 @@ DynamicEntity::~DynamicEntity()
 	colorName = "White";
 
 	// ----
-
-	if (particle != nullptr) {
-
-		particle->isRemove = true;
-		particle = nullptr;
-	}
 
 	// Attack
 	isStill = true;
@@ -240,6 +226,11 @@ uint DynamicEntity::GetDamage() const
 	return unitInfo.damage;
 }
 
+UILifeBar* DynamicEntity::GetLifeBar() const
+{
+	return lifeBar;
+}
+
 // State machine
 void DynamicEntity::UnitStateMachine(float dt) {}
 
@@ -264,11 +255,6 @@ PathPlanner* DynamicEntity::GetPathPlanner() const
 	return pathPlanner;
 }
 
-Navgraph* DynamicEntity::GetNavgraph() const
-{
-	return navgraph;
-}
-
 void DynamicEntity::SetIsStill(bool isStill)
 {
 	this->isStill = isStill;
@@ -277,17 +263,6 @@ void DynamicEntity::SetIsStill(bool isStill)
 bool DynamicEntity::IsStill() const
 {
 	return isStill;
-}
-
-// Blit
-void DynamicEntity::SetBlitState(bool blitting) const
-{
-	blitting = isBlitting; 
-}
-
-bool DynamicEntity::GetBlitState() const
-{
-	return isBlitting;
 }
 
 // Animations
@@ -576,7 +551,7 @@ void DynamicEntity::UpdateRhombusColliderPos(ColliderGroup* collider, uint radiu
 
 		for (uint i = 0; i < 4; ++i)
 		{
-			if (navgraph->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
+			if (App->pathfinding->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
 
 				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
 
@@ -861,4 +836,26 @@ bool TargetInfo::IsTargetPresent() const
 		return false;
 
 	return true;
+}
+
+// Blit
+void DynamicEntity::SetBlitState(bool isBlit)
+{
+	this->isBlit = isBlit;
+}
+
+bool DynamicEntity::GetBlitState() const
+{
+	return isBlit;
+}
+
+// Valid
+void DynamicEntity::SetIsValid(bool isValid) 
+{
+	this->isValid = isValid;
+}
+
+bool DynamicEntity::GetIsValid() const 
+{
+	return isValid;
 }

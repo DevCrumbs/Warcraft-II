@@ -79,7 +79,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	pugi::xml_node camera = config.child("camera");
 
 	camSpeed = camera.attribute("speed").as_float();
-	camMovMargin = camera.attribute("movMarginPcnt").as_int();
+	camMovMargin = camera.attribute("movMarginPcnt").as_float();
 
 	return ret;
 }
@@ -114,26 +114,21 @@ bool j1Scene::Start()
 	// Load an orthogonal, isometric or warcraft-based map
 	if (orthogonalActive) {
 		ret = App->map->Load(orthogonalMap.data());
-		//debugTex = App->tex->Load(orthogonalTexName.data());
+		debugTex = App->tex->Load(orthogonalTexName.data());
 	}
 	else if (isometricActive) {
 		ret = App->map->Load(isometricMap.data());
-		//debugTex = App->tex->Load(isometricTexName.data());
+		debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = LoadNewMap();
+		ret = LoadNewMap(1);
 	//	ret = App->map->Load("verticalSliceMap.tmx");
-		//debugTex = App->tex->Load(warcraftTexName.data());
+		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
 	// Create walkability map
 	if (ret)
-	{
-		if (App->map->CreateWalkabilityMap(w, h, &data))
-			App->pathfinding->SetMap(w, h, data);
-
-		//RELEASE_ARRAY(data);
-	}
+		App->map->CreateWalkabilityMap(w, h, &data);
 
 	//LoadInGameUI
 	LoadInGameUI();
@@ -146,8 +141,10 @@ bool j1Scene::Start()
 	}
 
 	//Calculate camera movement in pixels through the percentatge given
-	camMovMargin = 10;
-		//camMovMargin * ((width + height) / 2) / 100;
+	if (!isCamMovMarginCharged) {
+		camMovMargin = camMovMargin * ((width + height) / 2) / 100;
+		isCamMovMarginCharged = true;
+	}
 
 	alphaBuilding = EntityType_NONE;
 	pauseMenuActions = PauseMenuActions_NOT_EXIST;
@@ -231,6 +228,14 @@ bool j1Scene::LoadNewMap(int map)
 			basePos = App->map->MapToWorld(5, 120);
 			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
 			break;
+		case 5:
+			cameraPos = App->map->MapToWorld(13, 78);
+			App->render->camera.x = -cameraPos.x;
+			App->render->camera.y = -cameraPos.y;
+
+			basePos = App->map->MapToWorld(5, 70);
+			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
+			break;
 		default:
 			break;
 		}
@@ -260,6 +265,7 @@ bool j1Scene::PreUpdate()
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+//	LOG("MouseTile: %i, %i", mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
 
@@ -302,7 +308,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
@@ -321,7 +327,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
@@ -340,7 +346,7 @@ bool j1Scene::PreUpdate()
 		// Make sure that there are no entities on the spawn tile and that the tile is walkable
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		// Make sure that the spawn tile is valid
 		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
@@ -358,7 +364,7 @@ bool j1Scene::PreUpdate()
 
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 
@@ -371,7 +377,7 @@ bool j1Scene::PreUpdate()
 
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 
@@ -384,7 +390,7 @@ bool j1Scene::PreUpdate()
 
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 
@@ -397,7 +403,7 @@ bool j1Scene::PreUpdate()
 
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 
@@ -410,7 +416,7 @@ bool j1Scene::PreUpdate()
 
 		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-			tile = App->player->FindClosestValidTile(tile);
+			tile = App->movement->FindClosestValidTile(tile);
 
 		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
 
@@ -492,6 +498,7 @@ bool j1Scene::Update(float dt)
 {
 	bool ret = true;
 
+
 	// Save mouse position (world and map coords)
 	int x, y;
 	App->input->GetMousePosition(x, y);
@@ -507,19 +514,23 @@ bool j1Scene::Update(float dt)
 	App->map->Draw(); // map
 	App->particles->DrawPaws(); // paws particles
 	App->entities->Draw(); // entities
+	//App->particles->Draw();
 
-	/*
+	
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		debugDrawAttack = !debugDrawAttack;
 
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
 
+
+	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+		debugDrawMovement = !debugDrawMovement;
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
-		*/
 
-	//App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
+
+	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
 
 	// Units ---------------------------------------------------------------------------------
 
@@ -538,190 +549,195 @@ bool j1Scene::Update(float dt)
 				App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 	}
 
-	// Select units by mouse click
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
-		startRectangle = mousePos;
+	// *****UNITS*****
+	/// Units cannot be clicked if a building is being placed
+	if (GetAlphaBuilding() == EntityType_NONE) {
 
-		Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: only player side
+		// Select units by mouse click
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+			startRectangle = mousePos;
 
-		if (entity != nullptr)
-			App->entities->SelectEntity(entity);
-		//else
-			//App->entities->UnselectAllEntities();
-	}
+			Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: only player side
 
-	int width = mousePos.x - startRectangle.x;
-	int height = mousePos.y - startRectangle.y;
-
-	/// SELECT UNITS
-	// Select units by rectangle drawing
-	if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
-
-		// Draw the rectangle
-		SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
-		App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
-
-		// Select units within the rectangle
-		if (width < 0) {
-			mouseRect.x = mousePos.x;
-			mouseRect.w *= -1;
-		}
-		if (height < 0) {
-			mouseRect.y = mousePos.y;
-			mouseRect.h *= -1;
+			if (entity != nullptr)
+				App->entities->SelectEntity(entity);
+			//else
+				//App->entities->UnselectAllEntities();
 		}
 
-		App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: add static entities, only player side
-	}
+		int width = mousePos.x - startRectangle.x;
+		int height = mousePos.y - startRectangle.y;
 
-	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+		/// SELECT UNITS
+		// Select units by rectangle drawing
+		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
-	if (units.size() > 0) {
+			// Draw the rectangle
+			SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
+			App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
 
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
-			App->player->DeleteEntitiesMenu();
-			App->player->MakeUnitsMenu(units);
+			// Select units within the rectangle
+			if (width < 0) {
+				mouseRect.x = mousePos.x;
+				mouseRect.w *= -1;
+			}
+			if (height < 0) {
+				mouseRect.y = mousePos.y;
+				mouseRect.h *= -1;
+			}
+
+			App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: add static entities, only player side
 		}
 
-		UnitGroup* group = App->movement->GetGroupByUnits(units);
+		units = App->entities->GetLastUnitsSelected();
 
-		if (group == nullptr)
-
-			// Selected units will now behave as a group
-			group = App->movement->CreateGroupFromUnits(units);
-
-		if (group != nullptr) {
-
-			/// COMMAND PATROL
-			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
-
-				App->entities->CommandToUnits(units, UnitCommand_Patrol);
-
-			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
-			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
-
-				App->entities->CommandToUnits(units, UnitCommand_Stop);
-
-			/// COMMAND ATTACK
-			/// Enemy
-			// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
-			Entity* target = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
-
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr) {
-
-				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
-				list<DynamicEntity*>::const_iterator it = units.begin();
-
-				bool isTarget = true;
-
-				while (it != units.end()) {
-
-					if (!(*it)->SetCurrTarget(target))
-						isTarget = false;
-
-					it++;
-				}
-
-				if (isTarget)
-
-					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+		if (units.size() > 0) {
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+				App->player->DeleteEntitiesMenu();
+				App->player->MakeUnitsMenu(units);
 			}
 
-			/// Critter
-			Entity* critter = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
+			UnitGroup* group = App->movement->GetGroupByUnits(units);
 
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr) {
+			if (group == nullptr)
 
-				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
-				list<DynamicEntity*>::const_iterator it = units.begin();
+				// Selected units will now behave as a group
+				group = App->movement->CreateGroupFromUnits(units);
 
-				bool isTarget = true;
+			if (group != nullptr) {
 
-				while (it != units.end()) {
+				/// COMMAND PATROL
+				if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 
-					if (!(*it)->SetCurrTarget(critter))
-						isTarget = false;
+					App->entities->CommandToUnits(units, UnitCommand_Patrol);
 
-					it++;
-				}
+				/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
+				if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 
-				if (isTarget)
+					App->entities->CommandToUnits(units, UnitCommand_Stop);
 
-					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
-			}
+				/// COMMAND ATTACK
+				/// Enemy
+				// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
+				Entity* target = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
 
-			/// Buildings
-			Entity* building = App->entities->IsEntityOnTile(mouseTile, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr) {
 
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr) {
-
-				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
-				list<DynamicEntity*>::const_iterator it = units.begin();
-
-				bool isTarget = true;
-
-				while (it != units.end()) {
-
-					if (!(*it)->SetCurrTarget(building))
-						isTarget = false;
-
-					it++;
-				}
-
-				if (isTarget)
-
-					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
-			}
-
-			/// SET GOAL (COMMAND MOVE TO POSITION)
-			// Draw a shaped goal
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
-
-				group->DrawShapedGoal(mouseTile);
-
-			// Set a normal or shaped goal
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
-
-				bool isGoal = false;
-
-				if (group->GetShapedGoalSize() <= 1) {
-
-					group->ClearShapedGoal();
-
-					if (group->SetGoal(mouseTile)) /// normal goal
-
-						isGoal = true;
-				}
-				else if (group->SetShapedGoal()) /// shaped goal
-
-					isGoal = true;
-
-				if (isGoal) {
-
-					uint isPatrol = 0;
-
+					// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
 					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					bool isTarget = true;
 
 					while (it != units.end()) {
 
-						if ((*it)->GetUnitCommand() == UnitCommand_Patrol)
-							isPatrol++;
+						if (!(*it)->SetCurrTarget(target))
+							isTarget = false;
 
 						it++;
 					}
 
-					/// If all units are in the Patrol command or the AttackTarget command, do not set the MoveToPosition command
-					bool isFull = false;
+					if (isTarget)
 
-					if (isPatrol == units.size() || target != nullptr || critter != nullptr)
-						isFull = true;
+						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+				}
 
-					if (!isFull)
-						App->entities->CommandToUnits(units, UnitCommand_MoveToPosition);
+				/// Critter
+				Entity* critter = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
+
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr) {
+
+					// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					bool isTarget = true;
+
+					while (it != units.end()) {
+
+						if (!(*it)->SetCurrTarget(critter))
+							isTarget = false;
+
+						it++;
+					}
+
+					if (isTarget)
+
+						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+				}
+
+				/// Buildings
+				Entity* building = App->entities->IsEntityOnTile(mouseTile, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
+
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr) {
+
+					// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					bool isTarget = true;
+
+					while (it != units.end()) {
+
+						if (!(*it)->SetCurrTarget(building))
+							isTarget = false;
+
+						it++;
+					}
+
+					if (isTarget)
+
+						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+				}
+
+				/// SET GOAL (COMMAND MOVE TO POSITION)
+				// Draw a shaped goal
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+
+					group->DrawShapedGoal(mouseTile);
+
+				// Set a normal or shaped goal
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
+
+					bool isGoal = false;
+
+					if (group->GetShapedGoalSize() <= 1) {
+
+						group->ClearShapedGoal();
+
+						if (group->SetGoal(mouseTile)) /// normal goal
+
+							isGoal = true;
+					}
+					else if (group->SetShapedGoal()) /// shaped goal
+
+						isGoal = true;
+
+					if (isGoal) {
+
+						uint isPatrol = 0;
+
+						list<DynamicEntity*>::const_iterator it = units.begin();
+
+						while (it != units.end()) {
+
+							if ((*it)->GetUnitCommand() == UnitCommand_Patrol)
+								isPatrol++;
+
+							it++;
+						}
+
+						/// If all units are in the Patrol command or the AttackTarget command, do not set the MoveToPosition command
+						bool isFull = false;
+
+						if (isPatrol == units.size() || target != nullptr || critter != nullptr)
+							isFull = true;
+
+						if (!isFull)
+							App->entities->CommandToUnits(units, UnitCommand_MoveToPosition);
+					}
 				}
 			}
 		}
 	}
+	//_*****UNITS*****
 	
 	// ---------------------------------------------------------------------------------
 
@@ -770,6 +786,19 @@ bool j1Scene::Update(float dt)
 		break;
 	case PauseMenuActions_CREATED:
 		CreatePauseMenu();
+
+		if (buildingMenuOn)
+			UnLoadBuildingMenu();
+
+		if (alphaBuilding != EntityType_NONE) {
+			alphaBuilding = EntityType_NONE;
+			if (alphaBuilding != EntityType_MAX)
+			{
+				SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+				SDL_SetTextureAlphaMod(App->entities->GetNeutralBuildingTexture(), 255);
+			}
+		}
+
 		pauseMenuActions = PauseMenuActions_NONE;
 		break;
 	case PauseMenuActions_DESTROY:
@@ -990,6 +1019,14 @@ void j1Scene::DebugKeys()
 		App->render->camera.x = -basePos.x;
 		App->render->camera.y = -basePos.y;
 	}
+
+	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_REPEAT) {
+		if (buildingMenuOn)
+			UnLoadBuildingMenu();
+		else
+			LoadBuildingMenu();
+	}
+
 }
 
 void j1Scene::CheckCameraMovement(float dt) {
@@ -998,20 +1035,22 @@ void j1Scene::CheckCameraMovement(float dt) {
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
 	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
 
+
+	//NOT MOVING WITH App->input->GetKey(buttonMoveUp) == KEY_REPEAT
 	//Move with arrows
 	//UP
-	/*if (App->input->GetKey(buttonMoveUp) == KEY_REPEAT && App->render->camera.y <= 0)
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	//DOWN
-	if (App->input->GetKey(buttonMoveDown) == KEY_REPEAT && App->render->camera.y >= downMargin)
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	//LEFT
-	if (App->input->GetKey(buttonMoveLeft) == KEY_REPEAT && App->render->camera.x <= 0)
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	//RIGHT
-	if (App->input->GetKey(buttonMoveRight) == KEY_REPEAT && App->render->camera.x >= rightMargin)
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
-*/
+
 	//Move with mouse
 	////UP
 	if (mouse.y <= (camMovMargin - App->render->camera.y) /scale && App->render->camera.y <= 0)
@@ -1035,12 +1074,13 @@ void j1Scene::LoadInGameUI()
 	buttonInfo.normalTexArea = {0, 0, 126, 26};
 	buttonInfo.hoverTexArea = { 129, 0, 126, 26 };
 	buttonInfo.pressedTexArea = { 257, 0, 126, 26 };
-	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this, nullptr);
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.text = "Buildings";
+	labelInfo.interactive = false;
 	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, buildingButton);
 
 
@@ -1052,6 +1092,7 @@ void j1Scene::LoadInGameUI()
 
 
 	UIImage_Info entitiesInfo;
+	entitiesInfo.draggable = false;
 	entitiesInfo.texArea = { 0, 565, 371, 82 };
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
 	entitiesStats->SetPriorityDraw(PriorityDraw_UIINGAME);
@@ -1066,265 +1107,96 @@ void j1Scene::LoadInGameUI()
 void j1Scene::LoadBuildingMenu()
 {
 	UnLoadTerenasDialog();
+	//UIButton_Info buttonInfo;
+	//UILabel_Info labelInfo;
+
+	UIImage_Info imageInfo;
+	imageInfo.draggable = false;
+	imageInfo.texArea = { 0,33,240,529 };
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_RIGHT;
+	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this, nullptr);
+	buildingMenuOn = true;
+	buildingMenu->SetPriorityDraw(PriorityDraw_UNDER_FRAMEWORK);
+
+	if (buildingMenu->type != UIE_TYPE_NO_TYPE)
+	{
+
+		CreateBuildingElements({ 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 }, { 15, 55 }, "Chicken Farm",
+			"Cost: 250 gold", { 75, 65 }, { 75, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
+
+		CreateBuildingElements({ 343,160,50,41 }, { 343,160,50,41 }, { 343,160,50,41 }, { 15, 100 }, "Stables",
+			"Comming soon", { 75, 110 }, { 75, 127 }, stablesCost, &buildingMenuButtons.stables);
+
+		CreateBuildingElements({ 496,160,50,41 }, { 496,160,50,41 }, { 496,160,50,41 }, { 15, 145 }, "Gryphon Aviary",
+			"Comming soon", { 75, 155 }, { 75, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
+
+		CreateBuildingElements({ 496,202,50,41 }, { 496,202,50,41 }, { 496,202,50,41 }, { 15, 190 }, "Mage Tower",
+			"Comming soon", { 75, 200 }, { 75, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
+
+		CreateBuildingElements({ 394,34,50,41 }, { 445,34,50,41 }, { 496,34,50,41 }, { 15, 235 }, "Scout Tower",
+			"Cost: 400 gold", { 75, 245 }, { 75, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
+
+		CreateBuildingElements({ 394,76,50,41 }, { 445,76,50,41 }, { 496,76,50,41 }, { 15, 280 }, "Guard Tower",
+			"Cost: 600 gold", { 75, 290 }, { 75, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
+
+		CreateBuildingElements({ 394,118,50,41 }, { 445,118,50,41 }, { 496,118,50,41 }, { 15, 325 }, "Cannon Tower",
+			"Cost: 600 gold", { 75, 335 }, { 75, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
+	}
+	else
+	{
+		LOG("WTF");
+	}
+}
+
+void j1Scene::CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect buttonHoverTexArea, SDL_Rect buttonPressedTexArea,
+									 iPoint buttonPos, string buildingName, string buildingCost, iPoint namePos, iPoint costPos,
+									 int cost, MenuBuildingButton* elem)
+{
 	UIButton_Info buttonInfo;
 	UILabel_Info labelInfo;
 
-	UIImage_Info imageInfo;
-	imageInfo.texArea = { 0,33,240,529 };
-	buildingMenu = App->gui->CreateUIImage({ -110, 0 }, imageInfo, this, buildingButton);
-	buildingMenuOn = true;
-	buildingMenu->SetPriorityDraw(PriorityDraw_FRAMEWORK);
-
-	buttonInfo.normalTexArea = { 241,34,50,41 };
-	buttonInfo.hoverTexArea = { 292,34,50,41 };
-	buttonInfo.pressedTexArea = { 343,34,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
+	buttonInfo.normalTexArea = buttonNormalTexArea;
+	buttonInfo.hoverTexArea = buttonHoverTexArea;
+	buttonInfo.pressedTexArea = buttonPressedTexArea;
+	if (App->player->currentGold < cost) {
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
-	chickenFarmButton = App->gui->CreateUIButton({ 15, 55 }, buttonInfo, this, buildingMenu);
+	elem->icon = App->gui->CreateUIButton(buttonPos, buttonInfo, this, buildingMenu);
 
 	labelInfo.interactive = false;
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Chicken Farm";
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.text = buildingName;
 	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 65 }, labelInfo, this, buildingMenu));
+	elem->name = App->gui->CreateUILabel(namePos, labelInfo, this, buildingMenu);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 250 gold";
-	if (App->player->currentGold < chickenFarmCost) {
+	labelInfo.text = buildingCost;
+	if (App->player->currentGold < cost) {
 		labelInfo.normalColor = BloodyRed_;
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
 	}
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 82 }, labelInfo, this, buildingMenu));
+	elem->cost = App->gui->CreateUILabel(costPos, labelInfo, this, buildingMenu);
+}
 
-	buttonInfo.normalTexArea = { 343,76,50,41 };
-	buttonInfo.hoverTexArea = { 343,76,50,41 };
-	buttonInfo.pressedTexArea = { 343,76,50,41 };
-	if (App->player->currentGold < elvenLumberCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	elvenLumberButton = App->gui->CreateUIButton({ 15, 100 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Elven Lumber Mill";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 110}, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 127 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 343,118,50,41 };
-	buttonInfo.hoverTexArea = { 343,118,50,41 };
-	buttonInfo.pressedTexArea = { 343,118,50,41 };
-	if (App->player->currentGold < blacksmithCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	blackSmithButton = App->gui->CreateUIButton({ 15, 145 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Blacksmith";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 155 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 172 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 343,160,50,41 };
-	buttonInfo.hoverTexArea = { 343,160,50,41 };
-	buttonInfo.pressedTexArea = { 343,160,50,41 };
-	if (App->player->currentGold < stablesCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	stablesButton = App->gui->CreateUIButton({ 15, 190 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Stables";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 200 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-	
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 217 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 343,202,50,41 };
-	buttonInfo.hoverTexArea = { 343,202,50,41 };
-	buttonInfo.pressedTexArea = { 343,202,50,41 };
-	if (App->player->currentGold < churchCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	churchButton = App->gui->CreateUIButton({ 15, 235 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Church";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 245 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-	
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 262 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 496,160,50,41 };
-	buttonInfo.hoverTexArea = { 496,160,50,41 };
-	buttonInfo.pressedTexArea = { 496,160,50,41 };
-	if (App->player->currentGold < gryphonAviaryCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	gryphonAviaryButton = App->gui->CreateUIButton({ 15, 280 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Gryphon Aviary";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 290 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-	
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 307 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 496,202,50,41 };
-	buttonInfo.hoverTexArea = { 496,202,50,41 };
-	buttonInfo.pressedTexArea = { 496,202,50,41 };
-	if (App->player->currentGold < mageTowerCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	mageTowerButton = App->gui->CreateUIButton({ 15, 325 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Mage Tower";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 335 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-	
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 352 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 394,34,50,41 };
-	buttonInfo.hoverTexArea = { 445,34,50,41 };
-	buttonInfo.pressedTexArea = { 496,34,50,41 };
-	if (App->player->currentGold < scoutTowerCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	scoutTowerButton = App->gui->CreateUIButton({ 15, 370 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Scout Tower";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 380 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 400 gold";
-	if (App->player->currentGold < scoutTowerCost) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 397 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 394,76,50,41 };
-	buttonInfo.hoverTexArea = { 445,76,50,41 };
-	buttonInfo.pressedTexArea = { 496,76,50,41 };
-	if (App->player->currentGold < guardTowerCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	guardTowerButton = App->gui->CreateUIButton({ 15, 415 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Guard Tower";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 425 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 600 gold";
-	if (App->player->currentGold < guardTowerCost) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 442 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 394,118,50,41 };
-	buttonInfo.hoverTexArea = { 445,118,50,41 };
-	buttonInfo.pressedTexArea = { 496,118,50,41 };
-	if (App->player->currentGold < cannonTowerCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	cannonTowerButton = App->gui->CreateUIButton({ 15, 460 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Cannon Tower";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 470 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 800 gold";
-	if (App->player->currentGold < cannonTowerCost) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 487 }, labelInfo, this, buildingMenu));
+void j1Scene::DeleteBuildingElements(MenuBuildingButton* elem)
+{
+	App->gui->RemoveElem((UIElement**)&elem->icon);
+	App->gui->RemoveElem((UIElement**)&elem->name);
+	App->gui->RemoveElem((UIElement**)&elem->cost);
 }
 
 void j1Scene::UnLoadBuildingMenu()
-{
+{	
 	App->gui->RemoveElem((UIElement**)&buildingMenu);
-	App->gui->RemoveElem((UIElement**)&chickenFarmButton);
-	App->gui->RemoveElem((UIElement**)&elvenLumberButton);
-	App->gui->RemoveElem((UIElement**)&blackSmithButton);
-	App->gui->RemoveElem((UIElement**)&stablesButton);
-	App->gui->RemoveElem((UIElement**)&churchButton);
-	App->gui->RemoveElem((UIElement**)&gryphonAviaryButton);
-	App->gui->RemoveElem((UIElement**)&mageTowerButton);
-	App->gui->RemoveElem((UIElement**)&scoutTowerButton);
-	App->gui->RemoveElem((UIElement**)&guardTowerButton);
-	App->gui->RemoveElem((UIElement**)&cannonTowerButton);
-
-	/*for (; !buildingLabelsList.empty(); buildingLabelsList.pop_back())
-	{
-		buildingLabelsList.back()->toRemove = true;
-	}*/
-
-	for (list<UILabel*>::iterator it = buildingLabelsList.begin(); it != buildingLabelsList.end(); ++it)
-	{
-		if ((*it) != nullptr)
-			(*it)->toRemove = true;
-	}
-	buildingLabelsList.clear();
+	DeleteBuildingElements(&buildingMenuButtons.chickenFarm);
+	DeleteBuildingElements(&buildingMenuButtons.stables);
+	DeleteBuildingElements(&buildingMenuButtons.gryphonAviary);
+	DeleteBuildingElements(&buildingMenuButtons.mageTower);
+	DeleteBuildingElements(&buildingMenuButtons.scoutTower);
+	DeleteBuildingElements(&buildingMenuButtons.guardTower);
+	DeleteBuildingElements(&buildingMenuButtons.cannonTower);
 
 	buildingMenuOn = false;
 }
@@ -1332,6 +1204,7 @@ void j1Scene::UnLoadBuildingMenu()
 void j1Scene::LoadResourcesLabels()
 {
 	UILabel_Info labelInfo;
+	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = to_string(App->player->currentGold);
 	goldLabel = App->gui->CreateUILabel({ 224, 0 }, labelInfo, this, inGameFrameImage);
@@ -1516,25 +1389,11 @@ void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
 		labelInfo.text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
 		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
 	}
-	else if (dialogEvent == TerenasDialog_RESCUE_TURALYON) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 350;
-		labelInfo.interactive = false;
-		labelInfo.text = "Congratulations! You have freed Turalyon. I thank you in the name of Azeroth. For the alliance!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
-	}
 	else if (dialogEvent == TerenasDialog_GOLD_MINE) {
 		labelInfo.fontName = FONT_NAME_WARCRAFT14;
 		labelInfo.textWrapLength = 320;
 		labelInfo.interactive = false;
-		labelInfo.text = "To get gold, come next to the mine with a unit and click it!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
-	}
-	else if (dialogEvent == TerenasDialog_RUNESTONE) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 320;
-		labelInfo.interactive = false;
-		labelInfo.text = "To get healed, come next to the runestone with a unit and click it!";
+		labelInfo.text = "To get gold from the mine you have to select units and they will gather it.";
 		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
 	}
 	else if (dialogEvent == TerenasDialog_FOOD) {
@@ -1560,7 +1419,6 @@ void j1Scene::UnLoadTerenasDialog()
 	App->gui->RemoveElem((UIElement**)&terenasAdvices.terenasImage);
 }
 
-
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 {
 	switch (UIevent)
@@ -1585,7 +1443,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 		}
 
-		if (UIelem == chickenFarmButton) {
+		if (UIelem == buildingMenuButtons.chickenFarm.icon) {
 			if (App->player->currentGold >= chickenFarmCost) {
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadBuildingMenu();
@@ -1595,7 +1453,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
 		
-		if (UIelem == stablesButton) {
+		if (UIelem == buildingMenuButtons.stables.icon) {
 			if (App->player->currentGold >= stablesCost) {
 				//App->audio->PlayFx(1, 0); //Button sound
 				//UnLoadBuildingMenu();
@@ -1606,15 +1464,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
 		
-		if (UIelem == elvenLumberButton) {
-			App->audio->PlayFx(3, 0); //Button error sound
-		}
-
-		if (UIelem == blackSmithButton) {
-			App->audio->PlayFx(3, 0); //Button error sound
-		}
-		
-		if (UIelem == gryphonAviaryButton) {
+		if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
 			if (App->player->currentGold >= gryphonAviaryCost) {
 				//App->audio->PlayFx(1, 0); //Button sound
 				//UnLoadBuildingMenu();
@@ -1625,7 +1475,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
 
-		if (UIelem == mageTowerButton) {
+		if (UIelem == buildingMenuButtons.mageTower.icon) {
 			if (App->player->currentGold >= mageTowerCost) {
 				//App->audio->PlayFx(1, 0); //Button sound
 				//UnLoadBuildingMenu();
@@ -1636,11 +1486,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
 
-		if (UIelem == churchButton) {
-			App->audio->PlayFx(3, 0); //Button error sound
-		}
-
-		if (UIelem == scoutTowerButton) {
+		if (UIelem == buildingMenuButtons.scoutTower.icon) {
 			if (App->player->currentGold >= scoutTowerCost) {
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadBuildingMenu();
@@ -1650,7 +1496,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
 
-		if (UIelem == guardTowerButton) {
+		if (UIelem == buildingMenuButtons.guardTower.icon) {
 			if (App->player->currentGold >= guardTowerCost) {
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadBuildingMenu();
@@ -1660,7 +1506,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->audio->PlayFx(3, 0); //Button error sound
 		}
 
-		if (UIelem == cannonTowerButton) {
+		if (UIelem == buildingMenuButtons.cannonTower.icon) {
 			if (App->player->currentGold >= cannonTowerCost) {
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadBuildingMenu();

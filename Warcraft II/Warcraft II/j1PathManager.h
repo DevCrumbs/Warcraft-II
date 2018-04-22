@@ -24,37 +24,6 @@ class Entity;
 class PathPlanner;
 
 // ---------------------------------------------------------------------
-// Helper struct to set a walkability map
-// ---------------------------------------------------------------------
-struct Navgraph
-{
-public:
-
-	// HighLevelNavgraph (used to quickly determine paths at the "room" level)
-	// LowLevelNavgraph (used to determine paths at the "point" level)
-
-	bool CreateNavgraph();
-
-	bool SetNavgraph(j1PathFinding* currentSearch) const;
-
-	// Pathfinding methods ---------------------------------------------------------------------
-
-	// Utility: return true if pos is inside the map boundaries
-	bool CheckBoundaries(const iPoint& pos) const;
-
-	// Utility: returns true is the tile is walkable
-	bool IsWalkable(const iPoint& pos) const;
-
-	// Utility: return the walkability value of a tile
-	int GetTileAt(const iPoint& pos) const;
-
-public:
-
-	int w = 0, h = 0;
-	uchar* data = nullptr;
-};
-
-// ---------------------------------------------------------------------
 // Helper class to determine whether a condition for termination is fulfilled
 // ---------------------------------------------------------------------
 class FindActiveTrigger
@@ -71,6 +40,11 @@ public:
 
 	FindActiveTrigger(ActiveTriggerType activeTriggerType, Entity* entity);
 	FindActiveTrigger(ActiveTriggerType activeTriggerType, ENTITY_CATEGORY entityType);
+	bool CleanUp();
+
+	void SetActiveTriggerType(ActiveTriggerType activeTriggerType = ActiveTriggerType_NoType);
+	void SetEntity(Entity* entity = nullptr);
+	void SetEntityType(ENTITY_CATEGORY entityType = EntityCategory_NONE);
 
 	bool isSatisfied(iPoint tile) const;
 
@@ -120,8 +94,8 @@ private:
 
 	list<PathPlanner*> searchRequests; // a container of all the active search requests
 
-									   // total ms to spend on search cycles each update allocated to the manager
-									   // each update step these are divided equally among all registered path requests
+	// total ms to spend on search cycles each update allocated to the manager
+	// each update step these are divided equally among all registered path requests
 	double msSearchPerUpdate = 0.0f;
 
 	j1PerfTimer timer; // timer to keep track of the ms spent on each update
@@ -131,7 +105,7 @@ class PathPlanner
 {
 public:
 
-	PathPlanner(Entity* owner, Navgraph& navgraph);
+	PathPlanner(Entity* owner);
 
 	~PathPlanner();
 
@@ -178,9 +152,8 @@ private:
 
 	PathfindingAlgorithmType pathfindingAlgorithmType = PathfindingAlgorithmType_NoType;
 	j1PathFinding* currentSearch = nullptr; // a pointer to the current search
-	Navgraph& navgraph; // a local reference to the navgraph
 
-						// Dijkstra
+	// Dijkstra
 	FindActiveTrigger* trigger = nullptr; // a pointer to the FindActiveTrigger class
 };
 

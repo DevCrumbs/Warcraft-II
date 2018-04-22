@@ -264,43 +264,43 @@ void CritterSheep::UpdatePaws()
 
 				case UnitDirection_Up:
 
-					lastPaw->animation = App->particles->GetSheepPawsInfo().up;
+					lastPaw->animation = App->particles->GetPawsInfo(true).up;
 					break;
 
 				case UnitDirection_NoDirection:
 				case UnitDirection_Down:
 
-					lastPaw->animation = App->particles->GetSheepPawsInfo().down;
+					lastPaw->animation = App->particles->GetPawsInfo(true).down;
 					break;
 
 				case UnitDirection_Left:
 
-					lastPaw->animation = App->particles->GetSheepPawsInfo().left;
+					lastPaw->animation = App->particles->GetPawsInfo(true).left;
 					break;
 
 				case UnitDirection_Right:
 
-					lastPaw->animation = App->particles->GetSheepPawsInfo().right;
+					lastPaw->animation = App->particles->GetPawsInfo(true).right;
 					break;
 
 				case UnitDirection_UpLeft:
 
-					lastPaw->animation = App->particles->GetSheepPawsInfo().upLeft;
+					lastPaw->animation = App->particles->GetPawsInfo(true).upLeft;
 					break;
 
 				case UnitDirection_UpRight:
 
-					lastPaw->animation = App->particles->GetSheepPawsInfo().upRight;
+					lastPaw->animation = App->particles->GetPawsInfo(true).upRight;
 					break;
 
 				case UnitDirection_DownLeft:
 
-					lastPaw->animation = App->particles->GetSheepPawsInfo().downLeft;
+					lastPaw->animation = App->particles->GetPawsInfo(true).downLeft;
 					break;
 
 				case UnitDirection_DownRight:
 
-					lastPaw->animation = App->particles->GetSheepPawsInfo().downRight;
+					lastPaw->animation = App->particles->GetPawsInfo(true).downRight;
 					break;
 				}
 			}

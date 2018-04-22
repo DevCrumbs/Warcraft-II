@@ -17,6 +17,15 @@ UIInputText::UIInputText(iPoint localPos, UIElement* parent, j1Module* listener,
 
 }
 
+UIInputText::~UIInputText()
+{
+	isInputText = false;
+
+	App->tex->UnLoad(texture);
+	texture = nullptr;
+}
+
+
 void UIInputText::Update(float dt) {
 	
 	if (isInputText) {	

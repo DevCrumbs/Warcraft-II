@@ -68,6 +68,8 @@ private:
 	UI_EVENT UIevent = UI_EVENT_NONE;
 	bool nextEvent = false;
 
+	const char* text = nullptr;
+
 	// Fade parameters
 	float totalTime = 0.0f;
 	float startTime = 0.0f;

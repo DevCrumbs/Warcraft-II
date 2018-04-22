@@ -20,7 +20,6 @@ struct ColliderGroup;
 struct SingleUnit;
 
 class PathPlanner;
-class Navgraph;
 class Goal_Think;
 class UILifeBar;
 
@@ -105,6 +104,7 @@ public:
 	float GetSpeed() const;
 	uint GetPriority() const;
 	uint GetDamage() const;
+	UILifeBar* GetLifeBar() const;
 
 	// State machine
 	void UnitStateMachine(float dt);
@@ -115,14 +115,9 @@ public:
 	// Movement
 	SingleUnit* GetSingleUnit() const;
 	PathPlanner* GetPathPlanner() const;
-	Navgraph* GetNavgraph() const;
 
 	void SetIsStill(bool isStill);
 	bool IsStill() const;
-
-	// Blit
-	void SetBlitState(bool isBlitting) const;
-	bool GetBlitState() const;
 
 	// Animations
 	virtual void LoadAnimationsSpeed();
@@ -170,6 +165,14 @@ public:
 	bool SetUnitCommand(UnitCommand unitCommand);
 	UnitCommand GetUnitCommand() const;
 
+	// Blit
+	void SetBlitState(bool isBlit);
+	bool GetBlitState() const;
+
+	// Valid
+	void SetIsValid(bool isValid);
+	bool GetIsValid() const;
+
 public:
 
 	ENTITY_TYPE dynamicEntityType = EntityType_NONE;
@@ -179,8 +182,6 @@ public:
 
 	// Spawn
 	bool isSpawned = false;
-
-	Particle* particle = nullptr;
 
 protected:
 
@@ -202,7 +203,6 @@ protected:
 
 	SingleUnit* singleUnit = nullptr;
 	PathPlanner* pathPlanner = nullptr;
-	Navgraph* navgraph = nullptr;
 
 	bool isStill = true; // if true, the unit is still. Else, the unit is moving
 
@@ -213,6 +213,9 @@ protected:
 
 	bool isHitting = false; // if true, the unit is hitting their target
 
+	// Interact with the map
+	bool isGatherGold = false;
+
 	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;
 	ColliderGroup* attackRadiusCollider = nullptr;
@@ -221,14 +224,17 @@ protected:
 	// Death
 	j1Timer deadTimer;
 
-	//Blit
-	bool isBlitting = false;
+	// Blit
+	bool isBlit = true;
+
+	// Valid
+	bool isValid = true;
 
 	// Selection color
 	SDL_Color color = ColorWhite;
 	string colorName = "White";
 
-	//LifeBar
+	// LifeBar
 	UILifeBar* lifeBar = nullptr;
 	int lifeBarMarginX = 0;
 	int lifeBarMarginY = 0;

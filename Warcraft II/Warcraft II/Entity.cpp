@@ -89,9 +89,7 @@ void Entity::ApplyDamage(int damage)
 	currLife -= damage;
 	if (currLife < 0)
 		currLife = 0;
-	SetStringLife(currLife, maxLife);
-	if (entitySide == EntitySide_Player)
-		App->player->getEntityDamage = this;
+	SetStringLife(currLife, maxLife);	
 }
 
 void Entity::ApplyHealth(int health) 
@@ -101,9 +99,6 @@ void Entity::ApplyHealth(int health)
 	else
 		currLife += health;
 	SetStringLife(currLife, maxLife);
-	if (entitySide == EntitySide_Player)
-		App->player->getEntityDamage = this;
-
 }
 
 string Entity::GetStringLife() const
@@ -166,10 +161,15 @@ bool Entity::CreateEntityCollider(EntitySide entitySide, bool createOffset)
 
 void Entity::UpdateEntityColliderPos()
 {
-	entityCollider->colliders.front()->SetPos(pos.x, pos.y);
+	if (entityCollider != nullptr)
+	{
+		Collider* front = entityCollider->colliders.front();
+		if (front != nullptr)
+			entityCollider->colliders.front()->SetPos(pos.x, pos.y);
 
-	// 2. Create/Update the offset collider
-	entityCollider->CreateOffsetCollider();
+		// 2. Create/Update the offset collider
+		entityCollider->CreateOffsetCollider();
+	}
 }
 
 // Attack

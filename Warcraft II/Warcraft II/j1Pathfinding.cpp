@@ -10,7 +10,7 @@
 
 #include "Brofiler\Brofiler.h"
 
-j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), height(0)
+j1PathFinding::j1PathFinding() : j1Module()
 {
 	name.assign("pathfinding");
 }
@@ -18,30 +18,25 @@ j1PathFinding::j1PathFinding() : j1Module(), walkabilityMap(NULL), width(0), hei
 // Destructor
 j1PathFinding::~j1PathFinding()
 {
-	//RELEASE_ARRAY(walkabilityMap);
-
 	trigger = nullptr;
 }
 
 // Called before quitting
 bool j1PathFinding::CleanUp()
 {
-	LOG("Freeing pathfinding library");
+	distanceHeuristic = DistanceHeuristic_DistanceManhattan;
 
+	open.pathNodeList.clear();
+	close.pathNodeList.clear();
 	last_path.clear();
-	//RELEASE_ARRAY(walkabilityMap);
+
+	last_tile = { -1,-1 };
+	goal = { -1,-1 };
+
+	trigger = nullptr;
+	isPathRequested = false;
+
 	return true;
-}
-
-// Sets up the walkability map
-void j1PathFinding::SetMap(uint width, uint height, uchar* data)
-{
-	this->width = width;
-	this->height = height;
-
-	//RELEASE_ARRAY(walkabilityMap);
-	//walkabilityMap = new uchar[width*height];
-	//memcpy(walkabilityMap, data, width*height);
 }
 
 // Utility: return true if pos is inside the map boundaries
@@ -369,9 +364,6 @@ bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destinat
 	goal = destination;
 	this->distanceHeuristic = distanceHeuristic;
 
-	last_path.clear();
-	last_tile = { -1,-1 };
-
 	// Add the origin tile to open
 	PathNode originNode(0, CalculateDistance(origin, destination, distanceHeuristic), origin, nullptr);
 	open.pathNodeList.push_back(originNode);
@@ -455,9 +447,6 @@ bool j1PathFinding::InitializeDijkstra(const iPoint& origin, FindActiveTrigger* 
 	// If origin is not walkable, return false
 	if (!IsWalkable(origin))
 		return false;
-
-	last_path.clear();
-	last_tile = { -1,-1 };
 
 	this->trigger = trigger;
 	this->isPathRequested = isPathRequested;

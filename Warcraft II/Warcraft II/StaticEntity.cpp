@@ -39,7 +39,6 @@ StaticEntity::~StaticEntity()
 			App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 1u;
 			App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 1u;
 			App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 1u;
-			App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
 			break;
 
 		case Medium:
@@ -53,7 +52,6 @@ StaticEntity::~StaticEntity()
 			App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 1u;
 			App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 1u;
 			App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 1u;
-			App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
 			break;
 
 		case Big:
@@ -75,7 +73,6 @@ StaticEntity::~StaticEntity()
 			App->scene->data[App->scene->w * (buildingTile.y + 3) + buildingTile.x] = 1u;
 			App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 1)] = 1u;
 			App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 2)] = 1u;
-			App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
 			break;
 
 		case None:
@@ -83,16 +80,6 @@ StaticEntity::~StaticEntity()
 			break;
 		}
 	}
-
-	// Set unwalkable tiles (SMALL)
-	/*
-	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-	App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-	App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-	App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-	App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-	*/
-	// ----
 }
 
 void StaticEntity::Draw(SDL_Texture* sprites)

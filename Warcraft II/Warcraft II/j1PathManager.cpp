@@ -97,7 +97,7 @@ void j1PathManager::UnRegister(PathPlanner* pathPlanner)
 // PATH PLANNER
 // ---------------------------------------------------------------------
 
-PathPlanner::PathPlanner(Entity* owner, Navgraph& navgraph) :entity(owner), navgraph(navgraph) {}
+PathPlanner::PathPlanner(Entity* owner) :entity(owner) {}
 
 PathPlanner::~PathPlanner()
 {
@@ -128,15 +128,12 @@ bool PathPlanner::RequestAStar(iPoint origin, iPoint destination)
 
 	pathfindingAlgorithmType = PathfindingAlgorithmType_AStar;
 
-	currentSearch = new j1PathFinding();
-
-	// Set the walkability map
-	//ret = navgraph.SetNavgraph(currentSearch);
-	ret = true;
+	// Current search
+	if (currentSearch == nullptr)
+		currentSearch = new j1PathFinding();
 
 	// Invalidate if origin or destination are non-walkable
-	if (ret)
-		ret = currentSearch->InitializeAStar(origin, destination);
+	ret = currentSearch->InitializeAStar(origin, destination);
 
 	if (ret)
 		App->pathmanager->Register(this);
@@ -156,36 +153,47 @@ bool PathPlanner::RequestDijkstra(iPoint origin, FindActiveTrigger::ActiveTrigge
 
 	pathfindingAlgorithmType = PathfindingAlgorithmType_Dijkstra;
 
-	this->isPathRequested = isPathRequested;
+	// Current search
+	if (currentSearch == nullptr)
+		currentSearch = new j1PathFinding();
 
-	currentSearch = new j1PathFinding();
-
+	// Trigger
 	switch (activeTriggerType) {
 
 	case FindActiveTrigger::ActiveTriggerType_Goal:
 
-		trigger = new FindActiveTrigger(activeTriggerType, entity);
+		if (trigger == nullptr)
+			trigger = new FindActiveTrigger(activeTriggerType, entity);
+		else {
+			trigger->SetActiveTriggerType(activeTriggerType);
+			trigger->SetEntity(entity);
+		}
 
 		break;
 
 	case FindActiveTrigger::ActiveTriggerType_Object:
-
-		trigger = new FindActiveTrigger(activeTriggerType, entity->entityType);
+		
+		if (trigger == nullptr)
+			trigger = new FindActiveTrigger(activeTriggerType, entity->entityType);
+		else {
+			trigger->SetActiveTriggerType(activeTriggerType);
+			trigger->SetEntityType(entity->entityType);
+		}
 
 		break;
 
 	case FindActiveTrigger::ActiveTriggerType_NoType:
 	default:
 
+		trigger = nullptr;
+
 		break;
 	}
 
-	//navgraph.SetNavgraph(currentSearch);
-
-	ret = true;
 	// Invalidate if origin is non-walkable
-	if (ret)
-		ret = currentSearch->InitializeDijkstra(origin, trigger, isPathRequested);
+	this->isPathRequested = isPathRequested;
+
+	ret = currentSearch->InitializeDijkstra(origin, trigger, isPathRequested);
 
 	if (ret)
 		App->pathmanager->Register(this);
@@ -201,12 +209,10 @@ void PathPlanner::GetReadyForNewSearch()
 
 	// Delete any active search
 	if (currentSearch != nullptr)
-		delete currentSearch;
-	currentSearch = nullptr;
+		currentSearch->CleanUp();
 
 	if (trigger != nullptr)
-		delete trigger;
-	trigger = nullptr;
+		trigger->CleanUp();
 }
 
 PathfindingStatus PathPlanner::CycleOnce()
@@ -303,52 +309,40 @@ j1PathFinding* PathPlanner::GetCurrentSearch() const
 	return currentSearch;
 }
 
-// WalkabilityMap struct ---------------------------------------------------------------------------------
-
-bool Navgraph::CreateNavgraph()
-{
-	return App->map->LoadWalkabilityMap(w, h, &data);
-
-}
-
-bool Navgraph::SetNavgraph(j1PathFinding* currentSearch) const
-{
-	if (currentSearch == nullptr)
-		return false;
-
-	currentSearch->SetMap(App->scene->w, App->scene->h, App->scene->data);
-
-	return true;
-}
-
-// Utility: return true if pos is inside the map boundaries
-bool Navgraph::CheckBoundaries(const iPoint& pos) const
-{
-	return (pos.x >= 0 && pos.x <= (int)(w - 1) &&
-		pos.y >= 0 && pos.y <= (int)(h - 1));
-}
-
-// Utility: returns true if the tile is walkable
-bool Navgraph::IsWalkable(const iPoint& pos) const
-{
-	int t = GetTileAt(pos);
-	return INVALID_WALK_CODE && t > 0;
-}
-
-// Utility: return the walkability value of a tile
-int Navgraph::GetTileAt(const iPoint& pos) const
-{
-	if (CheckBoundaries(pos))
-		return data[(pos.y*w) + pos.x];
-
-	return INVALID_WALK_CODE;
-}
-
 // FindActiveTrigger class ---------------------------------------------------------------------------------
 
 FindActiveTrigger::FindActiveTrigger(ActiveTriggerType activeTriggerType, Entity* entity) :activeTriggerType(activeTriggerType), entity(entity) {}
 
 FindActiveTrigger::FindActiveTrigger(ActiveTriggerType activeTriggerType, ENTITY_CATEGORY entityType) : activeTriggerType(activeTriggerType), entityType(entityType) {}
+
+bool FindActiveTrigger::CleanUp()
+{
+	activeTriggerType = ActiveTriggerType_NoType;
+	entity = nullptr;
+
+	entityType = EntityCategory_NONE;
+
+	isCheckingCurrTile = false;
+	isCheckingNextTile = false;
+	isCheckingGoalTile = true;
+
+	return true;
+}
+
+void FindActiveTrigger::SetActiveTriggerType(ActiveTriggerType activeTriggerType) 
+{
+	this->activeTriggerType = activeTriggerType;
+}
+
+void FindActiveTrigger::SetEntity(Entity* entity) 
+{
+	this->entity = entity;
+}
+
+void FindActiveTrigger::SetEntityType(ENTITY_CATEGORY entityType) 
+{
+	this->entityType = entityType;
+}
 
 bool FindActiveTrigger::isSatisfied(iPoint tile) const
 {

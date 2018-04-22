@@ -29,6 +29,7 @@ class UIButton : public UIElement
 {
 public:
 	UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener = nullptr, bool isInWolrd = false);
+	~UIButton();
 	void Update(float dt);
 	void HandleInput();
 	void DebugDraw(iPoint blitPos) const;

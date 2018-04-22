@@ -124,8 +124,6 @@ public:
 	j1PathManager*				pathmanager = nullptr;
 	j1FinishGame*				finish = nullptr;
 
-	bool isSoundCharged = false;
-
 private:
 
 	list<j1Module*>		modules;

@@ -109,7 +109,8 @@ bool j1Gui::PreUpdate()
 	addedElementUI.clear();
 
 	for (std::list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); iterator++) {
-		drawOrder.push(*iterator);
+		if ((*iterator)->type != UIE_TYPE_NO_TYPE)
+			drawOrder.push(*iterator);
 	}
 	
 	return ret;
@@ -128,22 +129,40 @@ bool j1Gui::Update(float dt)
 
 	while (UI_elem_it != UIElementsList.end())
 	{
-		if ((*UI_elem_it) != nullptr);
-			if ((*UI_elem_it)->type != UIE_TYPE_NO_TYPE)
-				(*UI_elem_it)->Update(dt);
+		if ((*UI_elem_it)->type != UIE_TYPE_NO_TYPE)
+			(*UI_elem_it)->Update(dt);
 
 		UI_elem_it++;
 	}
 
-	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
+	//for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
+	//	info = drawOrder.top();
+	//	if (info->type != UIE_TYPE_NO_TYPE) {
+	//		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+	//			info->Draw();
+	//		else if (App->render->IsInScreen(info->GetLocalRect())) {
+	//			info->Draw();
+	//		}
+	//	}
+	//}
+
+	UIElement* info = nullptr;
+	while (!drawOrder.empty())
+	{
 		info = drawOrder.top();
-		if (info != nullptr) {
-			if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
-				info->Draw();
-			else if (App->render->IsInScreen(info->GetLocalRect())) {
-				info->Draw();
+		if (info->type != UIE_TYPE_NO_TYPE) {
+
+			// Only blit elements with isBlit == true
+			if (info->isBlit) {
+
+				if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+					info->Draw();
+				else if (App->render->IsInScreen(info->GetLocalRect())) {
+					info->Draw();
+				}
 			}
 		}
+		drawOrder.pop();
 	}
 
 	return ret;
@@ -151,7 +170,8 @@ bool j1Gui::Update(float dt)
 
 void j1Gui::Draw() 
 {
-	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
+	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
+		info = drawOrder.top();
 		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
 			info->Draw();
 		else if (App->render->IsInScreen(info->GetLocalRect()))
@@ -167,16 +187,26 @@ bool j1Gui::PostUpdate()
 	list<UIElement*>::const_iterator iterator = UIElementsList.begin();
 
 	while (iterator != UIElementsList.end()) {
+	
+		if ((*iterator)->type != UIE_TYPE_NO_TYPE) {
+			if ((*iterator)->HasToBeRemoved()) {
+				LOG("Type is %i", (*iterator)->type);
 
-		if ((*iterator)->HasToBeRemoved()) {
+				UIElement* toDelete = *iterator;
+				UIElementsList.erase(iterator);
+				iterator = UIElementsList.begin();
 
-			delete *iterator;
-			UIElementsList.remove(*iterator);
+				delete toDelete;
+				continue;
+			}
+		}
+		else {
+			UIElementsList.erase(iterator);
 			iterator = UIElementsList.begin();
 			continue;
 		}
-
 		iterator++;
+
 	}
 
 	return ret;
@@ -212,8 +242,8 @@ UIImage* j1Gui::CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* lis
 {
 	UIImage* image = new UIImage(localPos, parent, info, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
+//	if (parent == nullptr)
+//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)image);
 
@@ -224,8 +254,8 @@ UILabel* j1Gui::CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* lis
 {
 	UILabel* label = new UILabel(localPos, parent, info, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
+//	if (parent == nullptr)
+//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)label);
 	
@@ -237,8 +267,8 @@ UISlider* j1Gui::CreateUISlider(iPoint localPos, UISlider_Info& info, j1Module* 
 {
 	UISlider* slider = new UISlider(localPos, parent, info, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
+//	if (parent == nullptr)
+//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)slider);
 
@@ -250,8 +280,8 @@ UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* 
 {
 	UIButton* button = new UIButton(localPos, parent, info, listener, isInWorld);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
+//	if (parent == nullptr)
+//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)button);
 
@@ -263,8 +293,8 @@ UILifeBar* j1Gui::CreateUILifeBar(iPoint localPos, UILifeBar_Info& info, j1Modul
 {
 	UILifeBar* lifeBar = new UILifeBar(localPos, parent, info, listener, isInWorld);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
+//	if (parent == nullptr)
+	//	parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)lifeBar);
 
@@ -276,8 +306,8 @@ UIInputText* j1Gui::CreateUIInputText(iPoint localPos, j1Module* listener, UIEle
 {
 	UIInputText* inputText = new UIInputText(localPos, parent, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
+//	if (parent == nullptr)
+//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)inputText);
 
@@ -291,8 +321,8 @@ UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIEleme
 
 	UICursor* cursor = new UICursor(localPos, parent, info, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
+//	if (parent == nullptr)
+//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)cursor);
 
@@ -305,8 +335,8 @@ UIMinimap* j1Gui::CreateUIMinimap(UIMinimap_Info& info, j1Module* listener, UIEl
 
 	UIMinimap* minimap = new UIMinimap(localPos, parent, info, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
+//	if (parent == nullptr)
+//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)minimap);
 

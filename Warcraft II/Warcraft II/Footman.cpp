@@ -98,6 +98,7 @@ void Footman::Move(float dt)
 			App->audio->PlayFx(12, 0);
 
 			isDead = true;
+			isValid = false;
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
@@ -124,7 +125,7 @@ void Footman::Move(float dt)
 		}
 	}
 
-	if (!isDead) {
+	if (!isDead && isValid) {
 
 		if (auxIsSelected != isSelected) {
 
@@ -206,12 +207,10 @@ void Footman::Move(float dt)
 
 			break;
 		}
-
-		// ---------------------------------------------------------------------
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
 	}
+
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 
@@ -232,11 +231,13 @@ void Footman::Move(float dt)
 	}
 
 	// Update Unit LifeBar
+	
 	if (lifeBar != nullptr) {
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
 	}
+	
 }
 
 void Footman::Draw(SDL_Texture* sprites)

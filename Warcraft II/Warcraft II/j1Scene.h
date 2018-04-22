@@ -20,7 +20,6 @@ struct UIButton;
 struct UIImage;
 struct UISlider;
 class UISlider_Info;
-class UIInputText;
 class UIMinimap;
 
 enum ENTITY_TYPE;
@@ -33,9 +32,7 @@ enum TerenasDialogEvents {
 	TerenasDialog_START,
 	TerenasDialog_RESCUE_ALLERIA,
 	TerenasDialog_RESCUE_KHADGAR,
-	TerenasDialog_RESCUE_TURALYON,
 	TerenasDialog_GOLD_MINE,
-	TerenasDialog_RUNESTONE,
 	TerenasDialog_FOOD,
 	TerenasDialog_GOLD,
 	TerenasDialog_NONE
@@ -51,8 +48,24 @@ enum PauseMenuActions {
 	PauseMenuActions_SLIDERMUSIC
 };
 struct TerenasAdvices {
-	UIImage* terenasImage;
-	UILabel* text;
+	UIImage* terenasImage = nullptr;
+	UILabel* text = nullptr;
+};
+
+struct MenuBuildingButton {
+	UIButton* icon = nullptr;
+	UILabel* name = nullptr;
+	UILabel* cost = nullptr;
+};
+
+struct BuildingMenu {
+	MenuBuildingButton chickenFarm;
+	MenuBuildingButton stables;
+	MenuBuildingButton gryphonAviary;
+	MenuBuildingButton mageTower;
+	MenuBuildingButton scoutTower;
+	MenuBuildingButton guardTower;
+	MenuBuildingButton cannonTower;
 };
 
 class j1Scene : public j1Module
@@ -99,6 +112,9 @@ public:
 
 	void LoadInGameUI();
 	void LoadBuildingMenu();
+	void CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect buttonHoverTexArea, SDL_Rect buttonPressedTexArea,
+	iPoint buttonPos, string buildingName, string buildingCost, iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
+	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
 	void UpdateResourcesLabels();
@@ -117,11 +133,11 @@ public:
 
 public:
 
-	// Walkability
+	// Walkability map
 	int w = 0, h = 0;
 	uchar* data = NULL;
 
-	//Building costs
+	// Building costs
 	int keepCost = 500;
 	int castleCost = 1500;
 	int barracks2Cost = 1000;
@@ -165,7 +181,7 @@ public:
 
 	bool isFrameByFrame = false;
 
-	bool isDebug = false;
+	bool isDebug = true;
 
 	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
 	TerenasAdvices terenasAdvices;
@@ -176,6 +192,8 @@ public:
 
 	UIMinimap* minimap = nullptr;
 
+	list<DynamicEntity*> units;
+
 private:
 
 	j1Timer finalTransition;
@@ -184,24 +202,23 @@ private:
 	bool isStarted = false;
 	bool isAttackCursor = false;
 	bool isFadeToMenu = false;
+
 	// Draw rectangle
 	iPoint startRectangle = { 0,0 };
 
 	//UI
-	UIButton *buildingButton = nullptr, *chickenFarmButton = nullptr, *elvenLumberButton = nullptr, *blackSmithButton = nullptr, *stablesButton = nullptr;
-	UIButton *gryphonAviaryButton = nullptr, *mageTowerButton = nullptr, *churchButton = nullptr, *scoutTowerButton = nullptr, *guardTowerButton = nullptr, *cannonTowerButton = nullptr;
-	list<UILabel*> buildingLabelsList;
-	UILabel *buildingLabel = nullptr;
-
-	UIImage *buildingMenu = nullptr;
+	BuildingMenu buildingMenuButtons;
+	UIButton* buildingButton = nullptr;
+	UILabel* buildingLabel = nullptr;
+	UIImage* buildingMenu = nullptr;
 
 	//Frame InGame
 	UIImage* inGameFrameImage = nullptr;
 	UILabel* goldLabel, *foodLabel = nullptr;
 
 	//Pause Menu
-	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
-	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;
+	UIButton* pauseMenuButt = nullptr, * settingsButt = nullptr, * continueButt = nullptr, * ReturnMenuButt = nullptr;
+	UILabel* pauseMenuLabel = nullptr, * settingsLabel = nullptr, * continueLabel = nullptr, * ReturnMenuLabel = nullptr;
 	UIImage* parchmentImg = nullptr;
 	//Settings Menu
 	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
@@ -223,7 +240,8 @@ private:
 
 	//Camera attributes
 	float camSpeed = 0.0f;
-	int camMovMargin = 0;
+	float camMovMargin = 0.0f;
+	bool isCamMovMarginCharged = false;
 
 	SDL_Scancode buttonSaveGame =	SDL_SCANCODE_UNKNOWN;
 	SDL_Scancode buttonLoadGame =	SDL_SCANCODE_UNKNOWN;

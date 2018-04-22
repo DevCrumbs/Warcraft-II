@@ -27,7 +27,6 @@ bool j1Movement::Update(float dt)
 
 void j1Movement::DebugDraw() const
 {
-	/*
 	for (list<UnitGroup*>::const_iterator group = unitGroups.begin(); group != unitGroups.end(); ++group) {
 		for (list<SingleUnit*>::const_iterator unit = (*group)->units.begin(); unit != (*group)->units.end(); ++unit) {
 
@@ -62,7 +61,6 @@ void j1Movement::DebugDraw() const
 			}
 		}
 	}
-	*/
 }
 
 bool j1Movement::CleanUp()
@@ -254,17 +252,40 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 		// The unit is still
 		singleUnit->unit->SetIsStill(true);
 
+		// The goal of the unit has been invalidated
+		if (singleUnit->isWalkabilityUpdated) {
+
+			if (!App->pathfinding->IsWalkable(singleUnit->goal))
+
+				singleUnit->goal = FindClosestValidTile(singleUnit->goal);
+
+			if (singleUnit->goal.x != -1 && singleUnit->goal.y != -1) {
+
+				singleUnit->isWalkabilityUpdated = false;
+				break;
+			}
+
+			// If no valid goal can be found, stop the unit where they are
+			singleUnit->goal = singleUnit->currTile;
+			singleUnit->movementState = MovementState_GoalReached;
+		}
+
 		// The goal of a unit cannot be the goal of another unit
-		if (!IsValidTile(singleUnit, singleUnit->goal, false, false, true))
+		if (!IsValidTile(singleUnit, singleUnit->goal, false, false, true)
+			&& singleUnit->goal.x != -1 && singleUnit->goal.y != -1) {
+
+			singleUnit->changedGoal = singleUnit->goal;
+			singleUnit->goal = { -1,-1 };
 
 			singleUnit->isGoalNeeded = true;
+		}
 
 		if (singleUnit->isGoalNeeded) {
 
 			// Only one unit at a time can change its goal
 			if (!IsAnyUnitDoingSomething(singleUnit, true)) {
 
-				singleUnit->unit->GetPathPlanner()->RequestDijkstra(singleUnit->goal, FindActiveTrigger::ActiveTriggerType_Goal);
+				singleUnit->unit->GetPathPlanner()->RequestDijkstra(singleUnit->changedGoal, FindActiveTrigger::ActiveTriggerType_Goal);
 
 				singleUnit->isSearching = true; /// The unit is changing its goal
 			}
@@ -359,7 +380,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 			// ---------------------------------------------------------------------
 
 			// a) The other unit is hitting and won't respond to any movement order
-			if (singleUnit->waitUnit->unit->IsHitting() || singleUnit->waitUnit->unit->IsStill()) {
+			if (singleUnit->waitUnit->unit->IsHitting()) {
 
 				// Current unit must react to the collision
 				// Current unit moves
@@ -451,9 +472,6 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 			// b) The waitUnit is still on its goal
 			if (singleUnit->nextTile == singleUnit->waitUnit->goal && singleUnit->waitUnit->currTile == singleUnit->waitUnit->goal) {
-
-				// Wake up the unit (it may not be in the UnitState_Walk state)
-				singleUnit->waitUnit->WakeUp();
 
 				// The unit with the higher priority politely asks the other unit to move
 				if ((singleUnit->unit->GetPriority() >= singleUnit->waitUnit->unit->GetPriority() || singleUnit->reversePriority)) {
@@ -726,6 +744,13 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 				// Update the unit's currTile with the nextTile
 				singleUnit->currTile = singleUnit->nextTile;
+
+				// The walkability map has been updated
+				if (singleUnit->isWalkabilityUpdated) {
+
+					singleUnit->movementState = MovementState_WaitForPath;
+					break;
+				}
 
 				// Set the unit's movement state to IncreaseWaypoint
 				singleUnit->movementState = MovementState_IncreaseWaypoint;
@@ -1221,7 +1246,7 @@ iPoint j1Movement::FindNewValidTile(SingleUnit* singleUnit, bool checkOnlyFront)
 		curr = queue.top();
 		queue.pop();
 
-		if (singleUnit->unit->GetNavgraph()->IsWalkable(curr.point) && IsValidTile(singleUnit, curr.point, true, true))
+		if (App->pathfinding->IsWalkable(curr.point) && IsValidTile(singleUnit, curr.point, true, true))
 			return curr.point;
 	}
 
@@ -1294,7 +1319,7 @@ bool j1Movement::IsOppositeDirection(SingleUnit* singleUnitA, SingleUnit* single
 	}
 }
 
-bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor)
+bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor) const
 {
 	iPoint neighbors[8] = { { -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 } };
 
@@ -1314,6 +1339,86 @@ bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor)
 	}
 
 	return false;
+}
+
+// Returns the closest walkable and valid neighbor of the tiled passed as an argument
+iPoint j1Movement::FindClosestValidTile(iPoint tile) const
+{
+	// Perform a BFS
+	queue<iPoint> queue;
+	list<iPoint> visited;
+
+	iPoint curr = tile;
+	queue.push(curr);
+
+	while (queue.size() > 0) {
+
+		curr = queue.front();
+		queue.pop();
+
+		if (!App->entities->IsEntityOnTile(curr) && App->pathfinding->IsWalkable(curr))
+			return curr;
+
+		iPoint neighbors[8];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
+		neighbors[4].create(curr.x + 1, curr.y + 1);
+		neighbors[5].create(curr.x + 1, curr.y - 1);
+		neighbors[6].create(curr.x - 1, curr.y + 1);
+		neighbors[7].create(curr.x - 1, curr.y - 1);
+
+		for (uint i = 0; i < 8; ++i)
+		{
+			if (App->pathfinding->IsWalkable(neighbors[i])) {
+
+				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+					queue.push(neighbors[i]);
+					visited.push_back(neighbors[i]);
+				}
+			}
+		}
+	}
+
+	return { -1,-1 };
+}
+
+void j1Movement::UpdateUnitsWalkability(vector<iPoint> updatedTiles) const
+{
+	if (updatedTiles.size() == 0)
+		return;
+
+	list<UnitGroup*>::const_iterator groups;
+	list<SingleUnit*>::const_iterator units;
+
+	for (groups = unitGroups.begin(); groups != unitGroups.end(); ++groups) {
+		for (units = (*groups)->units.begin(); units != (*groups)->units.end(); ++units) {
+
+			// If a path of a unit contains an updated tile, request a new path
+			if ((*units)->path.size() > 0) {
+
+				bool isUpdated = false;
+
+				for (uint i = 0; i < (*units)->path.size(); ++i) {
+
+					for (uint j = 0; j < updatedTiles.size(); ++j) {
+
+						if ((*units)->path[i] == updatedTiles[j]) {
+						
+							isUpdated = true;
+							(*units)->isWalkabilityUpdated = true;
+						}
+						if (isUpdated)
+							break;
+					}
+					if (isUpdated)
+						break;
+				}
+			}
+		}
+	}
 }
 
 // UnitGroup struct ---------------------------------------------------------------------------------
@@ -1621,37 +1726,12 @@ bool SingleUnit::IsTileReached(iPoint nextPos, fPoint endPos) const
 	return ret;
 }
 
-// Resets the parameters of the unit (general info)
-void SingleUnit::ResetUnitParameters()
+// Returns true if the unit is fitting a tile
+bool SingleUnit::IsFittingTile() const
 {
-	isGoalNeeded = false;
+	iPoint currTilePos = App->map->MapToWorld(currTile.x, currTile.y);
 
-	wakeUp = false;
-	nextTile = { -1,-1 };
-
-	isSearching = false;
-	unit->GetPathPlanner()->SetSearchRequested(false);
-}
-
-// Resets the collision parameters of the unit
-void SingleUnit::ResetUnitCollisionParameters()
-{
-	coll = CollisionType_NoCollision;
-	waitUnit = nullptr;
-	waitTile = { -1,-1 };
-	wait = false;
-
-	reversePriority = false;
-}
-
-// When detected a collision, to set the collision parameters of the unit
-void SingleUnit::SetCollisionParameters(CollisionType collisionType, SingleUnit* waitUnit, iPoint waitTile)
-{
-	coll = collisionType;
-
-	wait = true;
-	this->waitUnit = waitUnit;
-	this->waitTile = waitTile;
+	return (int)unit->GetPos().x == currTilePos.x && (int)unit->GetPos().y == currTilePos.y;
 }
 
 // Prepares the unit for its next movement cycle
@@ -1661,14 +1741,15 @@ bool SingleUnit::GetReadyForNewMove()
 
 	if (IsFittingTile()) {
 
+		// Resets the movement information of the unit
 		ResetUnitParameters();
 
-		unit->GetPathPlanner()->SetSearchRequested(false);
-		isSearching = false;
+		// Resets the collision information of the unit
+		ResetUnitCollisionParameters();
+
+		// -----
 
 		movementState = MovementState_WaitForPath;
-
-		isGoalChanged = false;
 
 		ret = true;
 	}
@@ -1676,20 +1757,53 @@ bool SingleUnit::GetReadyForNewMove()
 	return ret;
 }
 
-// Sets the state of the unit to UnitState_Walk
-void SingleUnit::WakeUp()
+// Resets the parameters of the unit (general info)
+void SingleUnit::ResetUnitParameters(bool isGoalReset)
 {
-	if (!wakeUp)
-		wakeUp = true;
+	path.clear();
+	nextTile = { -1,-1 };
+
+	isGoalNeeded = false;
+	isGoalChanged = false;
+
+	unit->GetPathPlanner()->SetSearchRequested(false);
+	isSearching = false;
+
+	if (isGoalReset) {
+	
+		goal = { -1,-1 };
+		shapedGoal = { -1,-1 };
+		changedGoal = { -1,-1 };
+	}
+
+	// Walkability map
+	isWalkabilityUpdated = false;
 }
 
-bool SingleUnit::IsFittingTile() const
+// Resets the collision parameters of the unit
+void SingleUnit::ResetUnitCollisionParameters()
 {
-	iPoint currTilePos = App->map->MapToWorld(currTile.x, currTile.y);
+	reversePriority = false;
 
-	return (int)unit->GetPos().x == currTilePos.x && (int)unit->GetPos().y == currTilePos.y;
+	wait = false;
+
+	waitTile = { -1,-1 };
+	waitUnit = nullptr;
+	coll = CollisionType_NoCollision;
 }
 
+// When detected a collision, to set the collision parameters of the unit
+void SingleUnit::SetCollisionParameters(CollisionType collisionType, SingleUnit* waitUnit, iPoint waitTile)
+{
+	coll = collisionType;
+
+	wait = true;
+
+	this->waitTile = waitTile;
+	this->waitUnit = waitUnit;
+}
+
+// To set the goal tile of the unit
 void SingleUnit::SetGoal(iPoint goal)
 {
 	this->goal = goal;

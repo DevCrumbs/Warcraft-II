@@ -98,17 +98,12 @@ void TrollAxethrower::Move(float dt)
 			App->audio->PlayFx(13, 0);
 
 			isDead = true;
+			isValid = false;
 			App->player->enemiesKill++;
 
 			App->player->currentGold += 15;
 
 			App->scene->hasGoldChanged = true;
-			
-			if (particle != nullptr) {
-
-				particle->isRemove = true;
-				particle = nullptr;
-			}
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
@@ -133,13 +128,7 @@ void TrollAxethrower::Move(float dt)
 		}
 	}
 
-	if (currTarget == nullptr && particle != nullptr) {
-
-		particle->isRemove = true;
-		particle = nullptr;
-	}
-
-	if (!isDead) {
+	if (!isDead && isValid) {
 
 		/// GOAL: MoveToPosition
 		// The goal of the unit has been changed manually
@@ -150,6 +139,7 @@ void TrollAxethrower::Move(float dt)
 		/// GOAL: AttackTarget
 		// Check if there are available targets
 		/// Prioritize a type of target (static or dynamic)
+		/*
 		if (singleUnit->IsFittingTile()) {
 
 			newTarget = GetBestTargetInfo();
@@ -160,12 +150,6 @@ void TrollAxethrower::Move(float dt)
 				if (currTarget != newTarget) {
 
 					if (currTarget != nullptr) {
-
-						if (particle != nullptr) {
-
-							particle->isRemove = true;
-							particle = nullptr;
-						}
 
 						if (!currTarget->isRemoved) {
 
@@ -179,14 +163,11 @@ void TrollAxethrower::Move(float dt)
 				}
 			}
 		}
-
-		// ---------------------------------------------------------------------
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
+		*/
 	}
 
-	// ---------------------------------------------------------------------
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 
@@ -207,6 +188,7 @@ void TrollAxethrower::Move(float dt)
 	}
 
 	//Update Unit LifeBar
+	
 	if (lifeBar != nullptr) {
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
@@ -218,7 +200,7 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 	if (animation != nullptr) {
 
 		fPoint offset = { 0.0f,0.0f };
-		offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+		offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 3.0f };
 
 		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
 	}
@@ -684,4 +666,9 @@ bool TrollAxethrower::ChangeAnimation()
 		return ret;
 	}
 	return ret;
+}
+
+float TrollAxethrower::GetAxeSpeed() const 
+{
+	return trollAxethrowerInfo.axeSpeed;
 }

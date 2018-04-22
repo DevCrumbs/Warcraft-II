@@ -2,7 +2,6 @@
 #define __WatchTower_H__
 
 #include "StaticEntity.h"
-#include "ScoutTower.h"
 #include <list>
 
 struct WatchTowerInfo
@@ -33,11 +32,7 @@ public:
 	void TowerStateMachine(float dt);
 
 	//Arrows
-	void DetermineArrowDirection();
 	void CreateArrow();
-	void CheckArrowMovement(float dt);
-	void MoveArrowTowardsTarget(float dt);
-	void InflictDamageAndDestroyArrow();
 
 	// Animations
 	void LoadAnimationsSpeed();
@@ -56,8 +51,6 @@ private:
 
 	//Arrow
 	Particle* arrowParticle = nullptr;
-	ArrowDirection arrowDirection = NO_DIRECTION;
-
 };
 
 #endif //__WatchTower_H__

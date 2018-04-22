@@ -2,7 +2,6 @@
 #define __EnemyCannonTower_H__
 
 #include "StaticEntity.h"
-#include "ScoutTower.h"
 #include <list>
 
 struct EnemyCannonTowerInfo
@@ -32,11 +31,7 @@ public:
 	void TowerStateMachine(float dt);
 
 	//Cannon bullet
-	void DetermineCannonBulletDirection();
 	void CreateCannonBullet();
-	void CheckCannonBulletMovement(float dt);
-	void MoveCannonTowardsTarget(float dt);
-	void InflictDamageAndDestroyCannonBullet();
 
 	// Animations
 	void LoadAnimationsSpeed();
@@ -53,9 +48,8 @@ private:
 	j1Timer attackTimer;
 	std::list<Entity*> enemyAttackList;
 
-	//Arrow
+	//Cannon bullet
 	Particle* cannonParticle = nullptr;
-	ArrowDirection cannonDirection = NO_DIRECTION;
 };
 
 #endif //__EnemyCannonTower_H__

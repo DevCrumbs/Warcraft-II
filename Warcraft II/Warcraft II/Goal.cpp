@@ -11,6 +11,11 @@
 #include "j1EntityFactory.h"
 #include "j1EntityFactory.h"
 #include "j1Particles.h"
+#include "j1Gui.h"
+#include "UILifeBar.h"
+
+#include "j1Player.h"
+#include "j1Scene.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -186,6 +191,11 @@ void Goal_Think::AddGoal_MoveToPosition(iPoint destinationTile)
 void Goal_Think::AddGoal_Patrol(iPoint originTile, iPoint destinationTile)
 {
 	AddSubgoal(new Goal_Patrol(owner, originTile, destinationTile));
+}
+
+void Goal_Think::AddGoal_GatherGold(GoldMine* goldMine) 
+{
+	AddSubgoal(new Goal_GatherGold(owner, goldMine));
 }
 
 // Goal_AttackTarget ---------------------------------------------------------------------
@@ -370,8 +380,6 @@ void Goal_Wander::Activate()
 	if(owner != nullptr)
 		AddSubgoal(new Goal_LookAround(owner));
 
-	Navgraph* navgraph = owner->GetNavgraph();
-
 	iPoint destinationTile = { -1,-1 };
 
 	int sign = rand() % 2;
@@ -417,6 +425,70 @@ void Goal_Wander::Terminate()
 	owner->SetUnitState(UnitState_Idle);
 }
 
+// Goal_GatherGold ---------------------------------------------------------------------
+
+Goal_GatherGold::Goal_GatherGold(DynamicEntity* owner, GoldMine* goldMine) :CompositeGoal(owner, GoalType_GatherGold), goldMine(goldMine) {}
+
+void Goal_GatherGold::Activate()
+{
+	// 1. The selected group of units move near the Gold Mine
+	// 2. Only one unit of the group (the unit nearest to the mine) enters the mine and gathers the gold (it takes a bit of time to gather the gold)
+
+	goalStatus = GoalStatus_Active;
+
+	if (goldMine == nullptr) {
+	
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+	else if (goldMine->buildingState == BuildingState_Destroyed) {
+	
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+
+	AddSubgoal(new Goal_PickNugget(owner, goldMine));
+
+	// The goal tile is the tile in front of the entrance of the mine
+	iPoint goldMineTile = App->map->WorldToMap(goldMine->GetPos().x, goldMine->GetPos().y);
+	goldMineTile.x -= 1;
+	goldMineTile.y += 3;
+
+	iPoint unitGoal = goldMineTile;
+
+	// If the tile in front of the entrance of the mine is not walkable, find another tile next to the mine
+	if (!App->pathfinding->IsWalkable(goldMineTile)) {
+
+		unitGoal = App->movement->FindClosestValidTile(goldMineTile);
+
+		if (unitGoal.x == -1 || unitGoal.y == -1) {
+
+			goalStatus = GoalStatus_Failed;
+			return;
+		}
+	}
+
+	AddSubgoal(new Goal_MoveToPosition(owner, unitGoal));
+}
+
+GoalStatus Goal_GatherGold::Process(float dt)
+{
+	ActivateIfInactive();
+
+	goalStatus = ProcessSubgoals(dt);
+
+	return goalStatus;
+}
+
+void Goal_GatherGold::Terminate()
+{
+	RemoveAllSubgoals();
+
+	goldMine = nullptr;
+
+	owner->SetUnitState(UnitState_Idle);
+}
+
 // ATOMIC GOALS
 // Goal_MoveToPosition ---------------------------------------------------------------------
 
@@ -428,9 +500,7 @@ void Goal_MoveToPosition::Activate()
 
 	owner->SetHitting(false);
 
-	Navgraph* v = owner->GetNavgraph();
-
-	if (!owner->GetNavgraph()->IsWalkable(destinationTile)) {
+	if (!App->pathfinding->IsWalkable(destinationTile)) {
 
 		goalStatus = GoalStatus_Failed;
 		return;
@@ -555,211 +625,116 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		return goalStatus;
 	}
 
+	// Do things when the animation of the unit has finished
 	if (((DynamicEntity*)owner)->GetAnimation()->Finished()) {
 
 		DynamicEntity* dyn = (DynamicEntity*)owner;
 
-		if (owner->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+		// Calculate particle orientation (for Elven Archer and Troll Axethrower)
+		orientation = { targetInfo->target->GetPos().x - owner->GetPos().x, targetInfo->target->GetPos().y - owner->GetPos().y };
 
-			if (owner->particle == nullptr) {
+		float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
-				App->audio->PlayFx(24, 0);
+		if (m > 0.0f) {
+			orientation.x /= m;
+			orientation.y /= m;
+		}
 
-				orientation = { targetInfo->target->GetPos().x - owner->GetPos().x, targetInfo->target->GetPos().y - owner->GetPos().y };
+		switch (owner->dynamicEntityType) {
 
-				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+		case EntityType_ELVEN_ARCHER:
 
-				if (m > 0.0f) {
-					orientation.x /= m;
-					orientation.y /= m;
-				}
+			// ARROW
+			App->audio->PlayFx(24, 0);
+
+			{
+				ElvenArcher* elvenArcher = (ElvenArcher*)owner;
 
 				switch (owner->GetDirection(orientation)) {
 
 				case UnitDirection_DownRight:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.downRight, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y + 16 });
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_UpRight:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.upRight, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y - 16 });
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_Right:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.right, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y });
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_DownLeft:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.downLeft, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y + 16 });
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_UpLeft:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.upLeft, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y - 16 });
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_Left:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.left, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y });
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_Down:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.down, { (int)owner->GetPos().x, (int)owner->GetPos().y + 16 });
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
 					break;
 
 				case UnitDirection_Up:
 				case UnitDirection_NoDirection:
 				default:
-					owner->particle = App->particles->AddParticle(App->particles->towerArrowParticles.up, { (int)owner->GetPos().x, (int)owner->GetPos().y - 16 });
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
 					break;
 				}
-
-				if (owner->particle != nullptr)
-					owner->particle->destination = orientation;
-
-				return goalStatus;
 			}
-		}
-		else if (owner->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
+			break;
 
-			if (owner->particle == nullptr) {
+		case EntityType_TROLL_AXETHROWER:
 
-				App->audio->PlayFx(23, 0);
+			// AXE
+			App->audio->PlayFx(23, 0);
 
-				orientation = { targetInfo->target->GetPos().x - owner->GetPos().x, targetInfo->target->GetPos().y - owner->GetPos().y };
-
-				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-				if (m > 0.0f) {
-					orientation.x /= m;
-					orientation.y /= m;
-				}
+			{
+				TrollAxethrower* trollAxethrower = (TrollAxethrower*)owner;
 
 				switch (owner->GetDirection(orientation)) {
 
 				case UnitDirection_DownRight:
-					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y + 16 });
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_UpRight:
-					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y - 16 });
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_Right:
-					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 16, (int)owner->GetPos().y });
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_DownLeft:
-					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y + 16 });
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_UpLeft:
-					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y - 16 });
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_Left:
-					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x - 16, (int)owner->GetPos().y });
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
 					break;
 				case UnitDirection_Down:
-					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x, (int)owner->GetPos().y + 16 });
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
 					break;
 
 				case UnitDirection_Up:
 				case UnitDirection_NoDirection:
 				default:
-					owner->particle = App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x, (int)owner->GetPos().y - 16 });
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
 					break;
 				}
-
-				if (owner->particle != nullptr)
-					owner->particle->destination = orientation;
-
-				return goalStatus;
 			}
-		}
-		else {
+			break;
+
+			// The rest of entities
+		default:
 
 			App->audio->PlayFx(25, 0);
 
 			targetInfo->target->ApplyDamage(owner->GetDamage());
-			((DynamicEntity*)owner)->GetAnimation()->Reset();
+			break;
 		}
-	}
 
-	if (owner->dynamicEntityType == EntityType_ELVEN_ARCHER || owner->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
-
-		if (owner->particle != nullptr) {
-
-			owner->particle->pos.x += owner->particle->destination.x * dt * 130.0f;
-			owner->particle->pos.y += owner->particle->destination.y * dt * 130.0f;
-
-			iPoint particleTile = App->map->WorldToMap(owner->particle->pos.x, owner->particle->pos.y);
-			DynamicEntity* dyn = (DynamicEntity*)targetInfo->target;
-
-			switch (owner->GetDirection(orientation)) {
-
-			case UnitDirection_DownRight:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
-					owner->particle->isRemove = true;
-					owner->particle = nullptr;
-					targetInfo->target->ApplyDamage(owner->GetDamage());
-
-					((DynamicEntity*)owner)->GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_UpRight:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
-					owner->particle->isRemove = true;
-					owner->particle = nullptr;
-					targetInfo->target->ApplyDamage(owner->GetDamage());
-					((DynamicEntity*)owner)->GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Right:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x) {
-					owner->particle->isRemove = true;
-					owner->particle = nullptr;
-					targetInfo->target->ApplyDamage(owner->GetDamage());
-					((DynamicEntity*)owner)->GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_DownLeft:
-				if (particleTile.x <= dyn->GetSingleUnit()->currTile.x && particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
-					owner->particle->isRemove = true;
-					owner->particle = nullptr;
-					targetInfo->target->ApplyDamage(owner->GetDamage());
-					((DynamicEntity*)owner)->GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_UpLeft:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
-					owner->particle->isRemove = true;
-					owner->particle = nullptr;
-					targetInfo->target->ApplyDamage(owner->GetDamage());
-					((DynamicEntity*)owner)->GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Left:
-				if (particleTile.x <= dyn->GetSingleUnit()->currTile.x) {
-					owner->particle->isRemove = true;
-					owner->particle = nullptr;
-					targetInfo->target->ApplyDamage(owner->GetDamage());
-					((DynamicEntity*)owner)->GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Down:
-				if (particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
-					owner->particle->isRemove = true;
-					owner->particle = nullptr;
-					targetInfo->target->ApplyDamage(owner->GetDamage());
-					((DynamicEntity*)owner)->GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Up:
-			case UnitDirection_NoDirection:
-			default:
-				if (particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
-					owner->particle->isRemove = true;
-					owner->particle = nullptr;
-					targetInfo->target->ApplyDamage(owner->GetDamage());
-					((DynamicEntity*)owner)->GetAnimation()->Reset();
-				}
-				break;
-			}
-		}
+		// Reset the animation
+		((DynamicEntity*)owner)->GetAnimation()->Reset();
 	}
 
 	return goalStatus;
@@ -912,4 +887,139 @@ void Goal_LookAround::Terminate()
 	secondsToChange = 0.0f;
 	secondsUntilNextChange = 0.0f;
 	isChanged = false;
+}
+
+// Goal_PickNugget ---------------------------------------------------------------------
+
+Goal_PickNugget::Goal_PickNugget(DynamicEntity* owner, GoldMine* goldMine) :AtomicGoal(owner, GoalType_PickNugget), goldMine(goldMine) {}
+
+void Goal_PickNugget::Activate()
+{
+	goalStatus = GoalStatus_Active;
+
+	if (goldMine == nullptr) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+	else if (goldMine->buildingState == BuildingState_Destroyed) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+
+	if (!goldMine->IsUnitGatheringGold()) {
+
+		// The goal tile is the tile in front of the entrance of the mine
+		iPoint goldMineTile = App->map->WorldToMap(goldMine->GetPos().x, goldMine->GetPos().y);
+		goldMineTile.x -= 1;
+		goldMineTile.y += 3;
+
+		// If this tile is walkable, the unit on this tile will gather the gold 
+		if (App->pathfinding->IsWalkable(goldMineTile)) {
+
+			if (owner->GetSingleUnit()->currTile == goldMineTile)
+
+				goldMine->SetUnitGatheringGold(true);
+			else {
+			
+				goalStatus = GoalStatus_Failed;
+				return;
+			}
+		}
+		// Else, any unit can gather the gold (the unit which arrives first)
+		else
+			goldMine->SetUnitGatheringGold(true);
+	}
+	// Another unit has already entered the mine and is gathering the gold
+	else {
+	
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+
+	// Determine the amount of gold and the time (depending on the gold)
+	int random = rand() % 4;
+
+	switch (random) {
+
+	case 0:
+		gold = 550;
+		secondsGathering = 5.0f;
+		break;
+	case 1:
+		gold = 600;
+		secondsGathering = 6.0f;
+		break;
+	case 2:
+		gold = 650;
+		secondsGathering = 6.5f;
+		break;
+	case 3:
+		gold = 700;
+		secondsGathering = 7.0f;
+		break;
+
+	default:
+		gold = 800;
+		secondsGathering = 8.0f;
+		break;
+	}
+
+	App->audio->PlayFx(6, 3); // Gold Mine FX
+
+	owner->SetBlitState(false);
+	owner->SetIsValid(false);
+
+	if (owner->GetLifeBar() != nullptr)
+		owner->GetLifeBar()->isBlit = false;
+
+	msAnimation = 600.0f;
+
+	timerGathering.Start();
+	timerAnimation.Start();
+}
+
+GoalStatus Goal_PickNugget::Process(float dt)
+{
+	ActivateIfInactive();
+
+	if (goalStatus == GoalStatus_Failed)
+		return goalStatus;
+
+	if (timerAnimation.ReadMs() >= msAnimation) {
+	
+		goldMine->SwapTexArea();
+		timerAnimation.Start();
+	}
+
+	// Wait for the unit to pick the gold
+	if (timerGathering.ReadSec() >= secondsGathering)
+
+		goalStatus = GoalStatus_Completed;
+
+	return goalStatus;
+}
+
+void Goal_PickNugget::Terminate()
+{
+	if (goalStatus == GoalStatus_Completed) {
+
+		// Give gold to the player
+		App->player->AddGold(gold);
+		App->scene->hasGoldChanged = true;
+		goldMine->buildingState = BuildingState_Destroyed;
+
+		owner->SetBlitState(true);
+		owner->SetIsValid(true);
+
+		if (owner->GetLifeBar() != nullptr)
+			owner->GetLifeBar()->isBlit = true;
+	}
+
+	goldMine = nullptr;
+	gold = 0;
+	secondsGathering = 0.0f;
+
+	msAnimation = 0.0f;
 }

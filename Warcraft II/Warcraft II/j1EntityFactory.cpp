@@ -978,6 +978,7 @@ bool j1EntityFactory::Start()
 	// Troll Axethrower
 	trollAxethrowerInfo.maxLife = 40;
 	trollAxethrowerInfo.currLife = trollAxethrowerInfo.maxLife;
+	trollAxethrowerInfo.axeSpeed = 120.0f;
 
 	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
 	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
@@ -1002,6 +1003,7 @@ bool j1EntityFactory::Start()
 	// Elven Archer
 	elvenArcherInfo.maxLife = 30;
 	elvenArcherInfo.currLife = elvenArcherInfo.maxLife;
+	elvenArcherInfo.arrowSpeed = 170.0f;
 
 	elvenArcherInfo.unitInfo.maxSpeed = 80.0f;
 	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
@@ -1183,7 +1185,17 @@ void j1EntityFactory::Draw()
 
 	// Dynamic entities (one texture per dynamic entity)
 	for (EntitiesDraw_info info; !entityDrawOrder.empty(); entityDrawOrder.pop()) {
+
 		info = entityDrawOrder.top();
+
+		if (info.ent->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+			DynamicEntity* dynEnt = (DynamicEntity*)info.ent;
+
+			if (!dynEnt->GetBlitState())
+				continue;
+		}
+
 		switch (info.type) {
 			// Player
 		case EntityType_FOOTMAN:
@@ -1247,8 +1259,9 @@ void j1EntityFactory::Draw()
 			break;
 		}
 	}
-	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
-	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
+
+	if (App->scene->GetAlphaBuilding() != EntityType_NONE)
+		DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
 }
 
 void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos)
@@ -1673,22 +1686,22 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 // Returns true if a building can NOT be built in that spot
 bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const
 {
-	//Dynamic entities
+	// Dynamic entities
 	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
-
-
 
 	while (activeDyn != activeDynamicEntities.end()) {
 	
 		iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
+		iPoint entityNextTile = (*activeDyn)->GetSingleUnit()->nextTile;
 
-		//This checks the tile of the dynamic entity and its surroundings
+		// This checks the tile of the dynamic entity and its surroundings
 		switch (buildingSize)
 		{
 		case Small:
 			for (int i = -1; i < 1; i++) {
 				for (int j = -1; j < 1; j++) {
-					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						|| (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
@@ -1696,7 +1709,8 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		case Medium:
 			for (int i = -2; i < 1; i++) {
 				for (int j = -2; j < 1; j++) {
-					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						|| (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
@@ -1704,7 +1718,8 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		case Big:
 			for (int i = -3; i < 1; i++) {
 				for (int j = -3; j < 1; j++) {
-					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						|| (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
@@ -1716,112 +1731,112 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		activeDyn++;
 	}
 
-	//Static entities
+	// Static entities
 	list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
 
 	while (activeStatic != activeStaticEntities.end()) {
 
-			iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPos().x, (*activeStatic)->GetPos().y);
-			
-			//This checks all of the tiles that conform of the static entity and their surrounding tiles
-			if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
-				switch (buildingSize)
-				{
-				case Small:
-					for (int i = -1; i < 2; i++) {
-						for (int j = -1; j < 2; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-							}
-						}
-					break;
-				case Medium:
-					for (int i = -2; i < 2; i++) {
-						for (int j = -2; j < 2; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Big:
-					for (int i = -3; i < 2; i++) {
-						for (int j = -3; j < 2; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				default:
-					break;
-				}
-			}
-			else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
-				switch (buildingSize)
-				{
-				case Small:
-					for (int i = -1; i < 3; i++) {
-						for (int j = -1; j < 3; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Medium:
-					for (int i = -2; i < 3; i++) {
-						for (int j = -2; j < 3; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Big:
-					for (int i = -3; i < 3; i++) {
-						for (int j = -3; j < 3; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				default:
-					break;
-				}
-			}
-			else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
-				switch (buildingSize)
-				{
-				case Small:
-					for (int i = -1; i < 4; i++) {
-						for (int j = -1; j < 4; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Medium:
-					for (int i = -2; i < 4; i++) {
-						for (int j = -2; j < 4; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Big:
-					for (int i = -3; i < 4; i++) {
-						for (int j = -3; j < 4; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				default:
-					break;
-				}
-			}
+		iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPos().x, (*activeStatic)->GetPos().y);
 
-			activeStatic++;
+		//This checks all of the tiles that conform of the static entity and their surrounding tiles
+		if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
+			switch (buildingSize)
+			{
+			case Small:
+				for (int i = -1; i < 2; i++) {
+					for (int j = -1; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Medium:
+				for (int i = -2; i < 2; i++) {
+					for (int j = -2; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Big:
+				for (int i = -3; i < 2; i++) {
+					for (int j = -3; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
+			switch (buildingSize)
+			{
+			case Small:
+				for (int i = -1; i < 3; i++) {
+					for (int j = -1; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Medium:
+				for (int i = -2; i < 3; i++) {
+					for (int j = -2; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Big:
+				for (int i = -3; i < 3; i++) {
+					for (int j = -3; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+			switch (buildingSize)
+			{
+			case Small:
+				for (int i = -1; i < 4; i++) {
+					for (int j = -1; j < 4; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Medium:
+				for (int i = -2; i < 4; i++) {
+					for (int j = -2; j < 4; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case Big:
+				for (int i = -3; i < 4; i++) {
+					for (int j = -3; j < 4; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		activeStatic++;
 	}
 
-	//Check if a building can be edificated, depending on the map walkability
+	// Check if a building can be edificated, depending on the map walkability
 	switch (buildingSize)
 	{
 	case Small:
@@ -1851,7 +1866,6 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		break;
 	}
 
-
 	switch (buildingSize)
 	{
 	case Small:
@@ -1880,9 +1894,6 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		}
 		break;
 	}
-
-
-
 
 	return false;
 }
@@ -2821,10 +2832,14 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 	if (find(unitsSelected.begin(), unitsSelected.end(), entity) == unitsSelected.end()) {
 
 		DynamicEntity* unit = GetDynamicEntityByEntity(entity);
-		unitsSelected.push_back(unit);
-		(entity)->isSelected = true;
 
-		ret = true;
+		if (unit->GetIsValid()) {
+
+			unitsSelected.push_back(unit);
+			(entity)->isSelected = true;
+
+			ret = true;
+		}
 	}
 
 	// TODO: Add StaticEntities
@@ -2870,8 +2885,12 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 
 						// If the unit isn't in the unitsSelected list, add it
 						if (find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
-							unitsSelected.push_back(GetDynamicEntityByEntity(*it));
-							(*it)->isSelected = true;
+
+							if ((*it)->GetIsValid()) {
+
+								unitsSelected.push_back(GetDynamicEntityByEntity(*it));
+								(*it)->isSelected = true;
+							}
 						}
 					}
 				}
@@ -2959,8 +2978,8 @@ bool j1EntityFactory::RemoveUnitFromUnitsSelected(Entity* entity)
 // Updates the selection color of all entities
 void j1EntityFactory::SetUnitsSelectedColor()
 {
-	//SDL_Color colors[10] = { ColorYellow, ColorDarkGreen, ColorBrightBlue, ColorOrange, ColorPink, ColorPurple, ColorGrey, ColorBlack, ColorOlive, ColorViolet };
-	//string colorNames[10] = { "Yellow", "DarkGreen", "BrightBlue", "Orange", "Pink", "Purple", "Grey", "Black", "Olive", "Violet" };
+	SDL_Color colors[10] = { ColorYellow, ColorDarkGreen, ColorBrightBlue, ColorOrange, ColorPink, ColorPurple, ColorGrey, ColorBlack, ColorOlive, ColorViolet };
+	string colorNames[10] = { "Yellow", "DarkGreen", "BrightBlue", "Orange", "Pink", "Purple", "Grey", "Black", "Olive", "Violet" };
 
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 	uint i = 0;
@@ -2970,8 +2989,8 @@ void j1EntityFactory::SetUnitsSelectedColor()
 		// If the unit is selected, change its color
 		if ((*it)->isSelected) {
 
-			GetDynamicEntityByEntity(*it)->SetColor(ColorWhite, "White");
-			//GetDynamicEntityByEntity(*it)->SetColor(colors[i], colorNames[i]);
+			//GetDynamicEntityByEntity(*it)->SetColor(ColorWhite, "White");
+			GetDynamicEntityByEntity(*it)->SetColor(colors[i], colorNames[i]);
 			i++;
 		}
 		else {

@@ -97,9 +97,6 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Sets up the walkability map
-	void SetMap(uint width, uint height, uchar* data);
-
 	// Main function to request a path from A to B
 	int CreatePath(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
 
@@ -137,9 +134,6 @@ public:
 
 private:
 
-	uint width = 0; // size of the map (w)
-	uint height = 0; // size of the map (h)
-	uchar* walkabilityMap = nullptr; // all map walkability values [0..255]
 	DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan; // distance heuristic of choice
 
 	PathList open; // open list of PathNodes
@@ -147,10 +141,10 @@ private:
 	vector<iPoint> last_path; // we store the created path here
 	iPoint last_tile = { -1,-1 }; // we store the last tile checked here
 
-								  // A Star
+	// A Star
 	iPoint goal = { -1,-1 }; // destination tile
 
-							 // Dijkstra
+	// Dijkstra
 	FindActiveTrigger* trigger = nullptr;
 	bool isPathRequested = false;
 };

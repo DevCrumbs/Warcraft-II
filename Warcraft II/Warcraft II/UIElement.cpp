@@ -18,7 +18,30 @@ UIElement::UIElement(iPoint localPos, UIElement* parent, j1Module* listener, boo
 	scale = App->win->GetScale();
 }
 
-UIElement::~UIElement() {}
+UIElement::~UIElement() 
+{
+	drag = false;
+	toRemove = false;
+
+	type = UIE_TYPE_NO_TYPE;
+
+	horizontal = HORIZONTAL_POS_LEFT;
+	vertical = VERTICAL_POS_TOP;
+
+	listener = nullptr;
+
+	draggable = false;
+	interactive = true;
+	isInWorld = false;
+	mouseClickPos = { 0,0 };
+
+	texArea = { 0,0,0,0 };
+	width = 0, height = 0;
+	priority = PriorityDraw_NONE;
+
+	localPos = { 0,0 };
+	parent = nullptr;
+}
 
 void UIElement::Update(float dt) {}
 
@@ -96,7 +119,10 @@ bool UIElement::MouseHover() const
 	App->input->GetMousePosition(x, y);
 	uint scale = App->win->GetScale();
 
-	return x > GetScreenPos().x / scale && x < GetScreenPos().x / scale + GetLocalRect().w && y > GetScreenPos().y / scale && y < GetScreenPos().y / scale + GetLocalRect().h;
+	iPoint screenPos{ GetScreenPos() };
+	SDL_Rect localRect{ GetLocalRect() };
+
+	return x > screenPos.x / scale && x < screenPos.x / scale + localRect.w && y > screenPos.y / scale && y < screenPos.y / scale + localRect.h;
 }
 
 void UIElement::SetOrientation()
@@ -196,4 +222,15 @@ void UIElement::SetPriorityDraw(PriorityDraw priority) {
 
 PriorityDraw UIElement::GetPriorityDraw() const{
 	return priority;
+}
+
+// Blit
+void UIElement::SetBlitState(bool isBlit) 
+{
+	this->isBlit = isBlit;
+}
+
+bool UIElement::GetBlitState() const 
+{
+	return isBlit;
 }
