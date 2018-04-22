@@ -271,16 +271,21 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 		}
 
 		// The goal of a unit cannot be the goal of another unit
-		if (!IsValidTile(singleUnit, singleUnit->goal, false, false, true))
+		if (!IsValidTile(singleUnit, singleUnit->goal, false, false, true)
+			&& singleUnit->goal.x != -1 && singleUnit->goal.y != -1) {
+
+			singleUnit->changedGoal = singleUnit->goal;
+			singleUnit->goal = { -1,-1 };
 
 			singleUnit->isGoalNeeded = true;
+		}
 
 		if (singleUnit->isGoalNeeded) {
 
 			// Only one unit at a time can change its goal
 			if (!IsAnyUnitDoingSomething(singleUnit, true)) {
 
-				singleUnit->unit->GetPathPlanner()->RequestDijkstra(singleUnit->goal, FindActiveTrigger::ActiveTriggerType_Goal);
+				singleUnit->unit->GetPathPlanner()->RequestDijkstra(singleUnit->changedGoal, FindActiveTrigger::ActiveTriggerType_Goal);
 
 				singleUnit->isSearching = true; /// The unit is changing its goal
 			}
@@ -375,7 +380,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 			// ---------------------------------------------------------------------
 
 			// a) The other unit is hitting and won't respond to any movement order
-			if (singleUnit->waitUnit->unit->IsHitting() || singleUnit->waitUnit->unit->IsStill()) {
+			if (singleUnit->waitUnit->unit->IsHitting()) {
 
 				// Current unit must react to the collision
 				// Current unit moves
@@ -1737,7 +1742,7 @@ bool SingleUnit::GetReadyForNewMove()
 	if (IsFittingTile()) {
 
 		// Resets the movement information of the unit
-		ResetUnitParameters(); /// Do not reset goal parameters
+		ResetUnitParameters();
 
 		// Resets the collision information of the unit
 		ResetUnitCollisionParameters();
@@ -1768,6 +1773,7 @@ void SingleUnit::ResetUnitParameters(bool isGoalReset)
 	
 		goal = { -1,-1 };
 		shapedGoal = { -1,-1 };
+		changedGoal = { -1,-1 };
 	}
 
 	// Walkability map

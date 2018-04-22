@@ -198,6 +198,7 @@ struct SingleUnit
 	iPoint nextTile = { -1,-1 }; // next waypoint of the path (next tile the unit is heading to in map coords)
 
 	iPoint goal = { -1,-1 }; // goal of the unit
+	iPoint changedGoal = { -1,-1 };
 	iPoint shapedGoal = { -1,-1 }; // shaped goal of the unit
 
 	 /// Changed goals

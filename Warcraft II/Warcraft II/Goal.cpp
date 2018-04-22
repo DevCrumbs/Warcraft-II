@@ -11,6 +11,8 @@
 #include "j1EntityFactory.h"
 #include "j1EntityFactory.h"
 #include "j1Particles.h"
+#include "j1Gui.h"
+#include "UILifeBar.h"
 
 #include "j1Player.h"
 #include "j1Scene.h"
@@ -450,7 +452,7 @@ void Goal_GatherGold::Activate()
 	// The goal tile is the tile in front of the entrance of the mine
 	iPoint goldMineTile = App->map->WorldToMap(goldMine->GetPos().x, goldMine->GetPos().y);
 	goldMineTile.x -= 1;
-	goldMineTile.y += 2;
+	goldMineTile.y += 3;
 
 	iPoint unitGoal = goldMineTile;
 
@@ -906,10 +908,29 @@ void Goal_PickNugget::Activate()
 		return;
 	}
 
-	if (!goldMine->IsUnitGatheringGold())
+	if (!goldMine->IsUnitGatheringGold()) {
 
-		goldMine->SetUnitGatheringGold(true);
+		// The goal tile is the tile in front of the entrance of the mine
+		iPoint goldMineTile = App->map->WorldToMap(goldMine->GetPos().x, goldMine->GetPos().y);
+		goldMineTile.x -= 1;
+		goldMineTile.y += 3;
 
+		// If this tile is walkable, the unit on this tile will gather the gold 
+		if (App->pathfinding->IsWalkable(goldMineTile)) {
+
+			if (owner->GetSingleUnit()->currTile == goldMineTile)
+
+				goldMine->SetUnitGatheringGold(true);
+			else {
+			
+				goalStatus = GoalStatus_Failed;
+				return;
+			}
+		}
+		// Else, any unit can gather the gold (the unit which arrives first)
+		else
+			goldMine->SetUnitGatheringGold(true);
+	}
 	// Another unit has already entered the mine and is gathering the gold
 	else {
 	
@@ -950,6 +971,9 @@ void Goal_PickNugget::Activate()
 	owner->SetBlitState(false);
 	owner->SetIsValid(false);
 
+	if (owner->GetLifeBar() != nullptr)
+		owner->GetLifeBar()->isBlit = false;
+
 	msAnimation = 600.0f;
 
 	timerGathering.Start();
@@ -988,6 +1012,9 @@ void Goal_PickNugget::Terminate()
 
 		owner->SetBlitState(true);
 		owner->SetIsValid(true);
+
+		if (owner->GetLifeBar() != nullptr)
+			owner->GetLifeBar()->isBlit = true;
 	}
 
 	goldMine = nullptr;

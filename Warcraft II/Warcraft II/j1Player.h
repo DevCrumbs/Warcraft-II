@@ -146,6 +146,7 @@ public:
 	//void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateBarracksButtons();
+	void CreateTownHallButtons();
 	void HandleBarracksUIElem();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
@@ -219,9 +220,9 @@ private:
 	list<GroupSpawning> toSpawnUnitStats;
 	list<ToSpawnUnit*> newUnitsToSpawn;
 
-	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr;
-	UIButton *producePaladinButton = nullptr, *commandPatrolButton = nullptr, *commandStopButton = nullptr;
-
+	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
+		     *producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *commandPatrolButton = nullptr, *commandStopButton = nullptr;
+	
 
 	list<UIElement*> UIMenuInfoList;
 

@@ -104,6 +104,7 @@ public:
 	float GetSpeed() const;
 	uint GetPriority() const;
 	uint GetDamage() const;
+	UILifeBar* GetLifeBar() const;
 
 	// State machine
 	void UnitStateMachine(float dt);
