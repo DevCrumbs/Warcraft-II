@@ -643,7 +643,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 						it++;
 					}
 				}
-
+				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
+					App->scene->UnLoadTerenasDialog();
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+				}
 				/*
 				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
 				if (App->entities->IsNearSoldiers(pos, 7)) {

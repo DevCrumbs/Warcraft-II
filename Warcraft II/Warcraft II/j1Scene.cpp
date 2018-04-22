@@ -1389,6 +1389,13 @@ void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
 		labelInfo.text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
 		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
 	}
+	else if (dialogEvent == TerenasDialog_GOLD_MINE) {
+		labelInfo.fontName = FONT_NAME_WARCRAFT14;
+		labelInfo.textWrapLength = 320;
+		labelInfo.interactive = false;
+		labelInfo.text = "To get gold from the mine you have to select units and they will gather it.";
+		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
+	}
 	else if (dialogEvent == TerenasDialog_FOOD) {
 		labelInfo.fontName = FONT_NAME_WARCRAFT14;
 		labelInfo.textWrapLength = 320;

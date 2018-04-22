@@ -32,6 +32,7 @@ enum TerenasDialogEvents {
 	TerenasDialog_START,
 	TerenasDialog_RESCUE_ALLERIA,
 	TerenasDialog_RESCUE_KHADGAR,
+	TerenasDialog_GOLD_MINE,
 	TerenasDialog_FOOD,
 	TerenasDialog_GOLD,
 	TerenasDialog_NONE
