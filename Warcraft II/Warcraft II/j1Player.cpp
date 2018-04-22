@@ -817,7 +817,7 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 			iPoint pos = App->map->WorldToMap((int)dynamicEntity->GetPos().x, (int)dynamicEntity->GetPos().y);
 			if (App->entities->IsNearSoldiers(pos, 5)) {
 				dynamicEntity->isRemove = true;
-				RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 245 });
+				RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
 				App->audio->PlayFx(14, 0);
 			}
 		}
