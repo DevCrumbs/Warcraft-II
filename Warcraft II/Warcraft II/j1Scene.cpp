@@ -498,6 +498,13 @@ bool j1Scene::Update(float dt)
 {
 	bool ret = true;
 
+
+	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_REPEAT) {
+		if (buildingMenuOn) 
+			UnLoadBuildingMenu();
+		else
+			LoadBuildingMenu();
+	}
 	// Save mouse position (world and map coords)
 	int x, y;
 	App->input->GetMousePosition(x, y);
@@ -1105,9 +1112,9 @@ void j1Scene::LoadBuildingMenu()
 	imageInfo.draggable = false;
 	imageInfo.texArea = { 0,33,240,529 };
 	imageInfo.horizontalOrientation = HORIZONTAL_POS_RIGHT;
-	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this);
+	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this, nullptr);
 	buildingMenuOn = true;
-	buildingMenu->SetPriorityDraw(PriorityDraw_FRAMEWORK);
+	buildingMenu->SetPriorityDraw(PriorityDraw_UNDER_FRAMEWORK);
 
 	CreateBuildingElements({ 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 }, { 15, 55 }, "Chicken Farm", 
 						   "Cost: 250 gold", { 75, 65 }, { 75, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
