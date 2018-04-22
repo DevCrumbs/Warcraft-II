@@ -8,7 +8,7 @@
 	
   <renderer>
     <vsync value="false"/>
-    <CapFrames value="60"/>
+    <CapFrames value="60000"/>
   </renderer>
 
   <window>

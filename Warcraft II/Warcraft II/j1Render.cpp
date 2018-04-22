@@ -94,7 +94,7 @@ bool j1Render::PostUpdate()
 
 // Called before quitting
 bool j1Render::CleanUp()
-{
+{	
 	LOG("Destroying SDL render");
 	SDL_DestroyRenderer(renderer);
 	return true;

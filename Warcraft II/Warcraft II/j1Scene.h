@@ -210,17 +210,17 @@ private:
 
 	//UI
 	BuildingMenu buildingMenuButtons;
-	UIButton *buildingButton = nullptr;
-	UILabel *buildingLabel = nullptr;
-	UIImage *buildingMenu = nullptr;
+	UIButton* buildingButton = nullptr;
+	UILabel* buildingLabel = nullptr;
+	UIImage* buildingMenu = nullptr;
 
 	//Frame InGame
 	UIImage* inGameFrameImage = nullptr;
 	UILabel* goldLabel, *foodLabel = nullptr;
 
 	//Pause Menu
-	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
-	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;
+	UIButton* pauseMenuButt = nullptr, * settingsButt = nullptr, * continueButt = nullptr, * ReturnMenuButt = nullptr;
+	UILabel* pauseMenuLabel = nullptr, * settingsLabel = nullptr, * continueLabel = nullptr, * ReturnMenuLabel = nullptr;
 	UIImage* parchmentImg = nullptr;
 	//Settings Menu
 	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;

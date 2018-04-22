@@ -265,7 +265,7 @@ bool j1Scene::PreUpdate()
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-	LOG("MouseTile: %i, %i", mouseTile.x, mouseTile.y);
+//	LOG("MouseTile: %i, %i", mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
 
@@ -1025,6 +1025,14 @@ void j1Scene::DebugKeys()
 		App->render->camera.x = -basePos.x;
 		App->render->camera.y = -basePos.y;
 	}
+
+	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_REPEAT) {
+		if (buildingMenuOn)
+			UnLoadBuildingMenu();
+		else
+			LoadBuildingMenu();
+	}
+
 }
 
 void j1Scene::CheckCameraMovement(float dt) {
@@ -1072,7 +1080,7 @@ void j1Scene::LoadInGameUI()
 	buttonInfo.normalTexArea = {0, 0, 126, 26};
 	buttonInfo.hoverTexArea = { 129, 0, 126, 26 };
 	buttonInfo.pressedTexArea = { 257, 0, 126, 26 };
-	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this, nullptr);
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
@@ -1105,8 +1113,8 @@ void j1Scene::LoadInGameUI()
 void j1Scene::LoadBuildingMenu()
 {
 	UnLoadTerenasDialog();
-	UIButton_Info buttonInfo;
-	UILabel_Info labelInfo;
+	//UIButton_Info buttonInfo;
+	//UILabel_Info labelInfo;
 
 	UIImage_Info imageInfo;
 	imageInfo.draggable = false;
@@ -1116,26 +1124,34 @@ void j1Scene::LoadBuildingMenu()
 	buildingMenuOn = true;
 	buildingMenu->SetPriorityDraw(PriorityDraw_UNDER_FRAMEWORK);
 
-	CreateBuildingElements({ 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 }, { 15, 55 }, "Chicken Farm", 
-						   "Cost: 250 gold", { 75, 65 }, { 75, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
+	if (buildingMenu->type != UIE_TYPE_NO_TYPE)
+	{
 
-	CreateBuildingElements({ 343,160,50,41 }, { 343,160,50,41 }, { 343,160,50,41 }, { 15, 100 }, "Stables",
-						   "Comming soon", { 75, 110 }, { 75, 127 }, stablesCost, &buildingMenuButtons.stables);
+		CreateBuildingElements({ 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 }, { 15, 55 }, "Chicken Farm",
+			"Cost: 250 gold", { 75, 65 }, { 75, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
 
-	CreateBuildingElements({ 496,160,50,41 }, { 496,160,50,41 }, { 496,160,50,41 }, { 15, 145 }, "Gryphon Aviary",
-						   "Comming soon", { 75, 155 }, { 75, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
+		CreateBuildingElements({ 343,160,50,41 }, { 343,160,50,41 }, { 343,160,50,41 }, { 15, 100 }, "Stables",
+			"Comming soon", { 75, 110 }, { 75, 127 }, stablesCost, &buildingMenuButtons.stables);
 
-	CreateBuildingElements({ 496,202,50,41 }, { 496,202,50,41 }, { 496,202,50,41 }, { 15, 190 }, "Mage Tower",
-					       "Comming soon", { 75, 200 }, { 75, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
+		CreateBuildingElements({ 496,160,50,41 }, { 496,160,50,41 }, { 496,160,50,41 }, { 15, 145 }, "Gryphon Aviary",
+			"Comming soon", { 75, 155 }, { 75, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
 
-	CreateBuildingElements({ 394,34,50,41 }, { 445,34,50,41 }, { 496,34,50,41 }, { 15, 235 }, "Scout Tower",
-		                   "Cost: 400 gold", { 75, 245 }, { 75, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
+		CreateBuildingElements({ 496,202,50,41 }, { 496,202,50,41 }, { 496,202,50,41 }, { 15, 190 }, "Mage Tower",
+			"Comming soon", { 75, 200 }, { 75, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
 
-	CreateBuildingElements({ 394,76,50,41 }, { 445,76,50,41 }, { 496,76,50,41 }, { 15, 280 }, "Guard Tower",
-	                       "Cost: 600 gold", { 75, 290 }, { 75, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
+		CreateBuildingElements({ 394,34,50,41 }, { 445,34,50,41 }, { 496,34,50,41 }, { 15, 235 }, "Scout Tower",
+			"Cost: 400 gold", { 75, 245 }, { 75, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
 
-	CreateBuildingElements({ 394,118,50,41 }, { 445,118,50,41 }, { 496,118,50,41 }, { 15, 325 }, "Cannon Tower",
-		                   "Cost: 600 gold", { 75, 335 }, { 75, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
+		CreateBuildingElements({ 394,76,50,41 }, { 445,76,50,41 }, { 496,76,50,41 }, { 15, 280 }, "Guard Tower",
+			"Cost: 600 gold", { 75, 290 }, { 75, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
+
+		CreateBuildingElements({ 394,118,50,41 }, { 445,118,50,41 }, { 496,118,50,41 }, { 15, 325 }, "Cannon Tower",
+			"Cost: 600 gold", { 75, 335 }, { 75, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
+	}
+	else
+	{
+		LOG("WTF");
+	}
 }
 
 void j1Scene::CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect buttonHoverTexArea, SDL_Rect buttonPressedTexArea,
