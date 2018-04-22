@@ -102,11 +102,19 @@ public:
 	PriorityDraw GetPriorityDraw() const;
 
 	UIElement* GetParent() const;
+
+	// Blit
+	void SetBlitState(bool isBlit);
+	bool GetBlitState() const;
+
 public:
+
 	bool drag = false;
 	bool toRemove = false;
+	bool isBlit = true;
 
 	UIE_TYPE type = UIE_TYPE_NO_TYPE;
+
 protected:
 
 	UIE_HORIZONTAL_POS horizontal = HORIZONTAL_POS_LEFT;
@@ -125,9 +133,9 @@ protected:
 	PriorityDraw priority = PriorityDraw_NONE;
 
 private:
+
 	iPoint localPos = { 0,0 };
 	UIElement* parent = nullptr;
-
 };
 
 #endif //__UIElement_H__

@@ -151,10 +151,15 @@ bool j1Gui::Update(float dt)
 	{
 		info = drawOrder.top();
 		if (info->type != UIE_TYPE_NO_TYPE) {
-			if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
-				info->Draw();
-			else if (App->render->IsInScreen(info->GetLocalRect())) {
-				info->Draw();
+
+			// Only blit elements with isBlit == true
+			if (info->isBlit) {
+
+				if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+					info->Draw();
+				else if (App->render->IsInScreen(info->GetLocalRect())) {
+					info->Draw();
+				}
 			}
 		}
 		drawOrder.pop();

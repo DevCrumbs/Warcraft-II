@@ -72,6 +72,7 @@ bool j1Menu::Awake(pugi::xml_node& config)
 	stablesSound = buildingSounds.attribute("stables").as_string();
 	repairBuildingSound = buildingSounds.attribute("repair").as_string();
 	destroyBuildingSound = buildingSounds.attribute("destroyBuilding").as_string(); 
+	runeStoneSound = buildingSounds.attribute("runeStone").as_string();
 
 	pugi::xml_node unitsSounds = sounds.child("unitsPaths");
 	humanDeadSound = unitsSounds.attribute("humanDeadSound").as_string();
@@ -501,6 +502,7 @@ void j1Menu::ChargeGameSounds()
 	ret = App->audio->LoadFx(axeThrowSound.data()); //23
 	ret = App->audio->LoadFx(bowFireSound.data()); //24
 	ret = App->audio->LoadFx(swordSound.data()); //25
-
+	ret = App->audio->LoadFx(runeStoneSound.data()); //26
+	
 	isSoundCharged = true;
 }

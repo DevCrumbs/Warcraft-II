@@ -666,6 +666,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
 				if (App->entities->IsNearSoldiers(pos, 7)) {
+					App->audio->PlayFx(26, 0); //RuneStone sound
 					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
 					while (it != App->entities->activeDynamicEntities.end()) {
 						if ((*it)->entitySide == EntitySide_Player)
@@ -686,7 +687,8 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		case EntitiesEvent_LEFT_CLICK:
 
-			DeleteEntitiesMenu();
+			if (staticEntity->staticEntityType != EntityType_RUNESTONE && staticEntity->staticEntityType != EntityType_GOLD_MINE)
+				DeleteEntitiesMenu();
 
 			if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM) {
 				App->audio->PlayFx(5, 0); //Chicken farm sound
@@ -909,6 +911,10 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 		CreateMageTowerButtons();
 	}
 
+	if ((entityName_text == "Town Hall" || entityName_text == "Keep") && townHall->buildingState == BuildingState_Normal) {
+		CreateTownHallButtons();
+	}
+
 	entitySelectedStats.entitySelected = currentEntity;
 }
 
@@ -1055,6 +1061,10 @@ void j1Player::DeleteEntitiesMenu()
 		toSpawnUnitStats.clear();
 	}
 
+	if (entitySelectedStats.entitySelected == townHall) 
+		App->gui->RemoveElem((UIElement**)&upgradeTownHallButton);
+	
+
 	if (entitySelectedStats.entitySelected != nullptr) {
 		App->gui->RemoveElem((UIElement**)&entitySelectedStats.HP);
 		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityName);
@@ -1181,6 +1191,11 @@ void j1Player::CreateBarracksButtons()
 		CreateSimpleButton({ 444,244,50,41 }, { 699, 244, 50, 41 }, { 954,244,50,41 }, { 319, 2 }, producePaladinButton);
 }
 
+void j1Player::CreateTownHallButtons()
+{
+	CreateSimpleButton({ 579,118,50,41 }, { 629, 118, 50, 41 }, { 679,118,50,41 }, { 217, 2 }, upgradeTownHallButton);
+}
+
 void j1Player::HandleBarracksUIElem()
 {
 	//Delete UI elements when not used
@@ -1303,6 +1318,23 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				// Command Stop (SANDRA)
 				if (App->scene->units.size() > 0)
 					App->entities->CommandToUnits(App->scene->units, UnitCommand_Stop);
+			}
+
+			if (UIelem == upgradeTownHallButton) {
+				if (townHallUpgrade && currentGold >= 1500) {
+					keepUpgrade = true;
+					currentGold -= 1500;
+					App->scene->hasGoldChanged = true;
+					App->audio->PlayFx(2, 0); //Construction sound
+				}
+				else if(currentGold >= 500) {
+					townHallUpgrade = true;
+					currentGold -= 500;
+					App->scene->hasGoldChanged = true;
+					App->audio->PlayFx(2, 0);
+				}
+				else
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
 
 			/*if (hoverCheck == HoverCheck_Repair) {

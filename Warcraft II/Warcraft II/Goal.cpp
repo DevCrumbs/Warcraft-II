@@ -11,6 +11,8 @@
 #include "j1EntityFactory.h"
 #include "j1EntityFactory.h"
 #include "j1Particles.h"
+#include "j1Gui.h"
+#include "UILifeBar.h"
 
 #include "j1Player.h"
 #include "j1Scene.h"
@@ -969,6 +971,9 @@ void Goal_PickNugget::Activate()
 	owner->SetBlitState(false);
 	owner->SetIsValid(false);
 
+	if (owner->GetLifeBar() != nullptr)
+		owner->GetLifeBar()->isBlit = false;
+
 	msAnimation = 600.0f;
 
 	timerGathering.Start();
@@ -1007,6 +1012,9 @@ void Goal_PickNugget::Terminate()
 
 		owner->SetBlitState(true);
 		owner->SetIsValid(true);
+
+		if (owner->GetLifeBar() != nullptr)
+			owner->GetLifeBar()->isBlit = true;
 	}
 
 	goldMine = nullptr;

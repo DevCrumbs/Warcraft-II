@@ -380,7 +380,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 			// ---------------------------------------------------------------------
 
 			// a) The other unit is hitting and won't respond to any movement order
-			if (singleUnit->waitUnit->unit->IsHitting() || singleUnit->waitUnit->unit->IsStill()) {
+			if (singleUnit->waitUnit->unit->IsHitting()) {
 
 				// Current unit must react to the collision
 				// Current unit moves

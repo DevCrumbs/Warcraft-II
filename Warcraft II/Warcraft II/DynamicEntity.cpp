@@ -226,6 +226,11 @@ uint DynamicEntity::GetDamage() const
 	return unitInfo.damage;
 }
 
+UILifeBar* DynamicEntity::GetLifeBar() const
+{
+	return lifeBar;
+}
+
 // State machine
 void DynamicEntity::UnitStateMachine(float dt) {}
 

@@ -223,3 +223,14 @@ void UIElement::SetPriorityDraw(PriorityDraw priority) {
 PriorityDraw UIElement::GetPriorityDraw() const{
 	return priority;
 }
+
+// Blit
+void UIElement::SetBlitState(bool isBlit) 
+{
+	this->isBlit = isBlit;
+}
+
+bool UIElement::GetBlitState() const 
+{
+	return isBlit;
+}
