@@ -666,6 +666,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
 				if (App->entities->IsNearSoldiers(pos, 7)) {
+					App->audio->PlayFx(26, 0); //RuneStone sound
 					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
 					while (it != App->entities->activeDynamicEntities.end()) {
 						if ((*it)->entitySide == EntitySide_Player)
