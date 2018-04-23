@@ -766,7 +766,7 @@ bool j1Scene::Update(float dt)
 			pauseMenuActions = PauseMenuActions_CREATED;
 
 	if (hasGoldChanged) {
-		UpdateResourcesLabels();
+		UpdateGoldLabel();
 		if (buildingMenuOn) {
 			UnLoadBuildingMenu();
 			LoadBuildingMenu();
@@ -774,7 +774,7 @@ bool j1Scene::Update(float dt)
 		hasGoldChanged = false;
 	}
 	if (hasFoodChanged == true) {
-		UpdateResourcesLabels();
+		UpdateFoodLabel();
 		hasFoodChanged = false;
 	}
 
@@ -1214,9 +1214,12 @@ void j1Scene::LoadResourcesLabels()
 	foodLabel = App->gui->CreateUILabel({ 334, 0 }, labelInfo, this, inGameFrameImage);
 }
 
-void j1Scene::UpdateResourcesLabels()
+void j1Scene::UpdateGoldLabel()
 {
 	goldLabel->SetText(to_string(App->player->currentGold));
+}
+void j1Scene::UpdateFoodLabel()
+{
 	foodLabel->SetText(to_string(App->player->currentFood));
 }
 void j1Scene::UnLoadResourcesLabels()

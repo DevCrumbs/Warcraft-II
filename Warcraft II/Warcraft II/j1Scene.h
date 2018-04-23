@@ -117,7 +117,8 @@ public:
 	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
-	void UpdateResourcesLabels();
+	void UpdateGoldLabel();
+	void UpdateFoodLabel();
 	void UnLoadResourcesLabels();
 	void CreatePauseMenu();
     void DestroyPauseMenu();
