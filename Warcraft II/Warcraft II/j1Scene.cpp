@@ -1121,26 +1121,26 @@ void j1Scene::LoadBuildingMenu()
 	if (buildingMenu->type != UIE_TYPE_NO_TYPE)
 	{
 
-		CreateBuildingElements({ 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 }, { 15, 55 }, "Chicken Farm",
-			"Cost: 250 gold", { 75, 65 }, { 75, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
+		CreateBuildingElements({ 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 }, { 585, 55 }, "Chicken Farm",
+			"Cost: 250 gold", { 645, 65 }, { 645, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
 
-		CreateBuildingElements({ 343,160,50,41 }, { 343,160,50,41 }, { 343,160,50,41 }, { 15, 100 }, "Stables",
-			"Comming soon", { 75, 110 }, { 75, 127 }, stablesCost, &buildingMenuButtons.stables);
+		CreateBuildingElements({ 343,160,50,41 }, { 343,160,50,41 }, { 343,160,50,41 }, { 585, 100 }, "Stables",
+			"Comming soon", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
 
-		CreateBuildingElements({ 496,160,50,41 }, { 496,160,50,41 }, { 496,160,50,41 }, { 15, 145 }, "Gryphon Aviary",
-			"Comming soon", { 75, 155 }, { 75, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
+		CreateBuildingElements({ 496,160,50,41 }, { 496,160,50,41 }, { 496,160,50,41 }, { 585, 145 }, "Gryphon Aviary",
+			"Comming soon", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
 
-		CreateBuildingElements({ 496,202,50,41 }, { 496,202,50,41 }, { 496,202,50,41 }, { 15, 190 }, "Mage Tower",
-			"Comming soon", { 75, 200 }, { 75, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
+		CreateBuildingElements({ 496,202,50,41 }, { 496,202,50,41 }, { 496,202,50,41 }, { 585, 190 }, "Mage Tower",
+			"Comming soon", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
 
-		CreateBuildingElements({ 394,34,50,41 }, { 445,34,50,41 }, { 496,34,50,41 }, { 15, 235 }, "Scout Tower",
-			"Cost: 400 gold", { 75, 245 }, { 75, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
+		CreateBuildingElements({ 394,34,50,41 }, { 445,34,50,41 }, { 496,34,50,41 }, { 585, 235 }, "Scout Tower",
+			"Cost: 400 gold", { 645, 245 }, { 645, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
 
-		CreateBuildingElements({ 394,76,50,41 }, { 445,76,50,41 }, { 496,76,50,41 }, { 15, 280 }, "Guard Tower",
-			"Cost: 600 gold", { 75, 290 }, { 75, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
+		CreateBuildingElements({ 394,76,50,41 }, { 445,76,50,41 }, { 496,76,50,41 }, { 585, 280 }, "Guard Tower",
+			"Cost: 600 gold", { 645, 290 }, { 645, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
 
-		CreateBuildingElements({ 394,118,50,41 }, { 445,118,50,41 }, { 496,118,50,41 }, { 15, 325 }, "Cannon Tower",
-			"Cost: 600 gold", { 75, 335 }, { 75, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
+		CreateBuildingElements({ 394,118,50,41 }, { 445,118,50,41 }, { 496,118,50,41 }, { 585, 325 }, "Cannon Tower",
+			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
 	}
 	else
 	{
@@ -1162,13 +1162,13 @@ void j1Scene::CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect butt
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
-	elem->icon = App->gui->CreateUIButton(buttonPos, buttonInfo, this, buildingMenu);
+	elem->icon = App->gui->CreateUIButton(buttonPos, buttonInfo, this);
 
 	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.text = buildingName;
 	labelInfo.normalColor = White_;
-	elem->name = App->gui->CreateUILabel(namePos, labelInfo, this, buildingMenu);
+	elem->name = App->gui->CreateUILabel(namePos, labelInfo, this);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = buildingCost;
@@ -1177,7 +1177,7 @@ void j1Scene::CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect butt
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
 	}
-	elem->cost = App->gui->CreateUILabel(costPos, labelInfo, this, buildingMenu);
+	elem->cost = App->gui->CreateUILabel(costPos, labelInfo, this);
 }
 
 void j1Scene::DeleteBuildingElements(MenuBuildingButton* elem)
