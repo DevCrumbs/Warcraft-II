@@ -137,6 +137,18 @@ bool j1Menu::Start()
 // Called each loop iteration
 bool j1Menu::PreUpdate()
 {
+	switch (menuActions)
+	{
+	case MenuActions_SLIDERFX:
+		App->audio->PlayFx(1, 0); //Button sound
+		UpdateSlider(audioFX);
+		break;
+	case MenuActions_SLIDERMUSIC:
+		UpdateSlider(audioMusic);
+		break;
+	default:
+		break;
+	}
 	return true;
 }
 
@@ -182,13 +194,6 @@ bool j1Menu::Update(float dt)
 		DeleteSettings();
 		CreateMenu();
 		menuActions = MenuActions_NONE;
-		break;
-	case MenuActions_SLIDERFX:
-		App->audio->PlayFx(1, 0); //Button sound
-		UpdateSlider(audioFX);
-		break;
-	case MenuActions_SLIDERMUSIC:
-		UpdateSlider(audioMusic);
 		break;
 	default:
 		break;

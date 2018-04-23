@@ -424,6 +424,30 @@ bool j1Scene::PreUpdate()
 		App->entities->AddEntity(EntityType_KHADGAR, pos, App->entities->GetUnitInfo(EntityType_KHADGAR), unitInfo, App->player);
 	}
 
+	if (hasGoldChanged) {
+		UpdateGoldLabel();
+		if (buildingMenuOn) {
+			UnLoadBuildingMenu();
+			LoadBuildingMenu();
+		}
+		hasGoldChanged = false;
+	}
+	if (hasFoodChanged == true) {
+		UpdateFoodLabel();
+		hasFoodChanged = false;
+	}
+
+	switch (pauseMenuActions) 
+	{
+	case PauseMenuActions_SLIDERFX:
+		App->menu->UpdateSlider(AudioFXPause);
+		break;
+	case PauseMenuActions_SLIDERMUSIC:
+		App->menu->UpdateSlider(AudioMusicPause);
+		break;
+	default:
+		break;
+	}
 	/*
 	// 5: spawn a group of Footmans
 	if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
@@ -765,19 +789,6 @@ bool j1Scene::Update(float dt)
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
 
-	if (hasGoldChanged) {
-		UpdateGoldLabel();
-		if (buildingMenuOn) {
-			UnLoadBuildingMenu();
-			LoadBuildingMenu();
-		}
-		hasGoldChanged = false;
-	}
-	if (hasFoodChanged == true) {
-		UpdateFoodLabel();
-		hasFoodChanged = false;
-	}
-
 	switch (pauseMenuActions)
 	{
 	case PauseMenuActions_NONE:
@@ -819,11 +830,7 @@ bool j1Scene::Update(float dt)
 		CreateSettingsMenu();
 		pauseMenuActions = PauseMenuActions_NONE;
 		break;
-	case PauseMenuActions_SLIDERFX:
-		App->menu->UpdateSlider(AudioFXPause);
-		break;
-	case PauseMenuActions_SLIDERMUSIC:
-		App->menu->UpdateSlider(AudioMusicPause);
+	
 	default:
 		break;
 	}
