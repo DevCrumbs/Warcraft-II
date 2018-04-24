@@ -50,7 +50,7 @@ UIButton::~UIButton()
 
 void UIButton::Update(float dt)
 {
-	if (listener != nullptr && interactive)
+	if (listener != nullptr && interactive && isActive)
 		HandleInput();
 }
 

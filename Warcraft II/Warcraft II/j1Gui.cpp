@@ -153,7 +153,7 @@ bool j1Gui::Update(float dt)
 		if (info->type != UIE_TYPE_NO_TYPE) {
 
 			// Only blit elements with isBlit == true
-			if (info->isBlit) {
+			if (info->isBlit && info->isActive) {
 
 				if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
 					info->Draw();
@@ -168,7 +168,7 @@ bool j1Gui::Update(float dt)
 	return ret;
 }
 
-void j1Gui::Draw() 
+/*void j1Gui::Draw() 
 {
 	for (UIElement* info; !drawOrder.empty(); drawOrder.pop()) {
 		info = drawOrder.top();
@@ -177,7 +177,7 @@ void j1Gui::Draw()
 		else if (App->render->IsInScreen(info->GetLocalRect()))
 			info->Draw();
 	}
-}
+}*/
 
 // Called after all Updates
 bool j1Gui::PostUpdate()

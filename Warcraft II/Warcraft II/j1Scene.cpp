@@ -768,8 +768,8 @@ bool j1Scene::Update(float dt)
 	if (hasGoldChanged) {
 		UpdateResourcesLabels();
 		if (buildingMenuOn) {
-			UnLoadBuildingMenu();
-			LoadBuildingMenu();
+			//UnLoadBuildingMenu();
+			//LoadBuildingMenu();
 		}
 		hasGoldChanged = false;
 	}
@@ -788,7 +788,16 @@ bool j1Scene::Update(float dt)
 		CreatePauseMenu();
 
 		if (buildingMenuOn)
-			UnLoadBuildingMenu();
+		{
+			buildingMenu->isActive != buildingMenu->isActive;
+			ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
+			ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
+			ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
+			ChangeBuildingMenuState(&buildingMenuButtons.guardTower);
+			ChangeBuildingMenuState(&buildingMenuButtons.mageTower);
+			ChangeBuildingMenuState(&buildingMenuButtons.scoutTower);
+			ChangeBuildingMenuState(&buildingMenuButtons.stables);
+		}
 
 		if (alphaBuilding != EntityType_NONE) {
 			alphaBuilding = EntityType_NONE;
@@ -1021,10 +1030,14 @@ void j1Scene::DebugKeys()
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_REPEAT) {
-		if (buildingMenuOn)
-			UnLoadBuildingMenu();
-		else
-			LoadBuildingMenu();
+		buildingMenu->isActive != buildingMenu->isActive;
+		ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
+		ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
+		ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
+		ChangeBuildingMenuState(&buildingMenuButtons.guardTower);
+		ChangeBuildingMenuState(&buildingMenuButtons.mageTower);
+		ChangeBuildingMenuState(&buildingMenuButtons.scoutTower);
+		ChangeBuildingMenuState(&buildingMenuButtons.stables);
 	}
 
 }
@@ -1102,13 +1115,21 @@ void j1Scene::LoadInGameUI()
 	inGameFrameImage->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
 	LoadResourcesLabels();
+	LoadBuildingMenu();
 }
 
+void j1Scene::ChangeBuildingMenuState(MenuBuildingButton* elem)
+{
+	elem->cost->isActive = !elem->cost->isActive;
+	elem->icon->isActive = !elem->icon->isActive;
+	elem->name->isActive = !elem->name->isActive;
+}
 void j1Scene::LoadBuildingMenu()
 {
-	UnLoadTerenasDialog();
+	//UnLoadTerenasDialog();
 	//UIButton_Info buttonInfo;
 	//UILabel_Info labelInfo;
+
 
 	UIImage_Info imageInfo;
 	imageInfo.draggable = false;
@@ -1117,6 +1138,7 @@ void j1Scene::LoadBuildingMenu()
 	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this, nullptr);
 	buildingMenuOn = true;
 	buildingMenu->SetPriorityDraw(PriorityDraw_UNDER_FRAMEWORK);
+	buildingMenu->isActive = false;
 
 	if (buildingMenu->type != UIE_TYPE_NO_TYPE)
 	{
@@ -1163,12 +1185,14 @@ void j1Scene::CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect butt
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
 	elem->icon = App->gui->CreateUIButton(buttonPos, buttonInfo, this, buildingMenu);
+	elem->icon->isActive = false;
 
 	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.text = buildingName;
 	labelInfo.normalColor = White_;
 	elem->name = App->gui->CreateUILabel(namePos, labelInfo, this, buildingMenu);
+	elem->name->isActive = false;
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = buildingCost;
@@ -1178,6 +1202,7 @@ void j1Scene::CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect butt
 		labelInfo.pressedColor = BloodyRed_;
 	}
 	elem->cost = App->gui->CreateUILabel(costPos, labelInfo, this, buildingMenu);
+	elem->cost->isActive = false;
 }
 
 void j1Scene::DeleteBuildingElements(MenuBuildingButton* elem)
@@ -1436,17 +1461,28 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			if (parchmentImg == nullptr) {
 				App->audio->PlayFx(1, 0); //Button sound
 
-				if (!buildingMenuOn)
-					LoadBuildingMenu();
-				else
-					UnLoadBuildingMenu();
+				buildingMenu->isActive != buildingMenu->isActive;
+				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
+				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
+				ChangeBuildingMenuState(&buildingMenuButtons.guardTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.mageTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.scoutTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.stables);
 			}
 		}
 
 		if (UIelem == buildingMenuButtons.chickenFarm.icon) {
 			if (App->player->currentGold >= chickenFarmCost) {
 				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
+				buildingMenu->isActive != buildingMenu->isActive;
+				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
+				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
+				ChangeBuildingMenuState(&buildingMenuButtons.guardTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.mageTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.scoutTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.stables);
 				alphaBuilding = EntityType_CHICKEN_FARM;
 			}
 			else if(App->player->currentGold < chickenFarmCost)
@@ -1456,7 +1492,14 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.stables.icon) {
 			if (App->player->currentGold >= stablesCost) {
 				//App->audio->PlayFx(1, 0); //Button sound
-				//UnLoadBuildingMenu();
+				buildingMenu->isActive != buildingMenu->isActive;
+				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
+				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
+				ChangeBuildingMenuState(&buildingMenuButtons.guardTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.mageTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.scoutTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.stables);
 				//alphaBuilding = EntityType_STABLES;
 				App->audio->PlayFx(3, 0); //Button error sound
 			}
@@ -1467,7 +1510,14 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
 			if (App->player->currentGold >= gryphonAviaryCost) {
 				//App->audio->PlayFx(1, 0); //Button sound
-				//UnLoadBuildingMenu();
+				buildingMenu->isActive != buildingMenu->isActive;
+				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
+				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
+				ChangeBuildingMenuState(&buildingMenuButtons.guardTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.mageTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.scoutTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.stables);
 				//alphaBuilding = EntityType_GRYPHON_AVIARY;
 				App->audio->PlayFx(3, 0); //Button error sound
 			}
@@ -1478,7 +1528,14 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.mageTower.icon) {
 			if (App->player->currentGold >= mageTowerCost) {
 				//App->audio->PlayFx(1, 0); //Button sound
-				//UnLoadBuildingMenu();
+				buildingMenu->isActive != buildingMenu->isActive;
+				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
+				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
+				ChangeBuildingMenuState(&buildingMenuButtons.guardTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.mageTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.scoutTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.stables);
 				//alphaBuilding = EntityType_MAGE_TOWER;
 				App->audio->PlayFx(3, 0); //Button error sound
 			}
@@ -1489,7 +1546,14 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.scoutTower.icon) {
 			if (App->player->currentGold >= scoutTowerCost) {
 				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
+				buildingMenu->isActive != buildingMenu->isActive;
+				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
+				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
+				ChangeBuildingMenuState(&buildingMenuButtons.guardTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.mageTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.scoutTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.stables);
 				alphaBuilding = EntityType_SCOUT_TOWER;
 			}
 			else if(App->player->currentGold < scoutTowerCost)
@@ -1499,7 +1563,14 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.guardTower.icon) {
 			if (App->player->currentGold >= guardTowerCost) {
 				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
+				buildingMenu->isActive != buildingMenu->isActive;
+				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
+				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
+				ChangeBuildingMenuState(&buildingMenuButtons.guardTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.mageTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.scoutTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.stables);
 				alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
 			}
 			else if (App->player->currentGold < guardTowerCost)
@@ -1509,7 +1580,14 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.cannonTower.icon) {
 			if (App->player->currentGold >= cannonTowerCost) {
 				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
+				buildingMenu->isActive != buildingMenu->isActive;
+				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
+				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
+				ChangeBuildingMenuState(&buildingMenuButtons.guardTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.mageTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.scoutTower);
+				ChangeBuildingMenuState(&buildingMenuButtons.stables);
 				alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
 			}
 			else if (App->player->currentGold < cannonTowerCost)

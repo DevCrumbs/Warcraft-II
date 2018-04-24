@@ -109,9 +109,9 @@ public:
 	void DebugKeys();
 
 	void CheckCameraMovement(float dt);
-
 	void LoadInGameUI();
 	void LoadBuildingMenu();
+	void ChangeBuildingMenuState(MenuBuildingButton* elem);
 	void CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect buttonHoverTexArea, SDL_Rect buttonPressedTexArea,
 	iPoint buttonPos, string buildingName, string buildingCost, iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
 	void DeleteBuildingElements(MenuBuildingButton* elem);
