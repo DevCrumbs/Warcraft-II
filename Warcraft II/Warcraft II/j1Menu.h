@@ -94,7 +94,8 @@ private:
 	UILabel*  exitLabel = nullptr;
 	UIButton* settingsButt = nullptr;
 	UILabel*  settingsLabel = nullptr;
-	vector<UIImage*> artifacts;
+
+	list<UIImage*> artifacts;
 	Animation menuImgAnim;
 
 	//Settings
@@ -102,8 +103,6 @@ private:
 	SliderStruct audioMusic;
 	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
-
-	Particle* parchment = nullptr;
 
 	MenuActions menuActions;
 
