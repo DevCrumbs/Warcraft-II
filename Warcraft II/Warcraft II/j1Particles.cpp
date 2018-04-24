@@ -222,7 +222,6 @@ bool j1Particles::Start()
 	LOG("Loading particles");
 
 	paws.particleType = ParticleType_Paws;
-
 	trollAxe.particleType = ParticleType_Enemy_Projectile;
 	playerArrows.particleType = ParticleType_Player_Projectile;
 	enemyArrows.particleType = ParticleType_Enemy_Projectile;	
@@ -322,7 +321,7 @@ bool j1Particles::PostUpdate()
 		{
 			//App->render->Blit(atlasTex, currPart->pos.x, currPart->pos.y, &(currPart->animation.GetCurrentFrame()), 1.0f, currPart->angle);
 			if (currPart->particleType == ParticleType_Paws)
-				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_Paws);
+				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, pawsTex, currPart->animation.GetCurrentFrame(), Layers_Paws);
 			else
 				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_BasicParticles);
 		}

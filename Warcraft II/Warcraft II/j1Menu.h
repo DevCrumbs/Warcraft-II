@@ -62,7 +62,6 @@ public:
 	void CreateSettings();
 	//void CreateCredits();
 	void DeleteSettings();
-	void CreateLoading();
 	void DeteleMenu();
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
@@ -144,7 +143,6 @@ private:
 	bool isFadetoScene = false;
 	bool isMouseTextCreated = false;
 	bool isSoundCharged = false;
-
 };
 
 #endif

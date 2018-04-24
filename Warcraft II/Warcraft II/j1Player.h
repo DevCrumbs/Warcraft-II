@@ -39,7 +39,6 @@ struct HoverButton
 	StaticEntity* prevEntity = nullptr;
 
 	bool isCreated = false;
-
 };
 
 struct HoverInfo
@@ -49,23 +48,27 @@ struct HoverInfo
 	UIImage* background = nullptr;
 };
 
-struct GroupSelectedElements {
+struct GroupSelectedElements 
+{
 	Entity* owner = nullptr;
 
 	UIImage* entityIcon = nullptr;
 	UILifeBar* entityLifeBar = nullptr;
 };
 
-struct ToSpawnUnit {
+struct ToSpawnUnit 
+{
 	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
 		this->toSpawnTimer = toSpawnTimer;
 		this->entityType = entityType;
 	}
+
 	j1Timer toSpawnTimer;
 	ENTITY_TYPE entityType;
 };
 
-struct GroupSpawning {
+struct GroupSpawning 
+{
 	ToSpawnUnit* owner = nullptr;
 
 	UIImage* entityIcon = nullptr;
@@ -106,18 +109,6 @@ public:
 	bool Update(float dt);
 	bool PostUpdate();
 
-	void CheckIfPlaceBuilding();
-	iPoint GetMouseTilePos() const;
-	iPoint GetMousePos() const;
-
-	void CheckUnitSpawning();
-	void SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
-
-	void UpdateSpawnUnitsStats();
-
-	void AddGold(int sumGold);
-	int GetCurrentGold() const;
-
 	// Called before quitting
 	bool CleanUp();
 
@@ -127,10 +118,25 @@ public:
 	// Load
 	bool Load(pugi::xml_node&);
 
+	// -----
+
+	void CheckIfPlaceBuilding();
+	iPoint GetMouseTilePos() const;
+	iPoint GetMousePos() const;
+
+	void CheckUnitSpawning();
+	void SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
+
+	void UpdateSpawnUnitsStats();
+
+	// Gold
+	void AddGold(int sumGold);
+	int GetCurrentGold() const;
+
+
 	void OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
-
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void MakeUnitMenu(Entity* entity);
@@ -205,6 +211,7 @@ public:
 
 	bool isUnitSpawning = false;
 	bool isMouseOnMine = false;
+
 private:
 
 	double timer = 0.0f; // game time
@@ -213,7 +220,6 @@ private:
 	uint totalUnitsDead = 0;
 
 	//HoverButton hoverButtonStruct;
-
 	HoverInfo hoverInfo;
 
 	list<GroupSelectedElements> groupElementsList;
@@ -223,7 +229,6 @@ private:
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
 		     *producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *commandPatrolButton = nullptr, *commandStopButton = nullptr;
-	
 
 	list<UIElement*> UIMenuInfoList;
 

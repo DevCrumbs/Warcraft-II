@@ -1182,45 +1182,47 @@ void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos)
 {
+	uint alpha = 150;
+
 	switch (staticEntityType) {
 
 	case EntityType_CHICKEN_FARM:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, chickenFarmInfo.completeTexArea);
 		break;
 	case EntityType_ELVEN_LUMBER_MILL:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &elvenLumberMillInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, elvenLumberMillInfo.completeTexArea);
 		break;
 	case EntityType_MAGE_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, mageTowerInfo.completeTexArea);
 		break;
 	case EntityType_GRYPHON_AVIARY:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, gryphonAviaryInfo.completeTexArea);
 		break;
 	case EntityType_STABLES:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, stablesInfo.completeTexArea);
 		break;
 	case EntityType_SCOUT_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, scoutTowerInfo.completeTexArea);
 		break;
 	case EntityType_PLAYER_GUARD_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerGuardTowerInfo.completeTexArea);
 		break;
 	case EntityType_PLAYER_CANNON_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerCannonTowerInfo.completeTexArea);
 		break;
@@ -2026,8 +2028,13 @@ bool j1EntityFactory::PostUpdate()
 		statEnt++;
 	}
 
-	if (App->scene->GetAlphaBuilding() != EntityType_NONE)
+	if (App->scene->GetAlphaBuilding() != EntityType_NONE) {
 		DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
+		if (App->scene->GetAlphaBuilding() != EntityType_MAX) {
+			SDL_SetTextureAlphaMod(humanBuildingsTex, 255);
+			SDL_SetTextureAlphaMod(neutralBuildingsTex, 255);
+		}
+	}
 
 	return ret;
 }
