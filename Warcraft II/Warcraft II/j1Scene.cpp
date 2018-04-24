@@ -569,8 +569,8 @@ bool j1Scene::Update(float dt)
 	}
 
 	// *****UNITS*****
-	/// Units cannot be clicked if a building is being placed
-	if (GetAlphaBuilding() == EntityType_NONE) {
+	/// Units cannot be clicked if a building is being placed or Pause Menu are actived
+	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 
 		// Select units by mouse click
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
