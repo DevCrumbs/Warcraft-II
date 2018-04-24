@@ -161,10 +161,15 @@ bool Entity::CreateEntityCollider(EntitySide entitySide, bool createOffset)
 
 void Entity::UpdateEntityColliderPos()
 {
-	entityCollider->colliders.front()->SetPos(pos.x, pos.y);
+	if (entityCollider != nullptr)
+	{
+		Collider* front = entityCollider->colliders.front();
+		if (front != nullptr)
+			entityCollider->colliders.front()->SetPos(pos.x, pos.y);
 
-	// 2. Create/Update the offset collider
-	entityCollider->CreateOffsetCollider();
+		// 2. Create/Update the offset collider
+		entityCollider->CreateOffsetCollider();
+	}
 }
 
 // Attack

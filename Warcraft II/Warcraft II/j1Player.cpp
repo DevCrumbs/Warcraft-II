@@ -57,6 +57,25 @@ bool j1Player::Start()
 	return ret;
 }
 
+bool j1Player::PreUpdate() {
+
+	//Life Bar on building 
+	if (entitySelectedStats.entitySelected != nullptr) {
+		if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
+			if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
+				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+			}
+			else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
+				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+				entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+				entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
+			}
+		}
+	}
+
+	return true;
+}
+
 bool j1Player::Update(float dt) 
 {
 	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
@@ -131,7 +150,7 @@ bool j1Player::Update(float dt)
 				}
 			}
 	*/
-
+	/*
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 		if (!chickenFarm.empty()) 
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
@@ -147,35 +166,18 @@ bool j1Player::Update(float dt)
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
 			}
-		
-	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN) {
+	*/
+	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_REPEAT) {
 		App->audio->PlayFx(6, 0); //Gold mine sound
 		AddGold(500);
 		App->scene->hasGoldChanged = true;
 	}
-
-	//Life Bar on building 
-	if (entitySelectedStats.entitySelected != nullptr) {
-		if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
-			if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
-				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-			}
-			else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
-				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-				entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
-				entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
-				if (entitySelectedStats.entitySelected == barracks) {
-					if (barracksUpgrade && stables != nullptr && producePaladinButton == nullptr) {
-						UIButton_Info produceButtonInfo;
-						produceButtonInfo.normalTexArea = { 444,244,50,41 };
-						produceButtonInfo.hoverTexArea = { 699,244,50,41 };
-						produceButtonInfo.pressedTexArea = { 954,244,50,41 };
-						producePaladinButton = App->gui->CreateUIButton({ 319, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
-					}
-				}
-			}
-		}
+	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) {
+		currentFood += 3;
+		App->scene->hasFoodChanged = true;
 	}
+
+
 	//Handle the apparence and disapparence of to spawn units UI elements
 	
 	return true;
@@ -584,13 +586,9 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 						it++;
 					}
-
-					App->entities->CommandToUnits(units, UnitCommand_GatherGold);
 				}
 				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
-
 					App->scene->UnLoadTerenasDialog();
-
 					App->scene->terenasDialogTimer.Start();
 					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
 					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
@@ -758,7 +756,7 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 			iPoint pos = App->map->WorldToMap((int)dynamicEntity->GetPos().x, (int)dynamicEntity->GetPos().y);
 			if (App->entities->IsNearSoldiers(pos, 5)) {
 				dynamicEntity->isRemove = true;
-				RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 245 });
+				RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
 				App->audio->PlayFx(14, 0);
 			}
 		}

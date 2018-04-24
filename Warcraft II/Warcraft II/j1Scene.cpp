@@ -266,7 +266,7 @@ bool j1Scene::PreUpdate()
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-	LOG("MouseTile: %i, %i", mouseTile.x, mouseTile.y);
+//	LOG("MouseTile: %i, %i", mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
 
@@ -425,6 +425,30 @@ bool j1Scene::PreUpdate()
 		App->entities->AddEntity(EntityType_KHADGAR, pos, App->entities->GetUnitInfo(EntityType_KHADGAR), unitInfo, App->player);
 	}
 
+	if (hasGoldChanged) {
+		UpdateGoldLabel();
+		if (buildingMenuOn) {
+			UnLoadBuildingMenu();
+			LoadBuildingMenu();
+		}
+		hasGoldChanged = false;
+	}
+	if (hasFoodChanged == true) {
+		UpdateFoodLabel();
+		hasFoodChanged = false;
+	}
+
+	switch (pauseMenuActions) 
+	{
+	case PauseMenuActions_SLIDERFX:
+		App->menu->UpdateSlider(AudioFXPause);
+		break;
+	case PauseMenuActions_SLIDERMUSIC:
+		App->menu->UpdateSlider(AudioMusicPause);
+		break;
+	default:
+		break;
+	}
 	/*
 	// 5: spawn a group of Footmans
 	if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
@@ -498,6 +522,7 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	bool ret = true;
+
 
 	// Save mouse position (world and map coords)
 	int x, y;
@@ -759,19 +784,6 @@ bool j1Scene::Update(float dt)
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
 
-	if (hasGoldChanged) {
-		UpdateResourcesLabels();
-		if (buildingMenuOn) {
-			UnLoadBuildingMenu();
-			LoadBuildingMenu();
-		}
-		hasGoldChanged = false;
-	}
-	if (hasFoodChanged == true) {
-		UpdateResourcesLabels();
-		hasFoodChanged = false;
-	}
-
 	switch (pauseMenuActions)
 	{
 	case PauseMenuActions_NONE:
@@ -813,11 +825,7 @@ bool j1Scene::Update(float dt)
 		CreateSettingsMenu();
 		pauseMenuActions = PauseMenuActions_NONE;
 		break;
-	case PauseMenuActions_SLIDERFX:
-		App->menu->UpdateSlider(AudioFXPause);
-		break;
-	case PauseMenuActions_SLIDERMUSIC:
-		App->menu->UpdateSlider(AudioMusicPause);
+	
 	default:
 		break;
 	}
@@ -1013,6 +1021,14 @@ void j1Scene::DebugKeys()
 		App->render->camera.x = -basePos.x;
 		App->render->camera.y = -basePos.y;
 	}
+
+	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_REPEAT) {
+		if (buildingMenuOn)
+			UnLoadBuildingMenu();
+		else
+			LoadBuildingMenu();
+	}
+
 }
 
 void j1Scene::CheckCameraMovement(float dt) {
@@ -1059,7 +1075,7 @@ void j1Scene::LoadInGameUI()
 	buttonInfo.normalTexArea = {0, 0, 126, 26};
 	buttonInfo.hoverTexArea = { 129, 0, 126, 26 };
 	buttonInfo.pressedTexArea = { 257, 0, 126, 26 };
-	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this, nullptr);
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
@@ -1092,37 +1108,45 @@ void j1Scene::LoadInGameUI()
 void j1Scene::LoadBuildingMenu()
 {
 	UnLoadTerenasDialog();
-	UIButton_Info buttonInfo;
-	UILabel_Info labelInfo;
+	//UIButton_Info buttonInfo;
+	//UILabel_Info labelInfo;
 
 	UIImage_Info imageInfo;
 	imageInfo.draggable = false;
 	imageInfo.texArea = { 0,33,240,529 };
 	imageInfo.horizontalOrientation = HORIZONTAL_POS_RIGHT;
-	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this);
+	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this, nullptr);
 	buildingMenuOn = true;
-	buildingMenu->SetPriorityDraw(PriorityDraw_FRAMEWORK);
+	buildingMenu->SetPriorityDraw(PriorityDraw_UNDER_FRAMEWORK);
 
-	CreateBuildingElements({ 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 }, { 15, 55 }, "Chicken Farm", 
-						   "Cost: 250 gold", { 75, 65 }, { 75, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
+	if (buildingMenu->type != UIE_TYPE_NO_TYPE)
+	{
 
-	CreateBuildingElements({ 343,160,50,41 }, { 343,160,50,41 }, { 343,160,50,41 }, { 15, 100 }, "Stables",
-						   "Comming soon", { 75, 110 }, { 75, 127 }, stablesCost, &buildingMenuButtons.stables);
+		CreateBuildingElements({ 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 }, { 585, 55 }, "Chicken Farm",
+			"Cost: 250 gold", { 645, 65 }, { 645, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
 
-	CreateBuildingElements({ 496,160,50,41 }, { 496,160,50,41 }, { 496,160,50,41 }, { 15, 145 }, "Gryphon Aviary",
-						   "Comming soon", { 75, 155 }, { 75, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
+		CreateBuildingElements({ 343,160,50,41 }, { 343,160,50,41 }, { 343,160,50,41 }, { 585, 100 }, "Stables",
+			"Comming soon", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
 
-	CreateBuildingElements({ 496,202,50,41 }, { 496,202,50,41 }, { 496,202,50,41 }, { 15, 190 }, "Mage Tower",
-					       "Comming soon", { 75, 200 }, { 75, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
+		CreateBuildingElements({ 496,160,50,41 }, { 496,160,50,41 }, { 496,160,50,41 }, { 585, 145 }, "Gryphon Aviary",
+			"Comming soon", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
 
-	CreateBuildingElements({ 394,34,50,41 }, { 445,34,50,41 }, { 496,34,50,41 }, { 15, 235 }, "Scout Tower",
-		                   "Cost: 400 gold", { 75, 245 }, { 75, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
+		CreateBuildingElements({ 496,202,50,41 }, { 496,202,50,41 }, { 496,202,50,41 }, { 585, 190 }, "Mage Tower",
+			"Comming soon", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
 
-	CreateBuildingElements({ 394,76,50,41 }, { 445,76,50,41 }, { 496,76,50,41 }, { 15, 280 }, "Guard Tower",
-	                       "Cost: 600 gold", { 75, 290 }, { 75, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
+		CreateBuildingElements({ 394,34,50,41 }, { 445,34,50,41 }, { 496,34,50,41 }, { 585, 235 }, "Scout Tower",
+			"Cost: 400 gold", { 645, 245 }, { 645, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
 
-	CreateBuildingElements({ 394,118,50,41 }, { 445,118,50,41 }, { 496,118,50,41 }, { 15, 325 }, "Cannon Tower",
-		                   "Cost: 600 gold", { 75, 335 }, { 75, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
+		CreateBuildingElements({ 394,76,50,41 }, { 445,76,50,41 }, { 496,76,50,41 }, { 585, 280 }, "Guard Tower",
+			"Cost: 600 gold", { 645, 290 }, { 645, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
+
+		CreateBuildingElements({ 394,118,50,41 }, { 445,118,50,41 }, { 496,118,50,41 }, { 585, 325 }, "Cannon Tower",
+			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
+	}
+	else
+	{
+		LOG("WTF");
+	}
 }
 
 void j1Scene::CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect buttonHoverTexArea, SDL_Rect buttonPressedTexArea,
@@ -1139,13 +1163,13 @@ void j1Scene::CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect butt
 		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
 		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
 	}
-	elem->icon = App->gui->CreateUIButton(buttonPos, buttonInfo, this, buildingMenu);
+	elem->icon = App->gui->CreateUIButton(buttonPos, buttonInfo, this);
 
 	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.text = buildingName;
 	labelInfo.normalColor = White_;
-	elem->name = App->gui->CreateUILabel(namePos, labelInfo, this, buildingMenu);
+	elem->name = App->gui->CreateUILabel(namePos, labelInfo, this);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = buildingCost;
@@ -1154,7 +1178,7 @@ void j1Scene::CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect butt
 		labelInfo.hoverColor = BloodyRed_;
 		labelInfo.pressedColor = BloodyRed_;
 	}
-	elem->cost = App->gui->CreateUILabel(costPos, labelInfo, this, buildingMenu);
+	elem->cost = App->gui->CreateUILabel(costPos, labelInfo, this);
 }
 
 void j1Scene::DeleteBuildingElements(MenuBuildingButton* elem)
@@ -1191,9 +1215,12 @@ void j1Scene::LoadResourcesLabels()
 	foodLabel = App->gui->CreateUILabel({ 334, 0 }, labelInfo, this, inGameFrameImage);
 }
 
-void j1Scene::UpdateResourcesLabels()
+void j1Scene::UpdateGoldLabel()
 {
 	goldLabel->SetText(to_string(App->player->currentGold));
+}
+void j1Scene::UpdateFoodLabel()
+{
 	foodLabel->SetText(to_string(App->player->currentFood));
 }
 void j1Scene::UnLoadResourcesLabels()
@@ -1366,25 +1393,11 @@ void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
 		labelInfo.text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
 		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
 	}
-	else if (dialogEvent == TerenasDialog_RESCUE_TURALYON) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 350;
-		labelInfo.interactive = false;
-		labelInfo.text = "Congratulations! You have freed Turalyon. I thank you in the name of Azeroth. For the alliance!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
-	}
 	else if (dialogEvent == TerenasDialog_GOLD_MINE) {
 		labelInfo.fontName = FONT_NAME_WARCRAFT14;
 		labelInfo.textWrapLength = 320;
 		labelInfo.interactive = false;
-		labelInfo.text = "To get gold, come next to the mine with a unit and click it!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
-	}
-	else if (dialogEvent == TerenasDialog_RUNESTONE) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 320;
-		labelInfo.interactive = false;
-		labelInfo.text = "To get healed, come next to the runestone with a unit and click it!";
+		labelInfo.text = "To get gold from the mine you have to select units and they will gather it.";
 		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
 	}
 	else if (dialogEvent == TerenasDialog_FOOD) {

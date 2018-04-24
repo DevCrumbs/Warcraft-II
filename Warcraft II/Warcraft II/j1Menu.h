@@ -121,6 +121,7 @@ private:
 	string stablesSound;
 	string repairBuildingSound;
 	string destroyBuildingSound;
+	string runeStoneSound;
 
 	string humanDeadSound;
 	string orcDeadSound;

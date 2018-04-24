@@ -73,6 +73,7 @@ bool j1Menu::Awake(pugi::xml_node& config)
 	stablesSound = buildingSounds.attribute("stables").as_string();
 	repairBuildingSound = buildingSounds.attribute("repair").as_string();
 	destroyBuildingSound = buildingSounds.attribute("destroyBuilding").as_string(); 
+	runeStoneSound = buildingSounds.attribute("runeStone").as_string();
 
 	pugi::xml_node unitsSounds = sounds.child("unitsPaths");
 	humanDeadSound = unitsSounds.attribute("humanDeadSound").as_string();
@@ -137,6 +138,18 @@ bool j1Menu::Start()
 // Called each loop iteration
 bool j1Menu::PreUpdate()
 {
+	switch (menuActions)
+	{
+	case MenuActions_SLIDERFX:
+		App->audio->PlayFx(1, 0); //Button sound
+		UpdateSlider(audioFX);
+		break;
+	case MenuActions_SLIDERMUSIC:
+		UpdateSlider(audioMusic);
+		break;
+	default:
+		break;
+	}
 	return true;
 }
 
@@ -180,13 +193,6 @@ bool j1Menu::Update(float dt)
 		DeleteSettings();
 		CreateMenu();
 		menuActions = MenuActions_NONE;
-		break;
-	case MenuActions_SLIDERFX:
-		App->audio->PlayFx(1, 0); //Button sound
-		UpdateSlider(audioFX);
-		break;
-	case MenuActions_SLIDERMUSIC:
-		UpdateSlider(audioMusic);
 		break;
 	default:
 		break;
@@ -504,6 +510,7 @@ void j1Menu::ChargeGameSounds()
 	ret = App->audio->LoadFx(axeThrowSound.data()); //23
 	ret = App->audio->LoadFx(bowFireSound.data()); //24
 	ret = App->audio->LoadFx(swordSound.data()); //25
-
+	ret = App->audio->LoadFx(runeStoneSound.data()); //26
+	
 	isSoundCharged = true;
 }

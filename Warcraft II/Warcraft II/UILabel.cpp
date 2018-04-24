@@ -18,6 +18,9 @@ UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Modul
 	color = label.normalColor;
 
 	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.textWrapLength);
+
+	text = label.text.data();
+
 	App->font->CalcSize(label.text.data(), width, height, font);
 	priority = PrioriryDraw_LABEL;
 

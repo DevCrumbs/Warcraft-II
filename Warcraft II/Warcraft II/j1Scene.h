@@ -33,7 +33,6 @@ enum TerenasDialogEvents {
 	TerenasDialog_START,
 	TerenasDialog_RESCUE_ALLERIA,
 	TerenasDialog_RESCUE_KHADGAR,
-	TerenasDialog_RESCUE_TURALYON,
 	TerenasDialog_GOLD_MINE,
 	TerenasDialog_RUNESTONE,
 	TerenasDialog_FOOD,
@@ -126,7 +125,8 @@ public:
 	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
-	void UpdateResourcesLabels();
+	void UpdateGoldLabel();
+	void UpdateFoodLabel();
 	void UnLoadResourcesLabels();
 	void CreatePauseMenu();
     void DestroyPauseMenu();
@@ -217,17 +217,17 @@ private:
 
 	//UI
 	BuildingMenu buildingMenuButtons;
-	UIButton *buildingButton = nullptr;
-	UILabel *buildingLabel = nullptr;
-	UIImage *buildingMenu = nullptr;
+	UIButton* buildingButton = nullptr;
+	UILabel* buildingLabel = nullptr;
+	UIImage* buildingMenu = nullptr;
 
 	//Frame InGame
 	UIImage* inGameFrameImage = nullptr;
 	UILabel* goldLabel, *foodLabel = nullptr;
 
 	//Pause Menu
-	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
-	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;
+	UIButton* pauseMenuButt = nullptr, * settingsButt = nullptr, * continueButt = nullptr, * ReturnMenuButt = nullptr;
+	UILabel* pauseMenuLabel = nullptr, * settingsLabel = nullptr, * continueLabel = nullptr, * ReturnMenuLabel = nullptr;
 	UIImage* parchmentImg = nullptr;
 	//Settings Menu
 	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
