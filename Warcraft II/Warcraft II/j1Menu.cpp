@@ -288,14 +288,13 @@ void j1Menu::CreateSettings()
 	labelInfo.text = "Return";
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
 
-	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
+	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUME;
 	SDL_Rect butText = { 834,328,26,30 };
 	SDL_Rect bgText = { 434,328,400,30 };
 	AddSlider(audioFX, { 175,200 }, "Audio FX", relativeVol, butText, bgText, this);
 
-	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
+	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUME;
 	AddSlider(audioMusic, { 175,300 }, "Audio Music", relativeVol, butText, bgText, this);
-
 
 	//Fullscreen
 	if (!App->win->fullscreen) {
@@ -367,18 +366,20 @@ UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim)
 void j1Menu::UpdateSlider(SliderStruct &sliderStruct) 
 {
 	float volume = sliderStruct.slider->GetRelativePosition();
+	float fxVol = volume * MAX_AUDIO_VOLUME;
+
 	if (sliderStruct.name->GetText() == "Audio FX")
-		App->audio->SetFxVolume(volume * MAX_AUDIO_VOLUM);
+		App->audio->SetFxVolume(10);
 	else
-		App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
+		App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUME);
 
 	static char vol_text[4];
 	sprintf_s(vol_text, 4, "%.0f", volume * 100);
 	sliderStruct.value->SetText(vol_text);
 }
 
-void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
-
+void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
+{
 	switch (UIevent)
 	{
 	case UI_EVENT_NONE:
@@ -450,10 +451,14 @@ void j1Menu::DeteleMenu()
 	App->gui->RemoveElem((UIElement**)&settingsButt);
 	App->gui->RemoveElem((UIElement**)&settingsLabel);
 	
-	for (; !artifacts.empty(); artifacts.pop_back())
-	{
-		App->gui->RemoveElem((UIElement**)&artifacts.back());
+	list<UIImage*>::const_iterator it = artifacts.begin();
+
+	while (it != artifacts.end()) {
+
+		(*it)->toRemove = true;
+		it++;
 	}
+	artifacts.clear();
 }
 
 void j1Menu::DeleteSettings() {
@@ -469,11 +474,14 @@ void j1Menu::DeleteSettings() {
 	App->gui->RemoveElem((UIElement**)&audioMusic.value);
 	App->gui->RemoveElem((UIElement**)&audioMusic.slider);
 
-	for (; !artifacts.empty(); artifacts.pop_back())
-	{
-		App->gui->RemoveElem((UIElement**)&artifacts.back());
-	}
+	list<UIImage*>::const_iterator it = artifacts.begin();
 
+	while (it != artifacts.end()) {
+
+		(*it)->toRemove = true;
+		it++;
+	}
+	artifacts.clear();
 }
 
 void j1Menu::ChargeGameSounds()

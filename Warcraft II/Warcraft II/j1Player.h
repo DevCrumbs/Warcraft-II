@@ -4,6 +4,7 @@
 #include "j1Module.h"
 #include "j1Timer.h"
 #include "Defs.h"
+#include "Entity.h"
 
 #include "p2Point.h"
 #include "SDL\include\SDL_rect.h"
@@ -18,7 +19,6 @@ enum HoverCheck
 	HoverCheck_Upgrate,
 	HoverCheck_Repair
 };
-
 
 struct UILabel;
 struct UIImage;
@@ -64,7 +64,7 @@ struct ToSpawnUnit
 	}
 
 	j1Timer toSpawnTimer;
-	ENTITY_TYPE entityType;
+	ENTITY_TYPE entityType = EntityType_NONE;
 };
 
 struct GroupSpawning 
