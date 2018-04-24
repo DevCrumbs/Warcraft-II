@@ -28,6 +28,8 @@ enum CollisionState;
 enum DistanceHeuristic;
 
 struct Particle;
+struct GoldMine;
+struct Runestone;
 
 #define TIME_REMOVE_CORPSE 3.0
 
@@ -43,6 +45,8 @@ enum UnitState
 	UnitState_AttackTarget,
 	UnitState_Patrol,
 	UnitState_Wander,
+	UnitState_GatherGold,
+	UnitState_HealRunestone,
 
 	UnitState_MaxStates
 };
@@ -69,6 +73,8 @@ enum UnitCommand
 	UnitCommand_MoveToPosition,
 	UnitCommand_AttackTarget,
 	UnitCommand_Patrol,
+	UnitCommand_GatherGold,
+	UnitCommand_HealRunestone,
 
 	UnitCommand_MaxCommands
 };
@@ -161,6 +167,17 @@ public:
 	void SetHitting(bool isHitting);
 	bool IsHitting() const;
 
+	// Interact with the map
+	void SetGoldMine(GoldMine* goldMine);
+	GoldMine* GetGoldMine() const;
+	void SetUnitGatheringGold(bool isGatheringGold);
+	bool IsUnitGatheringGold() const;
+
+	void SetRunestone(Runestone* runestone);
+	Runestone* GetRunestone() const;
+	void SetUnitHealingRunestone(bool isHealingRunestone);
+	bool IsUnitHealingRunestone() const;
+
 	// Player commands
 	bool SetUnitCommand(UnitCommand unitCommand);
 	UnitCommand GetUnitCommand() const;
@@ -214,7 +231,11 @@ protected:
 	bool isHitting = false; // if true, the unit is hitting their target
 
 	// Interact with the map
-	bool isGatherGold = false;
+	GoldMine* goldMine = nullptr;
+	bool isGatheringGold = false;
+
+	Runestone* runestone = nullptr;
+	bool isHealingRunestone = false;
 
 	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;

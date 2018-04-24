@@ -11,6 +11,7 @@
 #include "j1EntityFactory.h"
 #include "j1Scene.h"
 #include "j1Map.h"
+#include "j1Printer.h"
 
 #include <math.h>
 
@@ -80,6 +81,15 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 		trollAxe.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 	trollAxe.size = { trollAxeAnimation.child("frame").attribute("w").as_int(), trollAxeAnimation.child("frame").attribute("h").as_int() };
+
+	// Health
+	pugi::xml_node healthAnimation = config.child("health");
+	health.animation.speed = healthAnimation.attribute("speed").as_float();
+	health.animation.loop = healthAnimation.attribute("loop").as_bool();
+	for (currentAnimation = healthAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		health.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	health.size = { healthAnimation.child("frame").attribute("w").as_int(), healthAnimation.child("frame").attribute("h").as_int() };
 
 	// Sheep Paws
 	pugi::xml_node sheepPawsAnimation = config.child("animations").child("sheepPaws");
@@ -219,6 +229,7 @@ bool j1Particles::Start()
 	cannonBullet.particleType = ParticleType_Cannon_Projectile;
 	lowFire.particleType = ParticleType_Fire;
 	hardFire.particleType = ParticleType_Fire;
+	health.particleType = ParticleType_Health;
 
 	paws.life = 800;
 
@@ -274,8 +285,7 @@ bool j1Particles::Update(float dt)
 {
 	bool ret = true;
 
-	/*UpdateAnimations(dt);
-
+	// Update the particles
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
 		Particle* currPart = activeParticles[i];
@@ -283,54 +293,42 @@ bool j1Particles::Update(float dt)
 		if (currPart == nullptr)
 			continue;
 
-		if (!currPart->Update(dt) && currPart != nullptr) //Idk if this fix will work
+		if (!currPart->Update(dt))
 		{
 			delete currPart;
 			activeParticles[i] = nullptr;
 		}
-
-		if (SDL_GetTicks() >= currPart->born)
-		{
-			if (currPart->particleType != ParticleType_Paws)
-				App->render->Blit(atlasTex, currPart->pos.x, currPart->pos.y, &(currPart->animation.GetCurrentFrame()), 1.0f, currPart->angle);
-		}
 	}
-	*/
+
+	// Update the speed of the animations
+	UpdateAnimations(dt);
+
 	return ret;
 }
 
-void j1Particles::Draw()
+bool j1Particles::PostUpdate() 
 {
+	bool ret = true;
+
+	// Send active particles to blit
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
-		Particle* p = activeParticles[i];
+		Particle* currPart = activeParticles[i];
 
-		if (p == nullptr)
+		if (currPart == nullptr)
 			continue;
 
-		if (SDL_GetTicks() >= p->born)
+		if (SDL_GetTicks() >= currPart->born)
 		{
-			if (p->particleType != ParticleType_Paws)
-				App->render->Blit(atlasTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()), 1.0f, p->angle);
+			//App->render->Blit(atlasTex, currPart->pos.x, currPart->pos.y, &(currPart->animation.GetCurrentFrame()), 1.0f, currPart->angle);
+			if (currPart->particleType == ParticleType_Paws)
+				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_Paws);
+			else
+				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_BasicParticles);
 		}
 	}
-}
 
-void j1Particles::DrawPaws() 
-{
-	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
-	{
-		Particle* p = activeParticles[i];
-
-		if (p == nullptr)
-			continue;
-
-		if (SDL_GetTicks() >= p->born)
-		{
-			if (p->particleType == ParticleType_Paws)
-				App->render->Blit(pawsTex, p->pos.x, p->pos.y, &(p->animation.GetCurrentFrame()), 1.0f, p->angle);
-		}
-	}
+	return ret;
 }
 
 Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, fPoint destination, float speed, uint damage, Uint32 delay)
@@ -409,9 +407,12 @@ void j1Particles::LoadAnimationsSpeed()
 	/// Troll Axe
 	trollAxeSpeed = trollAxe.animation.speed;
 
-	/// Fire Speed
+	/// Fire
 	lowFireSpeed = lowFire.animation.speed;
 	hardFireSpeed = hardFire.animation.speed;
+
+	/// Health
+	healthSpeed = health.animation.speed;
 }
 
 void j1Particles::UpdateAnimations(float dt)
@@ -439,9 +440,12 @@ void j1Particles::UpdateAnimations(float dt)
 	/// Troll Axe
 	trollAxe.animation.speed = trollAxeSpeed * dt;
 
-	/// Fire Speed
+	/// Fire
 	lowFire.animation.speed = lowFireSpeed * dt;
 	hardFire.animation.speed = hardFireSpeed * dt;
+
+	/// Health
+	health.animation.speed = healthSpeed * dt;
 }
 
 PawsInfo& j1Particles::GetPawsInfo(bool isSheep, bool isBoar)
@@ -545,6 +549,15 @@ bool Particle::Update(float dt)
 	case ParticleType_Paws:
 
 		if (animation.Finished() && isRemove)
+			return false;
+		else
+			return true;
+
+		break;
+
+	case ParticleType_Health:
+
+		if (animation.Finished())
 			return false;
 		else
 			return true;

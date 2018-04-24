@@ -19,6 +19,7 @@ enum ColliderType {
 	ColliderType_NeutralUnit,
 	ColliderType_PlayerBuilding,
 	ColliderType_EnemyBuilding,
+	ColliderType_NeutralBuilding,
 	ColliderType_PlayerSightRadius,
 	ColliderType_EnemySightRadius,
 	ColliderType_PlayerAttackRadius,

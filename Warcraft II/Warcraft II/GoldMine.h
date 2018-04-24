@@ -33,7 +33,6 @@ public:
 private:
 
 	GoldMineInfo goldMineInfo;
-
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	bool startTimer = true;

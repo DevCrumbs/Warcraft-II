@@ -24,14 +24,14 @@ enum ParticleType {
 	ParticleType_NoType,
 
 	ParticleType_Player_Projectile,
-
 	ParticleType_Enemy_Projectile,
-
 	ParticleType_Cannon_Projectile,
 
 	ParticleType_Paws,
 
 	ParticleType_Fire,
+
+	ParticleType_Health,
 
 	ParticleType_MaxTypes
 };
@@ -80,9 +80,8 @@ public:
 
 	bool Start();
 	bool Update(float dt);
-	void Draw();
-	void DrawPaws();
 	bool CleanUp();
+	bool PostUpdate();
 
 	Particle* AddParticle(const Particle& particle, iPoint pos, fPoint destination = { 0.0f,0.0f }, float speed = 0.0f, uint damage = 0, Uint32 delay = 0);
 
@@ -121,6 +120,9 @@ private:
 	float lowFireSpeed = 0.0f;
 	float hardFireSpeed = 0.0f;
 
+	/// Health Speed
+	float healthSpeed = 0.0f;
+
 public:
 
 	// Fire
@@ -137,6 +139,9 @@ public:
 	
 	// Paws
 	Particle paws;
+
+	// Health +++
+	Particle health;
 };
 
 #endif //__j1PARTICLES_H__

@@ -162,6 +162,7 @@
     <ClInclude Include="j1Pathmanager.h" />
     <ClInclude Include="j1PerfTimer.h" />
     <ClInclude Include="j1Player.h" />
+    <ClInclude Include="j1Printer.h" />
     <ClInclude Include="j1Render.h" />
     <ClInclude Include="j1Scene.h" />
     <ClInclude Include="j1Textures.h" />
@@ -246,6 +247,7 @@
     <ClCompile Include="j1Pathmanager.cpp" />
     <ClCompile Include="j1PerfTimer.cpp" />
     <ClCompile Include="j1Player.cpp" />
+    <ClCompile Include="j1Printer.cpp" />
     <ClCompile Include="j1Render.cpp" />
     <ClCompile Include="j1Scene.cpp" />
     <ClCompile Include="j1Textures.cpp" />
@@ -283,7 +285,9 @@
     <ClCompile Include="WatchTower.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\Game\config.xml" />
+    <Xml Include="..\Game\config.xml">
+      <SubType>Designer</SubType>
+    </Xml>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

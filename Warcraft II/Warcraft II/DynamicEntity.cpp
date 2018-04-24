@@ -15,6 +15,7 @@
 #include "Goal.h"
 #include "j1Player.h"
 #include "j1Particles.h"
+#include "j1Printer.h"
 
 #include "UILifeBar.h"
 
@@ -115,7 +116,8 @@ void DynamicEntity::Move(float dt) {}
 void DynamicEntity::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr) {
-		App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
+		//App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
+		App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 	}
 	if (isSelected)
 		DebugDrawSelected();
@@ -124,7 +126,8 @@ void DynamicEntity::Draw(SDL_Texture* sprites)
 void DynamicEntity::DebugDrawSelected()
 {
 	SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	App->render->DrawQuad(entitySize, 255, 255, 255, 255, false);
+	//App->render->DrawQuad(entitySize, 255, 255, 255, 255, false);
+	App->printer->PrintQuad(entitySize, ColorWhite);
 }
 
 void DynamicEntity::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState) {}
@@ -803,6 +806,47 @@ void DynamicEntity::SetHitting(bool isHitting)
 bool DynamicEntity::IsHitting() const
 {
 	return isHitting;
+}
+
+// Interact with the map
+void DynamicEntity::SetGoldMine(GoldMine* goldMine) 
+{
+	this->goldMine = goldMine;
+}
+
+GoldMine* DynamicEntity::GetGoldMine() const 
+{
+	return goldMine;
+}
+
+void DynamicEntity::SetUnitGatheringGold(bool isGatheringGold)
+{
+	this->isGatheringGold = isGatheringGold;
+}
+
+bool DynamicEntity::IsUnitGatheringGold() const 
+{
+	return isGatheringGold;
+}
+
+void DynamicEntity::SetRunestone(Runestone* runestone) 
+{
+	this->runestone = runestone;
+}
+
+Runestone* DynamicEntity::GetRunestone() const 
+{
+	return runestone;
+}
+
+void DynamicEntity::SetUnitHealingRunestone(bool isHealingRunestone) 
+{
+	this->isHealingRunestone = isHealingRunestone;
+}
+
+bool DynamicEntity::IsUnitHealingRunestone() const 
+{
+	return isHealingRunestone;
 }
 
 // Player commands

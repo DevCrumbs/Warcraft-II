@@ -15,6 +15,7 @@ class DynamicEntity;
 struct TargetInfo;
 struct Particle;
 struct GoldMine;
+struct Runestone;
 
 enum UnitDirection;
 
@@ -28,12 +29,14 @@ enum GoalType {
 	GoalType_Wander,
 	GoalType_Patrol,
 	GoalType_GatherGold,
+	GoalType_HealRunestone,
 
 	// Atomic Goals
 	GoalType_MoveToPosition,
 	GoalType_HitTarget,
 	GoalType_LookAround,
 	GoalType_PickNugget,
+	GoalType_HealArea,
 
 	GoalType_MaxTypes,
 
@@ -165,6 +168,7 @@ public:
 	void AddGoal_MoveToPosition(iPoint destinationTile);
 	void AddGoal_Patrol(iPoint originTile, iPoint destinationTile);
 	void AddGoal_GatherGold(GoldMine* goldMine);
+	void AddGoal_HealRunestone(Runestone* runestone);
 };
 
 class Goal_AttackTarget :public CompositeGoal
@@ -228,6 +232,21 @@ public:
 private:
 
 	GoldMine* goldMine = nullptr;
+};
+
+class Goal_HealRunestone :public CompositeGoal
+{
+public:
+
+	Goal_HealRunestone(DynamicEntity* owner, Runestone* runestone);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	Runestone* runestone = nullptr;
 };
 
 // Atomic Goals ---------------------------------------------------------------------
@@ -303,6 +322,30 @@ private:
 
 	double msAnimation = 0.0f;
 	j1PerfTimer timerAnimation;
+};
+
+class Goal_HealArea :public AtomicGoal
+{
+public:
+
+	Goal_HealArea(DynamicEntity* owner, Runestone* runestone);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	Runestone* runestone = nullptr;
+
+	uint health = 0;
+
+	double msAnimation = 0.0f;
+	uint timesAnimation = 0;
+	uint maxTimesAnimation = 0;
+	j1PerfTimer timerAnimation;
+
+	uint alpha = 0;
 };
 
 #endif //__GOAL_H__

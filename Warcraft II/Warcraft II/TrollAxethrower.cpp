@@ -15,6 +15,7 @@
 #include "j1Audio.h"
 #include "j1Particles.h"
 #include "j1Player.h"
+#include "j1Printer.h"
 
 #include "UILifeBar.h"
 
@@ -202,7 +203,8 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 		fPoint offset = { 0.0f,0.0f };
 		offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 3.0f };
 
-		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
+		//App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
+		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 	}
 
 	if (isSelected)
@@ -212,11 +214,13 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 void TrollAxethrower::DebugDrawSelected()
 {
 	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	App->printer->PrintQuad(entitySize, color);
 
 	for (uint i = 0; i < unitInfo.priority; ++i) {
 		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+		//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+		App->printer->PrintQuad(entitySize, color);
 	}
 }
 

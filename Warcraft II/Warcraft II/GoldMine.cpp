@@ -47,7 +47,7 @@ void GoldMine::Move(float dt)
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 
-	if (buildingState == BuildingState_Destroyed)
+	if (buildingState == BuildingState_Destroyed && !isUnitGatheringGold)
 		texArea = &goldMineInfo.inProgressTexArea;
 }
 

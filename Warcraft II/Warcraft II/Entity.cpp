@@ -135,7 +135,7 @@ bool Entity::CreateEntityCollider(EntitySide entitySide, bool createOffset)
 		else if (this->entityType == EntityCategory_STATIC_ENTITY)
 			collType = ColliderType_EnemyBuilding;
 	}
-	else if (entitySide == EntitySide_NoSide)
+	else if (entitySide == EntitySide_NoSide || entitySide == EntitySide_Neutral)
 
 		collType = ColliderType_NeutralUnit;
 

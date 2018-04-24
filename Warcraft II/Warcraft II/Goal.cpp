@@ -198,6 +198,11 @@ void Goal_Think::AddGoal_GatherGold(GoldMine* goldMine)
 	AddSubgoal(new Goal_GatherGold(owner, goldMine));
 }
 
+void Goal_Think::AddGoal_HealRunestone(Runestone* runestone) 
+{
+	AddSubgoal(new Goal_HealRunestone(owner, runestone));
+}
+
 // Goal_AttackTarget ---------------------------------------------------------------------
 
 Goal_AttackTarget::Goal_AttackTarget(DynamicEntity* owner, TargetInfo* targetInfo) :CompositeGoal(owner, GoalType_AttackTarget), targetInfo(targetInfo) {}
@@ -431,44 +436,33 @@ Goal_GatherGold::Goal_GatherGold(DynamicEntity* owner, GoldMine* goldMine) :Comp
 
 void Goal_GatherGold::Activate()
 {
-	// 1. The selected group of units move near the Gold Mine
-	// 2. Only one unit of the group (the unit nearest to the mine) enters the mine and gathers the gold (it takes a bit of time to gather the gold)
-
 	goalStatus = GoalStatus_Active;
 
 	if (goldMine == nullptr) {
-	
+
 		goalStatus = GoalStatus_Failed;
 		return;
 	}
 	else if (goldMine->buildingState == BuildingState_Destroyed) {
-	
+
 		goalStatus = GoalStatus_Completed;
 		return;
 	}
 
+	// 2. Pick Nugget
 	AddSubgoal(new Goal_PickNugget(owner, goldMine));
 
-	// The goal tile is the tile in front of the entrance of the mine
+	// 1. Move near the Gold Mine
 	iPoint goldMineTile = App->map->WorldToMap(goldMine->GetPos().x, goldMine->GetPos().y);
-	goldMineTile.x -= 1;
-	goldMineTile.y += 3;
+	goldMineTile = App->movement->FindClosestValidTile(goldMineTile);
 
-	iPoint unitGoal = goldMineTile;
+	if (goldMineTile.x == -1 || goldMineTile.y == -1) {
 
-	// If the tile in front of the entrance of the mine is not walkable, find another tile next to the mine
-	if (!App->pathfinding->IsWalkable(goldMineTile)) {
-
-		unitGoal = App->movement->FindClosestValidTile(goldMineTile);
-
-		if (unitGoal.x == -1 || unitGoal.y == -1) {
-
-			goalStatus = GoalStatus_Failed;
-			return;
-		}
+		goalStatus = GoalStatus_Failed;
+		return;
 	}
 
-	AddSubgoal(new Goal_MoveToPosition(owner, unitGoal));
+	AddSubgoal(new Goal_MoveToPosition(owner, goldMineTile));
 }
 
 GoalStatus Goal_GatherGold::Process(float dt)
@@ -486,6 +480,61 @@ void Goal_GatherGold::Terminate()
 
 	goldMine = nullptr;
 
+	owner->SetGoldMine(nullptr);
+	owner->SetUnitState(UnitState_Idle);
+}
+
+// Goal_HealRunestone ---------------------------------------------------------------------
+
+Goal_HealRunestone::Goal_HealRunestone(DynamicEntity* owner, Runestone* runestone) :CompositeGoal(owner, GoalType_HealRunestone), runestone(runestone) {}
+
+void Goal_HealRunestone::Activate()
+{
+	goalStatus = GoalStatus_Active;
+
+	if (runestone == nullptr) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+	else if (runestone->buildingState == BuildingState_Destroyed) {
+
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+
+	// 2. Heal Area
+	AddSubgoal(new Goal_HealArea(owner, runestone));
+
+	// 1. Move near the Runestone
+	iPoint runestoneTile = App->map->WorldToMap(runestone->GetPos().x, runestone->GetPos().y);
+	runestoneTile = App->movement->FindClosestValidTile(runestoneTile);
+
+	if (runestoneTile.x == -1 || runestoneTile.y == -1) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+
+	AddSubgoal(new Goal_MoveToPosition(owner, runestoneTile));
+}
+
+GoalStatus Goal_HealRunestone::Process(float dt)
+{
+	ActivateIfInactive();
+
+	goalStatus = ProcessSubgoals(dt);
+
+	return goalStatus;
+}
+
+void Goal_HealRunestone::Terminate()
+{
+	RemoveAllSubgoals();
+
+	runestone = nullptr;
+
+	owner->SetRunestone(nullptr);
 	owner->SetUnitState(UnitState_Idle);
 }
 
@@ -910,26 +959,9 @@ void Goal_PickNugget::Activate()
 
 	if (!goldMine->IsUnitGatheringGold()) {
 
-		// The goal tile is the tile in front of the entrance of the mine
-		iPoint goldMineTile = App->map->WorldToMap(goldMine->GetPos().x, goldMine->GetPos().y);
-		goldMineTile.x -= 1;
-		goldMineTile.y += 3;
-
-		// If this tile is walkable, the unit on this tile will gather the gold 
-		if (App->pathfinding->IsWalkable(goldMineTile)) {
-
-			if (owner->GetSingleUnit()->currTile == goldMineTile)
-
-				goldMine->SetUnitGatheringGold(true);
-			else {
-			
-				goalStatus = GoalStatus_Failed;
-				return;
-			}
-		}
-		// Else, any unit can gather the gold (the unit which arrives first)
-		else
-			goldMine->SetUnitGatheringGold(true);
+		owner->SetUnitGatheringGold(true);
+		goldMine->SetUnitGatheringGold(true);
+		goldMine->buildingState = BuildingState_Destroyed;
 	}
 	// Another unit has already entered the mine and is gathering the gold
 	else {
@@ -1008,7 +1040,9 @@ void Goal_PickNugget::Terminate()
 		// Give gold to the player
 		App->player->AddGold(gold);
 		App->scene->hasGoldChanged = true;
-		goldMine->buildingState = BuildingState_Destroyed;
+
+		owner->SetUnitGatheringGold(false);
+		goldMine->SetUnitGatheringGold(false);
 
 		owner->SetBlitState(true);
 		owner->SetIsValid(true);
@@ -1022,4 +1056,143 @@ void Goal_PickNugget::Terminate()
 	secondsGathering = 0.0f;
 
 	msAnimation = 0.0f;
+}
+
+// Goal_HealArea ---------------------------------------------------------------------
+
+Goal_HealArea::Goal_HealArea(DynamicEntity* owner, Runestone* runestone) :AtomicGoal(owner, GoalType_HealArea), runestone(runestone) {}
+
+void Goal_HealArea::Activate()
+{
+	goalStatus = GoalStatus_Active;
+
+	if (runestone == nullptr) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+	else if (runestone->buildingState == BuildingState_Destroyed) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+
+	if (!runestone->IsUnitHealingArea()) {
+
+		owner->SetUnitHealingRunestone(true);
+		runestone->SetUnitHealingArea(true);
+		runestone->buildingState = BuildingState_Destroyed;
+	}
+	// Another unit is already interacting with the runestone
+	else {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+
+	// Determine the amount of health
+	int random = rand() % 4;
+
+	switch (random) {
+
+	case 0:
+		health = 50;
+		break;
+	case 1:
+		health = 50;
+		break;
+	case 2:
+		health = 60;
+		break;
+	case 3:
+		health = 70;
+		break;
+
+	default:
+		health = 80;
+		break;
+	}
+
+	App->audio->PlayFx(8, 3); // Mage Tower FX
+
+	owner->SetIsValid(false);
+
+	msAnimation = 300.0f;
+	maxTimesAnimation = 3;
+	timerAnimation.Start();
+
+	alpha = 255;
+}
+
+GoalStatus Goal_HealArea::Process(float dt)
+{
+	ActivateIfInactive();
+
+	if (goalStatus == GoalStatus_Failed)
+		return goalStatus;
+
+	if (timesAnimation < maxTimesAnimation) {
+
+		if (timerAnimation.ReadMs() >= msAnimation) {
+
+			runestone->SwapTexArea();
+			timerAnimation.Start();
+
+			timesAnimation++;		
+		}
+
+		return goalStatus;
+	}
+
+	// Bright the area
+	if (alpha > 0) {
+
+		alpha--;
+		runestone->BlitSightArea(alpha);
+
+		return goalStatus;
+	}
+
+	// Perform the heal animation and heal the units within the area
+	ColliderGroup* sightRadiusCollider = runestone->GetSightRadiusCollider();
+
+	for (uint i = 0; i < sightRadiusCollider->colliders.size(); ++i) {
+
+		iPoint colliderTile = App->map->WorldToMap(sightRadiusCollider->colliders[i]->colliderRect.x, sightRadiusCollider->colliders[i]->colliderRect.y);
+
+		Entity* entity = App->entities->IsEntityOnTile(colliderTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+		
+		if (entity != nullptr) {
+
+			DynamicEntity* dynEnt = (DynamicEntity*)entity;
+			iPoint pos = App->map->MapToWorld(dynEnt->GetSingleUnit()->currTile.x, dynEnt->GetSingleUnit()->currTile.y);
+
+			App->particles->AddParticle(App->particles->health, pos);
+			entity->ApplyHealth(health);
+		}
+	}
+
+	goalStatus = GoalStatus_Completed;
+
+	return goalStatus;
+}
+
+void Goal_HealArea::Terminate()
+{
+	if (goalStatus == GoalStatus_Completed) {
+
+		owner->SetUnitHealingRunestone(false);
+		runestone->SetUnitHealingArea(false);
+
+		owner->SetIsValid(true);
+	}
+
+	runestone = nullptr;
+	health = 0;
+
+	msAnimation = 0.0f;
+	timesAnimation = 0;
+	maxTimesAnimation = 0;
+
+	alpha = 0;
 }

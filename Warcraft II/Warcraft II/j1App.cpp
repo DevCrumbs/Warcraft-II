@@ -23,6 +23,7 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 #include "j1FinishGame.h"
+#include "j1Printer.h"
 
 #include "j1App.h"
 #include "Brofiler\Brofiler.h"
@@ -52,6 +53,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	movement = new j1Movement();
 	pathmanager = new j1PathManager(MS_PATHFINDING);
 	finish = new j1FinishGame();
+	printer = new j1Printer();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -70,15 +72,15 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	/// <-- Do not change this order
 
 	AddModule(font);
+
 	AddModule(player);
 	AddModule(scene);
 
 	AddModule(particles);
-
 	AddModule(finish);
 	AddModule(menu);
-
 	AddModule(console);
+	AddModule(printer);
 	AddModule(gui);
 	AddModule(fade);
 

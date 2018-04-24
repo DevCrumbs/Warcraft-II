@@ -71,8 +71,6 @@ public:
 	// Called before all Updates
 	bool PreUpdate();
 
-	//void Draw();
-
 	// Called each loop iteration
 	bool Update(float dt);
 
@@ -94,11 +92,7 @@ public:
 
 	bool DestroyElement(UIElement** elem);
 	bool RemoveElem(UIElement ** elem);
-	bool ClearAllUI();
 	bool ClearMapTextures();
-
-	void SetUpDraggingChildren(UIElement* elem, bool dragging);
-	void SetUpDraggingNode(bool drag);
 
 	const SDL_Texture* GetAtlas() const;
 	SDL_Rect GetRectFromAtlas(SDL_Rect rect);
@@ -108,6 +102,7 @@ public:
 	void ResetAlpha();
 
 public:
+
 	std::list<UIElement*> addedElementUI;
 
 	//NTree<UIElement*>* UIElementsTree; Don't delete yet
@@ -131,6 +126,7 @@ private:
 
 	list<UIElement*> UIElementsList;
 	priority_queue<UIElement*, vector<UIElement*>, compareUIPriority> drawOrder;
+
 	// Alpha parameters
 	float totalTime = 0.0f;
 	float startTime = 0.0f;
