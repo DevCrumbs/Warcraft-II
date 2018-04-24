@@ -796,10 +796,10 @@ bool j1Scene::Update(float dt)
 	case PauseMenuActions_CREATED:
 		CreatePauseMenu();
 
-		if (buildingMenuOn)
+		/*if (buildingMenuOn)
 		{
 			ChangeBuildingMenuState(&buildingMenuButtons);
-		}
+		}*/
 
 		if (alphaBuilding != EntityType_NONE) {
 			alphaBuilding = EntityType_NONE;
@@ -1117,13 +1117,13 @@ void j1Scene::ChangeBuildingButtState(MenuBuildingButton* elem)
 void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem)
 {
 	buildingMenu->isActive = !buildingMenu->isActive;
-	ChangeBuildingButtState(&buildingMenuButtons.cannonTower);
-	ChangeBuildingButtState(&buildingMenuButtons.chickenFarm);
-	ChangeBuildingButtState(&buildingMenuButtons.gryphonAviary);
-	ChangeBuildingButtState(&buildingMenuButtons.guardTower);
-	ChangeBuildingButtState(&buildingMenuButtons.mageTower);
-	ChangeBuildingButtState(&buildingMenuButtons.scoutTower);
-	ChangeBuildingButtState(&buildingMenuButtons.stables);
+	ChangeBuildingButtState(&elem->cannonTower);
+	ChangeBuildingButtState(&elem->chickenFarm);
+	ChangeBuildingButtState(&elem->gryphonAviary);
+	ChangeBuildingButtState(&elem->guardTower);
+	ChangeBuildingButtState(&elem->mageTower);
+	ChangeBuildingButtState(&elem->scoutTower);
+	ChangeBuildingButtState(&elem->stables);
 	if (buildingMenu->isActive)
 	{
 		UpdateLabelsMenu();
@@ -1582,6 +1582,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.guardTower.icon) {
 			if (App->player->currentGold >= guardTowerCost) {
 				App->audio->PlayFx(1, 0); //Button sound
+				ChangeBuildingMenuState(&buildingMenuButtons);
 				alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
 			}
 			else if (App->player->currentGold < guardTowerCost)
