@@ -244,16 +244,6 @@ void j1Player::CheckIfPlaceBuilding()
 				chickenFarm.push_back(c);
 				AddGold(-App->scene->chickenFarmCost); //Discount gold
 				App->scene->hasGoldChanged = true;
-
-				// Set unwalkable tiles (SMALL)
-				/*
-				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-				*/
-				// ----
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -265,21 +255,6 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->stablesCost); //Discount gold
 				App->scene->hasGoldChanged = true;
-
-				// Set unwalkable tiles (MEDIUM)
-				/*
-				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 0u;
-				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-				*/
-				// -----
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -315,16 +290,6 @@ void j1Player::CheckIfPlaceBuilding()
 				scoutTower.push_back(s);
 				AddGold(-App->scene->scoutTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
-
-				// Set unwalkable tiles (SMALL)
-				/*
-				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-				*/
-				// ----
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -336,16 +301,6 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->guardTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
-
-				// Set unwalkable tiles (SMALL)
-				/*
-				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-				*/
-				// ----
 			}
 			break;
 		case EntityType_PLAYER_CANNON_TOWER:
@@ -354,16 +309,6 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->cannonTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
-
-				// Set unwalkable tiles (SMALL)
-				/*
-				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-				*/
-				// ----
 			}
 		case EntityType_NONE:
 			break;
@@ -635,48 +580,45 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 					while (it != units.end()) {
 
-						(*it)->GetBrain()->RemoveAllSubgoals();
-						(*it)->GetBrain()->AddGoal_GatherGold((GoldMine*)staticEntity);
-
-						(*it)->SetUnitState(UnitState_Walk);
+						(*it)->SetGoldMine((GoldMine*)staticEntity);
 
 						it++;
 					}
-				}
 
-				/*
-				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
-				if (App->entities->IsNearSoldiers(pos, 7)) {
-
-
-				//App->scene->UnLoadTerenasDialog();
-
+					App->entities->CommandToUnits(units, UnitCommand_GatherGold);
 				}
 				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
-				App->scene->UnLoadTerenasDialog();
-				App->scene->terenasDialogTimer.Start();
-				App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
-				App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+
+					App->scene->UnLoadTerenasDialog();
+
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
 				}
-				*/
 			}
 
 			// Runestone (right click to send a unit to heal the group)
 			else if (staticEntity->staticEntityType == EntityType_RUNESTONE && staticEntity->buildingState == BuildingState_Normal) {
 
-				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
-				if (App->entities->IsNearSoldiers(pos, 7)) {
-					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
-					while (it != App->entities->activeDynamicEntities.end()) {
-						if ((*it)->entitySide == EntitySide_Player)
-							(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+				if (units.size() > 0) {
+
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					while (it != units.end()) {
+
+						(*it)->SetRunestone((Runestone*)staticEntity);
+
 						it++;
 					}
-					App->scene->UnLoadTerenasDialog();
-					staticEntity->buildingState = BuildingState_Destroyed;
+
+					App->entities->CommandToUnits(units, UnitCommand_HealRunestone);
 				}
 				else if (App->scene->terenasDialogEvent != TerenasDialog_RUNESTONE) {
+
 					App->scene->UnLoadTerenasDialog();
+
 					App->scene->terenasDialogTimer.Start();
 					App->scene->terenasDialogEvent = TerenasDialog_RUNESTONE;
 					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);

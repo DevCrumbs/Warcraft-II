@@ -29,6 +29,7 @@ struct Particle;
 struct SliderStruct;
 
 enum TerenasDialogEvents {
+
 	TerenasDialog_START,
 	TerenasDialog_RESCUE_ALLERIA,
 	TerenasDialog_RESCUE_KHADGAR,
@@ -39,7 +40,9 @@ enum TerenasDialogEvents {
 	TerenasDialog_GOLD,
 	TerenasDialog_NONE
 };
+
 enum PauseMenuActions {
+
 	PauseMenuActions_NOT_EXIST,
 	PauseMenuActions_NONE,
 	PauseMenuActions_CREATED,
@@ -49,18 +52,22 @@ enum PauseMenuActions {
 	PauseMenuActions_SLIDERFX,
 	PauseMenuActions_SLIDERMUSIC
 };
+
 struct TerenasAdvices {
+
 	UIImage* terenasImage = nullptr;
 	UILabel* text = nullptr;
 };
 
 struct MenuBuildingButton {
+
 	UIButton* icon = nullptr;
 	UILabel* name = nullptr;
 	UILabel* cost = nullptr;
 };
 
 struct BuildingMenu {
+
 	MenuBuildingButton chickenFarm;
 	MenuBuildingButton stables;
 	MenuBuildingButton gryphonAviary;

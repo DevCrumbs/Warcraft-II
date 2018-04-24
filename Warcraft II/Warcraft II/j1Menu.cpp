@@ -19,6 +19,7 @@
 #include "j1Menu.h"
 #include "j1PathManager.h"
 #include "j1Movement.h"
+#include "j1Printer.h"
 
 #include "j1Gui.h"
 #include "UIImage.h"
@@ -108,8 +109,8 @@ bool j1Menu::Start()
 	App->audio->PlayMusic(mainMenuMusicName.data(), 0.0f);
 
 	//If it is the first code iteration, change all the sounds
-	if(!isSoundCharged)
-	ChargeGameSounds();
+	if (!isSoundCharged)
+		ChargeGameSounds();
 
 	App->render->camera.x = App->render->camera.y = 0;
 
@@ -142,8 +143,6 @@ bool j1Menu::PreUpdate()
 // Called each loop iteration
 bool j1Menu::Update(float dt)
 {
-	App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 70, 70, 70, 255);
-
 	/*
 	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
 		if (parchment != nullptr) {
@@ -199,6 +198,10 @@ bool j1Menu::Update(float dt)
 bool j1Menu::PostUpdate()
 {
 	bool ret = true;
+
+	// Blit the background
+	//App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 70, 70, 70, 255);
+	App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, { 70,70,70,255 }, true);
 
 	if (isFadetoScene) {
 		App->fade->FadeToBlack(this, App->scene);

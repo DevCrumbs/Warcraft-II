@@ -217,7 +217,8 @@ void UIElement::SetPriorityDraw(PriorityDraw priority) {
 	this->priority = priority;
 }
 
-PriorityDraw UIElement::GetPriorityDraw() const{
+PriorityDraw UIElement::GetPriorityDraw() const
+{
 	return priority;
 }
 

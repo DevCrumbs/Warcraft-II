@@ -336,6 +336,9 @@
     <ClInclude Include="UIMinimap.h">
       <Filter>Modules\UIElements</Filter>
     </ClInclude>
+    <ClInclude Include="j1Printer.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -577,6 +580,9 @@
     </ClCompile>
     <ClCompile Include="UIMinimap.cpp">
       <Filter>Modules\UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Printer.cpp">
+      <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

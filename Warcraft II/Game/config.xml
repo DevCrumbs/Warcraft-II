@@ -1162,6 +1162,20 @@
       <paws name="data/assets/textures/particles/paws.png"/>
     </spritesheets>
 
+    <health speed ="10" loop="0">
+      <frame x="1806" y="0" w="50" h="50" />
+      <frame x="1856" y="0" w="50" h="50" />
+      <frame x="1906" y="0" w="50" h="50" />
+
+      <frame x="1956" y="0" w="50" h="50" />
+      <frame x="2006" y="0" w="50" h="50" />
+      <frame x="2056" y="0" w="50" h="50" />
+
+      <frame x="2106" y="0" w="50" h="50" />
+      <frame x="2156" y="0" w="50" h="50" />
+      <frame x="2206" y="0" w="50" h="50" />
+    </health>
+
     <towerArrows>
       <up x="272" y="8" w="30" h="30" />
       <upRight x="312" y="9" w="30" h="30" />
@@ -1313,7 +1327,6 @@
 
     </animations>
   </particles>
-
   
   <finish>
     <spritesheets>

@@ -14,6 +14,7 @@
 #include "Goal.h"
 #include "j1Audio.h"
 #include "j1Particles.h"
+#include "j1Printer.h"
 
 #include "UILifeBar.h"
 
@@ -203,6 +204,44 @@ void ElvenArcher::Move(float dt)
 
 			break;
 
+		case UnitCommand_GatherGold:
+
+			if (goldMine != nullptr) {
+
+				if (goldMine->buildingState == BuildingState_Normal) {
+
+					if (singleUnit->IsFittingTile()) {
+
+						brain->RemoveAllSubgoals();
+						brain->AddGoal_GatherGold(goldMine);
+
+						unitState = UnitState_GatherGold;
+						unitCommand = UnitCommand_NoCommand;
+					}
+				}
+			}
+
+			break;
+
+		case UnitCommand_HealRunestone:
+
+			if (runestone != nullptr) {
+
+				if (runestone->buildingState == BuildingState_Normal) {
+
+					if (singleUnit->IsFittingTile()) {
+
+						brain->RemoveAllSubgoals();
+						brain->AddGoal_HealRunestone(runestone);
+
+						unitState = UnitState_HealRunestone;
+						unitCommand = UnitCommand_NoCommand;
+					}
+				}
+			}
+
+			break;
+
 		case UnitCommand_NoCommand:
 		default:
 
@@ -252,7 +291,8 @@ void ElvenArcher::Draw(SDL_Texture* sprites)
 		else
 			offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
 
-		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
+		//App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
+		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 	}
 
 	if (isSelected)
@@ -262,7 +302,8 @@ void ElvenArcher::Draw(SDL_Texture* sprites)
 void ElvenArcher::DebugDrawSelected()
 {
 	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	App->printer->PrintQuad(entitySize, color);
 
 	//for (uint i = 0; i < unitInfo.priority; ++i) {
 		//const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
@@ -461,6 +502,11 @@ void ElvenArcher::UnitStateMachine(float dt)
 		break;
 
 	case UnitState_AttackTarget:
+
+		break;
+
+	case UnitState_HealRunestone:
+	case UnitState_GatherGold:
 
 		break;
 

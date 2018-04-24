@@ -28,6 +28,7 @@
 #include "j1Player.h"
 #include "j1Fonts.h"
 #include "j1PathManager.h"
+#include "j1Printer.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
@@ -508,13 +509,6 @@ bool j1Scene::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
 		isDebug = !isDebug;
-
-	// Draw
-	App->map->Draw(); // map
-	App->particles->DrawPaws(); // paws particles
-	App->entities->Draw(); // entities
-	//App->particles->Draw();
-
 	
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		debugDrawAttack = !debugDrawAttack;
@@ -522,9 +516,9 @@ bool j1Scene::Update(float dt)
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
 
-
 	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		debugDrawMovement = !debugDrawMovement;
+
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
 
@@ -573,7 +567,8 @@ bool j1Scene::Update(float dt)
 
 			// Draw the rectangle
 			SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
-			App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
+			//App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
+			App->printer->PrintQuad(mouseRect, { 255,255,255,255 });
 
 			// Select units within the rectangle
 			if (width < 0) {
@@ -877,7 +872,6 @@ bool j1Scene::PostUpdate()
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
 	}
-	// -----
 	
 	if (((App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) && !App->player->isUnitSpawning) || (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)) {
 
@@ -893,6 +887,7 @@ bool j1Scene::PostUpdate()
 		App->menu->active = true;
 		isFadeToMenu = false;
 	}
+
 	return ret;
 }
 
@@ -1025,7 +1020,6 @@ void j1Scene::CheckCameraMovement(float dt) {
 	mouse = App->player->GetMousePos();
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
 	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
-
 
 	//NOT MOVING WITH App->input->GetKey(buttonMoveUp) == KEY_REPEAT
 	//Move with arrows

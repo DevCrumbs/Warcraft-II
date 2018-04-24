@@ -10,6 +10,7 @@
 #include "j1Scene.h"
 #include "j1EntityFactory.h"
 #include "j1Pathfinding.h"
+#include "j1Printer.h"
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) {
 	this->entityType = EntityCategory_STATIC_ENTITY;
@@ -84,7 +85,8 @@ StaticEntity::~StaticEntity()
 
 void StaticEntity::Draw(SDL_Texture* sprites)
 {
-	App->render->Blit(sprites, pos.x, pos.y, texArea);
+	//App->render->Blit(sprites, pos.x, pos.y, texArea);
+	App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, (SDL_Rect)*texArea, Layers_Entities);
 }
 
 void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
@@ -222,30 +224,48 @@ bool StaticEntity::GetIsFinishedBuilt() const
 ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic)
 {
 	vector<Collider*> colliders;
-	iPoint currTilePos = { (int)this->pos.x + 16, (int)this->pos.y + 16 };
 
-	int sign = 1;
-	for (int y = -(int)radius + 1; y < (int)radius; ++y) {
+	// Perform a BFS
+	queue<iPoint> queue;
+	list<iPoint> visited;
 
-		if (y == 0)
-			sign *= -1;
+	iPoint curr = App->map->WorldToMap(pos.x, pos.y);
+	queue.push(curr);
 
-		for (int x = (-sign * y) - (int)radius + 1; x < (int)radius + (sign * y); ++x) {
+	while (queue.size() > 0) {
 
-			//Valdivia: Idk if this is the correct way of doing it but it works
-			SDL_Rect rect = { currTilePos.x + x * App->map->data.tileWidth, currTilePos.y + y * App->map->data.tileHeight, App->map->data.tileWidth, App->map->data.tileHeight };
-			Collider* collider = App->collision->CreateCollider(rect);
-			
-			if (collider != nullptr)
-				colliders.push_back(collider);
-			/*
-			rect = { currTilePos.x + 32 + x * App->map->defaultTileSize, currTilePos.y + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
-			colliders.push_back(App->collision->CreateCollider(rect));
-			rect = { currTilePos.x + x * App->map->defaultTileSize, currTilePos.y + 32 + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
-			colliders.push_back(App->collision->CreateCollider(rect));
-			rect = { currTilePos.x + 32 + x * App->map->defaultTileSize, currTilePos.y + 32 + y * App->map->defaultTileSize, App->map->defaultTileSize, App->map->defaultTileSize };
-			colliders.push_back(App->collision->CreateCollider(rect));
-			*/
+		curr = queue.front();
+		queue.pop();
+
+		iPoint neighbors[4];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
+
+		/*
+		neighbors[4].create(curr.x + 1, curr.y + 1);
+		neighbors[5].create(curr.x + 1, curr.y - 1);
+		neighbors[6].create(curr.x - 1, curr.y + 1);
+		neighbors[7].create(curr.x - 1, curr.y - 1);
+		*/
+
+		for (uint i = 0; i < 4; ++i)
+		{
+			if (CalculateDistance(neighbors[i], App->map->WorldToMap(pos.x, pos.y), distanceHeuristic) < radius) {
+
+				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+					queue.push(neighbors[i]);
+					visited.push_back(neighbors[i]);
+
+					iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
+					SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+
+					Collider* coll = App->collision->CreateCollider(rect);
+					colliders.push_back(coll);
+				}
+			}
 		}
 	}
 
@@ -263,4 +283,3 @@ ColliderGroup * StaticEntity::GetSightRadiusCollider() const
 {
 	return sightRadiusCollider;
 }
-

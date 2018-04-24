@@ -93,7 +93,6 @@ protected:
 	bool isBuilt = false;
 
 	ColliderGroup* sightRadiusCollider = nullptr;
-
 };
 
 #endif //__StaticEntity_H__
