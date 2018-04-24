@@ -1190,25 +1190,21 @@ void j1Scene::LoadBuildingMenu()
 
 		CreateBuildingElements( { 343,160,50,41 }, { 585, 100 }, "Stables",
 			"Cost: 900 gold", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
-		//,
+	
 		CreateBuildingElements( { 496,160,50,41 }, { 585, 145 }, "Gryphon Aviary",
 			"Cost: 400 gold", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
-		//,
+		
 		CreateBuildingElements( { 496,202,50,41 }, { 585, 190 }, "Mage Tower",
 			"Cost: 1000 gold", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
-		//,
+		
 		CreateBuildingElements( { 496,34,50,41 }, { 585, 235 }, "Scout Tower",
 			"Cost: 400 gold", { 645, 245 }, { 645, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
-		//, 
+		
 		CreateBuildingElements({ 496,76,50,41 }, { 585, 280 }, "Guard Tower",
 			"Cost: 600 gold", { 645, 290 }, { 645, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
-		//, 
+		
 		CreateBuildingElements({ 496,118,50,41 }, { 585, 325 }, "Cannon Tower",
 			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
-	}
-	else
-	{
-		LOG("WTF");
 	}
 }
 

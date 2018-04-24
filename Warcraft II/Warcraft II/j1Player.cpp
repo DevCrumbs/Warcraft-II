@@ -959,28 +959,27 @@ void j1Player::MakeUnitMenu(Entity* entity)
 
 void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 {
-	list<DynamicEntity*>::iterator it;
-	it = units.begin();
+	list<DynamicEntity*>::iterator iterator = units.begin();
 	int cont = 0;
-	while (it != units.end()) {
+	while (iterator != units.end()) {
 		UIImage* image = nullptr;
 		UILifeBar* lifeBar = nullptr;
 		if (units.size() == 1) {
-			MakeUnitMenu((*it));
+			MakeUnitMenu((*iterator));
 		}
 		else {
 				
-			if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
+			if ((*iterator)->dynamicEntityType == EntityType_FOOTMAN) {
 				image = CreateGroupIcon({ 55 * (cont % 4) + 2, 39 * (cont / 4) + 18 }, { 649, 160, 46, 30 });
 			}
-			else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+			else if ((*iterator)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
 				image = CreateGroupIcon({ 55 * (cont % 4) + 2, 39 * (cont / 4) + 18 }, { 696, 160, 46, 30 });
 			}
-			lifeBar = CreateGroupLifeBar({ 55 * (cont % 4) + 1, 39 * (cont / 4) + 33 }, { 240,362,47,7 }, { 242,358,42,3 }, (Entity*)(*it));
+			lifeBar = CreateGroupLifeBar({ 55 * (cont % 4) + 1, 39 * (cont / 4) + 33 }, { 240,362,47,7 }, { 242,358,42,3 }, (Entity*)(*iterator));
 			
-			groupElementsList.push_back({(*it), image, lifeBar});
+			groupElementsList.push_back({(*iterator), image, lifeBar});
 		}		
-		it++;
+		iterator++;
 		cont++;
 	}
 
