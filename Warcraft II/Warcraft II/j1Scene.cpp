@@ -184,65 +184,6 @@ bool j1Scene::LoadNewMap(int map)
 		ret = App->map->Load(path);
 	}
 
-	if (ret)
-	{
-		iPoint cameraPos{ 0,0 };
-		switch (map)
-		{
-		case 0:
-			cameraPos = App->map->MapToWorld(13, 78);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos.y;
-
-			basePos = App->map->MapToWorld(5, 70);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		case 1:
-			cameraPos = App->map->MapToWorld(13, 128);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos	.y;
-
-			basePos = App->map->MapToWorld(5, 120);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		case 2:
-			cameraPos = App->map->MapToWorld(63, 78);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos.y;
-
-			basePos = App->map->MapToWorld(55, 70);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		case 3:
-			cameraPos = App->map->MapToWorld(63, 78);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos.y;
-
-			basePos = App->map->MapToWorld(55, 70);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		case 4:
-			cameraPos = App->map->MapToWorld(13, 128);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos.y;
-
-			basePos = App->map->MapToWorld(5, 120);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		case 5:
-			cameraPos = App->map->MapToWorld(13, 78);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos.y;
-
-			basePos = App->map->MapToWorld(5, 70);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		default:
-			break;
-		}
-		basePos = cameraPos;
-	}
-
 	UIMinimap_Info info;
 
 	info.entityHeight = 32;

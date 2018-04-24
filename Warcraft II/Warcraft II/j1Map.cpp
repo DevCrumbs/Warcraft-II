@@ -943,12 +943,17 @@ bool j1Map::LoadLogic()
 					int y = i / (*layerIterator)->width;
 
 					iPoint pos = MapToWorld(x, y);
-
+					int margin = 8;
 					ROOM_TYPE roomType = (ROOM_TYPE)(*layerIterator)->data[i];
 					switch (roomType)
 					{
 					case roomType_BASE:
-						roomRectList.push_back({ pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize });
+						playerBase = { pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize };
+						roomRectList.push_back(playerBase);
+
+						App->render->camera.x = -(playerBase.x + margin * defaultTileSize);
+						App->render->camera.y = -(playerBase.y + margin * defaultTileSize);
+
 						break;
 					case roomType_LARGE:
 						roomRectList.push_back({ pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultRoomSize * defaultTileSize });

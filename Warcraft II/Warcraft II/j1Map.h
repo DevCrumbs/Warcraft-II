@@ -20,10 +20,12 @@ using namespace std;
 
 enum ROOM_TYPE
 {
-roomType_NONE,
-roomType_BASE,
-roomType_LARGE,
-roomType_LITTLE
+roomType_NONE = 0,
+
+roomType_LARGE = 411,
+roomType_LITTLE = 412,
+roomType_BASE = 413
+
 };
 
 struct Object {
