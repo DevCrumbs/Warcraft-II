@@ -324,8 +324,6 @@ void j1Player::CheckIfPlaceBuilding()
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		App->scene->SetAplphaBuilding(EntityType_NONE);
 
-	//This makes that buildings on the scene aren't printed on alpha
-
 }
 
 //This method checks for the spawning queue of the units and if they're ready to spawn or not
