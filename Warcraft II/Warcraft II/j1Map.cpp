@@ -45,7 +45,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 void j1Map::Draw()
 {
-	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Azure);
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::PapayaWhip);
 
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
 	{
