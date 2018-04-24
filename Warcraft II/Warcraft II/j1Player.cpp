@@ -326,11 +326,6 @@ void j1Player::CheckIfPlaceBuilding()
 
 	//This makes that buildings on the scene aren't printed on alpha
 
-	if (alphaBuilding != EntityType_MAX)
-	{
-		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-		SDL_SetTextureAlphaMod(App->entities->GetNeutralBuildingTexture(), 255);
-	}
 }
 
 //This method checks for the spawning queue of the units and if they're ready to spawn or not

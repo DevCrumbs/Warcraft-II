@@ -1182,45 +1182,47 @@ void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos)
 {
+	uint alpha = 100;
+
 	switch (staticEntityType) {
 
 	case EntityType_CHICKEN_FARM:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, chickenFarmInfo.completeTexArea);
 		break;
 	case EntityType_ELVEN_LUMBER_MILL:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &elvenLumberMillInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, elvenLumberMillInfo.completeTexArea);
 		break;
 	case EntityType_MAGE_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, mageTowerInfo.completeTexArea);
 		break;
 	case EntityType_GRYPHON_AVIARY:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, gryphonAviaryInfo.completeTexArea);
 		break;
 	case EntityType_STABLES:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, stablesInfo.completeTexArea);
 		break;
 	case EntityType_SCOUT_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, scoutTowerInfo.completeTexArea);
 		break;
 	case EntityType_PLAYER_GUARD_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerGuardTowerInfo.completeTexArea);
 		break;
 	case EntityType_PLAYER_CANNON_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerCannonTowerInfo.completeTexArea);
 		break;
@@ -1265,41 +1267,37 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 //Draws green or red tiles on the preview depending on if there's a building on the ground and the preview building size
 void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntitySize buildingSize, iPoint mousePos)
 {
-	SDL_SetTextureAlphaMod(neutralBuildingsTex, buildingPreviewTiles.opacity);
 	iPoint mouseTilePos = App->player->GetMouseTilePos();
 
 	switch (buildingSize) {
 	case Small:
 		if (isPlaceable) {
-			//App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->printer->PrintSprite({ mousePos.x, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 32, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
+			if (!IsEntityOnTileBySize(mouseTilePos) && App->pathfinding->IsWalkable(mouseTilePos)) 
+				App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, { 0,255,0, (Uint8)buildingPreviewTiles.opacity }, true);
+
+			if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y }))
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, { 0,255,0, (Uint8)buildingPreviewTiles.opacity }, true);
+
+			if (!IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 }))
+				App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, { 0,255,0, (Uint8)buildingPreviewTiles.opacity }, true);
+
+			if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, { 0,255,0, (Uint8)buildingPreviewTiles.opacity }, true);
+			
 		}
 		else if (!isPlaceable)
 		{
-			if (IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile); //0,0
-				App->printer->PrintSprite({ mousePos.x, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile); //32,0
-				App->printer->PrintSprite({ mousePos.x + 32, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
+			if (IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) 
+				App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, { 255,0,0,(Uint8)buildingPreviewTiles.opacity }, true);
 
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile); //0,32
-				App->printer->PrintSprite({ mousePos.x, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y })) 
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, { 255,0,0,(Uint8)buildingPreviewTiles.opacity }, true);
 
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile); //32,32
-				App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
+			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 })) 
+				App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, { 255,0,0,(Uint8)buildingPreviewTiles.opacity }, true);
+
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) 
+					App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, { 255,0,0,(Uint8)buildingPreviewTiles.opacity }, true);
 		}
 		break;
 	case Medium:
@@ -2026,8 +2024,11 @@ bool j1EntityFactory::PostUpdate()
 		statEnt++;
 	}
 
-	if (App->scene->GetAlphaBuilding() != EntityType_NONE)
+	if (App->scene->GetAlphaBuilding() != EntityType_NONE) {
 		DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
+		if (App->scene->GetAlphaBuilding() != EntityType_MAX)
+			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+	}
 
 	return ret;
 }
