@@ -427,10 +427,6 @@ bool j1Scene::PreUpdate()
 
 	if (hasGoldChanged) {
 		UpdateGoldLabel();
-		if (buildingMenuOn) {
-			//UnLoadBuildingMenu();
-			//LoadBuildingMenu();
-		}
 		hasGoldChanged = false;
 	}
 	if (hasFoodChanged == true) {
@@ -1144,13 +1140,13 @@ void j1Scene::LoadBuildingMenu()
 			"Cost: 250 gold", { 645, 65 }, { 645, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
 
 		CreateBuildingElements({ 343,160,50,41 }, { 343,160,50,41 }, { 343,160,50,41 }, { 585, 100 }, "Stables",
-			"Comming soon", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
+			"Cost: 900 gold", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
 
 		CreateBuildingElements({ 496,160,50,41 }, { 496,160,50,41 }, { 496,160,50,41 }, { 585, 145 }, "Gryphon Aviary",
-			"Comming soon", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
+			"Cost: 400 gold", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
 
 		CreateBuildingElements({ 496,202,50,41 }, { 496,202,50,41 }, { 496,202,50,41 }, { 585, 190 }, "Mage Tower",
-			"Comming soon", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
+			"Cost: 1000 gold", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
 
 		CreateBuildingElements({ 394,34,50,41 }, { 445,34,50,41 }, { 496,34,50,41 }, { 585, 235 }, "Scout Tower",
 			"Cost: 400 gold", { 645, 245 }, { 645, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
@@ -1238,6 +1234,14 @@ void j1Scene::LoadResourcesLabels()
 void j1Scene::UpdateGoldLabel()
 {
 	goldLabel->SetText(to_string(App->player->currentGold));
+
+	/*ChangeMenuLabelColor(&buildingMenuButtons.cannonTower.cost, cannonTowerCost)
+	if (App->player->currentGold >= cannonTowerCost)
+		buildingMenuButtons.cannonTower.cost->SetColor(White_, true);
+	else
+		buildingMenuButtons.cannonTower.cost->SetColor(BloodyRed_, true);
+		*/
+
 }
 void j1Scene::UpdateFoodLabel()
 {
