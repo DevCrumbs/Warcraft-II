@@ -593,10 +593,11 @@ bool j1Scene::Update(float dt)
 
 		if (units.size() > 0) {
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
-				App->player->DeleteEntitiesMenu();
-				App->player->MakeUnitsMenu(units);
+				if (!CompareSelectedUnitsLists(units)) {
+					App->player->DeleteEntitiesMenu();
+					App->player->MakeUnitsMenu(units);
+				}
 			}
-
 			UnitGroup* group = App->movement->GetGroupByUnits(units);
 
 			if (group == nullptr)
@@ -789,7 +790,7 @@ bool j1Scene::Update(float dt)
 
 		if (buildingMenuOn)
 		{
-			buildingMenu->isActive != buildingMenu->isActive;
+			buildingMenu->isActive = !buildingMenu->isActive;
 			ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
 			ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
 			ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
@@ -1029,8 +1030,8 @@ void j1Scene::DebugKeys()
 		App->render->camera.y = -basePos.y;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_REPEAT) {
-		buildingMenu->isActive != buildingMenu->isActive;
+	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN) {
+		buildingMenu->isActive = !buildingMenu->isActive;
 		ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
 		ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
 		ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
@@ -1387,6 +1388,30 @@ PauseMenuActions j1Scene::GetPauseMenuActions()
 	return pauseMenuActions;
 }
 
+bool j1Scene::CompareSelectedUnitsLists(list<DynamicEntity*> units)
+{
+	bool ret = false;
+	if (units.size() == App->player->groupElementsList.size()) {
+		for (list<DynamicEntity*>::iterator unitsIterator = units.begin(); unitsIterator != units.end(); ++unitsIterator)
+		{
+			for (list<GroupSelectedElements>::iterator playerIterator = App->player->groupElementsList.begin(); playerIterator != App->player->groupElementsList.end(); ++playerIterator)
+			{
+				if (*unitsIterator == playerIterator->owner)
+				{
+					ret = true;
+					break;
+				}
+				else
+					ret = false;
+			}
+			if (!ret)
+				break;
+		}
+	}
+
+	return ret;
+}
+
 void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
 {
 	UIImage_Info imageInfo;
@@ -1435,7 +1460,7 @@ void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
 		labelInfo.text = "To produce units you need to have enough gold. Get more from mines.";
 		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
 	}
-	
+
 }
 
 void j1Scene::UnLoadTerenasDialog()
@@ -1461,7 +1486,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			if (parchmentImg == nullptr) {
 				App->audio->PlayFx(1, 0); //Button sound
 
-				buildingMenu->isActive != buildingMenu->isActive;
+				buildingMenu->isActive = !buildingMenu->isActive;
 				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
 				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
 				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
@@ -1475,7 +1500,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.chickenFarm.icon) {
 			if (App->player->currentGold >= chickenFarmCost) {
 				App->audio->PlayFx(1, 0); //Button sound
-				buildingMenu->isActive != buildingMenu->isActive;
+				buildingMenu->isActive = !buildingMenu->isActive;
 				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
 				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
 				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
@@ -1492,7 +1517,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.stables.icon) {
 			if (App->player->currentGold >= stablesCost) {
 				//App->audio->PlayFx(1, 0); //Button sound
-				buildingMenu->isActive != buildingMenu->isActive;
+				buildingMenu->isActive = !buildingMenu->isActive;
 				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
 				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
 				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
@@ -1510,7 +1535,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
 			if (App->player->currentGold >= gryphonAviaryCost) {
 				//App->audio->PlayFx(1, 0); //Button sound
-				buildingMenu->isActive != buildingMenu->isActive;
+				buildingMenu->isActive = !buildingMenu->isActive;
 				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
 				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
 				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
@@ -1528,7 +1553,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.mageTower.icon) {
 			if (App->player->currentGold >= mageTowerCost) {
 				//App->audio->PlayFx(1, 0); //Button sound
-				buildingMenu->isActive != buildingMenu->isActive;
+				buildingMenu->isActive = !buildingMenu->isActive;
 				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
 				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
 				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
@@ -1546,7 +1571,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.scoutTower.icon) {
 			if (App->player->currentGold >= scoutTowerCost) {
 				App->audio->PlayFx(1, 0); //Button sound
-				buildingMenu->isActive != buildingMenu->isActive;
+				buildingMenu->isActive = !buildingMenu->isActive;
 				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
 				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
 				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);
@@ -1563,7 +1588,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == buildingMenuButtons.guardTower.icon) {
 			if (App->player->currentGold >= guardTowerCost) {
 				App->audio->PlayFx(1, 0); //Button sound
-				buildingMenu->isActive != buildingMenu->isActive;
+				buildingMenu->isActive = !buildingMenu->isActive;
 				ChangeBuildingMenuState(&buildingMenuButtons.cannonTower);
 				ChangeBuildingMenuState(&buildingMenuButtons.chickenFarm);
 				ChangeBuildingMenuState(&buildingMenuButtons.gryphonAviary);

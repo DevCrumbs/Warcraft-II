@@ -204,6 +204,8 @@ public:
 
 	bool isUnitSpawning = false;
 	bool isMouseOnMine = false;
+
+	list<GroupSelectedElements> groupElementsList;
 private:
 
 	double timer = 0.0f; // game time
@@ -214,8 +216,6 @@ private:
 	//HoverButton hoverButtonStruct;
 
 	HoverInfo hoverInfo;
-
-	list<GroupSelectedElements> groupElementsList;
 
 	list<GroupSpawning> toSpawnUnitStats;
 	list<ToSpawnUnit*> newUnitsToSpawn;

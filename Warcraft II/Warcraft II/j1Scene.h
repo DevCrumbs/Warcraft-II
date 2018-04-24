@@ -126,6 +126,9 @@ public:
 	void DestroyAllUI();
 	PauseMenuActions GetPauseMenuActions();
 
+	bool CompareSelectedUnitsLists(list<DynamicEntity*> units);
+
+
 	void LoadTerenasDialog(TerenasDialogEvents dialogEvent);
 	void UnLoadTerenasDialog();
 

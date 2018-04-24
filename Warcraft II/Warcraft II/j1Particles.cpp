@@ -274,7 +274,7 @@ bool j1Particles::Update(float dt)
 {
 	bool ret = true;
 
-	UpdateAnimations(dt);
+	/*UpdateAnimations(dt);
 
 	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
 	{
@@ -295,7 +295,7 @@ bool j1Particles::Update(float dt)
 				App->render->Blit(atlasTex, currPart->pos.x, currPart->pos.y, &(currPart->animation.GetCurrentFrame()), 1.0f, currPart->angle);
 		}
 	}
-
+	*/
 	return ret;
 }
 
