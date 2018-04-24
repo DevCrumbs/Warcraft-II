@@ -47,6 +47,12 @@ enum UI_EVENT {
 	UI_EVENT_MAX_EVENTS
 };
 
+enum UI_TEXT_AREA_TYPE {
+	UI_TEXT_AREA_TYPE_NOTYPE,
+	UI_TEXT_AREA_TYPE_NORMAL,
+	UI_TEXT_AREA_TYPE_HOVER,
+	UI_TEXT_AREA_TYPE_PRESSED
+};
 enum PriorityDraw {
 
 	PriorityDraw_NONE,
@@ -113,6 +119,7 @@ public:
 	bool drag = false;
 	bool toRemove = false;
 	bool isBlit = true;
+	bool isActive = true;
 
 	UIE_TYPE type = UIE_TYPE_NO_TYPE;
 

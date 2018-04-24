@@ -118,11 +118,16 @@ public:
 	void DebugKeys();
 
 	void CheckCameraMovement(float dt);
-
 	void LoadInGameUI();
 	void LoadBuildingMenu();
-	void CreateBuildingElements(SDL_Rect buttonNormalTexArea, SDL_Rect buttonHoverTexArea, SDL_Rect buttonPressedTexArea,
-	iPoint buttonPos, string buildingName, string buildingCost, iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
+
+	void ChangeBuildingButtState(MenuBuildingButton* elem);
+	void ChangeBuildingMenuState(BuildingMenu* elem);
+	void UpdateLabelsMenu();
+	void UpdateIconsMenu();
+	void ChangeMenuLabelColor(UILabel* Label, int cost);
+	void CreateBuildingElements(SDL_Rect TexArea, iPoint buttonPos, string buildingName, string buildingCost, 
+		iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
 	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
@@ -135,6 +140,9 @@ public:
 	void DestroySettingsMenu();
 	void DestroyAllUI();
 	PauseMenuActions GetPauseMenuActions();
+
+	bool CompareSelectedUnitsLists(list<DynamicEntity*> units);
+
 
 	void LoadTerenasDialog(TerenasDialogEvents dialogEvent);
 	void UnLoadTerenasDialog();

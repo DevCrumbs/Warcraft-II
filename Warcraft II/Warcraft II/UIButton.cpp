@@ -50,7 +50,7 @@ UIButton::~UIButton()
 
 void UIButton::Update(float dt)
 {
-	if (listener != nullptr && interactive)
+	if (listener != nullptr && interactive && isActive)
 		HandleInput();
 }
 
@@ -170,6 +170,26 @@ void UIButton::HandleInput()
 void UIButton::ChangeSprite(SDL_Rect texArea)
 {
 	this->texArea = texArea;
+}
+
+void UIButton::ChangesTextArea(SDL_Rect textArea, UI_TEXT_AREA_TYPE type)
+{
+	switch (type)
+	{
+	case UI_TEXT_AREA_TYPE_NOTYPE:
+		break;
+	case UI_TEXT_AREA_TYPE_NORMAL:
+		normalTexArea = textArea;
+		break;
+	case UI_TEXT_AREA_TYPE_HOVER:
+		hoverTexArea = textArea;
+		break;
+	case UI_TEXT_AREA_TYPE_PRESSED:
+		pressedTexArea = textArea;
+		break;
+	default:
+		break;
+	}
 }
 
 SDL_Rect UIButton::GetHoverSprite() const

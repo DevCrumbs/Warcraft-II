@@ -358,8 +358,7 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, fPoint 
 
 				float m = sqrtf(pow(currPart->orientation.x, 2.0f) + pow(currPart->orientation.y, 2.0f));
 
-				if (m > 0) {
-
+				if (m > 0.0f) {
 					currPart->orientation.x /= m;
 					currPart->orientation.y /= m;
 				}

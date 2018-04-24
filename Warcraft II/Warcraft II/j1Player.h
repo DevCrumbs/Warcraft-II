@@ -5,6 +5,7 @@
 #include "j1Timer.h"
 #include "Defs.h"
 #include "Entity.h"
+#include "j1Gui.h"
 
 #include "p2Point.h"
 #include "SDL\include\SDL_rect.h"
@@ -54,11 +55,20 @@ struct GroupSelectedElements
 
 	UIImage* entityIcon = nullptr;
 	UILifeBar* entityLifeBar = nullptr;
+
+	~GroupSelectedElements() {
+
+		App->gui->RemoveElem((UIElement**)&entityIcon);
+		App->gui->RemoveElem((UIElement**)&entityLifeBar);
+
+		owner = nullptr;
+	}
 };
 
 struct ToSpawnUnit 
 {
 	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
+
 		this->toSpawnTimer = toSpawnTimer;
 		this->entityType = entityType;
 	}
@@ -73,6 +83,13 @@ struct GroupSpawning
 
 	UIImage* entityIcon = nullptr;
 	UILifeBar* entityLifeBar = nullptr;
+
+	~GroupSpawning() {
+		App->gui->RemoveElem((UIElement**)&entityIcon);
+		App->gui->RemoveElem((UIElement**)&entityLifeBar);
+
+		owner = nullptr;
+	}
 };
 
 struct EntitySelectedStats
@@ -212,6 +229,8 @@ public:
 	bool isUnitSpawning = false;
 	bool isMouseOnMine = false;
 
+	list<GroupSelectedElements*> groupElementsList;
+
 private:
 
 	double timer = 0.0f; // game time
@@ -222,9 +241,7 @@ private:
 	//HoverButton hoverButtonStruct;
 	HoverInfo hoverInfo;
 
-	list<GroupSelectedElements> groupElementsList;
-
-	list<GroupSpawning> toSpawnUnitStats;
+	list<GroupSpawning*> toSpawnUnitStats;
 	list<ToSpawnUnit*> newUnitsToSpawn;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
