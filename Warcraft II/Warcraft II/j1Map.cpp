@@ -38,6 +38,12 @@ bool j1Map::Awake(pugi::xml_node& config)
 	camera_blit = config.child("general").child("camera_blit").attribute("value").as_bool();
 	culing_offset = config.child("general").child("culing").attribute("value").as_int();
 
+	defaultRoomSize = config.child("defaultSizes").child("defaultRoomSize").attribute("size").as_int();
+	defaultBaseSize = config.child("defaultSizes").child("defaultBaseSize").attribute("size").as_int();
+	defaultLittleSize = config.child("defaultSizes").child("defaultLittleRoomSize").attribute("size").as_int();
+	defaultHallSize = config.child("defaultSizes").child("defaultHallSize").attribute("size").as_int();
+	defaultTileSize = config.child("defaultSizes").child("defaultTileSize").attribute("size").as_int();
+
 	playerBase = { 0,0,50,50 };
 
 	return ret;
@@ -634,7 +640,6 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 {
 	bool ret = true;
-	test++;
 	list<MapLayer*>::const_iterator item;
 	item = data.layers.begin();
 
@@ -848,8 +853,7 @@ bool j1Map::LoadLogic()
 		layerIterator != data.layers.end(); ++layerIterator)
 	{
 		// Check if layer is a logic layer
-		if (!(*layerIterator)->properties.GetProperty("logic", false))
-			continue;
+		if ((*layerIterator)->properties.GetProperty("logic", false))
 		{
 			// Iterate layer
 			for (int i = 0; i < (*layerIterator)->size_data; ++i)
@@ -926,11 +930,44 @@ bool j1Map::LoadLogic()
 				}
 			}
 		}
+
+		else if ((*layerIterator)->properties.GetProperty("roomLogic", false))
+		{
+			// Iterate layer
+			for (int i = 0; i < (*layerIterator)->size_data; ++i)
+			{
+				// Check if tile is not empty
+				if ((*layerIterator)->data[i] > 0)
+				{
+					int x = i % (*layerIterator)->width;
+					int y = i / (*layerIterator)->width;
+
+					iPoint pos = MapToWorld(x, y);
+
+					ROOM_TYPE roomType = (ROOM_TYPE)(*layerIterator)->data[i];
+					switch (roomType)
+					{
+					case roomType_BASE:
+						roomRectList.push_back({ pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize });
+						break;
+					case roomType_LARGE:
+						roomRectList.push_back({ pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultRoomSize * defaultTileSize });
+						break;
+					case roomType_LITTLE:
+						roomRectList.push_back({ pos.x, pos.y, defaultLittleSize * defaultTileSize, defaultLittleSize * defaultTileSize });
+						break;
+					default:
+						break;
+					}
+
+				}
+			}
+		}
 	}
 	return ret;
 }
 
-///*
+///*sadface*
 //#include <math.h>
 //#include <time.h>
 //

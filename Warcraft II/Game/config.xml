@@ -28,6 +28,14 @@
       <roomPullNo number="4"/>
       <roomPullNo number="4"/>
     </general>
+    <defaultSizes>
+     <defaultRoomSize size = "50"/>
+      <defaultBaseSize size = "40"/>
+      <defaultLittleRoomSize size = "30"/>
+      <defaultHallSize size = "20"/>
+      <defaultTileSize size = "32"/>
+    </defaultSizes>
+    
   </map>
 
   <audio>
