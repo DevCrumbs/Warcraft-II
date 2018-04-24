@@ -288,12 +288,12 @@ void j1Menu::CreateSettings()
 	labelInfo.text = "Return";
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
 
-	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUME;
+	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
 	SDL_Rect butText = { 834,328,26,30 };
 	SDL_Rect bgText = { 434,328,400,30 };
 	AddSlider(audioFX, { 175,200 }, "Audio FX", relativeVol, butText, bgText, this);
 
-	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUME;
+	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
 	AddSlider(audioMusic, { 175,300 }, "Audio Music", relativeVol, butText, bgText, this);
 
 	//Fullscreen
@@ -366,12 +366,12 @@ UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim)
 void j1Menu::UpdateSlider(SliderStruct &sliderStruct) 
 {
 	float volume = sliderStruct.slider->GetRelativePosition();
-	float fxVol = volume * MAX_AUDIO_VOLUME;
+	float fxVol = volume * MAX_AUDIO_VOLUM;
 
 	if (sliderStruct.name->GetText() == "Audio FX")
 		App->audio->SetFxVolume(10);
 	else
-		App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUME);
+		App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
 
 	static char vol_text[4];
 	sprintf_s(vol_text, 4, "%.0f", volume * 100);
