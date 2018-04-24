@@ -1,5 +1,6 @@
 #include "p2Log.h"
 
+#include "j1Printer.h"
 #include "j1Render.h"
 #include "j1Window.h"
 #include "j1Map.h"

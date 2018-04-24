@@ -7,6 +7,9 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
+#include "j1Collision.h"
+#include "j1Render.h"
+#include "j1Printer.h"
 
 Runestone::Runestone(fPoint pos, iPoint size, int currLife, uint maxLife, const RunestoneInfo& runestoneInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), runestoneInfo(runestoneInfo)
 {
@@ -28,6 +31,12 @@ Runestone::Runestone(fPoint pos, iPoint size, int currLife, uint maxLife, const 
 
 	texArea = &runestoneInfo.completeTexArea;
 	isBuilt = true;
+
+	// Colliders
+	CreateEntityCollider(EntitySide_Neutral);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_NeutralBuilding, runestoneInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	sightRadiusCollider->isTrigger = true;
+	entityCollider->isTrigger = true;
 }
 
 void Runestone::Move(float dt)
@@ -35,17 +44,39 @@ void Runestone::Move(float dt)
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 
-	if (buildingState == BuildingState_Destroyed)
+	if (buildingState == BuildingState_Destroyed && !isUnitHealingArea)
 		texArea = &runestoneInfo.inProgressTexArea;
 }
 
-// Animations
-void Runestone::LoadAnimationsSpeed()
+// Heal area
+bool Runestone::IsUnitHealingArea() const 
 {
-
+	return isUnitHealingArea;
 }
-void Runestone::UpdateAnimations(float dt)
+
+void Runestone::SetUnitHealingArea(bool isUnitHealingArea)
 {
-	//buildingState = BuildingState_Normal;
-	//texArea = &runestoneInfo.inProgressTexArea;
+	this->isUnitHealingArea = isUnitHealingArea;
+}
+
+// Tex area
+void Runestone::SwapTexArea() 
+{
+	if (texArea == &runestoneInfo.completeTexArea)
+		texArea = &runestoneInfo.inProgressTexArea;
+	else
+		texArea = &runestoneInfo.completeTexArea;
+}
+
+// Blit alpha area
+void Runestone::BlitSightArea(Uint8 alpha) 
+{
+	if (sightRadiusCollider == nullptr)
+		return;
+
+	for (uint i = 0; i < sightRadiusCollider->colliders.size(); ++i) {
+	
+		//App->render->DrawQuad(sightRadiusCollider->colliders[i]->colliderRect, 255, 255, 255, alpha);
+		App->printer->PrintQuad(sightRadiusCollider->colliders[i]->colliderRect, { 255,255,255,alpha });
+	}
 }

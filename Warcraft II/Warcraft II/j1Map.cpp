@@ -11,6 +11,7 @@
 #include "j1Window.h"
 #include "j1EntityFactory.h"
 #include "j1Player.h"
+#include "j1Printer.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -44,16 +45,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 void j1Map::Draw()
 {
-	BROFILER_CATEGORY("Draw(notAbove)", Profiler::Color::Azure);
-
-
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-	{
-		App->render->camera.x = 0;
-		App->render->camera.y = 0;
-	}
-	*/
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Azure);
 
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
 	{
@@ -85,14 +77,23 @@ void j1Map::Draw()
 					SDL_Rect* section = &rect;
 					iPoint world = MapToWorld(i, j);
 
-
 					App->render->Blit(tileset->texture, world.x, world.y, section, (*layer)->speed);
+					//App->printer->PrintSprite(world, tileset->texture, *section, Layers_Map);
 				}
 			}//for
 		}//for
 	}
 }
 
+bool j1Map::PostUpdate() 
+{
+	bool ret = true;
+
+	// Send the map to blit
+	Draw();
+
+	return ret;
+}
 
 TileSet* j1Map::GetTilesetFromTileId(int id) const
 {
@@ -225,10 +226,12 @@ bool j1Map::CleanUp()
 	}
 	data.layers.clear();
 
-	delete collisionLayer;
-	delete aboveLayer;
-
+	if (collisionLayer != nullptr)
+		delete collisionLayer;
 	collisionLayer = nullptr;
+
+	if (aboveLayer != nullptr)
+		delete aboveLayer;
 	aboveLayer = nullptr;
 
 	// Clean up the pugui tree

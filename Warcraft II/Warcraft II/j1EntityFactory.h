@@ -95,7 +95,6 @@ public:
 	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
 	bool PostUpdate();
 	bool CleanUp();
-	void Draw();
 
 	void DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos);
 	void DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntitySize buildingSize, iPoint mousePos);

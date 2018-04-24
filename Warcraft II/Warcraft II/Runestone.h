@@ -10,6 +10,8 @@ struct RunestoneInfo
 	iPoint size{ 0,0 };
 	uint life = 0u;
 	float speed = 0.0f;
+
+	uint sightRadius = 0;
 };
 
 class Runestone :public StaticEntity
@@ -21,15 +23,23 @@ public:
 
 	void Move(float dt);
 
-	// Animations
-	void LoadAnimationsSpeed();
-	void UpdateAnimations(float dt);
+	// Heal area
+	bool IsUnitHealingArea() const;
+	void SetUnitHealingArea(bool isUnitHealingArea);
+
+	// Tex area
+	void SwapTexArea();
+
+	// Blit alpha area
+	void BlitSightArea(Uint8 alpha);
 
 private:
 
 	RunestoneInfo runestoneInfo;
-
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
+
+	// Heal area
+	bool isUnitHealingArea = false;
 };
 
 #endif //__Runestone_H__

@@ -32,6 +32,7 @@ public:
 
 	bool Start();
 	bool Update(float dt);
+	bool PostUpdate();
 	bool FadeToBlack(j1Module* moduleOff, j1Module* module_on, float time = 2.0f, FADE_TYPE fadeType = FADE_TYPE_NORMAL, bool cleanupOff = true, bool startOn = true);
 
 	bool IsFading() const;

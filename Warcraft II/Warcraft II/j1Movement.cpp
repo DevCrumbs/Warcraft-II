@@ -11,6 +11,7 @@
 #include "j1Scene.h"
 #include "j1PathManager.h"
 #include "Goal.h"
+#include "j1Printer.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -49,7 +50,8 @@ void j1Movement::DebugDraw() const
 						{
 							iPoint pos = App->map->MapToWorld((*unit)->path.at(i).x, (*unit)->path.at(i).y);
 							SDL_Rect rect = { pos.x, pos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-							App->render->DrawQuad(rect, col.r, col.g, col.b, 50);
+							//App->render->DrawQuad(rect, col.r, col.g, col.b, 50);
+							App->printer->PrintQuad(rect, { col.r,col.g,col.b,50 }, true);
 						}
 					}
 				}
@@ -57,7 +59,8 @@ void j1Movement::DebugDraw() const
 				// Draw unit's goal
 				iPoint pos = App->map->MapToWorld((*unit)->goal.x, (*unit)->goal.y);
 				SDL_Rect rect = { pos.x, pos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-				App->render->DrawQuad(rect, col.r, col.g, col.b, 200);
+				//App->render->DrawQuad(rect, col.r, col.g, col.b, 200);
+				App->printer->PrintQuad(rect, { col.r,col.g,col.b,200 }, true);
 			}
 		}
 	}
@@ -380,7 +383,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 			// ---------------------------------------------------------------------
 
 			// a) The other unit is hitting and won't respond to any movement order
-			if (singleUnit->waitUnit->unit->IsHitting()) {
+			if (singleUnit->waitUnit->unit->IsHitting() || singleUnit->waitUnit->unit->IsUnitGatheringGold() || singleUnit->waitUnit->unit->IsUnitHealingRunestone()) {
 
 				// Current unit must react to the collision
 				// Current unit moves
@@ -1578,7 +1581,8 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile)
 
 					iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 					const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-					App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+					//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+					App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
 				}
 			}
 			else if (find(shapedGoal.begin(), shapedGoal.end(), mouseTile) != shapedGoal.end()
@@ -1616,7 +1620,8 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile)
 		for (uint i = 0; i < shapedGoal.size(); ++i) {
 			iPoint goalTilePos = App->map->MapToWorld(shapedGoal[i].x, shapedGoal[i].y);
 			const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-			App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+			//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+			App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
 		}
 	}
 

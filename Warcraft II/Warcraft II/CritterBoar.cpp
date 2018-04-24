@@ -14,6 +14,7 @@
 #include "j1PathManager.h"
 #include "Goal.h"
 #include "j1Audio.h"
+#include "j1Printer.h"
 
 #include "j1Scene.h" // isFrameByFrame
 #include "j1Input.h" // isFrameByFrame
@@ -119,8 +120,10 @@ void CritterBoar::Move(float dt)
 
 void CritterBoar::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr)
-		App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
+	if (animation != nullptr) {
+		//App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
+		App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+	}
 
 	if (isSelected)
 		DebugDrawSelected();
@@ -129,11 +132,13 @@ void CritterBoar::Draw(SDL_Texture* sprites)
 void CritterBoar::DebugDrawSelected()
 {
 	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	App->printer->PrintQuad(entitySize, color);
 
 	for (uint i = 0; i < unitInfo.priority; ++i) {
 		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+		//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+		App->printer->PrintQuad(entitySize, color);
 	}
 }
 

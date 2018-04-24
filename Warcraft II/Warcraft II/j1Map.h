@@ -166,6 +166,8 @@ public:
 	// Called each loop iteration
 	void Draw();
 
+	bool PostUpdate();
+
 	// Called before quitting
 	bool CleanUp();
 
@@ -182,7 +184,6 @@ public:
 	iPoint WorldToMap(int x, int y) const;
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
-
 
 	bool LoadWalkabilityMap(int & width, int & height, uchar ** buffer) const;
 

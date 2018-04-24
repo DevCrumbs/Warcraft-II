@@ -33,6 +33,7 @@ class j1Menu;
 class j1Movement;
 class j1PathManager;
 class j1FinishGame;
+class j1Printer;
 
 class j1App
 {
@@ -123,6 +124,7 @@ public:
 	j1Movement*					movement = nullptr;
 	j1PathManager*				pathmanager = nullptr;
 	j1FinishGame*				finish = nullptr;
+	j1Printer*					printer = nullptr;
 
 private:
 

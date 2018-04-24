@@ -57,6 +57,25 @@ bool j1Player::Start()
 	return ret;
 }
 
+bool j1Player::PreUpdate() {
+
+	//Life Bar on building 
+	if (entitySelectedStats.entitySelected != nullptr) {
+		if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
+			if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
+				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+			}
+			else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
+				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+				entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+				entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
+			}
+		}
+	}
+
+	return true;
+}
+
 bool j1Player::Update(float dt) 
 {
 	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
@@ -131,7 +150,7 @@ bool j1Player::Update(float dt)
 				}
 			}
 	*/
-
+	/*
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 		if (!chickenFarm.empty()) 
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
@@ -147,35 +166,18 @@ bool j1Player::Update(float dt)
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
 			}
-		
+	*/
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_REPEAT) {
 		App->audio->PlayFx(6, 0); //Gold mine sound
 		AddGold(500);
 		App->scene->hasGoldChanged = true;
 	}
-
-	//Life Bar on building 
-	if (entitySelectedStats.entitySelected != nullptr) {
-		if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
-			if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
-				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-			}
-			else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
-				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-				entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
-				entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
-				if (entitySelectedStats.entitySelected == barracks) {
-					if (barracksUpgrade && stables != nullptr && producePaladinButton == nullptr) {
-						UIButton_Info produceButtonInfo;
-						produceButtonInfo.normalTexArea = { 444,244,50,41 };
-						produceButtonInfo.hoverTexArea = { 699,244,50,41 };
-						produceButtonInfo.pressedTexArea = { 954,244,50,41 };
-						producePaladinButton = App->gui->CreateUIButton({ 319, 2 }, produceButtonInfo, this, (UIElement*)App->scene->entitiesStats);
-					}
-				}
-			}
-		}
+	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) {
+		currentFood += 3;
+		App->scene->hasFoodChanged = true;
 	}
+
+
 	//Handle the apparence and disapparence of to spawn units UI elements
 	
 	return true;
@@ -244,16 +246,6 @@ void j1Player::CheckIfPlaceBuilding()
 				chickenFarm.push_back(c);
 				AddGold(-App->scene->chickenFarmCost); //Discount gold
 				App->scene->hasGoldChanged = true;
-
-				// Set unwalkable tiles (SMALL)
-				/*
-				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-				*/
-				// ----
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -265,21 +257,6 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->stablesCost); //Discount gold
 				App->scene->hasGoldChanged = true;
-
-				// Set unwalkable tiles (MEDIUM)
-				/*
-				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y) + (buildingTile.x + 2)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 2) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 2) + (buildingTile.x + 2)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 0u;
-				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-				*/
-				// -----
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -315,16 +292,6 @@ void j1Player::CheckIfPlaceBuilding()
 				scoutTower.push_back(s);
 				AddGold(-App->scene->scoutTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
-
-				// Set unwalkable tiles (SMALL)
-				/*
-				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-				*/
-				// ----
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
 				App->audio->PlayFx(4, 0); //Placement building error button sound
@@ -336,16 +303,6 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->guardTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
-
-				// Set unwalkable tiles (SMALL)
-				/*
-				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-				*/
-				// ----
 			}
 			break;
 		case EntityType_PLAYER_CANNON_TOWER:
@@ -354,16 +311,6 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->cannonTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
-
-				// Set unwalkable tiles (SMALL)
-				/*
-				App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + buildingTile.x] = 0u;
-				App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 0u;
-				App->pathfinding->SetMap(App->scene->w, App->scene->h, App->scene->data);
-				*/
-				// ----
 			}
 		case EntityType_NONE:
 			break;
@@ -635,10 +582,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 					while (it != units.end()) {
 
-						(*it)->GetBrain()->RemoveAllSubgoals();
-						(*it)->GetBrain()->AddGoal_GatherGold((GoldMine*)staticEntity);
-
-						(*it)->SetUnitState(UnitState_Walk);
+						(*it)->SetGoldMine((GoldMine*)staticEntity);
 
 						it++;
 					}
@@ -649,36 +593,33 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
 					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
 				}
-				/*
-				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
-				if (App->entities->IsNearSoldiers(pos, 7)) {
-
-
-				//App->scene->UnLoadTerenasDialog();
-
-				}
-				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
-				App->scene->UnLoadTerenasDialog();
-				App->scene->terenasDialogTimer.Start();
-				App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
-				App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
-				}
-				*/
 			}
 
 			// Runestone (right click to send a unit to heal the group)
 			else if (staticEntity->staticEntityType == EntityType_RUNESTONE && staticEntity->buildingState == BuildingState_Normal) {
 
-				iPoint pos = App->map->WorldToMap((int)staticEntity->GetPos().x, (int)staticEntity->GetPos().y);
-				if (App->entities->IsNearSoldiers(pos, 7)) {
-					App->audio->PlayFx(26, 0); //RuneStone sound
-					list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
-					while (it != App->entities->activeDynamicEntities.end()) {
-						if ((*it)->entitySide == EntitySide_Player)
-							(*it)->ApplyHealth((*it)->GetMaxLife() / 2);
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+				if (units.size() > 0) {
+
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					while (it != units.end()) {
+
+						(*it)->SetRunestone((Runestone*)staticEntity);
+
 						it++;
 					}
-					staticEntity->buildingState = BuildingState_Destroyed;
+
+					App->entities->CommandToUnits(units, UnitCommand_HealRunestone);
+				}
+				else if (App->scene->terenasDialogEvent != TerenasDialog_RUNESTONE) {
+
+					App->scene->UnLoadTerenasDialog();
+
+					App->scene->terenasDialogTimer.Start();
+					App->scene->terenasDialogEvent = TerenasDialog_RUNESTONE;
+					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
 				}
 			}
 			break;
