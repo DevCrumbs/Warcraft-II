@@ -1268,204 +1268,75 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntitySize buildingSize, iPoint mousePos)
 {
 	iPoint mouseTilePos = App->player->GetMouseTilePos();
+	SDL_Color green = { 0,255,0, (Uint8)buildingPreviewTiles.opacity };
+	SDL_Color red = { 255,0,0,(Uint8)buildingPreviewTiles.opacity };
 
-	switch (buildingSize) {
-	case Small:
-		if (isPlaceable) {
+		if (isPlaceable) { //Small
 			if (!IsEntityOnTileBySize(mouseTilePos) && App->pathfinding->IsWalkable(mouseTilePos)) 
-				App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, { 0,255,0, (Uint8)buildingPreviewTiles.opacity }, true);
+				App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, green, true);
 
 			if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y }))
-				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, { 0,255,0, (Uint8)buildingPreviewTiles.opacity }, true);
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, green, true);
 
 			if (!IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 }))
-				App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, { 0,255,0, (Uint8)buildingPreviewTiles.opacity }, true);
+				App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, green, true);
 
 			if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
-				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, { 0,255,0, (Uint8)buildingPreviewTiles.opacity }, true);
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, green, true);
+			
+			if (buildingSize == Medium || buildingSize == Big) { //Medium
+
+				if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 }))
+					App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 64, 32, 32 }, green, true);
+
+				if(!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 }))
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 32, 32, 32 }, green, true);
+
+				if (!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y }))
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y, 32, 32 }, green, true);
+
+				if (!IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x , mouseTilePos.y + 2 }))
+					App->printer->PrintQuad({ mousePos.x, mousePos.y + 64, 32, 32 }, green, true);
+
+				if (!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 }))
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 64, 32, 32 }, green, true);
+
+			}
 			
 		}
 		else if (!isPlaceable)
 		{
 			if (IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) 
-				App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, { 255,0,0,(Uint8)buildingPreviewTiles.opacity }, true);
+				App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, red, true);
 
 			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y })) 
-				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, { 255,0,0,(Uint8)buildingPreviewTiles.opacity }, true);
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, red, true);
 
 			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 })) 
-				App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, { 255,0,0,(Uint8)buildingPreviewTiles.opacity }, true);
+				App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, red, true);
 
 			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) 
-					App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, { 255,0,0,(Uint8)buildingPreviewTiles.opacity }, true);
-		}
-		break;
-	case Medium:
-		if (isPlaceable) {
-			//App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->printer->PrintSprite({ mousePos.x, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 32, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 64, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 64, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 64, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-		}
-		else if (!isPlaceable) {
-			if (IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile); //0,0
-				App->printer->PrintSprite({ mousePos.x, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile); //32,0
-				App->printer->PrintSprite({ mousePos.x + 32, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile); //0,32
-				App->printer->PrintSprite({ mousePos.x, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile); //32,32
-				App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.redTile); //32,64
-				App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.redTile); //64,32
-				App->printer->PrintSprite({ mousePos.x + 64, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.redTile); //64,0
-				App->printer->PrintSprite({ mousePos.x + 64, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x , mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 2 })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.redTile); //0,64
-				App->printer->PrintSprite({ mousePos.x, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 })) {
-				//App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile); //64,64
-				App->printer->PrintSprite({ mousePos.x + 64, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
+					App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, red, true);
+
+			if (buildingSize == Medium || buildingSize == Big) { //Medium
+			
+				if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 })) 
+					App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 64, 32, 32 }, red, true);
+
+				if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 })) 
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 32, 32, 32 }, red, true);
+
+				if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y })) 
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y , 32, 32 }, red, true);
+
+				if (IsEntityOnTileBySize({ mouseTilePos.x , mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 2 })) 
+					App->printer->PrintQuad({ mousePos.x, mousePos.y + 64, 32, 32 }, red, true);
+
+				if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 })) 
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 64, 32, 32 }, red, true);
+
 			}
 		}
-		break;
-	case Big:
-		if (isPlaceable) {
-			//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->printer->PrintSprite({ mousePos.x, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 32, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 64, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 64, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 64, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-			//App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-			App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 96 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 64, mousePos.y + 96 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 96, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 96, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 96, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x, mousePos.y + 96 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-			App->printer->PrintSprite({ mousePos.x + 96, mousePos.y + 96 }, neutralBuildingsTex, buildingPreviewTiles.greenTile, Layers_PreviewBuildings);
-		}
-		else if (!isPlaceable) {
-			if (IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) { //0,0
-				//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) || !App->pathfinding->IsWalkable(mouseTilePos)) { //32,0
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 32, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable(mouseTilePos)) {//0,32
-				//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable(mouseTilePos)) {//32,32
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable(mouseTilePos)) {//32,64
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable(mouseTilePos)) { //64,32
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 64, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y }) || !App->pathfinding->IsWalkable(mouseTilePos)) { //64,0
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 64, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable(mouseTilePos)) {//0,64
-				//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable(mouseTilePos)) { //64,64
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 64, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 3 }) || !App->pathfinding->IsWalkable(mouseTilePos)) { //32,96
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 32, mousePos.y + 96 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 3 }) || !App->pathfinding->IsWalkable(mouseTilePos)) {//64,96
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 64, mousePos.y + 96 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 3, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable(mouseTilePos)) { //96,32
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 96, mousePos.y + 32 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 3, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable(mouseTilePos)) { //96,32
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 96, mousePos.y + 64 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 3, mouseTilePos.y }) || !App->pathfinding->IsWalkable(mouseTilePos)) { //96,0
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 96, mousePos.y }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 3 }) || !App->pathfinding->IsWalkable(mouseTilePos)) {//0,96
-				//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x, mousePos.y + 96 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 3, mouseTilePos.y + 3 }) || !App->pathfinding->IsWalkable(mouseTilePos)) {//96,96
-				//App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.redTile);
-				App->printer->PrintSprite({ mousePos.x + 96, mousePos.y + 96 }, neutralBuildingsTex, buildingPreviewTiles.redTile, Layers_PreviewBuildings);
-			}
-		}
-		break;
-	case None:
-	default:
-		break;
-	}
 }
 
 const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
