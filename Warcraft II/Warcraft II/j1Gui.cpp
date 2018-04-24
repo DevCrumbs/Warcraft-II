@@ -143,7 +143,7 @@ bool j1Gui::PostUpdate()
 		if ((*it)->HasToBeRemoved()) {
 
 			delete *it;
-			UIElementsList.erase(it);
+			UIElementsList.remove(*it);
 
 			it = UIElementsList.begin();
 			continue;

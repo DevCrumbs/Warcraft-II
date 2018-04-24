@@ -118,6 +118,7 @@ bool j1Menu::Start()
 	CreateMenu();
 
 	if (!isMouseTextCreated) {
+
 		UICursor_Info mouseInfo;
 		mouseInfo.default = { 243, 525, 28, 33 };
 		mouseInfo.onClick = { 275, 525, 28, 33 };
@@ -228,8 +229,8 @@ bool j1Menu::CleanUp()
 	return true;
 }
 
-void j1Menu::CreateMenu() {
-
+void j1Menu::CreateMenu() 
+{
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	playButt = App->gui->CreateUIButton({ 600, 350 }, buttonInfo, this, nullptr);
@@ -251,7 +252,6 @@ void j1Menu::CreateMenu() {
 	labelInfo.text = "Settings";
 	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, settingsButt);
 
-
 	artifacts.push_back(AddArtifact({ 50, 475 }, App->gui->bookText, App->gui->bookAnim));
 	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim));
 	artifacts.push_back(AddArtifact({ 300,525 }, App->gui->eyeText, App->gui->eyeAnim));
@@ -270,13 +270,10 @@ void j1Menu::CreateMenu() {
 	menuImgAnim.PushBack({ 876,1563,776,600 });
 	mainMenuImg->StartAnimation(menuImgAnim);
 	mainMenuImg->SetPriorityDraw(PriorityDraw_FRAMEWORK);
-
-
-
 }
 
-void j1Menu::CreateSettings() {
-
+void j1Menu::CreateSettings() 
+{
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	returnButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
@@ -325,8 +322,8 @@ void j1Menu::CreateSettings() {
 	artifacts.push_back(AddArtifact({ 625,125 }, App->gui->scepterText, App->gui->scepterAnim));
 }
 
-void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
-
+void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) 
+{
 	UILabel_Info labelInfo;
 	UISlider_Info sliderInfo;
 	sliderInfo.button_slider_area = buttText;
@@ -356,28 +353,28 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, listener);
 }
 
-UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim) {
-	UIImage* retImage;
-
+UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim) 
+{
 	UIImage_Info imageInfo;
 	imageInfo.texArea = textArea;
-	retImage = App->gui->CreateUIImage(pos, imageInfo);
+	UIImage* retImage = App->gui->CreateUIImage(pos, imageInfo);
 	retImage->StartAnimation(anim);
 
 	return retImage;
 }
 
 
-void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
+void j1Menu::UpdateSlider(SliderStruct &sliderStruct) 
+{
 	float volume = sliderStruct.slider->GetRelativePosition();
-	if(sliderStruct.name->GetText() == "Audio FX")
+	if (sliderStruct.name->GetText() == "Audio FX")
 		App->audio->SetFxVolume(volume * MAX_AUDIO_VOLUM);
 	else
 		App->audio->SetMusicVolume(volume * MAX_AUDIO_VOLUM);
+
 	static char vol_text[4];
 	sprintf_s(vol_text, 4, "%.0f", volume * 100);
 	sliderStruct.value->SetText(vol_text);
-	//LOG("%f", volume);
 }
 
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -442,8 +439,8 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	}
 
 }
-void j1Menu::DeteleMenu() {
-
+void j1Menu::DeteleMenu() 
+{
 	App->gui->RemoveElem((UIElement**)&mainMenuImg);
 	App->gui->RemoveElem((UIElement**)&logoImg);
 	App->gui->RemoveElem((UIElement**)&playButt);
@@ -457,7 +454,6 @@ void j1Menu::DeteleMenu() {
 	{
 		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
-
 }
 
 void j1Menu::DeleteSettings() {
