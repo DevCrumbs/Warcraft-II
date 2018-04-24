@@ -1050,11 +1050,6 @@
           </bigTilePlanks>
 
         </constructionPlanks>
-
-        <previewTiles>
-          <green x="15" y="227" w="32" h="32"/>
-          <red x="47" y="227" w="32" h="32"/>
-        </previewTiles>
         
       </humanBuildings>
 

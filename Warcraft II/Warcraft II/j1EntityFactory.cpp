@@ -51,7 +51,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	trollAxethrowerTexName = spritesheets.child("trollAxethrowerAnimations").attribute("name").as_string();
 
 	//Debug Textures Properties
-	buildingPreviewTiles.opacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
+	previewTilesopacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
 	previewBuildingOpacity = config.child("previewTexturesProperties").attribute("buildingPlaceOpacity").as_uint();
 
 	// Static entities
@@ -161,11 +161,6 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	barracksInfo.constructionPlanks2 = elvenLumberMillInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 	mageTowerInfo.constructionPlanks2 = gryphonAviaryInfo.constructionPlanks2 = stablesInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 
-
-	//Building preview tiles
-	pugi::xml_node previewTiles = humanBuildings.child("previewTiles");
-	buildingPreviewTiles.greenTile = { previewTiles.child("green").attribute("x").as_int(), previewTiles.child("green").attribute("y").as_int(), previewTiles.child("green").attribute("w").as_int(), previewTiles.child("green").attribute("h").as_int() };
-	buildingPreviewTiles.redTile = { previewTiles.child("red").attribute("x").as_int(), previewTiles.child("red").attribute("y").as_int(), previewTiles.child("red").attribute("w").as_int(), previewTiles.child("red").attribute("h").as_int() };
 
 	//Neutral buildings
 	pugi::xml_node neutralBuildings = staticEntities.child("neutralBuildings");
@@ -1182,47 +1177,46 @@ void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos)
 {
-	uint alpha = 100;
 
 	switch (staticEntityType) {
 
 	case EntityType_CHICKEN_FARM:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, chickenFarmInfo.completeTexArea);
 		break;
 	case EntityType_ELVEN_LUMBER_MILL:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &elvenLumberMillInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, elvenLumberMillInfo.completeTexArea);
 		break;
 	case EntityType_MAGE_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, mageTowerInfo.completeTexArea);
 		break;
 	case EntityType_GRYPHON_AVIARY:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, gryphonAviaryInfo.completeTexArea);
 		break;
 	case EntityType_STABLES:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, stablesInfo.completeTexArea);
 		break;
 	case EntityType_SCOUT_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, scoutTowerInfo.completeTexArea);
 		break;
 	case EntityType_PLAYER_GUARD_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerGuardTowerInfo.completeTexArea);
 		break;
 	case EntityType_PLAYER_CANNON_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, alpha);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerCannonTowerInfo.completeTexArea);
 		break;
@@ -1268,8 +1262,8 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntitySize buildingSize, iPoint mousePos)
 {
 	iPoint mouseTilePos = App->player->GetMouseTilePos();
-	SDL_Color green = { 0,255,0, (Uint8)buildingPreviewTiles.opacity };
-	SDL_Color red = { 255,0,0,(Uint8)buildingPreviewTiles.opacity };
+	SDL_Color green = { 0,255,0, (Uint8)previewTilesopacity };
+	SDL_Color red = { 255,0,0,(Uint8)previewTilesopacity };
 
 		if (isPlaceable) { //Small
 			if (!IsEntityOnTileBySize(mouseTilePos) && App->pathfinding->IsWalkable(mouseTilePos)) 
