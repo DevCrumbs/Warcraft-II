@@ -1130,6 +1130,26 @@ void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem)
 		UpdateIconsMenu();
 	}
 }
+void j1Scene::UpdateIconsMenu()
+{
+	ChangeMenuIconsText(buildingMenuButtons.chickenFarm.icon, chickenFarmCost, { 241,34,50,41 }, { 292,34,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.cannonTower.icon, cannonTowerCost, { 394,118,50,41 }, { 445,118,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 496,160,50,41 }, { 496,160,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.guardTower.icon, guardTowerCost, { 394,76,50,41 }, { 445,76,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.mageTower.icon, mageTowerCost, { 496,202,50,41 }, { 496,202,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.stables.icon, stablesCost, { 343,160,50,41 }, { 343,160,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 });
+
+
+}
+void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText)
+{
+	if (App->player->currentGold >= cost)
+		butt->ChangesTextsAreas(true, normalText, hoverText);
+	else {
+		butt->ChangesTextsAreas(false);
+	}
+}
 void j1Scene::UpdateLabelsMenu()
 {
 	ChangeMenuLabelColor(buildingMenuButtons.cannonTower.cost, cannonTowerCost);
@@ -1140,12 +1160,7 @@ void j1Scene::UpdateLabelsMenu()
 	ChangeMenuLabelColor(buildingMenuButtons.stables.cost, stablesCost);
 	ChangeMenuLabelColor(buildingMenuButtons.scoutTower.cost, scoutTowerCost);
 }
-void j1Scene::UpdateIconsMenu()
-{
-	buildingMenuButtons.cannonTower.icon->ChangesTextArea({ 241,34,50,41 }, UI_TEXT_AREA_TYPE_NORMAL);
-	buildingMenuButtons.cannonTower.icon->ChangesTextArea({ 292,34,50,41 }, UI_TEXT_AREA_TYPE_NORMAL);
 
-}
 void j1Scene::ChangeMenuLabelColor(UILabel * Label, int cost)
 {
 	if (App->player->currentGold >= cost)
@@ -1154,6 +1169,7 @@ void j1Scene::ChangeMenuLabelColor(UILabel * Label, int cost)
 		Label->SetColor(BloodyRed_, true);
 
 }
+
 void j1Scene::LoadBuildingMenu()
 {
 
@@ -1171,22 +1187,22 @@ void j1Scene::LoadBuildingMenu()
 
 		CreateBuildingElements({ 343,34,50,41 }, { 585, 55 }, "Chicken Farm",
 			"Cost: 250 gold", { 645, 65 }, { 645, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
-		//{ 343,160,50,41 }, { 343,160,50,41 },
+
 		CreateBuildingElements( { 343,160,50,41 }, { 585, 100 }, "Stables",
 			"Cost: 900 gold", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
-		//{ 496,160,50,41 }, { 496,160,50,41 },
+		//,
 		CreateBuildingElements( { 496,160,50,41 }, { 585, 145 }, "Gryphon Aviary",
 			"Cost: 400 gold", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
-		//{ 496,202,50,41 }, { 496,202,50,41 },
+		//,
 		CreateBuildingElements( { 496,202,50,41 }, { 585, 190 }, "Mage Tower",
 			"Cost: 1000 gold", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
-		//{ 394,34,50,41 }, { 445,34,50,41 },
+		//,
 		CreateBuildingElements( { 496,34,50,41 }, { 585, 235 }, "Scout Tower",
 			"Cost: 400 gold", { 645, 245 }, { 645, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
-		//{ 394,76,50,41 }, { 445,76,50,41 }, 
+		//, 
 		CreateBuildingElements({ 496,76,50,41 }, { 585, 280 }, "Guard Tower",
 			"Cost: 600 gold", { 645, 290 }, { 645, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
-		//{ 394,118,50,41 }, { 445,118,50,41 }, 
+		//, 
 		CreateBuildingElements({ 496,118,50,41 }, { 585, 325 }, "Cannon Tower",
 			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
 	}

@@ -124,7 +124,8 @@ public:
 	void ChangeBuildingMenuState(BuildingMenu* elem);
 	void UpdateLabelsMenu();
 	void UpdateIconsMenu();
-	void ChangeMenuLabelColor(UILabel* Label, int cost);
+	void ChangeMenuLabelColor(UILabel* label, int cost);
+	void ChangeMenuIconsText(UIButton* butt, int cost, SDL_Rect normalText, SDL_Rect hoverText);
 	void CreateBuildingElements(SDL_Rect TexArea, iPoint buttonPos, string buildingName, string buildingCost, 
 		iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
 	void DeleteBuildingElements(MenuBuildingButton* elem);
