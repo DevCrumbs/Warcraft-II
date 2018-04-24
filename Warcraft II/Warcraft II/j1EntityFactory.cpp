@@ -1811,8 +1811,11 @@ bool j1EntityFactory::PostUpdate()
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		if (!(*dynEnt)->GetBlitState())
+		if (!(*dynEnt)->GetBlitState()) {
+
+			dynEnt++;
 			continue;
+		}
 
 		switch ((*dynEnt)->dynamicEntityType) {
 			// Player

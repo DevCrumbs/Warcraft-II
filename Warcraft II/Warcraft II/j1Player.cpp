@@ -579,6 +579,8 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 						it++;
 					}
+
+					App->entities->CommandToUnits(units, UnitCommand_GatherGold);
 				}
 				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
 					App->scene->UnLoadTerenasDialog();

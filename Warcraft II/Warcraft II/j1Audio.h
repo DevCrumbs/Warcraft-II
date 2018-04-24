@@ -66,11 +66,10 @@ private:
 	_Mix_Music*			music = nullptr;
 	list<Mix_Chunk*>	fx;
 
-	devicesConnected = false;
-
 public:
+
 	int musicVolume = 0;
-	int fxVolume = 40;
+	int fxVolume = 0;
 };
 
 #endif //__j1AUDIO_H__

@@ -65,15 +65,6 @@ bool j1Audio::Awake(pugi::xml_node& config)
 
 bool j1Audio::Update(float dt)
 {
-
-	if (devicesConnected == false && SDL_GetNumAudioDevices(0) > 0)
-	{
-		devicesConnected = true;
-	}
-	else
-		devicesConnected = false;
-
-
 	return true;
 }
 
@@ -108,7 +99,7 @@ bool j1Audio::PlayMusic(const char* path, float fade_time)
 {
 	bool ret = true;
 
-	if (!active || !devicesConnected)
+	if (!active)
 		return false;
 
 	if (music != NULL)
@@ -165,7 +156,7 @@ unsigned int j1Audio::LoadFx(const char* path)
 {
 	unsigned int ret = 0;
 
-	if (!active || !devicesConnected)
+	if (!active)
 		return 1;
 
 	string tmp = fxFolder.data();
@@ -191,7 +182,7 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 {
 	bool ret = false;
 
-	if (!active || !devicesConnected)
+	if (!active)
 		return false;
 
 	if (id > 0 && id <= fx.size())
@@ -248,8 +239,6 @@ void j1Audio::SetMusicVolume(int volume) {
 
 // Set FX volume
 void j1Audio::SetFxVolume(int volume) {
-	if (!devicesConnected)
-		return;
 	Mix_Volume(-1, volume);
 	fxVolume = volume;
 }
