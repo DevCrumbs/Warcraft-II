@@ -258,17 +258,15 @@ PathfindingStatus PathPlanner::CycleOnce()
 vector<iPoint> PathPlanner::GetPath() const
 {
 	if (isSearchCompleted)
-
 		if (pathfindingAlgorithmType == PathfindingAlgorithmType_AStar || (pathfindingAlgorithmType == PathfindingAlgorithmType_Dijkstra && isPathRequested))
-
 			return *currentSearch->GetLastPath();
 }
 
 iPoint PathPlanner::GetTile() const
 {
 	if (isSearchCompleted)
-
 		return currentSearch->GetLastTile();
+	return { -1,-1 };
 }
 
 bool PathPlanner::IsSearchCompleted() const
