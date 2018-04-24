@@ -16,8 +16,8 @@ UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j
 	entityWidth = info.entityWidth;
 	entityHeight = info.entityWidth;
 
-	entityWidth = 32 * 4;
-	entityHeight = 32 * 4;
+	entityWidth = 32 * 3;
+	entityHeight = 32 * 3;
 
 	width = info.minimapInfo.w;
 	height = info.minimapInfo.h;
