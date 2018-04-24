@@ -25,6 +25,10 @@ public:
 	// Called before render is available
 	bool Awake(pugi::xml_node&);
 
+
+	// Called every frame
+	bool Update(float dt);
+
 	// Called before quitting
 	bool CleanUp();
 
@@ -61,6 +65,8 @@ private:
 	string				fxFolder;
 	_Mix_Music*			music = nullptr;
 	list<Mix_Chunk*>	fx;
+
+	devicesConnected = false;
 
 public:
 	int musicVolume = 0;
