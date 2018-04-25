@@ -42,6 +42,9 @@ public:
 public:
 
 	GoldMineState goldMineState = GoldMine_Untouched;
+	uint totalGold = 0;
+	float secondsGathering = 0.0f;
+	float currentSec = 0.0f;
 
 private:
 

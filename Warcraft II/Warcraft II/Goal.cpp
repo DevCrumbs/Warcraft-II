@@ -998,7 +998,9 @@ void Goal_PickNugget::Activate()
 		secondsGathering = 8.0f;
 		break;
 	}
-
+	
+	goldMine->totalGold = gold;
+	goldMine->secondsGathering = secondsGathering;
 
 
 	App->audio->PlayFx(6, 3); // Gold Mine FX
@@ -1012,6 +1014,7 @@ void Goal_PickNugget::Activate()
 	msAnimation = 600.0f;
 
 	timerGathering.Start();
+	goldMine->currentSec = timerGathering.ReadSec();
 	timerAnimation.Start();
 }
 
@@ -1032,6 +1035,8 @@ GoalStatus Goal_PickNugget::Process(float dt)
 	if (timerGathering.ReadSec() >= secondsGathering)
 
 		goalStatus = GoalStatus_Completed;
+
+	goldMine->currentSec = timerGathering.ReadSec();
 
 	return goalStatus;
 }

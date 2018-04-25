@@ -22,6 +22,8 @@
 #include "UILifeBar.h"
 #include "UICursor.h"
 
+
+
 j1Player::j1Player() : j1Module()
 {
 	name.assign("scene");
@@ -896,21 +898,31 @@ void j1Player::MakeGoldMineMenu(Entity* currentEntity)
 		labelInfo.text = "Gold = ???";
 		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
 		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
-		goldMineUIelem.questionMks = App->gui->CreateUILabel({ 60,35 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		goldMineUIelem.goldAmount = App->gui->CreateUILabel({ 60,35 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 		break;
 
 	case GoldMine_Gathering:
-		labelInfo.text = "Gold = 300"; //NOT DEFINITIVE (FIX LATER)
-		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
-		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
-		goldMineUIelem.questionMks = App->gui->CreateUILabel({ 60,35 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		{
+			uint currentGold = 0;
+			for (float i = goldMine->secondsGathering; i >= 0; i--) {
+				if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
+					currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
+					break;
+				}
+			}
+			string goldString = "Gold = " + to_string(currentGold);
+			labelInfo.text = goldString;
+			labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
+			labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+			goldMineUIelem.goldAmount = App->gui->CreateUILabel({ 60,35 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		}
 		break;
 
 	case GoldMine_Gathered:
 		labelInfo.text = "Gold = 0";
 		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
 		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
-		goldMineUIelem.questionMks = App->gui->CreateUILabel({ 60,35 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		goldMineUIelem.goldAmount = App->gui->CreateUILabel({ 60,35 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 		break;
 
 	default:
@@ -1110,7 +1122,7 @@ void j1Player::DeleteGoldMineMenu()
 {
 	App->gui->RemoveElem((UIElement**)&goldMineUIelem.icon);
 	App->gui->RemoveElem((UIElement**)&goldMineUIelem.name);
-	App->gui->RemoveElem((UIElement**)&goldMineUIelem.questionMks);
+	App->gui->RemoveElem((UIElement**)&goldMineUIelem.goldAmount);
 }
 
 void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) {
@@ -1265,6 +1277,7 @@ void j1Player::HandleBarracksUIElem()
 void j1Player::HandleGoldMineUIStates()
 {
 	GoldMine* goldMine = (GoldMine*)entitySelectedStats.entitySelected;
+
 	switch (goldMine->goldMineState) {
 
 	case GoldMine_Untouched:
@@ -1272,13 +1285,21 @@ void j1Player::HandleGoldMineUIStates()
 
 	case GoldMine_Gathering:
 	{
-		Goal_PickNugget
-		goldMineUIelem.questionMks->SetText("Gold = 300");
+		uint currentGold = 0;
+		for (float i = goldMine->secondsGathering; i >= 0; i--) {
+			if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
+				currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
+				break;
+			}
+		}
+		string goldString = "Gold = " + to_string(currentGold);
+		goldMineUIelem.goldAmount->SetText(goldString.data());
+		
 	}
 		break;
 
 	case GoldMine_Gathered:
-		goldMineUIelem.questionMks->SetText("Gold = 0");
+		goldMineUIelem.goldAmount->SetText("Gold = 0");
 		break;
 
 	default:

@@ -91,7 +91,7 @@ struct GoldMineUIelem
 {
 	UILabel* name = nullptr;
 	UIImage* icon = nullptr;
-	UILabel* questionMks = nullptr;
+	UILabel* goldAmount = nullptr;
 
 };
 
