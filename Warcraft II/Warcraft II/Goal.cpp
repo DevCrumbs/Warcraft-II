@@ -962,6 +962,7 @@ void Goal_PickNugget::Activate()
 		owner->SetUnitGatheringGold(true);
 		goldMine->SetUnitGatheringGold(true);
 		goldMine->buildingState = BuildingState_Destroyed;
+		goldMine->goldMineState = GoldMine_Gathering;
 	}
 	// Another unit has already entered the mine and is gathering the gold
 	else {
@@ -997,6 +998,10 @@ void Goal_PickNugget::Activate()
 		secondsGathering = 8.0f;
 		break;
 	}
+	
+	goldMine->totalGold = gold;
+	goldMine->secondsGathering = secondsGathering;
+
 
 	App->audio->PlayFx(6, 3); // Gold Mine FX
 
@@ -1009,6 +1014,7 @@ void Goal_PickNugget::Activate()
 	msAnimation = 600.0f;
 
 	timerGathering.Start();
+	goldMine->currentSec = timerGathering.ReadSec();
 	timerAnimation.Start();
 }
 
@@ -1030,12 +1036,16 @@ GoalStatus Goal_PickNugget::Process(float dt)
 
 		goalStatus = GoalStatus_Completed;
 
+	goldMine->currentSec = timerGathering.ReadSec();
+
 	return goalStatus;
 }
 
 void Goal_PickNugget::Terminate()
 {
 	if (goalStatus == GoalStatus_Completed) {
+
+		goldMine->goldMineState = GoldMine_Gathered;
 
 		// Give gold to the player
 		App->player->AddGold(gold);

@@ -1812,7 +1812,6 @@ bool j1EntityFactory::PostUpdate()
 	while (dynEnt != activeDynamicEntities.end()) {
 
 		if (!(*dynEnt)->GetBlitState()) {
-
 			dynEnt++;
 			continue;
 		}

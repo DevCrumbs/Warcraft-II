@@ -107,6 +107,14 @@ struct EntitySelectedStats
 	Entity* entitySelected = nullptr;
 };
 
+struct GoldMineUIelem 
+{
+	UILabel* name = nullptr;
+	UIImage* icon = nullptr;
+	UILabel* goldAmount = nullptr;
+
+};
+
 class j1Player : public j1Module
 {
 public:
@@ -156,9 +164,11 @@ public:
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
+	void MakeGoldMineMenu(Entity* currentEntity);
 	void MakeUnitMenu(Entity* entity);
 	void MakeUnitsMenu(list<DynamicEntity*> units);
 	void DeleteEntitiesMenu();
+	void DeleteGoldMineMenu();
 	void MakeHoverInfoMenu(string unitProduce, string gold);
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
@@ -172,6 +182,7 @@ public:
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
 	void HandleBarracksUIElem();
+	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 	void CreateAbilitiesButtons();
@@ -225,6 +236,7 @@ public:
 	uint buildDestroy = 0u;
 
 	EntitySelectedStats entitySelectedStats;
+	GoldMineUIelem goldMineUIelem;
 
 	bool isUnitSpawning = false;
 	bool isMouseOnMine = false;
