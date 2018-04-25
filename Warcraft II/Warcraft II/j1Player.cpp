@@ -180,8 +180,13 @@ bool j1Player::Update(float dt)
 		App->scene->hasFoodChanged = true;
 	}
 
-
-	//Handle the apparence and disapparence of to spawn units UI elements
+	//idk if put this here or in PreUpdate
+	if (entitySelectedStats.entitySelected != nullptr) { 
+		StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
+		if (building->staticEntityType == EntityType_GOLD_MINE) {
+			HandleGoldMineUIStates();
+		}
+	}
 	
 	return true;
 }
@@ -1255,6 +1260,31 @@ void j1Player::HandleBarracksUIElem()
 		LOG("WTF is going on");
 	}
 	newUnitsToSpawn.clear();
+}
+
+void j1Player::HandleGoldMineUIStates()
+{
+	GoldMine* goldMine = (GoldMine*)entitySelectedStats.entitySelected;
+	switch (goldMine->goldMineState) {
+
+	case GoldMine_Untouched:
+		break;
+
+	case GoldMine_Gathering:
+	{
+		Goal_PickNugget
+		goldMineUIelem.questionMks->SetText("Gold = 300");
+	}
+		break;
+
+	case GoldMine_Gathered:
+		goldMineUIelem.questionMks->SetText("Gold = 0");
+		break;
+
+	default:
+		break;
+	}
+
 }
 
 void j1Player::CreateGryphonAviaryButtons()

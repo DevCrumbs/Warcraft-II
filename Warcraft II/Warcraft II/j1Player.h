@@ -159,6 +159,7 @@ public:
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
 	void HandleBarracksUIElem();
+	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 	void CreateAbilitiesButtons();
