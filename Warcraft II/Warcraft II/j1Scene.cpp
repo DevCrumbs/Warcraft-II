@@ -271,36 +271,17 @@ bool j1Scene::PreUpdate()
 	// ---------------------------------------------------------------------
 
 	// Entities info
-	/// Entity
-	iPoint size = { App->map->data.tileWidth,App->map->data.tileHeight };
-	uint maxLife = 30;
-	int currLife = (int)maxLife;
-
-	/// DynamicEntity
 	UnitInfo unitInfo;
-	unitInfo.damage = 2;
-	unitInfo.priority = 1; // TODO: change to 3 or so
-
-	 /// Footman
 	FootmanInfo footmanInfo;
 	GruntInfo gruntInfo;
 	ElvenArcherInfo elvenArcherInfo;
 	TrollAxethrowerInfo trollAxethrowerInfo;
-
-	/// Sheep
 	CritterSheepInfo critterSheepInfo;
-	critterSheepInfo.restoredHealth = 5;
-
-	/// Boar
 	CritterBoarInfo critterBoarInfo;
-	critterBoarInfo.restoredHealth = 10;
 
 	// Entities creation
 
 	// 1: spawn a Footman with priority 1
-	unitInfo.sightRadius = 6;
-	unitInfo.attackRadius = 2;
-	unitInfo.maxSpeed = 80.0f;
 
 	if (isDebug && App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
 

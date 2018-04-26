@@ -230,8 +230,8 @@ private:
 	GryphonAviaryInfo gryphonAviaryInfo;
 	MageTowerInfo mageTowerInfo;
 	ScoutTowerInfo scoutTowerInfo;
-	PlayerGuardTowerInfo playerGuardTowerInfo; // TODO
-	PlayerCannonTowerInfo playerCannonTowerInfo; // TODO
+	PlayerGuardTowerInfo playerGuardTowerInfo;
+	PlayerCannonTowerInfo playerCannonTowerInfo; 
 
 	//Neutral buildings
 	GoldMineInfo goldMineInfo;
