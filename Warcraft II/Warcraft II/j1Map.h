@@ -20,11 +20,11 @@ using namespace std;
 
 enum ROOM_TYPE
 {
-roomType_NONE = 0,
+	roomType_NONE = 0,
 
-roomType_LARGE = 411,
-roomType_LITTLE = 412,
-roomType_BASE = 413
+	roomType_LARGE = 411,
+	roomType_LITTLE = 412,
+	roomType_BASE = 413
 
 };
 
@@ -216,7 +216,7 @@ private:
 	bool LoadObjectGroupDetails(pugi::xml_node& objectGroup_node, ObjectGroup* objectGroup);
 	bool LoadObject(pugi::xml_node& object_node, Object* object);
 
-	
+
 
 public:
 
@@ -232,7 +232,7 @@ public:
 
 	//Texture path
 	string				tilesetPath;
-	
+
 	// Walkability map
 	mutable	uchar*		walkMap = nullptr;
 	mutable	int         walkWidth = 0;
