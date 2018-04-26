@@ -28,6 +28,14 @@
       <roomPullNo number="4"/>
       <roomPullNo number="4"/>
     </general>
+    <defaultSizes>
+     <defaultRoomSize size = "50"/>
+      <defaultBaseSize size = "40"/>
+      <defaultLittleRoomSize size = "30"/>
+      <defaultHallSize size = "20"/>
+      <defaultTileSize size = "32"/>
+    </defaultSizes>
+    
   </map>
 
   <audio>
@@ -805,9 +813,9 @@
                 <frame x="480" y="600" w="120" h="120"/>
               </attackLeft>
               <deathUp speed="1" loop="0">
-                <frame x="0" y="1200" w="120" h="120"/>
-                <frame x="120" y="1200" w="120" h="120"/>
-                <frame x="240" y="1200" w="120" h="120"/>
+                <frame x="0" y="1080" w="120" h="120"/>
+                <frame x="120" y="1080" w="120" h="120"/>
+                <frame x="240" y="1080" w="120" h="120"/>
               </deathUp>
               <deathDown speed="1" loop="0">
                 <frame x="0" y="960" w="120" h="120"/>

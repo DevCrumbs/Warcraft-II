@@ -80,12 +80,6 @@ DynamicEntity::~DynamicEntity()
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
 
-	if (lifeBar != nullptr) {
-
-		lifeBar->toRemove = true;
-		lifeBar = nullptr;
-	}
-
 	color = ColorWhite;
 	colorName = "White";
 

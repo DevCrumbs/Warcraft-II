@@ -98,6 +98,12 @@ void TrollAxethrower::Move(float dt)
 
 			App->audio->PlayFx(13, 0);
 
+			if (lifeBar != nullptr) {
+
+				lifeBar->toRemove = true;
+				lifeBar = nullptr;
+			}
+
 			isDead = true;
 			isValid = false;
 			App->player->enemiesKill++;

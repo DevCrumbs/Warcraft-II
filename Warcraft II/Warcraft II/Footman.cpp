@@ -101,6 +101,12 @@ void Footman::Move(float dt)
 			isDead = true;
 			isValid = false;
 
+			if (lifeBar != nullptr) {
+
+				lifeBar->toRemove = true;
+				lifeBar = nullptr;
+			}
+
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
