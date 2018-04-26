@@ -80,6 +80,12 @@ DynamicEntity::~DynamicEntity()
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
 
+	if (lifeBar != nullptr) {
+
+		lifeBar->toRemove = true;
+		lifeBar = nullptr;
+	}
+
 	color = ColorWhite;
 	colorName = "White";
 
@@ -218,60 +224,9 @@ uint DynamicEntity::GetPriority() const
 	return unitInfo.priority;
 }
 
-uint DynamicEntity::GetDamage(Entity* target) const
+uint DynamicEntity::GetDamage() const
 {
-	if (target == nullptr)
-		return 0;
-
-	if (target->entityType == EntityCategory_DYNAMIC_ENTITY) {
-	
-		DynamicEntity* dynEnt = (DynamicEntity*)target;
-
-		switch (dynEnt->dynamicEntityType) {
-
-		case EntityType_FOOTMAN:
-		case EntityType_GRUNT:
-
-			return unitInfo.heavyDamage;
-			break;
-
-		case EntityType_ELVEN_ARCHER:
-		case EntityType_TROLL_AXETHROWER:
-
-			return unitInfo.lightDamage;
-			break;
-
-		case EntityType_GRYPHON_RIDER:
-		case EntityType_DRAGON:
-
-			return unitInfo.airDamage;
-			break;
-
-			// Critters
-		case EntityType_SHEEP:
-
-		{
-			int damage = dynEnt->GetMaxLife();
-			damage /= 3;
-			return damage;
-		}
-		break;
-
-		case EntityType_BOAR:
-
-		{
-			int damage = dynEnt->GetMaxLife();
-			damage /= 4;
-			return damage;
-		}
-		break;
-		}
-	}
-	else if (target->entityType == EntityCategory_STATIC_ENTITY)
-	
-		return unitInfo.towerDamage;
-
-	return 0;
+	return unitInfo.damage;
 }
 
 UILifeBar* DynamicEntity::GetLifeBar() const

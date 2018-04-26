@@ -84,23 +84,12 @@ struct UnitInfo
 {
 	uint priority = 1;
 
-	// Radius
 	uint sightRadius = 0;
 	uint attackRadius = 0;
+	uint damage = 0;
 
-	// Damage
-	uint heavyDamage = 0;
-	uint lightDamage = 0;
-	uint airDamage = 0;
-	uint towerDamage = 0;
-
-	// Speed
 	float maxSpeed = 0.0f;
 	float currSpeed = 0.0f;
-
-	// Life
-	int currLife = 0;
-	uint maxLife = 0;
 };
 
 class DynamicEntity :public Entity
@@ -120,7 +109,7 @@ public:
 	// UnitInfo
 	float GetSpeed() const;
 	uint GetPriority() const;
-	uint GetDamage(Entity* target) const;
+	uint GetDamage() const;
 	UILifeBar* GetLifeBar() const;
 
 	// State machine

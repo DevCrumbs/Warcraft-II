@@ -80,8 +80,6 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	bool DestroyAllUI();
-
 	// Gui creation functions
 	UIImage* CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UILabel* CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);

@@ -29,8 +29,9 @@ UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Modul
 
 void UILabel::Update(float dt)
 {
-	if (listener != nullptr && interactive && isActive)
+	if (listener != nullptr && interactive)
 		HandleInput();
+	Draw();
 }
 
 UILabel::~UILabel()

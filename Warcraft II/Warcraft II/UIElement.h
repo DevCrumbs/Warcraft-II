@@ -113,7 +113,6 @@ public:
 	bool drag = false;
 	bool toRemove = false;
 	bool isBlit = true;
-	bool isActive = true;
 
 	UIE_TYPE type = UIE_TYPE_NO_TYPE;
 

@@ -35,7 +35,6 @@ public:
 	void DebugDraw(iPoint blitPos) const;
 
 	void ChangeSprite(SDL_Rect texArea);
-	void ChangesTextsAreas(bool isDiferent, SDL_Rect normalText = {0,0,0,0}, SDL_Rect hoverText = { 0,0,0,0 });
 	SDL_Rect GetHoverSprite() const;
 	SDL_Rect GetPressedSprite() const;
 	SDL_Rect GetNormalSprite() const;

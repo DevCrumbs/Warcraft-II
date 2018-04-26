@@ -4,8 +4,6 @@
 #include "j1Module.h"
 #include "j1Timer.h"
 #include "Defs.h"
-#include "Entity.h"
-#include "j1Gui.h"
 
 #include "p2Point.h"
 #include "SDL\include\SDL_rect.h"
@@ -20,6 +18,7 @@ enum HoverCheck
 	HoverCheck_Upgrate,
 	HoverCheck_Repair
 };
+
 
 struct UILabel;
 struct UIImage;
@@ -40,6 +39,7 @@ struct HoverButton
 	StaticEntity* prevEntity = nullptr;
 
 	bool isCreated = false;
+
 };
 
 struct HoverInfo
@@ -49,47 +49,27 @@ struct HoverInfo
 	UIImage* background = nullptr;
 };
 
-struct GroupSelectedElements 
-{
+struct GroupSelectedElements {
 	Entity* owner = nullptr;
 
 	UIImage* entityIcon = nullptr;
 	UILifeBar* entityLifeBar = nullptr;
-
-	~GroupSelectedElements() {
-
-		App->gui->RemoveElem((UIElement**)&entityIcon);
-		App->gui->RemoveElem((UIElement**)&entityLifeBar);
-
-		owner = nullptr;
-	}
 };
 
-struct ToSpawnUnit 
-{
+struct ToSpawnUnit {
 	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
-
 		this->toSpawnTimer = toSpawnTimer;
 		this->entityType = entityType;
 	}
-
 	j1Timer toSpawnTimer;
-	ENTITY_TYPE entityType = EntityType_NONE;
+	ENTITY_TYPE entityType;
 };
 
-struct GroupSpawning 
-{
+struct GroupSpawning {
 	ToSpawnUnit* owner = nullptr;
 
 	UIImage* entityIcon = nullptr;
 	UILifeBar* entityLifeBar = nullptr;
-
-	~GroupSpawning() {
-		App->gui->RemoveElem((UIElement**)&entityIcon);
-		App->gui->RemoveElem((UIElement**)&entityLifeBar);
-
-		owner = nullptr;
-	}
 };
 
 struct EntitySelectedStats
@@ -105,14 +85,6 @@ struct EntitySelectedStats
 	UILifeBar* lifeBar = nullptr;
 
 	Entity* entitySelected = nullptr;
-};
-
-struct GoldMineUIelem 
-{
-	UILabel* name = nullptr;
-	UIImage* icon = nullptr;
-	UILabel* goldAmount = nullptr;
-
 };
 
 class j1Player : public j1Module
@@ -134,17 +106,6 @@ public:
 	bool Update(float dt);
 	bool PostUpdate();
 
-	// Called before quitting
-	bool CleanUp();
-
-	// Save
-	bool Save(pugi::xml_node&) const;
-
-	// Load
-	bool Load(pugi::xml_node&);
-
-	// -----
-
 	void CheckIfPlaceBuilding();
 	iPoint GetMouseTilePos() const;
 	iPoint GetMousePos() const;
@@ -154,21 +115,27 @@ public:
 
 	void UpdateSpawnUnitsStats();
 
-	// Gold
 	void AddGold(int sumGold);
 	int GetCurrentGold() const;
 
+	// Called before quitting
+	bool CleanUp();
+
+	// Save
+	bool Save(pugi::xml_node&) const;
+
+	// Load
+	bool Load(pugi::xml_node&);
 
 	void OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
+
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
-	void MakeGoldMineMenu(Entity* currentEntity);
 	void MakeUnitMenu(Entity* entity);
 	void MakeUnitsMenu(list<DynamicEntity*> units);
 	void DeleteEntitiesMenu();
-	void DeleteGoldMineMenu();
 	void MakeHoverInfoMenu(string unitProduce, string gold);
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
@@ -182,7 +149,6 @@ public:
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
 	void HandleBarracksUIElem();
-	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 	void CreateAbilitiesButtons();
@@ -236,13 +202,9 @@ public:
 	uint buildDestroy = 0u;
 
 	EntitySelectedStats entitySelectedStats;
-	GoldMineUIelem goldMineUIelem;
 
 	bool isUnitSpawning = false;
 	bool isMouseOnMine = false;
-
-	list<GroupSelectedElements*> groupElementsList;
-
 private:
 
 	double timer = 0.0f; // game time
@@ -251,13 +213,17 @@ private:
 	uint totalUnitsDead = 0;
 
 	//HoverButton hoverButtonStruct;
+
 	HoverInfo hoverInfo;
 
-	list<GroupSpawning*> toSpawnUnitStats;
+	list<GroupSelectedElements> groupElementsList;
+
+	list<GroupSpawning> toSpawnUnitStats;
 	list<ToSpawnUnit*> newUnitsToSpawn;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
 		     *producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *commandPatrolButton = nullptr, *commandStopButton = nullptr;
+	
 
 	list<UIElement*> UIMenuInfoList;
 
