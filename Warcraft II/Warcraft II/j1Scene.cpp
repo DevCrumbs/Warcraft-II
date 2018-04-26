@@ -1455,90 +1455,91 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		break;
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
-		if (UIelem == buildingButton) {
-			if (parchmentImg == nullptr) {
+		if (parchmentImg == nullptr) {
+
+			if (UIelem == buildingButton) {
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadTerenasDialog();
 				ChangeBuildingMenuState(&buildingMenuButtons);
 			}
-		}
 
-		if (UIelem == buildingMenuButtons.chickenFarm.icon) {
-			if (App->player->currentGold >= chickenFarmCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				alphaBuilding = EntityType_CHICKEN_FARM;
+
+			else if (UIelem == buildingMenuButtons.chickenFarm.icon) {
+				if (App->player->currentGold >= chickenFarmCost) {
+					App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_CHICKEN_FARM;
+				}
+				else if (App->player->currentGold < chickenFarmCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if(App->player->currentGold < chickenFarmCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
-		
-		if (UIelem == buildingMenuButtons.stables.icon) {
-			if (App->player->currentGold >= stablesCost) {
-				//App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				//alphaBuilding = EntityType_STABLES;
-				App->audio->PlayFx(3, 0); //Button error sound
+
+			else if (UIelem == buildingMenuButtons.stables.icon) {
+				if (App->player->currentGold >= stablesCost) {
+					//App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					//alphaBuilding = EntityType_STABLES;
+					App->audio->PlayFx(3, 0); //Button error sound
+				}
+				else if (App->player->currentGold < stablesCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if(App->player->currentGold < stablesCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
-		
-		if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
-			if (App->player->currentGold >= gryphonAviaryCost) {
-				//App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				//alphaBuilding = EntityType_GRYPHON_AVIARY;
-				App->audio->PlayFx(3, 0); //Button error sound
+
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
+				if (App->player->currentGold >= gryphonAviaryCost) {
+					//App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					//alphaBuilding = EntityType_GRYPHON_AVIARY;
+					App->audio->PlayFx(3, 0); //Button error sound
+				}
+				else if (App->player->currentGold < gryphonAviaryCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if(App->player->currentGold < gryphonAviaryCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == buildingMenuButtons.mageTower.icon) {
-			if (App->player->currentGold >= mageTowerCost) {
-				//App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				//alphaBuilding = EntityType_MAGE_TOWER;
-				App->audio->PlayFx(3, 0); //Button error sound
+			else if (UIelem == buildingMenuButtons.mageTower.icon) {
+				if (App->player->currentGold >= mageTowerCost) {
+					//App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					//alphaBuilding = EntityType_MAGE_TOWER;
+					App->audio->PlayFx(3, 0); //Button error sound
+				}
+				else if (App->player->currentGold < mageTowerCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if(App->player->currentGold < mageTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == buildingMenuButtons.scoutTower.icon) {
-			if (App->player->currentGold >= scoutTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				alphaBuilding = EntityType_SCOUT_TOWER;
+			else if (UIelem == buildingMenuButtons.scoutTower.icon) {
+				if (App->player->currentGold >= scoutTowerCost) {
+					App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_SCOUT_TOWER;
+				}
+				else if (App->player->currentGold < scoutTowerCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if(App->player->currentGold < scoutTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == buildingMenuButtons.guardTower.icon) {
-			if (App->player->currentGold >= guardTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
+			else if (UIelem == buildingMenuButtons.guardTower.icon) {
+				if (App->player->currentGold >= guardTowerCost) {
+					App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
+				}
+				else if (App->player->currentGold < guardTowerCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if (App->player->currentGold < guardTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == buildingMenuButtons.cannonTower.icon) {
-			if (App->player->currentGold >= cannonTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
+			else if (UIelem == buildingMenuButtons.cannonTower.icon) {
+				if (App->player->currentGold >= cannonTowerCost) {
+					App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
+				}
+				else if (App->player->currentGold < cannonTowerCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if (App->player->currentGold < cannonTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
+
 		}
 
-
-
-		else if (UIelem == pauseMenuButt) {
+		if (UIelem == pauseMenuButt) {
 			App->audio->PlayFx(1, 0); //Button sound
 			if (parchmentImg == nullptr) {
 				UIImage_Info parchmentInfo;
