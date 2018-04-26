@@ -702,31 +702,31 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				switch (owner->GetDirection(orientation)) {
 
 				case UnitDirection_DownRight:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpRight:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Right:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_DownLeft:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpLeft:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Left:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Down:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 
 				case UnitDirection_Up:
 				case UnitDirection_NoDirection:
 				default:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				}
 			}
@@ -743,31 +743,31 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				switch (owner->GetDirection(orientation)) {
 
 				case UnitDirection_DownRight:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpRight:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Right:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_DownLeft:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpLeft:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Left:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Down:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 
 				case UnitDirection_Up:
 				case UnitDirection_NoDirection:
 				default:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				}
 			}
@@ -778,7 +778,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 			App->audio->PlayFx(25, 0);
 
-			targetInfo->target->ApplyDamage(owner->GetDamage());
+			targetInfo->target->ApplyDamage(owner->GetDamage(targetInfo->target));
 			break;
 		}
 
