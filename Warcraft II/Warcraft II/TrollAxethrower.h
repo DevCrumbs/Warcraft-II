@@ -15,9 +15,6 @@ struct TrollAxethrowerInfo
 	Animation attackUpLeft, attackUpRight, attackDownLeft, attackDownRight;
 	Animation deathUp, deathDown;
 
-	int currLife = 0;
-	uint maxLife = 0;
-
 	float axeSpeed = 0.0f;
 };
 
