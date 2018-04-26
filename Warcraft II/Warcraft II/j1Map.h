@@ -38,7 +38,8 @@ struct Object {
 	uint type = 0;
 };
 
-struct ObjectGroup {
+struct ObjectGroup 
+{
 	string name;
 
 	list<Object*> objects;

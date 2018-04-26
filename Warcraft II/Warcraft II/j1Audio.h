@@ -25,6 +25,11 @@ public:
 	// Called before render is available
 	bool Awake(pugi::xml_node&);
 
+	bool StartMixer();
+
+	// Called every frame
+	bool Update(float dt);
+
 	// Called before quitting
 	bool CleanUp();
 
@@ -55,6 +60,8 @@ public:
 	// Pause music
 	void PauseMusic() const;
 
+	void ChargeGameSounds();
+
 private:
 
 	string				musicFolder;
@@ -62,9 +69,46 @@ private:
 	_Mix_Music*			music = nullptr;
 	list<Mix_Chunk*>	fx;
 
+	bool audioOn = false;
+
 public:
+
+	//Audio paths
+	string mainMenuMusicName;
+	string mainButtonSound;
+	string buildingConstructionSound;
+	string errorButtonSound;
+	string buildingErrorButtonSound;
+	string chickenFarmSound;
+	string goldMineSound;
+	string gryphonAviarySound;
+	string mageTowerSound;
+	string stablesSound;
+	string repairBuildingSound;
+	string destroyBuildingSound;
+	string runeStoneSound;
+
+	string humanDeadSound;
+	string orcDeadSound;
+	string prisonerRescueSound;
+	string crittersBoarDead;
+	string crittersSheepDead;
+
+	string archerGoToPlaceSound;
+	string archerReadySound;
+	string archerSelectedSound;
+	string footmanGoToPlaceSound;
+	string footmanReadySound;
+	string footmanSelectedSound;
+
+	string axeThrowSound;
+	string bowFireSound;
+	string swordSound;
+
+public:
+
 	int musicVolume = 0;
-	int fxVolume = 40;
+	int fxVolume = 0;
 };
 
 #endif //__j1AUDIO_H__

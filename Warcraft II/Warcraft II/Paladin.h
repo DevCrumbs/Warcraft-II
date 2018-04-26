@@ -5,8 +5,7 @@
 
 struct PaladinInfo
 {
-	int currLife = 0;
-	uint maxLife = 0;
+
 };
 
 class Paladin :public DynamicEntity
