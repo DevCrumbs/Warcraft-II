@@ -22,6 +22,8 @@
 
 #include "Brofiler\Brofiler.h"
 
+// Ignores the walkability of the map
+
 GryphonRider::GryphonRider(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GryphonRiderInfo& gryphonRiderInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), gryphonRiderInfo(gryphonRiderInfo)
 {
 	// XML loading

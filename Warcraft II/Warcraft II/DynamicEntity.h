@@ -120,7 +120,7 @@ public:
 	// UnitInfo
 	float GetSpeed() const;
 	uint GetPriority() const;
-	uint GetDamage() const;
+	uint GetDamage(Entity* target) const;
 	UILifeBar* GetLifeBar() const;
 
 	// State machine

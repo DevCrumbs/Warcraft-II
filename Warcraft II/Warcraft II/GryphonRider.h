@@ -20,6 +20,8 @@ struct GryphonRiderInfo
 	Animation attackUp, attackDown, attackLeft, attackRight;
 	Animation attackUpLeft, attackUpRight, attackDownLeft, attackDownRight;
 	Animation deathUp, deathDown;
+
+	float fireSpeed = 0.0f;
 };
 
 class GryphonRider :public DynamicEntity

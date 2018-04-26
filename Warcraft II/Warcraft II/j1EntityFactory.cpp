@@ -1234,18 +1234,129 @@ bool j1EntityFactory::Start()
 	LOG("Loading entities textures");
 
 	// ENTITIES INFO
+
+	/// ALLIANCE
+	/// Dynamic Entities
+	// Footman
+	footmanInfo.unitInfo.priority = 2;
+
+	/// Radius
+	footmanInfo.unitInfo.attackRadius = 2;
+	footmanInfo.unitInfo.sightRadius = 4;
+
+	/// Damage
+	footmanInfo.unitInfo.heavyDamage = 6;
+	footmanInfo.unitInfo.lightDamage = 8;
+	footmanInfo.unitInfo.airDamage = 0;
+	footmanInfo.unitInfo.towerDamage = 6;
+
+	/// Speed
+	footmanInfo.unitInfo.maxSpeed = 70.0f;
+	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+
+	/// Life
+	footmanInfo.unitInfo.maxLife = 60;
+	footmanInfo.unitInfo.currLife = footmanInfo.unitInfo.maxLife;
+	//_Footman
+
+	// Elven Archer
+	elvenArcherInfo.unitInfo.priority = 2;
+
+	/// Radius
+	elvenArcherInfo.unitInfo.attackRadius = 5;
+	elvenArcherInfo.unitInfo.sightRadius = 12;
+
+	/// Damage
+	elvenArcherInfo.unitInfo.heavyDamage = 4;
+	elvenArcherInfo.unitInfo.lightDamage = 7;
+	elvenArcherInfo.unitInfo.airDamage = 10;
+	elvenArcherInfo.unitInfo.towerDamage = 11;
+
+	/// Speed
+	elvenArcherInfo.unitInfo.maxSpeed = 80.0f;
+	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
+
+	/// Life	
+	elvenArcherInfo.unitInfo.maxLife = 50;
+	elvenArcherInfo.unitInfo.currLife = elvenArcherInfo.unitInfo.maxLife;
+	
+	///
+	elvenArcherInfo.arrowSpeed = 170.0f;
+	//_Elven_Archer
+	
+	// Gryphon Rider
+	gryphonRiderInfo.unitInfo.priority = 2;
+
+	/// Radius
+	gryphonRiderInfo.unitInfo.attackRadius = 3;
+	gryphonRiderInfo.unitInfo.sightRadius = 12;
+
+	/// Damage
+	gryphonRiderInfo.unitInfo.heavyDamage = 7;
+	gryphonRiderInfo.unitInfo.lightDamage = 5;
+	gryphonRiderInfo.unitInfo.airDamage = 7;
+	gryphonRiderInfo.unitInfo.towerDamage = 8;
+
+	/// Speed
+	gryphonRiderInfo.unitInfo.maxSpeed = 60.0f;
+	gryphonRiderInfo.unitInfo.currSpeed = gryphonRiderInfo.unitInfo.maxSpeed;
+
+	/// Life
+	gryphonRiderInfo.unitInfo.maxLife = 100;
+	gryphonRiderInfo.unitInfo.currLife = gryphonRiderInfo.unitInfo.maxLife;
+	///
+
+	gryphonRiderInfo.fireSpeed = 120.0f;
+	//_Gryphon_Rider
+
+	/// Static Entities
+	// Towers
+	scoutTowerInfo.life = 150;
+	scoutTowerInfo.damage = 7;
+
+	playerGuardTowerInfo.life = 175;
+	playerGuardTowerInfo.damage = 13;
+
+	playerCannonTowerInfo.life = 200;
+	playerCannonTowerInfo.damage = 17;
+	//_Towers
+
+	/// HORDE
+	/// Dynamic Entities
+	// Grunt
+	gruntInfo.unitInfo.priority = 2;
+
+	/// Radius
+	gruntInfo.unitInfo.attackRadius = 2;
+	gruntInfo.unitInfo.sightRadius = 12;
+
+	/// Damage
+	gruntInfo.unitInfo.heavyDamage = 6;
+	gruntInfo.unitInfo.lightDamage = 8;
+	gruntInfo.unitInfo.airDamage = 0;
+	gruntInfo.unitInfo.towerDamage = 6;
+
+	/// Speed
+	gruntInfo.unitInfo.maxSpeed = 50.0f;
+	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
+
+	/// Life
+	gruntInfo.unitInfo.maxLife = 60;
+	gruntInfo.unitInfo.currLife = gruntInfo.unitInfo.maxLife;
+	//_Grunt
+
 	// Troll Axethrower
-	trollAxethrowerInfo.unitInfo.priority = 3;
+	trollAxethrowerInfo.unitInfo.priority = 2;
 
 	/// Radius
 	trollAxethrowerInfo.unitInfo.attackRadius = 3;
 	trollAxethrowerInfo.unitInfo.sightRadius = 12;
 
 	/// Damage
-	trollAxethrowerInfo.unitInfo.heavyDamage = 6;
-	trollAxethrowerInfo.unitInfo.lightDamage = 6;
-	trollAxethrowerInfo.unitInfo.airDamage = 6;
-	trollAxethrowerInfo.unitInfo.towerDamage = 6;
+	trollAxethrowerInfo.unitInfo.heavyDamage = 4;
+	trollAxethrowerInfo.unitInfo.lightDamage = 7;
+	trollAxethrowerInfo.unitInfo.airDamage = 10;
+	trollAxethrowerInfo.unitInfo.towerDamage = 11;
 
 	/// Speed
 	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
@@ -1254,66 +1365,80 @@ bool j1EntityFactory::Start()
 	/// Life
 	trollAxethrowerInfo.unitInfo.maxLife = 40;
 	trollAxethrowerInfo.unitInfo.currLife = trollAxethrowerInfo.unitInfo.maxLife;
+	
 	///
-
 	trollAxethrowerInfo.axeSpeed = 120.0f;
 	//_Troll_Axethrower
 
-	/*
-	// Grunt
-	gruntInfo.maxLife = 40;
-	gruntInfo.currLife = gruntInfo.maxLife;
+	// Dragon
+	dragonInfo.unitInfo.priority = 2;
 
-	gruntInfo.unitInfo.maxSpeed = 50.0f;
-	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
-	gruntInfo.unitInfo.attackRadius = 2;
-	gruntInfo.unitInfo.sightRadius = 12;
-	gruntInfo.unitInfo.damage = 5;
-	gruntInfo.unitInfo.priority = 3;
-	// -----
+	/// Radius
+	dragonInfo.unitInfo.attackRadius = 3;
+	dragonInfo.unitInfo.sightRadius = 12;
 
-	// Elven Archer
-	elvenArcherInfo.maxLife = 30;
-	elvenArcherInfo.currLife = elvenArcherInfo.maxLife;
-	elvenArcherInfo.arrowSpeed = 170.0f;
+	/// Damage
+	dragonInfo.unitInfo.heavyDamage = 7;
+	dragonInfo.unitInfo.lightDamage = 5;
+	dragonInfo.unitInfo.airDamage = 7;
+	dragonInfo.unitInfo.towerDamage = 8;
 
-	elvenArcherInfo.unitInfo.maxSpeed = 80.0f;
-	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
-	elvenArcherInfo.unitInfo.attackRadius = 5;
-	elvenArcherInfo.unitInfo.sightRadius = 12;
-	elvenArcherInfo.unitInfo.damage = 5;
-	elvenArcherInfo.unitInfo.priority = 2;
-	// -----
+	/// Speed
+	dragonInfo.unitInfo.maxSpeed = 60.0f;
+	dragonInfo.unitInfo.currSpeed = dragonInfo.unitInfo.maxSpeed;
 
-	// Footman
-	footmanInfo.maxLife = 60;
-	footmanInfo.currLife = footmanInfo.maxLife;
+	/// Life
+	dragonInfo.unitInfo.maxLife = 50;
+	dragonInfo.unitInfo.currLife = dragonInfo.unitInfo.maxLife;
+	///
 
-	footmanInfo.unitInfo.maxSpeed = 70.0f;
-	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
-	footmanInfo.unitInfo.attackRadius = 2;
-	footmanInfo.unitInfo.sightRadius = 4;
-	footmanInfo.unitInfo.damage = 5;
-	footmanInfo.unitInfo.priority = 2;
-	// -----
+	dragonInfo.fireSpeed = 120.0f;
+	//_Dragon
 
-	// Critters
-	critterSheepInfo.currLife = 10;
-	critterSheepInfo.maxLife = critterSheepInfo.currLife;
-	critterSheepInfo.restoredHealth = 10;
+	/// Static Entities
+	// Towers
+	watchTowerInfo.life = 150;
+	watchTowerInfo.damage = 7;
 
-	critterSheepInfo.unitInfo.maxSpeed = 30.0f;
-	critterSheepInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+	enemyGuardTowerInfo.life = 175;
+	enemyGuardTowerInfo.damage = 13;
+
+	enemyCannonTowerInfo.life = 200;
+	enemyCannonTowerInfo.damage = 17;
+	//_Towers
+
+	// CRITTERS
+	// Sheep
 	critterSheepInfo.unitInfo.priority = 1;
 
-	critterBoarInfo.currLife = 20;
-	critterBoarInfo.maxLife = critterBoarInfo.currLife;
-	critterBoarInfo.restoredHealth = 20;
+	/// Speed
+	critterSheepInfo.unitInfo.maxSpeed = 30.0f;
+	critterSheepInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
 
+	/// Life
+	critterSheepInfo.unitInfo.currLife = 100;
+	critterSheepInfo.unitInfo.maxLife = critterSheepInfo.unitInfo.currLife;
+	
+	///
+	critterSheepInfo.restoredHealth = 10;
+	//_Sheep
+
+	// Boar
+	critterBoarInfo.unitInfo.priority = 1;
+
+	/// Speed
 	critterBoarInfo.unitInfo.maxSpeed = 30.0f;
 	critterBoarInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
-	critterBoarInfo.unitInfo.priority = 1;
-	// -----
+
+	/// Life
+	critterBoarInfo.unitInfo.currLife = 20;
+	critterBoarInfo.unitInfo.maxLife = critterBoarInfo.unitInfo.currLife;
+
+	///
+	critterBoarInfo.restoredHealth = 20;
+	//_Boar
+
+	//
 
 	// Load textures
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
@@ -1332,7 +1457,7 @@ bool j1EntityFactory::Start()
 
 	builtChickenFarmInfo = chickenFarmInfo;
 	builtChickenFarmInfo.isBuilt = true;
-	*/
+
 	return ret;
 }
 
@@ -2738,7 +2863,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	// Dynamic entities
 	case EntityType_FOOTMAN:
 	{
-		Footman* footman = new Footman(pos, { 32,32 }, footmanInfo.currLife, footmanInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
+		Footman* footman = new Footman(pos, { 32,32 }, footmanInfo.unitInfo.currLife, footmanInfo.unitInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
 		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
 		footman->dynamicEntityType = EntityType_FOOTMAN;
 		footman->entitySide = EntitySide_Player;
@@ -2751,7 +2876,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ELVEN_ARCHER:
 	{
-		ElvenArcher* elvenArcher = new ElvenArcher(pos, { 32,32 }, elvenArcherInfo.currLife, elvenArcherInfo.maxLife, unitInfo, (const ElvenArcherInfo&)entityInfo, listener);
+		ElvenArcher* elvenArcher = new ElvenArcher(pos, { 32,32 }, elvenArcherInfo.unitInfo.currLife, elvenArcherInfo.unitInfo.maxLife, unitInfo, (const ElvenArcherInfo&)entityInfo, listener);
 		elvenArcher->entityType = EntityCategory_DYNAMIC_ENTITY;
 		elvenArcher->dynamicEntityType = EntityType_ELVEN_ARCHER;
 		elvenArcher->entitySide = EntitySide_Player;
@@ -2764,7 +2889,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRYPHON_RIDER:
 	{
-		GryphonRider* gryphonRider = new GryphonRider(pos, { 32,32 }, footmanInfo.currLife, footmanInfo.maxLife, unitInfo, (const GryphonRiderInfo&)entityInfo, listener);
+		GryphonRider* gryphonRider = new GryphonRider(pos, { 32,32 }, footmanInfo.unitInfo.currLife, footmanInfo.unitInfo.maxLife, unitInfo, (const GryphonRiderInfo&)entityInfo, listener);
 		gryphonRider->entityType = EntityCategory_DYNAMIC_ENTITY;
 		gryphonRider->dynamicEntityType = EntityType_GRYPHON_RIDER;
 		gryphonRider->entitySide = EntitySide_Player;
@@ -2795,7 +2920,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_KHADGAR:
 	{
-		Khadgar* khadgar = new Khadgar(pos, { 64,64 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const KhadgarInfo&)entityInfo, listener);
+		Khadgar* khadgar = new Khadgar(pos, { 64,64 }, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const KhadgarInfo&)entityInfo, listener);
 		khadgar->entityType = EntityCategory_DYNAMIC_ENTITY;
 		khadgar->dynamicEntityType = EntityType_KHADGAR;
 
@@ -2807,7 +2932,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ALLERIA:
 	{
-		Alleria* alleria = new Alleria(pos, { 64,64 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const AlleriaInfo&)entityInfo, listener);
+		Alleria* alleria = new Alleria(pos, { 64,64 }, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const AlleriaInfo&)entityInfo, listener);
 		alleria->entityType = EntityCategory_DYNAMIC_ENTITY;
 		alleria->dynamicEntityType = EntityType_ALLERIA;
 
@@ -2819,7 +2944,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRUNT:
 	{
-		Grunt* grunt = new Grunt(pos, { 32,32 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
+		Grunt* grunt = new Grunt(pos, { 32,32 }, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
 		grunt->entityType = EntityCategory_DYNAMIC_ENTITY;
 		grunt->dynamicEntityType = EntityType_GRUNT;
 		grunt->entitySide = EntitySide_Enemy;
@@ -2831,7 +2956,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TROLL_AXETHROWER:
 	{
-		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, { 32,32 }, trollAxethrowerInfo.currLife, trollAxethrowerInfo.maxLife, unitInfo, (const TrollAxethrowerInfo&)entityInfo, listener);
+		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, { 32,32 }, trollAxethrowerInfo.unitInfo.currLife, trollAxethrowerInfo.unitInfo.maxLife, unitInfo, (const TrollAxethrowerInfo&)entityInfo, listener);
 		trollAxethrower->entityType = EntityCategory_DYNAMIC_ENTITY;
 		trollAxethrower->dynamicEntityType = EntityType_TROLL_AXETHROWER;
 		trollAxethrower->entitySide = EntitySide_Enemy;
@@ -2843,7 +2968,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_DRAGON:
 	{
-		Dragon* dragon = new Dragon(pos, { 32,32 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const DragonInfo&)entityInfo, listener);
+		Dragon* dragon = new Dragon(pos, { 32,32 }, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const DragonInfo&)entityInfo, listener);
 		dragon->entityType = EntityCategory_DYNAMIC_ENTITY;
 		dragon->dynamicEntityType = EntityType_DRAGON;
 		dragon->entitySide = EntitySide_Enemy;
@@ -2855,7 +2980,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_SHEEP:
 	{
-		CritterSheep* critterSheep = new CritterSheep(pos, { 32,32 }, critterSheepInfo.currLife, critterSheepInfo.maxLife, unitInfo, (const CritterSheepInfo&)entityInfo, listener);
+		CritterSheep* critterSheep = new CritterSheep(pos, { 32,32 }, critterSheepInfo.unitInfo.currLife, critterSheepInfo.unitInfo.maxLife, unitInfo, (const CritterSheepInfo&)entityInfo, listener);
 		critterSheep->entityType = EntityCategory_DYNAMIC_ENTITY;
 		critterSheep->entitySide = EntitySide_Neutral;
 		critterSheep->dynamicEntityType = EntityType_SHEEP;
@@ -2867,7 +2992,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_BOAR:
 	{
-		CritterBoar* critterBoar = new CritterBoar(pos, { 32,32 }, critterBoarInfo.currLife, critterBoarInfo.maxLife, unitInfo, (const CritterBoarInfo&)entityInfo, listener);
+		CritterBoar* critterBoar = new CritterBoar(pos, { 32,32 }, critterBoarInfo.unitInfo.currLife, critterBoarInfo.unitInfo.maxLife, unitInfo, (const CritterBoarInfo&)entityInfo, listener);
 		critterBoar->entityType = EntityCategory_DYNAMIC_ENTITY;
 		critterBoar->entitySide = EntitySide_Neutral;
 		critterBoar->dynamicEntityType = EntityType_BOAR;

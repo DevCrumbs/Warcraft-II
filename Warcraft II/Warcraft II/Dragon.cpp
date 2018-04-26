@@ -23,6 +23,8 @@
 
 #include "Brofiler\Brofiler.h"
 
+// Ignores the walkability of the map
+
 Dragon::Dragon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const DragonInfo& dragonInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), dragonInfo(dragonInfo)
 {
 	// XML loading
