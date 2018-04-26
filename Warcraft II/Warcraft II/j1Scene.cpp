@@ -1364,6 +1364,10 @@ PauseMenuActions j1Scene::GetPauseMenuActions()
 bool j1Scene::CompareSelectedUnitsLists(list<DynamicEntity*> units)
 {
 	bool ret = false;
+
+	if (App->player->entitySelectedStats.entitySelected != nullptr)
+		if (units.front() == App->player->entitySelectedStats.entitySelected)
+			ret = true;
 	if (units.size() == App->player->groupElementsList.size()) {
 		for (list<DynamicEntity*>::iterator unitsIterator = units.begin(); unitsIterator != units.end(); ++unitsIterator)
 		{
