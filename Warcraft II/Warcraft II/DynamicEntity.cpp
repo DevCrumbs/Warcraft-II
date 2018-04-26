@@ -528,7 +528,7 @@ ColliderGroup* DynamicEntity::CreateRhombusCollider(ColliderType colliderType, u
 
 		for (uint i = 0; i < 4; ++i)
 		{
-			if (CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
+			if (App->pathfinding->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
 
 				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
 

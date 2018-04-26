@@ -49,7 +49,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	alleriaTexName = spritesheets.child("alleriaAnimations").attribute("name").as_string();
 	elvenArcherTexName = spritesheets.child("elvenArcherAnimations").attribute("name").as_string();
 	trollAxethrowerTexName = spritesheets.child("trollAxethrowerAnimations").attribute("name").as_string();
-
+	gryphonRiderTexName = spritesheets.child("gryphonRiderAnimations").attribute("name").as_string();
+	dragonTexName = spritesheets.child("dragonAnimations").attribute("name").as_string();
 
 	//Debug Textures Properties
 	previewTilesopacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
@@ -1434,7 +1435,10 @@ bool j1EntityFactory::Start()
 	critterBoarInfo.restoredHealth = 20;
 	//_Boar
 
-	//
+	// NEUTRAL BUILDINGS
+	// Runestone
+	runestoneInfo.sightRadius = 7;
+	//_Runestone
 
 	// Load textures
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
@@ -1445,6 +1449,8 @@ bool j1EntityFactory::Start()
 	trollAxethrowerTex = App->tex->Load(trollAxethrowerTexName.data());
 	footmanTex = App->tex->Load(footmanTexName.data());
 	gruntTex = App->tex->Load(gruntTexName.data());
+	gryphonRiderTex = App->tex->Load(gryphonRiderTexName.data());
+	dragonTex = App->tex->Load(dragonTexName.data());
 
 	crittersTex = App->tex->Load(crittersTexName.data());
 
@@ -1946,7 +1952,6 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 
 	return false;
 }
-
 
 // Returns true if a building can NOT be built in that spot
 bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const
