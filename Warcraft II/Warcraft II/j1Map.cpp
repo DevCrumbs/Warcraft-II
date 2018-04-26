@@ -950,9 +950,10 @@ bool j1Map::LoadLogic()
 					case roomType_BASE:
 						playerBase = { pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize };
 						roomRectList.push_back(playerBase);
+						App->scene->basePos = { playerBase.x + margin * defaultTileSize, playerBase.y + margin * defaultTileSize };
 
-						App->render->camera.x = -(playerBase.x + margin * defaultTileSize);
-						App->render->camera.y = -(playerBase.y + margin * defaultTileSize);
+						App->render->camera.x = -App->scene->basePos.x;
+						App->render->camera.y = -App->scene->basePos.y;
 
 						break;
 					case roomType_LARGE:
