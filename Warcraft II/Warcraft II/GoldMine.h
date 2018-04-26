@@ -14,6 +14,14 @@ struct GoldMineInfo
 	float speed = 0.0f;
 };
 
+enum GoldMineState {
+	
+	GoldMine_Untouched,
+	GoldMine_Gathering,
+	GoldMine_Gathered,
+
+};
+
 class GoldMine :public StaticEntity
 {
 public:
@@ -29,6 +37,14 @@ public:
 
 	// Tex area
 	void SwapTexArea();
+
+
+public:
+
+	GoldMineState goldMineState = GoldMine_Untouched;
+	uint totalGold = 0;
+	float secondsGathering = 0.0f;
+	float currentSec = 0.0f;
 
 private:
 

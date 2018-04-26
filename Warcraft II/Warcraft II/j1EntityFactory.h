@@ -253,7 +253,7 @@ private:
 	EnemyCannonTowerInfo enemyCannonTowerInfo;
 
 	//Preview tiles
-	BuildingPreviewTiles buildingPreviewTiles;
+	uint previewTilesopacity = 0;
 	uint previewBuildingOpacity;
 
 	std::priority_queue<EntitiesDraw_info, std::vector<EntitiesDraw_info>, compareEntPriority> entityDrawOrder;

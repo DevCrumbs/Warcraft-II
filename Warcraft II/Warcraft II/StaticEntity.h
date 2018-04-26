@@ -48,12 +48,6 @@ enum TowerState
 	TowerState_Die
 };
 
-struct BuildingPreviewTiles 
-{
-	SDL_Rect greenTile = { 0,0,0,0 };
-	SDL_Rect redTile = { 0,0,0,0 };
-	uint opacity = 0;
-};
 
 class StaticEntity :public Entity
 {

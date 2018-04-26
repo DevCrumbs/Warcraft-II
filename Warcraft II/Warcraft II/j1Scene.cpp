@@ -122,7 +122,7 @@ bool j1Scene::Start()
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = LoadNewMap(1);
+		ret = LoadNewMap(0);
 	//	ret = App->map->Load("verticalSliceMap.tmx");
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
@@ -170,7 +170,7 @@ bool j1Scene::LoadNewMap(int map)
 
 
 		static char path[25];
-		sprintf_s(path, 25, "verticalSliceMap%i.tmx", map);
+		sprintf_s(path, 25, "alphaMap%i.tmx", map);
 
 		LOG(path);
 
@@ -179,7 +179,7 @@ bool j1Scene::LoadNewMap(int map)
 	else
 	{
 		static char path[25];
-		sprintf_s(path, 25, "verticalSliceMap%i.tmx", map);
+		sprintf_s(path, 25, "alphaMap%i.tmx", map);
 
 		ret = App->map->Load(path);
 	}
@@ -497,6 +497,20 @@ bool j1Scene::PreUpdate()
 	}
 	*/
 
+	units = App->entities->GetLastUnitsSelected();
+
+	if (units.size() > 0) {
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+
+			if (!CompareSelectedUnitsLists(units)) {
+
+				App->player->DeleteEntitiesMenu();
+				App->player->MakeUnitsMenu(units);
+			}
+		}
+	}
+
 	return ret;
 }
 
@@ -593,12 +607,7 @@ bool j1Scene::Update(float dt)
 		units = App->entities->GetLastUnitsSelected();
 
 		if (units.size() > 0) {
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
-				if (!CompareSelectedUnitsLists(units)) {
-					App->player->DeleteEntitiesMenu();
-					App->player->MakeUnitsMenu(units);
-				}
-			}
+
 			UnitGroup* group = App->movement->GetGroupByUnits(units);
 
 			if (group == nullptr)
@@ -895,7 +904,10 @@ bool j1Scene::CleanUp()
 	App->audio->PauseMusic();
 	//App->tex->UnLoad(debugTex);
 
+	// Removes all UI from Scene
 	DestroyAllUI();
+	// Removes all UI (also life bars, for example)
+	App->gui->DestroyAllUI();
 	//warcraftActive = false;
 
 	// Set to nullptr the pointers to the UI elements
@@ -1067,7 +1079,6 @@ void j1Scene::LoadInGameUI()
 	labelInfo.interactive = false;
 	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, buildingButton);
 
-
 	//Pause menu 
 	pauseMenuButt = App->gui->CreateUIButton({ 5,1 }, buttonInfo, this);
 
@@ -1142,6 +1153,7 @@ void j1Scene::UpdateLabelsMenu()
 	ChangeMenuLabelColor(buildingMenuButtons.scoutTower.cost, scoutTowerCost);
 }
 
+
 void j1Scene::ChangeMenuLabelColor(UILabel * Label, int cost)
 {
 	if (App->player->currentGold >= cost)
@@ -1153,7 +1165,6 @@ void j1Scene::ChangeMenuLabelColor(UILabel * Label, int cost)
 
 void j1Scene::LoadBuildingMenu()
 {
-
 	UIImage_Info imageInfo;
 	imageInfo.draggable = false;
 	imageInfo.texArea = { 0,33,240,529 };
@@ -1171,19 +1182,19 @@ void j1Scene::LoadBuildingMenu()
 
 		CreateBuildingElements( { 343,160,50,41 }, { 585, 100 }, "Stables",
 			"Cost: 900 gold", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
-		//,
+
 		CreateBuildingElements( { 496,160,50,41 }, { 585, 145 }, "Gryphon Aviary",
 			"Cost: 400 gold", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
-		//,
+
 		CreateBuildingElements( { 496,202,50,41 }, { 585, 190 }, "Mage Tower",
 			"Cost: 1000 gold", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
-		//,
+
 		CreateBuildingElements( { 496,34,50,41 }, { 585, 235 }, "Scout Tower",
 			"Cost: 400 gold", { 645, 245 }, { 645, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
-		//, 
+
 		CreateBuildingElements({ 496,76,50,41 }, { 585, 280 }, "Guard Tower",
 			"Cost: 600 gold", { 645, 290 }, { 645, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
-		//, 
+
 		CreateBuildingElements({ 496,118,50,41 }, { 585, 325 }, "Cannon Tower",
 			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
 	}
@@ -1301,8 +1312,8 @@ void j1Scene::CreatePauseMenu() {
 
 }
 
-void j1Scene::DestroyPauseMenu() {
-
+void j1Scene::DestroyPauseMenu() 
+{
 	App->gui->RemoveElem((UIElement**)&settingsButt);
 	App->gui->RemoveElem((UIElement**)&ReturnMenuButt);
 	App->gui->RemoveElem((UIElement**)&continueButt);
@@ -1311,7 +1322,8 @@ void j1Scene::DestroyPauseMenu() {
 	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
 }
 
-void j1Scene::CreateSettingsMenu() {
+void j1Scene::CreateSettingsMenu() 
+{
 	UIButton_Info buttonInfo;
 	UILabel_Info labelInfo;
 	
@@ -1336,7 +1348,6 @@ void j1Scene::CreateSettingsMenu() {
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
 	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
-
 
 	//Sliders
 	x = parchmentImg->GetLocalPos().x + 30;
@@ -1365,7 +1376,7 @@ void j1Scene::CreateSettingsMenu() {
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
 }
 
-void j1Scene::DestroySettingsMenu() 
+void j1Scene::DestroySettingsMenu()
 {
 	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&returnLabel);
@@ -1377,25 +1388,23 @@ void j1Scene::DestroySettingsMenu()
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.slider);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.name);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.value);
-
 }
 
-void j1Scene::DestroyAllUI() 
+void j1Scene::DestroyAllUI()
 {
-	if (parchmentImg != nullptr) {
-		App->gui->RemoveElem((UIElement**)&parchmentImg);
-	}
+	App->gui->RemoveElem((UIElement**)&parchmentImg);
 
 	DestroyPauseMenu();
 	DestroySettingsMenu();
 	UnLoadBuildingMenu();
 	UnLoadResourcesLabels();
 	UnLoadTerenasDialog();
-	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
+
 	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
-	App->gui->RemoveElem((UIElement**)&entitiesStats);
-	App->gui->RemoveElem((UIElement**)&buildingButton);
+	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
 	App->gui->RemoveElem((UIElement**)&buildingLabel);
+	App->gui->RemoveElem((UIElement**)&buildingButton);
+	App->gui->RemoveElem((UIElement**)&entitiesStats);
 	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
 	App->gui->RemoveElem((UIElement**)&minimap);
 }
@@ -1408,12 +1417,21 @@ PauseMenuActions j1Scene::GetPauseMenuActions()
 bool j1Scene::CompareSelectedUnitsLists(list<DynamicEntity*> units)
 {
 	bool ret = false;
-	if (units.size() == App->player->groupElementsList.size()) {
+
+	// 1. Only 1 unit
+	if (units.size() == 1 && App->player->entitySelectedStats.entitySelected != nullptr) {
+
+		if (units.front() == App->player->entitySelectedStats.entitySelected)
+			ret = true;
+	}
+	// 2. More than just 1 unit
+	else if (units.size() == App->player->groupElementsList.size()) {
+
 		for (list<DynamicEntity*>::iterator unitsIterator = units.begin(); unitsIterator != units.end(); ++unitsIterator)
 		{
-			for (list<GroupSelectedElements>::iterator playerIterator = App->player->groupElementsList.begin(); playerIterator != App->player->groupElementsList.end(); ++playerIterator)
+			for (list<GroupSelectedElements*>::iterator playerIterator = App->player->groupElementsList.begin(); playerIterator != App->player->groupElementsList.end(); ++playerIterator)
 			{
-				if (*unitsIterator == playerIterator->owner)
+				if (*unitsIterator == (*playerIterator)->owner)
 				{
 					ret = true;
 					break;
@@ -1421,6 +1439,7 @@ bool j1Scene::CompareSelectedUnitsLists(list<DynamicEntity*> units)
 				else
 					ret = false;
 			}
+
 			if (!ret)
 				break;
 		}

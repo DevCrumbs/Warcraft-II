@@ -55,7 +55,8 @@ CritterSheep::CritterSheep(fPoint pos, iPoint size, int currLife, uint maxLife, 
 CritterSheep::~CritterSheep() 
 {
 	if (lastPaw != nullptr)
-		lastPaw = nullptr;
+		lastPaw->isRemove = true;
+	lastPaw = nullptr;
 }
 
 void CritterSheep::Move(float dt)

@@ -22,6 +22,8 @@
 #include "UILifeBar.h"
 #include "UICursor.h"
 
+
+
 j1Player::j1Player() : j1Module()
 {
 	name.assign("scene");
@@ -61,14 +63,17 @@ bool j1Player::PreUpdate() {
 
 	//Life Bar on building 
 	if (entitySelectedStats.entitySelected != nullptr) {
-		if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
-			if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
-				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-			}
-			else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
-				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-				entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
-				entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
+		StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
+		if (building->staticEntityType != EntityType_GOLD_MINE) {
+			if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
+				if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
+					entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+				}
+				else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
+					entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+					entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+					entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
+				}
 			}
 		}
 	}
@@ -78,8 +83,8 @@ bool j1Player::PreUpdate() {
 
 bool j1Player::Update(float dt) 
 {
-	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
-		(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
+	for (list<GroupSelectedElements*>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
+		(*iterator)->entityLifeBar->SetLife((*iterator)->owner->GetCurrLife());
 	}
 	//Check if a building needs to be placed
 	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
@@ -177,8 +182,13 @@ bool j1Player::Update(float dt)
 		App->scene->hasFoodChanged = true;
 	}
 
-
-	//Handle the apparence and disapparence of to spawn units UI elements
+	//idk if put this here or in PreUpdate
+	if (entitySelectedStats.entitySelected != nullptr) { 
+		StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
+		if (building->staticEntityType == EntityType_GOLD_MINE) {
+			HandleGoldMineUIStates();
+		}
+	}
 	
 	return true;
 }
@@ -324,13 +334,6 @@ void j1Player::CheckIfPlaceBuilding()
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		App->scene->SetAplphaBuilding(EntityType_NONE);
 
-	//This makes that buildings on the scene aren't printed on alpha
-
-	if (alphaBuilding != EntityType_MAX)
-	{
-		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-		SDL_SetTextureAlphaMod(App->entities->GetNeutralBuildingTexture(), 255);
-	}
 }
 
 //This method checks for the spawning queue of the units and if they're ready to spawn or not
@@ -354,7 +357,7 @@ void j1Player::CheckUnitSpawning()
 		gryphonAviaryPos = gryphonAviary->GetPos();
 	}
 
-	list<GroupSpawning>::iterator lastElem;
+	list<GroupSpawning*>::iterator lastElem;
 
 	if (!toSpawnUnitQueue.empty()) {
 
@@ -397,8 +400,8 @@ void j1Player::CheckUnitSpawning()
 				lastElem = toSpawnUnitStats.begin();
 				LOG("Size before erase: %i", toSpawnUnitStats.size());
 
-				App->gui->RemoveElem((UIElement**)&lastElem->entityIcon);
-				App->gui->RemoveElem((UIElement**)&lastElem->entityLifeBar);
+				App->gui->RemoveElem((UIElement**)(*lastElem)->entityIcon);
+				App->gui->RemoveElem((UIElement**)(*lastElem)->entityLifeBar);
 
 				toSpawnUnitStats.erase(toSpawnUnitStats.begin());
 				LOG("Size after erase: %i", toSpawnUnitStats.size());
@@ -407,9 +410,9 @@ void j1Player::CheckUnitSpawning()
 			}
 		}
 	}
-	for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) 
+	for (list<GroupSpawning*>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) 
 	{
-		(*iterator).entityLifeBar->SetLife((*iterator).owner->toSpawnTimer.ReadSec());
+		(*iterator)->entityLifeBar->SetLife((*iterator)->owner->toSpawnTimer.ReadSec());
 	}
 }
 
@@ -439,10 +442,10 @@ void j1Player::SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity,
 void j1Player::UpdateSpawnUnitsStats()
 {
 	int cont = 0;
-	for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator)
+	for (list<GroupSpawning*>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator)
 	{
-		(*iterator).entityIcon->SetLocalPos({ 48 * cont + 72, 5 });
-		(*iterator).entityLifeBar->SetLocalPos({ 48 * cont + 72, 40 });
+		(*iterator)->entityIcon->SetLocalPos({ 48 * cont + 72, 5 });
+		(*iterator)->entityLifeBar->SetLocalPos({ 48 * cont + 72, 40 });
 		cont++;
 	}
 }
@@ -501,6 +504,7 @@ bool j1Player::CleanUp()
 	imagePrisonersVector.clear();
 
 	DeleteEntitiesMenu();
+
 	if (hoverInfo.background != nullptr) {
 		DeleteHoverInfoMenu();
 	}
@@ -509,11 +513,10 @@ bool j1Player::CleanUp()
 		barracks->isRemove = true;
 		barracks = nullptr;
 	}
-	if (townHall) {
+	if (townHall != nullptr) {
 		townHall->isRemove = true;
 		townHall = nullptr;
 	}
-
 
 	return ret;
 }
@@ -586,6 +589,8 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 						it++;
 					}
+
+					App->entities->CommandToUnits(units, UnitCommand_GatherGold);
 				}
 				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
 					App->scene->UnLoadTerenasDialog();
@@ -626,8 +631,9 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		case EntitiesEvent_LEFT_CLICK:
 
-			if (staticEntity->staticEntityType != EntityType_RUNESTONE && staticEntity->staticEntityType != EntityType_GOLD_MINE)
+			if (staticEntity->staticEntityType != EntityType_MAX) {
 				DeleteEntitiesMenu();
+			}
 
 			if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM) {
 				App->audio->PlayFx(5, 0); //Chicken farm sound
@@ -682,6 +688,10 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal) {
 				App->audio->PlayFx(1, 0); //Button sound
 				MakeEntitiesMenu(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
+			}
+			else if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
+				App->audio->PlayFx(1, 0); //Button sound
+				MakeGoldMineMenu(ent);
 			}
 			break;
 
@@ -857,6 +867,64 @@ void j1Player::MakeEntitiesMenu(string HP_text, string entityName_text, SDL_Rect
 	entitySelectedStats.entitySelected = currentEntity;
 }
 
+void j1Player::MakeGoldMineMenu(Entity* currentEntity)
+{
+	App->entities->UnselectAllEntities();
+
+	UILabel_Info labelInfo;
+	labelInfo.interactive = false;
+	labelInfo.text = "Gold Mine";
+	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
+	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+	goldMineUIelem.name = App->gui->CreateUILabel({ 5,5 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+	UIImage_Info imageInfo;
+	imageInfo.texArea = {848, 112, 50, 41};
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	goldMineUIelem.icon = App->gui->CreateUIImage({ 5, App->scene->entitiesStats->GetLocalRect().h / 2 }, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+
+	GoldMine* goldMine = (GoldMine*)currentEntity;
+	switch (goldMine->goldMineState) {
+
+	case GoldMine_Untouched:
+		labelInfo.text = "Gold = ???";
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
+		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+		goldMineUIelem.goldAmount = App->gui->CreateUILabel({ 60,35 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		break;
+
+	case GoldMine_Gathering:
+		{
+			uint currentGold = 0;
+			for (float i = goldMine->secondsGathering; i >= 0; i--) {
+				if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
+					currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
+					break;
+				}
+			}
+			string goldString = "Gold = " + to_string(currentGold);
+			labelInfo.text = goldString;
+			labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
+			labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+			goldMineUIelem.goldAmount = App->gui->CreateUILabel({ 60,35 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		}
+		break;
+
+	case GoldMine_Gathered:
+		labelInfo.text = "Gold = 0";
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT14;
+		labelInfo.verticalOrientation = VERTICAL_POS_TOP;
+		goldMineUIelem.goldAmount = App->gui->CreateUILabel({ 60,35 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		break;
+
+	default:
+		break;
+	}
+		
+	entitySelectedStats.entitySelected = currentEntity;
+}
+
 void j1Player::MakeUnitMenu(Entity* entity)
 {
 	if (entity == nullptr)
@@ -891,21 +959,18 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
 		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT9;
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT11;
 		labelInfo.text = "Damage: 6";
-		entitySelectedStats.entityDamage = App->gui->CreateUILabel({ 75, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		entitySelectedStats.entityDamage = App->gui->CreateUILabel({ 75, 33 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-		labelInfo.text = "Mana: -";
-		entitySelectedStats.entityMana = App->gui->CreateUILabel({ 145, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		labelInfo.text = "Speed: 10";
+		entitySelectedStats.entityMana = App->gui->CreateUILabel({ 145, 33 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 		labelInfo.text = "Sight: 4";
-		entitySelectedStats.entitySight = App->gui->CreateUILabel({ 75, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		entitySelectedStats.entitySight = App->gui->CreateUILabel({ 75, 48 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 		labelInfo.text = "Range: 9";
-		entitySelectedStats.entityRange = App->gui->CreateUILabel({ 145, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
-
-		labelInfo.text = "Movement Speed: 10";
-		entitySelectedStats.entityMovementSpeed = App->gui->CreateUILabel({ 75, 50 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		entitySelectedStats.entityRange = App->gui->CreateUILabel({ 145, 48 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 	}
 
 	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_ELVEN_ARCHER) 
@@ -937,21 +1002,18 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		labelInfo.verticalOrientation = VERTICAL_POS_BOTTOM;
 		entitySelectedStats.HP = App->gui->CreateUILabel({ 5, App->scene->entitiesStats->GetLocalRect().h }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT9;
+		labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT11;
 		labelInfo.text = "Damage: 5";
-		entitySelectedStats.entityDamage = App->gui->CreateUILabel({ 75, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		entitySelectedStats.entityDamage = App->gui->CreateUILabel({ 75, 33 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-		labelInfo.text = "Mana: -";
-		entitySelectedStats.entityMana = App->gui->CreateUILabel({ 145, 25 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		labelInfo.text = "Speed: 10";
+		entitySelectedStats.entityMana = App->gui->CreateUILabel({ 145, 33 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 		labelInfo.text = "Sight: 9";
-		entitySelectedStats.entitySight = App->gui->CreateUILabel({ 75, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		entitySelectedStats.entitySight = App->gui->CreateUILabel({ 75, 48 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
 		labelInfo.text = "Range: 4";
-		entitySelectedStats.entityRange = App->gui->CreateUILabel({ 145, 37 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
-
-		labelInfo.text = "Movement Speed: 10";
-		entitySelectedStats.entityMovementSpeed = App->gui->CreateUILabel({ 75, 50 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+		entitySelectedStats.entityRange = App->gui->CreateUILabel({ 145, 48 }, labelInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 	}	
 
 	entitySelectedStats.entitySelected = entity;	
@@ -959,27 +1021,33 @@ void j1Player::MakeUnitMenu(Entity* entity)
 
 void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 {
-	list<DynamicEntity*>::iterator it;
-	it = units.begin();
+	// 1. Only 1 unit selected
+	if (units.size() == 1) {
+
+		MakeUnitMenu(units.front());
+		CreateAbilitiesButtons();
+		return;
+	}
+	
+	// 2. More than 1 unit selected
+	list<DynamicEntity*>::iterator it = units.begin();
 	int cont = 0;
+
 	while (it != units.end()) {
+
 		UIImage* image = nullptr;
 		UILifeBar* lifeBar = nullptr;
-		if (units.size() == 1) {
-			MakeUnitMenu((*it));
-		}
-		else {
-				
-			if ((*it)->dynamicEntityType == EntityType_FOOTMAN) {
-				image = CreateGroupIcon({ 55 * (cont % 4) + 2, 39 * (cont / 4) + 18 }, { 649, 160, 46, 30 });
-			}
-			else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-				image = CreateGroupIcon({ 55 * (cont % 4) + 2, 39 * (cont / 4) + 18 }, { 696, 160, 46, 30 });
-			}
-			lifeBar = CreateGroupLifeBar({ 55 * (cont % 4) + 1, 39 * (cont / 4) + 33 }, { 240,362,47,7 }, { 242,358,42,3 }, (Entity*)(*it));
-			
-			groupElementsList.push_back({(*it), image, lifeBar});
-		}		
+
+		if ((*it)->dynamicEntityType == EntityType_FOOTMAN)
+			image = CreateGroupIcon({ 55 * (cont % 4) + 2, 39 * (cont / 4) + 18 }, { 649, 160, 46, 30 });
+		else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER)
+			image = CreateGroupIcon({ 55 * (cont % 4) + 2, 39 * (cont / 4) + 18 }, { 696, 160, 46, 30 });
+
+		lifeBar = CreateGroupLifeBar({ 55 * (cont % 4) + 1, 39 * (cont / 4) + 33 }, { 240,362,47,7 }, { 242,358,42,3 }, (Entity*)(*it));
+
+		if (image != nullptr && lifeBar != nullptr)
+			groupElementsList.push_back(new GroupSelectedElements({ *it, image, lifeBar }));
+
 		it++;
 		cont++;
 	}
@@ -990,51 +1058,61 @@ void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
 void j1Player::DeleteEntitiesMenu()
 {
 	if (entitySelectedStats.entitySelected == barracks) {
+
 		App->gui->RemoveElem((UIElement**)&produceElvenArcherButton);
 		App->gui->RemoveElem((UIElement**)&produceFootmanButton);
 		App->gui->RemoveElem((UIElement**)&producePaladinButton);
-		for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) {
-			App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
-			App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
-		}
+
+		for (list<GroupSpawning*>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator)
+			delete *iterator;
+
 		toSpawnUnitStats.clear();
 	}
 
 	if (entitySelectedStats.entitySelected == townHall) 
 		App->gui->RemoveElem((UIElement**)&upgradeTownHallButton);
 	
-
 	if (entitySelectedStats.entitySelected != nullptr) {
-		App->gui->RemoveElem((UIElement**)&entitySelectedStats.HP);
-		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityName);
-		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityIcon);
-		App->gui->RemoveElem((UIElement**)&entitySelectedStats.lifeBar);
-		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityDamage);
-		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityMana);
-		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityMovementSpeed);
-		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityRange);
-		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entitySight);
-		App->gui->RemoveElem((UIElement**)&commandPatrolButton);
-		App->gui->RemoveElem((UIElement**)&commandStopButton);
+		StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
+		if (building->staticEntityType != EntityType_GOLD_MINE) {
+			App->gui->RemoveElem((UIElement**)&entitySelectedStats.HP);
+			App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityName);
+			App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityIcon);
+			App->gui->RemoveElem((UIElement**)&entitySelectedStats.lifeBar);
+			App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityDamage);
+			App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityMana);
+			App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityMovementSpeed);
+			App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityRange);
+			App->gui->RemoveElem((UIElement**)&entitySelectedStats.entitySight);
+			App->gui->RemoveElem((UIElement**)&commandPatrolButton);
+			App->gui->RemoveElem((UIElement**)&commandStopButton);
+		}
+
+		else if(building->staticEntityType == EntityType_GOLD_MINE)
+		DeleteGoldMineMenu();
+
 		entitySelectedStats.entitySelected = nullptr;
 	}
 
-	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
-		App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
-		App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
-	}
 
-	if (!groupElementsList.empty()) {
-		if (commandPatrolButton != nullptr)
-			App->gui->RemoveElem((UIElement**)&commandPatrolButton);
-		if (commandStopButton != nullptr)
-			App->gui->RemoveElem((UIElement**)&commandStopButton);
-	}
+	for (list<GroupSelectedElements*>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator)
+		delete *iterator;
 	groupElementsList.clear();
+
+	// By the flies...
+	App->gui->RemoveElem((UIElement**)&commandPatrolButton);
+	App->gui->RemoveElem((UIElement**)&commandStopButton);
 }
 
-void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) {
+void j1Player::DeleteGoldMineMenu()
+{
+	App->gui->RemoveElem((UIElement**)&goldMineUIelem.icon);
+	App->gui->RemoveElem((UIElement**)&goldMineUIelem.name);
+	App->gui->RemoveElem((UIElement**)&goldMineUIelem.goldAmount);
+}
 
+void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) 
+{
 	UIImage_Info backgroundImageInfo;
 	backgroundImageInfo.texArea = { 241, 384, 85, 38 };
 	hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
@@ -1064,6 +1142,7 @@ UIImage* j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea)
 	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	return App->gui->CreateUIImage(iconPos, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 }
+
 UILifeBar* j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, Entity * entity)
 {
 	UILifeBar_Info lifeInfo;
@@ -1106,8 +1185,6 @@ UILifeBar* j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTe
 	InfoButton.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	InfoButton.verticalOrientation = VERTICAL_POS_CENTER;
 
-
-
 	if (hoverCheck != HoverCheck_None) {
 		hoverButtonStruct.hoverButton = App->gui->CreateUIButton({ pos.x + pos.w / 2, pos.y + pos.h / 2 }, InfoButton, this, nullptr, true);
 		hoverButtonStruct.currentEntity = staticEntity;
@@ -1122,6 +1199,7 @@ UILifeBar* j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTe
 	}
 }
 */
+
 void j1Player::CreateBarracksButtons()
 {
 	CreateSimpleButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 217, 2 }, produceFootmanButton);
@@ -1168,10 +1246,9 @@ void j1Player::HandleBarracksUIElem()
 
 			isUnitSpawning = true;
 
-			toSpawnUnitStats.push_back({ (*newUnit), image, lifeBar });
+			toSpawnUnitStats.push_back(new GroupSpawning({ (*newUnit), image, lifeBar }));
 
 			LOG("Cont = %i", cont);
-
 
 			cont++;
 		}
@@ -1180,6 +1257,40 @@ void j1Player::HandleBarracksUIElem()
 		LOG("WTF is going on");
 	}
 	newUnitsToSpawn.clear();
+}
+
+void j1Player::HandleGoldMineUIStates()
+{
+	GoldMine* goldMine = (GoldMine*)entitySelectedStats.entitySelected;
+
+	switch (goldMine->goldMineState) {
+
+	case GoldMine_Untouched:
+		break;
+
+	case GoldMine_Gathering:
+	{
+		uint currentGold = 0;
+		for (float i = goldMine->secondsGathering; i >= 0; i--) {
+			if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
+				currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
+				break;
+			}
+		}
+		string goldString = "Gold = " + to_string(currentGold);
+		goldMineUIelem.goldAmount->SetText(goldString.data());
+		
+	}
+		break;
+
+	case GoldMine_Gathered:
+		goldMineUIelem.goldAmount->SetText("Gold = 0");
+		break;
+
+	default:
+		break;
+	}
+
 }
 
 void j1Player::CreateGryphonAviaryButtons()
@@ -1198,15 +1309,14 @@ void j1Player::CreateAbilitiesButtons()
 	CreateSimpleButton({ 649,202,50,41 }, { 751, 202, 50, 41 }, { 700,202,50,41 }, { 268, 2 }, commandPatrolButton);
 }
 
-void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) {
-
+void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) 
+{
 	UIButton_Info infoButton;
 
 	infoButton.normalTexArea = normal;
 	infoButton.hoverTexArea = hover;
 	infoButton.pressedTexArea = pressed;
 	button = App->gui->CreateUIButton(pos, infoButton, this, (UIElement*)App->scene->entitiesStats);
-
 }
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 

@@ -34,6 +34,24 @@
     <music_folder>data/assets/audio/music/</music_folder>
     <fx_folder>data/assets/audio/fx/</fx_folder>
     <volume default="16"/>
+
+    <audioPaths>
+      <mainTheme path ="mainMenu.ogg"/>
+      <sounds>
+        <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"
+                       chickenFarm ="buildings/farm.wav" goldMine = "buildings/goldMine.wav" gryphAviar = "buildings/gryphonAviary.wav"
+                       mageTower ="buildings/mageTower.wav" stables= "buildings/stables.wav" repair = "buildings/buildingRepair.wav"
+                       destroyBuilding = "buildings/buildingDestroy.wav" runeStone = "buildings/runeStoneHeal.wav"/>
+        <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
+
+        <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" prisonerRescue="Units/PrisonerRescue.wav"/>
+        <archerPaths goToPlace ="Units/Archer/GoToPlace1.wav" ready="Units/Archer/Ready.wav" selected="Units/Archer/Selected1.wav"/>
+        <footmanPaths goToPlace ="Units/Footman/GoToPlace1.wav" ready="Units/Footman/Ready.wav" selected="Units/Footman/Selected1.wav"/>
+        <crittersPaths boarDead ="Units/Critters/BoarDead.wav" sheepDead="Units/Critters/SheepDead.wav"/>
+        <attackPaths axeThrow="Attack/AxeThrow.wav" bowFire="Attack/BowFire.wav" sword="Attack/Sword2.wav"/>
+
+      </sounds>
+    </audioPaths>
   </audio>
 
   <gui>
@@ -87,25 +105,6 @@
     </artifacts>
   </gui>
 
-  <menu>
-    <audioPaths>
-      <mainTheme path ="mainMenu.ogg"/>
-      <sounds>
-        <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"
-                       chickenFarm ="buildings/farm.wav" goldMine = "buildings/goldMine.wav" gryphAviar = "buildings/gryphonAviary.wav"
-                       mageTower ="buildings/mageTower.wav" stables= "buildings/stables.wav" repair = "buildings/buildingRepair.wav"
-                       destroyBuilding = "buildings/buildingDestroy.wav" runeStone = "buildings/runeStoneHeal.wav"/>
-        <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
-        
-        <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" prisonerRescue="Units/PrisonerRescue.wav"/>
-        <archerPaths goToPlace ="Units/Archer/GoToPlace1.wav" ready="Units/Archer/Ready.wav" selected="Units/Archer/Selected1.wav"/>
-        <footmanPaths goToPlace ="Units/Footman/GoToPlace1.wav" ready="Units/Footman/Ready.wav" selected="Units/Footman/Selected1.wav"/>
-        <crittersPaths boarDead ="Units/Critters/BoarDead.wav" sheepDead="Units/Critters/SheepDead.wav"/>
-        <attackPaths axeThrow="Attack/AxeThrow.wav" bowFire="Attack/BowFire.wav" sword="Attack/Sword2.wav"/>
-
-      </sounds>
-    </audioPaths>
-  </menu>
   
   <scene>
     <camera speed ="300.0" movMarginPcnt = "0.5"/>
@@ -1044,11 +1043,6 @@
           </bigTilePlanks>
 
         </constructionPlanks>
-
-        <previewTiles>
-          <green x="15" y="227" w="32" h="32"/>
-          <red x="47" y="227" w="32" h="32"/>
-        </previewTiles>
         
       </humanBuildings>
 
