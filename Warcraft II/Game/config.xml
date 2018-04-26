@@ -813,9 +813,9 @@
                 <frame x="480" y="600" w="120" h="120"/>
               </attackLeft>
               <deathUp speed="1" loop="0">
-                <frame x="0" y="1200" w="120" h="120"/>
-                <frame x="120" y="1200" w="120" h="120"/>
-                <frame x="240" y="1200" w="120" h="120"/>
+                <frame x="0" y="1080" w="120" h="120"/>
+                <frame x="120" y="1080" w="120" h="120"/>
+                <frame x="240" y="1080" w="120" h="120"/>
               </deathUp>
               <deathDown speed="1" loop="0">
                 <frame x="0" y="960" w="120" h="120"/>
