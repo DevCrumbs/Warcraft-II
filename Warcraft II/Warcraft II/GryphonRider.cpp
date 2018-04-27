@@ -22,7 +22,7 @@
 
 #include "Brofiler\Brofiler.h"
 
-// Ignores the walkability of the map
+// Ignores the walkability of the map. Avoids other Dragons + Gryphon Riders. Goes above every other unit.
 
 GryphonRider::GryphonRider(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GryphonRiderInfo& gryphonRiderInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), gryphonRiderInfo(gryphonRiderInfo)
 {
