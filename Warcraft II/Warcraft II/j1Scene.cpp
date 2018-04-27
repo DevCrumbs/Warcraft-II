@@ -208,53 +208,164 @@ bool j1Scene::PreUpdate()
 	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+//	LOG("MouseTile: %i, %i", mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
 
-	// Entities creation
+	// Entities info
+	/// Entity
+	iPoint size = { App->map->data.tileWidth,App->map->data.tileHeight };
+	uint maxLife = 30;
+	int currLife = (int)maxLife;
+
+	/// DynamicEntity
 	UnitInfo unitInfo;
-	fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
+	unitInfo.damage = 2;
+	unitInfo.priority = 1; // TODO: change to 3 or so
 
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	 /// Footman
+	FootmanInfo footmanInfo;
+	GruntInfo gruntInfo;
+	ElvenArcherInfo elvenArcherInfo;
+	TrollAxethrowerInfo trollAxethrowerInfo;
 
-		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, App->player);
+	/// Sheep
+	CritterSheepInfo critterSheepInfo;
+	critterSheepInfo.restoredHealth = 5;
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+	/// Boar
+	CritterBoarInfo critterBoarInfo;
+	critterBoarInfo.restoredHealth = 10;
 
-		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, App->player);
+	// Entities creation
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+	// 1: spawn a Footman with priority 1
+	unitInfo.sightRadius = 6;
+	unitInfo.attackRadius = 2;
+	unitInfo.maxSpeed = 80.0f;
 
-		App->entities->AddEntity(EntityType_GRYPHON_RIDER, pos, App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, App->player);
+	if (isDebug && App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+		iPoint tile = { 10,10 };
 
-		App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, App->player);
+		// Make sure that there are no entities on the spawn tile and that the tile is walkable
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+			tile = App->movement->FindClosestValidTile(tile);
 
+		// Make sure that the spawn tile is valid
+		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
+		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, this);
+		//}
+	}
+	if (isDebug && App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+
+		iPoint tile = { 10,10 };
+
+		// Make sure that there are no entities on the spawn tile and that the tile is walkable
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = App->movement->FindClosestValidTile(tile);
+
+		// Make sure that the spawn tile is valid
+		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
+		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
+		//}
+	}
+	if (isDebug && App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+
+		iPoint tile = { 10,10 };
+
+		// Make sure that there are no entities on the spawn tile and that the tile is walkable
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = App->movement->FindClosestValidTile(tile);
+
+		// Make sure that the spawn tile is valid
+		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
+		App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, this);
+		//}
+	}
+	if (isDebug && App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN) {
+
+		iPoint tile = { 10,10 };
+
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = App->movement->FindClosestValidTile(tile);
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
 		App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, App->player);
+	}
+	if (isDebug && App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN) {
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
+		iPoint tile = { 10,10 };
 
-		App->entities->AddEntity(EntityType_DRAGON, pos, App->entities->GetUnitInfo(EntityType_DRAGON), unitInfo, App->player);
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+			tile = App->movement->FindClosestValidTile(tile);
 
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
 		App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(EntityType_SHEEP), unitInfo, App->player);
+	}
+	if (isDebug && App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN) {
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+		iPoint tile = { 10,10 };
 
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = App->movement->FindClosestValidTile(tile);
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
 		App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
+	}
+	if (isDebug && App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+		iPoint tile = { 10,10 };
 
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = App->movement->FindClosestValidTile(tile);
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
 		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
+	}
+	if (isDebug && App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN) {
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+		iPoint tile = { 10,10 };
 
+		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
+
+			tile = App->movement->FindClosestValidTile(tile);
+
+		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
+
+		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
 		App->entities->AddEntity(EntityType_KHADGAR, pos, App->entities->GetUnitInfo(EntityType_KHADGAR), unitInfo, App->player);
-	//_Entities_creation
+	}
 
 	if (hasGoldChanged) {
 		UpdateGoldLabel();
