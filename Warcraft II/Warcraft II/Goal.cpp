@@ -1155,14 +1155,14 @@ GoalStatus Goal_HealArea::Process(float dt)
 	// Bright the area
 	if (alpha > 0) {
 
-		alpha -= 8;
+		alpha -= 1 * dt;
 
 		if (alpha < 0)
 			alpha = 0;
 
 		runestone->BlitSightArea(alpha);
 
-		if (alpha > 50)
+		if (alpha > 5)
 			return goalStatus;
 	}
 
