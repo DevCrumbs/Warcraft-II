@@ -1460,6 +1460,7 @@ void j1Scene::DestroyAllUI()
 	UnLoadBuildingMenu();
 	UnLoadResourcesLabels();
 	UnLoadTerenasDialog();
+
 	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
 	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
 	App->gui->RemoveElem((UIElement**)&entitiesStats);
@@ -1468,18 +1469,15 @@ void j1Scene::DestroyAllUI()
 	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
 	App->gui->RemoveElem((UIElement**)&minimap);
 
+
 	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
-		if ((*iterator).owner != nullptr) {
-			App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
-			App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
-			(*iterator).owner = nullptr;
-		}
+		App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
+		App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
+		(*iterator).owner = nullptr;
 	}
 
-	if (commandPatrolButton != nullptr)
-		App->gui->RemoveElem((UIElement**)&commandPatrolButton);
-	if (commandStopButton != nullptr)
-		App->gui->RemoveElem((UIElement**)&commandStopButton);
+	App->gui->RemoveElem((UIElement**)&commandPatrolButton);
+	App->gui->RemoveElem((UIElement**)&commandStopButton);
 
 	groupElementsList.clear();
 }
