@@ -827,3 +827,8 @@ bool GryphonRider::ChangeAnimation()
 	}
 	return ret;
 }
+
+float GryphonRider::GetFireSpeed() const
+{
+	return gryphonRiderInfo.fireSpeed;
+}

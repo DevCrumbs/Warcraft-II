@@ -1261,7 +1261,7 @@ bool j1EntityFactory::Start()
 
 	/// Radius
 	elvenArcherInfo.unitInfo.attackRadius = 5;
-	elvenArcherInfo.unitInfo.sightRadius = 12;
+	elvenArcherInfo.unitInfo.sightRadius = 8;
 
 	/// Damage
 	elvenArcherInfo.unitInfo.heavyDamage = 4;
@@ -1270,7 +1270,7 @@ bool j1EntityFactory::Start()
 	elvenArcherInfo.unitInfo.towerDamage = 11;
 
 	/// Speed
-	elvenArcherInfo.unitInfo.maxSpeed = 80.0f;
+	elvenArcherInfo.unitInfo.maxSpeed = 90.0f;
 	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
 
 	/// Life	
@@ -1287,7 +1287,7 @@ bool j1EntityFactory::Start()
 	gryphonRiderInfo.unitInfo.priority = 2;
 
 	/// Radius
-	gryphonRiderInfo.unitInfo.attackRadius = 3;
+	gryphonRiderInfo.unitInfo.attackRadius = 7;
 	gryphonRiderInfo.unitInfo.sightRadius = 12;
 
 	/// Damage
@@ -1297,7 +1297,7 @@ bool j1EntityFactory::Start()
 	gryphonRiderInfo.unitInfo.towerDamage = 8;
 
 	/// Speed
-	gryphonRiderInfo.unitInfo.maxSpeed = 60.0f;
+	gryphonRiderInfo.unitInfo.maxSpeed = 160.0f;
 	gryphonRiderInfo.unitInfo.currSpeed = gryphonRiderInfo.unitInfo.maxSpeed;
 
 	/// Life
@@ -1329,7 +1329,7 @@ bool j1EntityFactory::Start()
 
 	/// Radius
 	gruntInfo.unitInfo.attackRadius = 2;
-	gruntInfo.unitInfo.sightRadius = 12;
+	gruntInfo.unitInfo.sightRadius = 4;
 
 	/// Damage
 	gruntInfo.unitInfo.heavyDamage = 6;
@@ -1338,7 +1338,7 @@ bool j1EntityFactory::Start()
 	gruntInfo.unitInfo.towerDamage = 6;
 
 	/// Speed
-	gruntInfo.unitInfo.maxSpeed = 50.0f;
+	gruntInfo.unitInfo.maxSpeed = 70.0f;
 	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
 
 	/// Life
@@ -1354,8 +1354,8 @@ bool j1EntityFactory::Start()
 	trollAxethrowerInfo.unitInfo.priority = 2;
 
 	/// Radius
-	trollAxethrowerInfo.unitInfo.attackRadius = 3;
-	trollAxethrowerInfo.unitInfo.sightRadius = 12;
+	trollAxethrowerInfo.unitInfo.attackRadius = 5;
+	trollAxethrowerInfo.unitInfo.sightRadius = 8;
 
 	/// Damage
 	trollAxethrowerInfo.unitInfo.heavyDamage = 4;
@@ -1364,7 +1364,7 @@ bool j1EntityFactory::Start()
 	trollAxethrowerInfo.unitInfo.towerDamage = 11;
 
 	/// Speed
-	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
+	trollAxethrowerInfo.unitInfo.maxSpeed = 90.0f;
 	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
 
 	/// Life
@@ -1372,7 +1372,7 @@ bool j1EntityFactory::Start()
 	trollAxethrowerInfo.unitInfo.currLife = trollAxethrowerInfo.unitInfo.maxLife;
 
 	///
-	trollAxethrowerInfo.axeSpeed = 120.0f;
+	trollAxethrowerInfo.axeSpeed = 160.0f;
 	trollAxethrowerInfo.unitInfo.size = { 32,32 };
 	trollAxethrowerInfo.unitInfo.offsetSize = { 0,0 };
 	//_Troll_Axethrower
@@ -1381,7 +1381,7 @@ bool j1EntityFactory::Start()
 	dragonInfo.unitInfo.priority = 2;
 
 	/// Radius
-	dragonInfo.unitInfo.attackRadius = 3;
+	dragonInfo.unitInfo.attackRadius = 7;
 	dragonInfo.unitInfo.sightRadius = 12;
 
 	/// Damage
@@ -1391,7 +1391,7 @@ bool j1EntityFactory::Start()
 	dragonInfo.unitInfo.towerDamage = 8;
 
 	/// Speed
-	dragonInfo.unitInfo.maxSpeed = 60.0f;
+	dragonInfo.unitInfo.maxSpeed = 170.0f;
 	dragonInfo.unitInfo.currSpeed = dragonInfo.unitInfo.maxSpeed;
 
 	/// Life
@@ -1399,7 +1399,7 @@ bool j1EntityFactory::Start()
 	dragonInfo.unitInfo.currLife = dragonInfo.unitInfo.maxLife;
 
 	///
-	dragonInfo.fireSpeed = 120.0f;
+	dragonInfo.fireSpeed = 200.0f;
 	dragonInfo.unitInfo.size = { 64,64 };
 	dragonInfo.unitInfo.offsetSize = { -16,-16 };
 	//_Dragon

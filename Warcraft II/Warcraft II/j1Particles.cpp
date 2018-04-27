@@ -13,6 +13,10 @@
 #include "j1Map.h"
 #include "j1Printer.h"
 
+#include "Entity.h"
+#include "DynamicEntity.h"
+#include "j1Movement.h"
+
 #include <math.h>
 
 #include "SDL/include/SDL_timer.h"
@@ -67,6 +71,16 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	enemyArrows.animation.PushBack({ towerArrows.child("right").attribute("x").as_int(), towerArrows.child("right").attribute("y").as_int(), towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() });
 	playerArrows.size = { towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() };
 	enemyArrows.size = { towerArrows.child("right").attribute("w").as_int(), towerArrows.child("right").attribute("h").as_int() };
+
+	// DragonGryhponSubFire
+	pugi::xml_node dragonGryphonSubFireAnimation = config.child("dragonGryphonFire");
+	dragonGryphonSubFire.animation.speed = dragonGryphonSubFireAnimation.attribute("speed").as_float();
+	dragonGryphonSubFire.animation.loop = dragonGryphonSubFireAnimation.attribute("loop").as_bool();
+	for (currentAnimation = dragonGryphonSubFireAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonGryphonSubFire.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	dragonGryphonSubFire.size = { dragonGryphonSubFireAnimation.child("frame").attribute("w").as_int(), dragonGryphonSubFireAnimation.child("frame").attribute("h").as_int() };
+	dragonGryphonFire.size = { dragonGryphonSubFireAnimation.child("frame").attribute("w").as_int(), dragonGryphonSubFireAnimation.child("frame").attribute("h").as_int() };
 
 	// Cannon from the cannon tower
 	pugi::xml_node bulletsCannon = config.child("cannon");
@@ -221,6 +235,8 @@ bool j1Particles::Start()
 
 	LOG("Loading particles");
 
+	// Particles info
+	/// Type
 	paws.particleType = ParticleType_Paws;
 	trollAxe.particleType = ParticleType_Enemy_Projectile;
 	playerArrows.particleType = ParticleType_Player_Projectile;
@@ -229,9 +245,17 @@ bool j1Particles::Start()
 	lowFire.particleType = ParticleType_Fire;
 	hardFire.particleType = ParticleType_Fire;
 	health.particleType = ParticleType_Health;
+	dragonGryphonFire.particleType = ParticleType_DragonGryphonFire;
+	dragonGryphonSubFire.particleType = ParticleType_DragonGryphonSubFire;
 
+	/// Life
 	paws.life = 800;
+	dragonGryphonSubFire.life = 800;
 
+	/// Others
+	dragonGryphonSubFire.secondsToDamage = 2.0f;
+
+	/// Animations speed
 	sheepPawsInfo.up.speed = 1.0f;
 	sheepPawsInfo.down.speed = 1.0f;
 	sheepPawsInfo.left.speed = 1.0f;
@@ -371,6 +395,27 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, fPoint 
 			}
 			break;
 
+			case ParticleType_DragonGryphonFire:
+			{
+				// Calculate the orientation of the particle
+				currPart->orientation.x = currPart->destination.x - pos.x;
+				currPart->orientation.y = currPart->destination.y - pos.y;
+
+				float m = sqrtf(pow(currPart->orientation.x, 2.0f) + pow(currPart->orientation.y, 2.0f));
+
+				if (m > 0.0f) {
+					currPart->orientation.x /= m;
+					currPart->orientation.y /= m;
+				}
+			}
+			break;
+
+			case ParticleType_DragonGryphonSubFire:
+
+				currPart->life = rand() % 800 + 300;
+				currPart->damageTimer.Start();
+				break;
+
 			default:
 				break;
 			}
@@ -454,6 +499,38 @@ PawsInfo& j1Particles::GetPawsInfo(bool isSheep, bool isBoar)
 		return boarPawsInfo;
 }
 
+bool j1Particles::IsParticleOnTile(iPoint tile, ParticleType particleType)
+{
+	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
+	{
+		Particle* currPart = activeParticles[i];
+
+		if (currPart == nullptr)
+			continue;
+
+		if (SDL_GetTicks() >= currPart->born)
+		{
+			iPoint currPartTile = App->map->WorldToMap(currPart->pos.x, currPart->pos.y);
+
+			if (particleType == ParticleType_NoType) {
+			
+				if (tile == currPartTile)
+					return true;
+			}
+			else {
+			
+				if (particleType == currPart->particleType) {
+				
+					if (tile == currPartTile)
+						return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
@@ -503,7 +580,8 @@ bool Particle::Update(float dt)
 		if (SDL_HasIntersection(&rectA, &rectB)) {
 
 			//Apply damage in dynamic entities on the way of the particle, if the particle is a cannon bullet
-			Entity* entity = App->entities->IsEntityOnTile(App->map->WorldToMap(pos.x, pos.y));
+			Entity* entity = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y });
+
 			if (particleType == ParticleType_Cannon_Projectile) {
 				if (entity != nullptr) {
 					if (entity->entitySide == EntitySide_Player ||
@@ -514,7 +592,8 @@ bool Particle::Update(float dt)
 			}
 
 			// Apply damage and kill the particle if it reaches its target
-			entity = App->entities->IsEntityOnTile(destinationTile);
+			entity = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y });
+
 			if (entity != nullptr) {
 				if (particleType == ParticleType_Player_Projectile) {
 					if (entity->entitySide == EntitySide_Enemy || entity->entitySide == EntitySide_Neutral)
@@ -564,6 +643,116 @@ bool Particle::Update(float dt)
 
 	case ParticleType_Fire:
 		break;
+
+	case ParticleType_DragonGryphonFire:
+	{
+		// Explodes into a new DragonGryphonSubFire particle on each tile it touches
+		iPoint currTile = App->map->WorldToMap(pos.x, pos.y);
+		iPoint currTilePos = App->map->MapToWorld(currTile.x, currTile.y);
+		Entity* entity = App->entities->IsEntityUnderMouse({ (int)destination.x, (int)destination.y });
+
+		/// Move the invisible particle towards its destination
+		iPoint destinationTile = App->map->WorldToMap(destination.x, destination.y);
+
+		const SDL_Rect rectA = { (int)pos.x, (int)pos.y, size.x, size.y };
+		const SDL_Rect rectB = { destination.x, destination.y,  App->map->data.tileWidth, App->map->data.tileHeight };
+
+		if (SDL_HasIntersection(&rectA, &rectB)) {
+
+			if (entity != nullptr && !App->particles->IsParticleOnTile(currTile, ParticleType_DragonGryphonSubFire)) {
+
+				if (entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+					DynamicEntity* dynEnt = (DynamicEntity*)entity;
+					iPoint currTilePos = App->map->MapToWorld(dynEnt->GetSingleUnit()->currTile.x, dynEnt->GetSingleUnit()->currTile.y);
+
+					App->particles->AddParticle(App->particles->dragonGryphonSubFire, { currTilePos.x, currTilePos.y }, { 0,0 }, 0.0f, damage);
+				}
+				else {
+
+					iPoint entityTile = App->map->WorldToMap(entity->GetPos().x, entity->GetPos().y);
+					iPoint entityTilePos = App->map->MapToWorld(entityTile.x, entityTile.y);
+
+					App->particles->AddParticle(App->particles->dragonGryphonSubFire, { (int)entityTilePos.x, (int)entityTilePos.y }, { 0,0 }, 0.0f, damage);
+				}
+			}
+
+			else if (!App->particles->IsParticleOnTile(currTile, ParticleType_DragonGryphonSubFire))
+
+				App->particles->AddParticle(App->particles->dragonGryphonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
+
+			return false;
+		}
+
+		/// Explode into a new DragonGryphonSubFire when a new tile is reached
+		if (!App->particles->IsParticleOnTile(currTile, ParticleType_DragonGryphonSubFire)) {
+
+			int random = rand() % 2;
+
+			if (entity != nullptr) {
+			
+				if (entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+					DynamicEntity* dynEnt = (DynamicEntity*)entity;
+
+					if (dynEnt->dynamicEntityType != EntityType_GRYPHON_RIDER && dynEnt->dynamicEntityType != EntityType_DRAGON) {
+
+						if (random == 0)
+							App->particles->AddParticle(App->particles->dragonGryphonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
+					}
+				}
+				else {
+				
+					if (random == 0)
+						App->particles->AddParticle(App->particles->dragonGryphonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
+				}
+			}
+			else {
+
+				if (random == 0)
+					App->particles->AddParticle(App->particles->dragonGryphonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
+			}
+		}
+
+		pos.x += orientation.x * dt * speed;
+		pos.y += orientation.y * dt * speed;
+	}
+	break;
+
+	case ParticleType_DragonGryphonSubFire:
+	{
+		// Hits the entities under the fire (per time)
+		Entity* entity = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y });
+
+		if (entity != nullptr) {
+
+			if (entity->entitySide == EntitySide_Player || entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy) {
+
+				if (entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+				
+					DynamicEntity* dynEnt = (DynamicEntity*)entity;
+
+					if (dynEnt->dynamicEntityType != EntityType_GRYPHON_RIDER && dynEnt->dynamicEntityType != EntityType_DRAGON) {
+					
+						if (damageTimer.ReadSec() >= secondsToDamage) {
+
+							entity->ApplyDamage(damage);
+							damageTimer.Start();
+						}
+					}
+				}
+				else {
+
+					if (damageTimer.ReadSec() >= secondsToDamage) {
+
+						entity->ApplyDamage(damage);
+						damageTimer.Start();
+					}
+				}
+			}
+		}
+	}
+	break;
 
 	default:
 		break;

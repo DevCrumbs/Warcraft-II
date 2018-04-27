@@ -669,3 +669,8 @@ bool Dragon::ChangeAnimation()
 	}
 	return ret;
 }
+
+float Dragon::GetFireSpeed() const 
+{
+	return dragonInfo.fireSpeed;
+}
