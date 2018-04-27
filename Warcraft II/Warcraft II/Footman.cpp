@@ -96,7 +96,7 @@ void Footman::Move(float dt)
 			&& singleUnit->IsFittingTile()
 			&& !isDead) {
 
-			App->audio->PlayFx(12, 0);
+			App->audio->PlayFx(App->audio->GetFX().humanDeath, 0);
 
 			isDead = true;
 			isValid = false;
@@ -137,7 +137,7 @@ void Footman::Move(float dt)
 			auxIsSelected = isSelected;
 
 			if (isSelected)
-				App->audio->PlayFx(22, 0);
+				App->audio->PlayFx(App->audio->GetFX().footmanSelected, 0); //TODO Valdivia: 22 footman selected		
 		}
 
 		// PROCESS THE COMMANDS
@@ -162,7 +162,7 @@ void Footman::Move(float dt)
 
 				if (singleUnit->IsFittingTile()) {
 
-					App->audio->PlayFx(20, 0);
+					App->audio->PlayFx(App->audio->GetFX().footmanCommand, 0);
 
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);

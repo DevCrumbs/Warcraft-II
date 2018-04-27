@@ -149,7 +149,7 @@ void WatchTower::TowerStateMachine(float dt)
 			if (attackTimer.Read() >= (watchTowerInfo.attackWaitTime * 1000)) {
 				attackTimer.Start();
 				CreateArrow();
-				App->audio->PlayFx(24, 0); //Arrow sound
+				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 			}
 		}
 	}

@@ -31,7 +31,7 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	texArea = &scoutTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 
-	App->audio->PlayFx(2, 0); //Construction sound
+	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 }
 
 void ScoutTower::Move(float dt)
@@ -151,7 +151,7 @@ void ScoutTower::TowerStateMachine(float dt)
 			if (attackTimer.Read() >= (scoutTowerInfo.attackWaitTime * 1000)) {
 				attackTimer.Start();
 				CreateArrow();
-				App->audio->PlayFx(24, 0); //Arrow sound
+				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 			}
 		}
 	}

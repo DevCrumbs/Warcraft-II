@@ -37,7 +37,7 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	else if (!isBuilt) {
 		texArea = &chickenFarmInfo.constructionPlanks1;
 		this->constructionTimer.Start();
-		App->audio->PlayFx(2, 0); //Construction sound
+		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 	}
 
 	entitySide = EntitySide_Enemy;

@@ -31,7 +31,7 @@ PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint
 
 	texArea = &playerCannonTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
-	App->audio->PlayFx(2, 0); //Construction sound
+	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 }
 
 void PlayerCannonTower::Move(float dt)
@@ -151,7 +151,7 @@ void PlayerCannonTower::TowerStateMachine(float dt)
 			if (attackTimer.Read() >= (playerCannonTowerInfo.attackWaitTime * 1000)) {
 				attackTimer.Start();
 				CreateCannonBullet();
-				App->audio->PlayFx(24, 0); //Arrow sound
+				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0); //TODO Valdivia: cannon sound
 			}
 		}
 	}

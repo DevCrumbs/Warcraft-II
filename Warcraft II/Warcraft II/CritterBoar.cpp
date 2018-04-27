@@ -78,7 +78,7 @@ void CritterBoar::Move(float dt)
 		&& singleUnit->IsFittingTile()
 		&& !isDead) {
 
-		App->audio->PlayFx(15, 0);
+		App->audio->PlayFx(App->audio->GetFX().boarDeath, 0);
 
 		isDead = true;
 

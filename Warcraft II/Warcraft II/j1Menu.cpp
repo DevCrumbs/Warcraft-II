@@ -92,7 +92,7 @@ bool j1Menu::PreUpdate()
 	switch (menuActions)
 	{
 	case MenuActions_SLIDERFX:
-		App->audio->PlayFx(1, 0); //Button sound
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		UpdateSlider(audioFX);
 		break;
 	case MenuActions_SLIDERMUSIC:
@@ -116,7 +116,7 @@ bool j1Menu::Update(float dt)
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
-		App->audio->PlayFx(14, 0);
+		App->audio->PlayFx(App->audio->GetFX().prisionerRescue, 0);
 	}
 	*/
 
@@ -125,22 +125,22 @@ bool j1Menu::Update(float dt)
 	case MenuActions_NONE:
 		break;
 	case MenuActions_EXIT:
-		App->audio->PlayFx(1, 0); //Button sound
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		isExit = true;
 		break;
 	case MenuActions_PLAY:
-		App->audio->PlayFx(1, 0); //Button sound
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		isFadetoScene = true;
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_SETTINGS:
-		App->audio->PlayFx(1, 0); //Button sound
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		DeteleMenu();
 		CreateSettings();
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_RETURN:
-		App->audio->PlayFx(1, 0); //Button sound
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		DeleteSettings();
 		CreateMenu();
 		menuActions = MenuActions_NONE;
@@ -365,7 +365,7 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		else if (UIelem == fullScreenButt)
 		{
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			if (App->win->fullscreen) {
 				App->win->fullscreen = false;
 				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);

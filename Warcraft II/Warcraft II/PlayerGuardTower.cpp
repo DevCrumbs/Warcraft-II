@@ -30,7 +30,7 @@ PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint m
 
 	texArea = &playerGuardTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
-	App->audio->PlayFx(2, 0); //Construction sound
+	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 }
 
 void PlayerGuardTower::Move(float dt)
@@ -150,7 +150,7 @@ void PlayerGuardTower::TowerStateMachine(float dt)
 
 				attackTimer.Start();
 				CreateArrow();
-				App->audio->PlayFx(24, 0); //Arrow sound
+				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 			}
 		}
 	}

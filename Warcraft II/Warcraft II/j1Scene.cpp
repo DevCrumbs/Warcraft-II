@@ -671,7 +671,7 @@ bool j1Scene::Update(float dt)
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
-		App->audio->PlayFx(1, 0); //Button sound
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		if (parchmentImg == nullptr) {
 			UIImage_Info parchmentInfo;
 			parchmentInfo.texArea = App->gui->parchmentArea;
@@ -1522,7 +1522,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (parchmentImg == nullptr) {
 
 			if (UIelem == buildingButton) {
-				App->audio->PlayFx(1, 0); //Button sound
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				HideTerenasDialog();
 				ChangeBuildingMenuState(&buildingMenuButtons);
 			}
@@ -1530,81 +1530,81 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else if (UIelem == buildingMenuButtons.chickenFarm.icon) {
 				if (App->player->currentGold >= chickenFarmCost) {
-					App->audio->PlayFx(1, 0); //Button sound
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_CHICKEN_FARM;
 				}
 				else if (App->player->currentGold < chickenFarmCost)
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.stables.icon) {
 				if (App->player->currentGold >= stablesCost) {
-					//App->audio->PlayFx(1, 0); //Button sound
+					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					//alphaBuilding = EntityType_STABLES;
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
 				else if (App->player->currentGold < stablesCost)
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
 				if (App->player->currentGold >= gryphonAviaryCost) {
-					//App->audio->PlayFx(1, 0); //Button sound
+					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					//alphaBuilding = EntityType_GRYPHON_AVIARY;
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
 				else if (App->player->currentGold < gryphonAviaryCost)
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.mageTower.icon) {
 				if (App->player->currentGold >= mageTowerCost) {
-					//App->audio->PlayFx(1, 0); //Button sound
+					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					//alphaBuilding = EntityType_MAGE_TOWER;
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
 				else if (App->player->currentGold < mageTowerCost)
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.scoutTower.icon) {
 				if (App->player->currentGold >= scoutTowerCost) {
-					App->audio->PlayFx(1, 0); //Button sound
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_SCOUT_TOWER;
 				}
 				else if (App->player->currentGold < scoutTowerCost)
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.guardTower.icon) {
 				if (App->player->currentGold >= guardTowerCost) {
-					App->audio->PlayFx(1, 0); //Button sound
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
 				}
 				else if (App->player->currentGold < guardTowerCost)
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.cannonTower.icon) {
 				if (App->player->currentGold >= cannonTowerCost) {
-					App->audio->PlayFx(1, 0); //Button sound
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
 				}
 				else if (App->player->currentGold < cannonTowerCost)
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 		}
 
 		if (UIelem == pauseMenuButt) {
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			if (parchmentImg == nullptr) {
 				UIImage_Info parchmentInfo;
 				parchmentInfo.texArea = App->gui->parchmentArea;
@@ -1618,22 +1618,22 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		}
 
 		else if (UIelem == continueButt) {
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_DESTROY;
 		}
 
 		else if (UIelem == ReturnMenuButt) {
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_RETURN_MENU;
 		}
 
 		else if (UIelem == settingsButt) {
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_SETTINGS_MENU;
 		}
 
 		else if (UIelem == returnButt) {
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			DestroySettingsMenu();
 			pauseMenuActions = PauseMenuActions_CREATED;
 		}
@@ -1646,7 +1646,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 		else if (UIelem == fullScreenButt)
 		{
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			if (App->win->fullscreen) {
 				App->win->fullscreen = false;
 				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
