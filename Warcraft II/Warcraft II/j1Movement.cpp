@@ -40,8 +40,9 @@ void j1Movement::DebugDraw() const
 					// Raycast a line between the unit and the nextTile
 					iPoint offset = { App->map->data.tileWidth / 2, App->map->data.tileHeight / 2 };
 					iPoint nextPos = App->map->MapToWorld((*unit)->nextTile.x, (*unit)->nextTile.y);
-					App->render->DrawLine((*unit)->unit->GetPos().x + offset.x, (*unit)->unit->GetPos().y + offset.y, nextPos.x + offset.x, nextPos.y + offset.y, 255, 255, 255, 255);
-					App->render->DrawCircle(nextPos.x + offset.x, nextPos.y + offset.y, 10, 255, 255, 255, 255);
+					//App->render->DrawLine((*unit)->unit->GetPos().x + offset.x, (*unit)->unit->GetPos().y + offset.y, nextPos.x + offset.x, nextPos.y + offset.y, 255, 255, 255, 255);
+					//App->render->DrawCircle(nextPos.x + offset.x, nextPos.y + offset.y, 10, 255, 255, 255, 255);
+					//App->printer->PrintCircle({ nextPos.x + offset.x, nextPos.y + offset.y }, 10, ColorWhite, true);
 
 					// Draw unit's path
 					if (App->scene->debugDrawPath) {
