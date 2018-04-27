@@ -1,8 +1,6 @@
 #ifndef __j1MAP_H__
 #define __j1MAP_H__
 
-#include <list>
-
 #include "j1Module.h"
 
 #include "p2Point.h"
@@ -13,20 +11,8 @@
 #include "PugiXml/src/pugixml.hpp"
 #include "SDL\include\SDL.h"
 
-#include "SDL\include\SDL_rect.h"
-
+#include <list>
 using namespace std;
-
-
-enum ROOM_TYPE
-{
-	roomType_NONE = 0,
-
-	roomType_LARGE = 411,
-	roomType_LITTLE = 412,
-	roomType_BASE = 413
-
-};
 
 struct Object {
 	string name;
@@ -38,7 +24,8 @@ struct Object {
 	uint type = 0;
 };
 
-struct ObjectGroup {
+struct ObjectGroup 
+{
 	string name;
 
 	list<Object*> objects;
@@ -216,9 +203,11 @@ private:
 	bool LoadObjectGroupDetails(pugi::xml_node& objectGroup_node, ObjectGroup* objectGroup);
 	bool LoadObject(pugi::xml_node& object_node, Object* object);
 
-
+	
 
 public:
+
+	mutable	int test = 0;
 
 	MapData				data;
 	MapLayer*			collisionLayer = nullptr;
@@ -227,27 +216,13 @@ public:
 	int					blit_offset = 0;
 	bool				camera_blit = false;
 
-	//Base pos
 	SDL_Rect			playerBase{ 0,0,0,0 };
 
-	//Texture path
 	string				tilesetPath;
 
-	// Walkability map
 	mutable	uchar*		walkMap = nullptr;
 	mutable	int         walkWidth = 0;
 	mutable	int			walkHeight = 0;
-
-	// Rooms rects
-	list<SDL_Rect>		roomRectList;
-
-	// Default rooms sizes
-	int					defaultRoomSize = 0;
-	int					defaultBaseSize = 0;
-	int					defaultLittleSize = 0;
-	int					defaultTileSize = 0;
-	int					defaultHallSize = 0;
-
 private:
 
 	pugi::xml_document	map_file;

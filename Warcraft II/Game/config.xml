@@ -28,20 +28,30 @@
       <roomPullNo number="4"/>
       <roomPullNo number="4"/>
     </general>
-    <defaultSizes>
-     <defaultRoomSize size = "50"/>
-      <defaultBaseSize size = "40"/>
-      <defaultLittleRoomSize size = "30"/>
-      <defaultHallSize size = "20"/>
-      <defaultTileSize size = "32"/>
-    </defaultSizes>
-    
   </map>
 
   <audio>
     <music_folder>data/assets/audio/music/</music_folder>
     <fx_folder>data/assets/audio/fx/</fx_folder>
     <volume default="16"/>
+
+    <audioPaths>
+      <mainTheme path ="mainMenu.ogg"/>
+      <sounds>
+        <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"
+                       chickenFarm ="buildings/farm.wav" goldMine = "buildings/goldMine.wav" gryphAviar = "buildings/gryphonAviary.wav"
+                       mageTower ="buildings/mageTower.wav" stables= "buildings/stables.wav" repair = "buildings/buildingRepair.wav"
+                       destroyBuilding = "buildings/buildingDestroy.wav" runeStone = "buildings/runeStoneHeal.wav"/>
+        <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
+
+        <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" prisonerRescue="Units/PrisonerRescue.wav"/>
+        <archerPaths goToPlace ="Units/Archer/GoToPlace1.wav" ready="Units/Archer/Ready.wav" selected="Units/Archer/Selected1.wav"/>
+        <footmanPaths goToPlace ="Units/Footman/GoToPlace1.wav" ready="Units/Footman/Ready.wav" selected="Units/Footman/Selected1.wav"/>
+        <crittersPaths boarDead ="Units/Critters/BoarDead.wav" sheepDead="Units/Critters/SheepDead.wav"/>
+        <attackPaths axeThrow="Attack/AxeThrow.wav" bowFire="Attack/BowFire.wav" sword="Attack/Sword2.wav"/>
+
+      </sounds>
+    </audioPaths>
   </audio>
 
   <gui>
@@ -95,25 +105,6 @@
     </artifacts>
   </gui>
 
-  <menu>
-    <audioPaths>
-      <mainTheme path ="mainMenu.ogg"/>
-      <sounds>
-        <buildingPaths buildingConstruction ="buildings/Construct.wav" errorBttn = "buildings/BuildingPositionError.wav"
-                       chickenFarm ="buildings/farm.wav" goldMine = "buildings/goldMine.wav" gryphAviar = "buildings/gryphonAviary.wav"
-                       mageTower ="buildings/mageTower.wav" stables= "buildings/stables.wav" repair = "buildings/buildingRepair.wav"
-                       destroyBuilding = "buildings/buildingDestroy.wav" runeStone = "buildings/runeStoneHeal.wav"/>
-        <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
-        
-        <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" prisonerRescue="Units/PrisonerRescue.wav"/>
-        <archerPaths goToPlace ="Units/Archer/GoToPlace1.wav" ready="Units/Archer/Ready.wav" selected="Units/Archer/Selected1.wav"/>
-        <footmanPaths goToPlace ="Units/Footman/GoToPlace1.wav" ready="Units/Footman/Ready.wav" selected="Units/Footman/Selected1.wav"/>
-        <crittersPaths boarDead ="Units/Critters/BoarDead.wav" sheepDead="Units/Critters/SheepDead.wav"/>
-        <attackPaths axeThrow="Attack/AxeThrow.wav" bowFire="Attack/BowFire.wav" sword="Attack/Sword2.wav"/>
-
-      </sounds>
-    </audioPaths>
-  </menu>
   
   <scene>
     <camera speed ="300.0" movMarginPcnt = "0.5"/>
@@ -167,9 +158,9 @@
 
     <dynamicEntities>
       <humans>
-        <footman maxLife = "60">
+        
+        <footman>
           <animations>
-
             <up speed="4" loop="1">
               <frame x="0" y="0" w="80" h="80"/>
               <frame x="80" y="0" w="80" h="80"/>
@@ -284,13 +275,11 @@
               <frame x="80" y="640" w="80" h="80"/>
               <frame x="160" y="640" w="80" h="80"/>
             </deathDown>
-
           </animations>
         </footman>
 
         <elvenArcher>
           <animations>
-
             <up speed="4" loop="1">
               <frame x="0" y="0" w="60" h="75"/>
               <frame x="0" y="75" w="60" h="75"/>
@@ -388,96 +377,123 @@
               <frame x="13" y="542" w="60" h="75"/>
               <frame x="127" y="534" w="60" h="75"/>
               <frame x="237" y="541" w="60" h="75"/>
-            </deathDown>
-            
+            </deathDown>            
           </animations>                 
-        </elvenArcher>          
+        </elvenArcher>
+
+        <gryphonRider>
+          <animations>          
+           <up speed="4" loop="1">
+                <frame x="0" y="0" w="100" h="100"/>
+                <frame x="100" y="0" w="100" h="100"/>
+                <frame x="200" y="0" w="100" h="100"/>
+                <frame x="300" y="0" w="100" h="100"/>
+              </up>
+              <upRight speed="4" loop="1">
+                <frame x="0" y="300" w="100" h="100"/>
+                <frame x="100" y="300" w="100" h="100"/>
+                <frame x="200" y="300" w="100" h="100"/>
+                <frame x="300" y="300" w="100" h="100"/>
+              </upRight>
+              <upLeft speed="4" loop="1">
+                <frame x="0" y="600" w="100" h="100"/>
+                <frame x="100" y="600" w="100" h="100"/>
+                <frame x="200" y="600" w="100" h="100"/>
+                <frame x="300" y="600" w="100" h="100"/>
+              </upLeft>
+              <down speed="4" loop="1">
+                <frame x="0" y="100" w="100" h="100"/>
+                <frame x="100" y="100" w="100" h="100"/>
+                <frame x="200" y="100" w="100" h="100"/>
+                <frame x="300" y="100" w="100" h="100"/>
+              </down>
+              <downRight speed="4" loop="1">
+                <frame x="0" y="400" w="100" h="100"/>
+                <frame x="100" y="400" w="100" h="100"/>
+                <frame x="200" y="400" w="100" h="100"/>
+                <frame x="300" y="400" w="100" h="100"/>
+              </downRight>
+              <downLeft speed="4" loop="1">
+                <frame x="0" y="700" w="100" h="100"/>
+                <frame x="100" y="700" w="100" h="100"/>
+                <frame x="200" y="700" w="100" h="100"/>
+                <frame x="300" y="700" w="100" h="100"/>
+              </downLeft>
+              <left speed="4" loop="1">
+                <frame x="0" y="500" w="100" h="100"/>
+                <frame x="100" y="500" w="100" h="100"/>
+                <frame x="200" y="500" w="100" h="100"/>
+                <frame x="300" y="500" w="100" h="100"/>
+              </left>
+              <right speed="4" loop="1">
+                <frame x="0" y="200" w="100" h="100"/>
+                <frame x="100" y="200" w="100" h="100"/>
+                <frame x="200" y="200" w="100" h="100"/>
+                <frame x="300" y="200" w="100" h="100"/>
+              </right>
+              <attackUp speed="2" loop="0">
+                <frame x="400" y="0" w="100" h="100"/>
+                <frame x="500" y="0" w="100" h="100"/>
+                <frame x="600" y="0" w="100" h="100"/>
+              </attackUp>
+              <attackUpRight speed="2" loop="0">
+                <frame x="400" y="300" w="100" h="100"/>
+                <frame x="500" y="300" w="100" h="100"/>
+                <frame x="600" y="300" w="100" h="100"/>
+              </attackUpRight>
+              <attackUpLeft speed="2" loop="0">
+                <frame x="400" y="600" w="100" h="100"/>
+                <frame x="500" y="600" w="100" h="100"/>
+                <frame x="600" y="600" w="100" h="100"/>
+              </attackUpLeft>
+              <attackDown speed="2" loop="0">
+                <frame x="400" y="100" w="100" h="100"/>
+                <frame x="500" y="100" w="100" h="100"/>
+                <frame x="600" y="100" w="100" h="100"/>
+              </attackDown>
+              <attackDownRight speed="2" loop="0">
+                <frame x="400" y="400" w="100" h="100"/>
+                <frame x="500" y="400" w="100" h="100"/>
+                <frame x="600" y="400" w="100" h="100"/>
+              </attackDownRight>
+              <attackDownLeft speed="2" loop="0">
+                <frame x="400" y="700" w="100" h="100"/>
+                <frame x="500" y="700" w="100" h="100"/>
+                <frame x="600" y="700" w="100" h="100"/>
+              </attackDownLeft>
+              <attackRight speed="2" loop="0">
+                <frame x="400" y="200" w="100" h="100"/>
+                <frame x="500" y="200" w="100" h="100"/>
+                <frame x="600" y="200" w="100" h="100"/>
+              </attackRight>
+              <attackLeft speed="2" loop="0">
+                <frame x="400" y="500" w="100" h="100"/>
+                <frame x="500" y="500" w="100" h="100"/>
+                <frame x="600" y="500" w="100" h="100"/>
+              </attackLeft>
+              <deathUp speed="1" loop="0">
+                <frame x="0" y="800" w="100" h="100"/>
+                <frame x="100" y="800" w="100" h="100"/>
+                <frame x="200" y="800" w="100" h="100"/>
+                <frame x="300" y="800" w="100" h="100"/>
+                <frame x="400" y="800" w="100" h="100"/>
+                <frame x="500" y="800" w="100" h="100"/>
+              </deathUp>
+              <deathDown speed="1" loop="0">
+                <frame x="0" y="900" w="100" h="100"/>
+                <frame x="100" y="900" w="100" h="100"/>
+                <frame x="200" y="900" w="100" h="100"/>
+                <frame x="300" y="900" w="100" h="100"/>
+                <frame x="400" y="900" w="100" h="100"/>
+                <frame x="500" y="900" w="100" h="100"/>                
+              </deathDown>      
+          </animations>          
+        </gryphonRider>
       </humans>
-
-      <sheep>
-        <deathDownLeft speed="0" loop="0">
-          <frame x="0" y="0" w="30" h="31"/>
-        </deathDownLeft>
-        <deathUpRight speed="0" loop="0">
-          <frame x="30" y="0" w="30" h="31"/>
-        </deathUpRight>
-        <down speed="0" loop="0">
-          <frame x="60" y="0" w="30" h="31"/>
-        </down>
-        <right speed="0" loop="0">
-          <frame x="90" y="0" w="30" h="31"/>
-        </right>
-        <left speed="0" loop="0">
-          <frame x="120" y="0" w="30" h="31"/>
-        </left>
-        <upRight speed="0" loop="0">
-          <frame x="150" y="0" w="30" h="31"/>
-        </upRight>
-        <upLeft speed="0" loop="0">
-          <frame x="180" y="0" w="30" h="31"/>
-        </upLeft>
-
-        <deathDownRight speed="0" loop="0">
-          <frame x="0" y="31" w="30" h="31"/>
-        </deathDownRight>
-        <deathUpLeft speed="0" loop="0">
-          <frame x="30" y="31" w="30" h="31"/>
-        </deathUpLeft>
-        <up speed="0" loop="0">
-          <frame x="60" y="31" w="30" h="31"/>
-        </up>
-        <downRight speed="0" loop="0">
-          <frame x="90" y="31" w="30" h="31"/>
-        </downRight>
-        <downLeft speed="0" loop="0">
-          <frame x="120" y="31" w="30" h="31"/>
-        </downLeft>
-      </sheep>
-
-      <boar>
-        <deathDownLeft speed="0" loop="0">
-          <frame x="0" y="62" w="32" h="32"/>
-        </deathDownLeft>
-        <deathUpRight speed="0" loop="0">
-          <frame x="32" y="62" w="32" h="32"/>
-        </deathUpRight>
-        <down speed="0" loop="0">
-          <frame x="64" y="62" w="32" h="32"/>
-        </down>
-        <right speed="0" loop="0">
-          <frame x="96" y="62" w="32" h="32"/>
-        </right>
-        <left speed="0" loop="0">
-          <frame x="128" y="62" w="32" h="32"/>
-        </left>
-        <upRight speed="0" loop="0">
-          <frame x="160" y="62" w="32" h="32"/>
-        </upRight>
-        <upLeft speed="0" loop="0">
-          <frame x="192" y="62" w="32" h="32"/>
-        </upLeft>
-
-        <deathDownRight speed="0" loop="0">
-          <frame x="0" y="94" w="32" h="32"/>
-        </deathDownRight>
-        <deathUpLeft speed="0" loop="0">
-          <frame x="32" y="94" w="32" h="32"/>
-        </deathUpLeft>
-        <up speed="0" loop="0">
-          <frame x="64" y="94" w="32" h="32"/>
-        </up>
-        <downRight speed="0" loop="0">
-          <frame x="96" y="94" w="32" h="32"/>
-        </downRight>
-        <downLeft speed="0" loop="0">
-          <frame x="128" y="94" w="32" h="32"/>
-        </downLeft>
-      </boar>
       
       <orcs>
-        <grunt maxLife = "60">
-          <animations>
-            
+        <grunt>
+          <animations>    
               <up speed="4" loop="1">
                 <frame x="0" y="100" w="100" h="100"/>
                 <frame x="100" y="100" w="100" h="100"/>
@@ -591,14 +607,12 @@
                 <frame x="0" y="800" w="100" h="100"/>
                 <frame x="100" y="800" w="100" h="100"/>
                 <frame x="200" y="800" w="100" h="100"/>
-              </deathDown>
-         
+              </deathDown>         
           </animations>
         </grunt>
 
         <trollAxethrower>
           <animations>
-
             <up speed="4" loop="1">
               <frame x="0" y="0" w="55" h="58"/>
               <frame x="0" y="58" w="55" h="58"/>
@@ -715,35 +729,10 @@
             </deathDown>           
           </animations>         
         </trollAxethrower>
-      </orcs>
-      
-      <prisioners>
-        <khadgar>
+
+        <dragon>
           <animations>
-            
-            <idle speed="4" loop="1">
-              <frame x="0" y="0" w="64" h="64"/>
-            </idle>
-
-          </animations>
-        </khadgar>
-
-        <alleria>
-          <animations>
-
-            <idle speed="4" loop="1">
-              <frame x="0" y="0" w="64" h="64"/>
-            </idle>
-
-          </animations>
-        </alleria>
-
-      </prisioners>
-
-    </dynamicEntities>
-    
-    <!-- //DRAGON
-             <up speed="4" loop="1">
+            <up speed="4" loop="1">
                 <frame x="0" y="0" w="120" h="120"/>
                 <frame x="120" y="0" w="120" h="120"/>
                 <frame x="240" y="0" w="120" h="120"/>
@@ -791,9 +780,6 @@
                 <frame x="240" y="240" w="120" h="120"/>
                 <frame x="360" y="240" w="120" h="120"/>
               </right>
-              <idle speed="4" loop="1">
-                <frame x="0" y="120" w="120" h="120"/>
-              </idle>
               <attackUp speed="2" loop="0"> 
                 <frame x="480" y="0" w="120" h="120"/>
               </attackUp>
@@ -819,124 +805,123 @@
                 <frame x="480" y="600" w="120" h="120"/>
               </attackLeft>
               <deathUp speed="1" loop="0">
-                <frame x="0" y="1080" w="120" h="120"/>
-                <frame x="120" y="1080" w="120" h="120"/>
-                <frame x="240" y="1080" w="120" h="120"/>
+                <frame x="0" y="1200" w="120" h="120"/>
+                <frame x="120" y="1200" w="120" h="120"/>
+                <frame x="240" y="1200" w="120" h="120"/>
               </deathUp>
               <deathDown speed="1" loop="0">
                 <frame x="0" y="960" w="120" h="120"/>
                 <frame x="120" y="960" w="120" h="120"/>
                 <frame x="240" y="960" w="120" h="120"/>
-              </deathDown> -->
-    
-    <!-- //GRIPHON AVIARY
-              <up speed="4" loop="1">
-                <frame x="0" y="0" w="100" h="100"/>
-                <frame x="100" y="0" w="100" h="100"/>
-                <frame x="200" y="0" w="100" h="100"/>
-                <frame x="300" y="0" w="100" h="100"/>
-              </up>
-              <upRight speed="4" loop="1">
-                <frame x="0" y="300" w="100" h="100"/>
-                <frame x="100" y="300" w="100" h="100"/>
-                <frame x="200" y="300" w="100" h="100"/>
-                <frame x="300" y="300" w="100" h="100"/>
-              </upRight>
-              <upLeft speed="4" loop="1">
-                <frame x="0" y="600" w="100" h="100"/>
-                <frame x="100" y="600" w="100" h="100"/>
-                <frame x="200" y="600" w="100" h="100"/>
-                <frame x="300" y="600" w="100" h="100"/>
-              </upLeft>
-              <down speed="4" loop="1">
-                <frame x="0" y="100" w="100" h="100"/>
-                <frame x="100" y="100" w="100" h="100"/>
-                <frame x="200" y="100" w="100" h="100"/>
-                <frame x="300" y="100" w="100" h="100"/>
-              </down>
-              <downRight speed="4" loop="1">
-                <frame x="0" y="400" w="100" h="100"/>
-                <frame x="100" y="400" w="100" h="100"/>
-                <frame x="200" y="400" w="100" h="100"/>
-                <frame x="300" y="400" w="100" h="100"/>
-              </downRight>
-              <downLeft speed="4" loop="1">
-                <frame x="0" y="700" w="100" h="100"/>
-                <frame x="100" y="700" w="100" h="100"/>
-                <frame x="200" y="700" w="100" h="100"/>
-                <frame x="300" y="700" w="100" h="100"/>
-              </downLeft>
-              <left speed="4" loop="1">
-                <frame x="0" y="500" w="100" h="100"/>
-                <frame x="100" y="500" w="100" h="100"/>
-                <frame x="200" y="500" w="100" h="100"/>
-                <frame x="300" y="500" w="100" h="100"/>
-              </left>
-              <right speed="4" loop="1">
-                <frame x="0" y="200" w="100" h="100"/>
-                <frame x="100" y="200" w="100" h="100"/>
-                <frame x="200" y="200" w="100" h="100"/>
-                <frame x="300" y="200" w="100" h="100"/>
-              </right>
-              <idle speed="4" loop="1">
-                <frame x="0" y="100" w="100" h="100"/>
-              </idle>
-              <attackUp speed="2" loop="0">
-                <frame x="400" y="0" w="100" h="100"/>
-                <frame x="500" y="0" w="100" h="100"/>
-                <frame x="600" y="0" w="100" h="100"/>
-              </attackUp>
-              <attackUpRight speed="2" loop="0">
-                <frame x="400" y="300" w="100" h="100"/>
-                <frame x="500" y="300" w="100" h="100"/>
-                <frame x="600" y="300" w="100" h="100"/>
-              </attackUpRight>
-              <attackUpLeft speed="2" loop="0">
-                <frame x="400" y="600" w="100" h="100"/>
-                <frame x="500" y="600" w="100" h="100"/>
-                <frame x="600" y="600" w="100" h="100"/>
-              </attackUpLeft>
-              <attackDown speed="2" loop="0">
-                <frame x="400" y="100" w="100" h="100"/>
-                <frame x="500" y="100" w="100" h="100"/>
-                <frame x="600" y="100" w="100" h="100"/>
-              </attackDown>
-              <attackDownRight speed="2" loop="0">
-                <frame x="400" y="400" w="100" h="100"/>
-                <frame x="500" y="400" w="100" h="100"/>
-                <frame x="600" y="400" w="100" h="100"/>
-              </attackDownRight>
-              <attackDownLeft speed="2" loop="0">
-                <frame x="400" y="700" w="100" h="100"/>
-                <frame x="500" y="700" w="100" h="100"/>
-                <frame x="600" y="700" w="100" h="100"/>
-              </attackDownLeft>
-              <attackRight speed="2" loop="0">
-                <frame x="400" y="200" w="100" h="100"/>
-                <frame x="500" y="200" w="100" h="100"/>
-                <frame x="600" y="200" w="100" h="100"/>
-              </attackRight>
-              <attackLeft speed="2" loop="0">
-                <frame x="400" y="500" w="100" h="100"/>
-                <frame x="500" y="500" w="100" h="100"/>
-                <frame x="600" y="500" w="100" h="100"/>
-              </attackLeft>
-              <deathUp speed="1" loop="0">
-                <frame x="0" y="800" w="100" h="100"/>
-                <frame x="100" y="800" w="100" h="100"/>
-                <frame x="200" y="800" w="100" h="100"/>
-                <frame x="300" y="800" w="100" h="100"/>
-                <frame x="400" y="800" w="100" h="100"/>
-                <frame x="500" y="800" w="100" h="100"/>
-              </deathUp>
-              <deathDown speed="1" loop="0">
-                <frame x="0" y="900" w="100" h="100"/>
-                <frame x="100" y="900" w="100" h="100"/>
-                <frame x="200" y="900" w="100" h="100"/>
-                <frame x="300" y="900" w="100" h="100"/>
-                <frame x="400" y="900" w="100" h="100"/>
-                <frame x="500" y="900" w="100" h="100"/>                
-              </deathDown> -->
+              </deathDown>
+          </animations>
+        </dragon>
+      </orcs>
+
+      <critters>
+        <sheep>
+          <animations>
+            <deathDownLeft speed="0" loop="0">
+              <frame x="0" y="0" w="30" h="31"/>
+            </deathDownLeft>
+            <deathUpRight speed="0" loop="0">
+              <frame x="30" y="0" w="30" h="31"/>
+            </deathUpRight>
+            <down speed="0" loop="0">
+              <frame x="60" y="0" w="30" h="31"/>
+            </down>
+            <right speed="0" loop="0">
+              <frame x="90" y="0" w="30" h="31"/>
+            </right>
+            <left speed="0" loop="0">
+              <frame x="120" y="0" w="30" h="31"/>
+            </left>
+            <upRight speed="0" loop="0">
+              <frame x="150" y="0" w="30" h="31"/>
+            </upRight>
+            <upLeft speed="0" loop="0">
+              <frame x="180" y="0" w="30" h="31"/>
+            </upLeft>
+  
+            <deathDownRight speed="0" loop="0">
+              <frame x="0" y="31" w="30" h="31"/>
+            </deathDownRight>
+            <deathUpLeft speed="0" loop="0">
+              <frame x="30" y="31" w="30" h="31"/>
+            </deathUpLeft>
+            <up speed="0" loop="0">
+              <frame x="60" y="31" w="30" h="31"/>
+            </up>
+            <downRight speed="0" loop="0">
+              <frame x="90" y="31" w="30" h="31"/>
+            </downRight>
+            <downLeft speed="0" loop="0">
+              <frame x="120" y="31" w="30" h="31"/>
+            </downLeft>
+          </animations>
+        </sheep>
+  
+        <boar>
+          <animations>
+            <deathDownLeft speed="0" loop="0">
+              <frame x="0" y="62" w="32" h="32"/>
+            </deathDownLeft>
+            <deathUpRight speed="0" loop="0">
+              <frame x="32" y="62" w="32" h="32"/>
+            </deathUpRight>
+            <down speed="0" loop="0">
+              <frame x="64" y="62" w="32" h="32"/>
+            </down>
+            <right speed="0" loop="0">
+              <frame x="96" y="62" w="32" h="32"/>
+            </right>
+            <left speed="0" loop="0">
+              <frame x="128" y="62" w="32" h="32"/>
+            </left>
+            <upRight speed="0" loop="0">
+              <frame x="160" y="62" w="32" h="32"/>
+            </upRight>
+            <upLeft speed="0" loop="0">
+              <frame x="192" y="62" w="32" h="32"/>
+            </upLeft>
+  
+            <deathDownRight speed="0" loop="0">
+              <frame x="0" y="94" w="32" h="32"/>
+            </deathDownRight>
+            <deathUpLeft speed="0" loop="0">
+              <frame x="32" y="94" w="32" h="32"/>
+            </deathUpLeft>
+            <up speed="0" loop="0">
+              <frame x="64" y="94" w="32" h="32"/>
+            </up>
+            <downRight speed="0" loop="0">
+              <frame x="96" y="94" w="32" h="32"/>
+            </downRight>
+            <downLeft speed="0" loop="0">
+              <frame x="128" y="94" w="32" h="32"/>
+            </downLeft>
+          </animations>
+        </boar>
+      </critters>
+      
+      <prisoners>
+        <khadgar>
+          <animations>           
+            <idle speed="4" loop="1">
+              <frame x="0" y="0" w="64" h="64"/>
+            </idle>
+          </animations>
+        </khadgar>
+
+        <alleria>
+          <animations>
+            <idle speed="4" loop="1">
+              <frame x="0" y="0" w="64" h="64"/>
+            </idle>
+          </animations>
+        </alleria>
+      </prisoners>
+    </dynamicEntities>
     
     <staticEntities>
       <humanBuildings>

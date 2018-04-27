@@ -23,7 +23,8 @@
 
 #include "Brofiler\Brofiler.h"
 
-j1EntityFactory::j1EntityFactory(){
+j1EntityFactory::j1EntityFactory()
+{
 	name.assign("entities");
 }
 
@@ -51,10 +52,9 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	gryphonRiderTexName = spritesheets.child("gryphonRiderAnimations").attribute("name").as_string();
 	dragonTexName = spritesheets.child("dragonAnimations").attribute("name").as_string();
 
-
 	//Debug Textures Properties
-	previewBuildingOpacity = config.child("previewTexturesProperties").attribute("buildingPlaceOpacity").as_uint();
 	previewTilesopacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
+	previewBuildingOpacity = config.child("previewTexturesProperties").attribute("buildingPlaceOpacity").as_uint();
 
 	// Static entities
 	pugi::xml_node staticEntities = config.child("staticEntities");
@@ -163,6 +163,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	barracksInfo.constructionPlanks2 = elvenLumberMillInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 	mageTowerInfo.constructionPlanks2 = gryphonAviaryInfo.constructionPlanks2 = stablesInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 
+
 	//Neutral buildings
 	pugi::xml_node neutralBuildings = staticEntities.child("neutralBuildings");
 
@@ -232,136 +233,134 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	enemyCannonTowerInfo.attackWaitTime = { orcishBuildings.child("cannonTower").child("attack").attribute("attackWaitTime").as_uint() };
 	enemyCannonTowerInfo.arrowSpeed = { orcishBuildings.child("cannonTower").child("attack").attribute("arrowSpeed").as_uint() };
 
-
-	//Dynamic entities
-	//Humans
+	// DYNAMIC ENTITIES
+	// Humans
 	pugi::xml_node humanEntities = config.child("dynamicEntities").child("humans");
 
-	footmanInfo.maxLife = footmanInfo.currLife = humanEntities.child("footman").attribute("maxLife").as_int();
-	//Footman animations
+	// Footman animations
 	pugi::xml_node footmanAnimations = humanEntities.child("footman").child("animations");
 	pugi::xml_node currentAnimation;
 
-	//Up animation Footman
+	// Up animation Footman
 	currentAnimation = footmanAnimations.child("up");
 	footmanInfo.up.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down animation Footman
+	// Down animation Footman
 	currentAnimation = footmanAnimations.child("down");
 	footmanInfo.down.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.down.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Right animation Footman
+	// Right animation Footman
 	currentAnimation = footmanAnimations.child("right");
 	footmanInfo.right.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.right.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Left animation Footman
+	// Left animation Footman
 	currentAnimation = footmanAnimations.child("left");
 	footmanInfo.left.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.left.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Right animation Footman
+	// Up Right animation Footman
 	currentAnimation = footmanAnimations.child("upRight");
 	footmanInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Left animation Footman
+	// Up Left animation Footman
 	currentAnimation = footmanAnimations.child("upLeft");
 	footmanInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Right animation Footman
+	// Down Right animation Footman
 	currentAnimation = footmanAnimations.child("downRight");
 	footmanInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Left animation Footman
+	// Down Left animation Footman
 	currentAnimation = footmanAnimations.child("downLeft");
 	footmanInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up animation Footman
+	// Attack Up animation Footman
 	currentAnimation = footmanAnimations.child("attackUp");
 	footmanInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down animation Footman
+	// Attack Down animation Footman
 	currentAnimation = footmanAnimations.child("attackDown");
 	footmanInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Left animation Footman
+	// Attack Left animation Footman
 	currentAnimation = footmanAnimations.child("attackLeft");
 	footmanInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Right animation Footman
+	// Attack Right animation Footman
 	currentAnimation = footmanAnimations.child("attackRight");
 	footmanInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Left animation Footman
+	// Attack Up Left animation Footman
 	currentAnimation = footmanAnimations.child("attackUpLeft");
 	footmanInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Right animation Footman
+	// Attack Up Right animation Footman
 	currentAnimation = footmanAnimations.child("attackUpRight");
 	footmanInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Left animation Footman
+	// Attack Down Left animation Footman
 	currentAnimation = footmanAnimations.child("attackDownLeft");
 	footmanInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Right animation Footman
+	// Attack Down Right animation Footman
 	currentAnimation = footmanAnimations.child("attackDownRight");
 	footmanInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Death Up animation Footman
+	// Death Up animation Footman
 	currentAnimation = footmanAnimations.child("deathUp");
 	footmanInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Death Down animation Footman
+	// Death Down animation Footman
 	currentAnimation = footmanAnimations.child("deathDown");
 	footmanInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
@@ -369,129 +368,129 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		footmanInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//Elven Archer animations
+	// Elven Archer animations
 	pugi::xml_node elvenArcherAnimations = humanEntities.child("elvenArcher").child("animations");
 
-	//Up animation Elven Archer
+	// Up animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("up");
 	elvenArcherInfo.up.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down animation Elven Archer
+	// Down animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("down");
 	elvenArcherInfo.down.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.down.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Left animation Elven Archer
+	// Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("left");
 	elvenArcherInfo.left.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.left.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Right animation Elven Archer
+	// Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("right");
 	elvenArcherInfo.right.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.right.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Left animation Elven Archer
+	// Up Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("upLeft");
 	elvenArcherInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Right animation Elven Archer
+	// Up Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("upRight");
 	elvenArcherInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Left animation Elven Archer
+	// Down Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("downLeft");
 	elvenArcherInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Right animation Elven Archer
+	// Down Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("downRight");
 	elvenArcherInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up animation Elven Archer
+	// Attack Up animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackUp");
 	elvenArcherInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down animation Elven Archer
+	// Attack Down animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackDown");
 	elvenArcherInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Left animation Elven Archer
+	// Attack Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackLeft");
 	elvenArcherInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Right animation Elven Archer
+	// Attack Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackRight");
 	elvenArcherInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Left animation Elven Archer
+	// Attack Up Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackUpLeft");
 	elvenArcherInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Right animation Elven Archer
+	// Attack Up Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackUpRight");
 	elvenArcherInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Left animation Elven Archer
+	// Attack Down Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackDownLeft");
 	elvenArcherInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Right animation Elven Archer
+	// Attack Down Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackDownRight");
 	elvenArcherInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Up animation Elven Archer
+	// Attack Death Up animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("deathUp");
 	elvenArcherInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Down animation Elven Archer
+	// Attack Death Down animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("deathDown");
 	elvenArcherInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
@@ -499,133 +498,262 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		elvenArcherInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//Orcs
-	pugi::xml_node orcEntities = config.child("dynamicEntities").child("orcs");
-	gruntInfo.maxLife = gruntInfo.currLife = orcEntities.child("grunt").attribute("maxLife").as_int();
+	// Gryphon Rider animations
+	pugi::xml_node gryphonRiderAnimations = humanEntities.child("gryphonRider").child("animations");
 
-	//Grunt animations
+	// Up animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("up");
+	gryphonRiderInfo.up.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.up.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("down");
+	gryphonRiderInfo.down.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.down.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("left");
+	gryphonRiderInfo.left.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.left.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("right");
+	gryphonRiderInfo.right.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.right.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Up Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("upLeft");
+	gryphonRiderInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Up Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("upRight");
+	gryphonRiderInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("downLeft");
+	gryphonRiderInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("downRight");
+	gryphonRiderInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackUp");
+	gryphonRiderInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackDown");
+	gryphonRiderInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackLeft");
+	gryphonRiderInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackRight");
+	gryphonRiderInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackUpLeft");
+	gryphonRiderInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackUpRight");
+	gryphonRiderInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackDownLeft");
+	gryphonRiderInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackDownRight");
+	gryphonRiderInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Death Up animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("deathUp");
+	gryphonRiderInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Death Down animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("deathDown");
+	gryphonRiderInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
+	// Orcs
+	pugi::xml_node orcEntities = config.child("dynamicEntities").child("orcs");
+
+	// Grunt animations
 	pugi::xml_node gruntAnimations = orcEntities.child("grunt").child("animations");
 	
-	//Up animation Grunt
+	// Up animation Grunt
 	currentAnimation = gruntAnimations.child("up");
 	gruntInfo.up.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down animation Grunt
+	// Down animation Grunt
 	currentAnimation = gruntAnimations.child("down");
 	gruntInfo.down.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.down.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Left animation Grunt
+	// Left animation Grunt
 	currentAnimation = gruntAnimations.child("left");
 	gruntInfo.left.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.left.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Right animation Grunt
+	// Right animation Grunt
 	currentAnimation = gruntAnimations.child("right");
 	gruntInfo.right.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.right.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Left animation Grunt
+	// Up Left animation Grunt
 	currentAnimation = gruntAnimations.child("upLeft");
 	gruntInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Right animation Grunt
+	// Up Right animation Grunt
 	currentAnimation = gruntAnimations.child("upRight");
 	gruntInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Left animation Grunt
+	// Down Left animation Grunt
 	currentAnimation = gruntAnimations.child("downLeft");
 	gruntInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Right animation Grunt
+	// Down Right animation Grunt
 	currentAnimation = gruntAnimations.child("downRight");
 	gruntInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up animation Grunt
+	// Attack Up animation Grunt
 	currentAnimation = gruntAnimations.child("attackUp");
 	gruntInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down animation Grunt
+	// Attack Down animation Grunt
 	currentAnimation = gruntAnimations.child("attackDown");
 	gruntInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Left animation Grunt
+	// Attack Left animation Grunt
 	currentAnimation = gruntAnimations.child("attackLeft");
 	gruntInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Right animation Grunt
+	// Attack Right animation Grunt
 	currentAnimation = gruntAnimations.child("attackRight");
 	gruntInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Left animation Grunt
+	// Attack Up Left animation Grunt
 	currentAnimation = gruntAnimations.child("attackUpLeft");
 	gruntInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Right animation Grunt
+	// Attack Up Right animation Grunt
 	currentAnimation = gruntAnimations.child("attackUpRight");
 	gruntInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Left animation Grunt
+	// Attack Down Left animation Grunt
 	currentAnimation = gruntAnimations.child("attackDownLeft");
 	gruntInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Right animation Grunt
+	// Attack Down Right animation Grunt
 	currentAnimation = gruntAnimations.child("attackDownRight");
 	gruntInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Up animation Grunt
+	// Attack Death Up animation Grunt
 	currentAnimation = gruntAnimations.child("deathUp");
 	gruntInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Down animation Grunt
+	// Attack Death Down animation Grunt
 	currentAnimation = gruntAnimations.child("deathDown");
 	gruntInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
@@ -633,129 +761,129 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		gruntInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//Troll Axethrower animations
+	// Troll Axethrower animations
 	pugi::xml_node trollAxethrowerAnimations = orcEntities.child("trollAxethrower").child("animations");
 
-	//Up animation Troll Axethrower
+	// Up animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("up");
 	trollAxethrowerInfo.up.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down animation Troll Axethrower
+	// Down animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("down");
 	trollAxethrowerInfo.down.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.down.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Left animation Troll Axethrower
+	// Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("left");
 	trollAxethrowerInfo.left.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.left.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Right animation Troll Axethrower
+	// Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("right");
 	trollAxethrowerInfo.right.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.right.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Left animation Troll Axethrower
+	// Up Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("upLeft");
 	trollAxethrowerInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Right animation Troll Axethrower
+	// Up Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("upRight");
 	trollAxethrowerInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Left animation Troll Axethrower
+	// Down Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("downLeft");
 	trollAxethrowerInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Right animation Troll Axethrower
+	// Down Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("downRight");
 	trollAxethrowerInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up animation Troll Axethrower
+	// Attack Up animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackUp");
 	trollAxethrowerInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down animation Troll Axethrower
+	// Attack Down animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackDown");
 	trollAxethrowerInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Left animation Troll Axethrower
+	// Attack Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackLeft");
 	trollAxethrowerInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Right animation Troll Axethrower
+	// Attack Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackRight");
 	trollAxethrowerInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Left animation Troll Axethrower
+	// Attack Up Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackUpLeft");
 	trollAxethrowerInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Right animation Troll Axethrower
+	// Attack Up Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackUpRight");
 	trollAxethrowerInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Left animation Troll Axethrower
+	// Attack Down Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackDownLeft");
 	trollAxethrowerInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Right animation Troll Axethrower
+	// Attack Down Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackDownRight");
 	trollAxethrowerInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Up animation Troll Axethrower
+	// Attack Death Up animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("deathUp");
 	trollAxethrowerInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Down animation Troll Axethrower
+	// Attack Death Down animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("deathDown");
 	trollAxethrowerInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
@@ -763,9 +891,139 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		trollAxethrowerInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//Prisoners
-	//Khadgar
-	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisioners");
+	// Dragon animations
+	pugi::xml_node dragonAnimations = orcEntities.child("dragon").child("animations");
+
+	// Up animation Dragon
+	currentAnimation = dragonAnimations.child("up");
+	dragonInfo.up.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.up.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down animation Dragon
+	currentAnimation = dragonAnimations.child("down");
+	dragonInfo.down.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.down.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Left animation Dragon
+	currentAnimation = dragonAnimations.child("left");
+	dragonInfo.left.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.left.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Right animation Dragon
+	currentAnimation = dragonAnimations.child("right");
+	dragonInfo.right.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.right.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Up Left animation Dragon
+	currentAnimation = dragonAnimations.child("upLeft");
+	dragonInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Up Right animation Dragon
+	currentAnimation = dragonAnimations.child("upRight");
+	dragonInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down Left animation Dragon
+	currentAnimation = dragonAnimations.child("downLeft");
+	dragonInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down Right animation Dragon
+	currentAnimation = dragonAnimations.child("downRight");
+	dragonInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up animation Dragon
+	currentAnimation = dragonAnimations.child("attackUp");
+	dragonInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down animation Dragon
+	currentAnimation = dragonAnimations.child("attackDown");
+	dragonInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Left animation Dragon
+	currentAnimation = dragonAnimations.child("attackLeft");
+	dragonInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Right animation Dragon
+	currentAnimation = dragonAnimations.child("attackRight");
+	dragonInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up Left animation Dragon
+	currentAnimation = dragonAnimations.child("attackUpLeft");
+	dragonInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up Right animation Dragon
+	currentAnimation = dragonAnimations.child("attackUpRight");
+	dragonInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down Left animation Dragon
+	currentAnimation = dragonAnimations.child("attackDownLeft");
+	dragonInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down Right animation Dragon
+	currentAnimation = dragonAnimations.child("attackDownRight");
+	dragonInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Death Up animation Dragon
+	currentAnimation = dragonAnimations.child("deathUp");
+	dragonInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Death Down animation Dragon
+	currentAnimation = dragonAnimations.child("deathDown");
+	dragonInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
+	// Prisoners
+	// Khadgar
+	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
 
 	pugi::xml_node khadgarAnimations = prisionerEntities.child("khadgar").child("animations");
 	currentAnimation = khadgarAnimations.child("idle");
@@ -775,7 +1033,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		khadgarInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//Alleria
+	// Alleria
 	pugi::xml_node alleriaAnimations = prisionerEntities.child("alleria").child("animations");
 	currentAnimation = alleriaAnimations.child("idle");
 	alleriaInfo.idle.speed = currentAnimation.attribute("speed").as_float();
@@ -784,8 +1042,9 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		alleriaInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	// Critter sheep
-	pugi::xml_node sheepAnimations = config.child("dynamicEntities").child("sheep");
+	// Critters
+	// Sheep
+	pugi::xml_node sheepAnimations = config.child("dynamicEntities").child("critters").child("sheep").child("animations");
 
 	// up
 	currentAnimation = sheepAnimations.child("up");
@@ -873,8 +1132,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		critterSheepInfo.deathDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	// Critter boar
-	pugi::xml_node boarAnimations = config.child("dynamicEntities").child("boar");
+	// Boar
+	pugi::xml_node boarAnimations = config.child("dynamicEntities").child("critters").child("boar").child("animations");
 
 	// up
 	currentAnimation = boarAnimations.child("up");
@@ -942,8 +1201,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	}
 	// death up-right
 	currentAnimation = boarAnimations.child("deathUpRight");
-
-  critterBoarInfo.deathUpRight.speed = currentAnimation.attribute("speed").as_float();
+	critterBoarInfo.deathUpRight.speed = currentAnimation.attribute("speed").as_float();
 	critterBoarInfo.deathUpRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		critterBoarInfo.deathUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
@@ -1088,7 +1346,8 @@ bool j1EntityFactory::Start()
 	trollAxethrowerInfo.unitInfo.priority = 2;
 
 	/// Radius
-	trollAxethrowerInfo.unitInfo.attackRadius = 3;	trollAxethrowerInfo.unitInfo.sightRadius = 12;
+	trollAxethrowerInfo.unitInfo.attackRadius = 3;
+	trollAxethrowerInfo.unitInfo.sightRadius = 12;
 
 	/// Damage
 	trollAxethrowerInfo.unitInfo.heavyDamage = 4;
@@ -1099,6 +1358,7 @@ bool j1EntityFactory::Start()
 	/// Speed
 	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
 	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
+
 	/// Life
 	trollAxethrowerInfo.unitInfo.maxLife = 40;
 	trollAxethrowerInfo.unitInfo.currLife = trollAxethrowerInfo.unitInfo.maxLife;
@@ -1129,8 +1389,7 @@ bool j1EntityFactory::Start()
 	dragonInfo.unitInfo.currLife = dragonInfo.unitInfo.maxLife;
 	///
 
-
-  dragonInfo.fireSpeed = 120.0f;
+	dragonInfo.fireSpeed = 120.0f;
 	//_Dragon
 
 	/// Static Entities
@@ -1138,7 +1397,6 @@ bool j1EntityFactory::Start()
 	watchTowerInfo.life = 150;
 	watchTowerInfo.damage = 7;
 
-  
 	enemyGuardTowerInfo.life = 175;
 	enemyGuardTowerInfo.damage = 13;
 
@@ -1147,8 +1405,7 @@ bool j1EntityFactory::Start()
 	//_Towers
 
 	// CRITTERS
-
-  // Sheep
+	// Sheep
 	critterSheepInfo.unitInfo.priority = 1;
 
 	/// Speed
@@ -1182,6 +1439,7 @@ bool j1EntityFactory::Start()
 	// Runestone
 	runestoneInfo.sightRadius = 7;
 	//_Runestone
+
 	// Load textures
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
 	neutralBuildingsTex = App->tex->Load(neutralBuildingsTexName.data());
@@ -1213,6 +1471,7 @@ bool j1EntityFactory::PreUpdate()
 	list<Entity*>::const_iterator it = toSpawnEntities.begin();
 
 	while (it != toSpawnEntities.end()) {
+
 		fPoint pos = (*it)->GetPos();
 		int x = pos.x * App->scene->scale;
 		int y = pos.y * App->scene->scale;
@@ -1221,7 +1480,7 @@ bool j1EntityFactory::PreUpdate()
 		// Move the entity from the waiting list to the active list
 		if ((*it)->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-			activeDynamicEntities.push_back((DynamicEntity*)(*it))
+			activeDynamicEntities.push_back((DynamicEntity*)(*it));
 			if ((*it)->entitySide == EntitySide_Player)
 				App->player->unitProduce++;
 			LOG("Spawning dynamic entity at tile %d,%d", x, y);
@@ -1230,7 +1489,7 @@ bool j1EntityFactory::PreUpdate()
 
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
-		
+		}
 
 		it++;
 	}
@@ -1239,7 +1498,7 @@ bool j1EntityFactory::PreUpdate()
 	for (std::list<DynamicEntity*>::iterator iterator = activeDynamicEntities.begin(); iterator != activeDynamicEntities.end(); iterator++) {
 		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
 		if (App->render->IsInScreen(r)) {
-			EntitiesDraw_info info
+			EntitiesDraw_info info;
 			info.priority = (*iterator)->GetPos().y + (*iterator)->GetSize().y;
 			info.ent = (*iterator);
 			DynamicEntity* dyn = (DynamicEntity*)(*iterator);
@@ -1248,7 +1507,7 @@ bool j1EntityFactory::PreUpdate()
 		}
 	}
 
-		for (std::list<StaticEntity*>::iterator iterator = activeStaticEntities.begin(); iterator != activeStaticEntities.end(); iterator++) 
+		for (std::list<StaticEntity*>::iterator iterator = activeStaticEntities.begin(); iterator != activeStaticEntities.end(); iterator++) {
 		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
 		if (App->render->IsInScreen(r)) {
 			EntitiesDraw_info info;
@@ -1257,7 +1516,7 @@ bool j1EntityFactory::PreUpdate()
 			StaticEntity* stc = (StaticEntity*)(*iterator);
 				info.type = stc->staticEntityType;
 			entityDrawOrder.push(info);
-		
+		}
 	}
 
 	return ret;
@@ -1266,7 +1525,7 @@ bool j1EntityFactory::PreUpdate()
 // Called before render is available
 bool j1EntityFactory::Update(float dt)
 {
-	bool ret = true
+	bool ret = true;
 
 	// Update active static entities
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
@@ -1321,6 +1580,7 @@ void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos)
 {
+
 	switch (staticEntityType) {
 
 	case EntityType_CHICKEN_FARM:
@@ -1404,77 +1664,76 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 //Draws green or red tiles on the preview depending on if there's a building on the ground and the preview building size
 void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntitySize buildingSize, iPoint mousePos)
 {
-
 	iPoint mouseTilePos = App->player->GetMouseTilePos();
 	SDL_Color green = { 0,255,0, (Uint8)previewTilesopacity };
 	SDL_Color red = { 255,0,0,(Uint8)previewTilesopacity };
 
-	if (isPlaceable) { //Small
-		if (!IsEntityOnTileBySize(mouseTilePos) && App->pathfinding->IsWalkable(mouseTilePos))
-			App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, green, true);
+		if (isPlaceable) { //Small
+			if (!IsEntityOnTileBySize(mouseTilePos) && App->pathfinding->IsWalkable(mouseTilePos)) 
+				App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, green, true);
 
-		if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y }))
-			App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, green, true);
+			if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y }))
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, green, true);
 
-		if (!IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 }))
-			App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, green, true);
+			if (!IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 }))
+				App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, green, true);
 
-		if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
-			App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, green, true);
+			if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, green, true);
+			
+			if (buildingSize == Medium || buildingSize == Big) { //Medium
 
-		if (buildingSize == Medium || buildingSize == Big) { //Medium
+				if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 }))
+					App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 64, 32, 32 }, green, true);
 
-			if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 }))
-				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 64, 32, 32 }, green, true);
+				if(!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 }))
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 32, 32, 32 }, green, true);
 
-			if (!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 }))
-				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 32, 32, 32 }, green, true);
+				if (!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y }))
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y, 32, 32 }, green, true);
 
-			if (!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y }))
-				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y, 32, 32 }, green, true);
+				if (!IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x , mouseTilePos.y + 2 }))
+					App->printer->PrintQuad({ mousePos.x, mousePos.y + 64, 32, 32 }, green, true);
 
-			if (!IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x , mouseTilePos.y + 2 }))
-				App->printer->PrintQuad({ mousePos.x, mousePos.y + 64, 32, 32 }, green, true);
+				if (!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 }))
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 64, 32, 32 }, green, true);
 
-			if (!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 }))
-				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 64, 32, 32 }, green, true);
-
+			}
+			
 		}
+		else if (!isPlaceable)
+		{
+			if (IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) 
+				App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, red, true);
 
-	}
-	else if (!isPlaceable)
-	{
-		if (IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos))
-			App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, red, true);
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y })) 
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, red, true);
 
-		if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y }))
-			App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, red, true);
+			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 })) 
+				App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, red, true);
 
-		if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 }))
-			App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, red, true);
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) 
+					App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, red, true);
 
-		if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
-			App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, red, true);
+			if (buildingSize == Medium || buildingSize == Big) { //Medium
+			
+				if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 })) 
+					App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 64, 32, 32 }, red, true);
 
-		if (buildingSize == Medium || buildingSize == Big) { //Medium
+				if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 })) 
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 32, 32, 32 }, red, true);
 
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 }))
-				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 64, 32, 32 }, red, true);
+				if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y })) 
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y , 32, 32 }, red, true);
 
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 }))
-				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 32, 32, 32 }, red, true);
+				if (IsEntityOnTileBySize({ mouseTilePos.x , mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 2 })) 
+					App->printer->PrintQuad({ mousePos.x, mousePos.y + 64, 32, 32 }, red, true);
 
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y }))
-				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y , 32, 32 }, red, true);
+				if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 })) 
+					App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 64, 32, 32 }, red, true);
 
-			if (IsEntityOnTileBySize({ mouseTilePos.x , mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 2 }))
-				App->printer->PrintQuad({ mousePos.x, mousePos.y + 64, 32, 32 }, red, true);
-
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 }))
-				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 64, 32, 32 }, red, true);
-
+			}
 		}
-	}
 }
 
 const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
@@ -1954,8 +2213,10 @@ bool j1EntityFactory::PostUpdate()
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		if (!(*dynEnt)->GetBlitState())
+		if (!(*dynEnt)->GetBlitState()) {
+			dynEnt++;
 			continue;
+		}
 
 		switch ((*dynEnt)->dynamicEntityType) {
 			// Player
@@ -2037,7 +2298,6 @@ bool j1EntityFactory::PostUpdate()
 		if (App->scene->GetAlphaBuilding() != EntityType_MAX)
 			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 	}
-
 
 	return ret;
 }
@@ -2477,7 +2737,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	// Dynamic entities
 	case EntityType_FOOTMAN:
 	{
-		Footman* footman = new Footman(pos, { 32,32 }, footmanInfo.currLife, footmanInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
+		Footman* footman = new Footman(pos, { 32,32 }, footmanInfo.unitInfo.currLife, footmanInfo.unitInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
 		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
 		footman->dynamicEntityType = EntityType_FOOTMAN;
 		footman->entitySide = EntitySide_Player;
@@ -2490,7 +2750,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ELVEN_ARCHER:
 	{
-		ElvenArcher* elvenArcher = new ElvenArcher(pos, { 32,32 }, elvenArcherInfo.currLife, elvenArcherInfo.maxLife, unitInfo, (const ElvenArcherInfo&)entityInfo, listener);
+		ElvenArcher* elvenArcher = new ElvenArcher(pos, { 32,32 }, elvenArcherInfo.unitInfo.currLife, elvenArcherInfo.unitInfo.maxLife, unitInfo, (const ElvenArcherInfo&)entityInfo, listener);
 		elvenArcher->entityType = EntityCategory_DYNAMIC_ENTITY;
 		elvenArcher->dynamicEntityType = EntityType_ELVEN_ARCHER;
 		elvenArcher->entitySide = EntitySide_Player;
@@ -2503,7 +2763,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRYPHON_RIDER:
 	{
+		GryphonRider* gryphonRider = new GryphonRider(pos, { 32,32 }, footmanInfo.unitInfo.currLife, footmanInfo.unitInfo.maxLife, unitInfo, (const GryphonRiderInfo&)entityInfo, listener);
+		gryphonRider->entityType = EntityCategory_DYNAMIC_ENTITY;
+		gryphonRider->dynamicEntityType = EntityType_GRYPHON_RIDER;
+		gryphonRider->entitySide = EntitySide_Player;
+		gryphonRider->SetStringLife(gryphonRider->GetCurrLife(), gryphonRider->GetMaxLife());
 
+		toSpawnEntities.push_back((Entity*)gryphonRider);
+		return (DynamicEntity*)gryphonRider;
 	}
 	break;
 
@@ -2527,7 +2794,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_KHADGAR:
 	{
-		Khadgar* khadgar = new Khadgar(pos, { 64,64 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const KhadgarInfo&)entityInfo, listener);
+		Khadgar* khadgar = new Khadgar(pos, { 64,64 }, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const KhadgarInfo&)entityInfo, listener);
 		khadgar->entityType = EntityCategory_DYNAMIC_ENTITY;
 		khadgar->dynamicEntityType = EntityType_KHADGAR;
 
@@ -2539,7 +2806,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ALLERIA:
 	{
-		Alleria* alleria = new Alleria(pos, { 64,64 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const AlleriaInfo&)entityInfo, listener);
+		Alleria* alleria = new Alleria(pos, { 64,64 }, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const AlleriaInfo&)entityInfo, listener);
 		alleria->entityType = EntityCategory_DYNAMIC_ENTITY;
 		alleria->dynamicEntityType = EntityType_ALLERIA;
 
@@ -2551,7 +2818,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRUNT:
 	{
-		Grunt* grunt = new Grunt(pos, { 32,32 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
+		Grunt* grunt = new Grunt(pos, { 32,32 }, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
 		grunt->entityType = EntityCategory_DYNAMIC_ENTITY;
 		grunt->dynamicEntityType = EntityType_GRUNT;
 		grunt->entitySide = EntitySide_Enemy;
@@ -2563,7 +2830,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TROLL_AXETHROWER:
 	{
-		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, { 32,32 }, trollAxethrowerInfo.currLife, trollAxethrowerInfo.maxLife, unitInfo, (const TrollAxethrowerInfo&)entityInfo, listener);
+		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, { 32,32 }, trollAxethrowerInfo.unitInfo.currLife, trollAxethrowerInfo.unitInfo.maxLife, unitInfo, (const TrollAxethrowerInfo&)entityInfo, listener);
 		trollAxethrower->entityType = EntityCategory_DYNAMIC_ENTITY;
 		trollAxethrower->dynamicEntityType = EntityType_TROLL_AXETHROWER;
 		trollAxethrower->entitySide = EntitySide_Enemy;
@@ -2575,13 +2842,19 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_DRAGON:
 	{
+		Dragon* dragon = new Dragon(pos, { 32,32 }, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const DragonInfo&)entityInfo, listener);
+		dragon->entityType = EntityCategory_DYNAMIC_ENTITY;
+		dragon->dynamicEntityType = EntityType_DRAGON;
+		dragon->entitySide = EntitySide_Enemy;
 
+		toSpawnEntities.push_back((Entity*)dragon);
+		return (DynamicEntity*)dragon;
 	}
 	break;
 
 	case EntityType_SHEEP:
 	{
-		CritterSheep* critterSheep = new CritterSheep(pos, { 32,32 }, critterSheepInfo.currLife, critterSheepInfo.maxLife, unitInfo, (const CritterSheepInfo&)entityInfo, listener);
+		CritterSheep* critterSheep = new CritterSheep(pos, { 32,32 }, critterSheepInfo.unitInfo.currLife, critterSheepInfo.unitInfo.maxLife, unitInfo, (const CritterSheepInfo&)entityInfo, listener);
 		critterSheep->entityType = EntityCategory_DYNAMIC_ENTITY;
 		critterSheep->entitySide = EntitySide_Neutral;
 		critterSheep->dynamicEntityType = EntityType_SHEEP;
@@ -2593,7 +2866,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_BOAR:
 	{
-		CritterBoar* critterBoar = new CritterBoar(pos, { 32,32 }, critterBoarInfo.currLife, critterBoarInfo.maxLife, unitInfo, (const CritterBoarInfo&)entityInfo, listener);
+		CritterBoar* critterBoar = new CritterBoar(pos, { 32,32 }, critterBoarInfo.unitInfo.currLife, critterBoarInfo.unitInfo.maxLife, unitInfo, (const CritterBoarInfo&)entityInfo, listener);
 		critterBoar->entityType = EntityCategory_DYNAMIC_ENTITY;
 		critterBoar->entitySide = EntitySide_Neutral;
 		critterBoar->dynamicEntityType = EntityType_BOAR;

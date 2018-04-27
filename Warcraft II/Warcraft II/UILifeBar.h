@@ -34,7 +34,6 @@ public:
 	void Update(float dt);
 
 	void SetLife(const int life);
-	void SetMaxLife(const int maxLife);
 	void IncreaseLife(const int life);
 	void DecreaseLife(const int life);
 	int GetLife() const;
