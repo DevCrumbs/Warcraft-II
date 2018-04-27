@@ -126,11 +126,14 @@ public:
 	void DebugKeys();
 
 	void CheckCameraMovement(float dt);
+	//CreatingUI
 	void LoadInGameUI();
 	void LoadBuildingMenu();
 	void LoadUnitsMenuInfo();
 	UILifeBar * CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea);
+	//Patroll and Stop butt
 	void CreateAbilitiesButtons();
+	void LoadTerenasDialog();
 
 	void ShowSelectedUnits(list<DynamicEntity*> units);
 	void HideUnselectedUnits();
@@ -158,7 +161,8 @@ public:
 	bool CompareSelectedUnitsLists(list<DynamicEntity*> units);
 
 
-	void LoadTerenasDialog(TerenasDialogEvents dialogEvent);
+	void ShowTerenasDialog(TerenasDialogEvents dialogEvent);
+	void HideTerenasDialog();
 	void UnLoadTerenasDialog();
 
 	bool LoadKeys(pugi::xml_node&);

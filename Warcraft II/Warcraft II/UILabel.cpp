@@ -193,6 +193,7 @@ void UILabel::SetText(string text, uint wrapLength)
 	tex = App->font->Print(text.data(), color, font, wrapLength);
 }
 
+
 string UILabel::GetText() 
 {
 	return label.text;

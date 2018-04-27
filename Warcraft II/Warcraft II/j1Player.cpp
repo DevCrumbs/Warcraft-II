@@ -578,10 +578,9 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					}
 				}
 				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
-					App->scene->UnLoadTerenasDialog();
 					App->scene->terenasDialogTimer.Start();
 					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
-					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
 				}
 			}
 
@@ -604,12 +603,9 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					App->entities->CommandToUnits(units, UnitCommand_HealRunestone);
 				}
 				else if (App->scene->terenasDialogEvent != TerenasDialog_RUNESTONE) {
-
-					App->scene->UnLoadTerenasDialog();
-
 					App->scene->terenasDialogTimer.Start();
 					App->scene->terenasDialogEvent = TerenasDialog_RUNESTONE;
-					App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+					App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
 				}
 			}
 			break;
@@ -768,10 +764,9 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 void j1Player::RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos) {
 
 	if (App->scene->terenasDialogEvent != dialogEvent) {
-		App->scene->UnLoadTerenasDialog();
 		App->scene->terenasDialogTimer.Start();
 		App->scene->terenasDialogEvent = dialogEvent;
-		App->scene->LoadTerenasDialog(dialogEvent);
+		App->scene->ShowTerenasDialog(dialogEvent);
 	}
 
 	UIImage_Info imageInfo;
@@ -833,7 +828,8 @@ void j1Player::CreateEntitiesStatsUI()
 
 void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) 
 {
-	App->entities->UnselectAllEntities();
+	if (currentEntity->entityType == EntityCategory_STATIC_ENTITY) 
+		App->entities->UnselectAllEntities();
 	//Hide Last Entity info
 	HideEntitySelectedInfo();
 
@@ -934,21 +930,16 @@ void j1Player::MakeUnitMenu(Entity* entity)
 
 	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_FOOTMAN)
 	{
-
 		entity->SetStringLife(entity->GetCurrLife(), entity->GetMaxLife());
 		ShowEntitySelectedInfo(entity->GetStringLife(), "Footman", { 240,244, 50, 41 }, entity);
 		ShowDynEntityLabelsInfo("Damage: 6", "Speed: 10", "Sight: 4", "Range: 9");
-
 	}
 	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_ELVEN_ARCHER) 
 	{
-
 		entity->SetStringLife(entity->GetCurrLife(), entity->GetMaxLife());
 		ShowEntitySelectedInfo(entity->GetStringLife(), "Elven Archer", { 291,244, 50, 41 }, entity);
 		ShowDynEntityLabelsInfo("Damage: 5", "Speed: 10", "Sight: 9", "Range: 4");
 	}	
-
-	entitySelectedStats.entitySelected = entity;	
 }
 
 UIImage* j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea)
@@ -1302,24 +1293,22 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						newUnitsToSpawn.push_back(toSpawnUnit);
 						toSpawnUnitQueue.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
-							App->scene->UnLoadTerenasDialog();
+							App->scene->HideTerenasDialog();
 						}
 						HandleBarracksUIElem();
 					}
 					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD){
-						App->scene->UnLoadTerenasDialog();
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
-						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
 						}
 				}
 				else if (currentGold < footmanCost) {
 					App->audio->PlayFx(3, 0); //Button error sound
 					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
-						App->scene->UnLoadTerenasDialog();
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
-						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
 					}
 				}
 			}
@@ -1336,24 +1325,22 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						newUnitsToSpawn.push_back(toSpawnUnit);
 						toSpawnUnitQueue.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
-							App->scene->UnLoadTerenasDialog();
+							App->scene->HideTerenasDialog();
 						}
 						HandleBarracksUIElem();
 					}
 					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
-						App->scene->UnLoadTerenasDialog();
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
-						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
 					}
 				}
 				else if (currentGold < elvenArcherCost) {
 					App->audio->PlayFx(3, 0); //Button error sound
 					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
-						App->scene->UnLoadTerenasDialog();
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
-						App->scene->LoadTerenasDialog(App->scene->terenasDialogEvent);
+						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
 					}
 				}
 			}
