@@ -33,6 +33,9 @@ enum ParticleType {
 
 	ParticleType_Health,
 
+	ParticleType_DragonGryphonFire,
+	ParticleType_DragonGryphonSubFire,
+
 	ParticleType_MaxTypes
 };
 
@@ -62,6 +65,9 @@ struct Particle {
 
 	bool isRemove = false;
 
+	j1Timer damageTimer;
+	float secondsToDamage = 0.0f;
+
 	Particle();
 	Particle(const Particle& p);
 	~Particle();
@@ -89,6 +95,7 @@ public:
 	void LoadAnimationsSpeed();
 
 	PawsInfo& GetPawsInfo(bool isSheep = false, bool isBoar = false);
+	bool IsParticleOnTile(iPoint tile, ParticleType particleType = ParticleType_NoType);
 
 private:
 
@@ -136,6 +143,9 @@ public:
 	Particle cannonBullet;
 
 	Particle trollAxe;
+
+	Particle dragonGryphonFire;
+	Particle dragonGryphonSubFire;
 
 	// Paws
 	Particle paws;

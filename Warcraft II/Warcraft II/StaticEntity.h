@@ -56,6 +56,7 @@ public:
 	StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener);
 	virtual ~StaticEntity();
 	virtual void Draw(SDL_Texture* sprites);
+	virtual void DebugDrawSelected();
 	virtual void Move(float dt) {}
 
 	//virtual void DebugDrawSelected();

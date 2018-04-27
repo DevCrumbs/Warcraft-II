@@ -814,9 +814,9 @@
               <frame x="480" y="600" w="120" h="120"/>
             </attackLeft>
             <deathUp speed="1" loop="0">
-              <frame x="0" y="1200" w="120" h="120"/>
-              <frame x="120" y="1200" w="120" h="120"/>
-              <frame x="240" y="1200" w="120" h="120"/>
+              <frame x="0" y="1080" w="120" h="120"/>
+              <frame x="120" y="1080" w="120" h="120"/>
+              <frame x="240" y="1080" w="120" h="120"/>
             </deathUp>
             <deathDown speed="1" loop="0">
               <frame x="0" y="960" w="120" h="120"/>
@@ -1190,11 +1190,31 @@
 
     <cannon x ="251" y="6" w="13" h="11"/>
     
-    <trollAxe speed = "10" loop = "1">
+    <trollAxe speed = "10" loop ="1">
       <frame x="283" y="52" w="20" h="22" />
       <frame x="313" y="52" w="20" h="22" />
       <frame x="343" y="52" w="20" h="22" />
     </trollAxe>
+
+    <dragonGryphonFire speed ="1" loop="1">
+      <frame x="0" y="300" w="63" h="76" />
+      <frame x="63" y="300" w="63" h="76" />
+      <frame x="126" y="300" w="63" h="76" />
+      <frame x="189" y="300" w="63" h="76" />
+      <frame x="252" y="300" w="63" h="76" />
+      <frame x="315" y="300" w="63" h="76" />
+      <frame x="378" y="300" w="63" h="76" />
+      <frame x="441" y="300" w="63" h="76" />
+      <frame x="504" y="300" w="63" h="76" />
+      
+      <frame x="0" y="377" w="63" h="76" />
+      <frame x="63" y="377" w="63" h="76" />
+      <frame x="126" y="377" w="63" h="76" />
+      <frame x="189" y="377" w="63" h="76" />
+      <frame x="252" y="377" w="63" h="76" />
+      <frame x="315" y="377" w="63" h="76" />
+      <frame x="378" y="377" w="63" h="76" />
+    </dragonGryphonFire>
     
     <fire>
         <low speed = "10" loop = "1">

@@ -469,23 +469,6 @@ fPoint DynamicEntity::GetUnitDirectionByValue() const
 	return direction;
 }
 
-// Selection color
-void DynamicEntity::SetColor(SDL_Color color, string colorName)
-{
-	this->color = color;
-	this->colorName = colorName;
-}
-
-SDL_Color DynamicEntity::GetColor() const
-{
-	return color;
-}
-
-string DynamicEntity::GetColorName() const
-{
-	return colorName;
-}
-
 // Collision
 ColliderGroup* DynamicEntity::GetSightRadiusCollider() const
 {
