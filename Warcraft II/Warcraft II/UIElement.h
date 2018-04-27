@@ -55,7 +55,7 @@ enum PriorityDraw {
 	PriorityDraw_UNDER_FRAMEWORK,
 	PriorityDraw_FRAMEWORK,
 	PriorityDraw_UIINGAME,
-	PriorityDraw_PAUSEMENU,
+	PriorityDraw_WINDOW,
 	PriorityDraw_SLIDER,
 	PriorityDraw_IMAGE,
 	PrioriryDraw_LABEL,

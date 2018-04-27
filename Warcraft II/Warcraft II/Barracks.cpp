@@ -53,7 +53,7 @@ void Barracks::Move(float dt)
 	if (App->player->barracksUpgrade) {
 		if (startTimer) {
 			this->constructionTimer.Start();
-			App->player->DeleteEntitiesMenu();
+			App->player->HideEntitySelectedInfo();
 			startTimer = false;
 		}
 		UpdateAnimations(dt);

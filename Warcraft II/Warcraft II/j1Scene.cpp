@@ -563,7 +563,7 @@ bool j1Scene::Update(float dt)
 		if (units.size() > 0) {
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 				if (!CompareSelectedUnitsLists(units)) {
-					App->player->DeleteEntitiesMenu();
+					App->player->HideEntitySelectedInfo();
 					ShowSelectedUnits(units);
 				}
 			}
@@ -791,7 +791,7 @@ bool j1Scene::Update(float dt)
 			parchmentInfo.texArea = App->gui->parchmentArea;
 			parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
 			parchmentImg->StartAnimation(App->gui->parchmentAnim);
-			parchmentImg->SetPriorityDraw(PriorityDraw_PAUSEMENU);
+			parchmentImg->SetPriorityDraw(PriorityDraw_WINDOW);
 		}
 		else {
 			pauseMenuActions = PauseMenuActions_DESTROY;
@@ -1047,7 +1047,7 @@ void j1Scene::LoadInGameUI()
 	entitiesInfo.draggable = false;
 	entitiesInfo.texArea = { 0, 565, 371, 82 };
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
-	entitiesStats->SetPriorityDraw(PriorityDraw_UIINGAME);
+	entitiesStats->SetPriorityDraw(PriorityDraw_WINDOW);
 
 	entitiesInfo.texArea = { 1006,0,800,600 };
 	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
@@ -1056,6 +1056,9 @@ void j1Scene::LoadInGameUI()
 	LoadResourcesLabels();
 	LoadBuildingMenu();
 	LoadUnitsMenuInfo();
+
+	//create this before entitiesInfo (Parent)
+	App->player->CreateEntitiesStatsUI();
 
 }
 
@@ -1146,16 +1149,28 @@ void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
 
 void j1Scene::HideUnselectedUnits()
 {
-	for (list<GroupSelectedElements>::iterator iteratorInfo = groupElementsList.begin(); iteratorInfo != groupElementsList.end(); ++iteratorInfo)
+	//One Selection
+	if (App->player->entitySelectedStats.entitySelected != nullptr)
 	{
-		if ((*iteratorInfo).owner != nullptr)
+		App->player->entitySelectedStats.entitySight->isActive = false;
+		App->player->entitySelectedStats.entityRange->isActive = false;
+		App->player->entitySelectedStats.entityDamage->isActive = false;
+		App->player->entitySelectedStats.entitySpeed->isActive = false;
+	}
+	//Group Selection
+	else {
+		for (list<GroupSelectedElements>::iterator iteratorInfo = groupElementsList.begin(); iteratorInfo != groupElementsList.end(); ++iteratorInfo)
 		{
-			(*iteratorInfo).entityLifeBar->isActive = false;
-			(*iteratorInfo).entityIcon->isActive = false;
-			(*iteratorInfo).owner = nullptr;
-		}
-		else {
-			break;
+
+			if ((*iteratorInfo).owner != nullptr)
+			{
+				(*iteratorInfo).entityLifeBar->isActive = false;
+				(*iteratorInfo).entityIcon->isActive = false;
+				(*iteratorInfo).owner = nullptr;
+			}
+			else {
+				break;
+			}
 		}
 	}
 	commandPatrolButton->isActive = false;
@@ -1687,7 +1702,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				parchmentInfo.texArea = App->gui->parchmentArea;
 				parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
 				parchmentImg->StartAnimation(App->gui->parchmentAnim);
-				parchmentImg->SetPriorityDraw(PriorityDraw_PAUSEMENU);
+				parchmentImg->SetPriorityDraw(PriorityDraw_WINDOW);
 			}
 			else {
 				pauseMenuActions = PauseMenuActions_DESTROY;
