@@ -78,9 +78,6 @@ bool j1Player::PreUpdate() {
 
 bool j1Player::Update(float dt) 
 {
-	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
-		(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
-	}
 	//Check if a building needs to be placed
 	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
 		CheckIfPlaceBuilding();
@@ -944,33 +941,14 @@ void j1Player::MakeUnitMenu(Entity* entity)
 	entitySelectedStats.entitySelected = entity;	
 }
 
-void j1Player::MakeUnitsMenu(list<DynamicEntity*> units)
+UIImage* j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea)
 {
-	list<DynamicEntity*>::iterator iterator = units.begin();
-	int cont = 0;
-	while (iterator != units.end()) {
-		UIImage* image = nullptr;
-		UILifeBar* lifeBar = nullptr;
-		if (units.size() == 1) {
-			MakeUnitMenu((*iterator));
-		}
-		else {
-				
-			if ((*iterator)->dynamicEntityType == EntityType_FOOTMAN) {
-				image = CreateGroupIcon({ 55 * (cont % 4) + 2, 39 * (cont / 4) + 18 }, { 649, 160, 46, 30 });
-			}
-			else if ((*iterator)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
-				image = CreateGroupIcon({ 55 * (cont % 4) + 2, 39 * (cont / 4) + 18 }, { 696, 160, 46, 30 });
-			}
-			lifeBar = CreateGroupLifeBar({ 55 * (cont % 4) + 1, 39 * (cont / 4) + 33 }, { 240,362,47,7 }, { 242,358,42,3 }, (Entity*)(*iterator));
-			
-			groupElementsList.push_back({(*iterator), image, lifeBar});
-		}		
-		iterator++;
-		cont++;
-	}
+	UIImage_Info imageInfo;
+	imageInfo.texArea = texArea;
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	return App->gui->CreateUIImage(iconPos, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
 
-	CreateAbilitiesButtons();
 }
 
 void j1Player::DeleteEntitiesMenu()
@@ -986,9 +964,9 @@ void j1Player::DeleteEntitiesMenu()
 		toSpawnUnitStats.clear();
 	}
 
-	if (entitySelectedStats.entitySelected == townHall) 
+	if (entitySelectedStats.entitySelected == townHall)
 		App->gui->RemoveElem((UIElement**)&upgradeTownHallButton);
-	
+
 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		App->gui->RemoveElem((UIElement**)&entitySelectedStats.HP);
@@ -1000,23 +978,11 @@ void j1Player::DeleteEntitiesMenu()
 		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityMovementSpeed);
 		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entityRange);
 		App->gui->RemoveElem((UIElement**)&entitySelectedStats.entitySight);
-		App->gui->RemoveElem((UIElement**)&commandPatrolButton);
-		App->gui->RemoveElem((UIElement**)&commandStopButton);
 		entitySelectedStats.entitySelected = nullptr;
 	}
 
-	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
-		App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
-		App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
-	}
-
-	if (!groupElementsList.empty()) {
-		if (commandPatrolButton != nullptr)
-			App->gui->RemoveElem((UIElement**)&commandPatrolButton);
-		if (commandStopButton != nullptr)
-			App->gui->RemoveElem((UIElement**)&commandStopButton);
-	}
-	groupElementsList.clear();
+	if(App->scene->groupElementsList.front().owner != nullptr)
+		App->scene->HideUnselectedUnits();
 }
 
 void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) {
@@ -1040,26 +1006,6 @@ void j1Player::DeleteHoverInfoMenu()
 	App->gui->RemoveElem((UIElement**)&hoverInfo.background);
 	App->gui->RemoveElem((UIElement**)&hoverInfo.cost);
 	App->gui->RemoveElem((UIElement**)&hoverInfo.info);
-}
-
-UIImage* j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea)
-{
-	UIImage_Info imageInfo;
-	imageInfo.texArea = texArea;
-	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
-	imageInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	return App->gui->CreateUIImage(iconPos, imageInfo, nullptr, (UIElement*)App->scene->entitiesStats);
-}
-UILifeBar* j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, Entity * entity)
-{
-	UILifeBar_Info lifeInfo;
-	lifeInfo.background = backgroundTexArea;
-	lifeInfo.bar = barTexArea;
-	lifeInfo.maxLife = entity->GetMaxLife();
-	lifeInfo.life = entity->GetCurrLife();
-	lifeInfo.maxWidth = lifeInfo.bar.w;
-	lifeInfo.lifeBarPosition = { 2, 2 };
-	return App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);	
 }
 
 UILifeBar* j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea)
@@ -1178,12 +1124,6 @@ void j1Player::CreateMageTowerButtons()
 	CreateSimpleButton({ 342,244,50,41 }, { 597, 244, 50, 41 }, { 852,244,50,41 }, { 217, 2 }, produceMageButton);
 }
 
-void j1Player::CreateAbilitiesButtons()
-{
-	CreateSimpleButton({ 802,202,50,41 }, { 904, 202, 50, 41 }, { 853,202,50,41 }, { 217, 2 }, commandStopButton);
-	CreateSimpleButton({ 649,202,50,41 }, { 751, 202, 50, 41 }, { 700,202,50,41 }, { 268, 2 }, commandPatrolButton);
-}
-
 void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) {
 
 	UIButton_Info infoButton;
@@ -1233,17 +1173,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		case UI_EVENT_MOUSE_RIGHT_CLICK:
 			break;
 		case UI_EVENT_MOUSE_LEFT_CLICK:
-
-			if (UIelem == commandPatrolButton) {
-				// Command Patrol (SANDRA)
-				if (App->scene->units.size() > 0)
-					App->entities->CommandToUnits(App->scene->units, UnitCommand_Patrol);
-			}
-			if (UIelem == commandStopButton) {
-				// Command Stop (SANDRA)
-				if (App->scene->units.size() > 0)
-					App->entities->CommandToUnits(App->scene->units, UnitCommand_Stop);
-			}
 
 			if (UIelem == upgradeTownHallButton) {
 				if (townHallUpgrade && currentGold >= 1500) {

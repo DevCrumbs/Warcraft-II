@@ -68,6 +68,11 @@ void UILifeBar::SetLife(const int life)
 	lifeBar.life = life;
 }
 
+void UILifeBar::SetMaxLife(const int maxLife)
+{
+	lifeBar.maxLife = maxLife;
+}
+
 void UILifeBar::IncreaseLife(const int life)
 {
 	lifeBar.life += life;

@@ -36,6 +36,7 @@
 #include "UICursor.h"
 #include "UISlider.h"
 #include "UIMinimap.h"
+#include "UILifeBar.h"
 
 
 j1Scene::j1Scene() : j1Module()
@@ -509,6 +510,13 @@ bool j1Scene::Update(float dt)
 				App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 	}
 
+	//Update units slected lifeBars
+	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
+		if((*iterator).owner != nullptr)
+			(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
+	}
+
+
 	// *****UNITS*****
 	/// Units cannot be clicked if a building is being placed or Pause Menu are actived
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
@@ -556,7 +564,7 @@ bool j1Scene::Update(float dt)
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 				if (!CompareSelectedUnitsLists(units)) {
 					App->player->DeleteEntitiesMenu();
-					App->player->MakeUnitsMenu(units);
+					ShowSelectedUnits(units);
 				}
 			}
 			UnitGroup* group = App->movement->GetGroupByUnits(units);
@@ -1015,7 +1023,7 @@ void j1Scene::LoadInGameUI()
 {
 	//Buiding options
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = {0, 0, 126, 26};
+	buttonInfo.normalTexArea = { 0, 0, 126, 26 };
 	buttonInfo.hoverTexArea = { 129, 0, 126, 26 };
 	buttonInfo.pressedTexArea = { 257, 0, 126, 26 };
 	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this);
@@ -1032,7 +1040,7 @@ void j1Scene::LoadInGameUI()
 	pauseMenuButt = App->gui->CreateUIButton({ 5,1 }, buttonInfo, this);
 
 	labelInfo.text = "Menu";
-	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w/2, 8 }, labelInfo, this, pauseMenuButt);
+	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, pauseMenuButt);
 
 
 	UIImage_Info entitiesInfo;
@@ -1041,14 +1049,119 @@ void j1Scene::LoadInGameUI()
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
 	entitiesStats->SetPriorityDraw(PriorityDraw_UIINGAME);
 
-	entitiesInfo.texArea={ 1006,0,800,600 };
+	entitiesInfo.texArea = { 1006,0,800,600 };
 	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
 	inGameFrameImage->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
 	LoadResourcesLabels();
 	LoadBuildingMenu();
+	LoadUnitsMenuInfo();
+
 }
 
+void j1Scene::LoadUnitsMenuInfo()
+{
+	int cont = 0;
+	while (groupElementsList.size() < 8) {
+		UIImage* image = nullptr;
+		UILifeBar* lifeBar = nullptr;
+
+
+		image = App->player->CreateGroupIcon({ 54 * (cont % 4) + 3, 39 * (cont / 4) + 4 }, { 0, 0, 0, 0 });
+		image->isActive = false;
+		lifeBar = CreateGroupLifeBar({ 54 * (cont % 4) + 2, 39 * (cont / 4) + 33 }, { 240,362,47,7 }, { 242,358,42,3 });
+		lifeBar->isActive = false;
+
+		groupElementsList.push_back({ nullptr, image, lifeBar });
+		cont++;
+	}
+	CreateAbilitiesButtons();
+}
+
+UILifeBar* j1Scene::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea)
+{
+	UILifeBar_Info lifeInfo;
+	lifeInfo.background = backgroundTexArea;
+	lifeInfo.bar = barTexArea;
+	lifeInfo.maxWidth = lifeInfo.bar.w;
+	lifeInfo.lifeBarPosition = { 2, 2 };
+	return App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+}
+
+void j1Scene::CreateAbilitiesButtons()
+{
+	UIButton_Info infoButton;
+
+	infoButton.normalTexArea = { 802,202,50,41 };
+	infoButton.hoverTexArea = { 904, 202, 50, 41 };
+	infoButton.pressedTexArea = { 853,202,50,41 };
+	commandStopButton = App->gui->CreateUIButton({ 217, 2 }, infoButton, this, (UIElement*)App->scene->entitiesStats);
+	commandStopButton->isActive = false;
+
+	infoButton.normalTexArea = { 649,202,50,41 };
+	infoButton.hoverTexArea = { 751, 202, 50, 41 };
+	infoButton.pressedTexArea = { 700,202,50,41 };
+	commandPatrolButton = App->gui->CreateUIButton({ 268, 2 }, infoButton, this, (UIElement*)App->scene->entitiesStats);
+	commandPatrolButton->isActive = false;
+}
+
+void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
+{
+	list<DynamicEntity*>::iterator iterator = units.begin();
+	while (iterator != units.end()) {
+		UIImage* image = nullptr;
+		UILifeBar* lifeBar = nullptr;
+		if (units.size() == 1) {
+			App->player->MakeUnitMenu((*iterator));
+		}
+		else {
+			for (list<GroupSelectedElements>::iterator iteratorInfo = groupElementsList.begin(); iteratorInfo != groupElementsList.end(); ++iteratorInfo)
+			{
+				if (!(*iteratorInfo).entityIcon->isActive)
+				{
+					SDL_Rect text;
+					if ((*iterator)->dynamicEntityType == EntityType_FOOTMAN) {
+						text = { 649, 160, 46, 30 };
+						(*iteratorInfo).entityIcon->SetNewRect(text);
+					}
+					else if ((*iterator)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						text = { 696, 160, 46, 30 };
+						(*iteratorInfo).entityIcon->SetNewRect(text);
+					}
+					(*iteratorInfo).entityIcon->isActive = true;
+					(*iteratorInfo).entityLifeBar->SetLife((*iterator)->GetCurrLife());
+					(*iteratorInfo).entityLifeBar->SetMaxLife((*iterator)->GetMaxLife());
+					(*iteratorInfo).entityLifeBar->isActive = true;
+					(*iteratorInfo).owner = *iterator;
+					break;
+				}
+			}
+		}
+		iterator++;
+	}
+	commandPatrolButton->isActive = true;
+	commandStopButton->isActive = true;
+}
+
+
+void j1Scene::HideUnselectedUnits()
+{
+	for (list<GroupSelectedElements>::iterator iteratorInfo = groupElementsList.begin(); iteratorInfo != groupElementsList.end(); ++iteratorInfo)
+	{
+		if ((*iteratorInfo).owner != nullptr)
+		{
+			(*iteratorInfo).entityLifeBar->isActive = false;
+			(*iteratorInfo).entityIcon->isActive = false;
+			(*iteratorInfo).owner = nullptr;
+		}
+		else {
+			break;
+		}
+	}
+	commandPatrolButton->isActive = false;
+	commandStopButton->isActive = false;
+}
+	
 void j1Scene::ChangeBuildingButtState(MenuBuildingButton* elem)
 {
 	elem->cost->isActive = !elem->cost->isActive;
@@ -1336,7 +1449,7 @@ void j1Scene::DestroySettingsMenu()
 
 }
 
-void j1Scene::DestroyAllUI() 
+void j1Scene::DestroyAllUI()
 {
 	if (parchmentImg != nullptr) {
 		App->gui->RemoveElem((UIElement**)&parchmentImg);
@@ -1354,6 +1467,21 @@ void j1Scene::DestroyAllUI()
 	App->gui->RemoveElem((UIElement**)&buildingLabel);
 	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
 	App->gui->RemoveElem((UIElement**)&minimap);
+
+	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
+		if ((*iterator).owner != nullptr) {
+			App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
+			App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
+			(*iterator).owner = nullptr;
+		}
+	}
+
+	if (commandPatrolButton != nullptr)
+		App->gui->RemoveElem((UIElement**)&commandPatrolButton);
+	if (commandStopButton != nullptr)
+		App->gui->RemoveElem((UIElement**)&commandStopButton);
+
+	groupElementsList.clear();
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()
@@ -1364,18 +1492,24 @@ PauseMenuActions j1Scene::GetPauseMenuActions()
 bool j1Scene::CompareSelectedUnitsLists(list<DynamicEntity*> units)
 {
 	bool ret = false;
+	int sizeList = 0;//Want to know how many active icons are
 
-	if (App->player->entitySelectedStats.entitySelected != nullptr)
+	if (App->player->entitySelectedStats.entitySelected != nullptr && units.size() == 1)
 		if (units.front() == App->player->entitySelectedStats.entitySelected)
 			ret = true;
-	if (units.size() == App->player->groupElementsList.size()) {
+	if (!ret) {
 		for (list<DynamicEntity*>::iterator unitsIterator = units.begin(); unitsIterator != units.end(); ++unitsIterator)
 		{
-			for (list<GroupSelectedElements>::iterator playerIterator = App->player->groupElementsList.begin(); playerIterator != App->player->groupElementsList.end(); ++playerIterator)
+			for (list<GroupSelectedElements>::iterator playerIterator = groupElementsList.begin(); playerIterator != groupElementsList.end(); ++playerIterator)
 			{
 				if (*unitsIterator == playerIterator->owner)
 				{
 					ret = true;
+				}
+				//if owner is nullptr, next ones will be nullptr
+				else if (playerIterator->owner == nullptr) {
+					sizeList++;
+					ret = false;
 					break;
 				}
 				else
@@ -1383,9 +1517,14 @@ bool j1Scene::CompareSelectedUnitsLists(list<DynamicEntity*> units)
 			}
 			if (!ret)
 				break;
+			//If size are diferent have to redo information
+			else if (sizeList != units.size()) {
+				ret = false;
+				break;
+			}
 		}
-	}
 
+	}
 	return ret;
 }
 
@@ -1598,6 +1737,18 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				break;
 			}
 		}
+
+		else if (UIelem == commandPatrolButton && commandPatrolButton->isActive) {
+			// Command Patrol (SANDRA)
+			if (App->scene->units.size() > 0)
+				App->entities->CommandToUnits(App->scene->units, UnitCommand_Patrol);
+		}
+		else if (UIelem == commandStopButton && commandStopButton->isActive) {
+			// Command Stop (SANDRA)
+			if (App->scene->units.size() > 0)
+				App->entities->CommandToUnits(App->scene->units, UnitCommand_Stop);
+		}
+
 		break;
 
 	case UI_EVENT_MOUSE_LEFT_UP:

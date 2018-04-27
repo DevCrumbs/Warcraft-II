@@ -49,13 +49,6 @@ struct HoverInfo
 	UIImage* background = nullptr;
 };
 
-struct GroupSelectedElements {
-	Entity* owner = nullptr;
-
-	UIImage* entityIcon = nullptr;
-	UILifeBar* entityLifeBar = nullptr;
-};
-
 struct ToSpawnUnit {
 	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
 		this->toSpawnTimer = toSpawnTimer;
@@ -134,13 +127,11 @@ public:
 
 	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void MakeUnitMenu(Entity* entity);
-	void MakeUnitsMenu(list<DynamicEntity*> units);
 	void DeleteEntitiesMenu();
 	void MakeHoverInfoMenu(string unitProduce, string gold);
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
-	UIImage* CreateGroupIcon(iPoint iconPos, SDL_Rect texArea);
-	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, Entity* entity);
+	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea);
 	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea);
 	
 	//void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
@@ -151,7 +142,6 @@ public:
 	void HandleBarracksUIElem();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
-	void CreateAbilitiesButtons();
 
 	void RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos);
 
@@ -206,7 +196,6 @@ public:
 	bool isUnitSpawning = false;
 	bool isMouseOnMine = false;
 
-	list<GroupSelectedElements> groupElementsList;
 private:
 
 	double timer = 0.0f; // game time
@@ -222,7 +211,7 @@ private:
 	list<ToSpawnUnit*> newUnitsToSpawn;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
-		     *producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *commandPatrolButton = nullptr, *commandStopButton = nullptr;
+		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr;
 	
 
 	list<UIElement*> UIMenuInfoList;

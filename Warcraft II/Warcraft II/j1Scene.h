@@ -22,6 +22,7 @@ struct UISlider;
 class UISlider_Info;
 class UIMinimap;
 
+class Entity;
 enum ENTITY_TYPE;
 
 struct Particle;	
@@ -76,6 +77,14 @@ struct BuildingMenu {
 	MenuBuildingButton cannonTower;
 };
 
+struct GroupSelectedElements {
+	Entity* owner = nullptr;
+
+	UIImage* entityIcon = nullptr;
+	UILifeBar* entityLifeBar = nullptr;
+};
+
+
 class j1Scene : public j1Module
 {
 public:
@@ -119,7 +128,12 @@ public:
 	void CheckCameraMovement(float dt);
 	void LoadInGameUI();
 	void LoadBuildingMenu();
+	void LoadUnitsMenuInfo();
+	UILifeBar * CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea);
+	void CreateAbilitiesButtons();
 
+	void ShowSelectedUnits(list<DynamicEntity*> units);
+	void HideUnselectedUnits();
 	void ChangeBuildingButtState(MenuBuildingButton* elem);
 	void ChangeBuildingMenuState(BuildingMenu* elem);
 	void UpdateLabelsMenu();
@@ -211,6 +225,7 @@ public:
 	UIMinimap* minimap = nullptr;
 
 	list<DynamicEntity*> units;
+	list<GroupSelectedElements> groupElementsList;
 
 private:
 
@@ -243,8 +258,9 @@ private:
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 	SliderStruct AudioFXPause;
 	SliderStruct AudioMusicPause;
-
-
+	//Entities Buttons
+	UIButton* commandPatrolButton = nullptr, *commandStopButton = nullptr;
+	
 	bool buildingMenuOn = false;
 
 	string orthogonalMap, isometricMap, warcraftMap;
@@ -275,7 +291,6 @@ private:
 	ENTITY_TYPE alphaBuilding;
 
 	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
-
 };
 
 #endif //__j1SCENE1_H__
