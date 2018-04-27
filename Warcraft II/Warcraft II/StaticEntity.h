@@ -48,7 +48,6 @@ enum TowerState
 	TowerState_Die
 };
 
-
 class StaticEntity :public Entity
 {
 public:

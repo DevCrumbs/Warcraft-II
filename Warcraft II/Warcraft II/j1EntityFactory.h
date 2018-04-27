@@ -230,8 +230,8 @@ private:
 	GryphonAviaryInfo gryphonAviaryInfo;
 	MageTowerInfo mageTowerInfo;
 	ScoutTowerInfo scoutTowerInfo;
-	PlayerGuardTowerInfo playerGuardTowerInfo;
-	PlayerCannonTowerInfo playerCannonTowerInfo; 
+	PlayerGuardTowerInfo playerGuardTowerInfo; // TODO
+	PlayerCannonTowerInfo playerCannonTowerInfo; // TODO
 
 	//Neutral buildings
 	GoldMineInfo goldMineInfo;
@@ -253,8 +253,8 @@ private:
 	EnemyCannonTowerInfo enemyCannonTowerInfo;
 
 	//Preview tiles
-	uint previewTilesopacity = 0;
-	uint previewBuildingOpacity;
+	uint previewTilesopacity = 255;
+	uint previewBuildingOpacity = 255;
 
 	std::priority_queue<EntitiesDraw_info, std::vector<EntitiesDraw_info>, compareEntPriority> entityDrawOrder;
 
