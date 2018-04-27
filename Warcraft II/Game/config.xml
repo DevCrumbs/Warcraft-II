@@ -148,13 +148,19 @@
       <humanBuildings name="data/assets/textures/buildings/HumanBuildings.png"/>
       <neutralBuildings name ="data/assets/textures/buildings/NeutralBuildings.png"/>
       <orcishBuildings name ="data/assets/textures/buildings/OrcishBuildings.png"/>
+      
       <footmanAnimations name = "data/assets/textures/units/humanUnits/FinalFootman.png"/>
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/FinalGrunt.png"/>
       <trollAxethrowerAnimations name = "data/assets/textures/units/orcishUnits/TrollAxethrower.png"/>
       <elvenArcherAnimations name = "data/assets/textures/units/humanUnits/archer.png"/>
+      <gryphonRiderAnimations name = "data/assets/textures/units/humanUnits/gryphonRider.png"/>
+      <dragonAnimations name = "data/assets/textures/units/orcishUnits/dragon.png"/>
+      
+      <critters name="data/assets/textures/units/neutralUnits/critters.png"/>
+      
       <khadgarAnimations name = "data/assets/textures/units/prisonersUnits/Khadgar.png"/>
       <alleriaAnimations name = "data/assets/textures/units/prisonersUnits/Alleria.png"/>
-      <critters name="data/assets/textures/units/neutralUnits/critters.png"/>
+
     </spritesheets>
 
     <previewTexturesProperties buildingPlaceOpacity ="200" tileBuildingPlaceOpacity ="120"/>
@@ -1165,18 +1171,16 @@
       <paws name="data/assets/textures/particles/paws.png"/>
     </spritesheets>
 
-    <health speed ="10" loop="0">
-      <frame x="1806" y="0" w="50" h="50" />
-      <frame x="1856" y="0" w="50" h="50" />
-      <frame x="1906" y="0" w="50" h="50" />
-
-      <frame x="1956" y="0" w="50" h="50" />
-      <frame x="2006" y="0" w="50" h="50" />
-      <frame x="2056" y="0" w="50" h="50" />
-
-      <frame x="2106" y="0" w="50" h="50" />
-      <frame x="2156" y="0" w="50" h="50" />
-      <frame x="2206" y="0" w="50" h="50" />
+    <health speed ="8" loop="0">
+      <frame x="0" y="223" w="50" h="50"/>
+      <frame x="50" y="223" w="50" h="50"/>
+      <frame x="100" y="223" w="50" h="50"/>
+      <frame x="150" y="223" w="50" h="50"/>
+      <frame x="200" y="223" w="50" h="50"/>
+      <frame x="250" y="223" w="50" h="50"/>
+      <frame x="300" y="223" w="50" h="50"/>
+      <frame x="350" y="223" w="50" h="50"/>
+      <frame x="400" y="223" w="50" h="50"/>
     </health>
 
     <towerArrows>
@@ -1327,7 +1331,6 @@
           <frame x="224" y="192" w="32" h="32"/>
         </downRight>
       </boarPaws>
-
     </animations>
   </particles>
   

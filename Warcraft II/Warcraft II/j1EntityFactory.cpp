@@ -23,8 +23,7 @@
 
 #include "Brofiler\Brofiler.h"
 
-j1EntityFactory::j1EntityFactory()
-{
+j1EntityFactory::j1EntityFactory(){
 	name.assign("entities");
 }
 
@@ -49,6 +48,9 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	alleriaTexName = spritesheets.child("alleriaAnimations").attribute("name").as_string();
 	elvenArcherTexName = spritesheets.child("elvenArcherAnimations").attribute("name").as_string();
 	trollAxethrowerTexName = spritesheets.child("trollAxethrowerAnimations").attribute("name").as_string();
+	gryphonRiderTexName = spritesheets.child("gryphonRiderAnimations").attribute("name").as_string();
+	dragonTexName = spritesheets.child("dragonAnimations").attribute("name").as_string();
+
 
 	//Debug Textures Properties
 	previewBuildingOpacity = config.child("previewTexturesProperties").attribute("buildingPlaceOpacity").as_uint();
@@ -940,7 +942,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	}
 	// death up-right
 	currentAnimation = boarAnimations.child("deathUpRight");
-	critterBoarInfo.deathUpRight.speed = currentAnimation.attribute("speed").as_float();
+
+  critterBoarInfo.deathUpRight.speed = currentAnimation.attribute("speed").as_float();
 	critterBoarInfo.deathUpRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		critterBoarInfo.deathUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
@@ -969,75 +972,216 @@ bool j1EntityFactory::Start()
 
 	LOG("Loading entities textures");
 
-	// Entities Info
-	// Troll Axethrower
-	trollAxethrowerInfo.maxLife = 40;
-	trollAxethrowerInfo.currLife = trollAxethrowerInfo.maxLife;
-	trollAxethrowerInfo.axeSpeed = 120.0f;
+	// ENTITIES INFO
 
-	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
-	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
-	trollAxethrowerInfo.unitInfo.attackRadius = 3;
-	trollAxethrowerInfo.unitInfo.sightRadius = 12;
-	trollAxethrowerInfo.unitInfo.damage = 6;
-	trollAxethrowerInfo.unitInfo.priority = 3;
-	// -----
-
-	// Grunt
-	gruntInfo.maxLife = 40;
-	gruntInfo.currLife = gruntInfo.maxLife;
-
-	gruntInfo.unitInfo.maxSpeed = 50.0f;
-	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
-	gruntInfo.unitInfo.attackRadius = 2;
-	gruntInfo.unitInfo.sightRadius = 12;
-	gruntInfo.unitInfo.damage = 5;
-	gruntInfo.unitInfo.priority = 3;
-	// -----
-
-	// Elven Archer
-	elvenArcherInfo.maxLife = 30;
-	elvenArcherInfo.currLife = elvenArcherInfo.maxLife;
-	elvenArcherInfo.arrowSpeed = 170.0f;
-
-	elvenArcherInfo.unitInfo.maxSpeed = 80.0f;
-	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
-	elvenArcherInfo.unitInfo.attackRadius = 5;
-	elvenArcherInfo.unitInfo.sightRadius = 12;
-	elvenArcherInfo.unitInfo.damage = 5;
-	elvenArcherInfo.unitInfo.priority = 2;
-	// -----
-
+	/// ALLIANCE
+	/// Dynamic Entities
 	// Footman
-	footmanInfo.maxLife = 60;
-	footmanInfo.currLife = footmanInfo.maxLife;
+	footmanInfo.unitInfo.priority = 2;
 
-	footmanInfo.unitInfo.maxSpeed = 70.0f;
-	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+	/// Radius
 	footmanInfo.unitInfo.attackRadius = 2;
 	footmanInfo.unitInfo.sightRadius = 4;
-	footmanInfo.unitInfo.damage = 5;
-	footmanInfo.unitInfo.priority = 2;
-	// -----
 
-	// Critters
-	critterSheepInfo.currLife = 10;
-	critterSheepInfo.maxLife = critterSheepInfo.currLife;
-	critterSheepInfo.restoredHealth = 10;
+	/// Damage
+	footmanInfo.unitInfo.heavyDamage = 6;
+	footmanInfo.unitInfo.lightDamage = 8;
+	footmanInfo.unitInfo.airDamage = 0;
+	footmanInfo.unitInfo.towerDamage = 6;
 
-	critterSheepInfo.unitInfo.maxSpeed = 30.0f;
-	critterSheepInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+	/// Speed
+	footmanInfo.unitInfo.maxSpeed = 70.0f;
+	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+
+	/// Life
+	footmanInfo.unitInfo.maxLife = 60;
+	footmanInfo.unitInfo.currLife = footmanInfo.unitInfo.maxLife;
+	//_Footman
+
+	// Elven Archer
+	elvenArcherInfo.unitInfo.priority = 2;
+
+	/// Radius
+	elvenArcherInfo.unitInfo.attackRadius = 5;
+	elvenArcherInfo.unitInfo.sightRadius = 12;
+
+	/// Damage
+	elvenArcherInfo.unitInfo.heavyDamage = 4;
+	elvenArcherInfo.unitInfo.lightDamage = 7;
+	elvenArcherInfo.unitInfo.airDamage = 10;
+	elvenArcherInfo.unitInfo.towerDamage = 11;
+
+	/// Speed
+	elvenArcherInfo.unitInfo.maxSpeed = 80.0f;
+	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
+
+	/// Life	
+	elvenArcherInfo.unitInfo.maxLife = 50;
+	elvenArcherInfo.unitInfo.currLife = elvenArcherInfo.unitInfo.maxLife;
+	
+	///
+	elvenArcherInfo.arrowSpeed = 170.0f;
+	//_Elven_Archer
+	
+	// Gryphon Rider
+	gryphonRiderInfo.unitInfo.priority = 2;
+
+	/// Radius
+	gryphonRiderInfo.unitInfo.attackRadius = 3;
+	gryphonRiderInfo.unitInfo.sightRadius = 12;
+
+	/// Damage
+	gryphonRiderInfo.unitInfo.heavyDamage = 7;
+	gryphonRiderInfo.unitInfo.lightDamage = 5;
+	gryphonRiderInfo.unitInfo.airDamage = 7;
+	gryphonRiderInfo.unitInfo.towerDamage = 8;
+
+	/// Speed
+	gryphonRiderInfo.unitInfo.maxSpeed = 60.0f;
+	gryphonRiderInfo.unitInfo.currSpeed = gryphonRiderInfo.unitInfo.maxSpeed;
+
+	/// Life
+	gryphonRiderInfo.unitInfo.maxLife = 100;
+	gryphonRiderInfo.unitInfo.currLife = gryphonRiderInfo.unitInfo.maxLife;
+	///
+
+	gryphonRiderInfo.fireSpeed = 120.0f;
+	//_Gryphon_Rider
+
+	/// Static Entities
+	// Towers
+	scoutTowerInfo.life = 150;
+	scoutTowerInfo.damage = 7;
+
+	playerGuardTowerInfo.life = 175;
+	playerGuardTowerInfo.damage = 13;
+
+	playerCannonTowerInfo.life = 200;
+	playerCannonTowerInfo.damage = 17;
+	//_Towers
+
+	/// HORDE
+	/// Dynamic Entities
+	// Grunt
+	gruntInfo.unitInfo.priority = 2;
+
+	/// Radius
+	gruntInfo.unitInfo.attackRadius = 2;
+	gruntInfo.unitInfo.sightRadius = 12;
+
+	/// Damage
+	gruntInfo.unitInfo.heavyDamage = 6;
+	gruntInfo.unitInfo.lightDamage = 8;
+	gruntInfo.unitInfo.airDamage = 0;
+	gruntInfo.unitInfo.towerDamage = 6;
+
+	/// Speed
+	gruntInfo.unitInfo.maxSpeed = 50.0f;
+	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
+
+	/// Life
+	gruntInfo.unitInfo.maxLife = 60;
+	gruntInfo.unitInfo.currLife = gruntInfo.unitInfo.maxLife;
+	//_Grunt
+
+	// Troll Axethrower
+	trollAxethrowerInfo.unitInfo.priority = 2;
+
+	/// Radius
+	trollAxethrowerInfo.unitInfo.attackRadius = 3;	trollAxethrowerInfo.unitInfo.sightRadius = 12;
+
+	/// Damage
+	trollAxethrowerInfo.unitInfo.heavyDamage = 4;
+	trollAxethrowerInfo.unitInfo.lightDamage = 7;
+	trollAxethrowerInfo.unitInfo.airDamage = 10;
+	trollAxethrowerInfo.unitInfo.towerDamage = 11;
+
+	/// Speed
+	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
+	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
+	/// Life
+	trollAxethrowerInfo.unitInfo.maxLife = 40;
+	trollAxethrowerInfo.unitInfo.currLife = trollAxethrowerInfo.unitInfo.maxLife;
+	
+	///
+	trollAxethrowerInfo.axeSpeed = 120.0f;
+	//_Troll_Axethrower
+
+	// Dragon
+	dragonInfo.unitInfo.priority = 2;
+
+	/// Radius
+	dragonInfo.unitInfo.attackRadius = 3;
+	dragonInfo.unitInfo.sightRadius = 12;
+
+	/// Damage
+	dragonInfo.unitInfo.heavyDamage = 7;
+	dragonInfo.unitInfo.lightDamage = 5;
+	dragonInfo.unitInfo.airDamage = 7;
+	dragonInfo.unitInfo.towerDamage = 8;
+
+	/// Speed
+	dragonInfo.unitInfo.maxSpeed = 60.0f;
+	dragonInfo.unitInfo.currSpeed = dragonInfo.unitInfo.maxSpeed;
+
+	/// Life
+	dragonInfo.unitInfo.maxLife = 50;
+	dragonInfo.unitInfo.currLife = dragonInfo.unitInfo.maxLife;
+	///
+
+
+  dragonInfo.fireSpeed = 120.0f;
+	//_Dragon
+
+	/// Static Entities
+	// Towers
+	watchTowerInfo.life = 150;
+	watchTowerInfo.damage = 7;
+
+  
+	enemyGuardTowerInfo.life = 175;
+	enemyGuardTowerInfo.damage = 13;
+
+	enemyCannonTowerInfo.life = 200;
+	enemyCannonTowerInfo.damage = 17;
+	//_Towers
+
+	// CRITTERS
+
+  // Sheep
 	critterSheepInfo.unitInfo.priority = 1;
 
-	critterBoarInfo.currLife = 20;
-	critterBoarInfo.maxLife = critterBoarInfo.currLife;
-	critterBoarInfo.restoredHealth = 20;
+	/// Speed
+	critterSheepInfo.unitInfo.maxSpeed = 30.0f;
+	critterSheepInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
 
+	/// Life
+	critterSheepInfo.unitInfo.currLife = 100;
+	critterSheepInfo.unitInfo.maxLife = critterSheepInfo.unitInfo.currLife;
+	
+	///
+	critterSheepInfo.restoredHealth = 10;
+	//_Sheep
+
+	// Boar
+	critterBoarInfo.unitInfo.priority = 1;
+
+	/// Speed
 	critterBoarInfo.unitInfo.maxSpeed = 30.0f;
 	critterBoarInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
-	critterBoarInfo.unitInfo.priority = 1;
-	// -----
 
+	/// Life
+	critterBoarInfo.unitInfo.currLife = 20;
+	critterBoarInfo.unitInfo.maxLife = critterBoarInfo.unitInfo.currLife;
+
+	///
+	critterBoarInfo.restoredHealth = 20;
+	//_Boar
+
+	// NEUTRAL BUILDINGS
+	// Runestone
+	runestoneInfo.sightRadius = 7;
+	//_Runestone
 	// Load textures
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
 	neutralBuildingsTex = App->tex->Load(neutralBuildingsTexName.data());
@@ -1047,6 +1191,8 @@ bool j1EntityFactory::Start()
 	trollAxethrowerTex = App->tex->Load(trollAxethrowerTexName.data());
 	footmanTex = App->tex->Load(footmanTexName.data());
 	gruntTex = App->tex->Load(gruntTexName.data());
+	gryphonRiderTex = App->tex->Load(gryphonRiderTexName.data());
+	dragonTex = App->tex->Load(dragonTexName.data());
 
 	crittersTex = App->tex->Load(crittersTexName.data());
 
@@ -1067,7 +1213,6 @@ bool j1EntityFactory::PreUpdate()
 	list<Entity*>::const_iterator it = toSpawnEntities.begin();
 
 	while (it != toSpawnEntities.end()) {
-
 		fPoint pos = (*it)->GetPos();
 		int x = pos.x * App->scene->scale;
 		int y = pos.y * App->scene->scale;
@@ -1076,7 +1221,7 @@ bool j1EntityFactory::PreUpdate()
 		// Move the entity from the waiting list to the active list
 		if ((*it)->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-			activeDynamicEntities.push_back((DynamicEntity*)(*it));
+			activeDynamicEntities.push_back((DynamicEntity*)(*it))
 			if ((*it)->entitySide == EntitySide_Player)
 				App->player->unitProduce++;
 			LOG("Spawning dynamic entity at tile %d,%d", x, y);
@@ -1085,7 +1230,7 @@ bool j1EntityFactory::PreUpdate()
 
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
-		}
+		
 
 		it++;
 	}
@@ -1094,7 +1239,7 @@ bool j1EntityFactory::PreUpdate()
 	for (std::list<DynamicEntity*>::iterator iterator = activeDynamicEntities.begin(); iterator != activeDynamicEntities.end(); iterator++) {
 		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
 		if (App->render->IsInScreen(r)) {
-			EntitiesDraw_info info;
+			EntitiesDraw_info info
 			info.priority = (*iterator)->GetPos().y + (*iterator)->GetSize().y;
 			info.ent = (*iterator);
 			DynamicEntity* dyn = (DynamicEntity*)(*iterator);
@@ -1103,7 +1248,7 @@ bool j1EntityFactory::PreUpdate()
 		}
 	}
 
-		for (std::list<StaticEntity*>::iterator iterator = activeStaticEntities.begin(); iterator != activeStaticEntities.end(); iterator++) {
+		for (std::list<StaticEntity*>::iterator iterator = activeStaticEntities.begin(); iterator != activeStaticEntities.end(); iterator++) 
 		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
 		if (App->render->IsInScreen(r)) {
 			EntitiesDraw_info info;
@@ -1112,7 +1257,7 @@ bool j1EntityFactory::PreUpdate()
 			StaticEntity* stc = (StaticEntity*)(*iterator);
 				info.type = stc->staticEntityType;
 			entityDrawOrder.push(info);
-		}
+		
 	}
 
 	return ret;
@@ -1121,7 +1266,7 @@ bool j1EntityFactory::PreUpdate()
 // Called before render is available
 bool j1EntityFactory::Update(float dt)
 {
-	bool ret = true;
+	bool ret = true
 
 	// Update active static entities
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
@@ -1548,7 +1693,6 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 
 	return false;
 }
-
 
 // Returns true if a building can NOT be built in that spot
 bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const
@@ -2812,7 +2956,7 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 /// TODO:
 /// - If units are selected, buildings cannot be selected
 /// - If a building is selected, units cannot be selected
-/// · Only 1 building can be selected at a time
+/// Â· Only 1 building can be selected at a time
 void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTITY_CATEGORY entityCategory, EntitySide entitySide)
 {
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
