@@ -136,12 +136,11 @@ bool j1Scene::Start()
 	LoadInGameUI();
 
 	if (terenasDialogEvent == TerenasDialog_NONE) {
-		UnLoadTerenasDialog();
 		terenasDialogTimer.Start();
 		terenasDialogEvent = TerenasDialog_START;
-		LoadTerenasDialog(terenasDialogEvent);
+		ShowTerenasDialog(terenasDialogEvent);
 	}
-
+	
 	//Calculate camera movement in pixels through the percentatge given
 	if (!isCamMovMarginCharged) {
 		camMovMargin = camMovMargin * ((width + height) / 2) / 100;
@@ -606,12 +605,10 @@ bool j1Scene::Update(float dt)
 	//Checks if resources have changed to update building menu and gold label
 
 	if (terenasDialogTimer.Read() >= 25000 && terenasDialogEvent == TerenasDialog_START) {
-		terenasDialogEvent = TerenasDialog_NONE;
-		UnLoadTerenasDialog();
+		HideTerenasDialog();
 	}
 	if (terenasDialogTimer.Read() >= 5000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
-		terenasDialogEvent = TerenasDialog_NONE;
-		UnLoadTerenasDialog();
+		HideTerenasDialog();
 	}
 
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
@@ -945,7 +942,7 @@ void j1Scene::LoadInGameUI()
 	LoadResourcesLabels();
 	LoadBuildingMenu();
 	LoadUnitsMenuInfo();
-
+	LoadTerenasDialog();
 	//create this before entitiesInfo (Parent)
 	App->player->CreateEntitiesStatsUI();
 
@@ -995,6 +992,20 @@ void j1Scene::CreateAbilitiesButtons()
 	infoButton.pressedTexArea = { 700,202,50,41 };
 	commandPatrolButton = App->gui->CreateUIButton({ 268, 2 }, infoButton, this, (UIElement*)App->scene->entitiesStats);
 	commandPatrolButton->isActive = false;
+}
+
+void j1Scene::LoadTerenasDialog()
+{
+	UIImage_Info imageInfo;
+	imageInfo.texArea = { 734,34,70,100 };
+	terenasAdvices.terenasImage = App->gui->CreateUIImage({ 695,32 }, imageInfo, this);
+	terenasAdvices.terenasImage->isActive = false;
+
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.interactive = false;
+	terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
+	terenasAdvices.text->isActive = false;
 }
 
 void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
@@ -1379,11 +1390,12 @@ void j1Scene::DestroyAllUI()
 		App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
 		(*iterator).owner = nullptr;
 	}
+	groupElementsList.clear();
 
 	App->gui->RemoveElem((UIElement**)&commandPatrolButton);
 	App->gui->RemoveElem((UIElement**)&commandStopButton);
 
-	groupElementsList.clear();
+	
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()
@@ -1430,55 +1442,62 @@ bool j1Scene::CompareSelectedUnitsLists(list<DynamicEntity*> units)
 	return ret;
 }
 
-void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
+void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 {
-	UIImage_Info imageInfo;
-	imageInfo.texArea = {734,34,70,100};
-	terenasAdvices.terenasImage = App->gui->CreateUIImage({ 695,32 }, imageInfo, this);
-	UILabel_Info labelInfo;
-	if (dialogEvent == TerenasDialog_START) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 340;
-		labelInfo.interactive = false;
-		labelInfo.text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
+	//TODO: Search the same pos and lenght
+	string text;
+	switch (dialogEvent)
+	{
+	case TerenasDialog_START:
+		text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE!";
+		terenasAdvices.text->SetText(text, 340);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_RESCUE_ALLERIA:
+		text = "Congratulations! You have freed Alleria. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text->SetText(text, 350);
+		terenasAdvices.text->SetLocalPos({ 355,37 });
+		break;
+	case TerenasDialog_RESCUE_KHADGAR:
+		text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
+		terenasAdvices.text->SetText(text, 350);
+		terenasAdvices.text->SetLocalPos({ 355,37 });
+		break;
+	case TerenasDialog_GOLD_MINE:
+		text = "To get gold from the mine you have to select units and they will gather it.";
+		terenasAdvices.text->SetText(text, 320);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_RUNESTONE:
+		//TODO ??
+		//text = "To get gold from the mine you have to select units and they will gather it.";
+		//terenasAdvices.text->SetText(text, 320);
+		//terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_FOOD:
+		text = "To produce units you need to have enough food to feed them.Build more farms.";
+		terenasAdvices.text->SetText(text, 320);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_GOLD:
+		text = "To produce units you need to have enough gold. Get more from mines.";
+		terenasAdvices.text->SetText(text, 320);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_NONE:
+		break;
+	default:
+		break;
 	}
-	else if (dialogEvent == TerenasDialog_RESCUE_ALLERIA) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 350;
-		labelInfo.interactive = false;
-		labelInfo.text = "Congratulations! You have freed Alleria. I thank you in the name of Azeroth. For the alliance!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
-	}
-	else if (dialogEvent == TerenasDialog_RESCUE_KHADGAR) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 350;
-		labelInfo.interactive = false;
-		labelInfo.text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 355,37 }, labelInfo, this);
-	}
-	else if (dialogEvent == TerenasDialog_GOLD_MINE) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 320;
-		labelInfo.interactive = false;
-		labelInfo.text = "To get gold from the mine you have to select units and they will gather it.";
-		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
-	}
-	else if (dialogEvent == TerenasDialog_FOOD) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 320;
-		labelInfo.interactive = false;
-		labelInfo.text = "To produce units you need to have enough food to feed them. Build more farms.";
-		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
-	}
-	else if (dialogEvent == TerenasDialog_GOLD) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 320;
-		labelInfo.interactive = false;
-		labelInfo.text = "To produce units you need to have enough gold. Get more from mines.";
-		terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
-	}
+	terenasAdvices.text->isActive = true;
+	terenasAdvices.terenasImage->isActive = true;
+}
 
+void j1Scene::HideTerenasDialog()
+{
+	terenasDialogEvent = TerenasDialog_NONE;
+	terenasAdvices.text->isActive = false;
+	terenasAdvices.terenasImage->isActive = false;
 }
 
 void j1Scene::UnLoadTerenasDialog()
@@ -1504,7 +1523,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			if (UIelem == buildingButton) {
 				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadTerenasDialog();
+				HideTerenasDialog();
 				ChangeBuildingMenuState(&buildingMenuButtons);
 			}
 
