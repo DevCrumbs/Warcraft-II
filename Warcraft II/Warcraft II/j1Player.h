@@ -130,7 +130,9 @@ public:
 	void HideEntitySelectedInfo();
 	void MakeUnitMenu(Entity* entity);
 	void DeleteEntitiesMenu();
-	void MakeHoverInfoMenu(string unitProduce, string gold);
+	void CreateHoverInfoMenu();
+	void ShowHoverInfoMenu(string unitProduce, string gold);
+	void HideHoverInfoMenu();
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
 	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea);
@@ -209,6 +211,7 @@ private:
 
 	HoverInfo hoverInfo;
 
+	//TODO Oscar (Puntero in list)
 	list<GroupSpawning> toSpawnUnitStats;
 	list<ToSpawnUnit*> newUnitsToSpawn;
 

@@ -147,7 +147,7 @@ bool j1Player::Update(float dt)
 				}
 			}
 	*/
-	/*
+	
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 		if (!chickenFarm.empty()) 
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
@@ -155,7 +155,7 @@ bool j1Player::Update(float dt)
 				ent->ApplyDamage(20);
 				if (!chickenFarm.back()->CheckBuildingState()) {
 					if (entitySelectedStats.entitySelected == ent)
-						DeleteEntitiesMenu();
+						HideEntitySelectedInfo();
 					chickenFarm.pop_back();
 				}
 				else if (entitySelectedStats.entitySelected == ent) {
@@ -163,7 +163,7 @@ bool j1Player::Update(float dt)
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
 			}
-	*/
+	
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_REPEAT) {
 		App->audio->PlayFx(6, 0); //Gold mine sound
 		AddGold(500);
@@ -828,8 +828,7 @@ void j1Player::CreateEntitiesStatsUI()
 	CreateGryphonAviaryButtons();	
 	//CreateMageTowerButtons();
 	CreateTownHallButtons();
-	
-
+	CreateHoverInfoMenu();
 }
 
 void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) 
@@ -1020,21 +1019,21 @@ void j1Player::DeleteEntitiesMenu()
 	entitySelectedStats.entitySelected = nullptr;
 }
 
-void j1Player::MakeHoverInfoMenu(string unitProduce, string gold) {
+void j1Player::ShowHoverInfoMenu(string unitProduce, string gold) {
 
-	UIImage_Info backgroundImageInfo;
-	backgroundImageInfo.texArea = { 241, 384, 85, 38 };
-	hoverInfo.background = App->gui->CreateUIImage({ -2, -40 }, backgroundImageInfo, nullptr, produceFootmanButton);
-	UILabel_Info labelInfo;
-	labelInfo.interactive = false;
-	labelInfo.text = unitProduce;
-	labelInfo.fontName = FONT_NAME_WARCRAFT9;
-	hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, labelInfo, nullptr, hoverInfo.background);
+	hoverInfo.background->isActive = true;
 
-	labelInfo.text = gold;
-	labelInfo.fontName = FONT_NAME_WARCRAFT9;
-	hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, labelInfo, nullptr, hoverInfo.background);
+	hoverInfo.info->SetText(unitProduce);
+	hoverInfo.cost->SetText(gold);
 
+	hoverInfo.info->isActive = true;
+	hoverInfo.cost->isActive = true;
+}
+void j1Player::HideHoverInfoMenu()
+{
+	hoverInfo.background->isActive = false;
+	hoverInfo.info->isActive = false;
+	hoverInfo.cost->isActive = false;
 }
 void j1Player::DeleteHoverInfoMenu()
 {
@@ -1103,7 +1102,23 @@ void j1Player::CreateTownHallButtons()
 {
 	CreateSimpleButton({ 579,118,50,41 }, { 629, 118, 50, 41 }, { 679,118,50,41 }, { 217, 2 }, upgradeTownHallButton);
 }
+void j1Player::CreateHoverInfoMenu() {
 
+	UIImage_Info backgroundImageInfo;
+	backgroundImageInfo.texArea = { 241, 384, 85, 38 };
+	hoverInfo.background = App->gui->CreateUIImage({ 643, 481 }, backgroundImageInfo, nullptr);
+	hoverInfo.background->isActive = false;
+
+	UILabel_Info labelInfo;
+	labelInfo.interactive = false;
+	labelInfo.fontName = FONT_NAME_WARCRAFT9;
+	hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, labelInfo, nullptr, hoverInfo.background);
+	hoverInfo.info->isActive = false;
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT9;
+	hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, labelInfo, nullptr, hoverInfo.background);
+	hoverInfo.cost->isActive = false;
+}
 void j1Player::HandleBarracksUIElem()
 {
 	//Delete UI elements when not used
@@ -1183,29 +1198,24 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		case UI_EVENT_MOUSE_ENTER:
 
 			if (UIelem == produceFootmanButton) {
-				DeleteHoverInfoMenu();
-				MakeHoverInfoMenu("Produces footman", "Cost: 500 gold");
+				ShowHoverInfoMenu("Produces footman", "Cost: 500 gold");
 			}
 			if (UIelem == produceElvenArcherButton) {
-				DeleteHoverInfoMenu();
-				MakeHoverInfoMenu("Produces archer", "Cost: 400 gold");
+				ShowHoverInfoMenu("Produces archer", "Cost: 400 gold");
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
-				DeleteHoverInfoMenu();
-				MakeHoverInfoMenu("Produces mage", "Cost: 1200 gold");
+				ShowHoverInfoMenu("Produces mage", "Cost: 1200 gold");
 			}
 			if (UIelem == producePaladinButton) {
-				DeleteHoverInfoMenu();
-				MakeHoverInfoMenu("Produces paladin", "Cost: 800 gold");
+				ShowHoverInfoMenu("Produces paladin", "Cost: 800 gold");
 			}
 			if (UIelem == produceGryphonRiderButton) {
-				DeleteHoverInfoMenu();
-				MakeHoverInfoMenu("Produces gryphon", "Cost: 2500 gold");
+				ShowHoverInfoMenu("Produces gryphon", "Cost: 2500 gold");
 			}
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
 			if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton || UIelem == produceMageButton || UIelem == produceGryphonRiderButton) {
-				DeleteHoverInfoMenu();
+				HideHoverInfoMenu();
 			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_CLICK:

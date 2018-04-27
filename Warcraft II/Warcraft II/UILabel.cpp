@@ -185,12 +185,12 @@ void UILabel::HandleInput()
 
 //---------------------------------------------------------------
 
-void UILabel::SetText(string text)
+void UILabel::SetText(string text, uint wrapLength)
 {
 	if (tex != nullptr)
 		App->tex->UnLoad(tex);
 
-	tex = App->font->Print(text.data(), color, font);
+	tex = App->font->Print(text.data(), color, font, wrapLength);
 }
 
 string UILabel::GetText() 

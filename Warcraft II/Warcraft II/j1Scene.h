@@ -225,6 +225,7 @@ public:
 	UIMinimap* minimap = nullptr;
 
 	list<DynamicEntity*> units;
+	//TODO OSCAR
 	list<GroupSelectedElements> groupElementsList;
 
 private:
