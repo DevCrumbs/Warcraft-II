@@ -61,6 +61,11 @@ iPoint Entity::GetSize() const
 	return size;
 }
 
+iPoint Entity::GetOffsetSize() const
+{
+	return offsetSize;
+}
+
 void Entity::SetMaxLife(int life)
 {
 	maxLife = life;
@@ -212,6 +217,23 @@ uint Entity::GetAttackingUnitsSize(Entity* attackingUnit) const
 	}
 
 	return size;
+}
+
+// Selection color
+void Entity::SetColor(SDL_Color color, string colorName)
+{
+	this->color = color;
+	this->colorName = colorName;
+}
+
+SDL_Color Entity::GetColor() const
+{
+	return color;
+}
+
+string Entity::GetColorName() const
+{
+	return colorName;
 }
 
 // Struct TargetInfo -------------------------------------------------------------

@@ -40,6 +40,9 @@ CritterSheep::CritterSheep(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	this->critterSheepInfo.deathDownLeft = info.deathDownLeft;
 	this->critterSheepInfo.deathDownRight = info.deathDownRight;
 
+	size = this->unitInfo.size;
+	offsetSize = this->unitInfo.offsetSize;
+
 	LoadAnimationsSpeed();
 
 	// Initialize the goals
@@ -131,15 +134,8 @@ void CritterSheep::Draw(SDL_Texture* sprites)
 
 void CritterSheep::DebugDrawSelected()
 {
-	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	const SDL_Rect entitySize = { pos.x + offsetSize.x, pos.y + offsetSize.y, size.x, size.y };
 	App->printer->PrintQuad(entitySize, color);
-
-	for (uint i = 0; i < unitInfo.priority; ++i) {
-		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-		App->printer->PrintQuad(entitySize, color);
-	}
 }
 
 void CritterSheep::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)

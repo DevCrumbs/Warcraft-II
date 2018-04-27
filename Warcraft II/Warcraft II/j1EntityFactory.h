@@ -149,11 +149,18 @@ public:
 	void InvalidateMovementEntity(Entity* entity);
 	///_SANDRA
 
-	bool Save(pugi::xml_node& save) const;
-	bool Load(pugi::xml_node& save);
+	// New selection
+	Entity* IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide) const;
+	//_New_selection
+
+	bool SelectBuilding(StaticEntity* staticEntity);
+	void UnselectAllBuildings();
 
 	int GetPlayerSoldiers() const;
 	bool IsNearSoldiers(iPoint pos, uint distance);
+
+	bool Save(pugi::xml_node& save) const;
+	bool Load(pugi::xml_node& save);
 
 public:
 

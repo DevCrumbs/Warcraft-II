@@ -51,7 +51,14 @@ GryphonRider::GryphonRider(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	this->gryphonRiderInfo.deathUp = info.deathUp;
 	this->gryphonRiderInfo.deathDown = info.deathDown;
 
+	size = this->unitInfo.size;
+	offsetSize = this->unitInfo.offsetSize;
+
 	LoadAnimationsSpeed();
+
+	// Set the color of the entity
+	color = ColorWhite;
+	colorName = "WhiteGryphon";
 
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
@@ -284,9 +291,12 @@ void GryphonRider::Draw(SDL_Texture* sprites)
 	if (animation != nullptr) {
 
 		fPoint offset = { 0.0f,0.0f };
-		offset = { animation->GetCurrentFrame().w / 3.0f, animation->GetCurrentFrame().h / 3.0f };
 
-		//App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
+		if (animation == &gryphonRiderInfo.deathDown || animation == &gryphonRiderInfo.deathUp)
+			offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.3f };
+		else
+			offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.5f };
+
 		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 	}
 
@@ -296,15 +306,8 @@ void GryphonRider::Draw(SDL_Texture* sprites)
 
 void GryphonRider::DebugDrawSelected()
 {
-	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	const SDL_Rect entitySize = { pos.x + offsetSize.x, pos.y + offsetSize.y, size.x, size.y };
 	App->printer->PrintQuad(entitySize, color);
-
-	//for (uint i = 0; i < unitInfo.priority; ++i) {
-	//const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-	//const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-	//}
 }
 
 void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)

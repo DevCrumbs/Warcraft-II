@@ -164,6 +164,7 @@ public:
 	void AddToPos(fPoint pos);
 	fPoint GetPos() const;
 	iPoint GetSize() const;
+	iPoint GetOffsetSize() const;
 
 	// Life and damage
 	void SetMaxLife(int life);
@@ -187,6 +188,11 @@ public:
 	bool RemoveAttackingUnit(Entity* entity);
 	uint GetAttackingUnitsSize(Entity* attackingUnit) const;
 
+	// Selection color
+	void SetColor(SDL_Color color, string colorName);
+	SDL_Color GetColor() const;
+	string GetColorName() const;
+
 public:
 
 	ENTITY_CATEGORY entityType = EntityCategory_NONE;
@@ -202,8 +208,8 @@ public:
 
 protected:
 
-
 	iPoint size = { 0,0 };
+	iPoint offsetSize = { 0,0 };
 
 	int currLife = 0;
 	uint maxLife = 0;
@@ -216,6 +222,10 @@ protected:
 
 	// Attack
 	list<Entity*> unitsAttacking;
+
+	// Selection color
+	SDL_Color color = ColorOlive;
+	string colorName = "Default";
 };
 
 #endif //__Entity_H__

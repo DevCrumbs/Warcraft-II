@@ -406,19 +406,29 @@ bool j1Scene::Update(float dt)
 
 
 	// *****UNITS*****
-	/// Units cannot be clicked if a building is being placed or Pause Menu are actived
+	/// Units cannot be clicked if a building is being placed or Pause Menu is active
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 
 		// Select units by mouse click
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 			startRectangle = mousePos;
 
-			Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: only player side
-
+			Entity* entity = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY);
 			if (entity != nullptr)
 				App->entities->SelectEntity(entity);
 			//else
 				//App->entities->UnselectAllEntities();
+
+			Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+			if (playerBuilding != nullptr)
+				App->entities->SelectBuilding((StaticEntity*)playerBuilding);
+			
+			Entity* neutralBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
+			if (neutralBuilding != nullptr)
+				App->entities->SelectBuilding((StaticEntity*)neutralBuilding);
+
+			if (playerBuilding == nullptr && neutralBuilding == nullptr)
+				App->entities->UnselectAllBuildings();
 		}
 
 		int width = mousePos.x - startRectangle.x;
@@ -449,12 +459,19 @@ bool j1Scene::Update(float dt)
 		units = App->entities->GetLastUnitsSelected();
 
 		if (units.size() > 0) {
+
+			if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN)
+				units.front()->KillEntity();
+
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+
 				if (!CompareSelectedUnitsLists(units)) {
+
 					App->player->HideEntitySelectedInfo();
 					ShowSelectedUnits(units);
 				}
 			}
+
 			UnitGroup* group = App->movement->GetGroupByUnits(units);
 
 			if (group == nullptr)
