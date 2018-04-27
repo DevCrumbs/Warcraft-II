@@ -67,11 +67,9 @@ public:
 	uint GetConstructionTime() const;
 	bool GetIsFinishedBuilt() const;
 
-	// Collision
-	ColliderGroup* GetSightRadiusCollider() const;
-
+	//Colliders
 	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
-	void UpdateRhombusColliderPos(ColliderGroup* collider, uint radius, DistanceHeuristic distanceHeuristic);
+	ColliderGroup* GetSightRadiusCollider() const;
 
 public:
 
@@ -88,7 +86,6 @@ protected:
 	uint constructionTime = 0;
 	bool isBuilt = false;
 
-	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;
 };
 

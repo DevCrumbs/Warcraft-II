@@ -99,8 +99,7 @@ struct EntitySelectedStats
 	UILabel* entitySight = nullptr;
 	UILabel* entityRange = nullptr;
 	UILabel* entityDamage = nullptr;
-	UILabel* entityMana = nullptr;
-	UILabel* entityMovementSpeed = nullptr;
+	UILabel* entitySpeed = nullptr;
 	UIImage* entityIcon = nullptr;
 	UILifeBar* lifeBar = nullptr;
 
@@ -163,8 +162,13 @@ public:
 	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
-	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
-	void MakeGoldMineMenu(Entity* currentEntity);
+
+	void CreateEntitiesStatsUI();
+	void ShowEntitySelectedInfo(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
+	void ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range);
+	void ShowEntitySelectedButt(ENTITY_TYPE type);
+	void HideEntitySelectedInfo();
+
 	void MakeUnitMenu(Entity* entity);
 	void MakeUnitsMenu(list<DynamicEntity*> units);
 	void DeleteEntitiesMenu();

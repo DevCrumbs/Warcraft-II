@@ -65,7 +65,7 @@ void TownHall::Move(float dt)
 	if (App->player->keepUpgrade) {
 		if (!startTimer) {
 			this->constructionTimer.Start();
-			App->player->DeleteEntitiesMenu();
+			App->player->HideEntitySelectedInfo();
 			startTimer = true;
 		}
 		townHallInfo.townHallType = TownHallType_Castle;
@@ -74,7 +74,7 @@ void TownHall::Move(float dt)
 	else if (App->player->townHallUpgrade) {
 		if (startTimer) {
 			this->constructionTimer.Start();
-			App->player->DeleteEntitiesMenu();
+			App->player->HideEntitySelectedInfo();
 			startTimer = false;
 		}
 		townHallInfo.townHallType = TownHallType_Keep;

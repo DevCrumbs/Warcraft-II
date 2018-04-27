@@ -52,6 +52,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	gryphonRiderTexName = spritesheets.child("gryphonRiderAnimations").attribute("name").as_string();
 	dragonTexName = spritesheets.child("dragonAnimations").attribute("name").as_string();
 
+
 	//Debug Textures Properties
 	previewTilesopacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
 	previewBuildingOpacity = config.child("previewTexturesProperties").attribute("buildingPlaceOpacity").as_uint();
@@ -1230,216 +1231,6 @@ bool j1EntityFactory::Start()
 
 	LOG("Loading entities textures");
 
-	// ENTITIES INFO
-
-	/// ALLIANCE
-	/// Dynamic Entities
-	// Footman
-	footmanInfo.unitInfo.priority = 2;
-
-	/// Radius
-	footmanInfo.unitInfo.attackRadius = 2;
-	footmanInfo.unitInfo.sightRadius = 4;
-
-	/// Damage
-	footmanInfo.unitInfo.heavyDamage = 6;
-	footmanInfo.unitInfo.lightDamage = 8;
-	footmanInfo.unitInfo.airDamage = 0;
-	footmanInfo.unitInfo.towerDamage = 6;
-
-	/// Speed
-	footmanInfo.unitInfo.maxSpeed = 70.0f;
-	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
-
-	/// Life
-	footmanInfo.unitInfo.maxLife = 60;
-	footmanInfo.unitInfo.currLife = footmanInfo.unitInfo.maxLife;
-	//_Footman
-
-	// Elven Archer
-	elvenArcherInfo.unitInfo.priority = 2;
-
-	/// Radius
-	elvenArcherInfo.unitInfo.attackRadius = 5;
-	elvenArcherInfo.unitInfo.sightRadius = 12;
-
-	/// Damage
-	elvenArcherInfo.unitInfo.heavyDamage = 4;
-	elvenArcherInfo.unitInfo.lightDamage = 7;
-	elvenArcherInfo.unitInfo.airDamage = 10;
-	elvenArcherInfo.unitInfo.towerDamage = 11;
-
-	/// Speed
-	elvenArcherInfo.unitInfo.maxSpeed = 80.0f;
-	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
-
-	/// Life	
-	elvenArcherInfo.unitInfo.maxLife = 50;
-	elvenArcherInfo.unitInfo.currLife = elvenArcherInfo.unitInfo.maxLife;
-	
-	///
-	elvenArcherInfo.arrowSpeed = 170.0f;
-	//_Elven_Archer
-	
-	// Gryphon Rider
-	gryphonRiderInfo.unitInfo.priority = 2;
-
-	/// Radius
-	gryphonRiderInfo.unitInfo.attackRadius = 3;
-	gryphonRiderInfo.unitInfo.sightRadius = 12;
-
-	/// Damage
-	gryphonRiderInfo.unitInfo.heavyDamage = 7;
-	gryphonRiderInfo.unitInfo.lightDamage = 5;
-	gryphonRiderInfo.unitInfo.airDamage = 7;
-	gryphonRiderInfo.unitInfo.towerDamage = 8;
-
-	/// Speed
-	gryphonRiderInfo.unitInfo.maxSpeed = 60.0f;
-	gryphonRiderInfo.unitInfo.currSpeed = gryphonRiderInfo.unitInfo.maxSpeed;
-
-	/// Life
-	gryphonRiderInfo.unitInfo.maxLife = 100;
-	gryphonRiderInfo.unitInfo.currLife = gryphonRiderInfo.unitInfo.maxLife;
-	///
-
-	gryphonRiderInfo.fireSpeed = 120.0f;
-	//_Gryphon_Rider
-
-	/// Static Entities
-	// Towers
-	scoutTowerInfo.life = 150;
-	scoutTowerInfo.damage = 7;
-
-	playerGuardTowerInfo.life = 175;
-	playerGuardTowerInfo.damage = 13;
-
-	playerCannonTowerInfo.life = 200;
-	playerCannonTowerInfo.damage = 17;
-	//_Towers
-
-	/// HORDE
-	/// Dynamic Entities
-	// Grunt
-	gruntInfo.unitInfo.priority = 2;
-
-	/// Radius
-	gruntInfo.unitInfo.attackRadius = 2;
-	gruntInfo.unitInfo.sightRadius = 12;
-
-	/// Damage
-	gruntInfo.unitInfo.heavyDamage = 6;
-	gruntInfo.unitInfo.lightDamage = 8;
-	gruntInfo.unitInfo.airDamage = 0;
-	gruntInfo.unitInfo.towerDamage = 6;
-
-	/// Speed
-	gruntInfo.unitInfo.maxSpeed = 50.0f;
-	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
-
-	/// Life
-	gruntInfo.unitInfo.maxLife = 60;
-	gruntInfo.unitInfo.currLife = gruntInfo.unitInfo.maxLife;
-	//_Grunt
-
-	// Troll Axethrower
-	trollAxethrowerInfo.unitInfo.priority = 2;
-
-	/// Radius
-	trollAxethrowerInfo.unitInfo.attackRadius = 3;
-	trollAxethrowerInfo.unitInfo.sightRadius = 12;
-
-	/// Damage
-	trollAxethrowerInfo.unitInfo.heavyDamage = 4;
-	trollAxethrowerInfo.unitInfo.lightDamage = 7;
-	trollAxethrowerInfo.unitInfo.airDamage = 10;
-	trollAxethrowerInfo.unitInfo.towerDamage = 11;
-
-	/// Speed
-	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
-	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
-
-	/// Life
-	trollAxethrowerInfo.unitInfo.maxLife = 40;
-	trollAxethrowerInfo.unitInfo.currLife = trollAxethrowerInfo.unitInfo.maxLife;
-	
-	///
-	trollAxethrowerInfo.axeSpeed = 120.0f;
-	//_Troll_Axethrower
-
-	// Dragon
-	dragonInfo.unitInfo.priority = 2;
-
-	/// Radius
-	dragonInfo.unitInfo.attackRadius = 3;
-	dragonInfo.unitInfo.sightRadius = 12;
-
-	/// Damage
-	dragonInfo.unitInfo.heavyDamage = 7;
-	dragonInfo.unitInfo.lightDamage = 5;
-	dragonInfo.unitInfo.airDamage = 7;
-	dragonInfo.unitInfo.towerDamage = 8;
-
-	/// Speed
-	dragonInfo.unitInfo.maxSpeed = 60.0f;
-	dragonInfo.unitInfo.currSpeed = dragonInfo.unitInfo.maxSpeed;
-
-	/// Life
-	dragonInfo.unitInfo.maxLife = 50;
-	dragonInfo.unitInfo.currLife = dragonInfo.unitInfo.maxLife;
-	///
-
-	dragonInfo.fireSpeed = 120.0f;
-	//_Dragon
-
-	/// Static Entities
-	// Towers
-	watchTowerInfo.life = 150;
-	watchTowerInfo.damage = 7;
-
-	enemyGuardTowerInfo.life = 175;
-	enemyGuardTowerInfo.damage = 13;
-
-	enemyCannonTowerInfo.life = 200;
-	enemyCannonTowerInfo.damage = 17;
-	//_Towers
-
-	// CRITTERS
-	// Sheep
-	critterSheepInfo.unitInfo.priority = 1;
-
-	/// Speed
-	critterSheepInfo.unitInfo.maxSpeed = 30.0f;
-	critterSheepInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
-
-	/// Life
-	critterSheepInfo.unitInfo.currLife = 100;
-	critterSheepInfo.unitInfo.maxLife = critterSheepInfo.unitInfo.currLife;
-	
-	///
-	critterSheepInfo.restoredHealth = 10;
-	//_Sheep
-
-	// Boar
-	critterBoarInfo.unitInfo.priority = 1;
-
-	/// Speed
-	critterBoarInfo.unitInfo.maxSpeed = 30.0f;
-	critterBoarInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
-
-	/// Life
-	critterBoarInfo.unitInfo.currLife = 20;
-	critterBoarInfo.unitInfo.maxLife = critterBoarInfo.unitInfo.currLife;
-
-	///
-	critterBoarInfo.restoredHealth = 20;
-	//_Boar
-
-	// NEUTRAL BUILDINGS
-	// Runestone
-	runestoneInfo.sightRadius = 7;
-	//_Runestone
-
 	// Load textures
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
 	neutralBuildingsTex = App->tex->Load(neutralBuildingsTexName.data());
@@ -1449,8 +1240,6 @@ bool j1EntityFactory::Start()
 	trollAxethrowerTex = App->tex->Load(trollAxethrowerTexName.data());
 	footmanTex = App->tex->Load(footmanTexName.data());
 	gruntTex = App->tex->Load(gruntTexName.data());
-	gryphonRiderTex = App->tex->Load(gryphonRiderTexName.data());
-	dragonTex = App->tex->Load(dragonTexName.data());
 
 	crittersTex = App->tex->Load(crittersTexName.data());
 
@@ -1952,6 +1741,7 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 
 	return false;
 }
+
 
 // Returns true if a building can NOT be built in that spot
 bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const

@@ -1012,6 +1012,7 @@ void Goal_PickNugget::Activate()
 		owner->GetLifeBar()->isBlit = false;
 
 	msAnimation = 600.0f;
+
 	timerGathering.Start();
 	goldMine->currentSec = timerGathering.ReadSec();
 	timerAnimation.Start();
@@ -1062,8 +1063,8 @@ void Goal_PickNugget::Terminate()
 
 	goldMine = nullptr;
 	gold = 0;
-
 	secondsGathering = 0.0f;
+
 	msAnimation = 0.0f;
 }
 
@@ -1122,14 +1123,13 @@ void Goal_HealArea::Activate()
 		break;
 	}
 
-	App->audio->PlayFx(8, 0); // Mage Tower FX
+	App->audio->PlayFx(8, 3); // Mage Tower FX
 
 	owner->SetIsValid(false);
 
 	msAnimation = 300.0f;
+	maxTimesAnimation = 3;
 	timerAnimation.Start();
-	secondsGathering = 2.0f;
-	timerGathering.Start();
 
 	alpha = 255;
 }
@@ -1141,12 +1141,14 @@ GoalStatus Goal_HealArea::Process(float dt)
 	if (goalStatus == GoalStatus_Failed)
 		return goalStatus;
 
-	if (timerGathering.ReadSec() <= secondsGathering) {
+	if (timesAnimation < maxTimesAnimation) {
 
 		if (timerAnimation.ReadMs() >= msAnimation) {
 
 			runestone->SwapTexArea();
 			timerAnimation.Start();
+
+			timesAnimation++;		
 		}
 
 		return goalStatus;
@@ -1203,8 +1205,9 @@ void Goal_HealArea::Terminate()
 	runestone = nullptr;
 	health = 0;
 
-	secondsGathering = 0.0f;
 	msAnimation = 0.0f;
+	timesAnimation = 0;
+	maxTimesAnimation = 0;
 
 	alpha = 0;
 }
