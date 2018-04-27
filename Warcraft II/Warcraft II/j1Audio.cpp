@@ -24,6 +24,54 @@ j1Audio::~j1Audio()
 // Called before render is available
 bool j1Audio::Awake(pugi::xml_node& config)
 {
+	//Music
+	pugi::xml_node audio = config.child("audioPaths");
+
+	mainMenuMusicName = audio.child("mainTheme").attribute("path").as_string();
+
+	//Sounds
+	pugi::xml_node sounds = audio.child("sounds");
+
+	pugi::xml_node uIButtonsSounds = sounds.child("buttonPaths");
+	mainButtonSound = uIButtonsSounds.attribute("menuButton").as_string();
+	errorButtonSound = uIButtonsSounds.attribute("errorBttn").as_string();
+
+	pugi::xml_node buildingSounds = sounds.child("buildingPaths");
+	buildingConstructionSound = buildingSounds.attribute("buildingConstruction").as_string();
+	buildingErrorButtonSound = buildingSounds.attribute("errorBttn").as_string();
+	chickenFarmSound = buildingSounds.attribute("chickenFarm").as_string();
+	goldMineSound = buildingSounds.attribute("goldMine").as_string();
+	gryphonAviarySound = buildingSounds.attribute("gryphAviar").as_string();
+	mageTowerSound = buildingSounds.attribute("mageTower").as_string();
+	stablesSound = buildingSounds.attribute("stables").as_string();
+	repairBuildingSound = buildingSounds.attribute("repair").as_string();
+	destroyBuildingSound = buildingSounds.attribute("destroyBuilding").as_string();
+	runeStoneSound = buildingSounds.attribute("runeStone").as_string();
+
+	pugi::xml_node unitsSounds = sounds.child("unitsPaths");
+	humanDeadSound = unitsSounds.attribute("humanDeadSound").as_string();
+	orcDeadSound = unitsSounds.attribute("orcDeadSound").as_string();
+	prisonerRescueSound = unitsSounds.attribute("prisonerRescue").as_string();
+
+	pugi::xml_node crittersSounds = sounds.child("crittersPaths");
+	crittersBoarDead = crittersSounds.attribute("boarDead").as_string();
+	crittersSheepDead = crittersSounds.attribute("sheepDead").as_string();
+
+	pugi::xml_node archerSounds = sounds.child("archerPaths");
+	archerGoToPlaceSound = archerSounds.attribute("goToPlace").as_string();
+	archerReadySound = archerSounds.attribute("ready").as_string();
+	archerSelectedSound = archerSounds.attribute("selected").as_string();
+
+	pugi::xml_node footmanSounds = sounds.child("footmanPaths");
+	footmanGoToPlaceSound = footmanSounds.attribute("goToPlace").as_string();
+	footmanReadySound = footmanSounds.attribute("ready").as_string();
+	footmanSelectedSound = footmanSounds.attribute("selected").as_string();
+
+	pugi::xml_node attackSounds = sounds.child("attackPaths");
+	axeThrowSound = attackSounds.attribute("axeThrow").as_string();
+	bowFireSound = attackSounds.attribute("bowFire").as_string();
+	swordSound = attackSounds.attribute("sword").as_string();
+
 	LOG("Loading Audio Mixer");
 	bool ret = true;
 
@@ -45,22 +93,36 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	int flags = MIX_INIT_OGG;
 	int init = Mix_Init(flags);
 
-	if ((init & flags) != flags)
-	{
-		LOG("Could not initialize Mixer lib. Mix_Init: %s", Mix_GetError());
-		active = false;
-		ret = true;
-	}
+	StartMixer();
+
+	return ret;
+}
+
+bool j1Audio::StartMixer()
+{
+	bool ret = true;
 
 	//Initialize SDL_mixer
 	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
 	{
 		LOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
 		active = false;
+		ret = false;
+		audioOn = false;
+	}
+	else
+	{
+		audioOn = true;
 		ret = true;
+		ChargeGameSounds();
 	}
 
 	return ret;
+}
+
+bool j1Audio::Update(float dt)
+{
+	return true;
 }
 
 // Called before quitting
@@ -151,9 +213,6 @@ unsigned int j1Audio::LoadFx(const char* path)
 {
 	unsigned int ret = 0;
 
-	if (!active)
-		return 0;
-
 	string tmp = fxFolder.data();
 	tmp += path;
 
@@ -163,11 +222,9 @@ unsigned int j1Audio::LoadFx(const char* path)
 	{
 		LOG("Cannot load wav %s. Mix_GetError(): %s", path, Mix_GetError());
 	}
-	else
-	{
-		fx.push_back(chunk);
-		ret = fx.size();
-	}
+	
+	fx.push_back(chunk);
+	ret = fx.size();
 
 	return ret;
 }
@@ -191,7 +248,8 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 }
 
 // Control music volume
-void j1Audio::ChangeMusicVolume(bool positive) {
+void j1Audio::ChangeMusicVolume(bool positive)
+{
 	if (positive && musicVolume <= 120) {
 		cout << "Music volume was: " << Mix_VolumeMusic(musicVolume += 8) << endl;
 	}
@@ -202,7 +260,8 @@ void j1Audio::ChangeMusicVolume(bool positive) {
 	cout << "Music volume is now: " << Mix_VolumeMusic(-1) << endl;
 }
 
-bool j1Audio::Load(pugi::xml_node& save) {
+bool j1Audio::Load(pugi::xml_node& save)
+{
 	if (save.child("volume").attribute("default") != NULL) {
 		musicVolume = save.child("volume").attribute("default").as_int();
 		Mix_VolumeMusic(musicVolume);
@@ -211,7 +270,8 @@ bool j1Audio::Load(pugi::xml_node& save) {
 	return true;
 }
 
-bool j1Audio::Save(pugi::xml_node& save) const {
+bool j1Audio::Save(pugi::xml_node& save) const
+{
 
 	if (save.child("volume") == NULL)
 		save.append_child("volume").append_attribute("default") = musicVolume;
@@ -222,18 +282,56 @@ bool j1Audio::Save(pugi::xml_node& save) const {
 }
 
 // Pause music
-void j1Audio::PauseMusic() const {
+void j1Audio::PauseMusic() const
+{
 	Mix_FadeOutMusic(300);
 }
 
 // Set music volume
-void j1Audio::SetMusicVolume(int volume) {
+void j1Audio::SetMusicVolume(int volume)
+{
 	Mix_VolumeMusic(volume);
 	musicVolume = volume;
 }
 
 // Set FX volume
-void j1Audio::SetFxVolume(int volume) {
+void j1Audio::SetFxVolume(int volume)
+{
+	
+	if (!audioOn)
+		return;
+
 	Mix_Volume(-1, volume);
 	fxVolume = volume;
+}
+
+void j1Audio::ChargeGameSounds()
+{
+	LoadFx(mainButtonSound.data()); //1 Normal bttn sound
+	LoadFx(buildingConstructionSound.data()); //2 Construction building
+	LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
+	LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
+	LoadFx(chickenFarmSound.data()); //5 chicken farm sound
+	LoadFx(goldMineSound.data()); //6 gold mine sound
+	LoadFx(gryphonAviarySound.data()); //7 gryphon aviary sound
+	LoadFx(mageTowerSound.data()); //8 mage tower sound
+	LoadFx(stablesSound.data()); //9 stables sound
+	LoadFx(repairBuildingSound.data()); //10 repair building sound
+	LoadFx(destroyBuildingSound.data()); //11 destroy building sound
+
+	LoadFx(humanDeadSound.data()); //12
+	LoadFx(orcDeadSound.data()); //13
+	LoadFx(prisonerRescueSound.data()); //14
+	LoadFx(crittersBoarDead.data()); //15
+	LoadFx(crittersSheepDead.data()); //16
+	LoadFx(archerGoToPlaceSound.data()); //17
+	LoadFx(archerReadySound.data()); //18
+	LoadFx(archerSelectedSound.data()); //19
+	LoadFx(footmanGoToPlaceSound.data()); //20
+	LoadFx(footmanReadySound.data()); //21
+	LoadFx(footmanSelectedSound.data()); //22
+	LoadFx(axeThrowSound.data()); //23
+	LoadFx(bowFireSound.data()); //24
+	LoadFx(swordSound.data()); //25
+	LoadFx(runeStoneSound.data()); //26
 }

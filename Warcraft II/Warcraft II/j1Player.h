@@ -4,6 +4,8 @@
 #include "j1Module.h"
 #include "j1Timer.h"
 #include "Defs.h"
+#include "Entity.h"
+#include "j1Gui.h"
 
 #include "p2Point.h"
 #include "SDL\include\SDL_rect.h"
@@ -18,7 +20,6 @@ enum HoverCheck
 	HoverCheck_Upgrate,
 	HoverCheck_Repair
 };
-
 
 struct UILabel;
 struct UIImage;
@@ -39,7 +40,6 @@ struct HoverButton
 	StaticEntity* prevEntity = nullptr;
 
 	bool isCreated = false;
-
 };
 
 struct HoverInfo
@@ -49,20 +49,47 @@ struct HoverInfo
 	UIImage* background = nullptr;
 };
 
-struct ToSpawnUnit {
+struct GroupSelectedElements 
+{
+	Entity* owner = nullptr;
+
+	UIImage* entityIcon = nullptr;
+	UILifeBar* entityLifeBar = nullptr;
+
+	~GroupSelectedElements() {
+
+		App->gui->RemoveElem((UIElement**)&entityIcon);
+		App->gui->RemoveElem((UIElement**)&entityLifeBar);
+
+		owner = nullptr;
+	}
+};
+
+struct ToSpawnUnit 
+{
 	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
+
 		this->toSpawnTimer = toSpawnTimer;
 		this->entityType = entityType;
 	}
+
 	j1Timer toSpawnTimer;
-	ENTITY_TYPE entityType;
+	ENTITY_TYPE entityType = EntityType_NONE;
 };
 
-struct GroupSpawning {
+struct GroupSpawning 
+{
 	ToSpawnUnit* owner = nullptr;
 
 	UIImage* entityIcon = nullptr;
 	UILifeBar* entityLifeBar = nullptr;
+
+	~GroupSpawning() {
+		App->gui->RemoveElem((UIElement**)&entityIcon);
+		App->gui->RemoveElem((UIElement**)&entityLifeBar);
+
+		owner = nullptr;
+	}
 };
 
 struct EntitySelectedStats
@@ -77,6 +104,14 @@ struct EntitySelectedStats
 	UILifeBar* lifeBar = nullptr;
 
 	Entity* entitySelected = nullptr;
+};
+
+struct GoldMineUIelem 
+{
+	UILabel* name = nullptr;
+	UIImage* icon = nullptr;
+	UILabel* goldAmount = nullptr;
+
 };
 
 class j1Player : public j1Module
@@ -98,18 +133,6 @@ public:
 	bool Update(float dt);
 	bool PostUpdate();
 
-	void CheckIfPlaceBuilding();
-	iPoint GetMouseTilePos() const;
-	iPoint GetMousePos() const;
-
-	void CheckUnitSpawning();
-	void SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
-
-	void UpdateSpawnUnitsStats();
-
-	void AddGold(int sumGold);
-	int GetCurrentGold() const;
-
 	// Called before quitting
 	bool CleanUp();
 
@@ -119,21 +142,42 @@ public:
 	// Load
 	bool Load(pugi::xml_node&);
 
+	// -----
+
+	void CheckIfPlaceBuilding();
+	iPoint GetMouseTilePos() const;
+	iPoint GetMousePos() const;
+
+	void CheckUnitSpawning();
+	void SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
+
+	void UpdateSpawnUnitsStats();
+
+	// Gold
+	void AddGold(int sumGold);
+	int GetCurrentGold() const;
+
+
 	void OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
+
 
 	void CreateEntitiesStatsUI();
 	void ShowEntitySelectedInfo(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range);
 	void ShowEntitySelectedButt(ENTITY_TYPE type);
 	void HideEntitySelectedInfo();
+
 	void MakeUnitMenu(Entity* entity);
+	void MakeUnitsMenu(list<DynamicEntity*> units);
 	void DeleteEntitiesMenu();
+	void DeleteGoldMineMenu();
 	void MakeHoverInfoMenu(string unitProduce, string gold);
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
-	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea);
+	UIImage* CreateGroupIcon(iPoint iconPos, SDL_Rect texArea);
+	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, Entity* entity);
 	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea);
 	
 	//void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
@@ -142,8 +186,10 @@ public:
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
 	void HandleBarracksUIElem();
+	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
+	void CreateAbilitiesButtons();
 
 	void RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos);
 
@@ -194,9 +240,12 @@ public:
 	uint buildDestroy = 0u;
 
 	EntitySelectedStats entitySelectedStats;
+	GoldMineUIelem goldMineUIelem;
 
 	bool isUnitSpawning = false;
 	bool isMouseOnMine = false;
+
+	list<GroupSelectedElements*> groupElementsList;
 
 private:
 
@@ -206,15 +255,13 @@ private:
 	uint totalUnitsDead = 0;
 
 	//HoverButton hoverButtonStruct;
-
 	HoverInfo hoverInfo;
 
-	list<GroupSpawning> toSpawnUnitStats;
+	list<GroupSpawning*> toSpawnUnitStats;
 	list<ToSpawnUnit*> newUnitsToSpawn;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
-		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr;
-	
+		     *producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *commandPatrolButton = nullptr, *commandStopButton = nullptr;
 
 	list<UIElement*> UIMenuInfoList;
 

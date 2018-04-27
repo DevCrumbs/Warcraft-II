@@ -15,9 +15,6 @@ struct ElvenArcherInfo
 	Animation attackUpLeft, attackUpRight, attackDownLeft, attackDownRight;
 	Animation deathUp, deathDown;
 
-	int currLife = 0;
-	uint maxLife = 0;
-
 	float arrowSpeed = 0.0f;
 };
 

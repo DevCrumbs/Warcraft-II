@@ -101,12 +101,6 @@ void Footman::Move(float dt)
 			isDead = true;
 			isValid = false;
 
-			if (lifeBar != nullptr) {
-
-				lifeBar->toRemove = true;
-				lifeBar = nullptr;
-			}
-
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
@@ -126,6 +120,10 @@ void Footman::Move(float dt)
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
+
+			// Remove life bar
+			if (lifeBar != nullptr)
+				App->gui->RemoveElem((UIElement**)lifeBar);
 
 			// If the player dies, remove all their goals
 			//unitCommand = UnitCommand_Stop;
