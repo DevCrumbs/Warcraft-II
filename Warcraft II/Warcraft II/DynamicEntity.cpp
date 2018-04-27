@@ -931,9 +931,3 @@ bool DynamicEntity::GetIsValid() const
 {
 	return isValid;
 }
-
-void DynamicEntity::KillEntity() 
-{
-	isDead = true;
-	isValid = false;
-}

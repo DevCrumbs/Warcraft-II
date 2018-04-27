@@ -1132,7 +1132,7 @@ void Goal_HealArea::Activate()
 	secondsGathering = 2.0f;
 	timerGathering.Start();
 
-	alpha = 255;
+	alpha = 200;
 }
 
 GoalStatus Goal_HealArea::Process(float dt)

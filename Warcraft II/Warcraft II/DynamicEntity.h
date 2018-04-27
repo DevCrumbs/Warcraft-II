@@ -199,7 +199,6 @@ public:
 	// Valid
 	void SetIsValid(bool isValid);
 	bool GetIsValid() const;
-	void KillEntity();
 
 public:
 

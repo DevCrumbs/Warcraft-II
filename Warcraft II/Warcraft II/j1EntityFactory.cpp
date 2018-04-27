@@ -1430,6 +1430,8 @@ bool j1EntityFactory::Start()
 
 	///
 	critterSheepInfo.restoredHealth = 10;
+	critterSheepInfo.unitInfo.size = { 32,32 };
+	critterSheepInfo.unitInfo.offsetSize = { 0,0 };
 	//_Sheep
 
 	// Boar
@@ -1445,6 +1447,8 @@ bool j1EntityFactory::Start()
 
 	///
 	critterBoarInfo.restoredHealth = 20;
+	critterBoarInfo.unitInfo.size = { 32,32 };
+	critterBoarInfo.unitInfo.offsetSize = { 0,0 };
 	//_Boar
 
 	// NEUTRAL BUILDINGS
@@ -2896,8 +2900,8 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	{
 		CritterSheep* critterSheep = new CritterSheep(pos, critterSheepInfo.unitInfo.size, critterSheepInfo.unitInfo.currLife, critterSheepInfo.unitInfo.maxLife, unitInfo, (const CritterSheepInfo&)entityInfo, listener);
 		critterSheep->entityType = EntityCategory_DYNAMIC_ENTITY;
-		critterSheep->entitySide = EntitySide_Neutral;
 		critterSheep->dynamicEntityType = EntityType_SHEEP;
+		critterSheep->entitySide = EntitySide_Neutral;
 
 		toSpawnEntities.push_back((Entity*)critterSheep);
 		return (DynamicEntity*)critterSheep;
@@ -2908,8 +2912,8 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	{
 		CritterBoar* critterBoar = new CritterBoar(pos, critterBoarInfo.unitInfo.size, critterBoarInfo.unitInfo.currLife, critterBoarInfo.unitInfo.maxLife, unitInfo, (const CritterBoarInfo&)entityInfo, listener);
 		critterBoar->entityType = EntityCategory_DYNAMIC_ENTITY;
-		critterBoar->entitySide = EntitySide_Neutral;
 		critterBoar->dynamicEntityType = EntityType_BOAR;
+		critterBoar->entitySide = EntitySide_Neutral;
 
 		toSpawnEntities.push_back((Entity*)critterBoar);
 		return (DynamicEntity*)critterBoar;
@@ -3508,8 +3512,11 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 				// The unit cannot be dead
 				if (!(*activeDyn)->isDead) {
 
-					iPoint entityPos = { (int)(*activeDyn)->GetPos().x + (*activeDyn)->GetOffsetSize().x, (int)(*activeDyn)->GetPos().y + (*activeDyn)->GetOffsetSize().y };
-					iPoint entitySize = { (*activeDyn)->GetSize().x , (*activeDyn)->GetSize().y };
+					// An offset value is applied ONLY to the units selection
+					iPoint offsetValue = { 15,15 };
+
+					iPoint entityPos = { (int)(*activeDyn)->GetPos().x + (*activeDyn)->GetOffsetSize().x - offsetValue.x, (int)(*activeDyn)->GetPos().y + (*activeDyn)->GetOffsetSize().y - offsetValue.y };
+					iPoint entitySize = { (*activeDyn)->GetSize().x + offsetValue.x, (*activeDyn)->GetSize().y + offsetValue.y };
 					uint scale = App->win->GetScale();
 
 					switch (entitySide) {
