@@ -16,13 +16,15 @@ enum CollisionState;
 struct CritterSheepInfo
 {
 	UnitInfo unitInfo;
+	uint restoredHealth = 0;
 
 	// Unit animations
 	Animation up, down, left, right;
 	Animation upLeft, upRight, downLeft, downRight;
 	Animation deathUpLeft, deathUpRight, deathDownLeft, deathDownRight;
 
-	uint restoredHealth = 0;
+	int currLife = 0;
+	uint maxLife = 0;
 };
 
 class CritterSheep :public DynamicEntity

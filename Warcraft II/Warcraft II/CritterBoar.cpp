@@ -56,8 +56,7 @@ CritterBoar::CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, co
 CritterBoar::~CritterBoar() 
 {
 	if (lastPaw != nullptr)
-		lastPaw->isRemove = true;
-	lastPaw = nullptr;
+		lastPaw = nullptr;
 }
 
 void CritterBoar::Move(float dt)

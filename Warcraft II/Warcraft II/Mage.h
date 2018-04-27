@@ -5,7 +5,8 @@
 
 struct MageInfo
 {
-
+	int currLife = 0;
+	uint maxLife = 0;
 };
 
 class Mage :public DynamicEntity

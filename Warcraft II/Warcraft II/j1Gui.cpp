@@ -99,28 +99,10 @@ bool j1Gui::PreUpdate()
 {
 	bool ret = true;
 
-	// Remove UI elements
-	list<UIElement*>::const_iterator it = UIElementsList.begin();
-
-	while (it != UIElementsList.end()) {
-
-		if ((*it)->HasToBeRemoved()) {
-
-			delete *it;
-			UIElementsList.erase(it);
-
-			it = UIElementsList.begin();
-			continue;
-		}
-
-		it++;
-	}
-
-	// Add UI elements
 	list<UIElement*>::const_iterator add = addedElementUI.begin();
 
 	while (add != addedElementUI.end()) {
-
+	
 		UIElementsList.push_back(*add);
 		add++;
 	}
@@ -153,9 +135,26 @@ bool j1Gui::PostUpdate()
 {
 	bool ret = true;
 
+	// Remove UI elements
+	list<UIElement*>::const_iterator it = UIElementsList.begin();
+
+	while (it != UIElementsList.end()) {
+
+		if ((*it)->HasToBeRemoved()) {
+
+			delete *it;
+			UIElementsList.erase(it);
+
+			it = UIElementsList.begin();
+			continue;
+		}
+
+		it++;
+	}
+
 	// Blit UI elements
 	/// Move UI elements to the priority queue
-	for (list<UIElement*>::const_iterator it = UIElementsList.begin(); it != UIElementsList.end(); it++)
+	for (it = UIElementsList.begin(); it != UIElementsList.end(); it++)
 			drawOrder.push(*it);
 
 	/// Blit UI elements using the priority queue
@@ -208,41 +207,6 @@ bool j1Gui::CleanUp()
 
 	// Remove textures
 	ClearMapTextures();
-
-	return ret;
-}
-
-bool j1Gui::DestroyAllUI()
-{
-	bool ret = true;
-
-	// Clear UI_elements list (active elements)
-	list<UIElement*>::const_iterator elem = UIElementsList.begin();
-	UIElement* cursor = nullptr;
-
-	while (elem != UIElementsList.end()) {
-
-		if ((*elem)->type == UIE_TYPE_CURSOR)
-			cursor = *elem;
-		else
-			delete *elem;
-
-		elem++;
-	}
-	UIElementsList.clear();
-
-	if (cursor != nullptr)
-		UIElementsList.push_back(cursor);
-
-	// Clear UI_elements list (active elements)
-	list<UIElement*>::const_iterator add = addedElementUI.begin();
-
-	while (add != addedElementUI.end()) {
-
-		delete *add;
-		add++;
-	}
-	addedElementUI.clear();
 
 	return ret;
 }
@@ -356,8 +320,8 @@ bool j1Gui::DestroyElement(UIElement** elem)
 
 		delete *elem;
 		UIElementsList.remove(*elem);
+		*elem = nullptr;
 	}
-	*elem = nullptr;
 
 	return ret;
 }
@@ -366,10 +330,11 @@ bool j1Gui::RemoveElem(UIElement** elem)
 {
 	bool ret = false;
 
-	if (*elem != nullptr)
-		(*elem)->toRemove = true;
+	if (*elem != nullptr) {
 
-	*elem = nullptr;
+		(*elem)->toRemove = true;
+		*elem = nullptr;
+	}
 
 	return ret;
 }

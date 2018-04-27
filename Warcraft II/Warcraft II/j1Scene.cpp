@@ -36,6 +36,7 @@
 #include "UICursor.h"
 #include "UISlider.h"
 #include "UIMinimap.h"
+#include "UILifeBar.h"
 
 
 j1Scene::j1Scene() : j1Module()
@@ -182,65 +183,6 @@ bool j1Scene::LoadNewMap(int map)
 		sprintf_s(path, 25, "alphaMap%i.tmx", map);
 
 		ret = App->map->Load(path);
-	}
-
-	if (ret)
-	{
-		iPoint cameraPos{ 0,0 };
-		switch (map)
-		{
-		case 0:
-			cameraPos = App->map->MapToWorld(13, 78);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos.y;
-
-			basePos = App->map->MapToWorld(5, 70);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		case 1:
-			cameraPos = App->map->MapToWorld(13, 128);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos	.y;
-
-			basePos = App->map->MapToWorld(5, 120);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		case 2:
-			cameraPos = App->map->MapToWorld(63, 78);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos.y;
-
-			basePos = App->map->MapToWorld(55, 70);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		case 3:
-			cameraPos = App->map->MapToWorld(63, 78);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos.y;
-
-			basePos = App->map->MapToWorld(55, 70);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		case 4:
-			cameraPos = App->map->MapToWorld(13, 128);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos.y;
-
-			basePos = App->map->MapToWorld(5, 120);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		case 5:
-			cameraPos = App->map->MapToWorld(13, 78);
-			App->render->camera.x = -cameraPos.x;
-			App->render->camera.y = -cameraPos.y;
-
-			basePos = App->map->MapToWorld(5, 70);
-			App->map->playerBase = { basePos.x, basePos.y, 40 * 32,40 * 32 };
-			break;
-		default:
-			break;
-		}
-		basePos = cameraPos;
 	}
 
 	UIMinimap_Info info;
@@ -405,20 +347,6 @@ bool j1Scene::PreUpdate()
 	}
 	*/
 
-	units = App->entities->GetLastUnitsSelected();
-
-	if (units.size() > 0) {
-
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
-
-			if (!CompareSelectedUnitsLists(units)) {
-
-				App->player->DeleteEntitiesMenu();
-				App->player->MakeUnitsMenu(units);
-			}
-		}
-	}
-
 	return ret;
 }
 
@@ -471,9 +399,16 @@ bool j1Scene::Update(float dt)
 				App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 	}
 
+	//Update units slected lifeBars
+	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
+		if((*iterator).owner != nullptr)
+			(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
+	}
+
+
 	// *****UNITS*****
-	/// Units cannot be clicked if a building is being placed
-	if (GetAlphaBuilding() == EntityType_NONE) {
+	/// Units cannot be clicked if a building is being placed or Pause Menu are actived
+	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 
 		// Select units by mouse click
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
@@ -515,7 +450,12 @@ bool j1Scene::Update(float dt)
 		units = App->entities->GetLastUnitsSelected();
 
 		if (units.size() > 0) {
-
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+				if (!CompareSelectedUnitsLists(units)) {
+					App->player->DeleteEntitiesMenu();
+					ShowSelectedUnits(units);
+				}
+			}
 			UnitGroup* group = App->movement->GetGroupByUnits(units);
 
 			if (group == nullptr)
@@ -812,10 +752,7 @@ bool j1Scene::CleanUp()
 	App->audio->PauseMusic();
 	//App->tex->UnLoad(debugTex);
 
-	// Removes all UI from Scene
 	DestroyAllUI();
-	// Removes all UI (also life bars, for example)
-	App->gui->DestroyAllUI();
 	//warcraftActive = false;
 
 	// Set to nullptr the pointers to the UI elements
@@ -975,7 +912,7 @@ void j1Scene::LoadInGameUI()
 {
 	//Buiding options
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = {0, 0, 126, 26};
+	buttonInfo.normalTexArea = { 0, 0, 126, 26 };
 	buttonInfo.hoverTexArea = { 129, 0, 126, 26 };
 	buttonInfo.pressedTexArea = { 257, 0, 126, 26 };
 	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this);
@@ -987,11 +924,12 @@ void j1Scene::LoadInGameUI()
 	labelInfo.interactive = false;
 	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, buildingButton);
 
+
 	//Pause menu 
 	pauseMenuButt = App->gui->CreateUIButton({ 5,1 }, buttonInfo, this);
 
 	labelInfo.text = "Menu";
-	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w/2, 8 }, labelInfo, this, pauseMenuButt);
+	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, pauseMenuButt);
 
 
 	UIImage_Info entitiesInfo;
@@ -1000,14 +938,119 @@ void j1Scene::LoadInGameUI()
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
 	entitiesStats->SetPriorityDraw(PriorityDraw_UIINGAME);
 
-	entitiesInfo.texArea={ 1006,0,800,600 };
+	entitiesInfo.texArea = { 1006,0,800,600 };
 	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
 	inGameFrameImage->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
 	LoadResourcesLabels();
 	LoadBuildingMenu();
+	LoadUnitsMenuInfo();
+
 }
 
+void j1Scene::LoadUnitsMenuInfo()
+{
+	int cont = 0;
+	while (groupElementsList.size() < 8) {
+		UIImage* image = nullptr;
+		UILifeBar* lifeBar = nullptr;
+
+
+		image = App->player->CreateGroupIcon({ 54 * (cont % 4) + 3, 39 * (cont / 4) + 4 }, { 0, 0, 0, 0 });
+		image->isActive = false;
+		lifeBar = CreateGroupLifeBar({ 54 * (cont % 4) + 2, 39 * (cont / 4) + 33 }, { 240,362,47,7 }, { 242,358,42,3 });
+		lifeBar->isActive = false;
+
+		groupElementsList.push_back({ nullptr, image, lifeBar });
+		cont++;
+	}
+	CreateAbilitiesButtons();
+}
+
+UILifeBar* j1Scene::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea)
+{
+	UILifeBar_Info lifeInfo;
+	lifeInfo.background = backgroundTexArea;
+	lifeInfo.bar = barTexArea;
+	lifeInfo.maxWidth = lifeInfo.bar.w;
+	lifeInfo.lifeBarPosition = { 2, 2 };
+	return App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+}
+
+void j1Scene::CreateAbilitiesButtons()
+{
+	UIButton_Info infoButton;
+
+	infoButton.normalTexArea = { 802,202,50,41 };
+	infoButton.hoverTexArea = { 904, 202, 50, 41 };
+	infoButton.pressedTexArea = { 853,202,50,41 };
+	commandStopButton = App->gui->CreateUIButton({ 217, 2 }, infoButton, this, (UIElement*)App->scene->entitiesStats);
+	commandStopButton->isActive = false;
+
+	infoButton.normalTexArea = { 649,202,50,41 };
+	infoButton.hoverTexArea = { 751, 202, 50, 41 };
+	infoButton.pressedTexArea = { 700,202,50,41 };
+	commandPatrolButton = App->gui->CreateUIButton({ 268, 2 }, infoButton, this, (UIElement*)App->scene->entitiesStats);
+	commandPatrolButton->isActive = false;
+}
+
+void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
+{
+	list<DynamicEntity*>::iterator iterator = units.begin();
+	while (iterator != units.end()) {
+		UIImage* image = nullptr;
+		UILifeBar* lifeBar = nullptr;
+		if (units.size() == 1) {
+			App->player->MakeUnitMenu((*iterator));
+		}
+		else {
+			for (list<GroupSelectedElements>::iterator iteratorInfo = groupElementsList.begin(); iteratorInfo != groupElementsList.end(); ++iteratorInfo)
+			{
+				if (!(*iteratorInfo).entityIcon->isActive)
+				{
+					SDL_Rect text;
+					if ((*iterator)->dynamicEntityType == EntityType_FOOTMAN) {
+						text = { 649, 160, 46, 30 };
+						(*iteratorInfo).entityIcon->SetNewRect(text);
+					}
+					else if ((*iterator)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						text = { 696, 160, 46, 30 };
+						(*iteratorInfo).entityIcon->SetNewRect(text);
+					}
+					(*iteratorInfo).entityIcon->isActive = true;
+					(*iteratorInfo).entityLifeBar->SetLife((*iterator)->GetCurrLife());
+					(*iteratorInfo).entityLifeBar->SetMaxLife((*iterator)->GetMaxLife());
+					(*iteratorInfo).entityLifeBar->isActive = true;
+					(*iteratorInfo).owner = *iterator;
+					break;
+				}
+			}
+		}
+		iterator++;
+	}
+	commandPatrolButton->isActive = true;
+	commandStopButton->isActive = true;
+}
+
+
+void j1Scene::HideUnselectedUnits()
+{
+	for (list<GroupSelectedElements>::iterator iteratorInfo = groupElementsList.begin(); iteratorInfo != groupElementsList.end(); ++iteratorInfo)
+	{
+		if ((*iteratorInfo).owner != nullptr)
+		{
+			(*iteratorInfo).entityLifeBar->isActive = false;
+			(*iteratorInfo).entityIcon->isActive = false;
+			(*iteratorInfo).owner = nullptr;
+		}
+		else {
+			break;
+		}
+	}
+	commandPatrolButton->isActive = false;
+	commandStopButton->isActive = false;
+}
+	
 void j1Scene::ChangeBuildingButtState(MenuBuildingButton* elem)
 {
 	elem->cost->isActive = !elem->cost->isActive;
@@ -1061,7 +1104,6 @@ void j1Scene::UpdateLabelsMenu()
 	ChangeMenuLabelColor(buildingMenuButtons.scoutTower.cost, scoutTowerCost);
 }
 
-
 void j1Scene::ChangeMenuLabelColor(UILabel * Label, int cost)
 {
 	if (App->player->currentGold >= cost)
@@ -1073,6 +1115,7 @@ void j1Scene::ChangeMenuLabelColor(UILabel * Label, int cost)
 
 void j1Scene::LoadBuildingMenu()
 {
+
 	UIImage_Info imageInfo;
 	imageInfo.draggable = false;
 	imageInfo.texArea = { 0,33,240,529 };
@@ -1090,25 +1133,21 @@ void j1Scene::LoadBuildingMenu()
 
 		CreateBuildingElements( { 343,160,50,41 }, { 585, 100 }, "Stables",
 			"Cost: 900 gold", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
-
+	
 		CreateBuildingElements( { 496,160,50,41 }, { 585, 145 }, "Gryphon Aviary",
 			"Cost: 400 gold", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
-
+		
 		CreateBuildingElements( { 496,202,50,41 }, { 585, 190 }, "Mage Tower",
 			"Cost: 1000 gold", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
-
+		
 		CreateBuildingElements( { 496,34,50,41 }, { 585, 235 }, "Scout Tower",
 			"Cost: 400 gold", { 645, 245 }, { 645, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
-
+		
 		CreateBuildingElements({ 496,76,50,41 }, { 585, 280 }, "Guard Tower",
 			"Cost: 600 gold", { 645, 290 }, { 645, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
-
+		
 		CreateBuildingElements({ 496,118,50,41 }, { 585, 325 }, "Cannon Tower",
 			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
-	}
-	else
-	{
-		LOG("WTF");
 	}
 }
 
@@ -1220,8 +1259,8 @@ void j1Scene::CreatePauseMenu() {
 
 }
 
-void j1Scene::DestroyPauseMenu() 
-{
+void j1Scene::DestroyPauseMenu() {
+
 	App->gui->RemoveElem((UIElement**)&settingsButt);
 	App->gui->RemoveElem((UIElement**)&ReturnMenuButt);
 	App->gui->RemoveElem((UIElement**)&continueButt);
@@ -1230,8 +1269,7 @@ void j1Scene::DestroyPauseMenu()
 	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
 }
 
-void j1Scene::CreateSettingsMenu() 
-{
+void j1Scene::CreateSettingsMenu() {
 	UIButton_Info buttonInfo;
 	UILabel_Info labelInfo;
 	
@@ -1256,6 +1294,7 @@ void j1Scene::CreateSettingsMenu()
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
 	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
+
 
 	//Sliders
 	x = parchmentImg->GetLocalPos().x + 30;
@@ -1284,7 +1323,7 @@ void j1Scene::CreateSettingsMenu()
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
 }
 
-void j1Scene::DestroySettingsMenu()
+void j1Scene::DestroySettingsMenu() 
 {
 	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&returnLabel);
@@ -1296,11 +1335,14 @@ void j1Scene::DestroySettingsMenu()
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.slider);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.name);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.value);
+
 }
 
 void j1Scene::DestroyAllUI()
 {
-	App->gui->RemoveElem((UIElement**)&parchmentImg);
+	if (parchmentImg != nullptr) {
+		App->gui->RemoveElem((UIElement**)&parchmentImg);
+	}
 
 	DestroyPauseMenu();
 	DestroySettingsMenu();
@@ -1308,13 +1350,25 @@ void j1Scene::DestroyAllUI()
 	UnLoadResourcesLabels();
 	UnLoadTerenasDialog();
 
-	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
 	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
-	App->gui->RemoveElem((UIElement**)&buildingLabel);
-	App->gui->RemoveElem((UIElement**)&buildingButton);
+	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
 	App->gui->RemoveElem((UIElement**)&entitiesStats);
+	App->gui->RemoveElem((UIElement**)&buildingButton);
+	App->gui->RemoveElem((UIElement**)&buildingLabel);
 	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
 	App->gui->RemoveElem((UIElement**)&minimap);
+
+
+	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
+		App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
+		App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
+		(*iterator).owner = nullptr;
+	}
+
+	App->gui->RemoveElem((UIElement**)&commandPatrolButton);
+	App->gui->RemoveElem((UIElement**)&commandStopButton);
+
+	groupElementsList.clear();
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()
@@ -1325,34 +1379,39 @@ PauseMenuActions j1Scene::GetPauseMenuActions()
 bool j1Scene::CompareSelectedUnitsLists(list<DynamicEntity*> units)
 {
 	bool ret = false;
+	int sizeList = 0;//Want to know how many active icons are
 
-	// 1. Only 1 unit
-	if (units.size() == 1 && App->player->entitySelectedStats.entitySelected != nullptr) {
-
+	if (App->player->entitySelectedStats.entitySelected != nullptr && units.size() == 1)
 		if (units.front() == App->player->entitySelectedStats.entitySelected)
 			ret = true;
-	}
-	// 2. More than just 1 unit
-	else if (units.size() == App->player->groupElementsList.size()) {
-
+	if (!ret) {
 		for (list<DynamicEntity*>::iterator unitsIterator = units.begin(); unitsIterator != units.end(); ++unitsIterator)
 		{
-			for (list<GroupSelectedElements*>::iterator playerIterator = App->player->groupElementsList.begin(); playerIterator != App->player->groupElementsList.end(); ++playerIterator)
+			for (list<GroupSelectedElements>::iterator playerIterator = groupElementsList.begin(); playerIterator != groupElementsList.end(); ++playerIterator)
 			{
-				if (*unitsIterator == (*playerIterator)->owner)
+				if (*unitsIterator == playerIterator->owner)
 				{
 					ret = true;
+				}
+				//if owner is nullptr, next ones will be nullptr
+				else if (playerIterator->owner == nullptr) {
+					sizeList++;
+					ret = false;
 					break;
 				}
 				else
 					ret = false;
 			}
-
 			if (!ret)
 				break;
+			//If size are diferent have to redo information
+			else if (sizeList != units.size()) {
+				ret = false;
+				break;
+			}
 		}
-	}
 
+	}
 	return ret;
 }
 
@@ -1426,90 +1485,91 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		break;
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
-		if (UIelem == buildingButton) {
-			if (parchmentImg == nullptr) {
+		if (parchmentImg == nullptr) {
+
+			if (UIelem == buildingButton) {
 				App->audio->PlayFx(1, 0); //Button sound
 				UnLoadTerenasDialog();
 				ChangeBuildingMenuState(&buildingMenuButtons);
 			}
-		}
 
-		if (UIelem == buildingMenuButtons.chickenFarm.icon) {
-			if (App->player->currentGold >= chickenFarmCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				alphaBuilding = EntityType_CHICKEN_FARM;
+
+			else if (UIelem == buildingMenuButtons.chickenFarm.icon) {
+				if (App->player->currentGold >= chickenFarmCost) {
+					App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_CHICKEN_FARM;
+				}
+				else if (App->player->currentGold < chickenFarmCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if(App->player->currentGold < chickenFarmCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
-		
-		if (UIelem == buildingMenuButtons.stables.icon) {
-			if (App->player->currentGold >= stablesCost) {
-				//App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				//alphaBuilding = EntityType_STABLES;
-				App->audio->PlayFx(3, 0); //Button error sound
+
+			else if (UIelem == buildingMenuButtons.stables.icon) {
+				if (App->player->currentGold >= stablesCost) {
+					//App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					//alphaBuilding = EntityType_STABLES;
+					App->audio->PlayFx(3, 0); //Button error sound
+				}
+				else if (App->player->currentGold < stablesCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if(App->player->currentGold < stablesCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
-		
-		if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
-			if (App->player->currentGold >= gryphonAviaryCost) {
-				//App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				//alphaBuilding = EntityType_GRYPHON_AVIARY;
-				App->audio->PlayFx(3, 0); //Button error sound
+
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
+				if (App->player->currentGold >= gryphonAviaryCost) {
+					//App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					//alphaBuilding = EntityType_GRYPHON_AVIARY;
+					App->audio->PlayFx(3, 0); //Button error sound
+				}
+				else if (App->player->currentGold < gryphonAviaryCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if(App->player->currentGold < gryphonAviaryCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == buildingMenuButtons.mageTower.icon) {
-			if (App->player->currentGold >= mageTowerCost) {
-				//App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				//alphaBuilding = EntityType_MAGE_TOWER;
-				App->audio->PlayFx(3, 0); //Button error sound
+			else if (UIelem == buildingMenuButtons.mageTower.icon) {
+				if (App->player->currentGold >= mageTowerCost) {
+					//App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					//alphaBuilding = EntityType_MAGE_TOWER;
+					App->audio->PlayFx(3, 0); //Button error sound
+				}
+				else if (App->player->currentGold < mageTowerCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if(App->player->currentGold < mageTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == buildingMenuButtons.scoutTower.icon) {
-			if (App->player->currentGold >= scoutTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				alphaBuilding = EntityType_SCOUT_TOWER;
+			else if (UIelem == buildingMenuButtons.scoutTower.icon) {
+				if (App->player->currentGold >= scoutTowerCost) {
+					App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_SCOUT_TOWER;
+				}
+				else if (App->player->currentGold < scoutTowerCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if(App->player->currentGold < scoutTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == buildingMenuButtons.guardTower.icon) {
-			if (App->player->currentGold >= guardTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
+			else if (UIelem == buildingMenuButtons.guardTower.icon) {
+				if (App->player->currentGold >= guardTowerCost) {
+					App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
+				}
+				else if (App->player->currentGold < guardTowerCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if (App->player->currentGold < guardTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == buildingMenuButtons.cannonTower.icon) {
-			if (App->player->currentGold >= cannonTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				ChangeBuildingMenuState(&buildingMenuButtons);
-				alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
+			else if (UIelem == buildingMenuButtons.cannonTower.icon) {
+				if (App->player->currentGold >= cannonTowerCost) {
+					App->audio->PlayFx(1, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
+				}
+				else if (App->player->currentGold < cannonTowerCost)
+					App->audio->PlayFx(3, 0); //Button error sound
 			}
-			else if (App->player->currentGold < cannonTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
+
 		}
 
-
-
-		else if (UIelem == pauseMenuButt) {
+		if (UIelem == pauseMenuButt) {
 			App->audio->PlayFx(1, 0); //Button sound
 			if (parchmentImg == nullptr) {
 				UIImage_Info parchmentInfo;
@@ -1564,6 +1624,18 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				break;
 			}
 		}
+
+		else if (UIelem == commandPatrolButton && commandPatrolButton->isActive) {
+			// Command Patrol (SANDRA)
+			if (App->scene->units.size() > 0)
+				App->entities->CommandToUnits(App->scene->units, UnitCommand_Patrol);
+		}
+		else if (UIelem == commandStopButton && commandStopButton->isActive) {
+			// Command Stop (SANDRA)
+			if (App->scene->units.size() > 0)
+				App->entities->CommandToUnits(App->scene->units, UnitCommand_Stop);
+		}
+
 		break;
 
 	case UI_EVENT_MOUSE_LEFT_UP:

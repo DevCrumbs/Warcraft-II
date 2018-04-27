@@ -5,7 +5,6 @@
 #include "Animation.h"
 #include "j1Menu.h"
 #include "j1Timer.h"
-#include "Entity.h"
 
 #include <vector>
 #include <string>
@@ -23,6 +22,7 @@ struct UISlider;
 class UISlider_Info;
 class UIMinimap;
 
+class Entity;
 enum ENTITY_TYPE;
 
 struct Particle;	
@@ -53,8 +53,8 @@ enum PauseMenuActions {
 	PauseMenuActions_SLIDERMUSIC
 };
 
-struct TerenasAdvices 
-{
+struct TerenasAdvices {
+
 	UIImage* terenasImage = nullptr;
 	UILabel* text = nullptr;
 };
@@ -76,6 +76,14 @@ struct BuildingMenu {
 	MenuBuildingButton guardTower;
 	MenuBuildingButton cannonTower;
 };
+
+struct GroupSelectedElements {
+	Entity* owner = nullptr;
+
+	UIImage* entityIcon = nullptr;
+	UILifeBar* entityLifeBar = nullptr;
+};
+
 
 class j1Scene : public j1Module
 {
@@ -120,7 +128,12 @@ public:
 	void CheckCameraMovement(float dt);
 	void LoadInGameUI();
 	void LoadBuildingMenu();
+	void LoadUnitsMenuInfo();
+	UILifeBar * CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea);
+	void CreateAbilitiesButtons();
 
+	void ShowSelectedUnits(list<DynamicEntity*> units);
+	void HideUnselectedUnits();
 	void ChangeBuildingButtState(MenuBuildingButton* elem);
 	void ChangeBuildingMenuState(BuildingMenu* elem);
 	void UpdateLabelsMenu();
@@ -148,9 +161,6 @@ public:
 	void LoadTerenasDialog(TerenasDialogEvents dialogEvent);
 	void UnLoadTerenasDialog();
 
-	ENTITY_TYPE GetAlphaBuilding();
-	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
-
 	bool LoadKeys(pugi::xml_node&);
 
 public:
@@ -177,18 +187,23 @@ public:
 	int numMaps = 0;
 
 	// Camera
+	float up = false, down = false, left = false, right = false;
 	uint width = 0;
 	uint height = 0;
 	float scale = 0;
 
 	// Player
 	bool god = false;
+
 	bool pause = false;
 
 	bool hasGoldChanged = false;
+
 	bool hasFoodChanged = false;
 
 	UIImage* entitiesStats = nullptr;
+	ENTITY_TYPE GetAlphaBuilding();
+	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
 
 	// Movement
 	bool debugDrawMovement = true;
@@ -200,7 +215,6 @@ public:
 
 	bool isDebug = true;
 
-	// Terenas advices
 	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
 	TerenasAdvices terenasAdvices;
 
@@ -211,6 +225,7 @@ public:
 	UIMinimap* minimap = nullptr;
 
 	list<DynamicEntity*> units;
+	list<GroupSelectedElements> groupElementsList;
 
 private:
 
@@ -224,39 +239,40 @@ private:
 	// Draw rectangle
 	iPoint startRectangle = { 0,0 };
 
-	// UI
+	//UI
 	BuildingMenu buildingMenuButtons;
 	UIButton* buildingButton = nullptr;
 	UILabel* buildingLabel = nullptr;
 	UIImage* buildingMenu = nullptr;
 
-	// Frame InGame
+	//Frame InGame
 	UIImage* inGameFrameImage = nullptr;
 	UILabel* goldLabel, *foodLabel = nullptr;
 
-	// Pause Menu
+	//Pause Menu
 	UIButton* pauseMenuButt = nullptr, * settingsButt = nullptr, * continueButt = nullptr, * ReturnMenuButt = nullptr;
 	UILabel* pauseMenuLabel = nullptr, * settingsLabel = nullptr, * continueLabel = nullptr, * ReturnMenuLabel = nullptr;
 	UIImage* parchmentImg = nullptr;
-
-	// Settings Menu
-	UIButton* returnButt = nullptr, * fullScreenButt = nullptr;
-	UILabel*  returnLabel = nullptr, * fullScreenLabel = nullptr;
+	//Settings Menu
+	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 	SliderStruct AudioFXPause;
 	SliderStruct AudioMusicPause;
-
+	//Entities Buttons
+	UIButton* commandPatrolButton = nullptr, *commandStopButton = nullptr;
+	
 	bool buildingMenuOn = false;
 
 	string orthogonalMap, isometricMap, warcraftMap;
 	string orthogonalTexName, isometricTexName, warcraftTexName;
 	string mainThemeMusicName;
-	bool orthogonalActive = false, isometricActive = false, warcraftActive = false;
+	bool orthogonalActive, isometricActive, warcraftActive;
 
 	SDL_Texture* debugTex =	nullptr;
 
 	iPoint mouse = { 0,0 };
 
-	// Camera attributes
+	//Camera attributes
 	float camSpeed = 0.0f;
 	float camMovMargin = 0.0f;
 	bool isCamMovMarginCharged = false;
@@ -272,7 +288,7 @@ private:
 	SDL_Scancode buttonLeaveGame =	SDL_SCANCODE_UNKNOWN;
 	SDL_Scancode buttonReloadMap = SDL_SCANCODE_UNKNOWN;
 
-	ENTITY_TYPE alphaBuilding = EntityType_NONE;
+	ENTITY_TYPE alphaBuilding;
 
 	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
 };
