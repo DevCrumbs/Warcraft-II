@@ -17,11 +17,11 @@ StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, 
 
 	if (App->GetSecondsSinceAppStartUp() < 700) //Checks for static entities built since startup
 		isBuilt = true;
-	
+
 	constructionTime = 10;
 }
 
-StaticEntity::~StaticEntity() 
+StaticEntity::~StaticEntity()
 {
 	// Remove Colliders
 	if (sightRadiusCollider != nullptr)
@@ -171,16 +171,16 @@ bool StaticEntity::CheckBuildingState() {
 	if (this->GetCurrLife() <= 0)
 		buildingState = BuildingState_Destroyed;
 	else if (this->GetCurrLife() <= this->GetMaxLife() / 4) {// less than 1/4 HP
-			buildingState = BuildingState_HardFire;
+		buildingState = BuildingState_HardFire;
 	}
 	else if (this->GetCurrLife() <= 3 * this->GetMaxLife() / 4)// less than 3/4 HP
 		buildingState = BuildingState_LowFire;
 	else {
 		buildingState = BuildingState_Normal;
 	}
-		
 
-	if(bs != buildingState)
+
+	if (bs != buildingState)
 		switch (buildingState)
 		{
 		case BuildingState_Normal:
@@ -221,6 +221,11 @@ bool StaticEntity::GetIsFinishedBuilt() const
 	return isBuilt;
 }
 
+BuildingState StaticEntity::GetBuildingState() const 
+{
+	return buildingState;
+}
+
 ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic)
 {
 	vector<Collider*> colliders;
@@ -252,7 +257,7 @@ ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, ui
 
 		for (uint i = 0; i < 4; ++i)
 		{
-			if (CalculateDistance(neighbors[i], App->map->WorldToMap(pos.x, pos.y), distanceHeuristic) < radius) {
+			if (App->pathfinding->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], App->map->WorldToMap(pos.x, pos.y), distanceHeuristic) < radius) {
 
 				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
 

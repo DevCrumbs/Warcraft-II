@@ -340,12 +340,13 @@ private:
 
 	uint health = 0;
 
+	float secondsGathering = 0.0f;
+	j1Timer timerGathering;
+
 	double msAnimation = 0.0f;
-	uint timesAnimation = 0;
-	uint maxTimesAnimation = 0;
 	j1PerfTimer timerAnimation;
 
-	uint alpha = 0;
+	int alpha = 0;
 };
 
 #endif //__GOAL_H__

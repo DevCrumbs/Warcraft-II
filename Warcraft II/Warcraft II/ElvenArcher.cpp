@@ -102,12 +102,6 @@ void ElvenArcher::Move(float dt)
 			isDead = true;
 			isValid = false;
 
-			if (lifeBar != nullptr) {
-
-				lifeBar->toRemove = true;
-				lifeBar = nullptr;
-			}
-
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
@@ -127,6 +121,10 @@ void ElvenArcher::Move(float dt)
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
+
+			// Remove life bar
+			if (lifeBar != nullptr)
+				App->gui->RemoveElem((UIElement**)lifeBar);
 
 			// If the player dies, remove all their goals
 			//unitCommand = UnitCommand_Stop;
@@ -283,7 +281,7 @@ void ElvenArcher::Move(float dt)
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
 	}
-	
+
 }
 
 void ElvenArcher::Draw(SDL_Texture* sprites)
@@ -312,7 +310,7 @@ void ElvenArcher::DebugDrawSelected()
 	App->printer->PrintQuad(entitySize, color);
 
 	//for (uint i = 0; i < unitInfo.priority; ++i) {
-		//const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
+	//const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
 	//const SDL_Rect entitySize = { pos.x , pos.y, size.x, size.y };
 	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
 	//}
@@ -329,7 +327,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-		//	LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+			//	LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is within the SIGHT radius
 
@@ -385,10 +383,10 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			}
 		}
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-		//	LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+			//	LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is within the ATTACK radius
 
@@ -411,10 +409,10 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 		// Reset attack parameters
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-		//	LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+			//	LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is NO longer within the SIGHT radius
 
@@ -444,10 +442,10 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			}
 		}
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-	//		LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+			//		LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is NO longer within the ATTACK radius
 
@@ -490,7 +488,7 @@ void ElvenArcher::UnitStateMachine(float dt)
 				// A new target has found, update the attacking target
 				if (currTarget != newTarget) {
 
-					if (currTarget != nullptr) {					
+					if (currTarget != nullptr) {
 
 						if (!currTarget->isRemoved) {
 

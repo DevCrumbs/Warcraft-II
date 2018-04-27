@@ -97,7 +97,7 @@ DynamicEntity::~DynamicEntity()
 	list<TargetInfo*>::const_iterator it = targets.begin();
 
 	while (it != targets.end()) {
-	
+
 		delete *it;
 		targets.remove(*it++);
 
@@ -218,9 +218,60 @@ uint DynamicEntity::GetPriority() const
 	return unitInfo.priority;
 }
 
-uint DynamicEntity::GetDamage() const
+uint DynamicEntity::GetDamage(Entity* target) const
 {
-	return unitInfo.damage;
+	if (target == nullptr)
+		return 0;
+
+	if (target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+		DynamicEntity* dynEnt = (DynamicEntity*)target;
+
+		switch (dynEnt->dynamicEntityType) {
+
+		case EntityType_FOOTMAN:
+		case EntityType_GRUNT:
+
+			return unitInfo.heavyDamage;
+			break;
+
+		case EntityType_ELVEN_ARCHER:
+		case EntityType_TROLL_AXETHROWER:
+
+			return unitInfo.lightDamage;
+			break;
+
+		case EntityType_GRYPHON_RIDER:
+		case EntityType_DRAGON:
+
+			return unitInfo.airDamage;
+			break;
+
+			// Critters
+		case EntityType_SHEEP:
+
+		{
+			int damage = dynEnt->GetMaxLife();
+			damage /= 3;
+			return damage;
+		}
+		break;
+
+		case EntityType_BOAR:
+
+		{
+			int damage = dynEnt->GetMaxLife();
+			damage /= 4;
+			return damage;
+		}
+		break;
+		}
+	}
+	else if (target->entityType == EntityCategory_STATIC_ENTITY)
+
+		return unitInfo.towerDamage;
+
+	return 0;
 }
 
 UILifeBar* DynamicEntity::GetLifeBar() const
@@ -477,7 +528,7 @@ ColliderGroup* DynamicEntity::CreateRhombusCollider(ColliderType colliderType, u
 
 		for (uint i = 0; i < 4; ++i)
 		{
-			if (CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
+			if (App->pathfinding->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
 
 				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
 
@@ -756,7 +807,7 @@ TargetInfo* DynamicEntity::GetBestTargetInfo() const
 			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)(*it)->target;
-				
+
 				if (dynEnt->dynamicEntityType != EntityType_SHEEP && dynEnt->dynamicEntityType != EntityType_BOAR) {
 
 					priorityTargetInfo.targetInfo = *it;
@@ -803,12 +854,12 @@ bool DynamicEntity::IsHitting() const
 }
 
 // Interact with the map
-void DynamicEntity::SetGoldMine(GoldMine* goldMine) 
+void DynamicEntity::SetGoldMine(GoldMine* goldMine)
 {
 	this->goldMine = goldMine;
 }
 
-GoldMine* DynamicEntity::GetGoldMine() const 
+GoldMine* DynamicEntity::GetGoldMine() const
 {
 	return goldMine;
 }
@@ -818,27 +869,27 @@ void DynamicEntity::SetUnitGatheringGold(bool isGatheringGold)
 	this->isGatheringGold = isGatheringGold;
 }
 
-bool DynamicEntity::IsUnitGatheringGold() const 
+bool DynamicEntity::IsUnitGatheringGold() const
 {
 	return isGatheringGold;
 }
 
-void DynamicEntity::SetRunestone(Runestone* runestone) 
+void DynamicEntity::SetRunestone(Runestone* runestone)
 {
 	this->runestone = runestone;
 }
 
-Runestone* DynamicEntity::GetRunestone() const 
+Runestone* DynamicEntity::GetRunestone() const
 {
 	return runestone;
 }
 
-void DynamicEntity::SetUnitHealingRunestone(bool isHealingRunestone) 
+void DynamicEntity::SetUnitHealingRunestone(bool isHealingRunestone)
 {
 	this->isHealingRunestone = isHealingRunestone;
 }
 
-bool DynamicEntity::IsUnitHealingRunestone() const 
+bool DynamicEntity::IsUnitHealingRunestone() const
 {
 	return isHealingRunestone;
 }
@@ -888,12 +939,12 @@ bool DynamicEntity::GetBlitState() const
 }
 
 // Valid
-void DynamicEntity::SetIsValid(bool isValid) 
+void DynamicEntity::SetIsValid(bool isValid)
 {
 	this->isValid = isValid;
 }
 
-bool DynamicEntity::GetIsValid() const 
+bool DynamicEntity::GetIsValid() const
 {
 	return isValid;
 }

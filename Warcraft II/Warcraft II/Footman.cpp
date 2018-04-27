@@ -101,12 +101,6 @@ void Footman::Move(float dt)
 			isDead = true;
 			isValid = false;
 
-			if (lifeBar != nullptr) {
-
-				lifeBar->toRemove = true;
-				lifeBar = nullptr;
-			}
-
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
@@ -126,6 +120,10 @@ void Footman::Move(float dt)
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
+
+			// Remove life bar
+			if (lifeBar != nullptr)
+				App->gui->RemoveElem((UIElement**)lifeBar);
 
 			// If the player dies, remove all their goals
 			//unitCommand = UnitCommand_Stop;
@@ -276,13 +274,11 @@ void Footman::Move(float dt)
 	}
 
 	// Update Unit LifeBar
-	
 	if (lifeBar != nullptr) {
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
 	}
-	
 }
 
 void Footman::Draw(SDL_Texture* sprites)
@@ -307,7 +303,7 @@ void Footman::DebugDrawSelected()
 	App->printer->PrintQuad(entitySize, color);
 
 	//for (uint i = 0; i < unitInfo.priority; ++i) {
-		//const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
+	//const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
 	//const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
 	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
 	//}
@@ -321,10 +317,10 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 		// An enemy is within the sight of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
-		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
-			// Static Entity
+																														 // Static Entity
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			//LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
 
@@ -382,11 +378,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			}
 		}
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-		//	LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+			//	LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is within the ATTACK radius
 
@@ -409,11 +405,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 		// Reset attack parameters
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
-		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-		//	LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+			//	LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is NO longer within the SIGHT radius
 
@@ -443,11 +439,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			}
 		}
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-		//	LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+			//	LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Horde is NO longer within the ATTACK radius
 

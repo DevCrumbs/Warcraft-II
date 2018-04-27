@@ -222,10 +222,9 @@ bool j1Particles::Start()
 	LOG("Loading particles");
 
 	paws.particleType = ParticleType_Paws;
-
 	trollAxe.particleType = ParticleType_Enemy_Projectile;
 	playerArrows.particleType = ParticleType_Player_Projectile;
-	enemyArrows.particleType = ParticleType_Enemy_Projectile;	
+	enemyArrows.particleType = ParticleType_Enemy_Projectile;
 	cannonBullet.particleType = ParticleType_Cannon_Projectile;
 	lowFire.particleType = ParticleType_Fire;
 	hardFire.particleType = ParticleType_Fire;
@@ -306,7 +305,7 @@ bool j1Particles::Update(float dt)
 	return ret;
 }
 
-bool j1Particles::PostUpdate() 
+bool j1Particles::PostUpdate()
 {
 	bool ret = true;
 
@@ -322,9 +321,9 @@ bool j1Particles::PostUpdate()
 		{
 			//App->render->Blit(atlasTex, currPart->pos.x, currPart->pos.y, &(currPart->animation.GetCurrentFrame()), 1.0f, currPart->angle);
 			if (currPart->particleType == ParticleType_Paws)
-				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_Paws);
+				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, pawsTex, currPart->animation.GetCurrentFrame(), Layers_Paws);
 			else
-				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_BasicParticles);
+				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_BasicParticles, currPart->angle);
 		}
 	}
 
@@ -359,8 +358,7 @@ Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, fPoint 
 
 				float m = sqrtf(pow(currPart->orientation.x, 2.0f) + pow(currPart->orientation.y, 2.0f));
 
-				if (m > 0) {
-
+				if (m > 0.0f) {
 					currPart->orientation.x /= m;
 					currPart->orientation.y /= m;
 				}
@@ -506,7 +504,7 @@ bool Particle::Update(float dt)
 
 			//Apply damage in dynamic entities on the way of the particle, if the particle is a cannon bullet
 			Entity* entity = App->entities->IsEntityOnTile(App->map->WorldToMap(pos.x, pos.y));
-			if(particleType == ParticleType_Cannon_Projectile) {
+			if (particleType == ParticleType_Cannon_Projectile) {
 				if (entity != nullptr) {
 					if (entity->entitySide == EntitySide_Player ||
 						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy)

@@ -48,6 +48,7 @@ enum TowerState
 	TowerState_Die
 };
 
+
 class StaticEntity :public Entity
 {
 public:
@@ -58,7 +59,7 @@ public:
 	virtual void Move(float dt) {}
 
 	//virtual void DebugDrawSelected();
-	
+
 	void HandleInput(EntitiesEvent &EntityEvent);
 	bool MouseHover() const;
 	bool CheckBuildingState();
@@ -66,9 +67,12 @@ public:
 	uint GetConstructionTime() const;
 	bool GetIsFinishedBuilt() const;
 
-	//Colliders
-	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
+	BuildingState GetBuildingState() const;
+
+	// Collision
 	ColliderGroup* GetSightRadiusCollider() const;
+
+	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
 
 public:
 
@@ -85,6 +89,7 @@ protected:
 	uint constructionTime = 0;
 	bool isBuilt = false;
 
+	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;
 };
 

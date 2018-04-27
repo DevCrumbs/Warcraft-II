@@ -84,12 +84,23 @@ struct UnitInfo
 {
 	uint priority = 1;
 
+	// Radius
 	uint sightRadius = 0;
 	uint attackRadius = 0;
-	uint damage = 0;
 
+	// Damage
+	uint heavyDamage = 0;
+	uint lightDamage = 0;
+	uint airDamage = 0;
+	uint towerDamage = 0;
+
+	// Speed
 	float maxSpeed = 0.0f;
 	float currSpeed = 0.0f;
+
+	// Life
+	int currLife = 0;
+	uint maxLife = 0;
 };
 
 class DynamicEntity :public Entity
@@ -102,14 +113,14 @@ public:
 	virtual void Draw(SDL_Texture* sprites);
 	virtual void DebugDrawSelected();
 	virtual void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
-	
+
 	Animation* GetAnimation() const;
 	Goal_Think* GetBrain() const;
 
 	// UnitInfo
 	float GetSpeed() const;
 	uint GetPriority() const;
-	uint GetDamage() const;
+	uint GetDamage(Entity* target) const;
 	UILifeBar* GetLifeBar() const;
 
 	// State machine
@@ -197,7 +208,7 @@ public:
 	// Dead
 	bool isDead = false; // if true, the unit is performing their dead animation
 
-	// Spawn
+						 // Spawn
 	bool isSpawned = false;
 
 protected:
@@ -209,7 +220,7 @@ protected:
 
 	bool isFlying = false; /// Dragon and Gryphon Rider fly
 
-	// Root of a bot's goal hierarchy
+						   // Root of a bot's goal hierarchy
 	Goal_Think* brain = nullptr;
 
 	// Player commands
@@ -223,14 +234,14 @@ protected:
 
 	bool isStill = true; // if true, the unit is still. Else, the unit is moving
 
-	// Attack
+						 // Attack
 	list<TargetInfo*> targets;
 	TargetInfo* currTarget = nullptr;
 	TargetInfo* newTarget = nullptr;
 
 	bool isHitting = false; // if true, the unit is hitting their target
 
-	// Interact with the map
+							// Interact with the map
 	GoldMine* goldMine = nullptr;
 	bool isGatheringGold = false;
 

@@ -193,12 +193,12 @@ void Goal_Think::AddGoal_Patrol(iPoint originTile, iPoint destinationTile)
 	AddSubgoal(new Goal_Patrol(owner, originTile, destinationTile));
 }
 
-void Goal_Think::AddGoal_GatherGold(GoldMine* goldMine) 
+void Goal_Think::AddGoal_GatherGold(GoldMine* goldMine)
 {
 	AddSubgoal(new Goal_GatherGold(owner, goldMine));
 }
 
-void Goal_Think::AddGoal_HealRunestone(Runestone* runestone) 
+void Goal_Think::AddGoal_HealRunestone(Runestone* runestone)
 {
 	AddSubgoal(new Goal_HealRunestone(owner, runestone));
 }
@@ -382,7 +382,7 @@ void Goal_Wander::Activate()
 	maxDistance = 5;
 	goalStatus = GoalStatus_Active;
 
-	if(owner != nullptr)
+	if (owner != nullptr)
 		AddSubgoal(new Goal_LookAround(owner));
 
 	iPoint destinationTile = { -1,-1 };
@@ -652,7 +652,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		if (targetInfo->target->GetCurrLife() <= 0) {
 
 			if (targetInfo->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
-			
+
 				DynamicEntity* dyn = (DynamicEntity*)targetInfo->target;
 
 				if (dyn->dynamicEntityType == EntityType_SHEEP) {
@@ -702,31 +702,31 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				switch (owner->GetDirection(orientation)) {
 
 				case UnitDirection_DownRight:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpRight:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Right:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_DownLeft:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpLeft:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Left:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Down:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 
 				case UnitDirection_Up:
 				case UnitDirection_NoDirection:
 				default:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				}
 			}
@@ -743,31 +743,31 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				switch (owner->GetDirection(orientation)) {
 
 				case UnitDirection_DownRight:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpRight:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Right:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_DownLeft:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpLeft:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Left:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Down:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 
 				case UnitDirection_Up:
 				case UnitDirection_NoDirection:
 				default:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage());
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				}
 			}
@@ -778,7 +778,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 			App->audio->PlayFx(25, 0);
 
-			targetInfo->target->ApplyDamage(owner->GetDamage());
+			targetInfo->target->ApplyDamage(owner->GetDamage(targetInfo->target));
 			break;
 		}
 
@@ -962,10 +962,11 @@ void Goal_PickNugget::Activate()
 		owner->SetUnitGatheringGold(true);
 		goldMine->SetUnitGatheringGold(true);
 		goldMine->buildingState = BuildingState_Destroyed;
+		goldMine->SetGoldMineState(GoldMineState_Gathering);
 	}
 	// Another unit has already entered the mine and is gathering the gold
 	else {
-	
+
 		goalStatus = GoalStatus_Failed;
 		return;
 	}
@@ -998,6 +999,10 @@ void Goal_PickNugget::Activate()
 		break;
 	}
 
+	goldMine->totalGold = gold;
+	goldMine->secondsGathering = secondsGathering;
+
+
 	App->audio->PlayFx(6, 3); // Gold Mine FX
 
 	owner->SetBlitState(false);
@@ -1007,8 +1012,8 @@ void Goal_PickNugget::Activate()
 		owner->GetLifeBar()->isBlit = false;
 
 	msAnimation = 600.0f;
-
 	timerGathering.Start();
+	goldMine->currentSec = timerGathering.ReadSec();
 	timerAnimation.Start();
 }
 
@@ -1020,7 +1025,7 @@ GoalStatus Goal_PickNugget::Process(float dt)
 		return goalStatus;
 
 	if (timerAnimation.ReadMs() >= msAnimation) {
-	
+
 		goldMine->SwapTexArea();
 		timerAnimation.Start();
 	}
@@ -1030,12 +1035,16 @@ GoalStatus Goal_PickNugget::Process(float dt)
 
 		goalStatus = GoalStatus_Completed;
 
+	goldMine->currentSec = timerGathering.ReadSec();
+
 	return goalStatus;
 }
 
 void Goal_PickNugget::Terminate()
 {
 	if (goalStatus == GoalStatus_Completed) {
+
+		goldMine->SetGoldMineState(GoldMineState_Gathered);
 
 		// Give gold to the player
 		App->player->AddGold(gold);
@@ -1053,8 +1062,8 @@ void Goal_PickNugget::Terminate()
 
 	goldMine = nullptr;
 	gold = 0;
-	secondsGathering = 0.0f;
 
+	secondsGathering = 0.0f;
 	msAnimation = 0.0f;
 }
 
@@ -1082,6 +1091,7 @@ void Goal_HealArea::Activate()
 		owner->SetUnitHealingRunestone(true);
 		runestone->SetUnitHealingArea(true);
 		runestone->buildingState = BuildingState_Destroyed;
+		runestone->SetRunestoneState(RunestoneState_Gathering);
 	}
 	// Another unit is already interacting with the runestone
 	else {
@@ -1113,13 +1123,14 @@ void Goal_HealArea::Activate()
 		break;
 	}
 
-	App->audio->PlayFx(8, 3); // Mage Tower FX
+	App->audio->PlayFx(8, 0); // Mage Tower FX
 
 	owner->SetIsValid(false);
 
 	msAnimation = 300.0f;
-	maxTimesAnimation = 3;
 	timerAnimation.Start();
+	secondsGathering = 2.0f;
+	timerGathering.Start();
 
 	alpha = 255;
 }
@@ -1131,14 +1142,12 @@ GoalStatus Goal_HealArea::Process(float dt)
 	if (goalStatus == GoalStatus_Failed)
 		return goalStatus;
 
-	if (timesAnimation < maxTimesAnimation) {
+	if (timerGathering.ReadSec() <= secondsGathering) {
 
 		if (timerAnimation.ReadMs() >= msAnimation) {
 
 			runestone->SwapTexArea();
 			timerAnimation.Start();
-
-			timesAnimation++;		
 		}
 
 		return goalStatus;
@@ -1147,10 +1156,15 @@ GoalStatus Goal_HealArea::Process(float dt)
 	// Bright the area
 	if (alpha > 0) {
 
-		alpha--;
+		alpha -= 8;
+
+		if (alpha < 0)
+			alpha = 0;
+
 		runestone->BlitSightArea(alpha);
 
-		return goalStatus;
+		if (alpha > 50)
+			return goalStatus;
 	}
 
 	// Perform the heal animation and heal the units within the area
@@ -1161,7 +1175,7 @@ GoalStatus Goal_HealArea::Process(float dt)
 		iPoint colliderTile = App->map->WorldToMap(sightRadiusCollider->colliders[i]->colliderRect.x, sightRadiusCollider->colliders[i]->colliderRect.y);
 
 		Entity* entity = App->entities->IsEntityOnTile(colliderTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
-		
+
 		if (entity != nullptr) {
 
 			DynamicEntity* dynEnt = (DynamicEntity*)entity;
@@ -1181,6 +1195,8 @@ void Goal_HealArea::Terminate()
 {
 	if (goalStatus == GoalStatus_Completed) {
 
+		runestone->SetRunestoneState(RunestoneState_Gathered);
+
 		owner->SetUnitHealingRunestone(false);
 		runestone->SetUnitHealingArea(false);
 
@@ -1190,9 +1206,8 @@ void Goal_HealArea::Terminate()
 	runestone = nullptr;
 	health = 0;
 
+	secondsGathering = 0.0f;
 	msAnimation = 0.0f;
-	timesAnimation = 0;
-	maxTimesAnimation = 0;
 
 	alpha = 0;
 }

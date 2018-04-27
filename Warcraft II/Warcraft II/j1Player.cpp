@@ -576,6 +576,8 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 						it++;
 					}
+
+					App->entities->CommandToUnits(units, UnitCommand_GatherGold);
 				}
 				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
 					App->scene->UnLoadTerenasDialog();
@@ -673,13 +675,26 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			break;
 
 		case EntitiesEvent_HOVER:
+
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
-				App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
-				App->player->isMouseOnMine = true;
+
+				GoldMine* goldMine = (GoldMine*)staticEntity;
+
+				if (goldMine->GetGoldMineState() == GoldMineState_Untouched) {
+
+					App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+					App->player->isMouseOnMine = true;
+				}
 			}
 			if (staticEntity->staticEntityType == EntityType_RUNESTONE) {
-				App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
-				App->player->isMouseOnMine = true;
+
+				Runestone* runestone = (Runestone*)staticEntity;
+
+				if (runestone->GetRunestoneState() == RunestoneState_Untouched) {
+
+					App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+					App->player->isMouseOnMine = true;
+				}
 			}
 			if ((staticEntity->staticEntityType == EntityType_TOWN_HALL || staticEntity->staticEntityType == EntityType_BARRACKS) && ent->GetCurrLife() == ent->GetMaxLife())
 				hoverCheck = HoverCheck_Upgrate;

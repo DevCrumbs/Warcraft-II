@@ -98,12 +98,6 @@ void TrollAxethrower::Move(float dt)
 
 			App->audio->PlayFx(13, 0);
 
-			if (lifeBar != nullptr) {
-
-				lifeBar->toRemove = true;
-				lifeBar = nullptr;
-			}
-
 			isDead = true;
 			isValid = false;
 			App->player->enemiesKill++;
@@ -149,26 +143,26 @@ void TrollAxethrower::Move(float dt)
 		/*
 		if (singleUnit->IsFittingTile()) {
 
-			newTarget = GetBestTargetInfo();
+		newTarget = GetBestTargetInfo();
 
-			if (newTarget != nullptr) {
+		if (newTarget != nullptr) {
 
-				// A new target has found, update the attacking target
-				if (currTarget != newTarget) {
+		// A new target has found, update the attacking target
+		if (currTarget != newTarget) {
 
-					if (currTarget != nullptr) {
+		if (currTarget != nullptr) {
 
-						if (!currTarget->isRemoved) {
+		if (!currTarget->isRemoved) {
 
-							currTarget->target->RemoveAttackingUnit(this);
-							isHitting = false;
-						}
-					}
+		currTarget->target->RemoveAttackingUnit(this);
+		isHitting = false;
+		}
+		}
 
-					currTarget = newTarget;
-					brain->AddGoal_AttackTarget(currTarget);
-				}
-			}
+		currTarget = newTarget;
+		brain->AddGoal_AttackTarget(currTarget);
+		}
+		}
 		}
 		*/
 	}
@@ -195,7 +189,7 @@ void TrollAxethrower::Move(float dt)
 	}
 
 	//Update Unit LifeBar
-	
+
 	if (lifeBar != nullptr) {
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
@@ -240,7 +234,7 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 		if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-	//		LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
+			//		LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Alliance is within the SIGHT radius
 
@@ -272,7 +266,7 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 		else if (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-		//	LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
+			//	LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Alliance is within the ATTACK radius
 
@@ -297,7 +291,7 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 		if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-		//	LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
+			//	LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
 
 			// The Alliance is NO longer within the SIGHT radius
 
@@ -329,7 +323,7 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 		else if (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-		//	LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
+			//	LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
 
 			// The Alliance is NO longer within the ATTACK radius
 
@@ -678,7 +672,7 @@ bool TrollAxethrower::ChangeAnimation()
 	return ret;
 }
 
-float TrollAxethrower::GetAxeSpeed() const 
+float TrollAxethrower::GetAxeSpeed() const
 {
 	return trollAxethrowerInfo.axeSpeed;
 }

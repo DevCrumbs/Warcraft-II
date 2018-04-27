@@ -49,7 +49,7 @@ void Runestone::Move(float dt)
 }
 
 // Heal area
-bool Runestone::IsUnitHealingArea() const 
+bool Runestone::IsUnitHealingArea() const
 {
 	return isUnitHealingArea;
 }
@@ -60,7 +60,7 @@ void Runestone::SetUnitHealingArea(bool isUnitHealingArea)
 }
 
 // Tex area
-void Runestone::SwapTexArea() 
+void Runestone::SwapTexArea()
 {
 	if (texArea == &runestoneInfo.completeTexArea)
 		texArea = &runestoneInfo.inProgressTexArea;
@@ -69,14 +69,36 @@ void Runestone::SwapTexArea()
 }
 
 // Blit alpha area
-void Runestone::BlitSightArea(Uint8 alpha) 
+void Runestone::BlitSightArea(Uint8 alpha)
 {
 	if (sightRadiusCollider == nullptr)
 		return;
 
 	for (uint i = 0; i < sightRadiusCollider->colliders.size(); ++i) {
-	
-		//App->render->DrawQuad(sightRadiusCollider->colliders[i]->colliderRect, 255, 255, 255, alpha);
-		App->printer->PrintQuad(sightRadiusCollider->colliders[i]->colliderRect, { 255,255,255,alpha });
+
+		iPoint colliderTile = App->map->WorldToMap(sightRadiusCollider->colliders[i]->colliderRect.x, sightRadiusCollider->colliders[i]->colliderRect.y);
+		Entity* entity = App->entities->IsEntityOnTile(colliderTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+
+		if (entity != nullptr) {
+
+			DynamicEntity* dynEnt = (DynamicEntity*)entity;
+			iPoint pos = App->map->MapToWorld(dynEnt->GetSingleUnit()->currTile.x, dynEnt->GetSingleUnit()->currTile.y);
+
+			SDL_Color lightBlue = ColorLightBlue;
+			App->printer->PrintQuad({ pos.x, pos.y, 32, 32 }, { lightBlue.r,lightBlue.g,lightBlue.b,alpha }, Layers_FloorColliders);
+		}
+		else
+			App->printer->PrintQuad(sightRadiusCollider->colliders[i]->colliderRect, { 255,255,255,alpha }, Layers_FloorColliders);
 	}
+}
+
+// Runestone state
+void Runestone::SetRunestoneState(RunestoneState runestoneState) 
+{
+	this->runestoneState = runestoneState;
+}
+
+RunestoneState Runestone::GetRunestoneState() const 
+{
+	return runestoneState;
 }

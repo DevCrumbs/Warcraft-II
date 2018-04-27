@@ -52,12 +52,12 @@ void GoldMine::Move(float dt)
 }
 
 // Gather gold
-bool GoldMine::IsUnitGatheringGold() const 
+bool GoldMine::IsUnitGatheringGold() const
 {
 	return isUnitGatheringGold;
 }
 
-void GoldMine::SetUnitGatheringGold(bool isUnitGatheringGold) 
+void GoldMine::SetUnitGatheringGold(bool isUnitGatheringGold)
 {
 	this->isUnitGatheringGold = isUnitGatheringGold;
 }
@@ -69,4 +69,15 @@ void GoldMine::SwapTexArea()
 		texArea = &goldMineInfo.inProgressTexArea;
 	else
 		texArea = &goldMineInfo.completeTexArea;
+}
+
+// Gold Mine state
+void GoldMine::SetGoldMineState(GoldMineState goldMineState)
+{
+	this->goldMineState = goldMineState;
+}
+
+GoldMineState GoldMine::GetGoldMineState() const 
+{
+	return goldMineState;
 }

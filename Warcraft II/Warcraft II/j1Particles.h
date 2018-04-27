@@ -136,7 +136,7 @@ public:
 	Particle cannonBullet;
 
 	Particle trollAxe;
-	
+
 	// Paws
 	Particle paws;
 

@@ -7,11 +7,15 @@ struct RunestoneInfo
 {
 	SDL_Rect completeTexArea = { 0,0,0,0 };
 	SDL_Rect inProgressTexArea = { 0,0,0,0 };
-	iPoint size{ 0,0 };
-	uint life = 0u;
-	float speed = 0.0f;
 
 	uint sightRadius = 0;
+};
+
+enum RunestoneState {
+
+	RunestoneState_Untouched,
+	RunestoneState_Gathering,
+	RunestoneState_Gathered,
 };
 
 class Runestone :public StaticEntity
@@ -33,10 +37,15 @@ public:
 	// Blit alpha area
 	void BlitSightArea(Uint8 alpha);
 
+	// Runestone state
+	void SetRunestoneState(RunestoneState runestoneState);
+	RunestoneState GetRunestoneState() const;
+
 private:
 
 	RunestoneInfo runestoneInfo;
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
+	RunestoneState runestoneState = RunestoneState_Untouched;
 
 	// Heal area
 	bool isUnitHealingArea = false;
