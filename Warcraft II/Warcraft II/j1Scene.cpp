@@ -1501,11 +1501,12 @@ void j1Scene::DestroyAllUI()
 		App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
 		(*iterator).owner = nullptr;
 	}
+	groupElementsList.clear();
 
 	App->gui->RemoveElem((UIElement**)&commandPatrolButton);
 	App->gui->RemoveElem((UIElement**)&commandStopButton);
 
-	groupElementsList.clear();
+	
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()

@@ -504,6 +504,11 @@ bool j1Player::CleanUp()
 		townHall = nullptr;
 	}
 
+	while(!toSpawnUnitQueue.empty())
+	{
+		delete toSpawnUnitQueue.front();
+		toSpawnUnitQueue.pop();
+	}
 
 	return ret;
 }
@@ -957,9 +962,13 @@ void j1Player::HideEntitySelectedInfo()
 	if (entitySelectedStats.entitySelected == barracks) {
 		produceElvenArcherButton->isActive = false;
 		produceFootmanButton->isActive = false;
-		for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) {
+		for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator)
+		{
 			App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
 			App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
+
+			delete (*iterator).owner;
+			(*iterator).owner = nullptr;
 		}
 		toSpawnUnitStats.clear();
 	}
@@ -989,9 +998,13 @@ void j1Player::DeleteEntitiesMenu()
 	App->gui->RemoveElem((UIElement**)&produceElvenArcherButton);
 	App->gui->RemoveElem((UIElement**)&produceFootmanButton);
 	App->gui->RemoveElem((UIElement**)&producePaladinButton);
-	for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) {
+	for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator) 
+	{
 		App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
 		App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
+
+		delete (*iterator).owner;
+		(*iterator).owner = nullptr;
 	}
 	toSpawnUnitStats.clear();
 

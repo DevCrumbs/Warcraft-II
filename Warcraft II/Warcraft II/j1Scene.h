@@ -82,6 +82,11 @@ struct GroupSelectedElements {
 
 	UIImage* entityIcon = nullptr;
 	UILifeBar* entityLifeBar = nullptr;
+
+	bool operator==(GroupSelectedElements group)
+	{
+		return owner == group.owner && entityIcon == group.entityIcon && entityLifeBar == group.entityLifeBar;
+	}
 };
 
 
