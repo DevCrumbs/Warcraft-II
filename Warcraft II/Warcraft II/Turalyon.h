@@ -5,6 +5,8 @@
 
 struct TuralyonInfo
 {
+	UnitInfo unitInfo;
+	Animation idle;
 	int currLife = 0;
 	uint maxLife = 0;
 };
@@ -23,6 +25,7 @@ public:
 	void UpdateAnimations(float dt);
 
 private:
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	TuralyonInfo turalyonInfo;
 };
