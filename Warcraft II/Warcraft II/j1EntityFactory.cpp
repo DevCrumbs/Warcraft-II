@@ -16,6 +16,7 @@
 #include "j1Movement.h"
 #include "Goal.h"
 #include "j1Printer.h"
+#include "j1PathManager.h"
 
 #include "Entity.h"
 #include "DynamicEntity.h"
@@ -2350,8 +2351,11 @@ bool j1EntityFactory::CleanUp()
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		if ((*dynEnt) != nullptr)
+		if ((*dynEnt) != nullptr) {
 			delete *dynEnt;
+			activeDynamicEntities.remove(*dynEnt++);
+			continue;
+		}
 
 		dynEnt++;
 	}
@@ -2362,8 +2366,11 @@ bool j1EntityFactory::CleanUp()
 
 	while (statEnt != activeStaticEntities.end()) {
 
-		if ((*statEnt) != nullptr)
+		if ((*statEnt) != nullptr) {
 			delete *statEnt;
+			activeStaticEntities.remove(*statEnt++);
+			continue;
+		}
 
 		statEnt++;
 	}
@@ -2374,8 +2381,11 @@ bool j1EntityFactory::CleanUp()
 
 	while (it != toSpawnEntities.end()) {
 
-		if ((*it) != nullptr)
+		if ((*it) != nullptr) {
 			delete *it;
+			toSpawnEntities.remove(*it++);
+			continue;
+		}
 
 		it++;
 	}
@@ -2433,7 +2443,6 @@ bool j1EntityFactory::CleanUp()
 
 	return ret;
 }
-
 
 Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const EntityInfo& entityInfo, const UnitInfo& unitInfo, j1Module* listener)
 {
@@ -3497,23 +3506,31 @@ bool j1EntityFactory::RemoveAllUnitsGoals(list<DynamicEntity*> units)
 	return ret;
 }
 
-void j1EntityFactory::InvalidateAttackEntity(Entity* entity)
+bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
 {
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+	if (target == nullptr)
+		return false;
 
-	while (it != activeDynamicEntities.end()) {
+	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
 
-		if (!(*it)->isDead) {
-			//if ((*it)->IsEntityInTargetsList(entity))
+	while (dynEnt != activeDynamicEntities.end()) {
 
-				// The dead entity was a target of another entity
-			(*it)->InvalidateTarget(entity);
+		(*dynEnt)->SetIsRemovedTargetInfo(target);
+		(*dynEnt)->RemoveAttackingUnit(target);
 
-			// The dead entity may be attacking another unit
-			(*it)->RemoveAttackingUnit(entity);
-		}
-		it++;
+		dynEnt++;
 	}
+
+	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
+
+	while (statEnt != activeStaticEntities.end()) {
+
+		(*statEnt)->RemoveAttackingUnit(target);
+
+		statEnt++;
+	}
+
+	return true;
 }
 
 void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
@@ -3527,9 +3544,11 @@ void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 			if ((*it)->GetSingleUnit()->waitUnit != nullptr) {
 
 				// The dead entity was the waitUnit of another entity
-				if ((*it)->GetSingleUnit()->waitUnit->unit == entity)
+				if ((*it)->GetSingleUnit()->waitUnit->unit == entity) {
 
 					(*it)->GetSingleUnit()->ResetUnitCollisionParameters();
+					App->pathmanager->UnRegister((*it)->GetSingleUnit()->unit->GetPathPlanner());
+				}
 			}
 		}
 
@@ -3553,7 +3572,7 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 				if (!(*activeDyn)->isDead) {
 
 					// An offset value is applied ONLY to the units selection
-					iPoint offsetValue = { 15,15 };
+					iPoint offsetValue = { 20,20 };
 
 					iPoint entityPos = { (int)(*activeDyn)->GetPos().x + (*activeDyn)->GetOffsetSize().x - offsetValue.x, (int)(*activeDyn)->GetPos().y + (*activeDyn)->GetOffsetSize().y - offsetValue.y };
 					iPoint entitySize = { (*activeDyn)->GetSize().x + offsetValue.x, (*activeDyn)->GetSize().y + offsetValue.y };
@@ -3640,6 +3659,7 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 			}
 		}
 	}
+
 	return nullptr;
 }
 

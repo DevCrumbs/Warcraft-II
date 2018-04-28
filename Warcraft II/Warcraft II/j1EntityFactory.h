@@ -145,8 +145,8 @@ public:
 
 	bool RemoveAllUnitsGoals(list<DynamicEntity*> units);
 
-	// Removes the entity from all the targets and attacking units lists
-	void InvalidateAttackEntity(Entity* entity);
+	// ATTACK
+	bool InvalidateTargetInfo(Entity* target);
 	void InvalidateMovementEntity(Entity* entity);
 	///_SANDRA
 

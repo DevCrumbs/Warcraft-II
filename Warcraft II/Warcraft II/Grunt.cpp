@@ -118,12 +118,13 @@ void Grunt::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
-			App->entities->InvalidateAttackEntity(this);
+
+			// Remove any path request
+			App->pathmanager->UnRegister(pathPlanner);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
 			singleUnit = nullptr;
-
 
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;

@@ -170,11 +170,10 @@ public:
 	Entity* GetCurrTarget() const;
 	bool SetCurrTarget(Entity* target);
 
-	bool IsEntityInTargetsList(Entity* entity) const;
-	bool InvalidateTarget(Entity* entity); // sets isRemove to true
-	bool RemoveTargetInfo(TargetInfo* targetInfo);
+	bool SetIsRemovedTargetInfo(Entity* target); // this action happens first
+	bool RemoveTargetInfo(TargetInfo* targetInfo); // this action happens second
 
-	TargetInfo* GetBestTargetInfo() const; // TODO: add argument EntityType??? For critters vs enemies
+	TargetInfo* GetBestTargetInfo(ENTITY_CATEGORY entityType = EntityCategory_NONE) const; // TODO: add argument EntityType??? For critters vs enemies
 
 	void SetHitting(bool isHitting);
 	bool IsHitting() const;
@@ -214,7 +213,7 @@ public:
 	// Dead
 	bool isDead = false; // if true, the unit is performing their dead animation
 
-						 // Spawn
+	// Spawn
 	bool isSpawned = false;
 
 protected:
@@ -226,7 +225,7 @@ protected:
 
 	bool isFlying = false; /// Dragon and Gryphon Rider fly
 
-						   // Root of a bot's goal hierarchy
+	// Root of a bot's goal hierarchy
 	Goal_Think* brain = nullptr;
 
 	// Player commands
@@ -240,7 +239,7 @@ protected:
 
 	bool isStill = true; // if true, the unit is still. Else, the unit is moving
 
-						 // Attack
+	// Attack
 	list<TargetInfo*> targets;
 	TargetInfo* currTarget = nullptr;
 	TargetInfo* newTarget = nullptr;

@@ -174,8 +174,10 @@ bool StaticEntity::MouseHover() const
 }
 
 
-bool StaticEntity::CheckBuildingState() {
+bool StaticEntity::CheckBuildingState() 
+{
 	bool ret = true;
+
 	BuildingState bs = buildingState;
 
 	if (this->GetCurrLife() <= 0)
@@ -213,6 +215,7 @@ bool StaticEntity::CheckBuildingState() {
 		default:
 			break;
 		}
+
 	return ret;
 }
 

@@ -223,30 +223,17 @@ void Goal_AttackTarget::Activate()
 		goalStatus = GoalStatus_Completed;
 		return;
 	}
-
-	/// The target has been removed from another unit!!!
-	if (targetInfo->isRemoved) {
-
-		goalStatus = GoalStatus_Completed;
-		return;
-	}
-
-	// It is possible for a bot's target to die while this goal is active,
-	// so we must test to make sure the bot always has an active target
-	if (!targetInfo->IsTargetPresent()) {
+	/// The target has been removed by another unit
+	else if (targetInfo->isRemoved) {
 
 		goalStatus = GoalStatus_Completed;
 		return;
 	}
+	else if (!targetInfo->IsTargetPresent()) {
 
-	// The attack is only performed if the sight distance is satisfied
-	/*
-	else if (!targetInfo->isSightSatisfied) {
-
-	goalStatus = GoalStatus_Failed;
-	return;
+		goalStatus = GoalStatus_Completed;
+		return;
 	}
-	*/
 
 	// -----
 
@@ -259,7 +246,7 @@ void Goal_AttackTarget::Activate()
 		AddSubgoal(new Goal_MoveToPosition(owner, targetTile));
 	}
 
-	/// The target is being attacked by this unit
+	// The target is being attacked by this unit
 	targetInfo->target->AddAttackingUnit(owner);
 
 	owner->SetUnitState(UnitState_AttackTarget);
@@ -269,15 +256,26 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
-	// The unit was chasing their target, but the attack distance has been suddenly satisfied
-	if (subgoals.size() > 0) {
+	/// The target has been removed by another unit
+	if (targetInfo->isRemoved) {
 
-		if (owner->GetSingleUnit()->IsFittingTile()
-			&& (targetInfo->isRemoved || (targetInfo->isAttackSatisfied && subgoals.front()->GetType() == GoalType_MoveToPosition))) {
+		if (owner->GetSingleUnit()->IsFittingTile()) {
 
-			subgoals.front()->Terminate();
-			delete subgoals.front();
-			subgoals.pop_front();
+			goalStatus = GoalStatus_Completed;
+			return goalStatus;
+		}
+	}
+	else if (subgoals.size() > 0 && subgoals.front()->GetType() == GoalType_MoveToPosition) {
+
+		// The unit was chasing their target, but the attack distance has been suddenly satisfied
+		if (targetInfo->isAttackSatisfied) {
+
+			if (owner->GetSingleUnit()->IsFittingTile()) {
+
+				subgoals.front()->Terminate();
+				delete subgoals.front();
+				subgoals.pop_front();
+			}
 		}
 	}
 
@@ -293,45 +291,27 @@ void Goal_AttackTarget::Terminate()
 {
 	RemoveAllSubgoals();
 
-	// -----
-
 	if (targetInfo == nullptr)
 		return;
 
-	/// The target has been removed from another unit!!!
-	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
+	/// The target has been removed by this/another unit
+	if (targetInfo->isRemoved) {
 
-		// Remove the target from this owner
+		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
-
-		// -----
-
-		targetInfo = nullptr;
-		owner->SetUnitState(UnitState_Idle);
-
-		return;
 	}
+	else if (!targetInfo->isSightSatisfied) {
+	
+		// Remove this owner from the attacking units of the target
+		targetInfo->target->RemoveAttackingUnit(owner);
 
-	// Remove this attacking unit from the owner's unitsAttacking list
-	targetInfo->target->RemoveAttackingUnit(owner);
-
-	// If the target has died, invalidate it from the rest of the units
-	if (!targetInfo->IsTargetPresent())
-
-		App->entities->InvalidateAttackEntity(targetInfo->target);
-
-	// If the sight distance is not satisfied, remove the target from the entity targets list
-	// !targetInfo->isSightSatisfied ||
-	if (!targetInfo->IsTargetPresent())
-
-		// Remove the target from this owner
+		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
+	}
 
 	// -----
 
 	targetInfo = nullptr;
-
-	owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_Patrol ---------------------------------------------------------------------
@@ -654,26 +634,31 @@ void Goal_HitTarget::Activate()
 {
 	goalStatus = GoalStatus_Active;
 
-	/// The target has been removed from another unit!!!
-	if (targetInfo->isRemoved) {
+	if (targetInfo == nullptr) {
+	
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+	/// The target has been removed by another unit
+	else if (targetInfo->isRemoved) {
+
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+	/// The target has died
+	else if (!targetInfo->IsTargetPresent()) {
+
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+	/// The target is no longer within the attack nor sight radius of the unit
+	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied) {
 
 		goalStatus = GoalStatus_Completed;
 		return;
 	}
 
-	// It is possible for a bot's target to die while this goal is active,
-	// so we must test to make sure the bot always has an active target
-	if (!targetInfo->IsTargetPresent()) {
-
-		goalStatus = GoalStatus_Completed;
-		return;
-	}
-	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied
-		|| !owner->GetSingleUnit()->IsFittingTile()) {
-
-		goalStatus = GoalStatus_Failed;
-		return;
-	}
+	// -----
 
 	owner->SetHitting(true);
 }
@@ -682,53 +667,59 @@ GoalStatus Goal_HitTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
-	/// The target has been removed from another unit!!!
+	/// The target has been removed by another unit
 	if (targetInfo->isRemoved) {
 
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
+	/// The target has died
+	else if (!targetInfo->IsTargetPresent()) {
 
-	if (!targetInfo->IsTargetPresent()) {
+		/// Remove the target from all other units lists
+		App->entities->InvalidateTargetInfo(targetInfo->target);
 
-		if (targetInfo->target == nullptr) {
+		// If the target is a Sheep or a Boar, apply health to the unit that killed it (this unit)
+		if (targetInfo->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-			goalStatus = GoalStatus_Completed;
-			return goalStatus;
-		}
+			DynamicEntity* dyn = (DynamicEntity*)targetInfo->target;
 
-		// The target is dead
-		if (targetInfo->target->GetCurrLife() <= 0) {
+			if (dyn->dynamicEntityType == EntityType_SHEEP) {
 
-			if (targetInfo->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+				CritterSheepInfo c = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
+				owner->ApplyHealth(c.restoredHealth);
 
-				DynamicEntity* dyn = (DynamicEntity*)targetInfo->target;
-
-				if (dyn->dynamicEntityType == EntityType_SHEEP) {
-					CritterSheepInfo c = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
-					owner->ApplyHealth(c.restoredHealth);
-				}
-				else if (dyn->dynamicEntityType == EntityType_BOAR) {
-					CritterBoarInfo b = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
-					owner->ApplyHealth(b.restoredHealth);
-				}
+				iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
+				App->particles->AddParticle(App->particles->health, pos);
 			}
-			goalStatus = GoalStatus_Completed;
-			return goalStatus;
+			else if (dyn->dynamicEntityType == EntityType_BOAR) {
+
+				CritterBoarInfo b = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
+				owner->ApplyHealth(b.restoredHealth);
+
+				iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
+				App->particles->AddParticle(App->particles->health, pos);
+			}
 		}
+
+		goalStatus = GoalStatus_Completed;
+		return goalStatus;
 	}
+	/// The target is no longer within the attack nor sight radius of the unit
 	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied) {
 
-		goalStatus = GoalStatus_Failed;
+		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
 
-	// Do things when the animation of the unit has finished
+	// -----
+
+	// Do things at the end of the animation
 	if (((DynamicEntity*)owner)->GetAnimation()->Finished()) {
 
 		DynamicEntity* dyn = (DynamicEntity*)owner;
 
-		// Calculate particle orientation (for Elven Archer and Troll Axethrower)
+		// Calculate the orientation of the particle (Elven Archer, Troll Axethrower, Gryphon Rider and Dragon)
 		orientation = { targetInfo->target->GetPos().x - owner->GetPos().x, targetInfo->target->GetPos().y - owner->GetPos().y };
 
 		float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
@@ -742,7 +733,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 		case EntityType_ELVEN_ARCHER:
 
-			// ARROW
+			// Arrow
 			App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 
 			{
@@ -783,6 +774,8 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 		case EntityType_GRYPHON_RIDER:
 
+			// Flames
+
 			{
 				GryphonRider* gryphonRider = (GryphonRider*)owner;
 
@@ -821,7 +814,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 		case EntityType_TROLL_AXETHROWER:
 
-			// AXE
+			// Axe
 			App->audio->PlayFx(App->audio->GetFX().axeThrow, 0);
 
 			{
@@ -861,6 +854,8 @@ GoalStatus Goal_HitTarget::Process(float dt)
 			break;
 
 		case EntityType_DRAGON:
+
+			// Flames
 
 		{
 			Dragon* dragon = (Dragon*)owner;
@@ -917,6 +912,9 @@ GoalStatus Goal_HitTarget::Process(float dt)
 void Goal_HitTarget::Terminate()
 {
 	owner->SetHitting(false);
+
+	targetInfo = nullptr;
+	orientation = { 0,0 };
 }
 
 // Goal_LookAround ---------------------------------------------------------------------

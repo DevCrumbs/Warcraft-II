@@ -87,11 +87,15 @@ void CritterSheep::Move(float dt)
 		// Remove the entity from the unitsSelected list
 		App->entities->RemoveUnitFromUnitsSelected(this);
 
-		// If the player dies, remove all their goals
 		brain->RemoveAllSubgoals();
+
+		unitState = UnitState_Idle;
 
 		// Remove Movement (so other units can walk above them)
 		App->entities->InvalidateMovementEntity(this);
+
+		// Remove any path request
+		App->pathmanager->UnRegister(pathPlanner);
 
 		if (singleUnit != nullptr)
 			delete singleUnit;

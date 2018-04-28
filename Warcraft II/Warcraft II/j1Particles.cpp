@@ -237,16 +237,21 @@ bool j1Particles::Start()
 
 	// Particles info
 	/// Type
-	paws.particleType = ParticleType_Paws;
-	trollAxe.particleType = ParticleType_Enemy_Projectile;
-	playerArrows.particleType = ParticleType_Player_Projectile;
-	enemyArrows.particleType = ParticleType_Enemy_Projectile;
-	cannonBullet.particleType = ParticleType_Cannon_Projectile;
 	lowFire.particleType = ParticleType_Fire;
 	hardFire.particleType = ParticleType_Fire;
-	health.particleType = ParticleType_Health;
+
+	playerArrows.particleType = ParticleType_Player_Projectile;
+	enemyArrows.particleType = ParticleType_Enemy_Projectile;
+
+	cannonBullet.particleType = ParticleType_Cannon_Projectile;
+
+	trollAxe.particleType = ParticleType_Enemy_Projectile;
+
 	dragonGryphonFire.particleType = ParticleType_DragonGryphonFire;
 	dragonGryphonSubFire.particleType = ParticleType_DragonGryphonSubFire;
+
+	paws.particleType = ParticleType_Paws;
+	health.particleType = ParticleType_Health;
 
 	/// Life
 	paws.life = 800;
@@ -536,7 +541,16 @@ bool j1Particles::IsParticleOnTile(iPoint tile, ParticleType particleType)
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
-Particle::Particle()
+Particle::Particle() {}
+
+Particle::Particle(const Particle& p) :
+	animation(p.animation), pos(p.pos), destination(p.destination),
+	speed(p.speed), particleType(p.particleType), born(p.born), life(p.life),
+	damage(p.damage), orientation(p.orientation), isRemove(p.isRemove), angle(p.angle),
+	size(p.size)
+{}
+
+Particle::~Particle() 
 {
 	particleType = ParticleType_NoType;
 
@@ -553,16 +567,9 @@ Particle::Particle()
 	angle = 0.0f;
 
 	isRemove = false;
+
+	secondsToDamage = 0.0f;
 }
-
-Particle::Particle(const Particle& p) :
-	animation(p.animation), pos(p.pos), destination(p.destination),
-	speed(p.speed), particleType(p.particleType), born(p.born), life(p.life),
-	damage(p.damage), orientation(p.orientation), isRemove(p.isRemove), angle(p.angle),
-	size(p.size)
-{}
-
-Particle::~Particle() {}
 
 bool Particle::Update(float dt)
 {
@@ -581,40 +588,51 @@ bool Particle::Update(float dt)
 
 		if (SDL_HasIntersection(&rectA, &rectB)) {
 
-			//Apply damage in dynamic entities on the way of the particle, if the particle is a cannon bullet
-			Entity* entity = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y });
+			// Apply damage on dynamic entities on the way of the particle, if the particle is a cannon bullet
+			Entity* entity = App->entities->IsEntityOnTile({ destinationTile.x, destinationTile.y });
 
 			if (particleType == ParticleType_Cannon_Projectile) {
+
 				if (entity != nullptr) {
+
 					if (entity->entitySide == EntitySide_Player ||
 						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy)
 						entity->ApplyDamage(damage);
+
 					return false;
 				}
 			}
 
 			// Apply damage and kill the particle if it reaches its target
-			entity = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y });
-
 			if (entity != nullptr) {
+
 				if (particleType == ParticleType_Player_Projectile) {
+
 					if (entity->entitySide == EntitySide_Enemy || entity->entitySide == EntitySide_Neutral)
 						entity->ApplyDamage(damage);
+
 					return false;
 				}
 				else if (particleType == ParticleType_Enemy_Projectile) {
+
 					if (entity->entitySide == EntitySide_Player || entity->entitySide == EntitySide_Neutral)
 						entity->ApplyDamage(damage);
+
 					return false;
 				}
 				else if (particleType == ParticleType_Cannon_Projectile) {
+
 					if (entity->entitySide == EntitySide_Player ||
 						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy)
 						entity->ApplyDamage(damage);
+
 					return false;
 				}
 			}
+
+			return false;
 		}
+
 		pos.x += orientation.x * dt * speed;
 		pos.y += orientation.y * dt * speed;
 
