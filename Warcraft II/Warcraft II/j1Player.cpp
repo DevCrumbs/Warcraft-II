@@ -571,6 +571,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		case EntitiesEvent_RIGHT_CLICK:
 
+			/// TODO Sandra: only Footman and Elven Archer must be able to gather gold (King Terenas says that gold cannot be gathered by using a Gryphon Rider)
 			// Gold Mine (right click to send a unit to gather gold)
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
 
@@ -757,24 +758,38 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 	case EntitiesEvent_NONE:
 		break;
 	case EntitiesEvent_RIGHT_CLICK:
+
+		// Alleria (right click to send a unit to rescue her)
+		/// TODO Sandra: only Footman and Elven Archer must be able to rescue a Prisoner (King Terenas says that Alleria cannot be rescued by using a Gryphon Rider)
+		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON) {
+
+			list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+			if (units.size() > 0) {
+
+				list<DynamicEntity*>::const_iterator it = units.begin();
+
+				while (it != units.end()) {
+
+					(*it)->SetPrisoner(dynamicEntity);
+
+					it++;
+				}
+
+				App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+			}
+			/*
+			else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
+
+				App->scene->terenasDialogTimer.Start();
+				App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
+				App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+
+			}
+      */
+		}
 		break;
 	case EntitiesEvent_LEFT_CLICK:
-		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA) {
-			iPoint pos = App->map->WorldToMap((int)dynamicEntity->GetPos().x, (int)dynamicEntity->GetPos().y);
-			if (App->entities->IsNearSoldiers(pos, 5)) {
-				dynamicEntity->isRemove = true;
-				RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
-				App->audio->PlayFx(App->audio->GetFX().prisionerRescue, 0);
-			}
-		}
-		else if (dynamicEntity->dynamicEntityType == EntityType_KHADGAR) {
-			iPoint pos = App->map->WorldToMap((int)dynamicEntity->GetPos().x, (int)dynamicEntity->GetPos().y);
-			if (App->entities->IsNearSoldiers(pos, 5)) {
-				dynamicEntity->isRemove = true;
-				RescuePrisoner(TerenasDialog_RESCUE_KHADGAR, { 796,159,52,42 }, { 8, 200 });
-				App->audio->PlayFx(App->audio->GetFX().prisionerRescue, 0);
-			}
-		}
 		break;
 	case EntitiesEvent_HOVER:
 		break;
@@ -786,8 +801,9 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 		break;
 	}
 }
-void j1Player::RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos) {
 
+void j1Player::RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos) 
+{
 	if (App->scene->terenasDialogEvent != dialogEvent) {
 		App->scene->terenasDialogTimer.Start();
 		App->scene->terenasDialogEvent = dialogEvent;
@@ -965,6 +981,12 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		ShowEntitySelectedInfo(entity->GetStringLife(), "Elven Archer", { 291,244, 50, 41 }, entity);
 		ShowDynEntityLabelsInfo("Damage: 5", "Speed: 10", "Sight: 9", "Range: 4");
 	}	
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_GRYPHON_RIDER)
+	{
+		entity->SetStringLife(entity->GetCurrLife(), entity->GetMaxLife());
+		ShowEntitySelectedInfo(entity->GetStringLife(), "Gryphon Rider", { 700, 287, 50, 41 }, entity);
+		ShowDynEntityLabelsInfo("Damage: 12", "Speed: 14", "Sight: 6", "Range: 4");
+	}
 }
 
 UIImage* j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea)
@@ -1315,8 +1337,9 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			*/
 			if (UIelem == produceFootmanButton) {
 				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
-					if (currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
-						App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+
+					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + toSpawnUnitQueue.size())) {
+						App->audio->PlayFx(1, 0); //Button sound
 						currentGold -= 500;
 						App->scene->hasGoldChanged = true;
 						//Timer for the spawning
@@ -1347,8 +1370,9 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 			if (UIelem == produceElvenArcherButton) {
 				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
-					if (currentFood > (App->entities->GetPlayerSoldiers() + toSpawnUnitQueue.size())) {
-						App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+
+					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + toSpawnUnitQueue.size())) {
+						App->audio->PlayFx(1, 0); //Button sound
 						currentGold -= 400;
 						App->scene->hasGoldChanged = true;
 						//Timer for the spawning

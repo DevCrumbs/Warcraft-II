@@ -25,10 +25,16 @@ public:
 	void LoadAnimationsSpeed();
 	void UpdateAnimations(float dt);
 
-private:
-	EntitiesEvent entityEvent = EntitiesEvent_NONE;
+	// Prisoner rescue
+	bool IsUnitRescuingPrisoner() const;
+	void SetUnitRescuePrisoner(bool isUnitRescuingPrisoner);
 
+private:
+
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 	AlleriaInfo alleriaInfo;
+
+	bool isUnitRescuingPrisoner = false;
 };
 
 #endif //__Alleria_H__

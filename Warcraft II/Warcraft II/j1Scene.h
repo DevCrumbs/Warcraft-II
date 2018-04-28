@@ -33,7 +33,7 @@ enum TerenasDialogEvents {
 
 	TerenasDialog_START,
 	TerenasDialog_RESCUE_ALLERIA,
-	TerenasDialog_RESCUE_KHADGAR,
+	TerenasDialog_RESCUE_TURALYON,
 	TerenasDialog_GOLD_MINE,
 	TerenasDialog_RUNESTONE,
 	TerenasDialog_FOOD,
@@ -138,6 +138,9 @@ public:
 	UILifeBar * CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea);
 	//Patroll and Stop butt
 	void CreateAbilitiesButtons();
+	void CreateBuildingElements(SDL_Rect TexArea, iPoint buttonPos, string buildingName, string buildingCost,
+		iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
+
 	void LoadTerenasDialog();
 
 	void ShowSelectedUnits(list<DynamicEntity*> units);
@@ -148,8 +151,6 @@ public:
 	void UpdateIconsMenu();
 	void ChangeMenuLabelColor(UILabel* label, int cost);
 	void ChangeMenuIconsText(UIButton* butt, int cost, SDL_Rect normalText, SDL_Rect hoverText);
-	void CreateBuildingElements(SDL_Rect TexArea, iPoint buttonPos, string buildingName, string buildingCost, 
-		iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
 	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();

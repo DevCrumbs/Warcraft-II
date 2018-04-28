@@ -48,7 +48,7 @@ struct PathNode
 	PathNode(const PathNode& node);
 
 	// Fills a list (PathList) of all valid adjacent pathnodes
-	uint FindWalkableAdjacents(PathList& list_to_fill) const;
+	uint FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityChecked = true) const;
 	// Calculates this tile score
 	float Score() const;
 	// Calculate the F for a specific destination tile
@@ -121,13 +121,13 @@ public:
 	bool IsOnBase(const iPoint & pos);
 
 	// Initialize CycleOnceAStar
-	bool InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
+	bool InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan, bool isWalkabilityChecked = true);
 
 	// CycleOnce A Star
 	PathfindingStatus CycleOnceAStar();
 
 	// Initialize CycleOnceDijkstra
-	bool InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger = nullptr, bool isPathRequested = false);
+	bool InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger = nullptr, bool isPathRequested = false, bool isWalkabilityChecked = true);
 
 	// CycleOnce Dijkstra
 	PathfindingStatus CycleOnceDijkstra();
@@ -143,6 +143,7 @@ private:
 
 	// A Star
 	iPoint goal = { -1,-1 }; // destination tile
+	bool isWalkabilityChecked = true;
 
 	// Dijkstra
 	FindActiveTrigger* trigger = nullptr;

@@ -1230,6 +1230,9 @@ bool j1EntityFactory::Start()
 
 	/// ALLIANCE
 	/// Dynamic Entities
+	alleriaInfo.unitInfo.size = { 64,64 };
+	//turalyonInfo.unitInfo.size = { 64,64 };
+
 	// Footman
 	footmanInfo.unitInfo.priority = 2;
 
@@ -2803,7 +2806,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRYPHON_RIDER:
 	{
-		GryphonRider* gryphonRider = new GryphonRider(pos, gryphonRiderInfo.unitInfo.size, footmanInfo.unitInfo.currLife, footmanInfo.unitInfo.maxLife, unitInfo, (const GryphonRiderInfo&)entityInfo, listener);
+		GryphonRider* gryphonRider = new GryphonRider(pos, gryphonRiderInfo.unitInfo.size, gryphonRiderInfo.unitInfo.currLife, gryphonRiderInfo.unitInfo.maxLife, unitInfo, (const GryphonRiderInfo&)entityInfo, listener);
 		gryphonRider->entityType = EntityCategory_DYNAMIC_ENTITY;
 		gryphonRider->dynamicEntityType = EntityType_GRYPHON_RIDER;
 		gryphonRider->entitySide = EntitySide_Player;
@@ -2939,6 +2942,7 @@ uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEG
 	uint numOfEntities = 0;
 
 	if (entityCategory == EntityCategory_DYNAMIC_ENTITY) {
+
 		list<DynamicEntity*>::const_iterator activeDynamic = activeDynamicEntities.begin();
 
 		while (activeDynamic != activeDynamicEntities.end()) {
@@ -2948,8 +2952,8 @@ uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEG
 			activeDynamic++;
 		}
 	}
-
 	else if (entityCategory == EntityCategory_STATIC_ENTITY) {
+
 		list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
 
 		while (activeStatic != activeStaticEntities.end()) {
@@ -2962,7 +2966,23 @@ uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEG
 	else
 		numOfEntities = 0;
 
-	return  numOfEntities;
+	return numOfEntities;
+}
+
+uint j1EntityFactory::GetNumberOfPlayerUnits() const
+{
+	uint ret = 0;
+
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	while (it != activeDynamicEntities.end()) {
+
+		if ((*it)->entitySide == EntitySide_Player)
+			ret++;
+		it++;
+	}
+
+	return ret;
 }
 
 /// SANDRA
@@ -3600,6 +3620,7 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 			}
 		}
 	}
+	return nullptr;
 }
 
 bool j1EntityFactory::SelectBuilding(StaticEntity* staticEntity) 
@@ -3637,35 +3658,40 @@ void j1EntityFactory::UnselectAllBuildings()
 	}
 }
 
-int j1EntityFactory::GetPlayerSoldiers() const {
-	int ret = 0;
+bool j1EntityFactory::IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType)
+{
+	if (units.size() == 0)
+		return false;
 
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+	list<DynamicEntity*>::const_iterator it = units.begin();
+	
+	while (it != units.end()) {
+	
+		if ((*it)->dynamicEntityType != entityType)
+			return false;
 
-	while (it != activeDynamicEntities.end()) {
-
-		if ((*it)->entitySide == EntitySide_Player)
-			ret++;
 		it++;
 	}
-	return ret;
+
+	return true;
 }
 
-bool j1EntityFactory::IsNearSoldiers(iPoint pos, uint distance) {
-	bool ret = false;
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+bool j1EntityFactory::AreAllUnitsDoingSomething(list<DynamicEntity*> units, UnitState unitState)
+{
+	if (units.size() == 0)
+		return false;
 
-	while (it != activeDynamicEntities.end()) {
+	list<DynamicEntity*>::const_iterator it = units.begin();
 
-		if ((*it)->entitySide == EntitySide_Player && !(*it)->isDead) {
-			if (pos.DistanceManhattan((*it)->GetSingleUnit()->currTile) < distance)
-				return true;
-		}
+	while (it != units.end()) {
+
+		if ((*it)->GetUnitState() != unitState)
+			return false;
 
 		it++;
 	}
 
-	return ret;
+	return true;
 }
 
 // -------------------------------------------------------------

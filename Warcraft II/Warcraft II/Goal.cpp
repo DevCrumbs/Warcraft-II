@@ -203,6 +203,11 @@ void Goal_Think::AddGoal_HealRunestone(Runestone* runestone)
 	AddSubgoal(new Goal_HealRunestone(owner, runestone));
 }
 
+void Goal_Think::AddGoal_RescuePrisoner(DynamicEntity* prisoner)
+{
+	AddSubgoal(new Goal_RescuePrisoner(owner, prisoner));
+}
+
 // Goal_AttackTarget ---------------------------------------------------------------------
 
 Goal_AttackTarget::Goal_AttackTarget(DynamicEntity* owner, TargetInfo* targetInfo) :CompositeGoal(owner, GoalType_AttackTarget), targetInfo(targetInfo) {}
@@ -480,7 +485,7 @@ void Goal_GatherGold::Terminate()
 
 	goldMine = nullptr;
 
-	owner->SetGoldMine(nullptr);
+	//owner->SetGoldMine(nullptr);
 	owner->SetUnitState(UnitState_Idle);
 }
 
@@ -534,7 +539,48 @@ void Goal_HealRunestone::Terminate()
 
 	runestone = nullptr;
 
-	owner->SetRunestone(nullptr);
+	//owner->SetRunestone(nullptr);
+	owner->SetUnitState(UnitState_Idle);
+}
+
+// Goal_RescuePrisoner ---------------------------------------------------------------------
+
+Goal_RescuePrisoner::Goal_RescuePrisoner(DynamicEntity* owner, DynamicEntity* prisoner) :CompositeGoal(owner, GoalType_HealRunestone), prisoner(prisoner) {}
+
+void Goal_RescuePrisoner::Activate()
+{
+	goalStatus = GoalStatus_Active;
+
+	if (prisoner == nullptr) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+
+	// 2. Free the prisoner
+	AddSubgoal(new Goal_FreePrisoner(owner, prisoner));
+
+	// 1. Move near the prisoner
+	iPoint prisonerTile = App->map->WorldToMap(prisoner->GetPos().x, prisoner->GetPos().y);
+	AddSubgoal(new Goal_MoveToPosition(owner, prisonerTile));
+}
+
+GoalStatus Goal_RescuePrisoner::Process(float dt)
+{
+	ActivateIfInactive();
+
+	goalStatus = ProcessSubgoals(dt);
+
+	return goalStatus;
+}
+
+void Goal_RescuePrisoner::Terminate()
+{
+	RemoveAllSubgoals();
+
+	prisoner = nullptr;
+
+	//owner->SetPrisoner(nullptr);
 	owner->SetUnitState(UnitState_Idle);
 }
 
@@ -549,10 +595,13 @@ void Goal_MoveToPosition::Activate()
 
 	owner->SetHitting(false);
 
-	if (!App->pathfinding->IsWalkable(destinationTile)) {
+	if (owner->dynamicEntityType != EntityType_GRYPHON_RIDER && owner->dynamicEntityType != EntityType_DRAGON) {
 
-		goalStatus = GoalStatus_Failed;
-		return;
+		if (!App->pathfinding->IsWalkable(destinationTile)) {
+
+			goalStatus = GoalStatus_Failed;
+			return;
+		}
 	}
 
 	if (owner->GetSingleUnit()->goal != destinationTile)
@@ -1029,6 +1078,7 @@ void Goal_PickNugget::Activate()
 	}
 	else if (goldMine->buildingState == BuildingState_Destroyed) {
 
+		owner->SetGoldMine(nullptr);
 		goalStatus = GoalStatus_Failed;
 		return;
 	}
@@ -1043,6 +1093,7 @@ void Goal_PickNugget::Activate()
 	// Another unit has already entered the mine and is gathering the gold
 	else {
 
+		owner->SetGoldMine(nullptr);
 		goalStatus = GoalStatus_Failed;
 		return;
 	}
@@ -1126,6 +1177,7 @@ void Goal_PickNugget::Terminate()
 		App->player->AddGold(gold);
 		App->scene->hasGoldChanged = true;
 
+		owner->SetGoldMine(nullptr);
 		owner->SetUnitGatheringGold(false);
 		goldMine->SetUnitGatheringGold(false);
 
@@ -1158,6 +1210,7 @@ void Goal_HealArea::Activate()
 	}
 	else if (runestone->buildingState == BuildingState_Destroyed) {
 
+		owner->SetRunestone(nullptr);
 		goalStatus = GoalStatus_Failed;
 		return;
 	}
@@ -1172,6 +1225,7 @@ void Goal_HealArea::Activate()
 	// Another unit is already interacting with the runestone
 	else {
 
+		owner->SetRunestone(nullptr);
 		goalStatus = GoalStatus_Failed;
 		return;
 	}
@@ -1273,6 +1327,7 @@ void Goal_HealArea::Terminate()
 
 		runestone->SetRunestoneState(RunestoneState_Gathered);
 
+		owner->SetRunestone(nullptr);
 		owner->SetUnitHealingRunestone(false);
 		runestone->SetUnitHealingArea(false);
 
@@ -1286,4 +1341,96 @@ void Goal_HealArea::Terminate()
 	msAnimation = 0.0f;
 
 	alpha = 0;
+}
+
+// Goal_FreePrisoner ---------------------------------------------------------------------
+
+Goal_FreePrisoner::Goal_FreePrisoner(DynamicEntity* owner, DynamicEntity* prisoner) :AtomicGoal(owner, GoalType_HealArea), prisoner(prisoner) {}
+
+void Goal_FreePrisoner::Activate()
+{
+	goalStatus = GoalStatus_Active;
+
+	if (prisoner == nullptr) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+
+	if (prisoner->dynamicEntityType == EntityType_ALLERIA)	
+		alleria = (Alleria*)prisoner;
+	else if (prisoner->dynamicEntityType == EntityType_TURALYON)
+		turalyon = (Turalyon*)prisoner;
+
+	if (alleria == nullptr && turalyon == nullptr) {
+
+		goalStatus = GoalStatus_Failed;
+		return;
+	}
+	else if (alleria != nullptr) {
+	
+		if (!alleria->IsUnitRescuingPrisoner()) {
+
+			alleria->SetUnitRescuePrisoner(true);
+			owner->SetUnitRescuePrisoner(true);
+		}
+		// Another unit is already interacting with the prisoner
+		else {
+
+			owner->SetPrisoner(nullptr);
+			goalStatus = GoalStatus_Failed;
+			return;
+		}
+	}
+
+	App->audio->PlayFx(14, 0);
+
+	owner->SetIsValid(false);
+}
+
+GoalStatus Goal_FreePrisoner::Process(float dt)
+{
+	ActivateIfInactive();
+
+	if (goalStatus == GoalStatus_Failed)
+		return goalStatus;
+
+	/// TODO Sandra: make the prisoner say goodbye or something
+	/// TODO Sandra: make the prisoner disappear with the appropiate animation
+
+	goalStatus = GoalStatus_Completed;
+
+	return goalStatus;
+}
+
+void Goal_FreePrisoner::Terminate()
+{
+	if (goalStatus == GoalStatus_Completed) {
+
+		if (alleria != nullptr) {
+		
+			alleria->SetUnitRescuePrisoner(false);
+			App->player->RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
+		}
+		else if (turalyon != nullptr) {
+		
+			turalyon->SetUnitRescuePrisoner(false);
+			App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
+		}
+
+		prisoner->isRemove = true;
+
+		owner->SetPrisoner(nullptr);
+		owner->SetUnitRescuePrisoner(false);
+		owner->SetIsValid(true);
+
+		/// TODO Sandra: animate the room with a flash (fullscreen flash)
+
+		/// TODO Sandra: if the prisoner is the first rescued, the room becomes a new player base
+		/// TODO Sandra: if the prisoner is the second rescued, the victory of the game is achieved
+	}
+
+	prisoner = nullptr;
+	alleria = nullptr;
+	turalyon = nullptr;
 }

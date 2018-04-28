@@ -47,6 +47,7 @@ enum UnitState
 	UnitState_Wander,
 	UnitState_GatherGold,
 	UnitState_HealRunestone,
+	UnitState_RescuePrisoner,
 
 	UnitState_MaxStates
 };
@@ -75,6 +76,7 @@ enum UnitCommand
 	UnitCommand_Patrol,
 	UnitCommand_GatherGold,
 	UnitCommand_HealRunestone,
+	UnitCommand_RescuePrisoner,
 
 	UnitCommand_MaxCommands
 };
@@ -188,6 +190,11 @@ public:
 	void SetUnitHealingRunestone(bool isHealingRunestone);
 	bool IsUnitHealingRunestone() const;
 
+	void SetPrisoner(DynamicEntity* prisoner);
+	DynamicEntity* GetPrisoner() const;
+	void SetUnitRescuePrisoner(bool isRescuingPrisoner);
+	bool IsUnitRescuingPrisoner() const;
+
 	// Player commands
 	bool SetUnitCommand(UnitCommand unitCommand);
 	UnitCommand GetUnitCommand() const;
@@ -240,12 +247,15 @@ protected:
 
 	bool isHitting = false; // if true, the unit is hitting their target
 
-							// Interact with the map
+	// Interact with the map
 	GoldMine* goldMine = nullptr;
 	bool isGatheringGold = false;
 
 	Runestone* runestone = nullptr;
 	bool isHealingRunestone = false;
+
+	DynamicEntity* prisoner = nullptr;
+	bool isRescuingPrisoner = false;
 
 	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;

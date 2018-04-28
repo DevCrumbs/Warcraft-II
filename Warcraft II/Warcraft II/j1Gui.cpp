@@ -215,9 +215,6 @@ UIImage* j1Gui::CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* lis
 {
 	UIImage* image = new UIImage(localPos, parent, info, listener);
 
-//	if (parent == nullptr)
-//		parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)image);
 
 	return image;
@@ -226,9 +223,6 @@ UIImage* j1Gui::CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* lis
 UILabel* j1Gui::CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* listener, UIElement* parent)
 {
 	UILabel* label = new UILabel(localPos, parent, info, listener);
-
-//	if (parent == nullptr)
-//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)label);
 
@@ -239,9 +233,6 @@ UISlider* j1Gui::CreateUISlider(iPoint localPos, UISlider_Info& info, j1Module* 
 {
 	UISlider* slider = new UISlider(localPos, parent, info, listener);
 
-//	if (parent == nullptr)
-//		parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)slider);
 
 	return slider;
@@ -250,9 +241,6 @@ UISlider* j1Gui::CreateUISlider(iPoint localPos, UISlider_Info& info, j1Module* 
 UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener, UIElement* parent, bool isInWorld)
 {
 	UIButton* button = new UIButton(localPos, parent, info, listener, isInWorld);
-
-//	if (parent == nullptr)
-//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)button);
 
@@ -263,9 +251,6 @@ UILifeBar* j1Gui::CreateUILifeBar(iPoint localPos, UILifeBar_Info& info, j1Modul
 {
 	UILifeBar* lifeBar = new UILifeBar(localPos, parent, info, listener, isInWorld);
 
-//	if (parent == nullptr)
-	//	parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)lifeBar);
 
 	return lifeBar;
@@ -274,9 +259,6 @@ UILifeBar* j1Gui::CreateUILifeBar(iPoint localPos, UILifeBar_Info& info, j1Modul
 UIInputText* j1Gui::CreateUIInputText(iPoint localPos, j1Module* listener, UIElement* parent)
 {
 	UIInputText* inputText = new UIInputText(localPos, parent, listener);
-
-//	if (parent == nullptr)
-//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)inputText);
 
@@ -289,9 +271,6 @@ UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIEleme
 
 	UICursor* cursor = new UICursor(localPos, parent, info, listener);
 
-//	if (parent == nullptr)
-//		parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)cursor);
 
 	return cursor;
@@ -302,9 +281,6 @@ UIMinimap* j1Gui::CreateUIMinimap(UIMinimap_Info& info, j1Module* listener, UIEl
 	iPoint localPos = { 0,0 };
 
 	UIMinimap* minimap = new UIMinimap(localPos, parent, info, listener);
-
-//	if (parent == nullptr)
-//		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)minimap);
 

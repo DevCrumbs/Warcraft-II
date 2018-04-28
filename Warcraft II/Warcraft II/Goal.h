@@ -12,10 +12,13 @@ using namespace std;
 
 class Entity;
 class DynamicEntity;
+class GoldMine;
+class Runestone;
+class Alleria;
+class Turalyon;
+
 struct TargetInfo;
 struct Particle;
-struct GoldMine;
-struct Runestone;
 
 enum UnitDirection;
 
@@ -169,6 +172,7 @@ public:
 	void AddGoal_Patrol(iPoint originTile, iPoint destinationTile);
 	void AddGoal_GatherGold(GoldMine* goldMine);
 	void AddGoal_HealRunestone(Runestone* runestone);
+	void AddGoal_RescuePrisoner(DynamicEntity* prisoner);
 };
 
 class Goal_AttackTarget :public CompositeGoal
@@ -247,6 +251,21 @@ public:
 private:
 
 	Runestone* runestone = nullptr;
+};
+
+class Goal_RescuePrisoner :public CompositeGoal
+{
+public:
+
+	Goal_RescuePrisoner(DynamicEntity* owner, DynamicEntity* prisoner);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	DynamicEntity* prisoner = nullptr;
 };
 
 // Atomic Goals ---------------------------------------------------------------------
@@ -347,6 +366,24 @@ private:
 	j1PerfTimer timerAnimation;
 
 	int alpha = 0;
+};
+
+class Goal_FreePrisoner :public AtomicGoal
+{
+public:
+
+	Goal_FreePrisoner(DynamicEntity* owner, DynamicEntity* prisoner);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	DynamicEntity* prisoner = nullptr;
+
+	Alleria* alleria = nullptr;
+	Turalyon* turalyon = nullptr;
 };
 
 #endif //__GOAL_H__
