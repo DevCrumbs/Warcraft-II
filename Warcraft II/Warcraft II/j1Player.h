@@ -79,6 +79,13 @@ struct EntitySelectedStats
 	Entity* entitySelected = nullptr;
 };
 
+struct GroupSelectionButtons
+{
+	UIButton* selectFootmans = nullptr;
+	UIButton* selectElvenArchers = nullptr;
+	UIButton* selectGryphonRiders = nullptr;
+};
+
 class j1Player : public j1Module
 {
 public:
@@ -124,6 +131,7 @@ public:
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 	void CreateEntitiesStatsUI();
+	void CreateGroupSelectionButtons();
 	void ShowEntitySelectedInfo(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect iconDim, string entName, Entity* currentEntity);
 	void ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range);
@@ -131,6 +139,7 @@ public:
 	void HideEntitySelectedInfo();
 	void MakeUnitMenu(Entity* entity);
 	void DeleteEntitiesMenu();
+	void DeleteGroupSelectionButtons();
 	void CreateHoverInfoMenu();
 	void ShowHoverInfoMenu(string unitProduce, string gold);
 	void HideHoverInfoMenu();
@@ -142,6 +151,7 @@ public:
 	//void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	//void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
+	void CreateSimpleSelectionButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
 	void HandleBarracksUIElem();
@@ -210,8 +220,9 @@ private:
 	uint totalUnitsDead = 0;
 
 	//HoverButton hoverButtonStruct;
-
 	HoverInfo hoverInfo;
+
+	GroupSelectionButtons groupSelectionButtons;
 
 	//TODO Oscar (Puntero in list)
 	list<GroupSpawning> toSpawnUnitStats;

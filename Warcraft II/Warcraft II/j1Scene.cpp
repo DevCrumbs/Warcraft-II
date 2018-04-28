@@ -970,7 +970,7 @@ void j1Scene::LoadInGameUI()
 	LoadTerenasDialog();
 	//create this before entitiesInfo (Parent)
 	App->player->CreateEntitiesStatsUI();
-
+	App->player->CreateGroupSelectionButtons();
 }
 
 void j1Scene::LoadUnitsMenuInfo()
