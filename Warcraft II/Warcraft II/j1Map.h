@@ -94,7 +94,7 @@ struct MapLayer {
 	uint height = 0; //number of tiles in the y axis
 
 	uint* data = nullptr;
-	uint size_data = 0;
+	uint sizeData = 0;
 
 	float speed = 1.0f; //parallax (speed of the layer)
 
@@ -164,6 +164,11 @@ struct MapData
 	bool CheckIfEnter(string groupObject, string object, fPoint position);
 };
 
+struct EntityGroup
+{
+	list<Entity*> entities;
+};
+
 // ----------------------------------------------------
 class j1Map : public j1Module
 {
@@ -189,6 +194,12 @@ public:
 	bool Load(const char* path);
 
 	bool LoadLogic();
+
+	list<Entity*> LoadLayerEntities(MapLayer* layer);
+
+	bool LoadRoomRect(MapLayer * layer);
+
+	bool CreateEntityGroup(list<list<Entity*>> entityGroupLevel);
 
 	// Unload map
 	bool UnLoad();
@@ -248,9 +259,11 @@ public:
 	int					defaultTileSize = 0;
 	int					defaultHallSize = 0;
 
+	list<list<Entity*>>	entityGroups;
+
 private:
 
-	pugi::xml_document	map_file;
+	pugi::xml_document	mapFile;
 	string				folder;
 	bool				map_loaded = false;
 
