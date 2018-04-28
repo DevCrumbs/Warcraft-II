@@ -653,11 +653,6 @@ bool j1Scene::Update(float dt)
 	case PauseMenuActions_CREATED:
 		CreatePauseMenu();
 
-		/*if (buildingMenuOn)
-		{
-			ChangeBuildingMenuState(&buildingMenuButtons);
-		}*/
-
 		if (alphaBuilding != EntityType_NONE) {
 			alphaBuilding = EntityType_NONE;
 			if (alphaBuilding != EntityType_MAX)
@@ -1130,7 +1125,7 @@ void j1Scene::UpdateIconsMenu()
 {
 	ChangeMenuIconsText(buildingMenuButtons.chickenFarm.icon, chickenFarmCost, { 241,34,50,41 }, { 292,34,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.cannonTower.icon, cannonTowerCost, { 394,118,50,41 }, { 445,118,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 496,160,50,41 }, { 496,160,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.guardTower.icon, guardTowerCost, { 394,76,50,41 }, { 445,76,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.mageTower.icon, mageTowerCost, { 496,202,50,41 }, { 496,202,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.stables.icon, stablesCost, { 343,160,50,41 }, { 343,160,50,41 });
@@ -1233,14 +1228,13 @@ void j1Scene::CreateBuildingElements(SDL_Rect TexArea, iPoint buttonPos, string 
 
 void j1Scene::DeleteBuildingElements(MenuBuildingButton* elem)
 {
-	App->gui->RemoveElem((UIElement**)&elem->icon);
 	App->gui->RemoveElem((UIElement**)&elem->name);
 	App->gui->RemoveElem((UIElement**)&elem->cost);
+	App->gui->RemoveElem((UIElement**)&elem->icon);
 }
 
 void j1Scene::UnLoadBuildingMenu()
 {	
-	App->gui->RemoveElem((UIElement**)&buildingMenu);
 	DeleteBuildingElements(&buildingMenuButtons.chickenFarm);
 	DeleteBuildingElements(&buildingMenuButtons.stables);
 	DeleteBuildingElements(&buildingMenuButtons.gryphonAviary);
@@ -1248,6 +1242,7 @@ void j1Scene::UnLoadBuildingMenu()
 	DeleteBuildingElements(&buildingMenuButtons.scoutTower);
 	DeleteBuildingElements(&buildingMenuButtons.guardTower);
 	DeleteBuildingElements(&buildingMenuButtons.cannonTower);
+	App->gui->RemoveElem((UIElement**)&buildingMenu);
 
 	buildingMenuOn = false;
 }
@@ -1406,8 +1401,8 @@ void j1Scene::DestroyAllUI()
 	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
 	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
 	App->gui->RemoveElem((UIElement**)&entitiesStats);
-	App->gui->RemoveElem((UIElement**)&buildingButton);
 	App->gui->RemoveElem((UIElement**)&buildingLabel);
+	App->gui->RemoveElem((UIElement**)&buildingButton);
 	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
 	App->gui->RemoveElem((UIElement**)&minimap);
 

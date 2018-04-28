@@ -3620,6 +3620,7 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 			}
 		}
 	}
+	return nullptr;
 }
 
 bool j1EntityFactory::SelectBuilding(StaticEntity* staticEntity) 
