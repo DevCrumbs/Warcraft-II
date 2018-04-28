@@ -951,6 +951,9 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 				case EntityType_ALLERIA:
 					App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
 					break;
+				//case EntityType_TURALYON:
+				//	App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
+				//	break;
 
 				case EntityType_GRUNT:
 				case EntityType_TROLL_AXETHROWER:

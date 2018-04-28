@@ -47,6 +47,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	crittersTexName = spritesheets.child("critters").attribute("name").as_string();
 	khadgarTexName = spritesheets.child("khadgarAnimations").attribute("name").as_string();
 	alleriaTexName = spritesheets.child("alleriaAnimations").attribute("name").as_string();
+	turalyonTexName = spritesheets.child("turalyonAnimations").attribute("name").as_string();
 	elvenArcherTexName = spritesheets.child("elvenArcherAnimations").attribute("name").as_string();
 	trollAxethrowerTexName = spritesheets.child("trollAxethrowerAnimations").attribute("name").as_string();
 	gryphonRiderTexName = spritesheets.child("gryphonRiderAnimations").attribute("name").as_string();
@@ -1020,9 +1021,9 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	}
 
 	// Prisoners
-	// Khadgar
 	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
-
+	
+	// Khadgar
 	pugi::xml_node khadgarAnimations = prisionerEntities.child("khadgar").child("animations");
 	currentAnimation = khadgarAnimations.child("idle");
 	khadgarInfo.idle.speed = currentAnimation.attribute("speed").as_float();
@@ -1038,6 +1039,15 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	alleriaInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		alleriaInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
+	//Turalyon
+	pugi::xml_node turalyonAnimations = prisionerEntities.child("turalyon").child("animations");
+	currentAnimation = turalyonAnimations.child("idle");
+	turalyonInfo.idle.speed = currentAnimation.attribute("speed").as_float();
+	turalyonInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		turalyonInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
 	// Critters
@@ -1231,7 +1241,7 @@ bool j1EntityFactory::Start()
 	/// ALLIANCE
 	/// Dynamic Entities
 	alleriaInfo.unitInfo.size = { 64,64 };
-	//turalyonInfo.unitInfo.size = { 64,64 };
+	turalyonInfo.unitInfo.size = { 64,64 };
 
 	// Footman
 	footmanInfo.unitInfo.priority = 2;
@@ -1475,6 +1485,7 @@ bool j1EntityFactory::Start()
 
 	khadgarTex = App->tex->Load(khadgarTexName.data());
 	alleriaTex = App->tex->Load(alleriaTexName.data());
+	turalyonTex = App->tex->Load(turalyonTexName.data());
 
 	builtChickenFarmInfo = chickenFarmInfo;
 	builtChickenFarmInfo.isBuilt = true;
@@ -1877,6 +1888,9 @@ const EntityInfo& j1EntityFactory::GetUnitInfo(ENTITY_TYPE dynamicEntityType)
 		break;
 	case EntityType_KHADGAR:
 		return (EntityInfo&)khadgarInfo;
+		break;
+	case EntityType_TURALYON:
+		return (EntityInfo&)turalyonInfo;
 		break;
 
 	default:
@@ -2831,7 +2845,13 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TURALYON:
 	{
+		Turalyon* turalyon = new Turalyon(pos, khadgarInfo.unitInfo.size, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const TuralyonInfo&)entityInfo, listener);
+		turalyon->entityType = EntityCategory_DYNAMIC_ENTITY;
+		turalyon->dynamicEntityType = EntityType_TURALYON;
+		turalyon->entitySide = EntitySide_Player;
 
+		toSpawnEntities.push_back((Entity*)turalyon);
+		return (DynamicEntity*)turalyon;
 	}
 	break;
 

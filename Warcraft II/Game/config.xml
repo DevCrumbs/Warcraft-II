@@ -164,6 +164,7 @@
 
       <khadgarAnimations name = "data/assets/textures/units/prisonersUnits/Khadgar.png"/>
       <alleriaAnimations name = "data/assets/textures/units/prisonersUnits/Alleria.png"/>
+      <turalyonAnimations name = "data/assets/textures/units/prisonersUnits/Turalyon.png"/>
 
     </spritesheets>
 
@@ -933,6 +934,14 @@
             </idle>
           </animations>
         </alleria>
+
+        <turalyon>
+          <animations>
+            <idle speed="4" loop="1">
+              <frame x="0" y="0" w="64" h="64"/>
+            </idle>
+          </animations>
+        </turalyon>
       </prisoners>
     </dynamicEntities>
 
