@@ -80,7 +80,7 @@ void CritterSheep::Move(float dt)
 		&& singleUnit->IsFittingTile()
 		&& !isDead) {
 
-		App->audio->PlayFx(16, 0);
+		App->audio->PlayFx(App->audio->GetFX().sheepDeath, 0);
 
 		isDead = true;
 

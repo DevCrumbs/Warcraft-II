@@ -165,7 +165,7 @@ bool j1Player::Update(float dt)
 			}
 	
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN) {
-		App->audio->PlayFx(6, 0); //Gold mine sound
+		App->audio->PlayFx(App->audio->GetFX().goldMine, 0); //Gold mine sound
 		AddGold(500);
 		App->scene->hasGoldChanged = true;
 	}
@@ -245,7 +245,7 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->hasGoldChanged = true;
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
-				App->audio->PlayFx(4, 0); //Placement building error button sound
+				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
 		case EntityType_STABLES:
@@ -256,7 +256,7 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->hasGoldChanged = true;
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
-				App->audio->PlayFx(4, 0); //Placement building error button sound
+				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
 		case EntityType_GRYPHON_AVIARY:
@@ -267,7 +267,7 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->hasGoldChanged = true;
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
-				App->audio->PlayFx(4, 0); //Placement building error button sound
+				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
 		case EntityType_MAGE_TOWER:
@@ -278,7 +278,7 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->hasGoldChanged = true;
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
-				App->audio->PlayFx(4, 0); //Placement building error button sound
+				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
 		case EntityType_SCOUT_TOWER:
@@ -291,7 +291,7 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->hasGoldChanged = true;
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
-				App->audio->PlayFx(4, 0); //Placement building error button sound
+				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
 		case EntityType_PLAYER_GUARD_TOWER:
@@ -301,6 +301,8 @@ void j1Player::CheckIfPlaceBuilding()
 				AddGold(-App->scene->guardTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
 			}
+			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
+				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 		case EntityType_PLAYER_CANNON_TOWER:
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
@@ -309,6 +311,9 @@ void j1Player::CheckIfPlaceBuilding()
 				AddGold(-App->scene->cannonTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
 			}
+			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
+				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
+			break;
 		case EntityType_NONE:
 			break;
 
@@ -355,12 +360,12 @@ void j1Player::CheckUnitSpawning()
 
 			case EntityType_FOOTMAN:
 				SpawnUnit(barracksPos, EntityType_FOOTMAN, unitInfo);
-				App->audio->PlayFx(21, 0);
+				App->audio->PlayFx(App->audio->GetFX().footmanReady, 0);
 			break;
 
 			case EntityType_ELVEN_ARCHER:
 				SpawnUnit(barracksPos, EntityType_ELVEN_ARCHER, unitInfo);
-				App->audio->PlayFx(18, 0);
+				App->audio->PlayFx(App->audio->GetFX().archerReady, 0);
 				break;
 
 			case EntityType_MAGE:
@@ -621,57 +626,57 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 		case EntitiesEvent_LEFT_CLICK:
 
 			if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM) {
-				App->audio->PlayFx(5, 0); //Chicken farm sound
+				App->audio->PlayFx(App->audio->GetFX().chickenFarm, 0); //Chicken farm sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Chicken Farm", { 241,34,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_GRYPHON_AVIARY) {
-				App->audio->PlayFx(7, 0); //Gryphon aviary sound
+				App->audio->PlayFx(App->audio->GetFX().gryphonAviary, 0); //Gryphon aviary sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER) {
-				App->audio->PlayFx(8, 0); //Mage tower sound
+				App->audio->PlayFx(App->audio->GetFX().mageTower, 0); //Mage tower sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Mage Tower", { 394,202,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER) {
-				App->audio->PlayFx(1, 0); //Button sound
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_PLAYER_GUARD_TOWER) {
-				App->audio->PlayFx(5, 0); //Chicken farm sound
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Guard Tower", { 394,76,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER) {
-				App->audio->PlayFx(5, 0); //Chicken farm sound
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Cannon Tower", { 394,118,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_STABLES) {
-				App->audio->PlayFx(9, 0); //Stables sound
+				App->audio->PlayFx(App->audio->GetFX().stables, 0); //Stables sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->buildingState == BuildingState_Normal) {
-				App->audio->PlayFx(1, 0); //Button sound
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Barracks", { 546,160,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade && staticEntity->buildingState == BuildingState_Normal) {
-				App->audio->PlayFx(1, 0); //Button sound
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Castle", { 546,202,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade && staticEntity->buildingState == BuildingState_Normal) {
-				App->audio->PlayFx(1, 0); //Button sound
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Keep", { 597,202,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal) {
-				App->audio->PlayFx(1, 0); //Button sound
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
 			}
 			break;
@@ -779,8 +784,9 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 				App->scene->terenasDialogTimer.Start();
 				App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
 				App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+
 			}
-			*/
+      */
 		}
 		break;
 	case EntitiesEvent_LEFT_CLICK:
@@ -1261,24 +1267,24 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					keepUpgrade = true;
 					currentGold -= 1500;
 					App->scene->hasGoldChanged = true;
-					App->audio->PlayFx(2, 0); //Construction sound
+					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Constructuion sound
 				}
 				else if(currentGold >= 500) {
 					townHallUpgrade = true;
 					currentGold -= 500;
 					App->scene->hasGoldChanged = true;
-					App->audio->PlayFx(2, 0);
+					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 				}
 				else
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			/*if (hoverCheck == HoverCheck_Repair) {
 				if (currentGold < 500) {
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
 				else {
-					App->audio->PlayFx(10, 0); //Repair building sound
+					App->audio->PlayFx(App->audio->GetFX().repairBuild, 0); //Repair building sound
 					hoverButtonStruct.currentEntity->SetCurrLife(hoverButtonStruct.currentEntity->GetMaxLife());
 					hoverButtonStruct.currentEntity->CheckBuildingState();
 					entitySelectedStats.HP->SetText(hoverButtonStruct.currentEntity->GetStringLife());
@@ -1295,10 +1301,10 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						currentGold -= 1000;
 						App->scene->hasGoldChanged = true;
 						DestroyHoverButton(barracks);
-						App->audio->PlayFx(2, 0); //Construction sound
+						App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 					}
 					else
-						App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
 				if (hoverButtonStruct.currentEntity == townHall && townHallUpgrade) {
 					if (currentGold >= 500) {
@@ -1306,10 +1312,10 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						currentGold -= 500;
 						App->scene->hasGoldChanged = true;
 						DestroyHoverButton(townHall);
-						App->audio->PlayFx(2, 0); //Construction sound
+						App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 					}
 					else
-						App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
 				if (hoverButtonStruct.currentEntity == townHall) {
 					if (currentGold >= 1500) {
@@ -1319,12 +1325,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						DestroyHoverButton(townHall);
 					}
 					else
-						App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
 			}
 			*/
 			if (UIelem == produceFootmanButton) {
 				if (currentGold >= footmanCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
+
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + toSpawnUnitQueue.size())) {
 						App->audio->PlayFx(1, 0); //Button sound
 						currentGold -= 500;
@@ -1347,7 +1354,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						}
 				}
 				else if (currentGold < footmanCost) {
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
@@ -1357,6 +1364,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 			if (UIelem == produceElvenArcherButton) {
 				if (currentGold >= elvenArcherCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
+
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + toSpawnUnitQueue.size())) {
 						App->audio->PlayFx(1, 0); //Button sound
 						currentGold -= 400;
@@ -1379,7 +1387,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					}
 				}
 				else if (currentGold < elvenArcherCost) {
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
@@ -1389,7 +1397,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 			if (UIelem == produceMageButton && mageTower != nullptr) {
 				if (currentGold >= mageCost  && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
-					App->audio->PlayFx(1, 0); //Button sound
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					currentGold -= 1200;
 					//Timer for the spawning
 					j1Timer spawnTimer;
@@ -1399,11 +1407,11 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					toSpawnUnitQueue.back()->toSpawnTimer.Start();
 				}
 				else if (currentGold < mageCost)
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 			if (UIelem == producePaladinButton) {
 				if (currentGold >= paladinCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
-					App->audio->PlayFx(1, 0); //Button sound
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					currentGold -= 800;
 					//Timer for the spawning
 					j1Timer spawnTimer;
@@ -1413,11 +1421,11 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					toSpawnUnitQueue.back()->toSpawnTimer.Start();
 				}
 				else if (currentGold < paladinCost)
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 			if (UIelem == produceGryphonRiderButton) {
 				if (currentGold >= gryphonRiderCost && toSpawnUnitQueue.size() <= maxSpawnQueueSize) {
-					App->audio->PlayFx(1, 0); //Button sound
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					currentGold -= 2500;
 					//Timer for the spawning
 					j1Timer spawnTimer;
@@ -1427,7 +1435,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					toSpawnUnitQueue.back()->toSpawnTimer.Start();
 				}
 				else if (currentGold < gryphonRiderCost)
-					App->audio->PlayFx(3, 0); //Button error sound
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_UP:

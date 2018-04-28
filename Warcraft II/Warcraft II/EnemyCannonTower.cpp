@@ -148,7 +148,7 @@ void EnemyCannonTower::TowerStateMachine(float dt)
 			if (attackTimer.Read() >= (enemyCannonTowerInfo.attackWaitTime * 1000)) {
 				attackTimer.Start();
 				CreateCannonBullet();
-				App->audio->PlayFx(24, 0); //Arrow sound
+				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0); //TODO Valdivia: Cannon sound
 			}
 		}
 	}

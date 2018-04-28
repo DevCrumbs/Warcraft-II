@@ -102,7 +102,7 @@ void Dragon::Move(float dt)
 			&& singleUnit->IsFittingTile()
 			&& !isDead) {
 
-			App->audio->PlayFx(13, 0);
+			App->audio->PlayFx(App->audio->GetFX().orcDeath, 0); //Dragon death
 
 			isDead = true;
 			isValid = false;

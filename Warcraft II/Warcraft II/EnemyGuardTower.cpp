@@ -146,7 +146,7 @@ void EnemyGuardTower::TowerStateMachine(float dt)
 			if (attackTimer.Read() >= (enemyGuardTowerInfo.attackWaitTime * 1000)) {
 				attackTimer.Start();
 				CreateArrow();
-				App->audio->PlayFx(24, 0); //Arrow sound
+				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 			}
 		}
 	}
