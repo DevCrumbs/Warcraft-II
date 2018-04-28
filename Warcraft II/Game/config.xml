@@ -54,6 +54,7 @@
         <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" prisonerRescue="Units/PrisonerRescue.wav"/>
         <archerPaths goToPlace ="Units/Archer/GoToPlace1.wav" ready="Units/Archer/Ready.wav" selected="Units/Archer/Selected1.wav"/>
         <footmanPaths goToPlace ="Units/Footman/GoToPlace1.wav" ready="Units/Footman/Ready.wav" selected="Units/Footman/Selected1.wav"/>
+        <griffonPaths goToPlace ="Units/Griffon/GoToPlace.wav" selected ="Units/Griffon/Selected.wav" death ="Units/Griffon/Death.wav"/>
         <crittersPaths boarDead ="Units/Critters/BoarDead.wav" sheepDead="Units/Critters/SheepDead.wav"/>
         <attackPaths axeThrow="Attack/AxeThrow.wav" bowFire="Attack/BowFire.wav" sword="Attack/Sword2.wav"/>
 

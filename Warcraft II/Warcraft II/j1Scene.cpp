@@ -1107,7 +1107,7 @@ void j1Scene::HideUnselectedUnits()
 	commandPatrolButton->isActive = false;
 	commandStopButton->isActive = false;
 }
-
+//TODO Valdivia 
 void j1Scene::ChooseUnitSelectedSound(list<DynamicEntity*> units)
 {
 	uint footmanNum = 0, archerNum = 0, gryphonNum = 0;
@@ -1133,7 +1133,7 @@ void j1Scene::ChooseUnitSelectedSound(list<DynamicEntity*> units)
 
 	uint footmanSelect = App->audio->GetFX().footmanSelected;
 	uint archerSelect = App->audio->GetFX().archerSelected;
-	uint gryphonSelect = App->audio->GetFX().footmanSelected; //TODO Valdivia Gryphon sound
+	uint gryphonSelect = App->audio->GetFX().griffonSelected; 
 
 	if (footmanNum > archerNum + gryphonNum)
 		App->audio->PlayFx(footmanSelect, 0);
@@ -1181,7 +1181,7 @@ void j1Scene::ChooseUnitSelectedSound(list<DynamicEntity*> units)
 	else
 		App->audio->PlayFx(App->audio->GetFX().footmanSelected, 0); //default
 }
-
+//TODO Valdivia
 void j1Scene::ChooseUnitCommandSound(list<DynamicEntity*> units)
 {
 	bool isFootman = false, isArcher = false, isGryphon = false;
@@ -1206,7 +1206,7 @@ void j1Scene::ChooseUnitCommandSound(list<DynamicEntity*> units)
 	}
 	uint footmanCommand = App->audio->GetFX().footmanCommand;
 	uint archerCommand = App->audio->GetFX().archerCommand;
-	uint gryphonCommand = App->audio->GetFX().footmanCommand; //TODO Valdivia Gryphon sound
+	uint gryphonCommand = App->audio->GetFX().griffonCommand;
 	if (isFootman)
 		App->audio->PlayFx(footmanCommand, 0);
 	if (isArcher)
