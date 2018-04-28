@@ -33,8 +33,10 @@ enum ParticleType {
 
 	ParticleType_Health,
 
-	ParticleType_DragonGryphonFire,
-	ParticleType_DragonGryphonSubFire,
+	ParticleType_DragonFire,
+	ParticleType_DragonSubFire,
+	ParticleType_GryphonFire,
+	ParticleType_GryphonSubFire,
 
 	ParticleType_MaxTypes
 };
@@ -130,6 +132,10 @@ private:
 	/// Health Speed
 	float healthSpeed = 0.0f;
 
+	/// Dragon and Gryphon Fire Speed
+	float dragonSubFireSpeed = 0.0f;
+	float gryphonSubFireSpeed = 0.0f;
+
 public:
 
 	// Fire
@@ -144,8 +150,10 @@ public:
 
 	Particle trollAxe;
 
-	Particle dragonGryphonFire;
-	Particle dragonGryphonSubFire;
+	Particle dragonFire;
+	Particle dragonSubFire;
+	Particle gryphonFire;
+	Particle gryphonSubFire;
 
 	// Paws
 	Particle paws;

@@ -1209,7 +1209,7 @@
       <frame x="343" y="52" w="20" h="22" />
     </trollAxe>
 
-    <dragonGryphonFire speed ="1" loop="1">
+    <dragonFire speed ="20" loop="1">
       <frame x="0" y="300" w="63" h="76" />
       <frame x="63" y="300" w="63" h="76" />
       <frame x="126" y="300" w="63" h="76" />
@@ -1227,7 +1227,27 @@
       <frame x="252" y="377" w="63" h="76" />
       <frame x="315" y="377" w="63" h="76" />
       <frame x="378" y="377" w="63" h="76" />
-    </dragonGryphonFire>
+    </dragonFire>
+
+    <gryphonFire speed ="20" loop="1">
+      <frame x="0" y="454" w="63" h="76" />
+      <frame x="63" y="454" w="63" h="76" />
+      <frame x="126" y="454" w="63" h="76" />
+      <frame x="189" y="454" w="63" h="76" />
+      <frame x="252" y="454" w="63" h="76" />
+      <frame x="315" y="454" w="63" h="76" />
+      <frame x="378" y="454" w="63" h="76" />
+      <frame x="441" y="454" w="63" h="76" />
+      <frame x="504" y="454" w="63" h="76" />
+
+      <frame x="0" y="531" w="63" h="76" />
+      <frame x="63" y="531" w="63" h="76" />
+      <frame x="126" y="531" w="63" h="76" />
+      <frame x="189" y="531" w="63" h="76" />
+      <frame x="252" y="531" w="63" h="76" />
+      <frame x="315" y="531" w="63" h="76" />
+      <frame x="378" y="531" w="63" h="76" />
+    </gryphonFire>
     
     <fire>
         <low speed = "10" loop = "1">

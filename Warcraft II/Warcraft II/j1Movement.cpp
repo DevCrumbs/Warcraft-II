@@ -1588,30 +1588,61 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile, bool isWalkabilityChecked)
 
 				// Under the mouseTile there cannot be units nor buildings
 				// mouseTile must be walkable
-				if (!App->entities->IsEntityOnTile(mouseTile) && App->pathfinding->IsWalkable(mouseTile)) {
+				if (isWalkabilityChecked) {
 
-					vector<iPoint>::iterator it = find(shapedGoal.begin(), shapedGoal.end(), mouseTile);
+					if (!App->entities->IsEntityOnTile(mouseTile) && App->pathfinding->IsWalkable(mouseTile)) {
 
-					if (it != shapedGoal.end())
+						vector<iPoint>::iterator it = find(shapedGoal.begin(), shapedGoal.end(), mouseTile);
 
-						// Remove the goal tiles until reaching mouseTile
-						shapedGoal.erase(it, shapedGoal.end());
+						if (it != shapedGoal.end())
 
-					else if (it == shapedGoal.end())
+							// Remove the goal tiles until reaching mouseTile
+							shapedGoal.erase(it, shapedGoal.end());
 
-						// Push the mouseTile
-						if (shapedGoal.size() < units.size())
-							shapedGoal.push_back(mouseTile);
+						else if (it == shapedGoal.end())
+
+							// Push the mouseTile
+							if (shapedGoal.size() < units.size())
+								shapedGoal.push_back(mouseTile);
+					}
+					else {
+
+						// Draw the invalid goal
+						SDL_Color col = ColorRed;
+
+						iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+						const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+						//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+						App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
+					}
 				}
 				else {
+				
+					if (!App->entities->IsEntityOnTile(mouseTile)) {
 
-					// Draw the invalid goal
-					SDL_Color col = ColorRed;
+						vector<iPoint>::iterator it = find(shapedGoal.begin(), shapedGoal.end(), mouseTile);
 
-					iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-					const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-					//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
-					App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
+						if (it != shapedGoal.end())
+
+							// Remove the goal tiles until reaching mouseTile
+							shapedGoal.erase(it, shapedGoal.end());
+
+						else if (it == shapedGoal.end())
+
+							// Push the mouseTile
+							if (shapedGoal.size() < units.size())
+								shapedGoal.push_back(mouseTile);
+					}
+					else {
+
+						// Draw the invalid goal
+						SDL_Color col = ColorRed;
+
+						iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+						const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+						//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+						App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
+					}
 				}
 			}
 			else if (find(shapedGoal.begin(), shapedGoal.end(), mouseTile) != shapedGoal.end()
@@ -1623,8 +1654,17 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile, bool isWalkabilityChecked)
 		}
 		else {
 
-			if (!App->entities->IsEntityOnTile(mouseTile) && App->pathfinding->IsWalkable(mouseTile))
-				shapedGoal.push_back(mouseTile);
+			if (!App->entities->IsEntityOnTile(mouseTile)) {
+
+				if (isWalkabilityChecked) {
+
+					if (App->pathfinding->IsWalkable(mouseTile))
+
+						shapedGoal.push_back(mouseTile);
+				}
+				else
+					shapedGoal.push_back(mouseTile);		
+			}
 		}
 	}
 
