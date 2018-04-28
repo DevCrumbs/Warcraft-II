@@ -170,7 +170,7 @@ public:
 	Entity* GetCurrTarget() const;
 	bool SetCurrTarget(Entity* target);
 
-	bool SetIsRemovedTargetInfo(TargetInfo* targetInfo); // this action happens first
+	bool SetIsRemovedTargetInfo(Entity* target); // this action happens first
 	bool RemoveTargetInfo(TargetInfo* targetInfo); // this action happens second
 
 	TargetInfo* GetBestTargetInfo(ENTITY_CATEGORY entityType = EntityCategory_NONE) const; // TODO: add argument EntityType??? For critters vs enemies

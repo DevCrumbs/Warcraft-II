@@ -84,7 +84,7 @@ public:
 
 protected:
 
-	Particle* fire;
+	Particle* fire = nullptr;
 	const SDL_Rect* texArea = nullptr;
 	j1Timer constructionTimer;
 	uint constructionTime = 0;

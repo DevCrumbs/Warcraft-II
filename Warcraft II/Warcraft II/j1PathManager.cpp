@@ -80,6 +80,9 @@ void j1PathManager::UpdateSearches()
 
 void j1PathManager::Register(PathPlanner* pathPlanner)
 {
+	if (pathPlanner == nullptr)
+		return;
+
 	list<PathPlanner*>::const_iterator it = find(searchRequests.begin(), searchRequests.end(), pathPlanner);
 
 	if (it == searchRequests.end())
@@ -88,6 +91,9 @@ void j1PathManager::Register(PathPlanner* pathPlanner)
 
 void j1PathManager::UnRegister(PathPlanner* pathPlanner)
 {
+	if (pathPlanner == nullptr)
+		return;
+
 	pathPlanner->SetSearchRequested(false);
 
 	searchRequests.remove(pathPlanner);

@@ -146,7 +146,7 @@ public:
 	bool RemoveAllUnitsGoals(list<DynamicEntity*> units);
 
 	// ATTACK
-	bool InvalidateTargetInfo(TargetInfo* targetInfo);
+	bool InvalidateTargetInfo(Entity* target);
 	void InvalidateMovementEntity(Entity* entity);
 	///_SANDRA
 

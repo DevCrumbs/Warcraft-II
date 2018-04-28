@@ -73,6 +73,7 @@ DynamicEntity::~DynamicEntity()
 	isSpawned = true;
 
 	// Remove Attack
+	App->entities->InvalidateTargetInfo(this);
 	currTarget = nullptr;
 
 	// Remove Colliders
@@ -103,8 +104,7 @@ DynamicEntity::~DynamicEntity()
 	while (it != targets.end()) {
 
 		delete *it;
-		targets.remove(*it++);
-
+		it++;
 	}
 	targets.clear();
 }
@@ -694,9 +694,9 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 	return ret;
 }
 
-bool DynamicEntity::SetIsRemovedTargetInfo(TargetInfo* targetInfo) 
+bool DynamicEntity::SetIsRemovedTargetInfo(Entity* target)
 {
-	if (targetInfo == nullptr)
+	if (target == nullptr)
 		return false;
 
 	// Set isRemoved to true
@@ -704,7 +704,7 @@ bool DynamicEntity::SetIsRemovedTargetInfo(TargetInfo* targetInfo)
 
 	while (it != targets.end()) {
 
-		if ((*it)->target == targetInfo->target) {
+		if ((*it)->target == target) {
 
 			(*it)->isRemoved = true;
 			return true;
