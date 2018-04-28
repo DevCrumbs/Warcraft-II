@@ -241,7 +241,7 @@ bool j1Map::CleanUp()
 	aboveLayer = nullptr;
 
 	// Clean up the pugui tree
-	map_file.reset();
+	mapFile.reset();
 
 	return ret;
 }
@@ -311,7 +311,7 @@ bool j1Map::UnLoad()
 bool j1Map::LoadMap()
 {
 	bool ret = true;
-	pugi::xml_node map = map_file.child("map");
+	pugi::xml_node map = mapFile.child("map");
 
 	if (map == NULL)
 	{
@@ -405,7 +405,7 @@ bool j1Map::Load(const char* file_name)
 	string tmp = folder.data();
 	tmp += file_name;
 
-	pugi::xml_parse_result result = map_file.loadFile(tmp.data());
+	pugi::xml_parse_result result = mapFile.loadFile(tmp.data());
 
 	if (result == NULL)
 	{
@@ -421,7 +421,7 @@ bool j1Map::Load(const char* file_name)
 
 	// Load all tilesets info ----------------------------------------------
 	pugi::xml_node tileset;
-	for (tileset = map_file.child("map").child("tileset"); tileset && ret; tileset = tileset.next_sibling("tileset"))
+	for (tileset = mapFile.child("map").child("tileset"); tileset && ret; tileset = tileset.next_sibling("tileset"))
 	{
 		TileSet* set = new TileSet();
 
@@ -440,7 +440,7 @@ bool j1Map::Load(const char* file_name)
 
 	// Load layer info ----------------------------------------------
 	pugi::xml_node layer;
-	for (layer = map_file.child("map").child("layer"); layer && ret; layer = layer.next_sibling("layer"))
+	for (layer = mapFile.child("map").child("layer"); layer && ret; layer = layer.next_sibling("layer"))
 	{
 		MapLayer* set = new MapLayer();
 
@@ -456,7 +456,7 @@ bool j1Map::Load(const char* file_name)
 	pugi::xml_node objectGroup;
 	pugi::xml_node object;
 
-	for (objectGroup = map_file.child("map").child("objectgroup"); objectGroup && ret; objectGroup = objectGroup.next_sibling("objectgroup"))
+	for (objectGroup = mapFile.child("map").child("objectgroup"); objectGroup && ret; objectGroup = objectGroup.next_sibling("objectgroup"))
 	{
 		ObjectGroup* set = new ObjectGroup();
 
@@ -587,7 +587,7 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->height = node.attribute("height").as_uint();
 	LoadProperties(node, layer->properties);
 	layer->data = new uint[layer->width * layer->height];
-	layer->size_data = layer->width * layer->height;
+	layer->sizeData = layer->width * layer->height;
 	memset(layer->data, 0, layer->width * layer->height);
 
 	int i = 0;
@@ -847,125 +847,177 @@ bool MapData::CheckIfEnter(string groupObject, string object, fPoint position)
 bool j1Map::LoadLogic()
 {
 	bool ret = false;
+	// List of all entities 
+	list<list<Entity*>> entityGroupLevel;
 
 	// Iterate all layers
 	for (list<MapLayer*>::iterator layerIterator = data.layers.begin();
 		layerIterator != data.layers.end(); ++layerIterator)
 	{
-		// Check if layer is a logic layer
+		// Check if layer is a logic layer 
+
+			// For default logic
 		if ((*layerIterator)->properties.GetProperty("logic", false))
 		{
-			// Iterate layer
-			for (int i = 0; i < (*layerIterator)->size_data; ++i)
+			LoadLayerEntities(*layerIterator);
+			ret = true;
+		}
+
+			// For room rects
+		else if ((*layerIterator)->properties.GetProperty("roomLogic", false))
+		{
+			LoadRoomRect(*layerIterator);
+			ret = true;
+		}
+
+			// For entities groups
+		else if ((*layerIterator)->properties.GetProperty("entitiesGroup", false))
+		{
+			// Save the entities from layerIterator in entityGroupLevel
+			entityGroupLevel.push_back(LoadLayerEntities(*layerIterator));
+			ret = true;
+		}
+	}
+
+	if (ret)
+	{
+		CreateEntityGroup(entityGroupLevel);
+	}
+
+	return ret;
+}
+
+list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
+{
+
+	list<Entity*>entitiesGroup;
+	if (layer != nullptr)
+	{		
+		// Iterate layer
+		for (int i = 0; i < layer->sizeData; ++i)
+		{
+			// Check if tile is not empty
+			if (layer->data[i] > 0)
 			{
-				// Check if tile is not empty
-				if ((*layerIterator)->data[i] > 0)
+				int x = i % layer->width;
+				int y = i / layer->width;
+
+				iPoint auxPos = MapToWorld(x, y);
+				fPoint pos;
+				pos.x = auxPos.x;
+				pos.y = auxPos.y;
+
+				UnitInfo unitInfo;
+				ENTITY_TYPE entityType = (ENTITY_TYPE)layer->data[i];
+
+				Entity* enemyEntity = nullptr;
+				// Decide which entity to spawn
+				switch (entityType)
 				{
-					int x = i % (*layerIterator)->width;
-					int y = i / (*layerIterator)->width;
+					// Static Entities
+				case EntityType_TOWN_HALL:
+					App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+					break;
+				case EntityType_CHICKEN_FARM:
+					App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(), unitInfo, (j1Module*)App->player));
+					break;
+				case EntityType_BARRACKS:
+					App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+					break;
 
-					iPoint auxPos = MapToWorld(x, y);
-					fPoint pos;
-					pos.x = auxPos.x;
-					pos.y = auxPos.y;
+				case EntityType_GOLD_MINE:
+				case EntityType_RUNESTONE:
+				case EntityType_GREAT_HALL:
+				case EntityType_STRONGHOLD:
+				case EntityType_FORTRESS:
+				case EntityType_ENEMY_BARRACKS:
+				case EntityType_PIG_FARM:
+				case EntityType_TROLL_LUMBER_MILL:
+				case EntityType_ALTAR_OF_STORMS:
+				case EntityType_DRAGON_ROOST:
+				case EntityType_TEMPLE_OF_THE_DAMNED:
+				case EntityType_OGRE_MOUND:
+				case EntityType_ENEMY_BLACKSMITH:
+				case EntityType_WATCH_TOWER:
+				case EntityType_ENEMY_GUARD_TOWER:
+				case EntityType_ENEMY_CANNON_TOWER:
+					App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+					break;
 
-					UnitInfo unitInfo;
-					ENTITY_TYPE entityType = (ENTITY_TYPE)(*layerIterator)->data[i];
+					// Dynamic entities
+				case EntityType_FOOTMAN:
+				case EntityType_ELVEN_ARCHER:
+				case EntityType_KHADGAR:
+				case EntityType_ALLERIA:
+					App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
+					break;
 
-					switch (entityType)
-					{
-						// Static Entities
-					case EntityType_TOWN_HALL:
-						App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-						break;
-					case EntityType_CHICKEN_FARM:
-						App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(), unitInfo, (j1Module*)App->player));
-						break;
-					case EntityType_BARRACKS:
-						App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-						break;
+				case EntityType_GRUNT:
+				case EntityType_TROLL_AXETHROWER:
+					enemyEntity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+					break;
 
-					case EntityType_GOLD_MINE:
-					case EntityType_RUNESTONE:
-					case EntityType_GREAT_HALL:
-					case EntityType_STRONGHOLD:
-					case EntityType_FORTRESS:
-					case EntityType_ENEMY_BARRACKS:
-					case EntityType_PIG_FARM:
-					case EntityType_TROLL_LUMBER_MILL:
-					case EntityType_ALTAR_OF_STORMS:
-					case EntityType_DRAGON_ROOST:
-					case EntityType_TEMPLE_OF_THE_DAMNED:
-					case EntityType_OGRE_MOUND:
-					case EntityType_ENEMY_BLACKSMITH:
-					case EntityType_WATCH_TOWER:
-					case EntityType_ENEMY_GUARD_TOWER:
-					case EntityType_ENEMY_CANNON_TOWER:
-						App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-						break;
+				case EntityType_SHEEP:
+				case EntityType_BOAR:
+					int type = rand() % 2;
 
-						// Dynamic entities
-					case EntityType_FOOTMAN:
-					case EntityType_ELVEN_ARCHER:
-					case EntityType_KHADGAR:
-					case EntityType_ALLERIA:
-						App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
-						break;
+					if (type == 0)
+						App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+					else
+						App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+					break;
+				}
 
-					case EntityType_GRUNT:
-					case EntityType_TROLL_AXETHROWER:
-						App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
-						break;
+				// If the entity is an enemy 
+				if (enemyEntity != nullptr)
+				{
+					// we add it to the layer group
+					entitiesGroup.push_back(enemyEntity);
 
-					case EntityType_SHEEP:
-					case EntityType_BOAR:
-						int type = rand() % 2;
-
-						if (type == 0)
-							App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
-						else
-							App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
-						break;
-					}
 				}
 			}
 		}
+	}
+	return entitiesGroup;
+}
 
-		else if ((*layerIterator)->properties.GetProperty("roomLogic", false))
+bool j1Map::LoadRoomRect(MapLayer* layer)
+{
+	bool ret = false;
+	if (layer != nullptr)
+	{
+		ret = true;
+		// Iterate layer
+		for (int i = 0; i < layer->sizeData; ++i)
 		{
-			// Iterate layer
-			for (int i = 0; i < (*layerIterator)->size_data; ++i)
+			// Check if tile is not empty
+			if (layer->data[i] > 0)
 			{
-				// Check if tile is not empty
-				if ((*layerIterator)->data[i] > 0)
+				int x = i % layer->width;
+				int y = i / layer->width;
+
+				iPoint pos = MapToWorld(x, y);
+				int margin = 8;
+				ROOM_TYPE roomType = (ROOM_TYPE)layer->data[i];
+				switch (roomType)
 				{
-					int x = i % (*layerIterator)->width;
-					int y = i / (*layerIterator)->width;
+				case roomType_BASE:
+					playerBase = { pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize };
+					roomRectList.push_back(playerBase);
+					App->scene->basePos = { playerBase.x + margin * defaultTileSize, playerBase.y + margin * defaultTileSize };
 
-					iPoint pos = MapToWorld(x, y);
-					int margin = 8;
-					ROOM_TYPE roomType = (ROOM_TYPE)(*layerIterator)->data[i];
-					switch (roomType)
-					{
-					case roomType_BASE:
-						playerBase = { pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize };
-						roomRectList.push_back(playerBase);
-						App->scene->basePos = { playerBase.x + margin * defaultTileSize, playerBase.y + margin * defaultTileSize };
+					App->render->camera.x = -App->scene->basePos.x;
+					App->render->camera.y = -App->scene->basePos.y;
 
-						App->render->camera.x = -App->scene->basePos.x;
-						App->render->camera.y = -App->scene->basePos.y;
-
-						break;
-					case roomType_LARGE:
-						roomRectList.push_back({ pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultRoomSize * defaultTileSize });
-						break;
-					case roomType_LITTLE:
-						roomRectList.push_back({ pos.x, pos.y, defaultLittleSize * defaultTileSize, defaultLittleSize * defaultTileSize });
-						break;
-					default:
-						break;
-					}
-
+					break;
+				case roomType_LARGE:
+					roomRectList.push_back({ pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultRoomSize * defaultTileSize });
+					break;
+				case roomType_LITTLE:
+					roomRectList.push_back({ pos.x, pos.y, defaultLittleSize * defaultTileSize, defaultLittleSize * defaultTileSize });
+					break;
+				default:
+					break;
 				}
 			}
 		}
@@ -973,6 +1025,37 @@ bool j1Map::LoadLogic()
 	return ret;
 }
 
+bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
+{
+	// Iterate entity lists
+	for (list<list<Entity*>>::iterator iterator = entityGroupLevel.begin(); iterator != entityGroupLevel.end(); ++iterator)
+	{
+		// Iterate all rooms rects
+		for (list<SDL_Rect>::iterator roomIterator = roomRectList.begin(); roomIterator != roomRectList.end(); ++roomIterator)
+		{
+			list<Entity*> listOnRoom;
+			// Iterate entities
+			for (list<Entity*>::iterator currentEntity = (*iterator).begin(); currentEntity != (*iterator).end(); ++currentEntity)
+			{
+				fPoint pos = (*currentEntity)->GetPos();
+				iPoint size = (*currentEntity)->GetSize();
+				
+				SDL_Rect entityRect{ pos.x,pos.y,size.x,size.y };
+				SDL_Rect _void{ 0,0,0,0 };
+				
+				// Check if entity belongs to room
+				if (SDL_IntersectRect(&entityRect, &*roomIterator, &_void))
+				{
+					// Add entity to room list
+					listOnRoom.push_back(*currentEntity);
+				}
+			}
+			// Add room list to groups list
+			entityGroups.push_back(listOnRoom);
+		}
+	}
+	return true;
+}
 ///*sadface*
 //#include <math.h>
 //#include <time.h>

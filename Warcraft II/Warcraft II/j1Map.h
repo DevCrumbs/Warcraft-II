@@ -17,6 +17,7 @@
 
 using namespace std;
 
+class Entity;
 
 enum ROOM_TYPE
 {
@@ -94,7 +95,7 @@ struct MapLayer {
 	uint height = 0; //number of tiles in the y axis
 
 	uint* data = nullptr;
-	uint size_data = 0;
+	uint sizeData = 0;
 
 	float speed = 1.0f; //parallax (speed of the layer)
 
@@ -190,6 +191,13 @@ public:
 
 	bool LoadLogic();
 
+	list<Entity*> LoadLayerEntities(MapLayer* layer);
+
+	bool LoadRoomRect(MapLayer * layer);
+
+	// This function distributes a list of entities arranged by level to a list of entities arranged by level and room
+	bool CreateEntityGroup(list<list<Entity*>> entityGroupLevel);
+
 	// Unload map
 	bool UnLoad();
 
@@ -248,9 +256,11 @@ public:
 	int					defaultTileSize = 0;
 	int					defaultHallSize = 0;
 
+	list<list<Entity*>>	entityGroups;
+
 private:
 
-	pugi::xml_document	map_file;
+	pugi::xml_document	mapFile;
 	string				folder;
 	bool				map_loaded = false;
 

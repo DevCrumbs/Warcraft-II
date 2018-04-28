@@ -63,6 +63,10 @@ DynamicEntity::~DynamicEntity()
 		delete singleUnit;
 	singleUnit = nullptr;
 
+	if (lifeBar != nullptr) {
+		lifeBar->toRemove = true;
+		lifeBar = nullptr;
+	}
 	animation = nullptr;
 
 	isDead = true;

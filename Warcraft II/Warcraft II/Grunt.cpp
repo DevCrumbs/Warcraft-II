@@ -124,6 +124,7 @@ void Grunt::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
+
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;

@@ -981,6 +981,12 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		ShowEntitySelectedInfo(entity->GetStringLife(), "Elven Archer", { 291,244, 50, 41 }, entity);
 		ShowDynEntityLabelsInfo("Damage: 5", "Speed: 10", "Sight: 9", "Range: 4");
 	}	
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_GRYPHON_RIDER)
+	{
+		entity->SetStringLife(entity->GetCurrLife(), entity->GetMaxLife());
+		ShowEntitySelectedInfo(entity->GetStringLife(), "Gryphon Rider", { 700, 287, 50, 41 }, entity);
+		ShowDynEntityLabelsInfo("Damage: 12", "Speed: 14", "Sight: 6", "Range: 4");
+	}
 }
 
 UIImage* j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea)
