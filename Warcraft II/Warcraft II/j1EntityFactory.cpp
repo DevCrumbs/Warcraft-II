@@ -3675,6 +3675,24 @@ bool j1EntityFactory::IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_T
 	return true;
 }
 
+bool j1EntityFactory::AreAllUnitsDoingSomething(list<DynamicEntity*> units, UnitState unitState)
+{
+	if (units.size() == 0)
+		return false;
+
+	list<DynamicEntity*>::const_iterator it = units.begin();
+
+	while (it != units.end()) {
+
+		if ((*it)->GetUnitState() != unitState)
+			return false;
+
+		it++;
+	}
+
+	return true;
+}
+
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 

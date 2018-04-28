@@ -346,6 +346,8 @@ bool j1Particles::PostUpdate()
 			//App->render->Blit(atlasTex, currPart->pos.x, currPart->pos.y, &(currPart->animation.GetCurrentFrame()), 1.0f, currPart->angle);
 			if (currPart->particleType == ParticleType_Paws)
 				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, pawsTex, currPart->animation.GetCurrentFrame(), Layers_Paws);
+			else if (currPart->particleType == ParticleType_Health)
+				App->printer->PrintSprite({ (int)currPart->pos.x - 3, (int)currPart->pos.y - 15 }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_BasicParticles, currPart->angle);
 			else
 				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_BasicParticles, currPart->angle);
 		}
@@ -633,13 +635,13 @@ bool Particle::Update(float dt)
 		break;
 
 	case ParticleType_Health:
-
+	{
 		if (animation.Finished())
 			return false;
 		else
 			return true;
-
-		break;
+	}
+	break;
 
 	case ParticleType_Fire:
 		break;
