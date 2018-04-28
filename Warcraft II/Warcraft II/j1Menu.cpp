@@ -397,12 +397,13 @@ void j1Menu::DeteleMenu() {
 
 	App->gui->RemoveElem((UIElement**)&mainMenuImg);
 	App->gui->RemoveElem((UIElement**)&logoImg);
-	App->gui->RemoveElem((UIElement**)&playButt);
 	App->gui->RemoveElem((UIElement**)&playLabel);
-	App->gui->RemoveElem((UIElement**)&exitButt);
+	App->gui->RemoveElem((UIElement**)&playButt);
 	App->gui->RemoveElem((UIElement**)&exitLabel);
-	App->gui->RemoveElem((UIElement**)&settingsButt);
+	App->gui->RemoveElem((UIElement**)&exitButt);
 	App->gui->RemoveElem((UIElement**)&settingsLabel);
+	App->gui->RemoveElem((UIElement**)&settingsButt);
+
 	
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{
@@ -413,10 +414,10 @@ void j1Menu::DeteleMenu() {
 
 void j1Menu::DeleteSettings() {
 
-	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&returnLabel);
-	App->gui->RemoveElem((UIElement**)&fullScreenButt);
+	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&fullScreenLabel);
+	App->gui->RemoveElem((UIElement**)&fullScreenButt);
 	App->gui->RemoveElem((UIElement**)&audioFX.name);
 	App->gui->RemoveElem((UIElement**)&audioFX.value);
 	App->gui->RemoveElem((UIElement**)&audioFX.slider);

@@ -657,11 +657,6 @@ bool j1Scene::Update(float dt)
 	case PauseMenuActions_CREATED:
 		CreatePauseMenu();
 
-		/*if (buildingMenuOn)
-		{
-			ChangeBuildingMenuState(&buildingMenuButtons);
-		}*/
-
 		if (alphaBuilding != EntityType_NONE) {
 			alphaBuilding = EntityType_NONE;
 			if (alphaBuilding != EntityType_MAX)
@@ -1058,6 +1053,10 @@ void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
 						text = { 696, 160, 46, 30 };
 						(*iteratorInfo).entityIcon->SetNewRect(text);
 					}
+					else if ((*iterator)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						text = { 702, 288, 46, 30 };
+						(*iteratorInfo).entityIcon->SetNewRect(text);
+					}
 					(*iteratorInfo).entityIcon->isActive = true;
 					(*iteratorInfo).entityLifeBar->SetLife((*iterator)->GetCurrLife());
 					(*iteratorInfo).entityLifeBar->SetMaxLife((*iterator)->GetMaxLife());
@@ -1130,7 +1129,7 @@ void j1Scene::UpdateIconsMenu()
 {
 	ChangeMenuIconsText(buildingMenuButtons.chickenFarm.icon, chickenFarmCost, { 241,34,50,41 }, { 292,34,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.cannonTower.icon, cannonTowerCost, { 394,118,50,41 }, { 445,118,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 496,160,50,41 }, { 496,160,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.guardTower.icon, guardTowerCost, { 394,76,50,41 }, { 445,76,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.mageTower.icon, mageTowerCost, { 496,202,50,41 }, { 496,202,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.stables.icon, stablesCost, { 343,160,50,41 }, { 343,160,50,41 });
@@ -1233,14 +1232,13 @@ void j1Scene::CreateBuildingElements(SDL_Rect TexArea, iPoint buttonPos, string 
 
 void j1Scene::DeleteBuildingElements(MenuBuildingButton* elem)
 {
-	App->gui->RemoveElem((UIElement**)&elem->icon);
 	App->gui->RemoveElem((UIElement**)&elem->name);
 	App->gui->RemoveElem((UIElement**)&elem->cost);
+	App->gui->RemoveElem((UIElement**)&elem->icon);
 }
 
 void j1Scene::UnLoadBuildingMenu()
 {	
-	App->gui->RemoveElem((UIElement**)&buildingMenu);
 	DeleteBuildingElements(&buildingMenuButtons.chickenFarm);
 	DeleteBuildingElements(&buildingMenuButtons.stables);
 	DeleteBuildingElements(&buildingMenuButtons.gryphonAviary);
@@ -1248,6 +1246,7 @@ void j1Scene::UnLoadBuildingMenu()
 	DeleteBuildingElements(&buildingMenuButtons.scoutTower);
 	DeleteBuildingElements(&buildingMenuButtons.guardTower);
 	DeleteBuildingElements(&buildingMenuButtons.cannonTower);
+	App->gui->RemoveElem((UIElement**)&buildingMenu);
 
 	buildingMenuOn = false;
 }
@@ -1406,8 +1405,8 @@ void j1Scene::DestroyAllUI()
 	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
 	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
 	App->gui->RemoveElem((UIElement**)&entitiesStats);
-	App->gui->RemoveElem((UIElement**)&buildingButton);
 	App->gui->RemoveElem((UIElement**)&buildingLabel);
+	App->gui->RemoveElem((UIElement**)&buildingButton);
 	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
 	App->gui->RemoveElem((UIElement**)&minimap);
 
@@ -1578,10 +1577,9 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
 				if (App->player->currentGold >= gryphonAviaryCost) {
-					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
-					//alphaBuilding = EntityType_GRYPHON_AVIARY;
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+					alphaBuilding = EntityType_GRYPHON_AVIARY;
 				}
 				else if (App->player->currentGold < gryphonAviaryCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound

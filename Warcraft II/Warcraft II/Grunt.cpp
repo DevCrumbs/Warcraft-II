@@ -124,6 +124,9 @@ void Grunt::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
+			if (lifeBar != nullptr)
+				App->gui->RemoveElem((UIElement**)lifeBar);
+
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
