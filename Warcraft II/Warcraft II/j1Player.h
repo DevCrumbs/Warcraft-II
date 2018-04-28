@@ -125,6 +125,7 @@ public:
 
 	void CreateEntitiesStatsUI();
 	void ShowEntitySelectedInfo(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
+	void ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect iconDim, string entName, Entity* currentEntity);
 	void ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range);
 	void ShowEntitySelectedButt(ENTITY_TYPE type);
 	void HideEntitySelectedInfo();
@@ -144,6 +145,7 @@ public:
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
 	void HandleBarracksUIElem();
+	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 

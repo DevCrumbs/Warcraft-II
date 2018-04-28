@@ -62,13 +62,18 @@ bool j1Player::PreUpdate() {
 	//Life Bar on building 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
-			if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
-				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-			}
-			else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
-				entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-				entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
-				entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
+			StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
+
+			if (building->staticEntityType != EntityType_GOLD_MINE && building->staticEntityType != EntityType_RUNESTONE) {
+				if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
+					entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+				}
+				else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
+					entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+					entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+					entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
+				}
+
 			}
 		}
 	}
@@ -175,7 +180,14 @@ bool j1Player::Update(float dt)
 	}
 
 
-	//Handle the apparence and disapparence of to spawn units UI elements
+	//Handle the gold mine label
+	//idk if put this here or in PreUpdate
+	if (entitySelectedStats.entitySelected != nullptr) {
+		StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
+		if (building->staticEntityType == EntityType_GOLD_MINE) {
+			HandleGoldMineUIStates();
+		}
+	}
 	
 	return true;
 }
@@ -679,6 +691,14 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
 			}
+			else if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+				ShowMineOrRuneStoneSelectedInfo(EntityType_GOLD_MINE,  { 848, 112, 50, 41 }, "Gold Mine", ent);
+			}
+			else if (staticEntity->staticEntityType == EntityType_RUNESTONE) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+				ShowMineOrRuneStoneSelectedInfo(EntityType_RUNESTONE, { 848, 67, 50, 41 }, "RuneStone", ent);
+			}
 			break;
 
 		case EntitiesEvent_HOVER:
@@ -923,6 +943,71 @@ void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SD
 
 	entitySelectedStats.entitySelected = currentEntity;
 
+
+}
+
+void j1Player::ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect iconDim, string entName, Entity* currentEntity)
+{
+	if (currentEntity->entityType == EntityCategory_STATIC_ENTITY)
+		App->entities->UnselectAllEntities();
+	//Hide Last Entity info
+	HideEntitySelectedInfo();
+
+	//Set Entity Name
+	entitySelectedStats.entityName->SetText(entName);
+	entitySelectedStats.entityName->isActive = true;
+
+	//Set Entity icon image
+	entitySelectedStats.entityIcon->SetNewRect(iconDim);
+	entitySelectedStats.entityIcon->isActive = true;
+
+	switch (entType) {
+
+	case EntityType_RUNESTONE:
+
+		break;
+
+	case EntityType_GOLD_MINE:
+	{
+		GoldMine* goldMine = (GoldMine*)currentEntity;
+		switch (goldMine->GetGoldMineState()) {
+
+		case GoldMineState_Untouched:
+			entitySelectedStats.HP->SetText("Gold = ???");
+			break;
+
+		case GoldMineState_Gathering:
+		{
+			uint currentGold = 0;
+			for (float i = goldMine->secondsGathering; i >= 0; i--) {
+				if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
+					currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
+					break;
+				}
+			}
+			string goldString = "Gold = " + to_string(currentGold);
+			entitySelectedStats.HP->SetText(goldString);	
+		}
+		break;
+
+		case GoldMineState_Gathered:
+			entitySelectedStats.HP->SetText("Gold = 0");
+			break;
+
+		default:
+			break;
+		}
+
+		//Set the gold text
+		entitySelectedStats.HP->SetLocalPos({ 70, App->scene->entitiesStats->GetLocalRect().h - 45 });
+		entitySelectedStats.HP->isActive = true;
+		break;
+	}
+	default:
+		break;
+	}
+
+	entitySelectedStats.entitySelected = currentEntity;
 
 }
 
@@ -1210,6 +1295,38 @@ void j1Player::HandleBarracksUIElem()
 		LOG("WTF is going on");
 	}
 	newUnitsToSpawn.clear();
+}
+
+void j1Player::HandleGoldMineUIStates()
+{
+	GoldMine* goldMine = (GoldMine*)entitySelectedStats.entitySelected;
+
+	switch (goldMine->GetGoldMineState()) {
+
+	case GoldMineState_Untouched:
+		break;
+
+	case GoldMineState_Gathering:
+	{
+		uint currentGold = 0;
+		for (float i = goldMine->secondsGathering; i >= 0; i--) {
+			if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
+				currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
+				break;
+			}
+		}
+		string goldString = "Gold = " + to_string(currentGold);
+		entitySelectedStats.HP->SetText(goldString);
+	}
+	break;
+
+	case GoldMineState_Gathered:
+		entitySelectedStats.HP->SetText("Gold = 0");
+		break;
+
+	default:
+		break;
+	}
 }
 
 void j1Player::CreateGryphonAviaryButtons()
