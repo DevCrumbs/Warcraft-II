@@ -847,6 +847,7 @@ bool MapData::CheckIfEnter(string groupObject, string object, fPoint position)
 bool j1Map::LoadLogic()
 {
 	bool ret = false;
+	// List of all entities 
 	list<list<Entity*>> entityGroupLevel;
 
 	// Iterate all layers
@@ -870,8 +871,9 @@ bool j1Map::LoadLogic()
 		}
 
 			// For entities groups
-		else if ((*layerIterator)->properties.GetProperty("groupLogic", false))
+		else if ((*layerIterator)->properties.GetProperty("entitiesGroup", false))
 		{
+			// Save the entities from layerIterator in entityGroupLevel
 			entityGroupLevel.push_back(LoadLayerEntities(*layerIterator));
 			ret = true;
 		}
@@ -879,7 +881,7 @@ bool j1Map::LoadLogic()
 
 	if (ret)
 	{
-
+		CreateEntityGroup(entityGroupLevel);
 	}
 
 	return ret;
@@ -909,6 +911,7 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 				ENTITY_TYPE entityType = (ENTITY_TYPE)layer->data[i];
 
 				Entity* enemyEntity = nullptr;
+				// Decide which entity to spawn
 				switch (entityType)
 				{
 					// Static Entities
@@ -965,9 +968,10 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 					break;
 				}
 
-
+				// If the entity is an enemy 
 				if (enemyEntity != nullptr)
 				{
+					// we add it to the layer group
 					entitiesGroup.push_back(enemyEntity);
 
 				}
@@ -1042,12 +1046,15 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 				// Check if entity belongs to room
 				if (SDL_IntersectRect(&entityRect, &*roomIterator, &_void))
 				{
+					// Add entity to room list
 					listOnRoom.push_back(*currentEntity);
 				}
 			}
+			// Add room list to groups list
 			entityGroups.push_back(listOnRoom);
 		}
 	}
+	return true;
 }
 ///*sadface*
 //#include <math.h>

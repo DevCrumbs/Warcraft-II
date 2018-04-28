@@ -17,6 +17,7 @@
 
 using namespace std;
 
+class Entity;
 
 enum ROOM_TYPE
 {
@@ -164,11 +165,6 @@ struct MapData
 	bool CheckIfEnter(string groupObject, string object, fPoint position);
 };
 
-struct EntityGroup
-{
-	list<Entity*> entities;
-};
-
 // ----------------------------------------------------
 class j1Map : public j1Module
 {
@@ -199,6 +195,7 @@ public:
 
 	bool LoadRoomRect(MapLayer * layer);
 
+	// This function distributes a list of entities arranged by level to a list of entities arranged by level and room
 	bool CreateEntityGroup(list<list<Entity*>> entityGroupLevel);
 
 	// Unload map
