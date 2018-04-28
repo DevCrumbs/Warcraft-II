@@ -221,9 +221,6 @@ void j1Menu::CreateMenu() {
 	menuImgAnim.PushBack({ 876,1563,776,600 });
 	mainMenuImg->StartAnimation(menuImgAnim);
 	mainMenuImg->SetPriorityDraw(PriorityDraw_FRAMEWORK);
-
-
-
 }
 
 void j1Menu::CreateSettings() {
@@ -307,7 +304,8 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, listener);
 }
 
-UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim) {
+UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim) 
+{
 	UIImage* retImage;
 
 	UIImage_Info imageInfo;
@@ -391,10 +389,9 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		break;
 	}
-
 }
-void j1Menu::DeteleMenu() {
-
+void j1Menu::DeteleMenu() 
+{
 	App->gui->RemoveElem((UIElement**)&mainMenuImg);
 	App->gui->RemoveElem((UIElement**)&logoImg);
 	App->gui->RemoveElem((UIElement**)&playButt);
@@ -408,7 +405,6 @@ void j1Menu::DeteleMenu() {
 	{
 		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
-
 }
 
 void j1Menu::DeleteSettings() {

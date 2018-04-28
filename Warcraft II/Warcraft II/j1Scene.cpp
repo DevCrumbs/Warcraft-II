@@ -354,7 +354,6 @@ bool j1Scene::Update(float dt)
 {
 	bool ret = true;
 
-
 	// Save mouse position (world and map coords)
 	int x, y;
 	App->input->GetMousePosition(x, y);

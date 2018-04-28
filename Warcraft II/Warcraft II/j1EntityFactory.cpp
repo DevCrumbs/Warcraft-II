@@ -1287,7 +1287,7 @@ bool j1EntityFactory::Start()
 	//_Elven_Archer
 
 	// Gryphon Rider
-	gryphonRiderInfo.unitInfo.priority = 2;
+	gryphonRiderInfo.unitInfo.priority = 3;
 
 	/// Radius
 	gryphonRiderInfo.unitInfo.attackRadius = 7;
@@ -1381,7 +1381,7 @@ bool j1EntityFactory::Start()
 	//_Troll_Axethrower
 
 	// Dragon
-	dragonInfo.unitInfo.priority = 2;
+	dragonInfo.unitInfo.priority = 3;
 
 	/// Radius
 	dragonInfo.unitInfo.attackRadius = 7;
