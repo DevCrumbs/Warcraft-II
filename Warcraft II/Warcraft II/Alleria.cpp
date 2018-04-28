@@ -19,3 +19,14 @@ void Alleria::UpdateAnimations(float dt)
 {
 
 }
+
+// Prisoner rescue
+bool Alleria::IsUnitRescuingPrisoner() const 
+{
+	return isUnitRescuingPrisoner;
+}
+
+void Alleria::SetUnitRescuePrisoner(bool isUnitRescuingPrisoner) 
+{
+	this->isUnitRescuingPrisoner = isUnitRescuingPrisoner;
+}

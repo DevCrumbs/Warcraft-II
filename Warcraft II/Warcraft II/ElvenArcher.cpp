@@ -253,6 +253,22 @@ void ElvenArcher::Move(float dt)
 
 			break;
 
+		case UnitCommand_RescuePrisoner:
+
+			if (prisoner != nullptr) {
+
+				if (singleUnit->IsFittingTile()) {
+
+					brain->RemoveAllSubgoals();
+					brain->AddGoal_RescuePrisoner(prisoner);
+
+					unitState = UnitState_RescuePrisoner;
+					unitCommand = UnitCommand_NoCommand;
+				}
+			}
+
+			break;
+
 		case UnitCommand_NoCommand:
 		default:
 
@@ -509,6 +525,7 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 	case UnitState_HealRunestone:
 	case UnitState_GatherGold:
+	case UnitState_RescuePrisoner:
 
 		break;
 
