@@ -566,6 +566,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		case EntitiesEvent_RIGHT_CLICK:
 
+			/// TODO Sandra: only Footman and Elven Archer must be able to gather gold (King Terenas says that gold cannot be gathered by using a Gryphon Rider)
 			// Gold Mine (right click to send a unit to gather gold)
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
 
@@ -754,7 +755,6 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 	case EntitiesEvent_RIGHT_CLICK:
 
 		// Alleria (right click to send a unit to rescue her)
-		/// TODO Sandra: the room has to be cleared to be able to rescue alleria? (King Terenas says that if Alleria is clicked and the room is not cleared)
 		/// TODO Sandra: only Footman and Elven Archer must be able to rescue a Prisoner (King Terenas says that Alleria cannot be rescued by using a Gryphon Rider)
 		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON) {
 

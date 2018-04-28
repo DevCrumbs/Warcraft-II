@@ -3657,6 +3657,24 @@ void j1EntityFactory::UnselectAllBuildings()
 	}
 }
 
+bool j1EntityFactory::IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType)
+{
+	if (units.size() == 0)
+		return false;
+
+	list<DynamicEntity*>::const_iterator it = units.begin();
+	
+	while (it != units.end()) {
+	
+		if ((*it)->dynamicEntityType != entityType)
+			return false;
+
+		it++;
+	}
+
+	return true;
+}
+
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 

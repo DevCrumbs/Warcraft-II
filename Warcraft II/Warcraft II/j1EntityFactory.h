@@ -157,6 +157,8 @@ public:
 	bool SelectBuilding(StaticEntity* staticEntity);
 	void UnselectAllBuildings();
 
+	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);
+
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);
 

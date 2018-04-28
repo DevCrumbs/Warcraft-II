@@ -104,48 +104,80 @@ PathNode::PathNode(const PathNode& node) : g(node.g), h(node.h), pos(node.pos), 
 // PathNode -------------------------------------------------------------------------
 // Fills a list (PathList) of all valid adjacent pathnodes
 // ----------------------------------------------------------------------------------
-uint PathNode::FindWalkableAdjacents(PathList& list_to_fill) const
+uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityChecked) const
 {
 	iPoint cell;
 	uint before = list_to_fill.pathNodeList.size();
 
 	cell.create(pos.x, pos.y + 1);
-	if (App->pathfinding->IsWalkable(cell))
+	if (isWalkabilityChecked) {
+		if (App->pathfinding->IsWalkable(cell))
+			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+	}
+	else
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// south
 	cell.create(pos.x, pos.y - 1);
-	if (App->pathfinding->IsWalkable(cell))
+	if (isWalkabilityChecked) {
+		if (App->pathfinding->IsWalkable(cell))
+			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+	}
+	else
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// east
 	cell.create(pos.x + 1, pos.y);
-	if (App->pathfinding->IsWalkable(cell))
+	if (isWalkabilityChecked) {
+		if (App->pathfinding->IsWalkable(cell))
+			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+	}
+	else
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// west
 	cell.create(pos.x - 1, pos.y);
-	if (App->pathfinding->IsWalkable(cell))
+	if (isWalkabilityChecked) {
+		if (App->pathfinding->IsWalkable(cell))
+			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+	}
+	else
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// north-west
 	cell.create(pos.x + 1, pos.y - 1);
-	if (App->pathfinding->IsWalkable(cell))
+	if (isWalkabilityChecked) {
+		if (App->pathfinding->IsWalkable(cell))
+			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+	}
+	else
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	// south-west
 	cell.create(pos.x - 1, pos.y - 1);
-	if (App->pathfinding->IsWalkable(cell))
+	if (isWalkabilityChecked) {
+		if (App->pathfinding->IsWalkable(cell))
+			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+	}
+	else
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	// north-west
 	cell.create(pos.x + 1, pos.y + 1);
-	if (App->pathfinding->IsWalkable(cell))
+	if (isWalkabilityChecked) {
+		if (App->pathfinding->IsWalkable(cell))
+			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+	}
+	else
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	// south-est
 	cell.create(pos.x - 1, pos.y + 1);
-	if (App->pathfinding->IsWalkable(cell))
+	if (isWalkabilityChecked) {
+		if (App->pathfinding->IsWalkable(cell))
+			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+	}
+	else
 		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	return list_to_fill.pathNodeList.size();
@@ -355,11 +387,16 @@ int j1PathFinding::BacktrackToCreatePath()
 	return last_path.size();
 }
 
-bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic)
+bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic, bool isWalkabilityChecked)
 {
+	this->isWalkabilityChecked = isWalkabilityChecked;
+
 	// If origin or destination are not walkable, return false
-	if (!IsWalkable(origin) || !IsWalkable(destination))
-		return false;
+	if (this->isWalkabilityChecked) {
+
+		if (!IsWalkable(origin) || !IsWalkable(destination))
+			return false;
+	}
 
 	goal = destination;
 	this->distanceHeuristic = distanceHeuristic;
@@ -405,7 +442,7 @@ PathfindingStatus j1PathFinding::CycleOnceAStar()
 
 	// Fill a list of all adjancent nodes
 	PathList neighbors;
-	close.pathNodeList.back().FindWalkableAdjacents(neighbors);
+	close.pathNodeList.back().FindWalkableAdjacents(neighbors, isWalkabilityChecked);
 
 	list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
 
@@ -442,11 +479,15 @@ PathfindingStatus j1PathFinding::CycleOnceAStar()
 }
 
 // Initialize CycleOnceDijkstra
-bool j1PathFinding::InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger, bool isPathRequested)
+bool j1PathFinding::InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger, bool isPathRequested, bool isWalkabilityChecked)
 {
+	this->isWalkabilityChecked = isWalkabilityChecked;
+
 	// If origin is not walkable, return false
-	if (!IsWalkable(origin))
-		return false;
+	if (this->isWalkabilityChecked) {
+		if (!IsWalkable(origin))
+			return false;
+	}
 
 	this->trigger = trigger;
 	this->isPathRequested = isPathRequested;
@@ -497,7 +538,7 @@ PathfindingStatus j1PathFinding::CycleOnceDijkstra()
 
 	// Fill a list of all adjancent nodes
 	PathList neighbors;
-	close.pathNodeList.back().FindWalkableAdjacents(neighbors);
+	close.pathNodeList.back().FindWalkableAdjacents(neighbors, isWalkabilityChecked);
 
 	list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
 

@@ -27,6 +27,8 @@
 
 Dragon::Dragon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const DragonInfo& dragonInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), dragonInfo(dragonInfo)
 {
+	pathPlanner->SetIsWalkabilityChecked(false);
+
 	// XML loading
 	/// Animations
 	DragonInfo info = (DragonInfo&)App->entities->GetUnitInfo(EntityType_DRAGON);

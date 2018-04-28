@@ -594,10 +594,13 @@ void Goal_MoveToPosition::Activate()
 
 	owner->SetHitting(false);
 
-	if (!App->pathfinding->IsWalkable(destinationTile)) {
+	if (owner->dynamicEntityType != EntityType_GRYPHON_RIDER && owner->dynamicEntityType != EntityType_DRAGON) {
 
-		goalStatus = GoalStatus_Failed;
-		return;
+		if (!App->pathfinding->IsWalkable(destinationTile)) {
+
+			goalStatus = GoalStatus_Failed;
+			return;
+		}
 	}
 
 	if (owner->GetSingleUnit()->goal != destinationTile)

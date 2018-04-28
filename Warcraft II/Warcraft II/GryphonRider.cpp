@@ -26,6 +26,8 @@
 
 GryphonRider::GryphonRider(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GryphonRiderInfo& gryphonRiderInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), gryphonRiderInfo(gryphonRiderInfo)
 {
+	pathPlanner->SetIsWalkabilityChecked(false);
+
 	// XML loading
 	/// Animations
 	GryphonRiderInfo info = (GryphonRiderInfo&)App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER);
@@ -207,25 +209,6 @@ void GryphonRider::Move(float dt)
 
 					unitState = UnitState_AttackTarget;
 					unitCommand = UnitCommand_NoCommand;
-				}
-			}
-
-			break;
-
-		case UnitCommand_GatherGold:
-
-			if (goldMine != nullptr) {
-
-				if (goldMine->buildingState == BuildingState_Normal) {
-
-					if (singleUnit->IsFittingTile()) {
-
-						brain->RemoveAllSubgoals();
-						brain->AddGoal_GatherGold(goldMine);
-
-						unitState = UnitState_GatherGold;
-						unitCommand = UnitCommand_NoCommand;
-					}
 				}
 			}
 
