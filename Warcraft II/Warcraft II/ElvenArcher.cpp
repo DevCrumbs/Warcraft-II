@@ -143,9 +143,6 @@ void ElvenArcher::Move(float dt)
 		if (auxIsSelected != isSelected) {
 
 			auxIsSelected = isSelected;
-
-			if (isSelected)
-				App->audio->PlayFx(App->audio->GetFX().archerSelected, 0); //TODO Valdivia: 19 archer selected
 		}
 
 		// PROCESS THE COMMANDS
@@ -169,8 +166,6 @@ void ElvenArcher::Move(float dt)
 			if (singleUnit->isGoalChanged) {
 
 				if (singleUnit->IsFittingTile()) {
-
-					App->audio->PlayFx(App->audio->GetFX().archerCommand, 0);
 
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);

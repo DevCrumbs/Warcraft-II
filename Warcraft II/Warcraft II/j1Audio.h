@@ -38,6 +38,10 @@ struct GameSounds {
 	FX footmanCommand = 0;
 	FX footmanReady = 0;
 	FX footmanSelected = 0;
+	FX griffonCommand = 0;
+	FX griffonReady = 0;
+	FX griffonSelected = 0;
+	FX griffonDeath = 0;
 	FX axeThrow = 0;
 	FX arrowThrow = 0;
 	FX swordClash = 0;
@@ -134,18 +138,15 @@ private:
 	string footmanGoToPlaceSound;
 	string footmanReadySound;
 	string footmanSelectedSound;
-
+	string griffonGoToPlaceSound; //
+	string griffonReadySound; //
+	string griffonSelectedSound; // 
+	string griffonDeathSound; //
 	string axeThrowSound;
 	string bowFireSound;
 	string swordSound;
 	//---------------------
 
-	// FX
-	//---------------------
-
-	
-
-	//---------------------
 };
 
 #endif //__j1AUDIO_H__

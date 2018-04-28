@@ -99,6 +99,12 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	footmanReadySound = footmanSounds.attribute("ready").as_string();
 	footmanSelectedSound = footmanSounds.attribute("selected").as_string();
 
+	pugi::xml_node griffonSounds = sounds.child("griffonPaths");
+	griffonGoToPlaceSound = griffonSounds.attribute("goToPlace").as_string();
+	griffonReadySound = griffonSounds.attribute("goToPlace").as_string();
+	griffonSelectedSound = griffonSounds.attribute("selected").as_string();
+	griffonDeathSound = griffonSounds.attribute("death").as_string();
+
 	pugi::xml_node attackSounds = sounds.child("attackPaths");
 	axeThrowSound = attackSounds.attribute("axeThrow").as_string();
 	bowFireSound = attackSounds.attribute("bowFire").as_string();
@@ -307,6 +313,10 @@ void j1Audio::ChargeFX()
 	gameSounds.arrowThrow = App->audio->LoadFx(bowFireSound.data()); //24
 	gameSounds.swordClash = App->audio->LoadFx(swordSound.data()); //25
 	gameSounds.runeStone = App->audio->LoadFx(runeStoneSound.data()); //26
+	gameSounds.griffonCommand = App->audio->LoadFx(griffonGoToPlaceSound.data());
+	gameSounds.griffonReady = App->audio->LoadFx(griffonReadySound.data());
+	gameSounds.griffonSelected = App->audio->LoadFx(griffonSelectedSound.data());
+	gameSounds.griffonDeath = App->audio->LoadFx(griffonDeathSound.data());
 }
 
 GameSounds j1Audio::GetFX()
