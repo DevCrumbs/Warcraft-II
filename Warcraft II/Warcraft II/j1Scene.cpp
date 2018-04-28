@@ -1563,10 +1563,9 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
 				if (App->player->currentGold >= gryphonAviaryCost) {
-					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
-					//alphaBuilding = EntityType_GRYPHON_AVIARY;
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+					alphaBuilding = EntityType_GRYPHON_AVIARY;
 				}
 				else if (App->player->currentGold < gryphonAviaryCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
