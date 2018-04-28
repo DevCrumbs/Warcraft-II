@@ -485,7 +485,7 @@ void Goal_GatherGold::Terminate()
 
 	goldMine = nullptr;
 
-	owner->SetGoldMine(nullptr);
+	//owner->SetGoldMine(nullptr);
 	owner->SetUnitState(UnitState_Idle);
 }
 
@@ -539,7 +539,7 @@ void Goal_HealRunestone::Terminate()
 
 	runestone = nullptr;
 
-	owner->SetRunestone(nullptr);
+	//owner->SetRunestone(nullptr);
 	owner->SetUnitState(UnitState_Idle);
 }
 
@@ -580,6 +580,7 @@ void Goal_RescuePrisoner::Terminate()
 
 	prisoner = nullptr;
 
+	//owner->SetPrisoner(nullptr);
 	owner->SetUnitState(UnitState_Idle);
 }
 
@@ -1077,6 +1078,7 @@ void Goal_PickNugget::Activate()
 	}
 	else if (goldMine->buildingState == BuildingState_Destroyed) {
 
+		owner->SetGoldMine(nullptr);
 		goalStatus = GoalStatus_Failed;
 		return;
 	}
@@ -1091,6 +1093,7 @@ void Goal_PickNugget::Activate()
 	// Another unit has already entered the mine and is gathering the gold
 	else {
 
+		owner->SetGoldMine(nullptr);
 		goalStatus = GoalStatus_Failed;
 		return;
 	}
@@ -1174,6 +1177,7 @@ void Goal_PickNugget::Terminate()
 		App->player->AddGold(gold);
 		App->scene->hasGoldChanged = true;
 
+		owner->SetGoldMine(nullptr);
 		owner->SetUnitGatheringGold(false);
 		goldMine->SetUnitGatheringGold(false);
 
@@ -1206,6 +1210,7 @@ void Goal_HealArea::Activate()
 	}
 	else if (runestone->buildingState == BuildingState_Destroyed) {
 
+		owner->SetRunestone(nullptr);
 		goalStatus = GoalStatus_Failed;
 		return;
 	}
@@ -1220,6 +1225,7 @@ void Goal_HealArea::Activate()
 	// Another unit is already interacting with the runestone
 	else {
 
+		owner->SetRunestone(nullptr);
 		goalStatus = GoalStatus_Failed;
 		return;
 	}
@@ -1321,6 +1327,7 @@ void Goal_HealArea::Terminate()
 
 		runestone->SetRunestoneState(RunestoneState_Gathered);
 
+		owner->SetRunestone(nullptr);
 		owner->SetUnitHealingRunestone(false);
 		runestone->SetUnitHealingArea(false);
 
@@ -1370,6 +1377,7 @@ void Goal_FreePrisoner::Activate()
 		// Another unit is already interacting with the prisoner
 		else {
 
+			owner->SetPrisoner(nullptr);
 			goalStatus = GoalStatus_Failed;
 			return;
 		}
@@ -1412,6 +1420,7 @@ void Goal_FreePrisoner::Terminate()
 
 		prisoner->isRemove = true;
 
+		owner->SetPrisoner(nullptr);
 		owner->SetUnitRescuePrisoner(false);
 		owner->SetIsValid(true);
 
