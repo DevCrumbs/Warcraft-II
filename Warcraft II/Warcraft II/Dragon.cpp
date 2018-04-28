@@ -52,6 +52,9 @@ Dragon::Dragon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitIn
 	this->dragonInfo.deathUp = info.deathUp;
 	this->dragonInfo.deathDown = info.deathDown;
 
+	size = this->unitInfo.size;
+	offsetSize = this->unitInfo.offsetSize;
+
 	LoadAnimationsSpeed();
 
 	// Initialize the goals
@@ -189,8 +192,7 @@ void Dragon::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
-	//Update Unit LifeBar
-
+	// Update Unit LifeBar
 	if (lifeBar != nullptr) {
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
@@ -203,12 +205,11 @@ void Dragon::Draw(SDL_Texture* sprites)
 
 		fPoint offset = { 0.0f,0.0f };
 		if (animation == &dragonInfo.deathDown || animation == &dragonInfo.deathUp)
-			offset = { animation->GetCurrentFrame().w / 3.0f,animation->GetCurrentFrame().h / 5.0f };
+			offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.7f };
 		else
-			offset = { animation->GetCurrentFrame().w / 3.0f, animation->GetCurrentFrame().h / 3.0f };
+			offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.5f };
 
-		//App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
-		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_DragonGryphon);
 	}
 
 	if (isSelected)
@@ -217,15 +218,8 @@ void Dragon::Draw(SDL_Texture* sprites)
 
 void Dragon::DebugDrawSelected()
 {
-	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	const SDL_Rect entitySize = { pos.x + offsetSize.x, pos.y + offsetSize.y, size.x, size.y };
 	App->printer->PrintQuad(entitySize, color);
-
-	for (uint i = 0; i < unitInfo.priority; ++i) {
-		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-		App->printer->PrintQuad(entitySize, color);
-	}
 }
 
 void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
@@ -674,4 +668,9 @@ bool Dragon::ChangeAnimation()
 		return ret;
 	}
 	return ret;
+}
+
+float Dragon::GetFireSpeed() const
+{
+	return dragonInfo.fireSpeed;
 }

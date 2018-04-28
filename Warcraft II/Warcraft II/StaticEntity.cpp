@@ -12,7 +12,8 @@
 #include "j1Pathfinding.h"
 #include "j1Printer.h"
 
-StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) {
+StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) 
+{
 	this->entityType = EntityCategory_STATIC_ENTITY;
 
 	if (App->GetSecondsSinceAppStartUp() < 700) //Checks for static entities built since startup
@@ -87,6 +88,15 @@ void StaticEntity::Draw(SDL_Texture* sprites)
 {
 	//App->render->Blit(sprites, pos.x, pos.y, texArea);
 	App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, (SDL_Rect)*texArea, Layers_Entities);
+
+	if (isSelected)
+		DebugDrawSelected();
+}
+
+void StaticEntity::DebugDrawSelected() 
+{
+	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
+	App->printer->PrintQuad(entitySize, color);
 }
 
 void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)

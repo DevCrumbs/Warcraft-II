@@ -51,6 +51,9 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 	this->trollAxethrowerInfo.deathUp = info.deathUp;
 	this->trollAxethrowerInfo.deathDown = info.deathDown;
 
+	size = this->unitInfo.size;
+	offsetSize = this->unitInfo.offsetSize;
+
 	LoadAnimationsSpeed();
 
 	// Initialize the goals
@@ -188,8 +191,7 @@ void TrollAxethrower::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
-	//Update Unit LifeBar
-
+	// Update Unit LifeBar
 	if (lifeBar != nullptr) {
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
@@ -201,9 +203,12 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 	if (animation != nullptr) {
 
 		fPoint offset = { 0.0f,0.0f };
-		offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 3.0f };
 
-		//App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
+		if (animation == &trollAxethrowerInfo.deathDown || animation == &trollAxethrowerInfo.deathUp)
+			offset = { animation->GetCurrentFrame().w / 6.0f, animation->GetCurrentFrame().h / 3.8f };
+		else
+			offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 4.0f };
+
 		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 	}
 
@@ -213,15 +218,8 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 
 void TrollAxethrower::DebugDrawSelected()
 {
-	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
+	const SDL_Rect entitySize = { pos.x + offsetSize.x, pos.y + offsetSize.y, size.x, size.y };
 	App->printer->PrintQuad(entitySize, color);
-
-	for (uint i = 0; i < unitInfo.priority; ++i) {
-		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		//App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-		App->printer->PrintQuad(entitySize, color);
-	}
 }
 
 void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)

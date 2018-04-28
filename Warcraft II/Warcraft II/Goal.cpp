@@ -732,6 +732,44 @@ GoalStatus Goal_HitTarget::Process(float dt)
 			}
 			break;
 
+		case EntityType_GRYPHON_RIDER:
+
+			{
+				GryphonRider* gryphonRider = (GryphonRider*)owner;
+
+				switch (owner->GetDirection(orientation)) {
+
+				case UnitDirection_DownRight:
+					App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+					break;
+				case UnitDirection_UpRight:
+					App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+					break;
+				case UnitDirection_Right:
+					App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+					break;
+				case UnitDirection_DownLeft:
+					App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+					break;
+				case UnitDirection_UpLeft:
+					App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+					break;
+				case UnitDirection_Left:
+					App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+					break;
+				case UnitDirection_Down:
+					App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+					break;
+
+				case UnitDirection_Up:
+				case UnitDirection_NoDirection:
+				default:
+					App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+					break;
+				}
+			}
+			break;
+
 		case EntityType_TROLL_AXETHROWER:
 
 			// AXE
@@ -772,6 +810,44 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				}
 			}
 			break;
+
+		case EntityType_DRAGON:
+
+		{
+			Dragon* dragon = (Dragon*)owner;
+
+			switch (owner->GetDirection(orientation)) {
+
+			case UnitDirection_DownRight:
+				App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+				break;
+			case UnitDirection_UpRight:
+				App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+				break;
+			case UnitDirection_Right:
+				App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+				break;
+			case UnitDirection_DownLeft:
+				App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+				break;
+			case UnitDirection_UpLeft:
+				App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+				break;
+			case UnitDirection_Left:
+				App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+				break;
+			case UnitDirection_Down:
+				App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+				break;
+
+			case UnitDirection_Up:
+			case UnitDirection_NoDirection:
+			default:
+				App->particles->AddParticle(App->particles->dragonGryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
+				break;
+			}
+		}
+		break;
 
 			// The rest of entities
 		default:
@@ -1132,7 +1208,7 @@ void Goal_HealArea::Activate()
 	secondsGathering = 2.0f;
 	timerGathering.Start();
 
-	alpha = 255;
+	alpha = 200;
 }
 
 GoalStatus Goal_HealArea::Process(float dt)

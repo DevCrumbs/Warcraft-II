@@ -383,42 +383,37 @@ bool j1Scene::Update(float dt)
 
 	// Units ---------------------------------------------------------------------------------
 
-	Entity* isEnemyOnTile = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy); // TODO Sandra: only player side
-	Entity* isCritterOnTile = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
-
-	if (isEnemyOnTile != nullptr || isCritterOnTile != nullptr) {
-		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
-		if (r.x != 374)
-			App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
-	}
-	else {
-		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
-		if (r.x != 243)
-			if(!App->player->isMouseOnMine)
-				App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
-	}
-
-	//Update units slected lifeBars
+	// Update units selected life bars
 	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
-		if((*iterator).owner != nullptr)
+
+		if ((*iterator).owner != nullptr)
 			(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
 	}
 
-
 	// *****UNITS*****
-	/// Units cannot be clicked if a building is being placed or Pause Menu are actived
+	/// Units cannot be clicked if a building is being placed or Pause Menu is active
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 
 		// Select units by mouse click
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 			startRectangle = mousePos;
 
-			Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: only player side
-
+			Entity* entity = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
 			if (entity != nullptr)
 				App->entities->SelectEntity(entity);
 			//else
 				//App->entities->UnselectAllEntities();
+
+			Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+			if (playerBuilding != nullptr)
+				App->entities->SelectBuilding((StaticEntity*)playerBuilding);
+			
+			Entity* neutralBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
+			if (neutralBuilding != nullptr)
+				App->entities->SelectBuilding((StaticEntity*)neutralBuilding);
+
+			if (playerBuilding == nullptr && neutralBuilding == nullptr)
+				App->entities->UnselectAllBuildings();
 		}
 
 		int width = mousePos.x - startRectangle.x;
@@ -449,12 +444,16 @@ bool j1Scene::Update(float dt)
 		units = App->entities->GetLastUnitsSelected();
 
 		if (units.size() > 0) {
+
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+
 				if (!CompareSelectedUnitsLists(units)) {
+
 					App->player->HideEntitySelectedInfo();
 					ShowSelectedUnits(units);
 				}
 			}
+
 			UnitGroup* group = App->movement->GetGroupByUnits(units);
 
 			if (group == nullptr)
@@ -477,7 +476,7 @@ bool j1Scene::Update(float dt)
 				/// COMMAND ATTACK
 				/// Enemy
 				// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
-				Entity* target = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
+				Entity* target = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
 
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr) {
 
@@ -500,7 +499,7 @@ bool j1Scene::Update(float dt)
 				}
 
 				/// Critter
-				Entity* critter = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
+				Entity* critter = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
 
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr) {
 
@@ -523,7 +522,7 @@ bool j1Scene::Update(float dt)
 				}
 
 				/// Buildings
-				Entity* building = App->entities->IsEntityOnTile(mouseTile, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
+				Entity* building = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
 
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr) {
 
@@ -543,6 +542,19 @@ bool j1Scene::Update(float dt)
 					if (isTarget)
 
 						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+				}
+
+				// Set the cursor texture
+				if (target != nullptr || critter != nullptr || building != nullptr) {
+					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+					if (r.x != 374)
+						App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
+				}
+				else {
+					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+					if (r.x != 243)
+						if (!App->player->isMouseOnMine)
+							App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 				}
 
 				/// SET GOAL (COMMAND MOVE TO POSITION)

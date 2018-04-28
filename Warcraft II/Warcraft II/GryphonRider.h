@@ -43,6 +43,8 @@ public:
 	void UpdateAnimationsSpeed(float dt);
 	bool ChangeAnimation();
 
+	float GetFireSpeed() const;
+
 private:
 
 	GryphonRiderInfo gryphonRiderInfo;

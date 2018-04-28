@@ -101,6 +101,10 @@ struct UnitInfo
 	// Life
 	int currLife = 0;
 	uint maxLife = 0;
+
+	// Size
+	iPoint size = { 0,0 };
+	iPoint offsetSize = { 0,0 };
 };
 
 class DynamicEntity :public Entity
@@ -148,11 +152,6 @@ public:
 
 	void SetUnitDirectionByValue(fPoint unitDirection);
 	fPoint GetUnitDirectionByValue() const;
-
-	// Selection color
-	void SetColor(SDL_Color color, string colorName);
-	SDL_Color GetColor() const;
-	string GetColorName() const;
 
 	// Collision
 	ColliderGroup* GetSightRadiusCollider() const;
@@ -261,10 +260,6 @@ protected:
 
 	// Valid
 	bool isValid = true;
-
-	// Selection color
-	SDL_Color color = ColorWhite;
-	string colorName = "White";
 
 	// LifeBar
 	UILifeBar* lifeBar = nullptr;
