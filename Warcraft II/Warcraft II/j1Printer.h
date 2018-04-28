@@ -47,7 +47,7 @@ public:
 	iPoint pos = { 0,0 };
 	SDL_Texture* texture = nullptr;
 	SDL_Rect squareToBlit = { 0,0,0,0 };
-	double angle = 0.0f;
+	double degAngle = 0.0f;
 	int distToFeet = 0;
 	SDL_Color color = { 255,255,255,255 };
 
@@ -55,7 +55,7 @@ public:
 
 public:
 
-	Sprite(iPoint& pos, SDL_Texture* texture, SDL_Rect& squareToBlit, int layer, double degAngle, SDL_Color color) : DrawingElem(DrawingElem::DElemType::SPRITE), pos(pos), texture(texture), squareToBlit(squareToBlit), distToFeet(distToFeet), layer(layer), angle(degAngle), color(color) {}
+	Sprite(iPoint& pos, SDL_Texture* texture, SDL_Rect& squareToBlit, int layer, double degAngle, SDL_Color color) : DrawingElem(DrawingElem::DElemType::SPRITE), pos(pos), texture(texture), squareToBlit(squareToBlit), distToFeet(distToFeet), layer(layer), degAngle(degAngle), color(color) {}
 };
 
 class Quad : public DrawingElem

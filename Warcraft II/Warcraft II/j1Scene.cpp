@@ -558,10 +558,15 @@ bool j1Scene::Update(float dt)
 				}
 
 				/// SET GOAL (COMMAND MOVE TO POSITION)
+				bool isGryphonRider = App->entities->IsOnlyThisTypeOfUnits(units, EntityType_GRYPHON_RIDER);
+
 				// Draw a shaped goal
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 
-					group->DrawShapedGoal(mouseTile);
+					if (isGryphonRider)
+						group->DrawShapedGoal(mouseTile, false);
+					else
+						group->DrawShapedGoal(mouseTile);
 
 				// Set a normal or shaped goal
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
@@ -572,9 +577,14 @@ bool j1Scene::Update(float dt)
 
 						group->ClearShapedGoal();
 
-						if (group->SetGoal(mouseTile)) /// normal goal
-
-							isGoal = true;
+						if (isGryphonRider) {
+							if (group->SetGoal(mouseTile, false)) /// normal goal
+								isGoal = true;
+						}
+						else {	
+							if (group->SetGoal(mouseTile)) /// normal goal
+								isGoal = true;
+						}
 					}
 					else if (group->SetShapedGoal()) /// shaped goal
 
@@ -733,7 +743,8 @@ bool j1Scene::PostUpdate()
 		App->finish->active = true;
 	}
 	
-	if (((App->player->currentGold < 400 && App->entities->GetPlayerSoldiers() <= 0 && isStarted) && !App->player->isUnitSpawning) || (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)) {
+	if (((App->player->currentGold < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
+		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)) {
 
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
@@ -1466,12 +1477,12 @@ void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 		terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
 	case TerenasDialog_RESCUE_ALLERIA:
-		text = "Congratulations! You have freed Alleria. I thank you in the name of Azeroth. For the alliance!";
+		text = "Congratulations! You have freed Alleria. I thank you in the name of Azeroth. For the Alliance!";
 		terenasAdvices.text->SetText(text, 350);
 		terenasAdvices.text->SetLocalPos({ 355,37 });
 		break;
-	case TerenasDialog_RESCUE_KHADGAR:
-		text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
+	case TerenasDialog_RESCUE_TURALYON:
+		text = "Congratulations! You have freed Turalyon. I thank you in the name of Azeroth. For the Alliance!";
 		terenasAdvices.text->SetText(text, 350);
 		terenasAdvices.text->SetLocalPos({ 355,37 });
 		break;
