@@ -2803,7 +2803,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRYPHON_RIDER:
 	{
-		GryphonRider* gryphonRider = new GryphonRider(pos, gryphonRiderInfo.unitInfo.size, footmanInfo.unitInfo.currLife, footmanInfo.unitInfo.maxLife, unitInfo, (const GryphonRiderInfo&)entityInfo, listener);
+		GryphonRider* gryphonRider = new GryphonRider(pos, gryphonRiderInfo.unitInfo.size, gryphonRiderInfo.unitInfo.currLife, gryphonRiderInfo.unitInfo.maxLife, unitInfo, (const GryphonRiderInfo&)entityInfo, listener);
 		gryphonRider->entityType = EntityCategory_DYNAMIC_ENTITY;
 		gryphonRider->dynamicEntityType = EntityType_GRYPHON_RIDER;
 		gryphonRider->entitySide = EntitySide_Player;

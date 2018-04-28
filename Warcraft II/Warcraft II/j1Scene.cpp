@@ -1043,6 +1043,10 @@ void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
 						text = { 696, 160, 46, 30 };
 						(*iteratorInfo).entityIcon->SetNewRect(text);
 					}
+					else if ((*iterator)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						text = { 702, 288, 46, 30 };
+						(*iteratorInfo).entityIcon->SetNewRect(text);
+					}
 					(*iteratorInfo).entityIcon->isActive = true;
 					(*iteratorInfo).entityLifeBar->SetLife((*iterator)->GetCurrLife());
 					(*iteratorInfo).entityLifeBar->SetMaxLife((*iterator)->GetMaxLife());
