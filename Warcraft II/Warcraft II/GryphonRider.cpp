@@ -105,7 +105,7 @@ void GryphonRider::Move(float dt)
 			&& singleUnit->IsFittingTile()
 			&& !isDead) {
 
-			App->audio->PlayFx(12, 0);
+			App->audio->PlayFx(App->audio->GetFX().humanDeath, 0); //Gryphon death
 
 			isDead = true;
 			isValid = false;
@@ -142,7 +142,7 @@ void GryphonRider::Move(float dt)
 			auxIsSelected = isSelected;
 
 			if (isSelected)
-				App->audio->PlayFx(22, 0);
+				App->audio->PlayFx(App->audio->GetFX().footmanSelected, 0); //TODO Valdiia: gryphon selected sound
 		}
 
 		// PROCESS THE COMMANDS
@@ -167,7 +167,7 @@ void GryphonRider::Move(float dt)
 
 				if (singleUnit->IsFittingTile()) {
 
-					App->audio->PlayFx(20, 0);
+					App->audio->PlayFx(App->audio->GetFX().footmanCommand, 0); //TODO Valdivia: Gryphon command sound
 
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);

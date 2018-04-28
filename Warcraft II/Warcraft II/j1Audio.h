@@ -6,12 +6,44 @@
 #include <list>
 #include <string>
 using namespace std;
+typedef unsigned int FX;
 
 #define DEFAULT_MUSIC_FADE_TIME 2.0f
 #define MAX_AUDIO_VOLUM 128
 
 struct _Mix_Music;
 struct Mix_Chunk;
+
+struct GameSounds {
+
+	FX button = 0;
+	FX buildingConstruction = 0;
+	FX errorButt = 0;
+	FX errorButtBuilding = 0;
+	FX chickenFarm = 0;
+	FX goldMine = 0;
+	FX gryphonAviary = 0;
+	FX mageTower = 0;
+	FX stables = 0;
+	FX repairBuild = 0;
+	FX destroyBuild = 0;
+	FX humanDeath = 0;
+	FX orcDeath = 0;
+	FX prisionerRescue = 0;
+	FX boarDeath = 0;
+	FX sheepDeath = 0;
+	FX archerCommand = 0;
+	FX archerReady = 0;
+	FX archerSelected = 0;
+	FX footmanCommand = 0;
+	FX footmanReady = 0;
+	FX footmanSelected = 0;
+	FX axeThrow = 0;
+	FX arrowThrow = 0;
+	FX swordClash = 0;
+	FX runeStone = 0;
+
+};
 
 class j1Audio : public j1Module
 {
@@ -24,6 +56,8 @@ public:
 
 	// Called before render is available
 	bool Awake(pugi::xml_node&);
+
+	bool Start();
 
 	// Called before quitting
 	bool CleanUp();
@@ -55,6 +89,15 @@ public:
 	// Pause music
 	void PauseMusic() const;
 
+	//Charge Sound Effects
+	void ChargeFX();
+
+	GameSounds GetFX();
+
+public:
+	int musicVolume = 0;
+	int fxVolume = 40;
+
 private:
 
 	string				musicFolder;
@@ -62,9 +105,47 @@ private:
 	_Mix_Music*			music = nullptr;
 	list<Mix_Chunk*>	fx;
 
-public:
-	int musicVolume = 0;
-	int fxVolume = 40;
+	GameSounds gameSounds;
+
+	//FX paths
+	//---------------------
+	string mainButtonSound;
+	string buildingConstructionSound;
+	string errorButtonSound;
+	string buildingErrorButtonSound;
+	string chickenFarmSound;
+	string goldMineSound;
+	string gryphonAviarySound;
+	string mageTowerSound;
+	string stablesSound;
+	string repairBuildingSound;
+	string destroyBuildingSound;
+	string runeStoneSound;
+
+	string humanDeadSound;
+	string orcDeadSound;
+	string prisonerRescueSound;
+	string crittersBoarDead;
+	string crittersSheepDead;
+
+	string archerGoToPlaceSound;
+	string archerReadySound;
+	string archerSelectedSound;
+	string footmanGoToPlaceSound;
+	string footmanReadySound;
+	string footmanSelectedSound;
+
+	string axeThrowSound;
+	string bowFireSound;
+	string swordSound;
+	//---------------------
+
+	// FX
+	//---------------------
+
+	
+
+	//---------------------
 };
 
 #endif //__j1AUDIO_H__

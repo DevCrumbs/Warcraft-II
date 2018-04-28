@@ -694,7 +694,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		case EntityType_ELVEN_ARCHER:
 
 			// ARROW
-			App->audio->PlayFx(24, 0);
+			App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 
 			{
 				ElvenArcher* elvenArcher = (ElvenArcher*)owner;
@@ -773,7 +773,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		case EntityType_TROLL_AXETHROWER:
 
 			// AXE
-			App->audio->PlayFx(23, 0);
+			App->audio->PlayFx(App->audio->GetFX().axeThrow, 0);
 
 			{
 				TrollAxethrower* trollAxethrower = (TrollAxethrower*)owner;
@@ -852,7 +852,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 			// The rest of entities
 		default:
 
-			App->audio->PlayFx(25, 0);
+			App->audio->PlayFx(App->audio->GetFX().swordClash, 0);
 
 			targetInfo->target->ApplyDamage(owner->GetDamage(targetInfo->target));
 			break;
@@ -1079,7 +1079,7 @@ void Goal_PickNugget::Activate()
 	goldMine->secondsGathering = secondsGathering;
 
 
-	App->audio->PlayFx(6, 3); // Gold Mine FX
+	App->audio->PlayFx(App->audio->GetFX().goldMine, 3); //Gold mine sound
 
 	owner->SetBlitState(false);
 	owner->SetIsValid(false);
@@ -1199,7 +1199,7 @@ void Goal_HealArea::Activate()
 		break;
 	}
 
-	App->audio->PlayFx(8, 0); // Mage Tower FX
+	App->audio->PlayFx(App->audio->GetFX().mageTower, 0); // Mage Tower FX
 
 	owner->SetIsValid(false);
 
