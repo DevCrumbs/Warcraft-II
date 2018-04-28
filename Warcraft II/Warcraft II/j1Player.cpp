@@ -508,6 +508,9 @@ bool j1Player::CleanUp()
 	imagePrisonersVector.clear();
 
 	DeleteEntitiesMenu();
+
+	DeleteGroupSelectionButtons();
+
 	if (hoverInfo.background != nullptr) {
 		DeleteHoverInfoMenu();
 	}
@@ -887,6 +890,13 @@ void j1Player::CreateEntitiesStatsUI()
 	CreateHoverInfoMenu();
 }
 
+void j1Player::CreateGroupSelectionButtons()
+{
+	CreateSimpleSelectionButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 14, 540 }, groupSelectionButtons.selectFootmans);
+	CreateSimpleSelectionButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 65, 540 }, groupSelectionButtons.selectElvenArchers);
+	CreateSimpleSelectionButton({ 649,286,50,41 }, { 700, 286, 50, 41 }, { 751,286,50,41 }, { 116, 540 }, groupSelectionButtons.selectGryphonRiders);
+}
+
 void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) 
 {
 	if (currentEntity->entityType == EntityCategory_STATIC_ENTITY) 
@@ -1150,6 +1160,13 @@ void j1Player::DeleteEntitiesMenu()
 	entitySelectedStats.entitySelected = nullptr;
 }
 
+void j1Player::DeleteGroupSelectionButtons()
+{
+	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectFootmans);
+	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectElvenArchers);
+	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectGryphonRiders);
+}
+
 void j1Player::ShowHoverInfoMenu(string unitProduce, string gold) {
 
 	hoverInfo.background->isActive = true;
@@ -1349,6 +1366,17 @@ void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pres
 	infoButton.pressedTexArea = pressed;
 	button = App->gui->CreateUIButton(pos, infoButton, this, (UIElement*)App->scene->entitiesStats);
 	button->isActive = false;
+}
+
+void j1Player::CreateSimpleSelectionButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) {
+
+	UIButton_Info infoButton;
+
+	infoButton.normalTexArea = normal;
+	infoButton.hoverTexArea = hover;
+	infoButton.pressedTexArea = pressed;
+	button = App->gui->CreateUIButton(pos, infoButton, this);
+	button->isActive = true;
 }
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
@@ -1559,6 +1587,18 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 				else if (currentGold < gryphonRiderCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+			}
+			if (UIelem == groupSelectionButtons.selectFootmans) {
+				//TODO SANDRA (seleccion de ese tipo de tropas en camara)
+				// Recuerda la condición "si no hay ninguna unidad de ese tipo en camara -> button error sound"
+			}
+			if (UIelem == groupSelectionButtons.selectElvenArchers) {
+				//TODO SANDRA (seleccion de ese tipo de tropas en camara)
+				// Recuerda la condición "si no hay ninguna unidad de ese tipo en camara -> button error sound"
+			}
+			if (UIelem == groupSelectionButtons.selectGryphonRiders) {
+				//TODO SANDRA (seleccion de ese tipo de tropas en camara)
+				// Recuerda la condición "si no hay ninguna unidad de ese tipo en camara -> button error sound"
 			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_UP:
