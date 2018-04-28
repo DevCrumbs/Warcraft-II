@@ -144,25 +144,6 @@ void Footman::Move(float dt)
 
 		// ---------------------------------------------------------------------
 
-		// Update targets list
-		/*
-		list<TargetInfo*>::const_iterator it = targets.begin();
-
-		while (it != targets.end()) {
-
-			if (!(*it)->isSightSatisfied || !(*it)->isRemoved
-				|| !(*it)->IsTargetPresent()) {
-
-				if (*it == currTarget)
-					currTarget = nullptr;
-
-				targets.remove(*it);
-				it = targets.begin();
-			}
-			it++;
-		}
-		*/
-
 		// PROCESS THE COMMANDS
 		switch (unitCommand) {
 
@@ -460,7 +441,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					(*it)->isRemoved = true;
 					break;
 				}
 				it++;
@@ -501,27 +481,30 @@ void Footman::UnitStateMachine(float dt)
 
 		break;
 
+	case UnitState_Idle:
 	case UnitState_Patrol:
 
-		// Check if there are available targets
-		/// Prioritize a type of target (static or dynamic)
+		// ATTACK NOTE (Idle and Patrol states): the unit automatically attacks any target (only DYNAMIC ENTITIES) that is in their targets list
+
 		if (singleUnit->IsFittingTile()) {
 
-			newTarget = GetBestTargetInfo();
+			// Check if there are available targets (DYNAMIC ENTITY)
+			newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
 			if (newTarget != nullptr) {
 
-				// A new target has found, update the attacking target
+				// A new target has found! Update the currTarget
 				if (currTarget != newTarget) {
 
+					// Anticipate the removing of this unit from the attacking units of the target
 					if (currTarget != nullptr) {
 
-						if (!currTarget->isRemoved) {
+						if (!currTarget->isRemoved)
 
 							currTarget->target->RemoveAttackingUnit(this);
-							isHitting = false;
-						}
 					}
+
+					isHitting = false;
 
 					currTarget = newTarget;
 					brain->AddGoal_AttackTarget(currTarget);
@@ -532,6 +515,23 @@ void Footman::UnitStateMachine(float dt)
 		break;
 
 	case UnitState_AttackTarget:
+
+		// ATTACK NOTE (Attack state): if currTarget is dead, the unit automatically attacks the next target (only DYNAMIC ENTITIES) from their targets list
+
+		if (singleUnit->IsFittingTile()) {
+
+			if (currTarget == nullptr) {
+
+				// Check if there are available targets (DYNAMIC ENTITY) 
+				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+				if (newTarget != nullptr) {
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
+		}
 
 		break;
 
@@ -549,7 +549,6 @@ void Footman::UnitStateMachine(float dt)
 
 		break;
 
-	case UnitState_Idle:
 	case UnitState_NoState:
 	default:
 

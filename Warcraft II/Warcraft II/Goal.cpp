@@ -300,6 +300,14 @@ void Goal_AttackTarget::Terminate()
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
 	}
+	else if (!targetInfo->isSightSatisfied) {
+	
+		// Remove this owner from the attacking units of the target
+		targetInfo->target->RemoveAttackingUnit(owner);
+
+		// Remove definitely the target from this owner
+		owner->RemoveTargetInfo(targetInfo);
+	}
 
 	// -----
 
@@ -646,7 +654,7 @@ void Goal_HitTarget::Activate()
 	/// The target is no longer within the attack nor sight radius of the unit
 	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied) {
 
-		goalStatus = GoalStatus_Failed;
+		goalStatus = GoalStatus_Completed;
 		return;
 	}
 
@@ -700,7 +708,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 	/// The target is no longer within the attack nor sight radius of the unit
 	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied) {
 
-		goalStatus = GoalStatus_Failed;
+		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
 

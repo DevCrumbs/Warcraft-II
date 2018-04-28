@@ -3552,7 +3552,7 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 				if (!(*activeDyn)->isDead) {
 
 					// An offset value is applied ONLY to the units selection
-					iPoint offsetValue = { 15,15 };
+					iPoint offsetValue = { 20,20 };
 
 					iPoint entityPos = { (int)(*activeDyn)->GetPos().x + (*activeDyn)->GetOffsetSize().x - offsetValue.x, (int)(*activeDyn)->GetPos().y + (*activeDyn)->GetOffsetSize().y - offsetValue.y };
 					iPoint entitySize = { (*activeDyn)->GetSize().x + offsetValue.x, (*activeDyn)->GetSize().y + offsetValue.y };
