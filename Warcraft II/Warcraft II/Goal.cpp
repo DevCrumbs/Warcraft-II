@@ -306,8 +306,6 @@ void Goal_AttackTarget::Terminate()
 	// -----
 
 	targetInfo = nullptr;
-
-	owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_Patrol ---------------------------------------------------------------------
@@ -663,8 +661,6 @@ GoalStatus Goal_HitTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
-	/// NOTE: TargetInfo cannot be nullptr here
-
 	/// The target has been removed by another unit
 	if (targetInfo->isRemoved) {
 
@@ -673,6 +669,32 @@ GoalStatus Goal_HitTarget::Process(float dt)
 	}
 	/// The target has died
 	else if (!targetInfo->IsTargetPresent()) {
+
+		/// Remove the target from all other units lists
+		App->entities->InvalidateTargetInfo(targetInfo);
+
+		// If the target is a Sheep or a Boar, apply health to the unit that killed it (this unit)
+		if (targetInfo->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+			DynamicEntity* dyn = (DynamicEntity*)targetInfo->target;
+
+			if (dyn->dynamicEntityType == EntityType_SHEEP) {
+
+				CritterSheepInfo c = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
+				owner->ApplyHealth(c.restoredHealth);
+
+				iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
+				App->particles->AddParticle(App->particles->health, pos);
+			}
+			else if (dyn->dynamicEntityType == EntityType_BOAR) {
+
+				CritterBoarInfo b = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
+				owner->ApplyHealth(b.restoredHealth);
+
+				iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
+				App->particles->AddParticle(App->particles->health, pos);
+			}
+		}
 
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;
@@ -686,7 +708,6 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 	// -----
 
-	// 1. ATTACK
 	// Do things at the end of the animation
 	if (((DynamicEntity*)owner)->GetAnimation()->Finished()) {
 
@@ -877,32 +898,6 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 		// Reset the animation
 		((DynamicEntity*)owner)->GetAnimation()->Reset();
-	}
-
-	// 2. CHECK IF THE TARGET HAS BEEN KILLED (it can only have been killed by this unit here)
-	if (!targetInfo->IsTargetPresent()) {
-
-		/// Remove the target from all other units lists
-		App->entities->InvalidateTargetInfo(targetInfo);
-
-		// If the target is a Sheep or a Boar, apply health to the unit that killed it (this unit)
-		if (targetInfo->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
-
-			DynamicEntity* dyn = (DynamicEntity*)targetInfo->target;
-
-			if (dyn->dynamicEntityType == EntityType_SHEEP) {
-
-				CritterSheepInfo c = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
-				owner->ApplyHealth(c.restoredHealth);
-			}
-			else if (dyn->dynamicEntityType == EntityType_BOAR) {
-
-				CritterBoarInfo b = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
-				owner->ApplyHealth(b.restoredHealth);
-			}
-		}
-
-		goalStatus = GoalStatus_Completed;
 	}
 
 	return goalStatus;

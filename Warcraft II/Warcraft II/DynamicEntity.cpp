@@ -704,7 +704,7 @@ bool DynamicEntity::SetIsRemovedTargetInfo(TargetInfo* targetInfo)
 
 	while (it != targets.end()) {
 
-		if (*it == targetInfo) {
+		if ((*it)->target == targetInfo->target) {
 
 			(*it)->isRemoved = true;
 			return true;
@@ -729,7 +729,7 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 
 	while (it != targets.end()) {
 
-		if (*it == targetInfo) {
+		if ((*it)->target == targetInfo->target) {
 
 			targets.remove(*it);
 			return true;

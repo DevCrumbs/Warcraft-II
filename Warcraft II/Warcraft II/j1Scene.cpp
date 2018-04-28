@@ -444,6 +444,10 @@ bool j1Scene::Update(float dt)
 
 		if (units.size() > 0) {
 
+			if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
+
+				units.front()->ApplyDamage(20);
+
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 
 				if (!CompareSelectedUnitsLists(units)) {
