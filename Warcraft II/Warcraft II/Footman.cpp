@@ -117,7 +117,7 @@ void Footman::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
-			App->entities->InvalidateAttackEntity(this);
+			//App->entities->InvalidateAttackEntity(this);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
@@ -127,9 +127,6 @@ void Footman::Move(float dt)
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
-
-			// If the player dies, remove all their goals
-			//unitCommand = UnitCommand_Stop;
 		}
 	}
 
@@ -142,6 +139,27 @@ void Footman::Move(float dt)
 			if (isSelected)
 				App->audio->PlayFx(App->audio->GetFX().footmanSelected, 0); //TODO Valdivia: 22 footman selected		
 		}
+
+		// ---------------------------------------------------------------------
+
+		// Update targets list
+		/*
+		list<TargetInfo*>::const_iterator it = targets.begin();
+
+		while (it != targets.end()) {
+
+			if (!(*it)->isSightSatisfied || !(*it)->isRemoved
+				|| !(*it)->IsTargetPresent()) {
+
+				if (*it == currTarget)
+					currTarget = nullptr;
+
+				targets.remove(*it);
+				it = targets.begin();
+			}
+			it++;
+		}
+		*/
 
 		// PROCESS THE COMMANDS
 		switch (unitCommand) {
@@ -330,17 +348,16 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 	case CollisionState_OnEnter:
 
-		// An enemy is within the sight of this player unit
+		/// SET ATTACK PARAMETERS
+		// An enemy unit/enemy building is within the SIGHT RADIUS of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
-			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-																														 // Static Entity
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			//LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
 
-			// The Horde is within the SIGHT radius
-
+			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
 			bool isTargetFound = false;
 
@@ -355,7 +372,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				}
 				it++;
 			}
-
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
@@ -366,41 +382,49 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				targets.push_back(targetInfo);
 			}
 
+			// 2. MAKE UNIT FACE TOWARDS THE BEST TARGET
 			if (targets.size() > 0) {
 
-				if (currTarget == nullptr) {
+				bool isFacingTowardsTarget = false;
 
-					// Face towards the closest target (to show the player that the unit is going to be attacked)
-					TargetInfo* targetInfo = GetBestTargetInfo();
+				// a) If the unit is not attacking any target
+				if (currTarget == nullptr)
+					isFacingTowardsTarget = true;
+				// b) If the unit is attacking a static target
+				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
+					isFacingTowardsTarget = true;
+
+				if (isFacingTowardsTarget) {
+
+					// Face towards the best target (ONLY DYNAMIC ENTITIES!) (it is expected to be this target)
+					TargetInfo* targetInfo = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
 					if (targetInfo != nullptr) {
 
-						if (targetInfo->target != nullptr) {
+						fPoint orientation = { targetInfo->target->GetPos().x - pos.x, targetInfo->target->GetPos().y - pos.y };
 
-							fPoint orientation = { targetInfo->target->GetPos().x - pos.x, targetInfo->target->GetPos().y - pos.y };
+						float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
-							float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-							if (m > 0.0f) {
-								orientation.x /= m;
-								orientation.y /= m;
-							}
-
-							SetUnitDirectionByValue(orientation);
+						if (m > 0.0f) {
+							orientation.x /= m;
+							orientation.y /= m;
 						}
+
+						SetUnitDirectionByValue(orientation);
 					}
 				}
 			}
 		}
+
+		// An enemy unit/enemy building is within the ATTACK RADIUS of this player unit
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
-			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			//	LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
 
-			// The Horde is within the ATTACK radius
-
+			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
@@ -413,55 +437,43 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				it++;
 			}
 		}
-
 		break;
 
 	case CollisionState_OnExit:
 
-		// Reset attack parameters
+		/// RESET ATTACK PARAMETERS
+		// An enemy unit/enemy building is no longer within the SIGHT RADIUS of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
-			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			//	LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+			LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
 
-			// The Horde is NO longer within the SIGHT radius
-
-			// Remove the target from the targets list
+			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
-					// If currTarget matches the target that needs to be removed, set its isSightSatisfied to false and it will be removed later		
-					if (currTarget != nullptr) {
-
-						if (currTarget->target == c2->entity) {
-
-							currTarget->isSightSatisfied = false;
-							break;
-						}
-					}
-					// If currTarget is different from the target that needs to be removed, remove the target from the list
-					delete *it;
-					targets.erase(it);
-
+					(*it)->isSightSatisfied = false;
+					(*it)->isRemoved = true;
 					break;
 				}
 				it++;
 			}
 		}
+
+		// An enemy unit/enemy building is no longer within the ATTACK RADIUS of this player unit
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
-			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			//	LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+			LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
 
-			// The Horde is NO longer within the ATTACK radius
-
+			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
@@ -474,7 +486,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				it++;
 			}
 		}
-
 		break;
 	}
 }

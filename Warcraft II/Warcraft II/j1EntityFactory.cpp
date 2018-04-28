@@ -3477,23 +3477,31 @@ bool j1EntityFactory::RemoveAllUnitsGoals(list<DynamicEntity*> units)
 	return ret;
 }
 
-void j1EntityFactory::InvalidateAttackEntity(Entity* entity)
+bool j1EntityFactory::InvalidateTargetInfo(TargetInfo* targetInfo)
 {
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+	if (targetInfo == nullptr)
+		return false;
 
-	while (it != activeDynamicEntities.end()) {
+	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
 
-		if (!(*it)->isDead) {
-			//if ((*it)->IsEntityInTargetsList(entity))
+	while (dynEnt != activeDynamicEntities.end()) {
 
-				// The dead entity was a target of another entity
-			(*it)->InvalidateTarget(entity);
+		(*dynEnt)->SetIsRemovedTargetInfo(targetInfo);
+		(*dynEnt)->RemoveAttackingUnit(targetInfo->target);
 
-			// The dead entity may be attacking another unit
-			(*it)->RemoveAttackingUnit(entity);
-		}
-		it++;
+		dynEnt++;
 	}
+
+	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
+
+	while (statEnt != activeStaticEntities.end()) {
+
+		(*statEnt)->RemoveAttackingUnit(targetInfo->target);
+
+		statEnt++;
+	}
+
+	return true;
 }
 
 void j1EntityFactory::InvalidateMovementEntity(Entity* entity)

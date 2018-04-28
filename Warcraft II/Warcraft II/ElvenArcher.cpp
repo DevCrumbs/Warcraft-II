@@ -118,7 +118,7 @@ void ElvenArcher::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
-			App->entities->InvalidateAttackEntity(this);
+			//App->entities->InvalidateAttackEntity(this);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
@@ -336,7 +336,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 		// An enemy is within the sight of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			//	LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
@@ -395,7 +396,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			}
 		}
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
-			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			//	LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
@@ -421,7 +423,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 		// Reset attack parameters
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			//	LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
@@ -454,7 +457,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			}
 		}
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
-			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			//		LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());

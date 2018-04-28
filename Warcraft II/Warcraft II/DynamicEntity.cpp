@@ -694,50 +694,25 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 	return ret;
 }
 
-bool DynamicEntity::IsEntityInTargetsList(Entity* entity) const
+bool DynamicEntity::SetIsRemovedTargetInfo(TargetInfo* targetInfo) 
 {
+	if (targetInfo == nullptr)
+		return false;
+
+	// Set isRemoved to true
 	list<TargetInfo*>::const_iterator it = targets.begin();
 
 	while (it != targets.end()) {
 
-		if ((*it)->target == entity)
-			return true;
+		if (*it == targetInfo) {
 
+			(*it)->isRemoved = true;
+			return true;
+		}
 		it++;
 	}
 
 	return false;
-}
-
-bool DynamicEntity::InvalidateTarget(Entity* entity)
-{
-	bool ret = false;
-
-	TargetInfo* targetInfo = nullptr;
-
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	// Find the TargetInfo of the target
-	while (it != targets.end()) {
-
-		if ((*it)->target == entity) {
-
-			targetInfo = *it;
-			break;
-		}
-
-		it++;
-	}
-
-	// If TargetInfo is found, invalidate it
-	if (targetInfo != nullptr) {
-
-		(*it)->target = nullptr;
-		(*it)->isRemoved = true;
-		ret = true;
-	}
-
-	return ret;
 }
 
 bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
@@ -745,12 +720,9 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 	if (targetInfo == nullptr)
 		return false;
 
-	// If the target matches the currTarget, set currTarget to null
-	if (currTarget != nullptr) {
-
-		if (currTarget->target == targetInfo->target)
-			currTarget = nullptr;
-	}
+	// If the target is the currTarget, set currTarget to nullptr
+	if (targetInfo == currTarget)
+		currTarget = nullptr;
 
 	// Remove the target from the targets list
 	list<TargetInfo*>::const_iterator it = targets.begin();
@@ -759,9 +731,7 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 
 		if (*it == targetInfo) {
 
-			delete *it;
-			targets.erase(it);
-
+			targets.remove(*it);
 			return true;
 		}
 		it++;
@@ -770,7 +740,7 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 	return false;
 }
 
-TargetInfo* DynamicEntity::GetBestTargetInfo() const
+TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityType) const
 {
 	// If there are no targets, return null
 	if (targets.size() == 0)

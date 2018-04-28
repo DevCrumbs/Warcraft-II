@@ -134,6 +134,8 @@ struct EntityInfo; // empty container
 
 struct TargetInfo
 {
+	/// NOTE: if the target is nullptr, TargetInfo must also be nullptr!
+
 	TargetInfo();
 	TargetInfo(const TargetInfo& t);
 

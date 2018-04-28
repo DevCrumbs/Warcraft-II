@@ -121,7 +121,7 @@ void GryphonRider::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
-			App->entities->InvalidateAttackEntity(this);
+			//App->entities->InvalidateAttackEntity(this);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
@@ -302,9 +302,9 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 		// An enemy is within the sight of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
-			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-																														 // Static Entity
+
 			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 			//LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
 
