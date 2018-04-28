@@ -115,6 +115,7 @@ public:
 	void DestroyStaticEntity(StaticEntity* staticEntity);
 
 	uint CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEGORY entityCategory);
+	uint GetNumberOfPlayerUnits() const;
 
 	/// SANDRA
 	// Returns a pointer to the Entity that is on the tile or nullptr
@@ -156,8 +157,7 @@ public:
 	bool SelectBuilding(StaticEntity* staticEntity);
 	void UnselectAllBuildings();
 
-	int GetPlayerSoldiers() const;
-	bool IsNearSoldiers(iPoint pos, uint distance);
+	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);
 
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);

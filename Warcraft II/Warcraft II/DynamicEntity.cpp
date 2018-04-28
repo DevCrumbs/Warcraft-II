@@ -877,6 +877,26 @@ bool DynamicEntity::IsUnitHealingRunestone() const
 	return isHealingRunestone;
 }
 
+void DynamicEntity::SetPrisoner(DynamicEntity* prisoner) 
+{
+	this->prisoner = prisoner;
+}
+
+DynamicEntity* DynamicEntity::GetPrisoner() const 
+{
+	return prisoner;
+}
+
+void DynamicEntity::SetUnitRescuePrisoner(bool isRescuingPrisoner) 
+{
+	this->isRescuingPrisoner = isRescuingPrisoner;
+}
+
+bool DynamicEntity::IsUnitRescuingPrisoner() const 
+{
+	return isRescuingPrisoner;
+}
+
 // Player commands
 bool DynamicEntity::SetUnitCommand(UnitCommand unitCommand)
 {

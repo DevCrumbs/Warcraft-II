@@ -133,7 +133,7 @@ bool PathPlanner::RequestAStar(iPoint origin, iPoint destination)
 		currentSearch = new j1PathFinding();
 
 	// Invalidate if origin or destination are non-walkable
-	ret = currentSearch->InitializeAStar(origin, destination);
+	ret = currentSearch->InitializeAStar(origin, destination, DistanceHeuristic_DistanceManhattan, isWalkabilityChecked);
 
 	if (ret)
 		App->pathmanager->Register(this);
@@ -193,7 +193,7 @@ bool PathPlanner::RequestDijkstra(iPoint origin, FindActiveTrigger::ActiveTrigge
 	// Invalidate if origin is non-walkable
 	this->isPathRequested = isPathRequested;
 
-	ret = currentSearch->InitializeDijkstra(origin, trigger, isPathRequested);
+	ret = currentSearch->InitializeDijkstra(origin, trigger, isPathRequested, isWalkabilityChecked);
 
 	if (ret)
 		App->pathmanager->Register(this);
@@ -305,6 +305,11 @@ void PathPlanner::SetCheckingGoalTile(bool isCheckingGoalTile)
 j1PathFinding* PathPlanner::GetCurrentSearch() const
 {
 	return currentSearch;
+}
+
+void PathPlanner::SetIsWalkabilityChecked(bool isWalkabilityChecked) 
+{
+	this->isWalkabilityChecked = isWalkabilityChecked;
 }
 
 // FindActiveTrigger class ---------------------------------------------------------------------------------
