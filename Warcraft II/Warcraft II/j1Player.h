@@ -157,6 +157,7 @@ public:
 	void CreateSimpleSelectionButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
+	void CreateDestructionButton();
 	void HandleBarracksUIElem();
 	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
@@ -234,7 +235,7 @@ private:
 	list<ToSpawnUnit*> newUnitsToSpawn;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
-		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr;
+		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr;
 	
 
 	list<UIElement*> UIMenuInfoList;
