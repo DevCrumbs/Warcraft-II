@@ -31,6 +31,7 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	texArea = &scoutTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 
+	buildingState = BuildingState_Building;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 }
 
@@ -182,6 +183,8 @@ void ScoutTower::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
 		texArea = &scoutTowerInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000)
+	if (constructionTimer.Read() >= constructionTime * 1000) {
 		texArea = &scoutTowerInfo.completeTexArea;
+		buildingState = BuildingState_Normal;
+	}
 }

@@ -28,6 +28,7 @@ PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint m
 	App->movement->UpdateUnitsWalkability(walkability);
 	// -----
 
+	buildingState = BuildingState_Building;
 	texArea = &playerGuardTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
@@ -182,6 +183,8 @@ void PlayerGuardTower::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
 		texArea = &playerGuardTowerInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000)
+	if (constructionTimer.Read() >= constructionTime * 1000) {
 		texArea = &playerGuardTowerInfo.completeTexArea;
+		buildingState = BuildingState_Normal;
+	}
 }

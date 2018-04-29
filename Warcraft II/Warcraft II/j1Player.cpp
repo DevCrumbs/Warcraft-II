@@ -887,6 +887,7 @@ void j1Player::CreateEntitiesStatsUI()
 	CreateGryphonAviaryButtons();	
 	//CreateMageTowerButtons();
 	CreateTownHallButtons();
+	CreateDestructionButton();
 	CreateHoverInfoMenu();
 }
 
@@ -937,6 +938,7 @@ void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SD
 
 	entitySelectedStats.lifeBar->isActive = true;
 
+	StaticEntity* selectedEnt = (StaticEntity*)currentEntity;
 
 	if (entityName_text == "Barracks") 
 		ShowEntitySelectedButt(EntityType_BARRACKS);
@@ -950,6 +952,18 @@ void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SD
 	else if ((entityName_text == "Town Hall" || entityName_text == "Keep") && townHall->buildingState == BuildingState_Normal) {
 		ShowEntitySelectedButt(EntityType_TOWN_HALL);
 	}
+
+	else if(entityName_text == "Chicken Farm" && selectedEnt->buildingState != BuildingState_Building)
+		ShowEntitySelectedButt(EntityType_CHICKEN_FARM);
+
+	else if (entityName_text == "Scout Tower" && selectedEnt->buildingState != BuildingState_Building)
+		ShowEntitySelectedButt(EntityType_SCOUT_TOWER);
+
+	else if (entityName_text == "Guard Tower" && selectedEnt->buildingState != BuildingState_Building)
+		ShowEntitySelectedButt(EntityType_PLAYER_GUARD_TOWER);
+
+	else if (entityName_text == "Cannon Tower" && selectedEnt->buildingState != BuildingState_Building)
+		ShowEntitySelectedButt(EntityType_PLAYER_CANNON_TOWER);
 
 	entitySelectedStats.entitySelected = currentEntity;
 
@@ -1039,6 +1053,15 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	//	break;
 	case EntityType_GRYPHON_AVIARY:
 		produceGryphonRiderButton->isActive = true;
+		destroyBuildingButton->SetLocalPos({ 270, 2 });
+		destroyBuildingButton->isActive = true;
+		break;
+	case EntityType_CHICKEN_FARM:
+	case EntityType_SCOUT_TOWER:
+	case EntityType_PLAYER_GUARD_TOWER:
+	case EntityType_PLAYER_CANNON_TOWER:
+		destroyBuildingButton->SetLocalPos({ 217, 2 });
+		destroyBuildingButton->isActive = true;
 		break;
 	default:
 		break;
@@ -1113,8 +1136,24 @@ void j1Player::HideEntitySelectedInfo()
 	else if (entitySelectedStats.entitySelected == townHall)
 		upgradeTownHallButton->isActive = false;
 
-	else if (entitySelectedStats.entitySelected == gryphonAviary && gryphonAviary != nullptr)
+	else if (entitySelectedStats.entitySelected == gryphonAviary && gryphonAviary != nullptr) {
 		produceGryphonRiderButton->isActive = false;
+	}
+
+	if (destroyBuildingButton->isActive)
+		destroyBuildingButton->isActive = false;
+		/*
+	else if (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
+		StaticEntity* ent = (StaticEntity*)entitySelectedStats.entitySelected;
+		switch (ent->staticEntityType) {
+		case EntityType_CHICKEN_FARM:
+		case EntityType_SCOUT_TOWER:
+		case EntityType_PLAYER_GUARD_TOWER:
+		case EntityType_PLAYER_CANNON_TOWER:
+			destroyBuildingButton->isActive = false;
+			break;
+		}
+	}*/
 
 	//Hide Dynamic stats
 	else if (App->scene->groupElementsList.front().owner != nullptr || (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY))
@@ -1148,6 +1187,9 @@ void j1Player::DeleteEntitiesMenu()
 
 	//TownHall Butt
 	App->gui->RemoveElem((UIElement**)&upgradeTownHallButton);
+
+	//Destroy Building Butt
+	App->gui->RemoveElem((UIElement**)&destroyBuildingButton);
 
 	//Entity Selected Info
 	App->gui->RemoveElem((UIElement**)&entitySelectedStats.HP);
@@ -1250,6 +1292,10 @@ void j1Player::CreateBarracksButtons()
 void j1Player::CreateTownHallButtons()
 {
 	CreateSimpleButton({ 579,118,50,41 }, { 629, 118, 50, 41 }, { 679,118,50,41 }, { 217, 2 }, upgradeTownHallButton);
+}
+void j1Player::CreateDestructionButton()
+{
+	CreateSimpleButton({ 579,76,49,41 }, { 629, 76, 49, 41 }, { 679,76,49,41 }, { 270, 2 }, destroyBuildingButton);
 }
 void j1Player::CreateHoverInfoMenu() {
 
@@ -1404,9 +1450,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			if (UIelem == produceGryphonRiderButton) {
 				ShowHoverInfoMenu("Produces gryphon", "Cost: 2500 gold");
 			}
-			break;
+			if (UIelem == destroyBuildingButton) {
+				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy");
+			}
+				break;
 		case UI_EVENT_MOUSE_LEAVE:
-			if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton || UIelem == produceMageButton || UIelem == produceGryphonRiderButton) {
+			if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton 
+				|| UIelem == produceMageButton || UIelem == produceGryphonRiderButton || UIelem == destroyBuildingButton) {
 				HideHoverInfoMenu();
 			}
 			break;
@@ -1429,6 +1479,16 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+			}
+
+			//For destroying a building
+			if (UIelem == destroyBuildingButton) { 
+				StaticEntity* toDestroyEnt = (StaticEntity*)entitySelectedStats.entitySelected;
+				HideEntitySelectedInfo();
+				HideHoverInfoMenu();
+				toDestroyEnt->isRemove = true;
+				App->audio->PlayFx(App->audio->GetFX().destroyBuild);
+				entitySelectedStats.entitySelected = nullptr;
 			}
 
 			/*if (hoverCheck == HoverCheck_Repair) {

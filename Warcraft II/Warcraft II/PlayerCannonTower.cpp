@@ -29,6 +29,7 @@ PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint
 	App->movement->UpdateUnitsWalkability(walkability);
 	// -----
 
+	buildingState = BuildingState_Building;
 	texArea = &playerCannonTowerInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
@@ -181,6 +182,8 @@ void PlayerCannonTower::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
 		texArea = &playerCannonTowerInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000)
+	if (constructionTimer.Read() >= constructionTime * 1000) {
 		texArea = &playerCannonTowerInfo.completeTexArea;
+		buildingState = BuildingState_Normal;
+	}
 }
