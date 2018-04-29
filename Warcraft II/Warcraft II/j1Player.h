@@ -59,7 +59,7 @@ struct ToSpawnUnit {
 };
 
 struct GroupSpawning {
-	ToSpawnUnit* owner = nullptr;
+	ToSpawnUnit** owner = nullptr;
 
 	UIImage* entityIcon = nullptr;
 	UILifeBar* entityLifeBar = nullptr;
@@ -155,7 +155,7 @@ public:
 	void CreateSimpleSelectionButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
-	void HandleSpawningUnitsUIElem(ToSpawnUnit* toSpawnUnit, list<GroupSpawning>* groupList);
+	void HandleSpawningUnitsUIElem(ToSpawnUnit** toSpawnUnit, list<GroupSpawning>* groupList);
 	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();

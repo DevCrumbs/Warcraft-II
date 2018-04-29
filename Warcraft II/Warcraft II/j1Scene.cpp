@@ -1877,7 +1877,7 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 {
 	bool ret = true;
 
-	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) == SDL_SCANCODE_UNKNOWN)
+	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) ==  SDL_SCANCODE_UNKNOWN)
 	{
 		LOG("Could not load SaveGame button");
 		ret = false;
@@ -1937,7 +1937,5 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 		ret = false;
 	}
 	
-
-
 	return ret;
 }
