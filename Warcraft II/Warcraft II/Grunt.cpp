@@ -50,7 +50,7 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	this->gruntInfo.deathUp = info.deathUp;
 	this->gruntInfo.deathDown = info.deathDown;
 
-	size = this->unitInfo.size;
+	this->size = this->unitInfo.size;
 	offsetSize = this->unitInfo.offsetSize;
 
 	LoadAnimationsSpeed();
@@ -125,6 +125,9 @@ void Grunt::Move(float dt)
 			if (singleUnit != nullptr)
 				delete singleUnit;
 			singleUnit = nullptr;
+
+			if (lifeBar != nullptr)
+				lifeBar->isActive = false;
 
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;

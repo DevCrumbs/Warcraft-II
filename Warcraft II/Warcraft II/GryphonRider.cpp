@@ -53,7 +53,7 @@ GryphonRider::GryphonRider(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	this->gryphonRiderInfo.deathUp = info.deathUp;
 	this->gryphonRiderInfo.deathDown = info.deathDown;
 
-	size = this->unitInfo.size;
+	this->size = this->unitInfo.size;
 	offsetSize = this->unitInfo.offsetSize;
 
 	LoadAnimationsSpeed();
@@ -129,6 +129,9 @@ void GryphonRider::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
+			if (lifeBar != nullptr)
+				lifeBar->isActive = false;
+
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
@@ -144,9 +147,6 @@ void GryphonRider::Move(float dt)
 		if (auxIsSelected != isSelected) {
 
 			auxIsSelected = isSelected;
-
-			if (isSelected)
-				App->audio->PlayFx(App->audio->GetFX().footmanSelected, 0); //TODO Valdiia: gryphon selected sound
 		}
 
 		// PROCESS THE COMMANDS
@@ -170,8 +170,6 @@ void GryphonRider::Move(float dt)
 			if (singleUnit->isGoalChanged) {
 
 				if (singleUnit->IsFittingTile()) {
-
-					App->audio->PlayFx(App->audio->GetFX().footmanCommand, 0); //TODO Valdivia: Gryphon command sound
 
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);

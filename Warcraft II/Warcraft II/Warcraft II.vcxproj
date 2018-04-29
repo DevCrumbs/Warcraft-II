@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{ECCF88E5-2C26-4595-ADF0-7C9D47359E90}</ProjectGuid>
     <RootNamespace>WarcraftII</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -168,7 +168,6 @@
     <ClInclude Include="j1Textures.h" />
     <ClInclude Include="j1Timer.h" />
     <ClInclude Include="j1Window.h" />
-    <ClInclude Include="Khadgar.h" />
     <ClInclude Include="Mage.h" />
     <ClInclude Include="MageTower.h" />
     <ClInclude Include="NTree.h" />
@@ -253,7 +252,6 @@
     <ClCompile Include="j1Textures.cpp" />
     <ClCompile Include="j1Timer.cpp" />
     <ClCompile Include="j1Window.cpp" />
-    <ClCompile Include="Khadgar.cpp" />
     <ClCompile Include="Mage.cpp" />
     <ClCompile Include="MageTower.cpp" />
     <ClCompile Include="OgreMound.cpp" />

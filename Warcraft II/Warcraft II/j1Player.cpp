@@ -809,7 +809,7 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 				App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
 
 			}
-      */
+			*/
 		}
 		break;
 	case EntitiesEvent_LEFT_CLICK:
@@ -1112,8 +1112,9 @@ void j1Player::HideEntitySelectedInfo()
 
 	else if (entitySelectedStats.entitySelected == townHall)
 		upgradeTownHallButton->isActive = false;
-	//else if (entitySelectedStats.entitySelected == gryphonAviary)
-	//	produceGryphonRiderButton->isActive = false;
+
+	else if (entitySelectedStats.entitySelected == gryphonAviary && gryphonAviary != nullptr)
+		produceGryphonRiderButton->isActive = false;
 
 	//Hide Dynamic stats
 	else if (App->scene->groupElementsList.front().owner != nullptr || (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY))

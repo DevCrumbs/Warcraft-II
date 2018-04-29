@@ -1023,15 +1023,6 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	// Prisoners
 	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
-	
-	// Khadgar
-	pugi::xml_node khadgarAnimations = prisionerEntities.child("khadgar").child("animations");
-	currentAnimation = khadgarAnimations.child("idle");
-	khadgarInfo.idle.speed = currentAnimation.attribute("speed").as_float();
-	khadgarInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
-	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
-		khadgarInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
-	}
 
 	// Alleria
 	pugi::xml_node alleriaAnimations = prisionerEntities.child("alleria").child("animations");
@@ -1242,7 +1233,9 @@ bool j1EntityFactory::Start()
 	/// ALLIANCE
 	/// Dynamic Entities
 	alleriaInfo.unitInfo.size = { 64,64 };
+	alleriaInfo.unitInfo.offsetSize = { -16,-16 };
 	turalyonInfo.unitInfo.size = { 64,64 };
+	turalyonInfo.unitInfo.offsetSize = { -16,-16 };
 
 	// Footman
 	footmanInfo.unitInfo.priority = 2;
@@ -1887,9 +1880,6 @@ const EntityInfo& j1EntityFactory::GetUnitInfo(ENTITY_TYPE dynamicEntityType)
 	case EntityType_ALLERIA:
 		return (EntityInfo&)alleriaInfo;
 		break;
-	case EntityType_KHADGAR:
-		return (EntityInfo&)khadgarInfo;
-		break;
 	case EntityType_TURALYON:
 		return (EntityInfo&)turalyonInfo;
 		break;
@@ -2273,9 +2263,6 @@ bool j1EntityFactory::PostUpdate()
 
 		case EntityType_TURALYON:
 			(*dynEnt)->Draw(turalyonTex);
-			break;
-		case EntityType_KHADGAR:
-			(*dynEnt)->Draw(khadgarTex);
 			break;
 		case EntityType_ALLERIA:
 			(*dynEnt)->Draw(alleriaTex);
@@ -2854,26 +2841,13 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TURALYON:
 	{
-		Turalyon* turalyon = new Turalyon(pos, khadgarInfo.unitInfo.size, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const TuralyonInfo&)entityInfo, listener);
+		Turalyon* turalyon = new Turalyon(pos, turalyonInfo.unitInfo.size, turalyonInfo.unitInfo.currLife, turalyonInfo.unitInfo.maxLife, unitInfo, (const TuralyonInfo&)entityInfo, listener);
 		turalyon->entityType = EntityCategory_DYNAMIC_ENTITY;
 		turalyon->dynamicEntityType = EntityType_TURALYON;
 		turalyon->entitySide = EntitySide_Player;
 
 		toSpawnEntities.push_back((Entity*)turalyon);
 		return (DynamicEntity*)turalyon;
-	}
-	break;
-
-	case EntityType_KHADGAR:
-	{
-		Khadgar* khadgar = new Khadgar(pos, khadgarInfo.unitInfo.size, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const KhadgarInfo&)entityInfo, listener);
-		khadgar->entityType = EntityCategory_DYNAMIC_ENTITY;
-		khadgar->dynamicEntityType = EntityType_KHADGAR;
-		khadgar->entitySide = EntitySide_Player;
-
-		toSpawnEntities.push_back((Entity*)khadgar);
-		return (DynamicEntity*)khadgar;
-
 	}
 	break;
 

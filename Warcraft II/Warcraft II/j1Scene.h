@@ -145,6 +145,8 @@ public:
 
 	void ShowSelectedUnits(list<DynamicEntity*> units);
 	void HideUnselectedUnits();
+	void ChooseUnitSelectedSound(list<DynamicEntity*> units);
+	void ChooseUnitCommandSound(list<DynamicEntity*> units);
 	void ChangeBuildingButtState(MenuBuildingButton* elem);
 	void ChangeBuildingMenuState(BuildingMenu* elem);
 	void UpdateLabelsMenu();

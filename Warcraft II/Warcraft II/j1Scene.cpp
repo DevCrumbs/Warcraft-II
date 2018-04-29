@@ -246,13 +246,13 @@ bool j1Scene::PreUpdate()
 
 		App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
 
 		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
 
-		App->entities->AddEntity(EntityType_KHADGAR, pos, App->entities->GetUnitInfo(EntityType_KHADGAR), unitInfo, App->player);
+		App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
 	//_Entities_creation
 
 	if (hasGoldChanged) {
@@ -377,8 +377,7 @@ bool j1Scene::Update(float dt)
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
 
-
-	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
+	App->printer->PrintSprite(mouseTilePos, debugTex, { 0,0,32,32 }); // tile under the mouse pointer
 
 	// Units ---------------------------------------------------------------------------------
 
@@ -451,9 +450,9 @@ bool j1Scene::Update(float dt)
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 
 				if (!CompareSelectedUnitsLists(units)) {
-
 					App->player->HideEntitySelectedInfo();
 					ShowSelectedUnits(units);
+					ChooseUnitSelectedSound(units); //Unit selected sound
 				}
 			}
 
@@ -581,6 +580,8 @@ bool j1Scene::Update(float dt)
 					bool isGoal = false;
 
 					if (group->GetShapedGoalSize() <= 1) {
+
+						ChooseUnitCommandSound(units); //Unit command sound
 
 						group->ClearShapedGoal();
 
@@ -1104,6 +1105,113 @@ void j1Scene::HideUnselectedUnits()
 	}
 	commandPatrolButton->isActive = false;
 	commandStopButton->isActive = false;
+}
+//TODO Valdivia 
+void j1Scene::ChooseUnitSelectedSound(list<DynamicEntity*> units)
+{
+	uint footmanNum = 0, archerNum = 0, gryphonNum = 0;
+
+	list<DynamicEntity*>::iterator iterator = units.begin();
+
+	while (iterator != units.end()) {
+		switch ((*iterator)->dynamicEntityType) {
+		case EntityType_FOOTMAN:
+			footmanNum++;
+			break;
+		case EntityType_ELVEN_ARCHER:
+			archerNum++;
+			break;
+		case EntityType_GRYPHON_RIDER:
+			gryphonNum++;
+			break;
+		default:
+			break;
+	}
+		iterator++;
+	}
+
+	uint footmanSelect = App->audio->GetFX().footmanSelected;
+	uint archerSelect = App->audio->GetFX().archerSelected;
+	uint gryphonSelect = App->audio->GetFX().griffonSelected; 
+
+	if (footmanNum > archerNum + gryphonNum)
+		App->audio->PlayFx(footmanSelect, 0);
+
+	else if (archerNum > footmanNum + gryphonNum)
+		App->audio->PlayFx(archerSelect, 0);
+
+	else if(gryphonNum > archerNum + footmanNum)
+		App->audio->PlayFx(gryphonSelect, 0);
+
+	else if (footmanNum == archerNum && footmanNum != gryphonNum) {
+		uint rng = rand() % 2 + 1;
+
+		if(rng == 1)
+			App->audio->PlayFx(footmanSelect, 0);
+		else if (rng == 2)
+			App->audio->PlayFx(archerSelect, 0);
+	}
+	else if (footmanNum == gryphonNum && footmanNum != archerNum) {
+		uint rng = rand() % 2 + 1;
+
+		if (rng == 1)
+			App->audio->PlayFx(footmanSelect, 0);
+		else if (rng == 2)
+			App->audio->PlayFx(gryphonSelect, 0);  
+	}
+	else if (archerNum == gryphonNum && archerNum != footmanNum) {
+		uint rng = rand() % 2 + 1;
+
+		if (rng == 1)
+			App->audio->PlayFx(archerSelect, 0);
+		else if (rng == 2)
+			App->audio->PlayFx(gryphonSelect, 0);
+	}
+	else if (footmanNum == archerNum && footmanNum == gryphonNum) {
+		uint rng = rand() % 2 + 1;
+
+		if (rng == 1)
+			App->audio->PlayFx(footmanSelect, 0);
+		else if (rng == 2)
+			App->audio->PlayFx(archerSelect, 0);
+		else if (rng == 3)
+			App->audio->PlayFx(gryphonSelect, 0);
+	}
+	else
+		App->audio->PlayFx(App->audio->GetFX().footmanSelected, 0); //default
+}
+//TODO Valdivia
+void j1Scene::ChooseUnitCommandSound(list<DynamicEntity*> units)
+{
+	bool isFootman = false, isArcher = false, isGryphon = false;
+
+	list<DynamicEntity*>::iterator iterator = units.begin();
+
+	while (iterator != units.end()) {
+		switch ((*iterator)->dynamicEntityType) {
+		case EntityType_FOOTMAN:
+			isFootman = true;
+			break;
+		case EntityType_ELVEN_ARCHER:
+			isArcher = true;
+			break;
+		case EntityType_GRYPHON_RIDER:
+			isGryphon = true;
+			break;
+		default:
+			break;
+		}
+		iterator++;
+	}
+	uint footmanCommand = App->audio->GetFX().footmanCommand;
+	uint archerCommand = App->audio->GetFX().archerCommand;
+	uint gryphonCommand = App->audio->GetFX().griffonCommand;
+	if (isFootman)
+		App->audio->PlayFx(footmanCommand, 0);
+	if (isArcher)
+		App->audio->PlayFx(archerCommand, 0);
+	if(isGryphon)
+		App->audio->PlayFx(gryphonCommand, 0);
 }
 	
 void j1Scene::ChangeBuildingButtState(MenuBuildingButton* elem)

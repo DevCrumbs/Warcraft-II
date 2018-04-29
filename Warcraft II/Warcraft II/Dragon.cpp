@@ -54,7 +54,7 @@ Dragon::Dragon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitIn
 	this->dragonInfo.deathUp = info.deathUp;
 	this->dragonInfo.deathDown = info.deathDown;
 
-	size = this->unitInfo.size;
+	this->size = this->unitInfo.size;
 	offsetSize = this->unitInfo.offsetSize;
 
 	LoadAnimationsSpeed();
@@ -130,8 +130,8 @@ void Dragon::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
-			//if (lifeBar != nullptr)
-			//	App->gui->RemoveElem((UIElement**)lifeBar);
+			if (lifeBar != nullptr)
+				lifeBar->isActive = false;
 
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;

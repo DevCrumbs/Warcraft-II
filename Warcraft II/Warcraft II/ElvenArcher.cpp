@@ -50,7 +50,7 @@ ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	this->elvenArcherInfo.deathUp = info.deathUp;
 	this->elvenArcherInfo.deathDown = info.deathDown;
 
-	size = this->unitInfo.size;
+	this->size = this->unitInfo.size;
 	offsetSize = this->unitInfo.offsetSize;
 
 	LoadAnimationsSpeed();
@@ -131,7 +131,10 @@ void ElvenArcher::Move(float dt)
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
 
-			// Remove life bar
+			// Hide life bar Will remove in destructor
+			if (lifeBar != nullptr)
+				lifeBar->isActive = false;
+
 
 			// If the player dies, remove all their goals
 			//unitCommand = UnitCommand_Stop;
@@ -143,9 +146,6 @@ void ElvenArcher::Move(float dt)
 		if (auxIsSelected != isSelected) {
 
 			auxIsSelected = isSelected;
-
-			if (isSelected)
-				App->audio->PlayFx(App->audio->GetFX().archerSelected, 0); //TODO Valdivia: 19 archer selected
 		}
 
 		// PROCESS THE COMMANDS
@@ -169,8 +169,6 @@ void ElvenArcher::Move(float dt)
 			if (singleUnit->isGoalChanged) {
 
 				if (singleUnit->IsFittingTile()) {
-
-					App->audio->PlayFx(App->audio->GetFX().archerCommand, 0);
 
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);

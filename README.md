@@ -120,12 +120,14 @@ If debug mode is on:
 
 	1: Spawn a Footman at mouse position
 	2: Spawn an Elven Archer at mouse position
-	3: Spawn a Grunt at mouse position
-	4: Spawn a Troll Axethrower at mouse position
-	5: Spawn a sheep at mouse position
-	6: Spawn a boar at mouse position
-	7: Spawn Alleria
-	8: Spawn Khadgar
+	3: Spawn a Gryphon Rider at mouse position
+	4: Spawn a Grunt at mouse position
+	5: Spawn a Troll Axethrower at mouse position
+	6: Spawn a Dragon at mouse position
+	7: Spawn a sheep at mouse position
+	8: Spawn a boar at mouse position
+	9: Spawn Alleria
+	0: Spawn Turalyon
 
 	W: direct win
 	L: direct lose
