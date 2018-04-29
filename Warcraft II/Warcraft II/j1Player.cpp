@@ -350,28 +350,27 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 
 	list<GroupSpawning>::iterator lastElem;
 
-	if (!queue->empty()) {
 
-		if (queue->front()->toSpawnTimer.Read() > (spawningTime * 1000)) {
-			ENTITY_TYPE toSpawnEntity = queue->front()->entityType;
+	if (queue->front()->toSpawnTimer.Read() > (spawningTime * 1000)) {
+		ENTITY_TYPE toSpawnEntity = queue->front()->entityType;
 
-			switch (toSpawnEntity) {
+		switch (toSpawnEntity) {
 
-			case EntityType_FOOTMAN:
-				SpawnUnit(barracks->GetPos(), EntityType_FOOTMAN, unitInfo);
-				App->audio->PlayFx(App->audio->GetFX().footmanReady, 0);
-				barracksSpawningListUI.front().entityIcon->isActive = false;
-				barracksSpawningListUI.front().entityLifeBar->isActive = false;
-				barracksSpawningListUI.front().owner = nullptr;
-				break;
+		case EntityType_FOOTMAN:
+			SpawnUnit(barracks->GetPos(), EntityType_FOOTMAN, unitInfo);
+			App->audio->PlayFx(App->audio->GetFX().footmanReady, 0);
+			barracksSpawningListUI.front().entityIcon->isActive = false;
+			barracksSpawningListUI.front().entityLifeBar->isActive = false;
+			barracksSpawningListUI.front().owner = nullptr;
+			break;
 
-			case EntityType_ELVEN_ARCHER:
-				SpawnUnit(barracks->GetPos(), EntityType_ELVEN_ARCHER, unitInfo);
-				App->audio->PlayFx(App->audio->GetFX().archerReady, 0);
-				barracksSpawningListUI.front().entityIcon->isActive = false;
-				barracksSpawningListUI.front().entityLifeBar->isActive = false;
-				barracksSpawningListUI.front().owner = nullptr;
-				break;
+		case EntityType_ELVEN_ARCHER:
+			SpawnUnit(barracks->GetPos(), EntityType_ELVEN_ARCHER, unitInfo);
+			App->audio->PlayFx(App->audio->GetFX().archerReady, 0);
+			barracksSpawningListUI.front().entityIcon->isActive = false;
+			barracksSpawningListUI.front().entityLifeBar->isActive = false;
+			barracksSpawningListUI.front().owner = nullptr;
+			break;
 
 			//case EntityType_MAGE:
 			//	App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_MAGE), unitInfo, this);
@@ -381,41 +380,69 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 			//	App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_PALADIN), unitInfo, this);
 			//	break;
 
-			case EntityType_GRYPHON_RIDER:
-				App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviary->GetPos().x + 30, gryphonAviary->GetPos().y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, this);
-				gryphoSpawningListUI.front().entityIcon->isActive = false;
-				gryphoSpawningListUI.front().entityLifeBar->isActive = false;
-				gryphoSpawningListUI.front().owner = nullptr;
-				break;
+		case EntityType_GRYPHON_RIDER:
+			SpawnUnit(gryphonAviary->GetPos(), EntityType_GRYPHON_RIDER, unitInfo);
+			//App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviary->GetPos().x + 30, gryphonAviary->GetPos().y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, this);
+			gryphoSpawningListUI.front().entityIcon->isActive = false;
+			gryphoSpawningListUI.front().entityLifeBar->isActive = false;
+			gryphoSpawningListUI.front().owner = nullptr;
+			break;
 
-			default:
-				break;
-			}
-			
-			delete queue->front();
-			queue->pop();
+		default:
+			break;
+		}
 
-			/*if (!toSpawnUnitStats.empty())
+		delete queue->front();
+		queue->pop();
+
+		if (entitySelectedStats.entitySelected == barracks) {
+
+			auto barrackIter2 = barracksSpawningListUI.begin();
+			auto barrackIter1 = barrackIter2++;
+			auto lastSpwan = barracksSpawningListUI.end();
+
+			for (;;)
 			{
-				lastElem = toSpawnUnitStats.begin();
+				if ((*barrackIter1).owner == nullptr && (*barrackIter2).owner != nullptr)
+					swap(*barrackIter1, *barrackIter2);
 
-				App->gui->RemoveElem((UIElement**)&lastElem->entityIcon);
-				App->gui->RemoveElem((UIElement**)&lastElem->entityLifeBar);
 
-				toSpawnUnitStats.erase(toSpawnUnitStats.begin());
+				barrackIter1 = barrackIter2++;
+				if ((*barrackIter1).owner == nullptr && (*barrackIter2).owner != nullptr)
+					swap(*barrackIter1, *barrackIter2);
+				if (barrackIter2 == lastSpwan)
+					break;
+				barrackIter1 = barrackIter2++;
+				if (barrackIter2 == lastSpwan)
+					break;
 
-				UpdateSpawnUnitsStats();
-			}*/
+			}
+			UpdateSpawnUnitsStats(&barracksSpawningListUI);
+		}
+
+		else if (entitySelectedStats.entitySelected == gryphonAviary)
+		{
+			for (list<GroupSpawning>::iterator gryphIter = gryphoSpawningListUI.begin(); gryphIter != gryphoSpawningListUI.end(); ++gryphIter)
+			{
+
+
+
+
+
+			}
+			UpdateSpawnUnitsStats(&gryphoSpawningListUI);
 		}
 	}
-	//Update LifeBar
-	for (list<GroupSpawning>::iterator barrackIter = barracksSpawningListUI.begin(), gryphIter = gryphoSpawningListUI.begin(); barrackIter != barracksSpawningListUI.end(); ++barrackIter, ++gryphIter)
+
+	for (list<GroupSpawning>::iterator gryphIter = gryphoSpawningListUI.begin(), barrackIter = barracksSpawningListUI.begin(); gryphIter != gryphoSpawningListUI.end(); ++gryphIter, ++barrackIter)
 	{
-		if((*barrackIter).entityLifeBar->isActive)
-			(*barrackIter).entityLifeBar->SetLife((*barrackIter).owner->toSpawnTimer.ReadSec());
 		if ((*gryphIter).entityLifeBar->isActive)
 			(*gryphIter).entityLifeBar->SetLife((*gryphIter).owner->toSpawnTimer.ReadSec());
+
+		if ((*barrackIter).entityLifeBar->isActive)
+			(*barrackIter).entityLifeBar->SetLife((*barrackIter).owner->toSpawnTimer.ReadSec());
 	}
+
 }
 
 void j1Player::SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo)
@@ -441,15 +468,15 @@ void j1Player::SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity,
 	}
 }
 
-void j1Player::UpdateSpawnUnitsStats()
+void j1Player::UpdateSpawnUnitsStats(list<GroupSpawning>* spawningList)
 {
 	int cont = 0;
-	/*for (list<GroupSpawning>::iterator iterator = toSpawnUnitStats.begin(); iterator != toSpawnUnitStats.end(); ++iterator)
+	for (list<GroupSpawning>::iterator iterator = spawningList->begin(); iterator != spawningList->end(); ++iterator)
 	{
 		(*iterator).entityIcon->SetLocalPos({ 48 * cont + 72, 5 });
 		(*iterator).entityLifeBar->SetLocalPos({ 48 * cont + 72, 40 });
 		cont++;
-	}*/
+	}
 }
 
 // Called before quitting
@@ -852,11 +879,11 @@ void j1Player::CreateUISpawningUnits()
 		image = CreateGroupIcon({ 48 * i + 72, 20 }, { 649,160,39,30 },false);
 		lifeBar = CreateGroupLifeBar({ 48 * i + 72, 40 }, { 241, 362, 46, 7 }, { 243, 358, 42, 3 },false); //To spawn unit lifeBar timer
 		
-		barracksSpawningListUI.push_back({ nullptr,image,lifeBar });
+		barracksSpawningListUI.push_back({ nullptr, image, lifeBar });
 
 		image = CreateGroupIcon({ 48 * i + 72, 20 }, { 649,160,39,30 },false);
 		lifeBar = CreateGroupLifeBar({ 48 * i + 72, 40 }, { 241, 362, 46, 7 }, { 243, 358, 42, 3 },false); //To spawn unit lifeBar timer
-		gryphoSpawningListUI.push_back({ nullptr,image,lifeBar });
+		gryphoSpawningListUI.push_back({ nullptr, image, lifeBar });
 
 	}
 }
@@ -1297,10 +1324,9 @@ void j1Player::CreateHoverInfoMenu() {
 	hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, labelInfo, nullptr, hoverInfo.background);
 	hoverInfo.cost->isActive = false;
 }
-void j1Player::HandleSpawningUnitsUIElem(ToSpawnUnit* toSpawnUnit, list<GroupSpawning> groupList)
+void j1Player::HandleSpawningUnitsUIElem(ToSpawnUnit* toSpawnUnit, list<GroupSpawning>* groupList)
 {
-	//Delete UI elements when not used
-	for (list<GroupSpawning>::iterator iterator = groupList.begin(); iterator != groupList.end(); ++iterator)
+	for (list<GroupSpawning>::iterator iterator = groupList->begin(); iterator != groupList->end(); ++iterator)
 	{
 		if (!(*iterator).entityIcon->isActive) {
 
@@ -1324,9 +1350,9 @@ void j1Player::HandleSpawningUnitsUIElem(ToSpawnUnit* toSpawnUnit, list<GroupSpa
 
 			(*iterator).entityLifeBar->SetLife(toSpawnUnit->toSpawnTimer.ReadSec());
 
-			(*iterator).entityLifeBar->isActive = true;
-			(*iterator).entityIcon->isActive = true;
-			(*iterator).owner = toSpawnUnit;
+			iterator->entityLifeBar->isActive = true;
+			iterator->entityIcon->isActive = true;
+			iterator->owner = toSpawnUnit;
 
 			isUnitSpawning = true;
 			break;
@@ -1531,7 +1557,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
 							App->scene->HideTerenasDialog();
 						}
-						HandleSpawningUnitsUIElem(toSpawnUnit, barracksSpawningListUI);
+						HandleSpawningUnitsUIElem(toSpawnUnit, &barracksSpawningListUI);
 					}
 					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD){
 						App->scene->terenasDialogTimer.Start();
@@ -1564,7 +1590,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
 							App->scene->HideTerenasDialog();
 						}
-						HandleSpawningUnitsUIElem(toSpawnUnit, barracksSpawningListUI);
+						HandleSpawningUnitsUIElem(toSpawnUnit, &barracksSpawningListUI);
 					}
 					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
 						App->scene->terenasDialogTimer.Start();
@@ -1624,7 +1650,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						toSpawnUnitGrypho.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD)
 							App->scene->HideTerenasDialog();
-						HandleSpawningUnitsUIElem(toSpawnUnit, gryphoSpawningListUI);
+						HandleSpawningUnitsUIElem(toSpawnUnit, &gryphoSpawningListUI);
 					}
 					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
 						App->scene->terenasDialogTimer.Start();

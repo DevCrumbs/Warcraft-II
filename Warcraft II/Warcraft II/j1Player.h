@@ -112,7 +112,7 @@ public:
 	void CheckUnitSpawning(queue<ToSpawnUnit*>* queue);
 	void SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
 
-	void UpdateSpawnUnitsStats();
+	void UpdateSpawnUnitsStats(list<GroupSpawning>* spawningList);
 
 	void AddGold(int sumGold);
 	int GetCurrentGold() const;
@@ -155,7 +155,7 @@ public:
 	void CreateSimpleSelectionButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
-	void HandleSpawningUnitsUIElem(ToSpawnUnit* toSpawnUnit, list<GroupSpawning> groupList);
+	void HandleSpawningUnitsUIElem(ToSpawnUnit* toSpawnUnit, list<GroupSpawning>* groupList);
 	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
