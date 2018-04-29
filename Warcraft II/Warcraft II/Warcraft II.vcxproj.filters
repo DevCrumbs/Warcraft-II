@@ -219,9 +219,6 @@
     <ClInclude Include="Turalyon.h">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
     </ClInclude>
-    <ClInclude Include="Khadgar.h">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
-    </ClInclude>
     <ClInclude Include="Barracks.h">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClInclude>
@@ -462,9 +459,6 @@
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
     </ClCompile>
     <ClCompile Include="Turalyon.cpp">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
-    </ClCompile>
-    <ClCompile Include="Khadgar.cpp">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
     </ClCompile>
     <ClCompile Include="Paladin.cpp">

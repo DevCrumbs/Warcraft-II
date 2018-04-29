@@ -53,7 +53,7 @@ GryphonRider::GryphonRider(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	this->gryphonRiderInfo.deathUp = info.deathUp;
 	this->gryphonRiderInfo.deathDown = info.deathDown;
 
-	size = this->unitInfo.size;
+	this->size = this->unitInfo.size;
 	offsetSize = this->unitInfo.offsetSize;
 
 	LoadAnimationsSpeed();

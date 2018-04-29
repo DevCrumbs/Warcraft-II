@@ -82,7 +82,6 @@ enum ENTITY_TYPE
 	EntityType_ELVEN_ARCHER = 407,
 	EntityType_TURALYON = 408,
 	EntityType_ALLERIA = 409,
-	EntityType_KHADGAR = 410,
 
 	EntityType_GRYPHON_RIDER = 415,
 	EntityType_MAGE = 416,
@@ -90,8 +89,6 @@ enum ENTITY_TYPE
 
 	// Player buildings
 	/// Production buildings
-
-
 	EntityType_ELVEN_LUMBER_MILL = 418,
 	EntityType_MAGE_TOWER = 419,
 	EntityType_GRYPHON_AVIARY = 420,
@@ -107,11 +104,9 @@ enum ENTITY_TYPE
 
 	// Enemy buildings
 	///Production buildings
-
 	EntityType_ALTAR_OF_STORMS = 425,
 
 	/// Defense buildings
-
 
 
 	// Player types
@@ -122,7 +117,6 @@ enum ENTITY_TYPE
 
 
 	// Neutral types
-
 	EntityType_BOAR = 426,
 
 	EntityType_MAX = 500

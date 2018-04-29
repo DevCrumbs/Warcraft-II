@@ -1380,6 +1380,21 @@ void Goal_FreePrisoner::Activate()
 			return;
 		}
 	}
+	else if (turalyon != nullptr) {
+
+		if (!turalyon->IsUnitRescuingPrisoner()) {
+
+			turalyon->SetUnitRescuePrisoner(true);
+			owner->SetUnitRescuePrisoner(true);
+		}
+		// Another unit is already interacting with the prisoner
+		else {
+
+			owner->SetPrisoner(nullptr);
+			goalStatus = GoalStatus_Failed;
+			return;
+		}
+	}
 
 	App->audio->PlayFx(14, 0);
 

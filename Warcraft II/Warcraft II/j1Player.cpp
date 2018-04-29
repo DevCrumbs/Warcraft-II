@@ -809,7 +809,7 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 				App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
 
 			}
-      */
+			*/
 		}
 		break;
 	case EntitiesEvent_LEFT_CLICK:

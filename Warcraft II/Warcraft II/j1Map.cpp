@@ -947,13 +947,10 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 					// Dynamic entities
 				case EntityType_FOOTMAN:
 				case EntityType_ELVEN_ARCHER:
-				case EntityType_KHADGAR:
 				case EntityType_ALLERIA:
+				case EntityType_TURALYON:
 					App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
 					break;
-				//case EntityType_TURALYON:
-				//	App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
-				//	break;
 
 				case EntityType_GRUNT:
 				case EntityType_TROLL_AXETHROWER:
