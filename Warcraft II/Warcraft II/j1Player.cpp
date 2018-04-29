@@ -1450,9 +1450,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			if (UIelem == produceGryphonRiderButton) {
 				ShowHoverInfoMenu("Produces gryphon", "Cost: 2500 gold");
 			}
-			break;
+			if (UIelem == destroyBuildingButton) {
+				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy");
+			}
+				break;
 		case UI_EVENT_MOUSE_LEAVE:
-			if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton || UIelem == produceMageButton || UIelem == produceGryphonRiderButton) {
+			if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton 
+				|| UIelem == produceMageButton || UIelem == produceGryphonRiderButton || UIelem == destroyBuildingButton) {
 				HideHoverInfoMenu();
 			}
 			break;
@@ -1475,6 +1479,16 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+			}
+
+			//For destroying a building
+			if (UIelem == destroyBuildingButton) { 
+				StaticEntity* toDestroyEnt = (StaticEntity*)entitySelectedStats.entitySelected;
+				HideEntitySelectedInfo();
+				HideHoverInfoMenu();
+				toDestroyEnt->isRemove = true;
+				App->audio->PlayFx(App->audio->GetFX().destroyBuild);
+				entitySelectedStats.entitySelected = nullptr;
 			}
 
 			/*if (hoverCheck == HoverCheck_Repair) {
