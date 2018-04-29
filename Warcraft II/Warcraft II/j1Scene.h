@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 using namespace std;
+typedef unsigned int FX;
 
 #define RECTANGLE_MIN_AREA 5
 
@@ -145,8 +146,8 @@ public:
 
 	void ShowSelectedUnits(list<DynamicEntity*> units);
 	void HideUnselectedUnits();
-	void ChooseUnitSelectedSound(list<DynamicEntity*> units);
-	void ChooseUnitCommandSound(list<DynamicEntity*> units);
+	void PlayUnitSound(list<DynamicEntity*> units, bool isSelect);
+	FX ChooseRandomUnitSound(ENTITY_TYPE unitType, bool isSelect);
 	void ChangeBuildingButtState(MenuBuildingButton* elem);
 	void ChangeBuildingMenuState(BuildingMenu* elem);
 	void UpdateLabelsMenu();

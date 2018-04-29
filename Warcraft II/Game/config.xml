@@ -52,8 +52,16 @@
         <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav"/>
         
         <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" prisonerRescue="Units/PrisonerRescue.wav"/>
-        <archerPaths goToPlace ="Units/Archer/GoToPlace1.wav" ready="Units/Archer/Ready.wav" selected="Units/Archer/Selected1.wav"/>
-        <footmanPaths goToPlace ="Units/Footman/GoToPlace1.wav" ready="Units/Footman/Ready.wav" selected="Units/Footman/Selected1.wav"/>
+        
+        <archerPaths goToPlace1 ="Units/Archer/GoToPlace1.wav" goToPlace2 ="Units/Archer/GoToPlace2.wav" goToPlace3 ="Units/Archer/GoToPlace3.wav"
+                     goToPlace4 ="Units/Archer/GoToPlace4.wav" ready="Units/Archer/Ready.wav" selected1 ="Units/Archer/Selected1.wav"
+                     selected2 ="Units/Archer/Selected2.wav" selected3 ="Units/Archer/Selected3.wav" selected4 ="Units/Archer/Selected4.wav"/>
+       
+        <footmanPaths goToPlace1 ="Units/Footman/GoToPlace1.wav" goToPlace2 ="Units/Footman/GoToPlace2.wav" goToPlace3 ="Units/Footman/GoToPlace3.wav" 
+                      goToPlace4 ="Units/Footman/GoToPlace4.wav" ready="Units/Footman/Ready.wav" selected1 ="Units/Footman/Selected1.wav"
+                      selected2 ="Units/Footman/Selected2.wav" selected3 ="Units/Footman/Selected3.wav" selected4 ="Units/Footman/Selected4.wav"
+                      selected5 ="Units/Footman/Selected5.wav"/>
+        
         <griffonPaths goToPlace ="Units/Griffon/GoToPlace.wav" selected ="Units/Griffon/Selected.wav" death ="Units/Griffon/Death.wav"/>
         <crittersPaths boarDead ="Units/Critters/BoarDead.wav" sheepDead="Units/Critters/SheepDead.wav"/>
         <attackPaths axeThrow="Attack/AxeThrow.wav" bowFire="Attack/BowFire.wav" sword="Attack/Sword2.wav"/>
