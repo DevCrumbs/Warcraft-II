@@ -32,16 +32,36 @@ struct GameSounds {
 	FX prisionerRescue = 0;
 	FX boarDeath = 0;
 	FX sheepDeath = 0;
-	FX archerCommand = 0;
+
+	//Archer
+	FX archerCommand1 = 0;
+	FX archerCommand2 = 0;
+	FX archerCommand3 = 0;
+	FX archerCommand4 = 0;
 	FX archerReady = 0;
-	FX archerSelected = 0;
-	FX footmanCommand = 0;
+	FX archerSelected1 = 0;
+	FX archerSelected2 = 0;
+	FX archerSelected3 = 0;
+	FX archerSelected4 = 0;
+
+	//Footman
+	FX footmanCommand1 = 0;
+	FX footmanCommand2 = 0;
+	FX footmanCommand3 = 0;
+	FX footmanCommand4 = 0;
 	FX footmanReady = 0;
-	FX footmanSelected = 0;
+	FX footmanSelected1 = 0;
+	FX footmanSelected2 = 0;
+	FX footmanSelected3 = 0;
+	FX footmanSelected4 = 0;
+	FX footmanSelected5 = 0;
+
+	//Gryphon
 	FX griffonCommand = 0;
 	FX griffonReady = 0;
 	FX griffonSelected = 0;
 	FX griffonDeath = 0;
+
 	FX axeThrow = 0;
 	FX arrowThrow = 0;
 	FX swordClash = 0;
@@ -132,16 +152,35 @@ private:
 	string crittersBoarDead;
 	string crittersSheepDead;
 
-	string archerGoToPlaceSound;
+	//Archer
+	string archerGoToPlaceSound1;
+	string archerGoToPlaceSound2;
+	string archerGoToPlaceSound3;
+	string archerGoToPlaceSound4;
 	string archerReadySound;
-	string archerSelectedSound;
-	string footmanGoToPlaceSound;
+	string archerSelectedSound1;
+	string archerSelectedSound2;
+	string archerSelectedSound3;
+	string archerSelectedSound4;
+
+	//Footman
+	string footmanGoToPlaceSound1;
+	string footmanGoToPlaceSound2;
+	string footmanGoToPlaceSound3;
+	string footmanGoToPlaceSound4;
 	string footmanReadySound;
-	string footmanSelectedSound;
-	string griffonGoToPlaceSound; //
-	string griffonReadySound; //
-	string griffonSelectedSound; // 
-	string griffonDeathSound; //
+	string footmanSelectedSound1;
+	string footmanSelectedSound2;
+	string footmanSelectedSound3;
+	string footmanSelectedSound4;
+	string footmanSelectedSound5;
+
+	//Gryphon
+	string griffonGoToPlaceSound; 
+	string griffonReadySound; 
+	string griffonSelectedSound;  
+	string griffonDeathSound; 
+	
 	string axeThrowSound;
 	string bowFireSound;
 	string swordSound;

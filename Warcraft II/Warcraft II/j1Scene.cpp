@@ -452,8 +452,9 @@ bool j1Scene::Update(float dt)
 				if (!CompareSelectedUnitsLists(units)) {
 					App->player->HideEntitySelectedInfo();
 					ShowSelectedUnits(units);
-					ChooseUnitSelectedSound(units); //Unit selected sound
+					PlayUnitSound(units, true); //Unit selected sound
 				}
+				
 			}
 
 			UnitGroup* group = App->movement->GetGroupByUnits(units);
@@ -581,8 +582,7 @@ bool j1Scene::Update(float dt)
 
 					if (group->GetShapedGoalSize() <= 1) {
 
-						ChooseUnitCommandSound(units); //Unit command sound
-
+					
 						group->ClearShapedGoal();
 
 						if (isGryphonRider && !isGryphonRiderRunestone) {
@@ -599,6 +599,8 @@ bool j1Scene::Update(float dt)
 						isGoal = true;
 
 					if (isGoal) {
+						
+						PlayUnitSound(units, false); //Unit command sound
 
 						uint isPatrol = 0;
 
@@ -1106,8 +1108,10 @@ void j1Scene::HideUnselectedUnits()
 	commandPatrolButton->isActive = false;
 	commandStopButton->isActive = false;
 }
-//TODO Valdivia 
-void j1Scene::ChooseUnitSelectedSound(list<DynamicEntity*> units)
+
+//This function executes a unit sound depending on if it is a command sound or selection, and on which entity and 
+//numer of entities are on the selection, depending on the type
+void j1Scene::PlayUnitSound(list<DynamicEntity*> units, bool isSelect)
 {
 	uint footmanNum = 0, archerNum = 0, gryphonNum = 0;
 
@@ -1130,88 +1134,124 @@ void j1Scene::ChooseUnitSelectedSound(list<DynamicEntity*> units)
 		iterator++;
 	}
 
-	uint footmanSelect = App->audio->GetFX().footmanSelected;
-	uint archerSelect = App->audio->GetFX().archerSelected;
-	uint gryphonSelect = App->audio->GetFX().griffonSelected; 
+	//Chooses a random sound to make for the unit
+	FX footmanSound = ChooseRandomUnitSound(EntityType_FOOTMAN, isSelect);
+	FX archerSound = ChooseRandomUnitSound(EntityType_ELVEN_ARCHER, isSelect);
+	FX gryphonSound = ChooseRandomUnitSound(EntityType_GRYPHON_RIDER, isSelect);
 
-	if (footmanNum > archerNum + gryphonNum)
-		App->audio->PlayFx(footmanSelect, 0);
+	//Selects which sound to play depending on the number of entities that compose the unit selection
+	if (footmanNum > archerNum + gryphonNum) {
+		App->audio->PlayFx(footmanSound, 0);
+	}
 
-	else if (archerNum > footmanNum + gryphonNum)
-		App->audio->PlayFx(archerSelect, 0);
+	else if (archerNum > footmanNum + gryphonNum) {
+		App->audio->PlayFx(archerSound, 0);
+	}
 
 	else if(gryphonNum > archerNum + footmanNum)
-		App->audio->PlayFx(gryphonSelect, 0);
+		App->audio->PlayFx(gryphonSound, 0);
 
 	else if (footmanNum == archerNum && footmanNum != gryphonNum) {
 		uint rng = rand() % 2 + 1;
 
-		if(rng == 1)
-			App->audio->PlayFx(footmanSelect, 0);
+		if (rng == 1) 
+			App->audio->PlayFx(footmanSound, 0);
+
 		else if (rng == 2)
-			App->audio->PlayFx(archerSelect, 0);
+			App->audio->PlayFx(archerSound, 0);
 	}
 	else if (footmanNum == gryphonNum && footmanNum != archerNum) {
 		uint rng = rand() % 2 + 1;
 
 		if (rng == 1)
-			App->audio->PlayFx(footmanSelect, 0);
+			App->audio->PlayFx(footmanSound, 0);
 		else if (rng == 2)
-			App->audio->PlayFx(gryphonSelect, 0);  
+			App->audio->PlayFx(gryphonSound, 0);
 	}
 	else if (archerNum == gryphonNum && archerNum != footmanNum) {
 		uint rng = rand() % 2 + 1;
 
 		if (rng == 1)
-			App->audio->PlayFx(archerSelect, 0);
+			App->audio->PlayFx(archerSound, 0);
 		else if (rng == 2)
-			App->audio->PlayFx(gryphonSelect, 0);
+			App->audio->PlayFx(gryphonSound, 0);
 	}
 	else if (footmanNum == archerNum && footmanNum == gryphonNum) {
 		uint rng = rand() % 2 + 1;
 
 		if (rng == 1)
-			App->audio->PlayFx(footmanSelect, 0);
+			App->audio->PlayFx(footmanSound, 0);
 		else if (rng == 2)
-			App->audio->PlayFx(archerSelect, 0);
+			App->audio->PlayFx(archerSound, 0);
 		else if (rng == 3)
-			App->audio->PlayFx(gryphonSelect, 0);
+			App->audio->PlayFx(gryphonSound, 0);
 	}
 	else
-		App->audio->PlayFx(App->audio->GetFX().footmanSelected, 0); //default
+		App->audio->PlayFx(footmanSound, 0); //default
 }
-//TODO Valdivia
-void j1Scene::ChooseUnitCommandSound(list<DynamicEntity*> units)
+
+//This function chooses a random sound for the unit to make when selected or being commanded somwhere
+FX j1Scene::ChooseRandomUnitSound(ENTITY_TYPE unitType, bool isSelect)
 {
-	bool isFootman = false, isArcher = false, isGryphon = false;
+	FX unitSound = 0;
+	list<FX> posibleFX;
+	uint rng = rand() % 4 + 1; //Random number for the sound choosing
 
-	list<DynamicEntity*>::iterator iterator = units.begin();
-
-	while (iterator != units.end()) {
-		switch ((*iterator)->dynamicEntityType) {
-		case EntityType_FOOTMAN:
-			isFootman = true;
-			break;
-		case EntityType_ELVEN_ARCHER:
-			isArcher = true;
-			break;
-		case EntityType_GRYPHON_RIDER:
-			isGryphon = true;
-			break;
-		default:
-			break;
+	//Looks for which sound it has to choose depending on the entity type and if it is a selection or a command
+	switch (unitType) {
+	case EntityType_FOOTMAN:
+		if (isSelect) {
+			rng = rand() % 5 + 1; //These are five sounds to choose instead of four
+			posibleFX.push_back(App->audio->GetFX().footmanSelected1);
+			posibleFX.push_back(App->audio->GetFX().footmanSelected2);
+			posibleFX.push_back(App->audio->GetFX().footmanSelected3);
+			posibleFX.push_back(App->audio->GetFX().footmanSelected4);
+			posibleFX.push_back(App->audio->GetFX().footmanSelected5);
 		}
-		iterator++;
+		else if (!isSelect) {
+			posibleFX.push_back(App->audio->GetFX().footmanCommand1);
+			posibleFX.push_back(App->audio->GetFX().footmanCommand2);
+			posibleFX.push_back(App->audio->GetFX().footmanCommand3);
+			posibleFX.push_back(App->audio->GetFX().footmanCommand4);
+		}
+		break;
+	case EntityType_ELVEN_ARCHER:
+		if (isSelect) {
+			posibleFX.push_back(App->audio->GetFX().archerSelected1);
+			posibleFX.push_back(App->audio->GetFX().archerSelected2);
+			posibleFX.push_back(App->audio->GetFX().archerSelected3);
+			posibleFX.push_back(App->audio->GetFX().archerSelected4);
+		}
+		else if (!isSelect) {
+			posibleFX.push_back(App->audio->GetFX().archerCommand1);
+			posibleFX.push_back(App->audio->GetFX().archerCommand2);
+			posibleFX.push_back(App->audio->GetFX().archerCommand3);
+			posibleFX.push_back(App->audio->GetFX().archerCommand4);
+		}
+		break;
+	case EntityType_GRYPHON_RIDER:
+		if (isSelect) {
+			return App->audio->GetFX().griffonSelected;
+		}
+		else if (!isSelect) {
+			return App->audio->GetFX().griffonCommand;
+		}
+		break;
+	default:
+		break;
 	}
-	uint footmanCommand = App->audio->GetFX().footmanCommand;
-	uint archerCommand = App->audio->GetFX().archerCommand;
-	uint gryphonCommand = App->audio->GetFX().griffonCommand;
-	if (isFootman)
-		App->audio->PlayFx(footmanCommand, 0);
-	if (isArcher)
-		App->audio->PlayFx(archerCommand, 0);
-	if(isGryphon)
-		App->audio->PlayFx(gryphonCommand, 0);
+	
+	uint auxNum = 1;
+	list<FX>::const_iterator it = posibleFX.begin();
+	//Chooses the random sound depending on the random number generated (rng)
+	while (it != posibleFX.end()) {
+		if (rng == auxNum)
+			unitSound = (*it);
+		auxNum++;
+		it++;
+	}
+
+	return unitSound;
 }
 	
 void j1Scene::ChangeBuildingButtState(MenuBuildingButton* elem)
