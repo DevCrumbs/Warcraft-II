@@ -88,8 +88,7 @@ bool j1Player::Update(float dt)
 		CheckIfPlaceBuilding();
 
 	//Check if the units need to spawn
-	if (!toSpawnUnitBarracks.empty())
-		CheckUnitSpawning(&toSpawnUnitBarracks);
+	CheckUnitSpawning(&toSpawnUnitBarracks);
 
 	if (!toSpawnUnitGrypho.empty())
 		CheckUnitSpawning(&toSpawnUnitGrypho);
@@ -350,96 +349,78 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 
 	list<GroupSpawning>::iterator lastElem;
 
+	if (!queue->empty())
+	{
+		if (queue->front()->toSpawnTimer.Read() > (spawningTime * 1000)) {
+			ENTITY_TYPE toSpawnEntity = queue->front()->entityType;
 
-	if (queue->front()->toSpawnTimer.Read() > (spawningTime * 1000)) {
-		ENTITY_TYPE toSpawnEntity = queue->front()->entityType;
+			switch (toSpawnEntity) {
 
-		switch (toSpawnEntity) {
+			case EntityType_FOOTMAN:
+				SpawnUnit(barracks->GetPos(), EntityType_FOOTMAN, unitInfo);
+				App->audio->PlayFx(App->audio->GetFX().footmanReady, 0);
+				barracksSpawningListUI.front().entityIcon->isActive = false;
+				barracksSpawningListUI.front().entityLifeBar->isActive = false;
+				barracksSpawningListUI.front().owner = nullptr;
+				break;
 
-		case EntityType_FOOTMAN:
-			SpawnUnit(barracks->GetPos(), EntityType_FOOTMAN, unitInfo);
-			App->audio->PlayFx(App->audio->GetFX().footmanReady, 0);
-			barracksSpawningListUI.front().entityIcon->isActive = false;
-			barracksSpawningListUI.front().entityLifeBar->isActive = false;
-			barracksSpawningListUI.front().owner = nullptr;
-			break;
+			case EntityType_ELVEN_ARCHER:
+				SpawnUnit(barracks->GetPos(), EntityType_ELVEN_ARCHER, unitInfo);
+				App->audio->PlayFx(App->audio->GetFX().archerReady, 0);
+				barracksSpawningListUI.front().entityIcon->isActive = false;
+				barracksSpawningListUI.front().entityLifeBar->isActive = false;
+				barracksSpawningListUI.front().owner = nullptr;
+				break;
 
-		case EntityType_ELVEN_ARCHER:
-			SpawnUnit(barracks->GetPos(), EntityType_ELVEN_ARCHER, unitInfo);
-			App->audio->PlayFx(App->audio->GetFX().archerReady, 0);
-			barracksSpawningListUI.front().entityIcon->isActive = false;
-			barracksSpawningListUI.front().entityLifeBar->isActive = false;
-			barracksSpawningListUI.front().owner = nullptr;
-			break;
+				//case EntityType_MAGE:
+				//	App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_MAGE), unitInfo, this);
+				//	break;
 
-			//case EntityType_MAGE:
-			//	App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_MAGE), unitInfo, this);
-			//	break;
+				//case EntityType_PALADIN:
+				//	App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_PALADIN), unitInfo, this);
+				//	break;
 
-			//case EntityType_PALADIN:
-			//	App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_PALADIN), unitInfo, this);
-			//	break;
+			case EntityType_GRYPHON_RIDER:
+				SpawnUnit(gryphonAviary->GetPos(), EntityType_GRYPHON_RIDER, unitInfo);
+				//App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviary->GetPos().x + 30, gryphonAviary->GetPos().y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, this);
+				gryphoSpawningListUI.front().entityIcon->isActive = false;
+				gryphoSpawningListUI.front().entityLifeBar->isActive = false;
+				gryphoSpawningListUI.front().owner = nullptr;
+				break;
 
-		case EntityType_GRYPHON_RIDER:
-			SpawnUnit(gryphonAviary->GetPos(), EntityType_GRYPHON_RIDER, unitInfo);
-			//App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviary->GetPos().x + 30, gryphonAviary->GetPos().y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, this);
-			gryphoSpawningListUI.front().entityIcon->isActive = false;
-			gryphoSpawningListUI.front().entityLifeBar->isActive = false;
-			gryphoSpawningListUI.front().owner = nullptr;
-			break;
-
-		default:
-			break;
-		}
-
-		delete queue->front();
-		queue->pop();
-
-		if (entitySelectedStats.entitySelected == barracks) {
-
-			auto barrackIter2 = barracksSpawningListUI.begin();
-			auto barrackIter1 = barrackIter2++;
-			auto lastSpwan = barracksSpawningListUI.end();
-
-			for (;;)
-			{
-				if ((*barrackIter1).owner == nullptr && (*barrackIter2).owner != nullptr)
-					swap(*barrackIter1, *barrackIter2);
-
-
-				barrackIter1 = barrackIter2++;
-				if ((*barrackIter1).owner == nullptr && (*barrackIter2).owner != nullptr)
-					swap(*barrackIter1, *barrackIter2);
-				if (barrackIter2 == lastSpwan)
-					break;
-				barrackIter1 = barrackIter2++;
-				if (barrackIter2 == lastSpwan)
-					break;
-
+			default:
+				break;
 			}
-			UpdateSpawnUnitsStats(&barracksSpawningListUI);
-		}
 
-		else if (entitySelectedStats.entitySelected == gryphonAviary)
-		{
-			for (list<GroupSpawning>::iterator gryphIter = gryphoSpawningListUI.begin(); gryphIter != gryphoSpawningListUI.end(); ++gryphIter)
-			{
+			delete queue->front();
+			queue->front() = nullptr;
+			queue->pop();
 
+			if (entitySelectedStats.entitySelected == barracks) {
 
-
-
-
+				UpdateSpawnUnitsStats(&barracksSpawningListUI);
 			}
-			UpdateSpawnUnitsStats(&gryphoSpawningListUI);
+
+			else if (entitySelectedStats.entitySelected == gryphonAviary)
+			{
+				for (list<GroupSpawning>::iterator gryphIter = gryphoSpawningListUI.begin(); gryphIter != gryphoSpawningListUI.end(); ++gryphIter)
+				{
+
+
+
+
+
+				}
+				UpdateSpawnUnitsStats(&gryphoSpawningListUI);
+			}
 		}
 	}
-
 	for (list<GroupSpawning>::iterator gryphIter = gryphoSpawningListUI.begin(), barrackIter = barracksSpawningListUI.begin(); gryphIter != gryphoSpawningListUI.end(); ++gryphIter, ++barrackIter)
 	{
-		if ((*gryphIter).entityLifeBar->isActive)
+		if ((*gryphIter).entityLifeBar->isActive && *(*gryphIter).owner != nullptr)
 			(*gryphIter).entityLifeBar->SetLife((*(*gryphIter).owner)->toSpawnTimer.ReadSec());
 
-		if ((*barrackIter).entityLifeBar->isActive)
+		if ((*barrackIter).entityLifeBar->isActive && *(*barrackIter).owner != nullptr)
 			(*barrackIter).entityLifeBar->SetLife((*(*barrackIter).owner)->toSpawnTimer.ReadSec());
 	}
 
@@ -470,13 +451,39 @@ void j1Player::SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity,
 
 void j1Player::UpdateSpawnUnitsStats(list<GroupSpawning>* spawningList)
 {
+	auto barrackIter2 = barracksSpawningListUI.begin();
+	auto barrackIter1 = barrackIter2++;
+	auto lastSpwan = barracksSpawningListUI.end();
+
+	for (;;)
+	{
+		if ((*barrackIter1).owner == nullptr && (*barrackIter2).owner != nullptr)
+			swap(*barrackIter1, *barrackIter2);
+
+
+		barrackIter1 = barrackIter2++;
+		if ((*barrackIter1).owner == nullptr && (*barrackIter2).owner != nullptr)
+			swap(*barrackIter1, *barrackIter2);
+		if (barrackIter2 == lastSpwan)
+			break;
+		barrackIter1 = barrackIter2++;
+		if (barrackIter2 == lastSpwan)
+			break;
+
+	}
+
 	int cont = 0;
 	for (list<GroupSpawning>::iterator iterator = spawningList->begin(); iterator != spawningList->end(); ++iterator)
 	{
 		(*iterator).entityIcon->SetLocalPos({ 48 * cont + 72, 5 });
 		(*iterator).entityLifeBar->SetLocalPos({ 48 * cont + 72, 40 });
 		cont++;
+		if ((*iterator).owner != nullptr)
+			if (*(*iterator).owner == nullptr)
+				(*iterator).IsActive(false);
+
 	}
+	LOG("Updating units stats");
 }
 
 // Called before quitting
@@ -1089,10 +1096,11 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 		for (list<GroupSpawning>::iterator iterator = barracksSpawningListUI.begin(); iterator != barracksSpawningListUI.end(); ++iterator)
 		{
 			if ((*iterator).owner != nullptr)
-			{
-				(*iterator).entityIcon->isActive = true;
-				(*iterator).entityLifeBar->isActive = true;
-			}
+				if (*(*iterator).owner != nullptr)
+				{
+					(*iterator).entityIcon->isActive = true;
+					(*iterator).entityLifeBar->isActive = true;
+				}
 		}
 		UpdateSpawnUnitsStats(&barracksSpawningListUI);
 		break;
@@ -1202,14 +1210,12 @@ void j1Player::DeleteEntitiesMenu()
 		App->gui->RemoveElem((UIElement**)&(*barrackIter).entityIcon);
 		App->gui->RemoveElem((UIElement**)&(*barrackIter).entityLifeBar);
 
-		delete (*barrackIter).owner;
-		(*barrackIter).owner = nullptr;
+
 		//Gryphon Spawning
 		App->gui->RemoveElem((UIElement**)&(*gryphIter).entityIcon);
 		App->gui->RemoveElem((UIElement**)&(*gryphIter).entityLifeBar);
 
-		delete (*gryphIter).owner;
-		(*gryphIter).owner = nullptr;
+
 	}
 	barracksSpawningListUI.clear();
 	gryphoSpawningListUI.clear();
@@ -1702,4 +1708,14 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		default:
 			break;
 		}
+}
+
+
+// GroupSpawning
+//--------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------
+void GroupSpawning::IsActive(bool isActive)
+{
+	entityIcon->isActive = isActive;
+	entityLifeBar->isActive = isActive;
 }

@@ -63,6 +63,8 @@ struct GroupSpawning {
 
 	UIImage* entityIcon = nullptr;
 	UILifeBar* entityLifeBar = nullptr;
+
+	void IsActive(bool isActive);
 };
 
 struct EntitySelectedStats
