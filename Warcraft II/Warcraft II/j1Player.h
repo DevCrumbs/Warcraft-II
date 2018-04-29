@@ -163,6 +163,8 @@ public:
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 
+	void DestroyBuilding();
+
 	void RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos);
 
 public:

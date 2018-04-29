@@ -1139,9 +1139,13 @@ void j1Player::HideEntitySelectedInfo()
 	else if (entitySelectedStats.entitySelected == gryphonAviary && gryphonAviary != nullptr) {
 		produceGryphonRiderButton->isActive = false;
 	}
+	else if(produceGryphonRiderButton->isActive)
+		produceGryphonRiderButton->isActive = false;
 
 	if (destroyBuildingButton->isActive)
 		destroyBuildingButton->isActive = false;
+	
+
 		/*
 	else if (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
 		StaticEntity* ent = (StaticEntity*)entitySelectedStats.entitySelected;
@@ -1403,6 +1407,68 @@ void j1Player::CreateMageTowerButtons()
 	CreateSimpleButton({ 342,244,50,41 }, { 597, 244, 50, 41 }, { 852,244,50,41 }, { 217, 2 }, produceMageButton);
 }
 
+void j1Player::DestroyBuilding()
+{
+	StaticEntity* toDestroyEnt = (StaticEntity*)entitySelectedStats.entitySelected;
+
+	//Remove entity from the j1Player entitylist
+	switch (toDestroyEnt->staticEntityType) {
+	case EntityType_CHICKEN_FARM:
+	{
+		list<StaticEntity*>::const_iterator farm = chickenFarm.begin();
+		while (farm != chickenFarm.end()) {
+			if ((*farm) == toDestroyEnt) {
+				chickenFarm.remove(*farm);
+			}
+			farm++;
+		}
+	}
+	break;
+	case EntityType_SCOUT_TOWER:
+	{
+		list<StaticEntity*>::const_iterator tower = scoutTower.begin();
+		while (tower != scoutTower.end()) {
+			if ((*tower) == toDestroyEnt) {
+				scoutTower.remove(*tower);
+			}
+			tower++;
+		}
+	}
+	break;
+	case EntityType_PLAYER_GUARD_TOWER:
+	{
+		list<StaticEntity*>::const_iterator tower = guardTower.begin();
+		while (tower != guardTower.end()) {
+			if ((*tower) == toDestroyEnt) {
+				guardTower.remove(*tower);
+			}
+			tower++;
+		}
+	}
+	break;
+	case EntityType_PLAYER_CANNON_TOWER:
+	{
+		list<StaticEntity*>::const_iterator tower = cannonTower.begin();
+		while (tower != cannonTower.end()) {
+			if ((*tower) == toDestroyEnt) {
+				cannonTower.remove(*tower);
+			}
+			tower++;
+		}
+	}
+	break;
+	case EntityType_GRYPHON_AVIARY:
+		gryphonAviary = nullptr;
+		break;
+	default:
+		break;
+	}
+
+	toDestroyEnt->isRemove = true; //Remove entity
+
+	App->audio->PlayFx(App->audio->GetFX().destroyBuild);
+}
+
 //This button have ACTIVE false, you wont see it
 void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) {
 
@@ -1483,11 +1549,9 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			//For destroying a building
 			if (UIelem == destroyBuildingButton) { 
-				StaticEntity* toDestroyEnt = (StaticEntity*)entitySelectedStats.entitySelected;
+				DestroyBuilding();
 				HideEntitySelectedInfo();
 				HideHoverInfoMenu();
-				toDestroyEnt->isRemove = true;
-				App->audio->PlayFx(App->audio->GetFX().destroyBuild);
 				entitySelectedStats.entitySelected = nullptr;
 			}
 
