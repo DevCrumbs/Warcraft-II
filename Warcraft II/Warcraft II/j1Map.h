@@ -198,6 +198,9 @@ public:
 	// This function distributes a list of entities arranged by level to a list of entities arranged by level and room
 	bool CreateEntityGroup(list<list<Entity*>> entityGroupLevel);
 
+	bool IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal);
+	bool IsGoalOnRoom(iPoint origin, iPoint goal);
+
 	// Unload map
 	bool UnLoad();
 

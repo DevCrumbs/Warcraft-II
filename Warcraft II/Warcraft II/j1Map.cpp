@@ -1059,6 +1059,38 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 	}
 	return true;
 }
+
+bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
+{
+	bool ret = false;
+	SDL_Rect _void{ 0,0,0,0 };
+
+	list<SDL_Rect>::iterator iterator;
+	for (iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
+	{
+		if (SDL_IntersectRect(&origin, &*iterator, &_void))
+		{
+			ret = true;
+			break;
+		}
+	}
+
+	if (ret)
+	{
+		ret = SDL_IntersectRect(&goal, &*iterator, &_void);
+	}
+
+	return ret;
+}
+
+bool j1Map::IsGoalOnRoom(iPoint origin, iPoint goal)
+{
+	SDL_Rect originRect{ origin.x, origin.y, defaultTileSize, defaultTileSize };
+	SDL_Rect goalRect{ goal.x, goal.y, defaultTileSize, defaultTileSize };
+
+	return IsGoalOnRoom(originRect, goalRect);
+}
+
 ///*sadface*
 //#include <math.h>
 //#include <time.h>
