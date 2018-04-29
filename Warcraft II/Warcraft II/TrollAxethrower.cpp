@@ -127,8 +127,8 @@ void TrollAxethrower::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
-			//if (lifeBar != nullptr)
-			//	App->gui->RemoveElem((UIElement**)lifeBar);
+			if (lifeBar != nullptr)
+				lifeBar->isActive = false;
 
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;

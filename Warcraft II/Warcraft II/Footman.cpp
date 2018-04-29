@@ -125,6 +125,9 @@ void Footman::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
+			if (lifeBar != nullptr)
+				lifeBar->isActive = false;
+
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
