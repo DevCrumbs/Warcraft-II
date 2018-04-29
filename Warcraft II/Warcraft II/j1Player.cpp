@@ -1152,7 +1152,7 @@ void j1Player::HideEntitySelectedInfo()
 		for (list<GroupSpawning>::iterator iterator = barracksSpawningListUI.begin(); iterator != barracksSpawningListUI.end(); ++iterator)
 		{
 			(*iterator).entityIcon->isActive = false;
-			(*iterator).entityLifeBar = false;
+			(*iterator).entityLifeBar->isActive = false;
 			(*iterator).owner = nullptr;
 		}
 	}
