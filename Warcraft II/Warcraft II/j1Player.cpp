@@ -1112,8 +1112,9 @@ void j1Player::HideEntitySelectedInfo()
 
 	else if (entitySelectedStats.entitySelected == townHall)
 		upgradeTownHallButton->isActive = false;
-	//else if (entitySelectedStats.entitySelected == gryphonAviary)
-	//	produceGryphonRiderButton->isActive = false;
+
+	if (entitySelectedStats.entitySelected == gryphonAviary)
+		produceGryphonRiderButton->isActive = false;
 
 	//Hide Dynamic stats
 	else if (App->scene->groupElementsList.front().owner != nullptr || (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY))
