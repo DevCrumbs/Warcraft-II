@@ -279,3 +279,18 @@ bool j1Render::IsInScreen(const SDL_Rect& item) const
 	return (-camera.x < item.x + item.w && -camera.x + camera.w > item.x && -camera.y < item.y + item.h && camera.h + -camera.y > item.y);
 }
 
+bool j1Render::IsInScreen(const iPoint& item) const
+{
+	SDL_Rect itemRect{ item.x,item.y,1,1 };
+
+	return IsInScreen(itemRect);
+}
+
+bool j1Render::IsInScreen(const fPoint& item) const
+{
+	SDL_Rect itemRect{ item.x,item.y,1,1 };
+
+	return IsInScreen(itemRect);
+}
+
+

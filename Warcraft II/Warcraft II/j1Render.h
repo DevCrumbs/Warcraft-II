@@ -51,6 +51,8 @@ public:
 	void SetBackgroundColor(SDL_Color color);
 
 	bool IsInScreen(const SDL_Rect& item) const;
+	bool IsInScreen(const iPoint & item) const;
+	bool IsInScreen(const fPoint & item) const;
 
 public:
 

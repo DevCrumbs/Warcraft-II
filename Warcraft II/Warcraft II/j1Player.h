@@ -130,6 +130,9 @@ public:
 	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
+	bool CreateGroupSelection(ENTITY_TYPE type, list<Entity*>* entitiesSelected = nullptr);
+	list<Entity*> SelectEntityType(ENTITY_TYPE type, list<Entity*>* entitiesSelected = nullptr);
+
 	void CreateEntitiesStatsUI();
 	void CreateGroupSelectionButtons();
 	void ShowEntitySelectedInfo(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
@@ -213,6 +216,8 @@ public:
 	bool isMouseOnMine = false;
 
 private:
+
+	uint maxUnitsSelected = 8;
 
 	double timer = 0.0f; // game time
 	HoverCheck hoverCheck = HoverCheck_None;

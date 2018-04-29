@@ -1592,14 +1592,17 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			if (UIelem == groupSelectionButtons.selectFootmans) {
 				//TODO SANDRA (seleccion de ese tipo de tropas en camara)
 				// Recuerda la condición "si no hay ninguna unidad de ese tipo en camara -> button error sound"
+				CreateGroupSelection(EntityType_FOOTMAN);
 			}
 			if (UIelem == groupSelectionButtons.selectElvenArchers) {
 				//TODO SANDRA (seleccion de ese tipo de tropas en camara)
 				// Recuerda la condición "si no hay ninguna unidad de ese tipo en camara -> button error sound"
+				CreateGroupSelection(EntityType_ELVEN_ARCHER);
 			}
 			if (UIelem == groupSelectionButtons.selectGryphonRiders) {
 				//TODO SANDRA (seleccion de ese tipo de tropas en camara)
 				// Recuerda la condición "si no hay ninguna unidad de ese tipo en camara -> button error sound"
+				CreateGroupSelection(EntityType_GRYPHON_RIDER);
 			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_UP:
@@ -1612,3 +1615,49 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			break;
 		}
 }
+
+bool j1Player::CreateGroupSelection(ENTITY_TYPE type, list<Entity*>* entitiesSelected)
+{
+	bool ret = true;
+
+
+	list<Entity*> newEntitiesSelected = SelectEntityType(type, entitiesSelected);
+
+	if (newEntitiesSelected.empty())
+	{
+		ret = false;
+		App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
+	}
+
+	return ret;
+}
+
+list<Entity*> j1Player::SelectEntityType(ENTITY_TYPE type, list<Entity*>* entitiesSelected)
+{
+	// Esto te devuelve una lista de unidades del tipo type que están dentro de cámara, esta lista serán las entidades seleccionadas
+	list<Entity*> newEntitiesSelected;
+
+	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
+	{
+		if ((*iterator)->dynamicEntityType == type)
+			if (App->render->IsInScreen((*iterator)->GetPos()))
+			{
+				if (newEntitiesSelected.size() < maxUnitsSelected)
+					newEntitiesSelected.push_back(*iterator);
+
+				if (entitiesSelected != nullptr)
+				{
+					if (entitiesSelected->size() < maxUnitsSelected)
+						entitiesSelected->push_back(*iterator);
+					if (entitiesSelected->size() >= maxUnitsSelected)
+						break;
+				}
+
+				if (newEntitiesSelected.size() >= maxUnitsSelected)
+					break;
+			}
+	}
+
+	return newEntitiesSelected;
+}
+
