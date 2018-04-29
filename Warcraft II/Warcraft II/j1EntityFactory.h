@@ -9,7 +9,6 @@
 #include "Grunt.h"
 #include "TrollAxethrower.h"
 #include "Alleria.h"
-#include "Khadgar.h"
 #include "Turalyon.h"
 #include "ElvenArcher.h"
 #include "Footman.h"
@@ -217,7 +216,6 @@ private:
 	MageInfo mageInfo;
 	PaladinInfo paladinInfo;
 	AlleriaInfo alleriaInfo;
-	KhadgarInfo khadgarInfo;
 	TuralyonInfo turalyonInfo;
 	GruntInfo gruntInfo;
 	TrollAxethrowerInfo trollAxethrowerInfo;

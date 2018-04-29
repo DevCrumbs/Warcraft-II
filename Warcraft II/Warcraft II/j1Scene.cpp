@@ -246,13 +246,13 @@ bool j1Scene::PreUpdate()
 
 		App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
 
 		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
 
-		App->entities->AddEntity(EntityType_KHADGAR, pos, App->entities->GetUnitInfo(EntityType_KHADGAR), unitInfo, App->player);
+		App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
 	//_Entities_creation
 
 	if (hasGoldChanged) {
@@ -377,8 +377,7 @@ bool j1Scene::Update(float dt)
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
 
-
-	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
+	App->printer->PrintSprite(mouseTilePos, debugTex, { 0,0,32,32 }); // tile under the mouse pointer
 
 	// Units ---------------------------------------------------------------------------------
 

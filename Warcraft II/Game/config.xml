@@ -920,14 +920,6 @@
       </critters>
 
       <prisoners>
-        <khadgar>
-          <animations>
-            <idle speed="4" loop="1">
-              <frame x="0" y="0" w="64" h="64"/>
-            </idle>
-          </animations>
-        </khadgar>
-
         <alleria>
           <animations>
             <idle speed="4" loop="1">

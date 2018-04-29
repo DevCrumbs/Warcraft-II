@@ -49,7 +49,7 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	this->footmanInfo.deathUp = info.deathUp;
 	this->footmanInfo.deathDown = info.deathDown;
 
-	size = this->unitInfo.size;
+	this->size = this->unitInfo.size;
 	offsetSize = this->unitInfo.offsetSize;
 
 	LoadAnimationsSpeed();

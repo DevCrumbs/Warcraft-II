@@ -50,7 +50,7 @@ ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	this->elvenArcherInfo.deathUp = info.deathUp;
 	this->elvenArcherInfo.deathDown = info.deathDown;
 
-	size = this->unitInfo.size;
+	this->size = this->unitInfo.size;
 	offsetSize = this->unitInfo.offsetSize;
 
 	LoadAnimationsSpeed();
