@@ -143,6 +143,7 @@ j1Collision::j1Collision()
 	debugColors[ColliderType_NeutralUnit] = ColorWhite;
 	debugColors[ColliderType_PlayerBuilding] = ColorDarkBlue;
 	debugColors[ColliderType_EnemyBuilding] = ColorDarkRed;
+	debugColors[ColliderType_NeutralBuilding] = ColorWhite;
 	debugColors[ColliderType_PlayerSightRadius] = ColorLightBlue;
 	debugColors[ColliderType_EnemySightRadius] = ColorLightRed;
 	debugColors[ColliderType_PlayerAttackRadius] = ColorLightBlue;
