@@ -974,6 +974,7 @@ void j1Scene::LoadInGameUI()
 	//create this before entitiesInfo (Parent)
 	App->player->CreateEntitiesStatsUI();
 	App->player->CreateGroupSelectionButtons();
+	App->player->CreateUISpawningUnits();
 }
 
 void j1Scene::LoadUnitsMenuInfo()
@@ -1585,40 +1586,52 @@ bool j1Scene::CompareSelectedUnitsLists(list<DynamicEntity*> units)
 	bool ret = false;
 	int sizeList = 0;//Want to know how many active icons are
 
+
 	if (App->player->entitySelectedStats.entitySelected != nullptr && units.size() == 1)
 		if (units.front() == App->player->entitySelectedStats.entitySelected)
 			ret = true;
 	if (!ret) {
-		for (list<DynamicEntity*>::iterator unitsIterator = units.begin(); unitsIterator != units.end(); ++unitsIterator)
-		{
-			for (list<GroupSelectedElements>::iterator playerIterator = groupElementsList.begin(); playerIterator != groupElementsList.end(); ++playerIterator)
+		if (units.size() == GetGroupElementSize()) {
+			for (list<DynamicEntity*>::iterator unitsIterator = units.begin(); unitsIterator != units.end(); ++unitsIterator)
 			{
-				if (*unitsIterator == playerIterator->owner)
+				for (list<GroupSelectedElements>::iterator playerIterator = groupElementsList.begin(); playerIterator != groupElementsList.end(); ++playerIterator)
 				{
-					ret = true;
+					if (*unitsIterator == playerIterator->owner)
+					{
+						ret = true;
+						sizeList++;
+						break;
+					}
+					//if owner is nullptr, next ones will be nullptr
+					else if (playerIterator->owner == nullptr) {
+						ret = false;
+						break;
+					}
+					else
+						ret = false;
 				}
-				//if owner is nullptr, next ones will be nullptr
-				else if (playerIterator->owner == nullptr) {
-					sizeList++;
-					ret = false;
+				if (!ret)
 					break;
-				}
-				else
-					ret = false;
-			}
-			if (!ret)
-				break;
-			//If size are diferent have to redo information
-			else if (sizeList != units.size()) {
-				ret = false;
-				break;
+				//If size are diferent have to redo information
 			}
 		}
-
 	}
 	return ret;
 }
 
+uint j1Scene::GetGroupElementSize() 
+{
+	uint size = 0u;
+	for (list<GroupSelectedElements>::iterator playerIterator = groupElementsList.begin(); playerIterator != groupElementsList.end(); ++playerIterator)
+	{
+		if (playerIterator->owner != nullptr) {
+			size++;
+		}
+		else
+			break;
+	}
+	return size;
+}
 void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 {
 	//TODO: Search the same pos and lenght
@@ -1904,7 +1917,7 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 {
 	bool ret = true;
 
-	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) == SDL_SCANCODE_UNKNOWN)
+	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) ==  SDL_SCANCODE_UNKNOWN)
 	{
 		LOG("Could not load SaveGame button");
 		ret = false;
@@ -1964,7 +1977,5 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 		ret = false;
 	}
 	
-
-
 	return ret;
 }

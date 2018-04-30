@@ -59,10 +59,12 @@ struct ToSpawnUnit {
 };
 
 struct GroupSpawning {
-	ToSpawnUnit* owner = nullptr;
+	ToSpawnUnit** owner = nullptr;
 
 	UIImage* entityIcon = nullptr;
 	UILifeBar* entityLifeBar = nullptr;
+
+	void IsActive(bool isActive);
 };
 
 struct EntitySelectedStats
@@ -109,10 +111,10 @@ public:
 	iPoint GetMouseTilePos() const;
 	iPoint GetMousePos() const;
 
-	void CheckUnitSpawning();
+	void CheckUnitSpawning(queue<ToSpawnUnit*>* queue);
 	void SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
 
-	void UpdateSpawnUnitsStats();
+	void UpdateSpawnUnitsStats(list<GroupSpawning>* spawningList);
 
 	void AddGold(int sumGold);
 	int GetCurrentGold() const;
@@ -135,6 +137,7 @@ public:
 
 	void CreateEntitiesStatsUI();
 	void CreateGroupSelectionButtons();
+	void CreateUISpawningUnits();
 	void ShowEntitySelectedInfo(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect iconDim, string entName, Entity* currentEntity);
 	void ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range);
@@ -148,8 +151,8 @@ public:
 	void HideHoverInfoMenu();
 	void DeleteHoverInfoMenu();
 	//void CheckBuildingState(Entity* ent);
-	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea);
-	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea);
+	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, bool isActive = true);
+	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, bool isActive = true);
 	
 	//void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
 	//void DestroyHoverButton(Entity* ent);
@@ -158,14 +161,16 @@ public:
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
 	void CreateDestructionButton();
-	void HandleBarracksUIElem();
+	void HandleSpawningUnitsUIElem(ToSpawnUnit** toSpawnUnit, list<GroupSpawning>* groupList);
 	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
+	uint GetGroupSpawningSize(list<GroupSpawning> listSpawning);
 
 	void DestroyBuilding();
 
 	void RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos);
+
 
 public:
 
@@ -232,9 +237,8 @@ private:
 
 	GroupSelectionButtons groupSelectionButtons;
 
-	//TODO Oscar (Puntero in list)
-	list<GroupSpawning> toSpawnUnitStats;
-	list<ToSpawnUnit*> newUnitsToSpawn;
+	//list<GroupSpawning> toSpawnUnitStats;
+	//list<ToSpawnUnit*> newUnitsToSpawn;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
 		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr;
@@ -243,9 +247,14 @@ private:
 	list<UIElement*> UIMenuInfoList;
 
 	//Spawning units from barracks queues and variables
-	queue<ToSpawnUnit*> toSpawnUnitQueue;
+	queue<ToSpawnUnit*> toSpawnUnitBarracks;
+	queue<ToSpawnUnit*> toSpawnUnitGrypho;
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;
+
+	list<GroupSpawning> barracksSpawningListUI;
+	list<GroupSpawning> gryphoSpawningListUI;
+
 };
 
 #endif //__j1PLAYER_H__

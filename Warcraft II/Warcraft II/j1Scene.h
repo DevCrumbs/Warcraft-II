@@ -168,7 +168,7 @@ public:
 	PauseMenuActions GetPauseMenuActions();
 
 	bool CompareSelectedUnitsLists(list<DynamicEntity*> units);
-
+	uint GetGroupElementSize();
 
 	void ShowTerenasDialog(TerenasDialogEvents dialogEvent);
 	void HideTerenasDialog();
@@ -238,7 +238,6 @@ public:
 	UIMinimap* minimap = nullptr;
 
 	list<DynamicEntity*> units;
-	//TODO OSCAR
 	list<GroupSelectedElements> groupElementsList;
 
 private:
