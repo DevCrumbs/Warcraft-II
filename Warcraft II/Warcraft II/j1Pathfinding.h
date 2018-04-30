@@ -128,7 +128,7 @@ public:
 
 	// Initialize CycleOnceDijkstra
 	bool InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger = nullptr, bool isPathRequested = false, bool isWalkabilityChecked = true);
-
+																			
 	// CycleOnce Dijkstra
 	PathfindingStatus CycleOnceDijkstra();
 

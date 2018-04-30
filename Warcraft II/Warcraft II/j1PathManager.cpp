@@ -275,11 +275,18 @@ iPoint PathPlanner::GetTile() const
 	return { -1,-1 };
 }
 
+// Search completed
 bool PathPlanner::IsSearchCompleted() const
 {
 	return isSearchCompleted;
 }
 
+void PathPlanner::SetSearchCompleted(bool isSearchCompleted)
+{
+	this->isSearchCompleted = isSearchCompleted;
+}
+
+// Search requested
 bool PathPlanner::IsSearchRequested() const
 {
 	return isSearchRequested;
@@ -353,7 +360,7 @@ void FindActiveTrigger::SetEntityType(ENTITY_CATEGORY entityType)
 	this->entityType = entityType;
 }
 
-bool FindActiveTrigger::isSatisfied(iPoint tile) const
+bool FindActiveTrigger::IsSatisfied(iPoint tile) const
 {
 	bool isSatisfied = false;
 

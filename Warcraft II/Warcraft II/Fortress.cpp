@@ -11,8 +11,6 @@
 
 Fortress::Fortress(fPoint pos, iPoint size, int currLife, uint maxLife, const FortressInfo& fortressInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), fortressInfo(fortressInfo)
 {
-	buildingSize = Big;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -53,7 +51,7 @@ Fortress::Fortress(fPoint pos, iPoint size, int currLife, uint maxLife, const Fo
 
 	texArea = &fortressInfo.completeTexArea;
 
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	entityCollider->isTrigger = true;
 }
 

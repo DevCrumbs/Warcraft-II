@@ -29,6 +29,7 @@ class Entity;
 class StaticEntity;
 enum ENTITY_TYPE;
 enum TerenasDialogEvents;
+enum StaticEntitySize;
 struct UnitInfo;
 
 struct HoverButton

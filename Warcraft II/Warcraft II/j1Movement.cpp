@@ -261,7 +261,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 			if (!App->pathfinding->IsWalkable(singleUnit->goal))
 
-				singleUnit->goal = FindClosestValidTile(singleUnit->goal);
+				singleUnit->goal = FindClosestValidTile(singleUnit->goal, singleUnit->unit);
 
 			if (singleUnit->goal.x != -1 && singleUnit->goal.y != -1) {
 
@@ -281,7 +281,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 			singleUnit->changedGoal = singleUnit->goal;
 			singleUnit->goal = { -1,-1 };
 
-			singleUnit->isGoalNeeded = true;
+			singleUnit->isGoalNeeded = true; /// A new goal is needed
+			break;
 		}
 
 		if (singleUnit->isGoalNeeded) {
@@ -304,7 +305,10 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 				singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
 
 				singleUnit->isSearching = false; /// The unit has finished changing its goal
-				singleUnit->isGoalNeeded = false;
+				singleUnit->isGoalNeeded = false; /// A new goal is no longer needed
+
+				if (singleUnit->goal.x == -1 && singleUnit->goal.y == -1)
+					singleUnit->goal = singleUnit->changedGoal;
 			}
 			break;
 		}
@@ -1364,42 +1368,96 @@ bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor) const
 	return false;
 }
 
-// Returns the closest walkable and valid neighbor of the tiled passed as an argument
-iPoint j1Movement::FindClosestValidTile(iPoint tile) const
+// Returns the closest walkable and valid neighbor of the tile passed as an argument
+iPoint j1Movement::FindClosestValidTile(iPoint tile, DynamicEntity* unit) const
 {
-	// Perform a BFS
-	queue<iPoint> queue;
-	list<iPoint> visited;
+	// No unit: normal queue
+	if (unit == nullptr) {
 
-	iPoint curr = tile;
-	queue.push(curr);
+		// Perform a BFS
+		queue<iPoint> queue;
+		list<iPoint> visited;
 
-	while (queue.size() > 0) {
+		iPoint curr = tile;
+		queue.push(curr);
 
-		curr = queue.front();
-		queue.pop();
+		while (queue.size() > 0) {
 
-		if (!App->entities->IsEntityOnTile(curr) && App->pathfinding->IsWalkable(curr))
-			return curr;
+			curr = queue.front();
+			queue.pop();
 
-		iPoint neighbors[8];
-		neighbors[0].create(curr.x + 1, curr.y + 0);
-		neighbors[1].create(curr.x + 0, curr.y + 1);
-		neighbors[2].create(curr.x - 1, curr.y + 0);
-		neighbors[3].create(curr.x + 0, curr.y - 1);
-		neighbors[4].create(curr.x + 1, curr.y + 1);
-		neighbors[5].create(curr.x + 1, curr.y - 1);
-		neighbors[6].create(curr.x - 1, curr.y + 1);
-		neighbors[7].create(curr.x - 1, curr.y - 1);
+			if (!App->entities->IsEntityOnTile(curr) && App->pathfinding->IsWalkable(curr))
+				return curr;
 
-		for (uint i = 0; i < 8; ++i)
-		{
-			if (App->pathfinding->IsWalkable(neighbors[i])) {
+			iPoint neighbors[8];
+			neighbors[0].create(curr.x + 1, curr.y + 0);
+			neighbors[1].create(curr.x + 0, curr.y + 1);
+			neighbors[2].create(curr.x - 1, curr.y + 0);
+			neighbors[3].create(curr.x + 0, curr.y - 1);
+			neighbors[4].create(curr.x + 1, curr.y + 1);
+			neighbors[5].create(curr.x + 1, curr.y - 1);
+			neighbors[6].create(curr.x - 1, curr.y + 1);
+			neighbors[7].create(curr.x - 1, curr.y - 1);
 
-				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+			for (uint i = 0; i < 8; ++i)
+			{
+				if (App->pathfinding->IsWalkable(neighbors[i])) {
 
-					queue.push(neighbors[i]);
-					visited.push_back(neighbors[i]);
+					if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+						queue.push(neighbors[i]);
+						visited.push_back(neighbors[i]);
+					}
+				}
+			}
+		}
+	}
+	// Unit: priority queue (searches for the tile closest to the unit)
+	else {
+
+		priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
+		list<iPoint> visited;
+
+		iPointPriority curr;
+		curr.point = tile;
+		curr.priority = tile.DistanceManhattan(unit->GetSingleUnit()->currTile);
+		queue.push(curr);
+
+		while (queue.size() > 0) {
+
+			curr = queue.top();
+			queue.pop();
+
+			if (!App->entities->IsEntityOnTile(curr.point) && App->pathfinding->IsWalkable(curr.point))
+				return curr.point;
+
+			iPointPriority neighbors[8];
+			neighbors[0].point.create(curr.point.x + 1, curr.point.y + 0);
+			neighbors[0].priority = neighbors[0].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[1].point.create(curr.point.x + 0, curr.point.y + 1);
+			neighbors[1].priority = neighbors[1].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[2].point.create(curr.point.x - 1, curr.point.y + 0);
+			neighbors[2].priority = neighbors[2].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[3].point.create(curr.point.x + 0, curr.point.y - 1);
+			neighbors[3].priority = neighbors[3].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[4].point.create(curr.point.x + 1, curr.point.y + 1);
+			neighbors[4].priority = neighbors[4].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[5].point.create(curr.point.x + 1, curr.point.y - 1);
+			neighbors[5].priority = neighbors[5].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[6].point.create(curr.point.x - 1, curr.point.y + 1);
+			neighbors[6].priority = neighbors[6].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[7].point.create(curr.point.x - 1, curr.point.y - 1);
+			neighbors[7].priority = neighbors[7].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+
+			for (uint i = 0; i < 8; ++i)
+			{
+				if (App->pathfinding->IsWalkable(neighbors[i].point)) {
+
+					if (find(visited.begin(), visited.end(), neighbors[i].point) == visited.end()) {
+
+						queue.push(neighbors[i]);
+						visited.push_back(neighbors[i].point);
+					}
 				}
 			}
 		}
@@ -1825,6 +1883,8 @@ bool SingleUnit::GetReadyForNewMove()
 
 		movementState = MovementState_WaitForPath;
 
+		if (unit->isSelected)
+			LOG("GetReady!");
 		ret = true;
 	}
 
@@ -1841,6 +1901,9 @@ void SingleUnit::ResetUnitParameters(bool isGoalReset)
 	isGoalChanged = false;
 
 	unit->GetPathPlanner()->SetSearchRequested(false);
+	unit->GetPathPlanner()->SetSearchCompleted(false);
+	App->pathmanager->UnRegister(unit->GetPathPlanner());
+
 	isSearching = false;
 
 	if (isGoalReset) {

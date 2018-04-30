@@ -19,6 +19,7 @@ struct DragonInfo
 	Animation deathUp, deathDown;
 
 	float fireSpeed = 0.0f;
+	uint droppedGold = 0;
 };
 
 class Dragon :public DynamicEntity

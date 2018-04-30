@@ -46,7 +46,7 @@ public:
 	void SetEntity(Entity* entity = nullptr);
 	void SetEntityType(ENTITY_CATEGORY entityType = EntityCategory_NONE);
 
-	bool isSatisfied(iPoint tile) const;
+	bool IsSatisfied(iPoint tile) const;
 
 private:
 
@@ -130,10 +130,12 @@ public:
 	// to request the tile found
 	iPoint GetTile() const;
 
+	// Search completed
 	bool IsSearchCompleted() const;
+	void SetSearchCompleted(bool isSearchCompleted);
 
+	// Search requested
 	bool IsSearchRequested() const;
-
 	void SetSearchRequested(bool isSearchRequested);
 
 	void SetCheckingCurrTile(bool isCheckingCurrTile);

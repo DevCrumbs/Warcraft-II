@@ -1228,8 +1228,8 @@ bool j1EntityFactory::Start()
 
 	LOG("Loading entities textures");
 
+	/// TODO Joan (balancing)
 	// ENTITIES INFO
-
 	/// ALLIANCE
 	/// Dynamic Entities
 	alleriaInfo.unitInfo.size = { 64,64 };
@@ -1291,7 +1291,7 @@ bool j1EntityFactory::Start()
 	//_Elven_Archer
 
 	// Gryphon Rider
-	gryphonRiderInfo.unitInfo.priority = 3;
+	gryphonRiderInfo.unitInfo.priority = 4;
 
 	/// Radius
 	gryphonRiderInfo.unitInfo.attackRadius = 7;
@@ -1332,7 +1332,7 @@ bool j1EntityFactory::Start()
 	/// HORDE
 	/// Dynamic Entities
 	// Grunt
-	gruntInfo.unitInfo.priority = 2;
+	gruntInfo.unitInfo.priority = 3;
 
 	/// Radius
 	gruntInfo.unitInfo.attackRadius = 2;
@@ -1353,12 +1353,13 @@ bool j1EntityFactory::Start()
 	gruntInfo.unitInfo.currLife = gruntInfo.unitInfo.maxLife;
 
 	///
+	gruntInfo.droppedGold = 10;
 	gruntInfo.unitInfo.size = { 32,32 };
 	gruntInfo.unitInfo.offsetSize = { 0,0 };
 	//_Grunt
 
 	// Troll Axethrower
-	trollAxethrowerInfo.unitInfo.priority = 2;
+	trollAxethrowerInfo.unitInfo.priority = 3;
 
 	/// Radius
 	trollAxethrowerInfo.unitInfo.attackRadius = 5;
@@ -1380,12 +1381,13 @@ bool j1EntityFactory::Start()
 
 	///
 	trollAxethrowerInfo.axeSpeed = 160.0f;
+	trollAxethrowerInfo.droppedGold = 10;
 	trollAxethrowerInfo.unitInfo.size = { 32,32 };
 	trollAxethrowerInfo.unitInfo.offsetSize = { 0,0 };
 	//_Troll_Axethrower
 
 	// Dragon
-	dragonInfo.unitInfo.priority = 3;
+	dragonInfo.unitInfo.priority = 5;
 
 	/// Radius
 	dragonInfo.unitInfo.attackRadius = 7;
@@ -1407,6 +1409,7 @@ bool j1EntityFactory::Start()
 
 	///
 	dragonInfo.fireSpeed = 200.0f;
+	dragonInfo.droppedGold = 10;
 	dragonInfo.unitInfo.size = { 64,64 };
 	dragonInfo.unitInfo.offsetSize = { -16,-16 };
 	//_Dragon
@@ -1523,30 +1526,6 @@ bool j1EntityFactory::PreUpdate()
 	}
 	toSpawnEntities.clear();
 
-	for (std::list<DynamicEntity*>::iterator iterator = activeDynamicEntities.begin(); iterator != activeDynamicEntities.end(); iterator++) {
-		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
-		if (App->render->IsInScreen(r)) {
-			EntitiesDraw_info info;
-			info.priority = (*iterator)->GetPos().y + (*iterator)->GetSize().y;
-			info.ent = (*iterator);
-			DynamicEntity* dyn = (DynamicEntity*)(*iterator);
-				info.type = dyn->dynamicEntityType;
-			entityDrawOrder.push(info);
-		}
-	}
-
-		for (std::list<StaticEntity*>::iterator iterator = activeStaticEntities.begin(); iterator != activeStaticEntities.end(); iterator++) {
-		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
-		if (App->render->IsInScreen(r)) {
-			EntitiesDraw_info info;
-			info.priority = (*iterator)->GetPos().y + (*iterator)->GetSize().y;
-			info.ent = (*iterator);
-			StaticEntity* stc = (StaticEntity*)(*iterator);
-				info.type = stc->staticEntityType;
-			entityDrawOrder.push(info);
-		}
-	}
-
 	return ret;
 }
 
@@ -1595,7 +1574,7 @@ void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 	while (statEntity != activeStaticEntities.end()) {
 
-		// - SightRadiusCollider and AttackRadiusCollider call their owner as the c1 Collider
+		// - SightRadiusCollider calls its owner as the c1 Collider
 		if ((*statEntity)->GetSightRadiusCollider() == c1) {
 
 			(*statEntity)->OnCollision(c1, c2, collisionState);
@@ -1662,21 +1641,22 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 	case EntityType_SCOUT_TOWER:
 	case EntityType_PLAYER_GUARD_TOWER:
 	case EntityType_PLAYER_CANNON_TOWER:
-		DrawStaticEntityPreviewTiles(true, Small, mousePos);
+		DrawStaticEntityPreviewTiles(true, StaticEntitySize_Small, mousePos);
 
-		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), Small)) 
-			DrawStaticEntityPreviewTiles(false, Small, mousePos);
+		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), StaticEntitySize_Small))
+			DrawStaticEntityPreviewTiles(false, StaticEntitySize_Small, mousePos);
 
 		break;
 	case EntityType_ELVEN_LUMBER_MILL:
 	case EntityType_MAGE_TOWER:
 	case EntityType_GRYPHON_AVIARY:
 	case EntityType_STABLES:
-	case EntityType_BARRACKS:
-		DrawStaticEntityPreviewTiles(true, Medium, mousePos);
 
-		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), Medium)) 
-			DrawStaticEntityPreviewTiles(false, Medium, mousePos);
+		DrawStaticEntityPreviewTiles(true, StaticEntitySize_Medium, mousePos);
+
+
+		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), StaticEntitySize_Medium))
+			DrawStaticEntityPreviewTiles(false, StaticEntitySize_Medium, mousePos);
 
 		break;
 
@@ -1706,7 +1686,7 @@ void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntit
 		if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
 			App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, green, true);
 
-		if (buildingSize == Medium || buildingSize == Big) { //Medium
+		if (buildingSize == StaticEntitySize_Medium || buildingSize == StaticEntitySize_Big) { //Medium
 
 			if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 }))
 				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 64, 32, 32 }, green, true);
@@ -1740,7 +1720,7 @@ void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntit
 		if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
 			App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, red, true);
 
-		if (buildingSize == Medium || buildingSize == Big) { //Medium
+		if (buildingSize == StaticEntitySize_Medium || buildingSize == StaticEntitySize_Big) { //Medium
 
 			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 }))
 				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 64, 32, 32 }, red, true);
@@ -2003,7 +1983,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		// This checks the tile of the dynamic entity and its surroundings
 		switch (buildingSize)
 		{
-		case Small:
+		case StaticEntitySize_Small:
 			for (int i = -1; i < 1; i++) {
 				for (int j = -1; j < 1; j++) {
 					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2012,7 +1992,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 				}
 			}
 			break;
-		case Medium:
+		case StaticEntitySize_Medium:
 			for (int i = -2; i < 1; i++) {
 				for (int j = -2; j < 1; j++) {
 					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2021,7 +2001,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 				}
 			}
 			break;
-		case Big:
+		case StaticEntitySize_Big:
 			for (int i = -3; i < 1; i++) {
 				for (int j = -3; j < 1; j++) {
 					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2048,7 +2028,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
 			switch (buildingSize)
 			{
-			case Small:
+			case StaticEntitySize_Small:
 				for (int i = -1; i < 2; i++) {
 					for (int j = -1; j < 2; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2056,7 +2036,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 					}
 				}
 				break;
-			case Medium:
+			case StaticEntitySize_Medium:
 				for (int i = -2; i < 2; i++) {
 					for (int j = -2; j < 2; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2064,7 +2044,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 					}
 				}
 				break;
-			case Big:
+			case StaticEntitySize_Big:
 				for (int i = -3; i < 2; i++) {
 					for (int j = -3; j < 2; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2079,7 +2059,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
 			switch (buildingSize)
 			{
-			case Small:
+			case StaticEntitySize_Small:
 				for (int i = -1; i < 3; i++) {
 					for (int j = -1; j < 3; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2087,7 +2067,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 					}
 				}
 				break;
-			case Medium:
+			case StaticEntitySize_Medium:
 				for (int i = -2; i < 3; i++) {
 					for (int j = -2; j < 3; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2095,7 +2075,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 					}
 				}
 				break;
-			case Big:
+			case StaticEntitySize_Big:
 				for (int i = -3; i < 3; i++) {
 					for (int j = -3; j < 3; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2110,7 +2090,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
 			switch (buildingSize)
 			{
-			case Small:
+			case StaticEntitySize_Small:
 				for (int i = -1; i < 4; i++) {
 					for (int j = -1; j < 4; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2118,7 +2098,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 					}
 				}
 				break;
-			case Medium:
+			case StaticEntitySize_Medium:
 				for (int i = -2; i < 4; i++) {
 					for (int j = -2; j < 4; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2126,7 +2106,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 					}
 				}
 				break;
-			case Big:
+			case StaticEntitySize_Big:
 				for (int i = -3; i < 4; i++) {
 					for (int j = -3; j < 4; j++) {
 						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
@@ -2145,7 +2125,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 	// Check if a building can be edificated, depending on the map walkability
 	switch (buildingSize)
 	{
-	case Small:
+	case StaticEntitySize_Small:
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 2; j++) {
 				if (!App->pathfinding->IsWalkable({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
@@ -2153,7 +2133,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			}
 		}
 		break;
-	case Medium:
+	case StaticEntitySize_Medium:
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				if (!App->pathfinding->IsWalkable({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
@@ -2161,7 +2141,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			}
 		}
 		break;
-	case Big:
+	case StaticEntitySize_Big:
 
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -2169,12 +2149,15 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 					return true;
 			}
 		}
+		break;
+
+	default:
 		break;
 	}
 
 	switch (buildingSize)
 	{
-	case Small:
+	case StaticEntitySize_Small:
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 2; j++) {
 				if (!App->pathfinding->IsOnBase({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
@@ -2182,7 +2165,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			}
 		}
 		break;
-	case Medium:
+	case StaticEntitySize_Medium:
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				if (!App->pathfinding->IsOnBase({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
@@ -2190,7 +2173,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			}
 		}
 		break;
-	case Big:
+	case StaticEntitySize_Big:
 
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -2198,6 +2181,9 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 					return true;
 			}
 		}
+		break;
+
+	default:
 		break;
 	}
 
@@ -2451,11 +2437,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		// Player static entities
 	case EntityType_TOWN_HALL:
 	{
-		TownHall* townHall = new TownHall(pos, { 128,128 }, townHallInfo.townHallMaxLife, townHallInfo.townHallMaxLife, (const TownHallInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
+
+		TownHall* townHall = new TownHall(pos, { 128,128 }, maxLife, maxLife, (const TownHallInfo&)entityInfo, listener);
 		townHall->entityType = EntityCategory_STATIC_ENTITY;
 		townHall->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		townHall->staticEntityType = EntityType_TOWN_HALL;
 		townHall->entitySide = EntitySide_Player;
+		townHall->buildingSize = StaticEntitySize_Big;
 		townHall->SetStringLife(townHall->GetCurrLife(), townHall->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)townHall);
@@ -2465,11 +2454,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_CHICKEN_FARM:
 	{
-		ChickenFarm* chickenFarm = new ChickenFarm(pos, { 64,64 }, chickenFarmInfo.maxLife, chickenFarmInfo.maxLife, (const ChickenFarmInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Small);
+
+		ChickenFarm* chickenFarm = new ChickenFarm(pos, { 64,64 }, maxLife, maxLife, (const ChickenFarmInfo&)entityInfo, listener);
 		chickenFarm->entityType = EntityCategory_STATIC_ENTITY;
 		chickenFarm->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		chickenFarm->staticEntityType = EntityType_CHICKEN_FARM;
 		chickenFarm->entitySide = EntitySide_Player;
+		chickenFarm->buildingSize = StaticEntitySize_Small;
 		chickenFarm->SetStringLife(chickenFarm->GetCurrLife(), chickenFarm->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)chickenFarm);
@@ -2479,11 +2471,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_BARRACKS:
 	{
-		Barracks* barracks = new Barracks(pos, { 96,96 }, barracksInfo.barracks1MaxLife, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		Barracks* barracks = new Barracks(pos, { 96,96 }, maxLife, maxLife, (const BarracksInfo&)entityInfo, listener);
 		barracks->entityType = EntityCategory_STATIC_ENTITY;
 		barracks->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		barracks->staticEntityType = EntityType_BARRACKS;
 		barracks->entitySide = EntitySide_Player;
+		barracks->buildingSize = StaticEntitySize_Medium;
 		barracks->SetStringLife(barracks->GetCurrLife(), barracks->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)barracks);
@@ -2493,11 +2488,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ELVEN_LUMBER_MILL:
 	{
-		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 96,96 }, elvenLumberMillInfo.maxLife, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 96,96 }, maxLife, maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
 		elvenLumberMill->entityType = EntityCategory_STATIC_ENTITY;
 		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		elvenLumberMill->staticEntityType = EntityType_BARRACKS;
 		elvenLumberMill->entitySide = EntitySide_Player;
+		elvenLumberMill->buildingSize = StaticEntitySize_Medium;
 		elvenLumberMill->SetStringLife(elvenLumberMill->GetCurrLife(), elvenLumberMill->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)elvenLumberMill);
@@ -2507,11 +2505,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_MAGE_TOWER:
 	{
-		MageTower* mageTower = new MageTower(pos, { 96,96 }, mageTowerInfo.maxLife, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		MageTower* mageTower = new MageTower(pos, { 96,96 }, maxLife, maxLife, (const MageTowerInfo&)entityInfo, listener);
 		mageTower->entityType = EntityCategory_STATIC_ENTITY;
 		mageTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		mageTower->staticEntityType = EntityType_MAGE_TOWER;
 		mageTower->entitySide = EntitySide_Player;
+		mageTower->buildingSize = StaticEntitySize_Medium;
 		mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)mageTower);
@@ -2521,11 +2522,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRYPHON_AVIARY:
 	{
-		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 96,96 }, gryphonAviaryInfo.maxLife, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 96,96 }, maxLife, maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
 		gryphonAviary->entityType = EntityCategory_STATIC_ENTITY;
 		gryphonAviary->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		gryphonAviary->staticEntityType = EntityType_GRYPHON_AVIARY;
 		gryphonAviary->entitySide = EntitySide_Player;
+		gryphonAviary->buildingSize = StaticEntitySize_Medium;
 		gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)gryphonAviary);
@@ -2535,11 +2539,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_STABLES:
 	{
-		Stables* stables = new Stables(pos, { 96,96 }, stablesInfo.maxLife, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		Stables* stables = new Stables(pos, { 96,96 }, maxLife, maxLife, (const StablesInfo&)entityInfo, listener);
 		stables->entityType = EntityCategory_STATIC_ENTITY;
 		stables->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		stables->staticEntityType = EntityType_STABLES;
 		stables->entitySide = EntitySide_Player;
+		stables->buildingSize = StaticEntitySize_Medium;
 		stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)stables);
@@ -2549,11 +2556,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_SCOUT_TOWER:
 	{
-		ScoutTower* scoutTower = new ScoutTower(pos, { 64,64 }, scoutTowerInfo.maxLife, scoutTowerInfo.maxLife, (const ScoutTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_SCOUT_TOWER, StaticEntitySize_Small);
+
+		ScoutTower* scoutTower = new ScoutTower(pos, { 64,64 }, maxLife, maxLife, (const ScoutTowerInfo&)entityInfo, listener);
 		scoutTower->entityType = EntityCategory_STATIC_ENTITY;
 		scoutTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		scoutTower->staticEntityType = EntityType_SCOUT_TOWER;
 		scoutTower->entitySide = EntitySide_Player;
+		scoutTower->buildingSize = StaticEntitySize_Small;
 		scoutTower->SetStringLife(scoutTower->GetCurrLife(), scoutTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)scoutTower);
@@ -2563,11 +2573,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_PLAYER_GUARD_TOWER:
 	{
-		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, { 64,64 }, 12, 12, (const PlayerGuardTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_PLAYER_GUARD_TOWER, StaticEntitySize_Small);
+
+		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, { 64,64 }, maxLife, maxLife, (const PlayerGuardTowerInfo&)entityInfo, listener);
 		playerGuardTower->entityType = EntityCategory_STATIC_ENTITY;
 		playerGuardTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		playerGuardTower->staticEntityType = EntityType_PLAYER_GUARD_TOWER;
 		playerGuardTower->entitySide = EntitySide_Player;
+		playerGuardTower->buildingSize = StaticEntitySize_Small;
 		playerGuardTower->SetStringLife(playerGuardTower->GetCurrLife(), playerGuardTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)playerGuardTower);
@@ -2577,11 +2590,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_PLAYER_CANNON_TOWER:
 	{
-		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, { 64,64 }, 12, 12, (const PlayerCannonTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_PLAYER_CANNON_TOWER, StaticEntitySize_Small);
+
+		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, { 64,64 }, maxLife, maxLife, (const PlayerCannonTowerInfo&)entityInfo, listener);
 		playerCannonTower->entityType = EntityCategory_STATIC_ENTITY;
 		playerCannonTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		playerCannonTower->staticEntityType = EntityType_PLAYER_CANNON_TOWER;
 		playerCannonTower->entitySide = EntitySide_Player;
+		playerCannonTower->buildingSize = StaticEntitySize_Small;
 		playerCannonTower->SetStringLife(playerCannonTower->GetCurrLife(), playerCannonTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)playerCannonTower);
@@ -2596,6 +2612,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		goldMine->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		goldMine->staticEntityType = EntityType_GOLD_MINE;
 		goldMine->entitySide = EntitySide_Neutral;
+		goldMine->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)goldMine);
 		return (StaticEntity*)goldMine;
@@ -2609,6 +2626,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		runestone->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		runestone->staticEntityType = EntityType_RUNESTONE;
 		runestone->entitySide = EntitySide_Neutral;
+		runestone->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)runestone);
 		return (StaticEntity*)runestone;
@@ -2618,11 +2636,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		// Enemy static entities
 	case EntityType_GREAT_HALL:
 	{
-		GreatHall* greatHall = new GreatHall(pos, { 128, 128 }, greatHallInfo.life, greatHallInfo.life, (const GreatHallInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
+
+		GreatHall* greatHall = new GreatHall(pos, { 128, 128 }, maxLife, maxLife, (const GreatHallInfo&)entityInfo, listener);
 		greatHall->entityType = EntityCategory_STATIC_ENTITY;
 		greatHall->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		greatHall->staticEntityType = EntityType_GREAT_HALL;
 		greatHall->entitySide = EntitySide_Enemy;
+		greatHall->buildingSize = StaticEntitySize_Big;
 
 		toSpawnEntities.push_back((Entity*)greatHall);
 		return (StaticEntity*)greatHall;
@@ -2631,11 +2652,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_STRONGHOLD:
 	{
-		Stronghold* stronghold = new Stronghold(pos, { 128, 128 }, strongholdInfo.life, strongholdInfo.life, (const StrongholdInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
+
+		Stronghold* stronghold = new Stronghold(pos, { 128, 128 }, maxLife, maxLife, (const StrongholdInfo&)entityInfo, listener);
 		stronghold->entityType = EntityCategory_STATIC_ENTITY;
 		stronghold->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		stronghold->staticEntityType = EntityType_STRONGHOLD;
 		stronghold->entitySide = EntitySide_Enemy;
+		stronghold->buildingSize = StaticEntitySize_Big;
 
 		toSpawnEntities.push_back((Entity*)stronghold);
 		return (StaticEntity*)stronghold;
@@ -2644,11 +2668,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_FORTRESS:
 	{
-		Fortress* fortress = new Fortress(pos, { 128, 128 }, fortressInfo.life, fortressInfo.life, (const FortressInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
+
+		Fortress* fortress = new Fortress(pos, { 128, 128 }, maxLife, maxLife, (const FortressInfo&)entityInfo, listener);
 		fortress->entityType = EntityCategory_STATIC_ENTITY;
 		fortress->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		fortress->staticEntityType = EntityType_FORTRESS;
 		fortress->entitySide = EntitySide_Enemy;
+		fortress->buildingSize = StaticEntitySize_Big;
 
 		toSpawnEntities.push_back((Entity*)fortress);
 		return (StaticEntity*)fortress;
@@ -2657,11 +2684,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ENEMY_BARRACKS:
 	{
-		EnemyBarracks* enemyBarracks = new EnemyBarracks(pos, { 96, 96 }, enemyBarracksInfo.life, enemyBarracksInfo.life, (const EnemyBarracksInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		EnemyBarracks* enemyBarracks = new EnemyBarracks(pos, { 96, 96 }, maxLife, maxLife, (const EnemyBarracksInfo&)entityInfo, listener);
 		enemyBarracks->entityType = EntityCategory_STATIC_ENTITY;
 		enemyBarracks->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyBarracks->staticEntityType = EntityType_ENEMY_BARRACKS;
 		enemyBarracks->entitySide = EntitySide_Enemy;
+		enemyBarracks->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)enemyBarracks);
 		return (StaticEntity*)enemyBarracks;
@@ -2670,11 +2700,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_PIG_FARM:
 	{
-		PigFarm* pigFarm = new PigFarm(pos, { 64, 64 }, pigFarmInfo.life, pigFarmInfo.life, (const PigFarmInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Small);
+
+		PigFarm* pigFarm = new PigFarm(pos, { 64, 64 }, maxLife, maxLife, (const PigFarmInfo&)entityInfo, listener);
 		pigFarm->entityType = EntityCategory_STATIC_ENTITY;
 		pigFarm->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		pigFarm->staticEntityType = EntityType_PIG_FARM;
 		pigFarm->entitySide = EntitySide_Enemy;
+		pigFarm->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)pigFarm);
 		return (StaticEntity*)pigFarm;
@@ -2683,11 +2716,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TROLL_LUMBER_MILL:
 	{
-		TrollLumberMill* trollLumberMill = new TrollLumberMill(pos, { 96, 96 }, trollLumberMillInfo.life, trollLumberMillInfo.life, (const TrollLumberMillInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		TrollLumberMill* trollLumberMill = new TrollLumberMill(pos, { 96, 96 }, maxLife, maxLife, (const TrollLumberMillInfo&)entityInfo, listener);
 		trollLumberMill->entityType = EntityCategory_STATIC_ENTITY;
 		trollLumberMill->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		trollLumberMill->staticEntityType = EntityType_TROLL_LUMBER_MILL;
 		trollLumberMill->entitySide = EntitySide_Enemy;
+		trollLumberMill->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)trollLumberMill);
 		return (StaticEntity*)trollLumberMill;
@@ -2696,11 +2732,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ALTAR_OF_STORMS:
 	{
-		AltarOfStorms* altarOfStorms = new AltarOfStorms(pos, { 96, 96 }, altarOfStormsInfo.life, altarOfStormsInfo.life, (const AltarOfStormsInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		AltarOfStorms* altarOfStorms = new AltarOfStorms(pos, { 96, 96 }, maxLife, maxLife, (const AltarOfStormsInfo&)entityInfo, listener);
 		altarOfStorms->entityType = EntityCategory_STATIC_ENTITY;
 		altarOfStorms->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		altarOfStorms->staticEntityType = EntityType_ALTAR_OF_STORMS;
 		altarOfStorms->entitySide = EntitySide_Enemy;
+		altarOfStorms->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)altarOfStorms);
 		return (StaticEntity*)altarOfStorms;
@@ -2709,11 +2748,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_DRAGON_ROOST:
 	{
-		DragonRoost* dragonRoost = new DragonRoost(pos, { 96, 96 }, dragonRoostInfo.life, dragonRoostInfo.life, (const DragonRoostInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		DragonRoost* dragonRoost = new DragonRoost(pos, { 96, 96 }, maxLife, maxLife, (const DragonRoostInfo&)entityInfo, listener);
 		dragonRoost->entityType = EntityCategory_STATIC_ENTITY;
 		dragonRoost->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		dragonRoost->staticEntityType = EntityType_DRAGON_ROOST;
 		dragonRoost->entitySide = EntitySide_Enemy;
+		dragonRoost->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)dragonRoost);
 		return (StaticEntity*)dragonRoost;
@@ -2722,11 +2764,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TEMPLE_OF_THE_DAMNED:
 	{
-		TempleOfTheDamned* templeOfTheDamned = new TempleOfTheDamned(pos, { 96, 96 }, templeOfTheDamnedInfo.life, templeOfTheDamnedInfo.life, (const TempleOfTheDamnedInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		TempleOfTheDamned* templeOfTheDamned = new TempleOfTheDamned(pos, { 96, 96 }, maxLife, maxLife, (const TempleOfTheDamnedInfo&)entityInfo, listener);
 		templeOfTheDamned->entityType = EntityCategory_STATIC_ENTITY;
 		templeOfTheDamned->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		templeOfTheDamned->staticEntityType = EntityType_TEMPLE_OF_THE_DAMNED;
 		templeOfTheDamned->entitySide = EntitySide_Enemy;
+		templeOfTheDamned->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)templeOfTheDamned);
 		return (StaticEntity*)templeOfTheDamned;
@@ -2735,11 +2780,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_OGRE_MOUND:
 	{
-		OgreMound* ogreMound = new OgreMound(pos, { 96, 96 }, ogreMoundInfo.life, ogreMoundInfo.life, (const OgreMoundInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		OgreMound* ogreMound = new OgreMound(pos, { 96, 96 }, maxLife, maxLife, (const OgreMoundInfo&)entityInfo, listener);
 		ogreMound->entityType = EntityCategory_STATIC_ENTITY;
 		ogreMound->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		ogreMound->staticEntityType = EntityType_OGRE_MOUND;
 		ogreMound->entitySide = EntitySide_Enemy;
+		ogreMound->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)ogreMound);
 		return (StaticEntity*)ogreMound;
@@ -2748,11 +2796,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ENEMY_BLACKSMITH:
 	{
-		EnemyBlacksmith* enemyBlacksmith = new EnemyBlacksmith(pos, { 96, 96 }, enemyBlacksmithInfo.life, enemyBlacksmithInfo.life, (const EnemyBlacksmithInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		EnemyBlacksmith* enemyBlacksmith = new EnemyBlacksmith(pos, { 96, 96 }, maxLife, maxLife, (const EnemyBlacksmithInfo&)entityInfo, listener);
 		enemyBlacksmith->entityType = EntityCategory_STATIC_ENTITY;
 		enemyBlacksmith->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyBlacksmith->staticEntityType = EntityType_ENEMY_BLACKSMITH;
 		enemyBlacksmith->entitySide = EntitySide_Enemy;
+		enemyBlacksmith->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)enemyBlacksmith);
 		return (StaticEntity*)enemyBlacksmith;
@@ -2761,11 +2812,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_WATCH_TOWER:
 	{
-		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, watchTowerInfo.life, watchTowerInfo.life, (const WatchTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_WATCH_TOWER, StaticEntitySize_Small);
+
+		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, maxLife, maxLife, (const WatchTowerInfo&)entityInfo, listener);
 		watchTower->entityType = EntityCategory_STATIC_ENTITY;
 		watchTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		watchTower->staticEntityType = EntityType_WATCH_TOWER;
 		watchTower->entitySide = EntitySide_Enemy;
+		watchTower->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)watchTower);
 		return (StaticEntity*)watchTower;
@@ -2774,11 +2828,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ENEMY_GUARD_TOWER:
 	{
-		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, enemyGuardTowerInfo.life, enemyGuardTowerInfo.life, (const EnemyGuardTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_ENEMY_GUARD_TOWER, StaticEntitySize_Small);
+
+		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, maxLife, maxLife, (const EnemyGuardTowerInfo&)entityInfo, listener);
 		enemyGuardTower->entityType = EntityCategory_STATIC_ENTITY;
 		enemyGuardTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyGuardTower->staticEntityType = EntityType_ENEMY_GUARD_TOWER;
 		enemyGuardTower->entitySide = EntitySide_Enemy;
+		enemyGuardTower->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)enemyGuardTower);
 		return (StaticEntity*)enemyGuardTower;
@@ -2787,11 +2844,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ENEMY_CANNON_TOWER:
 	{
-		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, enemyCannonTowerInfo.life, enemyCannonTowerInfo.life, (const EnemyCannonTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_ENEMY_CANNON_TOWER, StaticEntitySize_Small);
+
+		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, maxLife, maxLife, (const EnemyCannonTowerInfo&)entityInfo, listener);
 		enemyCannonTower->entityType = EntityCategory_STATIC_ENTITY;
 		enemyCannonTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyCannonTower->staticEntityType = EntityType_ENEMY_CANNON_TOWER;
 		enemyCannonTower->entitySide = EntitySide_Enemy;
+		enemyCannonTower->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)enemyCannonTower);
 		return (StaticEntity*)enemyCannonTower;
@@ -3492,6 +3552,7 @@ bool j1EntityFactory::RemoveAllUnitsGoals(list<DynamicEntity*> units)
 	return ret;
 }
 
+// Attack
 bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
 {
 	if (target == nullptr)
@@ -3519,6 +3580,7 @@ bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
 	return true;
 }
 
+// Movement
 void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 {
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
@@ -3541,8 +3603,8 @@ void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 		it++;
 	}
 }
-///_SANDRA
 
+// Entities
 Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY entityCategory, EntitySide entitySide) const
 {
 	// DYNAMIC ENTITIES
@@ -3649,6 +3711,44 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 	return nullptr;
 }
 
+// Dynamic Entities
+bool j1EntityFactory::IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType)
+{
+	if (units.size() == 0)
+		return false;
+
+	list<DynamicEntity*>::const_iterator it = units.begin();
+
+	while (it != units.end()) {
+
+		if ((*it)->dynamicEntityType != entityType)
+			return false;
+
+		it++;
+	}
+
+	return true;
+}
+
+bool j1EntityFactory::AreAllUnitsDoingSomething(list<DynamicEntity*> units, UnitState unitState)
+{
+	if (units.size() == 0)
+		return false;
+
+	list<DynamicEntity*>::const_iterator it = units.begin();
+
+	while (it != units.end()) {
+
+		if ((*it)->GetUnitState() != unitState)
+			return false;
+
+		it++;
+	}
+
+	return true;
+}
+
+// Static Entities
 bool j1EntityFactory::SelectBuilding(StaticEntity* staticEntity) 
 {
 	bool ret = false;
@@ -3684,41 +3784,102 @@ void j1EntityFactory::UnselectAllBuildings()
 	}
 }
 
-bool j1EntityFactory::IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType)
+uint j1EntityFactory::DetermineBuildingMaxLife(ENTITY_TYPE buildingType, StaticEntitySize buildingSize)
 {
-	if (units.size() == 0)
-		return false;
+	/// TODO Joan (balancing)
+	uint maxLife = 0;
 
-	list<DynamicEntity*>::const_iterator it = units.begin();
-	
-	while (it != units.end()) {
-	
-		if ((*it)->dynamicEntityType != entityType)
-			return false;
+		// Towers
+	if (buildingType == EntityType_SCOUT_TOWER || buildingType == EntityType_WATCH_TOWER) {
 
-		it++;
+		maxLife = 200;
+		return maxLife;
+	}
+	else if (buildingType == EntityType_PLAYER_GUARD_TOWER || buildingType == EntityType_ENEMY_GUARD_TOWER) {
+
+		maxLife = 300;
+		return maxLife;
+	}
+	else if (buildingType == EntityType_PLAYER_CANNON_TOWER || buildingType == EntityType_ENEMY_CANNON_TOWER) {
+
+		maxLife = 500;
+		return maxLife;
 	}
 
-	return true;
-}
+	// The rest of buildings
+	switch (buildingSize) {
 
-bool j1EntityFactory::AreAllUnitsDoingSomething(list<DynamicEntity*> units, UnitState unitState)
-{
-	if (units.size() == 0)
-		return false;
+	case StaticEntitySize_Small:
 
-	list<DynamicEntity*>::const_iterator it = units.begin();
+		maxLife = 200;
+		break;
 
-	while (it != units.end()) {
+	case StaticEntitySize_Medium:
 
-		if ((*it)->GetUnitState() != unitState)
-			return false;
+		maxLife = 400;
+		break;
 
-		it++;
+	case StaticEntitySize_Big:
+
+		maxLife = 600;
+		break;
+
+	case StaticEntitySize_None:
+	default:
+		break;
 	}
 
-	return true;
+	return maxLife;
 }
+
+uint j1EntityFactory::DetermineBuildingGold(ENTITY_TYPE buildingType, StaticEntitySize buildingSize)
+{
+	/// TODO Joan (balancing)
+	uint gold = 0;
+
+	// Towers
+	if (buildingType == EntityType_SCOUT_TOWER || buildingType == EntityType_WATCH_TOWER) {
+
+		gold = 200;
+		return gold;
+	}
+	else if (buildingType == EntityType_PLAYER_GUARD_TOWER || buildingType == EntityType_ENEMY_GUARD_TOWER) {
+
+		gold = 250;
+		return gold;
+	}
+	else if (buildingType == EntityType_PLAYER_CANNON_TOWER || buildingType == EntityType_ENEMY_CANNON_TOWER) {
+
+		gold = 300;
+		return gold;
+	}
+
+	// The rest of buildings
+	switch (buildingSize) {
+
+	case StaticEntitySize_Small:
+
+		gold = 150;
+		break;
+
+	case StaticEntitySize_Medium:
+
+		gold = 300;
+		break;
+
+	case StaticEntitySize_Big:
+
+		gold = 600;
+		break;
+
+	case StaticEntitySize_None:
+	default:
+		break;
+	}
+
+	return gold;
+}
+///_SANDRA
 
 // -------------------------------------------------------------
 // -------------------------------------------------------------
@@ -3768,5 +3929,3 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 	return ret;
 }
-
-

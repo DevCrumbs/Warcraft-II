@@ -119,6 +119,8 @@ void Footman::Move(float dt)
 			App->entities->InvalidateMovementEntity(this);
 
 			// Remove any path request
+			pathPlanner->SetSearchRequested(false);
+			pathPlanner->SetSearchCompleted(false);
 			App->pathmanager->UnRegister(pathPlanner);
 
 			if (singleUnit != nullptr)
@@ -140,7 +142,6 @@ void Footman::Move(float dt)
 		if (auxIsSelected != isSelected) {
 
 			auxIsSelected = isSelected;
-	
 		}
 
 		// ---------------------------------------------------------------------
@@ -326,6 +327,8 @@ void Footman::DebugDrawSelected()
 
 void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
 {
+	LOG("COLLISION!");
+
 	switch (collisionState) {
 
 	case CollisionState_OnEnter:
@@ -440,6 +443,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
+					RemoveTargetInfo(*it);
 					break;
 				}
 				it++;
@@ -517,6 +521,7 @@ void Footman::UnitStateMachine(float dt)
 
 		// ATTACK NOTE (Attack state): if currTarget is dead, the unit automatically attacks the next target (only DYNAMIC ENTITIES) from their targets list
 
+		/*
 		if (singleUnit->IsFittingTile()) {
 
 			if (currTarget == nullptr) {
@@ -531,6 +536,7 @@ void Footman::UnitStateMachine(float dt)
 				}
 			}
 		}
+		*/
 
 		break;
 
