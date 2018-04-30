@@ -108,12 +108,13 @@ void CritterBoar::Move(float dt)
 		entityCollider->isValid = false;
 	}
 
-	if (!isDead)
+	if (!isDead) {
 
 		UpdatePaws();
 
-	// PROCESS THE CURRENTLY ACTIVE GOAL
-	brain->Process(dt);
+		// PROCESS THE CURRENTLY ACTIVE GOAL
+		brain->Process(dt);
+	}
 
 	UnitStateMachine(dt);
 

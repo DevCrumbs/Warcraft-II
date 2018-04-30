@@ -178,10 +178,10 @@ void Dragon::Move(float dt)
 		}
 		}
 		*/
-	}
 
-	// PROCESS THE CURRENTLY ACTIVE GOAL
-	brain->Process(dt);
+		// PROCESS THE CURRENTLY ACTIVE GOAL
+		brain->Process(dt);
+	}
 
 	UnitStateMachine(dt);
 
