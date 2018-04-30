@@ -11,8 +11,6 @@
 
 EnemyBarracks::EnemyBarracks(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyBarracksInfo& enemyBarracksInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), enemyBarracksInfo(enemyBarracksInfo)
 {
-	buildingSize = Medium;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -40,7 +38,7 @@ EnemyBarracks::EnemyBarracks(fPoint pos, iPoint size, int currLife, uint maxLife
 
 	texArea = &enemyBarracksInfo.completeTexArea;
 
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	entityCollider->isTrigger = true;
 }
 

@@ -11,8 +11,6 @@
 
 TempleOfTheDamned::TempleOfTheDamned(fPoint pos, iPoint size, int currLife, uint maxLife, const TempleOfTheDamnedInfo& templeOfTheDamnedInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), templeOfTheDamnedInfo(templeOfTheDamnedInfo)
 {
-	buildingSize = Medium;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -40,7 +38,7 @@ TempleOfTheDamned::TempleOfTheDamned(fPoint pos, iPoint size, int currLife, uint
 
 	texArea = &templeOfTheDamnedInfo.completeTexArea;
 
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	entityCollider->isTrigger = true;
 }
 

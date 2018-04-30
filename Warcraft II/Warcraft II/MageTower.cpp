@@ -11,8 +11,6 @@
 
 MageTower::MageTower(fPoint pos, iPoint size, int currLife, uint maxLife, const MageTowerInfo& mageTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), mageTowerInfo(mageTowerInfo)
 {
-	buildingSize = Medium;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);

@@ -140,7 +140,6 @@ void Footman::Move(float dt)
 		if (auxIsSelected != isSelected) {
 
 			auxIsSelected = isSelected;
-	
 		}
 
 		// ---------------------------------------------------------------------
@@ -326,6 +325,8 @@ void Footman::DebugDrawSelected()
 
 void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
 {
+	LOG("COLLISION!");
+
 	switch (collisionState) {
 
 	case CollisionState_OnEnter:

@@ -16,6 +16,7 @@ struct TrollAxethrowerInfo
 	Animation deathUp, deathDown;
 
 	float axeSpeed = 0.0f;
+	uint droppedGold = 0;
 };
 
 class TrollAxethrower :public DynamicEntity

@@ -478,12 +478,10 @@ bool j1Scene::Update(float dt)
 
 				/// COMMAND ATTACK
 				/// Enemy
-				// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
 				Entity* target = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
 
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr) {
 
-					// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					bool isTarget = true;
@@ -497,7 +495,7 @@ bool j1Scene::Update(float dt)
 					}
 
 					if (isTarget)
-
+						// All the group is issued to attack this enemy (DYNAMIC ENTITY: enemy)
 						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
 				}
 
@@ -506,7 +504,6 @@ bool j1Scene::Update(float dt)
 
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr) {
 
-					// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					bool isTarget = true;
@@ -520,7 +517,7 @@ bool j1Scene::Update(float dt)
 					}
 
 					if (isTarget)
-
+						// All the group is issued to attack this enemy (DYNAMIC ENTITY: neutral)
 						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
 				}
 
@@ -529,7 +526,6 @@ bool j1Scene::Update(float dt)
 
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr) {
 
-					// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					bool isTarget = true;
@@ -543,7 +539,7 @@ bool j1Scene::Update(float dt)
 					}
 
 					if (isTarget)
-
+						// All the group is issued to attack this enemy (STATIC ENTITY: enemy)
 						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
 				}
 

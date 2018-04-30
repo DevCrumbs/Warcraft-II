@@ -12,8 +12,6 @@
 
 EnemyCannonTower::EnemyCannonTower(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyCannonTowerInfo& enemyCannonTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), enemyCannonTowerInfo(enemyCannonTowerInfo)
 {
-	buildingSize = Small;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -31,7 +29,7 @@ EnemyCannonTower::EnemyCannonTower(fPoint pos, iPoint size, int currLife, uint m
 	texArea = &enemyCannonTowerInfo.completeTexArea;
 
 	// Colliders
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, enemyCannonTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 	sightRadiusCollider->isTrigger = true;
 	entityCollider->isTrigger = true;
@@ -39,7 +37,6 @@ EnemyCannonTower::EnemyCannonTower(fPoint pos, iPoint size, int currLife, uint m
 
 void EnemyCannonTower::Move(float dt)
 {
-
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 

@@ -35,10 +35,10 @@ enum BuildingState
 
 enum StaticEntitySize
 {
-	None,
-	Small,
-	Medium,
-	Big
+	StaticEntitySize_None,
+	StaticEntitySize_Small,
+	StaticEntitySize_Medium,
+	StaticEntitySize_Big
 };
 
 enum TowerState
@@ -72,7 +72,6 @@ public:
 
 	// Collision
 	ColliderGroup* GetSightRadiusCollider() const;
-
 	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
 
 public:
@@ -80,7 +79,7 @@ public:
 	ENTITY_TYPE staticEntityType = EntityType_NONE;
 	StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
 	BuildingState buildingState = BuildingState_Normal;
-	StaticEntitySize buildingSize = None;
+	StaticEntitySize buildingSize = StaticEntitySize_None;
 
 protected:
 

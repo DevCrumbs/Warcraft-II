@@ -11,8 +11,6 @@
 
 GreatHall::GreatHall(fPoint pos, iPoint size, int currLife, uint maxLife, const GreatHallInfo& greatHallInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), greatHallInfo(greatHallInfo)
 {
-	buildingSize = Big;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -53,7 +51,7 @@ GreatHall::GreatHall(fPoint pos, iPoint size, int currLife, uint maxLife, const 
 
 	texArea = &greatHallInfo.completeTexArea;
 
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	entityCollider->isTrigger = true;
 }
 

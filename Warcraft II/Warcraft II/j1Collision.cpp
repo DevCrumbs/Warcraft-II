@@ -220,17 +220,69 @@ bool j1Collision::Update(float dt)
 				if (matrix[(*I)->colliderType][(*J)->colliderType]) {
 
 					// Check if there is a collision between the offsetColliders
-					if (offsetCollider1->CheckCollision(offsetCollider2->colliderRect) && offsetCollider1->colliderGroup->callback != nullptr)
+					if (offsetCollider1->CheckCollision(offsetCollider2->colliderRect) && offsetCollider1->colliderGroup->callback != nullptr) {
 
-						ProcessCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup);
+						if (offsetCollider1->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY || offsetCollider2->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY) {
+
+							// If one of the colliders belongs to a Static Entity, process here the collision (by only checking the offsetColliders)
+							if (offsetCollider1->colliderGroup->isTrigger) {
+
+								if (find(offsetCollider1->colliderGroup->collidingGroups.begin(), offsetCollider1->colliderGroup->collidingGroups.end(), offsetCollider2->colliderGroup) == offsetCollider1->colliderGroup->collidingGroups.end()) {
+
+									offsetCollider1->colliderGroup->collidingGroups.push_back(offsetCollider2->colliderGroup);
+									offsetCollider1->colliderGroup->lastCollidingGroups.push_back(offsetCollider2->colliderGroup);
+
+									// Collision!
+									offsetCollider1->colliderGroup->callback->OnCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup, CollisionState_OnEnter);
+									ret = true;
+								}
+								else {
+
+									offsetCollider1->colliderGroup->lastCollidingGroups.push_back(offsetCollider2->colliderGroup);
+									ret = true;
+								}
+							}
+							else
+								offsetCollider1->colliderGroup->callback->OnCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup, CollisionState_OnEnter);
+						}
+						else
+							// Process the collision by checking the sub-colliders
+							ProcessCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup);
+					}
 				}
 
 				if (matrix[(*J)->colliderType][(*I)->colliderType]) {
 
 					// Check if there is a collision between the offsetColliders
-					if (offsetCollider2->CheckCollision(offsetCollider1->colliderRect) && offsetCollider2->colliderGroup->callback != nullptr)
+					if (offsetCollider2->CheckCollision(offsetCollider1->colliderRect) && offsetCollider2->colliderGroup->callback != nullptr) {
 
-						ProcessCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup);
+						if (offsetCollider1->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY || offsetCollider2->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY) {
+
+							// If one of the colliders belongs to a Static Entity, process here the collision (by only checking the offsetColliders)
+							if (offsetCollider2->colliderGroup->isTrigger) {
+
+								if (find(offsetCollider2->colliderGroup->collidingGroups.begin(), offsetCollider2->colliderGroup->collidingGroups.end(), offsetCollider1->colliderGroup) == offsetCollider2->colliderGroup->collidingGroups.end()) {
+
+									offsetCollider2->colliderGroup->collidingGroups.push_back(offsetCollider1->colliderGroup);
+									offsetCollider2->colliderGroup->lastCollidingGroups.push_back(offsetCollider1->colliderGroup);
+
+									// Collision!
+									offsetCollider2->colliderGroup->callback->OnCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup, CollisionState_OnEnter);
+									ret = true;
+								}
+								else {
+
+									offsetCollider2->colliderGroup->lastCollidingGroups.push_back(offsetCollider1->colliderGroup);
+									ret = true;
+								}
+							}
+							else
+								offsetCollider2->colliderGroup->callback->OnCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup, CollisionState_OnEnter);
+						}
+						else
+							// Process the collision by checking the sub-colliders
+							ProcessCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup);
+					}
 				}
 			}
 			J++;
@@ -503,8 +555,10 @@ bool ColliderGroup::IsColliderInGroup(Collider* collider)
 	return false;
 }
 
-void ColliderGroup::CreateOffsetCollider()
+bool ColliderGroup::CreateOffsetCollider()
 {
+	bool ret = false;
+
 	if (offsetCollider != nullptr)
 		delete offsetCollider;
 	offsetCollider = nullptr;
@@ -516,17 +570,24 @@ void ColliderGroup::CreateOffsetCollider()
 	Collider* bottom = GetCollider(false, false, false, true);
 
 	if (left == nullptr || right == nullptr || top == nullptr || bottom == nullptr)
-		return;
+		return false;
 
 	SDL_Rect colliderRect;
 	colliderRect.x = left->GetPos().x;
 	colliderRect.y = top->GetPos().y;
 
-	colliderRect.w = (right->GetPos().x + App->map->data.tileWidth) - left->GetPos().x;
-	colliderRect.h = (bottom->GetPos().y + App->map->data.tileHeight) - top->GetPos().y;
+	colliderRect.w = (right->GetPos().x + right->colliderRect.w) - left->GetPos().x;
+	colliderRect.h = (bottom->GetPos().y + right->colliderRect.h) - top->GetPos().y;
 
 	offsetCollider = new Collider(colliderRect);
-	offsetCollider->SetColliderGroup(this);
+
+	if (offsetCollider != nullptr) {
+
+		offsetCollider->SetColliderGroup(this);
+		ret = true;
+	}
+
+	return ret;
 }
 
 Collider* ColliderGroup::GetCollider(bool left, bool right, bool top, bool bottom)

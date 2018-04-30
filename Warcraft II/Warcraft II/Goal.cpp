@@ -256,6 +256,11 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
+	if (targetInfo == nullptr) {
+
+		goalStatus = GoalStatus_Completed;
+		return goalStatus;
+	}
 	/// The target has been removed by another unit
 	if (targetInfo->isRemoved) {
 
@@ -667,6 +672,11 @@ GoalStatus Goal_HitTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
+	if (targetInfo == nullptr) {
+
+		goalStatus = GoalStatus_Completed;
+		return goalStatus;
+	}
 	/// The target has been removed by another unit
 	if (targetInfo->isRemoved) {
 
@@ -899,6 +909,12 @@ GoalStatus Goal_HitTarget::Process(float dt)
 			App->audio->PlayFx(App->audio->GetFX().swordClash, 0);
 
 			targetInfo->target->ApplyDamage(owner->GetDamage(targetInfo->target));
+
+			if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
+
+				StaticEntity* building = (StaticEntity*)targetInfo->target;
+				building->CheckBuildingState();
+			}
 			break;
 		}
 

@@ -11,8 +11,6 @@
 
 DragonRoost::DragonRoost(fPoint pos, iPoint size, int currLife, uint maxLife, const DragonRoostInfo& dragonRoostInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), dragonRoostInfo(dragonRoostInfo)
 {
-	buildingSize = Medium;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -40,7 +38,7 @@ DragonRoost::DragonRoost(fPoint pos, iPoint size, int currLife, uint maxLife, co
 
 	texArea = &dragonRoostInfo.completeTexArea;
 
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	entityCollider->isTrigger = true;
 }
 

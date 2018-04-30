@@ -11,8 +11,6 @@
 
 PigFarm::PigFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const PigFarmInfo& pigFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), pigFarmInfo(pigFarmInfo)
 {
-	buildingSize = Small;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -33,9 +31,8 @@ PigFarm::PigFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const PigF
 	entityCollider->isTrigger = true;
 }
 
-void PigFarm::Move(float dt) {
-
-
+void PigFarm::Move(float dt) 
+{
 }
 
 // Animations

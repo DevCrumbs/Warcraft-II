@@ -104,8 +104,8 @@ void Grunt::Move(float dt)
 			isValid = false;
 			App->player->enemiesKill++;
 
-			App->player->currentGold += 10;
-
+			// Give gold to the player
+			App->player->currentGold += gruntInfo.droppedGold;
 			App->scene->hasGoldChanged = true;
 
 			// Remove the entity from the unitsSelected list

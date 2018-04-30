@@ -45,8 +45,6 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	entitySide = EntitySide_Enemy;
 	CreateEntityCollider(EntitySide_Enemy, true);
 	entityCollider->isTrigger = true;
-
-	buildingSize = Small;
 }
 
 ChickenFarm::~ChickenFarm() {
