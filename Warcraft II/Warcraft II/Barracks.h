@@ -12,8 +12,8 @@ enum BarracksType
 struct BarracksInfo
 {
 	BarracksType barracksType = BarracksType_Barracks;
-	SDL_Rect barracksCompleteTexArea = { 0,0,0,0 };
-	SDL_Rect barracks2CompleteTexArea = { 0,0,0,0 };
+	SDL_Rect inProgressTexArea = { 0,0,0,0 };
+	SDL_Rect completeTexArea = { 0,0,0,0 };
 	SDL_Rect constructionPlanks1 = { 0,0,0,0 };
 	SDL_Rect constructionPlanks2 = { 0,0,0,0 };
 	int barracks1MaxLife = 0;
@@ -21,6 +21,8 @@ struct BarracksInfo
 	iPoint size{ 0,0 };
 	uint life = 0u;
 	float speed = 0.0f;
+
+	bool isBuilt = false;
 };
 
 class Barracks :public StaticEntity

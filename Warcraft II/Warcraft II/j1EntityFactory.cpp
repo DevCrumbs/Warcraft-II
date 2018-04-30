@@ -123,11 +123,11 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	barracksInfo.barracks1MaxLife = { humanBuildings.child("barracks").child("maxLife").attribute("value").as_int() };
 	aux = humanBuildings.child("barracks").child("sprites");
-	barracksInfo.barracksCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	barracksInfo.inProgressTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 
 	barracksInfo.barracks2MaxLife = { humanBuildings.child("barracks2").child("maxLife").attribute("value").as_int() };
 	aux = humanBuildings.child("barracks2").child("sprites");
-	barracksInfo.barracks2CompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	barracksInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 
 	elvenLumberMillInfo.maxLife = { humanBuildings.child("elvenLumberMill").child("maxLife").attribute("value").as_int() };
 	aux = humanBuildings.child("elvenLumberMill").child("sprites");
@@ -1481,8 +1481,12 @@ bool j1EntityFactory::Start()
 	alleriaTex = App->tex->Load(alleriaTexName.data());
 	turalyonTex = App->tex->Load(turalyonTexName.data());
 
+	//Already built buildings info
 	builtChickenFarmInfo = chickenFarmInfo;
 	builtChickenFarmInfo.isBuilt = true;
+
+	builtBarracksInfo = barracksInfo;
+	builtBarracksInfo.isBuilt = true;
 
 	return ret;
 }
@@ -1608,43 +1612,39 @@ void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoi
 
 	case EntityType_CHICKEN_FARM:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, chickenFarmInfo.completeTexArea);
 		break;
 	case EntityType_ELVEN_LUMBER_MILL:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &elvenLumberMillInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, elvenLumberMillInfo.completeTexArea);
 		break;
 	case EntityType_MAGE_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, mageTowerInfo.completeTexArea);
 		break;
 	case EntityType_GRYPHON_AVIARY:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, gryphonAviaryInfo.completeTexArea);
 		break;
 	case EntityType_STABLES:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, stablesInfo.completeTexArea);
 		break;
 	case EntityType_SCOUT_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, scoutTowerInfo.completeTexArea);
 		break;
 	case EntityType_PLAYER_GUARD_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerGuardTowerInfo.completeTexArea);
 		break;
 	case EntityType_PLAYER_CANNON_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		//App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerCannonTowerInfo.completeTexArea);
+		break;
+	case EntityType_BARRACKS:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+		App->printer->PrintSprite(mousePos, humanBuildingsTex, barracksInfo.completeTexArea);
 		break;
 	default:
 		break;
@@ -1672,6 +1672,7 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 	case EntityType_MAGE_TOWER:
 	case EntityType_GRYPHON_AVIARY:
 	case EntityType_STABLES:
+	case EntityType_BARRACKS:
 		DrawStaticEntityPreviewTiles(true, Medium, mousePos);
 
 		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), Medium)) 
@@ -1883,16 +1884,27 @@ const EntityInfo& j1EntityFactory::GetUnitInfo(ENTITY_TYPE dynamicEntityType)
 	case EntityType_TURALYON:
 		return (EntityInfo&)turalyonInfo;
 		break;
-
 	default:
 		return (const EntityInfo&)footmanInfo;
 		break;
 	}
 }
 
-const EntityInfo& j1EntityFactory::GetBuiltBuilding()
+const EntityInfo& j1EntityFactory::GetBuiltBuilding(ENTITY_TYPE staticEntityType)
 {
-	return (const EntityInfo&)builtChickenFarmInfo;
+	switch (staticEntityType) {
+	case EntityType_BARRACKS:
+		return (const EntityInfo&)builtBarracksInfo;
+		break;
+
+	case EntityType_CHICKEN_FARM:
+		return (const EntityInfo&)builtChickenFarmInfo;
+		break;
+
+	default:
+		return (const EntityInfo&)builtChickenFarmInfo;
+		break;
+	}
 }
 
 SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {

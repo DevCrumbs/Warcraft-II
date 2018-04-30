@@ -1287,7 +1287,7 @@ void j1Scene::UpdateIconsMenu()
 	ChangeMenuIconsText(buildingMenuButtons.mageTower.icon, mageTowerCost, { 496,202,50,41 }, { 496,202,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.stables.icon, stablesCost, { 343,160,50,41 }, { 343,160,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracks2Cost, { 394,34,50,41 }, { 445,34,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracksCost, { 394,34,50,41 }, { 445,34,50,41 });
 
 
 }
@@ -1308,7 +1308,7 @@ void j1Scene::UpdateLabelsMenu()
 	ChangeMenuLabelColor(buildingMenuButtons.mageTower.cost, mageTowerCost);
 	ChangeMenuLabelColor(buildingMenuButtons.stables.cost, stablesCost);
 	ChangeMenuLabelColor(buildingMenuButtons.scoutTower.cost, scoutTowerCost);
-	ChangeMenuLabelColor(buildingMenuButtons.barracks.cost, barracks2Cost);
+	ChangeMenuLabelColor(buildingMenuButtons.barracks.cost, barracksCost);
 }
 
 void j1Scene::ChangeMenuLabelColor(UILabel * Label, int cost)
@@ -1793,6 +1793,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
 				}
 				else if (App->player->currentGold < cannonTowerCost)
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+			}
+
+			else if (UIelem == buildingMenuButtons.barracks.icon) {
+				if (App->player->currentGold >= barracksCost) {
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_BARRACKS;
+				}
+				else if (App->player->currentGold < barracksCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
