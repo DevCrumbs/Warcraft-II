@@ -115,6 +115,15 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	// Sheep Paws
 	pugi::xml_node sheepPawsAnimation = config.child("animations").child("sheepPaws");
 
+	//Cross for the mouse press
+	pugi::xml_node crossAnimation = config.child("cross");
+	cross.animation.speed = crossAnimation.attribute("speed").as_float();
+	cross.animation.loop = crossAnimation.attribute("loop").as_bool();
+	for (currentAnimation = crossAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		cross.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	cross.size = { healthAnimation.child("frame").attribute("w").as_int(), healthAnimation.child("frame").attribute("h").as_int() };
+
 	// up
 	currentAnimation = sheepPawsAnimation.child("up");
 	sheepPawsInfo.up.speed = currentAnimation.attribute("speed").as_float();
@@ -261,6 +270,8 @@ bool j1Particles::Start()
 
 	paws.particleType = ParticleType_Paws;
 	health.particleType = ParticleType_Health;
+
+	cross.particleType = ParticleType_Cross;
 
 	/// Life
 	paws.life = 800;
@@ -688,6 +699,7 @@ bool Particle::Update(float dt)
 		break;
 
 	case ParticleType_Health:
+	case ParticleType_Cross:
 	{
 		if (animation.Finished())
 			return false;

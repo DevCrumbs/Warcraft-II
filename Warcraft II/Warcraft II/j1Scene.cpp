@@ -576,6 +576,9 @@ bool j1Scene::Update(float dt)
 
 					bool isGoal = false;
 
+					//Cross particle where the mouse is
+					App->particles->AddParticle(App->particles->cross, App->player->GetMousePos());
+
 					if (group->GetShapedGoalSize() <= 1) {
 
 					
