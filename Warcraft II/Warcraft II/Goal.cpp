@@ -316,6 +316,11 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
+	if (targetInfo == nullptr) {
+
+		goalStatus = GoalStatus_Completed;
+		return goalStatus;
+	}
 	/// The target has been removed by another unit
 	if (targetInfo->isRemoved) {
 
@@ -777,6 +782,11 @@ GoalStatus Goal_HitTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
+	if (targetInfo == nullptr) {
+
+		goalStatus = GoalStatus_Completed;
+		return goalStatus;
+	}
 	/// The target has been removed by another unit
 	if (targetInfo->isRemoved) {
 

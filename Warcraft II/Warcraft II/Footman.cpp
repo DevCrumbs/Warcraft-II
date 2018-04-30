@@ -521,7 +521,6 @@ void Footman::UnitStateMachine(float dt)
 
 		// ATTACK NOTE (Attack state): if currTarget is dead, the unit automatically attacks the next target (only DYNAMIC ENTITIES) from their targets list
 
-		/*
 		if (singleUnit->IsFittingTile()) {
 
 			if (currTarget == nullptr) {
@@ -536,7 +535,6 @@ void Footman::UnitStateMachine(float dt)
 				}
 			}
 		}
-		*/
 
 		break;
 
