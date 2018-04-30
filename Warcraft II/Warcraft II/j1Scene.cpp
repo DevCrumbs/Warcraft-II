@@ -1282,42 +1282,70 @@ void j1Scene::UpdateIconsMenu()
 {
 	ChangeMenuIconsText(buildingMenuButtons.chickenFarm.icon, chickenFarmCost, { 241,34,50,41 }, { 292,34,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.cannonTower.icon, cannonTowerCost, { 394,118,50,41 }, { 445,118,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.guardTower.icon, guardTowerCost, { 394,76,50,41 }, { 445,76,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.mageTower.icon, mageTowerCost, { 496,202,50,41 }, { 496,202,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.stables.icon, stablesCost, { 343,160,50,41 }, { 343,160,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracks2Cost, { 394,34,50,41 }, { 445,34,50,41 });
+	//Only one construction for each one
+	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracks2Cost, { 394,34,50,41 }, { 445,34,50,41 }, true, App->player->barracks);
+	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 }, true, App->player->gryphonAviary);
 
 
 }
-void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText)
+void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle, StaticEntity* stcEntity)
 {
-	if (App->player->currentGold >= cost)
-		butt->ChangesTextsAreas(true, normalText, hoverText);
+	if (isSingle) {
+		if (stcEntity == nullptr && App->player->currentGold >= cost)
+			butt->ChangesTextsAreas(true, normalText, hoverText);
+		else
+			butt->ChangesTextsAreas(false);
+	}
 	else {
-		butt->ChangesTextsAreas(false);
+		if (App->player->currentGold >= cost)
+			butt->ChangesTextsAreas(true, normalText, hoverText);
+		else 
+			butt->ChangesTextsAreas(false);
 	}
 }
+
 void j1Scene::UpdateLabelsMenu()
 {
-	ChangeMenuLabelColor(buildingMenuButtons.cannonTower.cost, cannonTowerCost);
-	ChangeMenuLabelColor(buildingMenuButtons.chickenFarm.cost, chickenFarmCost);
-	ChangeMenuLabelColor(buildingMenuButtons.gryphonAviary.cost, gryphonAviaryCost);
-	ChangeMenuLabelColor(buildingMenuButtons.guardTower.cost, guardTowerCost);
-	ChangeMenuLabelColor(buildingMenuButtons.mageTower.cost, mageTowerCost);
-	ChangeMenuLabelColor(buildingMenuButtons.stables.cost, stablesCost);
-	ChangeMenuLabelColor(buildingMenuButtons.scoutTower.cost, scoutTowerCost);
-	ChangeMenuLabelColor(buildingMenuButtons.barracks.cost, barracks2Cost);
+	ChangeMenuLabelInfo(buildingMenuButtons.cannonTower.cost, cannonTowerCost);
+	ChangeMenuLabelInfo(buildingMenuButtons.chickenFarm.cost, chickenFarmCost);
+	ChangeMenuLabelInfo(buildingMenuButtons.guardTower.cost, guardTowerCost);
+	ChangeMenuLabelInfo(buildingMenuButtons.mageTower.cost, mageTowerCost);
+	ChangeMenuLabelInfo(buildingMenuButtons.stables.cost, stablesCost);
+	ChangeMenuLabelInfo(buildingMenuButtons.scoutTower.cost, scoutTowerCost);
+	//Only one construction for each one
+	ChangeMenuLabelInfo(buildingMenuButtons.barracks.cost, barracks2Cost, true, App->player->barracks);
+	ChangeMenuLabelInfo(buildingMenuButtons.gryphonAviary.cost, gryphonAviaryCost, true, App->player->gryphonAviary);
 }
 
-void j1Scene::ChangeMenuLabelColor(UILabel * Label, int cost)
+void j1Scene::ChangeMenuLabelInfo(UILabel * Label, int cost, bool isSingle, StaticEntity* stcEntity)
 {
-	if (App->player->currentGold >= cost)
-		Label->SetColor(White_, true);
-	else
-		Label->SetColor(BloodyRed_, true);
+	//Text if you only can have one building like barracks
+	if (isSingle) {
+		if (stcEntity == nullptr) {
 
+			if (App->player->currentGold >= cost)
+				Label->SetColor(White_, true);
+			else
+				Label->SetColor(BloodyRed_, true);
+
+			Label->SetText("Cost: " + to_string(cost) + " gold");
+		}
+		else {
+			Label->SetColor(BloodyRed_, true);
+			Label->SetText("You already have it");
+		}
+	}
+	else {
+
+		if (App->player->currentGold >= cost)
+			Label->SetColor(White_, true);
+		else
+			Label->SetColor(BloodyRed_, true);
+	}
 }
 
 void j1Scene::LoadBuildingMenu()
@@ -1357,7 +1385,7 @@ void j1Scene::LoadBuildingMenu()
 			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
 
 		CreateBuildingElements({ 496,118,50,41 }, { 585, 370 }, "Barracks",
-			"You already have it", { 645, 380 }, { 645, 397 }, 500, &buildingMenuButtons.barracks);
+			"Cost: 1000 gold", { 645, 380 }, { 645, 397 }, barracks2Cost, &buildingMenuButtons.barracks);
 	}
 }
 
@@ -1404,6 +1432,7 @@ void j1Scene::UnLoadBuildingMenu()
 	DeleteBuildingElements(&buildingMenuButtons.scoutTower);
 	DeleteBuildingElements(&buildingMenuButtons.guardTower);
 	DeleteBuildingElements(&buildingMenuButtons.cannonTower);
+	DeleteBuildingElements(&buildingMenuButtons.barracks);
 	App->gui->RemoveElem((UIElement**)&buildingMenu);
 
 	buildingMenuOn = false;
@@ -1745,7 +1774,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
-			else if (UIelem == buildingMenuButtons.gryphonAviary.icon) {
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon &&  App->player->gryphonAviary == nullptr) {
 				if (App->player->currentGold >= gryphonAviaryCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);

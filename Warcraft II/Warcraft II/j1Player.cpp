@@ -396,23 +396,11 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 			queue->front() = nullptr;
 			queue->pop();
 
-			if (entitySelectedStats.entitySelected == barracks) {
-
+			if (entitySelectedStats.entitySelected == barracks) 
 				UpdateSpawnUnitsStats(&barracksSpawningListUI);
-			}
 
 			else if (entitySelectedStats.entitySelected == gryphonAviary)
-			{
-				for (list<GroupSpawning>::iterator gryphIter = gryphoSpawningListUI.begin(); gryphIter != gryphoSpawningListUI.end(); ++gryphIter)
-				{
-
-
-
-
-
-				}
 				UpdateSpawnUnitsStats(&gryphoSpawningListUI);
-			}
 		}
 	}
 	for (list<GroupSpawning>::iterator gryphIter = gryphoSpawningListUI.begin(), barrackIter = barracksSpawningListUI.begin(); gryphIter != gryphoSpawningListUI.end(); ++gryphIter, ++barrackIter)
@@ -1240,7 +1228,6 @@ void j1Player::HideEntitySelectedInfo()
 	}
 }
 
-
 void j1Player::DeleteEntitiesMenu()
 {
 	//Barracs Butt
@@ -1298,12 +1285,14 @@ void j1Player::ShowHoverInfoMenu(string unitProduce, string gold) {
 	hoverInfo.info->isActive = true;
 	hoverInfo.cost->isActive = true;
 }
+
 void j1Player::HideHoverInfoMenu()
 {
 	hoverInfo.background->isActive = false;
 	hoverInfo.info->isActive = false;
 	hoverInfo.cost->isActive = false;
 }
+
 void j1Player::DeleteHoverInfoMenu()
 {
 	App->gui->RemoveElem((UIElement**)&hoverInfo.background);

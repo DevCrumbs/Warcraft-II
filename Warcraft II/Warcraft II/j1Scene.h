@@ -153,8 +153,8 @@ public:
 	void ChangeBuildingMenuState(BuildingMenu* elem);
 	void UpdateLabelsMenu();
 	void UpdateIconsMenu();
-	void ChangeMenuLabelColor(UILabel* label, int cost);
-	void ChangeMenuIconsText(UIButton* butt, int cost, SDL_Rect normalText, SDL_Rect hoverText);
+	void ChangeMenuLabelInfo(UILabel* label, int cost, bool isSingle = false, StaticEntity* stcEnt = nullptr);
+	void ChangeMenuIconsText(UIButton* butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle = false, StaticEntity* stcEnt = nullptr);
 	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
