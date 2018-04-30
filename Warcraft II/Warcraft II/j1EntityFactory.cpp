@@ -3711,6 +3711,38 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 	return nullptr;
 }
 
+void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
+{
+	UnselectAllEntities();
+
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	while (it != activeDynamicEntities.end()) {
+
+		if (App->render->IsInScreen((*it)->GetPos())) {
+
+			if (entityType != EntityType_NONE) {
+
+				if ((*it)->dynamicEntityType == entityType && unitsSelected.size() < MAX_UNITS_SELECTED) {
+
+					(*it)->isSelected = true;
+					unitsSelected.push_back(*it);
+				}
+			}
+			else {
+
+				if (unitsSelected.size() < MAX_UNITS_SELECTED) {
+
+					(*it)->isSelected = true;
+					unitsSelected.push_back(*it);
+				}
+			}
+		}
+
+		it++;
+	}
+}
+
 // Dynamic Entities
 bool j1EntityFactory::IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType)
 {

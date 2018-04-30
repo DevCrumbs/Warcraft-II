@@ -432,7 +432,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 			LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
 
 			// Set the target's isSightSatisfied to false
@@ -455,7 +455,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 			LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
 
 			// Set the target's isAttackSatisfied to false
@@ -521,7 +521,6 @@ void Footman::UnitStateMachine(float dt)
 
 		// ATTACK NOTE (Attack state): if currTarget is dead, the unit automatically attacks the next target (only DYNAMIC ENTITIES) from their targets list
 
-		/*
 		if (singleUnit->IsFittingTile()) {
 
 			if (currTarget == nullptr) {
@@ -536,7 +535,6 @@ void Footman::UnitStateMachine(float dt)
 				}
 			}
 		}
-		*/
 
 		break;
 

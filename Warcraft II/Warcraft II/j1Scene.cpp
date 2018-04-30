@@ -436,7 +436,7 @@ bool j1Scene::Update(float dt)
 				mouseRect.h *= -1;
 			}
 
-			App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: add static entities, only player side
+			App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
 		}
 
 		units = App->entities->GetLastUnitsSelected();
