@@ -368,35 +368,32 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 			switch (toSpawnEntity) {
 
 			case EntityType_FOOTMAN:
-				SpawnUnit(barracks->GetPos(), EntityType_FOOTMAN, unitInfo);
-				App->audio->PlayFx(App->audio->GetFX().footmanReady, 0);
-				barracksSpawningListUI.front().entityIcon->isActive = false;
-				barracksSpawningListUI.front().entityLifeBar->isActive = false;
-				barracksSpawningListUI.front().owner = nullptr;
+				if (barracks != nullptr) {
+					SpawnUnit(barracks->GetPos(), EntityType_FOOTMAN, unitInfo);
+					App->audio->PlayFx(App->audio->GetFX().footmanReady, 0);
+					barracksSpawningListUI.front().entityIcon->isActive = false;
+					barracksSpawningListUI.front().entityLifeBar->isActive = false;
+					barracksSpawningListUI.front().owner = nullptr;
+				}
 				break;
 
 			case EntityType_ELVEN_ARCHER:
-				SpawnUnit(barracks->GetPos(), EntityType_ELVEN_ARCHER, unitInfo);
-				App->audio->PlayFx(App->audio->GetFX().archerReady, 0);
-				barracksSpawningListUI.front().entityIcon->isActive = false;
-				barracksSpawningListUI.front().entityLifeBar->isActive = false;
-				barracksSpawningListUI.front().owner = nullptr;
+				if (barracks != nullptr) {
+					SpawnUnit(barracks->GetPos(), EntityType_ELVEN_ARCHER, unitInfo);
+					App->audio->PlayFx(App->audio->GetFX().archerReady, 0);
+					barracksSpawningListUI.front().entityIcon->isActive = false;
+					barracksSpawningListUI.front().entityLifeBar->isActive = false;
+					barracksSpawningListUI.front().owner = nullptr;
+				}
 				break;
 
-				//case EntityType_MAGE:
-				//	App->entities->AddEntity(EntityType_MAGE, { mageTowerPos.x + 30, mageTowerPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_MAGE), unitInfo, this);
-				//	break;
-
-				//case EntityType_PALADIN:
-				//	App->entities->AddEntity(EntityType_PALADIN, { barracksPos.x + 30, barracksPos.y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_PALADIN), unitInfo, this);
-				//	break;
-
 			case EntityType_GRYPHON_RIDER:
-				SpawnUnit(gryphonAviary->GetPos(), EntityType_GRYPHON_RIDER, unitInfo);
-				//App->entities->AddEntity(EntityType_GRYPHON_RIDER, { gryphonAviary->GetPos().x + 30, gryphonAviary->GetPos().y - 50 }, (EntityInfo&)App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, this);
-				gryphoSpawningListUI.front().entityIcon->isActive = false;
-				gryphoSpawningListUI.front().entityLifeBar->isActive = false;
-				gryphoSpawningListUI.front().owner = nullptr;
+				if (gryphonAviary != nullptr) {
+					SpawnUnit(gryphonAviary->GetPos(), EntityType_GRYPHON_RIDER, unitInfo);
+					gryphoSpawningListUI.front().entityIcon->isActive = false;
+					gryphoSpawningListUI.front().entityLifeBar->isActive = false;
+					gryphoSpawningListUI.front().owner = nullptr;
+				}
 				break;
 
 			default:
@@ -628,7 +625,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 			/// TODO Sandra: only Footman and Elven Archer must be able to gather gold (King Terenas says that gold cannot be gathered by using a Gryphon Rider)
 			// Gold Mine (right click to send a unit to gather gold)
-			if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
+ 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
 
 				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
@@ -715,22 +712,22 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 			}
 
-			else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->buildingState == BuildingState_Normal) {
+			else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->GetIsFinishedBuilt()) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Barracks", { 546,160,50,41 }, ent);
 			}
 
-			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade && staticEntity->buildingState == BuildingState_Normal) {
+			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade && staticEntity->GetIsFinishedBuilt()) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Castle", { 546,202,50,41 }, ent);
 			}
 
-			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade && staticEntity->buildingState == BuildingState_Normal) {
+			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade && staticEntity->GetIsFinishedBuilt()) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Keep", { 597,202,50,41 }, ent);
 			}
 
-			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->buildingState == BuildingState_Normal) {
+			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && staticEntity->GetIsFinishedBuilt()) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
 			}
