@@ -102,7 +102,7 @@ public:
 	
 	const EntityInfo& GetBuildingInfo(ENTITY_TYPE staticEntityType);
 	const EntityInfo& GetUnitInfo(ENTITY_TYPE dynamicEntityType);
-	const EntityInfo& GetBuiltBuilding();
+	const EntityInfo& GetBuiltBuilding(ENTITY_TYPE staticEntityType);
 
 	SDL_Texture* GetHumanBuildingTexture();
 	SDL_Texture* GetNeutralBuildingTexture();
@@ -229,6 +229,7 @@ private:
 	StrongholdInfo strongholdInfo;
 
 	BarracksInfo barracksInfo;
+	BarracksInfo builtBarracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
 	ChickenFarmInfo builtChickenFarmInfo;
 	ElvenLumberMillInfo elvenLumberMillInfo;
@@ -236,8 +237,8 @@ private:
 	GryphonAviaryInfo gryphonAviaryInfo;
 	MageTowerInfo mageTowerInfo;
 	ScoutTowerInfo scoutTowerInfo;
-	PlayerGuardTowerInfo playerGuardTowerInfo; // TODO
-	PlayerCannonTowerInfo playerCannonTowerInfo; // TODO
+	PlayerGuardTowerInfo playerGuardTowerInfo; 
+	PlayerCannonTowerInfo playerCannonTowerInfo;
 
 	//Neutral buildings
 	GoldMineInfo goldMineInfo;

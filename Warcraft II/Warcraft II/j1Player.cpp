@@ -139,21 +139,23 @@ bool j1Player::Update(float dt)
 				}
 			}
 	
-
+	*/
 	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
-		if (gryphonAviary != nullptr)
-			if (gryphonAviary->GetIsFinishedBuilt()) {
-				Entity* ent = (Entity*)gryphonAviary;
-				ent->ApplyDamage(20);
-				if (!gryphonAviary->CheckBuildingState() && entitySelectedStats.entitySelected == ent) {
-					DeleteEntitiesMenu();
+		if (barracks != nullptr)
+			if (barracks->GetIsFinishedBuilt()) {
+				Entity* ent = (Entity*)barracks;
+				ent->ApplyDamage(200);
+				if (!barracks->CheckBuildingState()){
+					if(entitySelectedStats.entitySelected == ent)
+						HideEntitySelectedInfo();
+					barracks = nullptr;
 				}
 				else if (entitySelectedStats.entitySelected == ent) {
 					entitySelectedStats.HP->SetText(ent->GetStringLife());
-					entitySelectedStats.lifeBar->DecreaseLife(20);
+					entitySelectedStats.lifeBar->DecreaseLife(200);
 				}
 			}
-	*/
+	
 	
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 		if (!chickenFarm.empty()) 
@@ -326,6 +328,16 @@ void j1Player::CheckIfPlaceBuilding()
 				App->scene->hasGoldChanged = true;
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
+				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
+			break;
+		case EntityType_BARRACKS:
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
+				cannonTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_BARRACKS, buildingPos, App->entities->GetBuildingInfo(EntityType_BARRACKS), unitInfo, this));
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				AddGold(-App->scene->barracksCost); //Discount gold
+				App->scene->hasGoldChanged = true;
+			}
+			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 		case EntityType_NONE:
@@ -775,26 +787,38 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			App->player->isMouseOnMine = false;
 			break;
 		case EntitiesEvent_CREATED:
-			if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM)
+			if (staticEntity->staticEntityType == EntityType_CHICKEN_FARM) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Chicken Farm", { 241,34,50,41 }, ent);
-
-			else if (staticEntity->staticEntityType == EntityType_GRYPHON_AVIARY)
+			}
+			else if (staticEntity->staticEntityType == EntityType_GRYPHON_AVIARY) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Gryphon Aviary", { 394,160,50,41 }, ent);
-
-			else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER)
+			}
+			else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Mage Tower", { 394,202,50,41 }, ent);
-
-			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER)
+			}
+			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Scout Tower", { 394,34,50,41 }, ent);
-
-			else if (staticEntity->staticEntityType == EntityType_PLAYER_GUARD_TOWER)
+			}
+			else if (staticEntity->staticEntityType == EntityType_PLAYER_GUARD_TOWER) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Guard Tower", { 394,76,50,41 }, ent);
-
-			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER)
+			}
+			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Cannon Tower", { 394,118,50,41 }, ent);
-
-			else if (staticEntity->staticEntityType == EntityType_STABLES)
+			}
+			else if (staticEntity->staticEntityType == EntityType_STABLES) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Stables", { 241,160,50,41 }, ent);
+			}
+			else if (staticEntity->staticEntityType == EntityType_BARRACKS) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+				ShowEntitySelectedInfo("Building...", "Barracks", { 546,160,50,41 }, ent);
+			}
 			break;
 
 		default:

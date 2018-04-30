@@ -186,7 +186,7 @@ public:
 	// Building costs
 	int keepCost = 500;
 	int castleCost = 1500;
-	int barracks2Cost = 1000;
+	int barracksCost = 1000;
 	int chickenFarmCost = 250;
 	int stablesCost = 900;
 	int gryphonAviaryCost = 400;

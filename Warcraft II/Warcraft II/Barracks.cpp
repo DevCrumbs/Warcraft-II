@@ -38,11 +38,22 @@ Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const Ba
 	App->movement->UpdateUnitsWalkability(walkability);
 	// -----
 
-	texArea = &barracksInfo.barracksCompleteTexArea;
-	currLife = maxLife;
-	isBuilt = true;
-	buildingState = BuildingState_Normal;
-	//this->constructionTimer.Start();
+	isBuilt = barracksInfo.isBuilt;
+
+	if (isBuilt) {
+		texArea = &barracksInfo.completeTexArea;
+		buildingState = BuildingState_Normal;
+	}
+
+	else if (!isBuilt) {
+		texArea = &barracksInfo.constructionPlanks1;
+		this->constructionTimer.Start();
+		buildingState = BuildingState_Building;
+		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+	}
+
+	currLife = maxLife;	
+	
 }
 
 void Barracks::Move(float dt)
@@ -50,7 +61,16 @@ void Barracks::Move(float dt)
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 
-	if (App->player->barracksUpgrade) {
+	
+	if (!isBuilt) 
+		UpdateAnimations(dt);
+
+	if (constructionTimer.Read() >= (constructionTime * 1000) && !isBuilt)
+		isBuilt = true;
+	
+
+	//It isnt used anymore
+	/*if (App->player->barracksUpgrade) {
 		if (startTimer) {
 			this->constructionTimer.Start();
 			App->player->HideEntitySelectedInfo();
@@ -58,11 +78,8 @@ void Barracks::Move(float dt)
 		}
 		UpdateAnimations(dt);
 		barracksInfo.barracksType = BarracksType_Barracks2;
-	}
-
-	//if (constructionTimer.Read() >= (constructionTime * 1000))
-	//	isBuilt = true;
-	
+	}*/
+	//-----------------------------
 }
 
 // Animations
@@ -72,6 +89,19 @@ void Barracks::LoadAnimationsSpeed()
 }
 void Barracks::UpdateAnimations(float dt)
 {
+	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+		texArea = &barracksInfo.constructionPlanks2;
+
+	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+		texArea = &barracksInfo.inProgressTexArea;
+
+	if (constructionTimer.Read() >= constructionTime * 1000) {
+		texArea = &barracksInfo.completeTexArea;
+		buildingState = BuildingState_Normal;
+	}
+
+	//It isnt used anymore
+	/*
 	if (constructionTimer.Read() >= constructionTime * 1000) {
 		if (barracksInfo.barracksType == BarracksType_Barracks2) {
 			texArea = &barracksInfo.barracks2CompleteTexArea;
@@ -84,4 +114,6 @@ void Barracks::UpdateAnimations(float dt)
 		texArea = &barracksInfo.constructionPlanks2;
 		buildingState = BuildingState_Building;
 	}
+	*/
+	//-----------------------------
 }

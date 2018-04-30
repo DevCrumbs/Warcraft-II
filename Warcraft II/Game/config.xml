@@ -1011,7 +1011,7 @@
         <barracks>
           <maxLife value = "800"/>
           <sprites>
-            <complete x="546" y="15" w="96" h="96"/>
+            <complete x="546" y="126" w="96" h="96"/>
           </sprites>
         </barracks>
 

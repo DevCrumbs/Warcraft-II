@@ -62,7 +62,7 @@ void ChickenFarm::Move(float dt)
 	if(!isBuilt)
 		UpdateAnimations(dt);
 	
-	if (constructionTimer.Read() >= (constructionTime * 1000) && isBuilt == false) {
+	if (constructionTimer.Read() >= (constructionTime * 1000) && !isBuilt) {
 		isBuilt = true;
 		App->player->currentFood += 3;
 		App->scene->hasFoodChanged = true;

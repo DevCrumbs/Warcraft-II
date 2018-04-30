@@ -1287,10 +1287,8 @@ void j1Scene::UpdateIconsMenu()
 	ChangeMenuIconsText(buildingMenuButtons.stables.icon, stablesCost, { 343,160,50,41 }, { 343,160,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 });
 	//Only one construction for each one
-	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracks2Cost, { 394,34,50,41 }, { 445,34,50,41 }, true, App->player->barracks);
+	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracksCost, { 394,34,50,41 }, { 445,34,50,41 }, true, App->player->barracks);
 	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 }, true, App->player->gryphonAviary);
-
-
 }
 void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle, StaticEntity* stcEntity)
 {
@@ -1310,6 +1308,7 @@ void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText
 
 void j1Scene::UpdateLabelsMenu()
 {
+
 	ChangeMenuLabelInfo(buildingMenuButtons.cannonTower.cost, cannonTowerCost);
 	ChangeMenuLabelInfo(buildingMenuButtons.chickenFarm.cost, chickenFarmCost);
 	ChangeMenuLabelInfo(buildingMenuButtons.guardTower.cost, guardTowerCost);
@@ -1317,7 +1316,7 @@ void j1Scene::UpdateLabelsMenu()
 	ChangeMenuLabelInfo(buildingMenuButtons.stables.cost, stablesCost);
 	ChangeMenuLabelInfo(buildingMenuButtons.scoutTower.cost, scoutTowerCost);
 	//Only one construction for each one
-	ChangeMenuLabelInfo(buildingMenuButtons.barracks.cost, barracks2Cost, true, App->player->barracks);
+	ChangeMenuLabelInfo(buildingMenuButtons.barracks.cost, barracksCost, true, App->player->barracks);
 	ChangeMenuLabelInfo(buildingMenuButtons.gryphonAviary.cost, gryphonAviaryCost, true, App->player->gryphonAviary);
 }
 
@@ -1385,7 +1384,7 @@ void j1Scene::LoadBuildingMenu()
 			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
 
 		CreateBuildingElements({ 547,160,50,41 }, { 585, 370 }, "Barracks",
-			"Cost: 1000 gold", { 645, 380 }, { 645, 397 }, barracks2Cost, &buildingMenuButtons.barracks);
+			"Cost: 1000 gold", { 645, 380 }, { 645, 397 }, barracksCost, &buildingMenuButtons.barracks);
 	}
 }
 
@@ -1822,6 +1821,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
 				}
 				else if (App->player->currentGold < cannonTowerCost)
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+			}
+
+			else if (UIelem == buildingMenuButtons.barracks.icon && App->player->barracks == nullptr) {
+				if (App->player->currentGold >= barracksCost) {
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_BARRACKS;
+				}
+				else if (App->player->currentGold < barracksCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
