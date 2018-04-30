@@ -150,7 +150,6 @@ public:
 	void ShowHoverInfoMenu(string unitProduce, string gold);
 	void HideHoverInfoMenu();
 	void DeleteHoverInfoMenu();
-	//void CheckBuildingState(Entity* ent);
 	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, bool isActive = true);
 	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, bool isActive = true);
 	

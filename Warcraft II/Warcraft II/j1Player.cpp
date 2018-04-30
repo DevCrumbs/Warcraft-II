@@ -65,23 +65,22 @@ bool j1Player::PreUpdate() {
 			StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
 
 			if (building->staticEntityType != EntityType_GOLD_MINE && building->staticEntityType != EntityType_RUNESTONE) {
-				if (!((StaticEntity*)entitySelectedStats.entitySelected)->GetIsFinishedBuilt()) {
-					entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+				if (!building->GetIsFinishedBuilt()) {
+					entitySelectedStats.lifeBar->SetLife(building->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
 				}
-				else if (((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() == ((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTime()) {
-					entitySelectedStats.lifeBar->SetLife(((StaticEntity*)entitySelectedStats.entitySelected)->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-					entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+				else if (building->GetConstructionTimer() == building->GetConstructionTime()) {
+					entitySelectedStats.lifeBar->SetLife(building->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
+					entitySelectedStats.HP->SetText(building->GetStringLife());
 					entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
+					ShowEntitySelectedButt(building->staticEntityType);
 				}
-
 			}
 		}
 	}
-
 	return true;
 }
 
-bool j1Player::Update(float dt) 
+bool j1Player::Update(float dt)  
 {
 	//Check if a building needs to be placed
 	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
@@ -332,7 +331,7 @@ void j1Player::CheckIfPlaceBuilding()
 			break;
 		case EntityType_BARRACKS:
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
-				cannonTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_BARRACKS, buildingPos, App->entities->GetBuildingInfo(EntityType_BARRACKS), unitInfo, this));
+				barracks = (StaticEntity*)App->entities->AddEntity(EntityType_BARRACKS, buildingPos, App->entities->GetBuildingInfo(EntityType_BARRACKS), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->barracksCost); //Discount gold
 				App->scene->hasGoldChanged = true;
@@ -1011,33 +1010,33 @@ void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SD
 
 	StaticEntity* selectedEnt = (StaticEntity*)currentEntity;
 
-	if (entityName_text == "Barracks") 
-		ShowEntitySelectedButt(EntityType_BARRACKS);
-	
-	else if (entityName_text == "Gryphon Aviary" && gryphonAviary->buildingState == BuildingState_Normal) 
-		ShowEntitySelectedButt(EntityType_GRYPHON_AVIARY);
-	
-	//if (entityName_text == "Mage Tower" && mageTower->buildingState == BuildingState_Normal) 
-	//	ShowEntitySelectedButt(EntityType_MAGE_TOWER);
-	
-	else if ((entityName_text == "Town Hall" || entityName_text == "Keep") && townHall->buildingState == BuildingState_Normal) {
-		ShowEntitySelectedButt(EntityType_TOWN_HALL);
+	if (selectedEnt->GetIsFinishedBuilt()) {
+		if (entityName_text == "Barracks")
+			ShowEntitySelectedButt(EntityType_BARRACKS);
+
+		else if (entityName_text == "Gryphon Aviary")
+			ShowEntitySelectedButt(EntityType_GRYPHON_AVIARY);
+
+		//if (entityName_text == "Mage Tower" && mageTower->buildingState == BuildingState_Normal) 
+		//	ShowEntitySelectedButt(EntityType_MAGE_TOWER);
+
+		else if (entityName_text == "Town Hall" || entityName_text == "Keep") {
+			ShowEntitySelectedButt(EntityType_TOWN_HALL);
+		}
+
+		else if (entityName_text == "Chicken Farm")
+			ShowEntitySelectedButt(EntityType_CHICKEN_FARM);
+
+		else if (entityName_text == "Scout Tower")
+			ShowEntitySelectedButt(EntityType_SCOUT_TOWER);
+
+		else if (entityName_text == "Guard Tower")
+			ShowEntitySelectedButt(EntityType_PLAYER_GUARD_TOWER);
+
+		else if (entityName_text == "Cannon Tower")
+			ShowEntitySelectedButt(EntityType_PLAYER_CANNON_TOWER);
 	}
-
-	else if(entityName_text == "Chicken Farm" && selectedEnt->buildingState != BuildingState_Building)
-		ShowEntitySelectedButt(EntityType_CHICKEN_FARM);
-
-	else if (entityName_text == "Scout Tower" && selectedEnt->buildingState != BuildingState_Building)
-		ShowEntitySelectedButt(EntityType_SCOUT_TOWER);
-
-	else if (entityName_text == "Guard Tower" && selectedEnt->buildingState != BuildingState_Building)
-		ShowEntitySelectedButt(EntityType_PLAYER_GUARD_TOWER);
-
-	else if (entityName_text == "Cannon Tower" && selectedEnt->buildingState != BuildingState_Building)
-		ShowEntitySelectedButt(EntityType_PLAYER_CANNON_TOWER);
-
 	entitySelectedStats.entitySelected = currentEntity;
-
 
 }
 
@@ -1496,9 +1495,10 @@ void j1Player::DestroyBuilding()
 		list<StaticEntity*>::const_iterator farm = chickenFarm.begin();
 		while (farm != chickenFarm.end()) {
 			if ((*farm) == toDestroyEnt) {
-				chickenFarm.remove(*farm);
+				chickenFarm.remove(*farm++);
 			}
-			farm++;
+			else
+				farm++;
 		}
 	}
 	break;
@@ -1507,9 +1507,10 @@ void j1Player::DestroyBuilding()
 		list<StaticEntity*>::const_iterator tower = scoutTower.begin();
 		while (tower != scoutTower.end()) {
 			if ((*tower) == toDestroyEnt) {
-				scoutTower.remove(*tower);
+				scoutTower.remove(*tower++);
 			}
-			tower++;
+			else
+				tower++;
 		}
 	}
 	break;
@@ -1518,9 +1519,10 @@ void j1Player::DestroyBuilding()
 		list<StaticEntity*>::const_iterator tower = guardTower.begin();
 		while (tower != guardTower.end()) {
 			if ((*tower) == toDestroyEnt) {
-				guardTower.remove(*tower);
+				scoutTower.remove(*tower++);
 			}
-			tower++;
+			else
+				tower++;
 		}
 	}
 	break;
@@ -1529,9 +1531,10 @@ void j1Player::DestroyBuilding()
 		list<StaticEntity*>::const_iterator tower = cannonTower.begin();
 		while (tower != cannonTower.end()) {
 			if ((*tower) == toDestroyEnt) {
-				cannonTower.remove(*tower);
+				scoutTower.remove(*tower++);
 			}
-			tower++;
+			else
+				tower++;
 		}
 	}
 	break;
