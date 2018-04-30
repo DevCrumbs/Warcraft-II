@@ -235,7 +235,6 @@ private:
 	//Player buildings
 	TownHallInfo townHallInfo;
 	StrongholdInfo strongholdInfo;
-
 	BarracksInfo barracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
 	ChickenFarmInfo builtChickenFarmInfo;
@@ -269,8 +268,6 @@ private:
 	//Preview tiles
 	uint previewTilesopacity = 255;
 	uint previewBuildingOpacity = 255;
-
-	std::priority_queue<EntitiesDraw_info, std::vector<EntitiesDraw_info>, compareEntPriority> entityDrawOrder;
 
 	TownHall* townHall = nullptr;
 };

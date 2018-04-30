@@ -1522,30 +1522,6 @@ bool j1EntityFactory::PreUpdate()
 	}
 	toSpawnEntities.clear();
 
-	for (std::list<DynamicEntity*>::iterator iterator = activeDynamicEntities.begin(); iterator != activeDynamicEntities.end(); iterator++) {
-		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
-		if (App->render->IsInScreen(r)) {
-			EntitiesDraw_info info;
-			info.priority = (*iterator)->GetPos().y + (*iterator)->GetSize().y;
-			info.ent = (*iterator);
-			DynamicEntity* dyn = (DynamicEntity*)(*iterator);
-				info.type = dyn->dynamicEntityType;
-			entityDrawOrder.push(info);
-		}
-	}
-
-		for (std::list<StaticEntity*>::iterator iterator = activeStaticEntities.begin(); iterator != activeStaticEntities.end(); iterator++) {
-		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
-		if (App->render->IsInScreen(r)) {
-			EntitiesDraw_info info;
-			info.priority = (*iterator)->GetPos().y + (*iterator)->GetSize().y;
-			info.ent = (*iterator);
-			StaticEntity* stc = (StaticEntity*)(*iterator);
-				info.type = stc->staticEntityType;
-			entityDrawOrder.push(info);
-		}
-	}
-
 	return ret;
 }
 

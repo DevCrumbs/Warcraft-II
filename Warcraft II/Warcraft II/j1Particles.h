@@ -9,9 +9,8 @@
 #include "j1Collision.h"
 
 #include <string>
+#include <list>
 using namespace std;
-
-#define MAX_ACTIVE_PARTICLES 5000 // if max particles are exceeded, they should not be created nor printed (not crush!)
 
 struct SDL_Texture;
 
@@ -66,6 +65,7 @@ struct Particle {
 	double angle = 0.0f;
 
 	bool isRemove = false;
+	bool isDelete = false; // if true, it removes the particle definitely and also removes it from the activeParticles list
 
 	j1Timer damageTimer;
 	float secondsToDamage = 0.0f;
@@ -87,6 +87,7 @@ public:
 	bool Awake(pugi::xml_node&);
 
 	bool Start();
+	bool PreUpdate();
 	bool Update(float dt);
 	bool CleanUp();
 	bool PostUpdate();
@@ -104,7 +105,8 @@ private:
 	string atlasTexName;
 	SDL_Texture* atlasTex = nullptr;
 
-	Particle* activeParticles[MAX_ACTIVE_PARTICLES];
+	list<Particle*> toSpawnParticles;
+	list<Particle*> activeParticles;
 	uint lastParticle = 0;
 
 	string pawsTexName;
