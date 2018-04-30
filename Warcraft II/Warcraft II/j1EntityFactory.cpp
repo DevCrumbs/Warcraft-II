@@ -1228,8 +1228,8 @@ bool j1EntityFactory::Start()
 
 	LOG("Loading entities textures");
 
+	/// TODO Joan (balancing)
 	// ENTITIES INFO
-
 	/// ALLIANCE
 	/// Dynamic Entities
 	alleriaInfo.unitInfo.size = { 64,64 };
@@ -3797,6 +3797,7 @@ void j1EntityFactory::UnselectAllBuildings()
 
 uint j1EntityFactory::DetermineBuildingMaxLife(ENTITY_TYPE buildingType, StaticEntitySize buildingSize)
 {
+	/// TODO Joan (balancing)
 	uint maxLife = 0;
 
 		// Towers
@@ -3844,6 +3845,7 @@ uint j1EntityFactory::DetermineBuildingMaxLife(ENTITY_TYPE buildingType, StaticE
 
 uint j1EntityFactory::DetermineBuildingGold(ENTITY_TYPE buildingType, StaticEntitySize buildingSize)
 {
+	/// TODO Joan (balancing)
 	uint gold = 0;
 
 	// Towers

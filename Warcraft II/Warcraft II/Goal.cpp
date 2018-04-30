@@ -243,6 +243,18 @@ void Goal_AttackTarget::Activate()
 	if (!targetInfo->isAttackSatisfied) {
 
 		iPoint targetTile = App->map->WorldToMap(targetInfo->target->GetPos().x, targetInfo->target->GetPos().y);
+
+		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
+
+			targetTile = App->movement->FindClosestValidTile(targetTile);
+
+			if (targetTile.x == -1 || targetTile.y == -1) {
+
+				goalStatus = GoalStatus_Failed;
+				return;
+			}
+		}
+
 		AddSubgoal(new Goal_MoveToPosition(owner, targetTile));
 	}
 
@@ -305,14 +317,8 @@ void Goal_AttackTarget::Terminate()
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
 	}
-	else if (!targetInfo->isSightSatisfied) {
-	
-		// Remove this owner from the attacking units of the target
+	else
 		targetInfo->target->RemoveAttackingUnit(owner);
-
-		// Remove definitely the target from this owner
-		owner->RemoveTargetInfo(targetInfo);
-	}
 
 	// -----
 

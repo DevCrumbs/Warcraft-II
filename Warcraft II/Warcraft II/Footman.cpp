@@ -441,6 +441,14 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
+
+					// If the target is not the currTarget, remove the target info from the targets list
+					if (currTarget != nullptr) {
+
+						if (currTarget->target != c2->entity)
+
+							RemoveTargetInfo(*it);
+					}
 					break;
 				}
 				it++;
@@ -518,6 +526,7 @@ void Footman::UnitStateMachine(float dt)
 
 		// ATTACK NOTE (Attack state): if currTarget is dead, the unit automatically attacks the next target (only DYNAMIC ENTITIES) from their targets list
 
+		/*
 		if (singleUnit->IsFittingTile()) {
 
 			if (currTarget == nullptr) {
@@ -532,6 +541,7 @@ void Footman::UnitStateMachine(float dt)
 				}
 			}
 		}
+		*/
 
 		break;
 
