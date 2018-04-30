@@ -105,8 +105,8 @@ void TrollAxethrower::Move(float dt)
 			isValid = false;
 			App->player->enemiesKill++;
 
-			App->player->currentGold += 15;
-
+			// Give gold to the player
+			App->player->currentGold += trollAxethrowerInfo.droppedGold;
 			App->scene->hasGoldChanged = true;
 
 			// Remove the entity from the unitsSelected list
@@ -121,6 +121,8 @@ void TrollAxethrower::Move(float dt)
 			App->entities->InvalidateMovementEntity(this);
 
 			// Remove any path request
+			pathPlanner->SetSearchRequested(false);
+			pathPlanner->SetSearchCompleted(false);
 			App->pathmanager->UnRegister(pathPlanner);
 
 			if (singleUnit != nullptr)

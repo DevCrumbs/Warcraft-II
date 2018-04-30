@@ -17,6 +17,8 @@ struct GruntInfo
 	Animation attackUp, attackDown, attackLeft, attackRight;
 	Animation attackUpLeft, attackUpRight, attackDownLeft, attackDownRight;
 	Animation deathUp, deathDown;
+
+	uint droppedGold = 0;
 };
 
 class Grunt :public DynamicEntity

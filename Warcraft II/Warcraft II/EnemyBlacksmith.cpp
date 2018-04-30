@@ -11,8 +11,6 @@
 
 EnemyBlacksmith::EnemyBlacksmith(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyBlacksmithInfo& enemyBlacksmithInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), enemyBlacksmithInfo(enemyBlacksmithInfo)
 {
-	buildingSize = Medium;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -40,7 +38,7 @@ EnemyBlacksmith::EnemyBlacksmith(fPoint pos, iPoint size, int currLife, uint max
 
 	texArea = &enemyBlacksmithInfo.completeTexArea;
 
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	entityCollider->isTrigger = true;
 }
 

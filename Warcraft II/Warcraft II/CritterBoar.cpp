@@ -96,6 +96,8 @@ void CritterBoar::Move(float dt)
 		App->entities->InvalidateMovementEntity(this);
 
 		// Remove any path request
+		pathPlanner->SetSearchRequested(false);
+		pathPlanner->SetSearchCompleted(false);
 		App->pathmanager->UnRegister(pathPlanner);
 
 		if (singleUnit != nullptr)
@@ -106,14 +108,12 @@ void CritterBoar::Move(float dt)
 		entityCollider->isValid = false;
 	}
 
-	if (!isDead) {
-		//UpdatePaws();
+	if (!isDead)
 
-		// ---------------------------------------------------------------------
+		UpdatePaws();
 
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
-	}
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 

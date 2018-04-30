@@ -24,9 +24,6 @@
 j1Particles::j1Particles()
 {
 	name.assign("particles");
-
-	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
-		activeParticles[i] = nullptr;
 }
 
 j1Particles::~j1Particles()
@@ -306,14 +303,14 @@ bool j1Particles::CleanUp()
 {
 	LOG("Unloading particles");
 
-	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
-	{
-		if (activeParticles[i] != nullptr)
-		{
-			delete activeParticles[i];
-			activeParticles[i] = nullptr;
-		}
+	list<Particle*>::const_iterator it = activeParticles.begin();
+
+	while (it != activeParticles.end()) {
+	
+		delete *it;
+		it++;
 	}
+	activeParticles.clear();
 
 	// UnLoad textures
 	App->tex->UnLoad(pawsTex);
@@ -322,24 +319,36 @@ bool j1Particles::CleanUp()
 	return true;
 }
 
+bool j1Particles::PreUpdate() 
+{
+	bool ret = true;
+
+	list<Particle*>::const_iterator it = toSpawnParticles.begin();
+
+	while (it != toSpawnParticles.end()) {
+
+		activeParticles.push_back(*it);
+		it++;
+	}
+	toSpawnParticles.clear();
+
+	return ret;
+}
+
 // Update: draw background
 bool j1Particles::Update(float dt)
 {
 	bool ret = true;
 
 	// Update the particles
-	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
-	{
-		Particle* currPart = activeParticles[i];
+	list<Particle*>::const_iterator it = activeParticles.begin();
 
-		if (currPart == nullptr)
-			continue;
+	while (it != activeParticles.end()) {
 
-		if (!currPart->Update(dt))
-		{
-			delete currPart;
-			activeParticles[i] = nullptr;
-		}
+		if (!(*it)->Update(dt))
+			(*it)->isDelete = true;
+
+		it++;
 	}
 
 	// Update the speed of the animations
@@ -352,24 +361,36 @@ bool j1Particles::PostUpdate()
 {
 	bool ret = true;
 
-	// Send active particles to blit
-	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
-	{
-		Particle* currPart = activeParticles[i];
+	// Remove particles with isDelete == true
+	list<Particle*>::const_iterator it = activeParticles.begin();
 
-		if (currPart == nullptr)
+	while (it != activeParticles.end()) {
+
+		if ((*it)->isDelete) {
+
+			delete *it;
+			activeParticles.erase(it);
+			it = activeParticles.begin();
 			continue;
-
-		if (SDL_GetTicks() >= currPart->born)
-		{
-			//App->render->Blit(atlasTex, currPart->pos.x, currPart->pos.y, &(currPart->animation.GetCurrentFrame()), 1.0f, currPart->angle);
-			if (currPart->particleType == ParticleType_Paws)
-				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, pawsTex, currPart->animation.GetCurrentFrame(), Layers_Paws);
-			else if (currPart->particleType == ParticleType_Health)
-				App->printer->PrintSprite({ (int)currPart->pos.x - 3, (int)currPart->pos.y - 15 }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_BasicParticles, currPart->angle);
-			else
-				App->printer->PrintSprite({ (int)currPart->pos.x, (int)currPart->pos.y }, atlasTex, currPart->animation.GetCurrentFrame(), Layers_BasicParticles, currPart->angle);
 		}
+		it++;
+	}
+
+	// Send active particles to blit
+	it = activeParticles.begin();
+
+	while (it != activeParticles.end()) {
+
+		if (SDL_GetTicks() >= (*it)->born) {
+
+			if ((*it)->particleType == ParticleType_Paws)
+				App->printer->PrintSprite({ (int)(*it)->pos.x, (int)(*it)->pos.y }, pawsTex, (*it)->animation.GetCurrentFrame(), Layers_Paws);
+			else if ((*it)->particleType == ParticleType_Health)
+				App->printer->PrintSprite({ (int)(*it)->pos.x - 3, (int)(*it)->pos.y - 15 }, atlasTex, (*it)->animation.GetCurrentFrame(), Layers_BasicParticles, (*it)->angle);
+			else
+				App->printer->PrintSprite({ (int)(*it)->pos.x, (int)(*it)->pos.y }, atlasTex, (*it)->animation.GetCurrentFrame(), Layers_BasicParticles, (*it)->angle);
+		}
+		it++;
 	}
 
 	return ret;
@@ -377,75 +398,69 @@ bool j1Particles::PostUpdate()
 
 Particle* j1Particles::AddParticle(const Particle& particle, iPoint pos, fPoint destination, float speed, uint damage, Uint32 delay)
 {
-	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
+	Particle* currPart = new Particle(particle);
+
+	currPart->born = SDL_GetTicks() + delay;
+	currPart->pos = { (float)pos.x, (float)pos.y };
+	currPart->destination = destination;
+	currPart->speed = speed;
+	currPart->damage = damage;
+
+	switch (currPart->particleType) {
+
+	case ParticleType_Player_Projectile:
+	case ParticleType_Enemy_Projectile:
+	case ParticleType_Cannon_Projectile:
 	{
-		if (activeParticles[i] == nullptr)
-		{
-			Particle* currPart = new Particle(particle);
+		// Calculate the orientation of the particle
+		currPart->orientation.x = currPart->destination.x - pos.x;
+		currPart->orientation.y = currPart->destination.y - pos.y;
 
-			currPart->born = SDL_GetTicks() + delay;
-			currPart->pos = { (float)pos.x, (float)pos.y };
-			currPart->destination = destination;
-			currPart->speed = speed;
-			currPart->damage = damage;
+		float m = sqrtf(pow(currPart->orientation.x, 2.0f) + pow(currPart->orientation.y, 2.0f));
 
-			activeParticles[i] = currPart;
+		if (m > 0.0f) {
+			currPart->orientation.x /= m;
+			currPart->orientation.y /= m;
+		}
 
-			switch (currPart->particleType) {
+		// Calculate the angle of the particle
+		currPart->angle = (atan2(currPart->orientation.y, currPart->orientation.x) * 180.0f / (float)M_PI);
 
-			case ParticleType_Player_Projectile:
-			case ParticleType_Enemy_Projectile:
-			case ParticleType_Cannon_Projectile:
-			{
-				// Calculate the orientation of the particle
-				currPart->orientation.x = currPart->destination.x - pos.x;
-				currPart->orientation.y = currPart->destination.y - pos.y;
+		if (currPart->angle >= 360.0f)
+			currPart->angle = 0.0f;
+	}
+	break;
 
-				float m = sqrtf(pow(currPart->orientation.x, 2.0f) + pow(currPart->orientation.y, 2.0f));
+	case ParticleType_DragonFire:
+	case ParticleType_GryphonFire:
+	{
+		// Calculate the orientation of the particle
+		currPart->orientation.x = currPart->destination.x - pos.x;
+		currPart->orientation.y = currPart->destination.y - pos.y;
 
-				if (m > 0.0f) {
-					currPart->orientation.x /= m;
-					currPart->orientation.y /= m;
-				}
+		float m = sqrtf(pow(currPart->orientation.x, 2.0f) + pow(currPart->orientation.y, 2.0f));
 
-				// Calculate the angle of the particle
-				currPart->angle = (atan2(currPart->orientation.y, currPart->orientation.x) * 180.0f / (float)M_PI);
-
-				if (currPart->angle >= 360.0f)
-					currPart->angle = 0.0f;
-			}
-			break;
-
-			case ParticleType_DragonFire:
-			case ParticleType_GryphonFire:
-			{
-				// Calculate the orientation of the particle
-				currPart->orientation.x = currPart->destination.x - pos.x;
-				currPart->orientation.y = currPart->destination.y - pos.y;
-
-				float m = sqrtf(pow(currPart->orientation.x, 2.0f) + pow(currPart->orientation.y, 2.0f));
-
-				if (m > 0.0f) {
-					currPart->orientation.x /= m;
-					currPart->orientation.y /= m;
-				}
-			}
-			break;
-
-			case ParticleType_DragonSubFire:
-			case ParticleType_GryphonSubFire:
-
-				currPart->life = rand() % 800 + 300;
-				currPart->damageTimer.Start();
-				break;
-
-			default:
-				break;
-			}
-
-			return currPart;
+		if (m > 0.0f) {
+			currPart->orientation.x /= m;
+			currPart->orientation.y /= m;
 		}
 	}
+	break;
+
+	case ParticleType_DragonSubFire:
+	case ParticleType_GryphonSubFire:
+
+		currPart->life = rand() % 800 + 300;
+		currPart->damageTimer.Start();
+		break;
+
+	default:
+		break;
+	}
+
+	toSpawnParticles.push_back(currPart);
+
+	return currPart;
 }
 
 void j1Particles::LoadAnimationsSpeed()
@@ -532,31 +547,26 @@ PawsInfo& j1Particles::GetPawsInfo(bool isSheep, bool isBoar)
 
 bool j1Particles::IsParticleOnTile(iPoint tile, ParticleType particleType)
 {
-	for (uint i = 0; i < MAX_ACTIVE_PARTICLES; ++i)
-	{
-		Particle* currPart = activeParticles[i];
+	list<Particle*>::const_iterator it = activeParticles.begin();
 
-		if (currPart == nullptr)
-			continue;
+	while (it != activeParticles.end()) {
 
-		if (SDL_GetTicks() >= currPart->born)
-		{
-			iPoint currPartTile = App->map->WorldToMap(currPart->pos.x, currPart->pos.y);
+		iPoint currPartTile = App->map->WorldToMap((*it)->pos.x, (*it)->pos.y);
 
-			if (particleType == ParticleType_NoType) {
-			
+		if (particleType == ParticleType_NoType) {
+
+			if (tile == currPartTile)
+				return true;
+		}
+		else {
+
+			if (particleType == (*it)->particleType) {
+
 				if (tile == currPartTile)
 					return true;
 			}
-			else {
-			
-				if (particleType == currPart->particleType) {
-				
-					if (tile == currPartTile)
-						return true;
-				}
-			}
 		}
+		it++;
 	}
 
 	return false;
@@ -591,6 +601,7 @@ Particle::~Particle()
 	angle = 0.0f;
 
 	isRemove = false;
+	isDelete = false;
 
 	secondsToDamage = 0.0f;
 }

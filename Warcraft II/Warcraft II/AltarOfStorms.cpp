@@ -11,8 +11,6 @@
 
 AltarOfStorms::AltarOfStorms(fPoint pos, iPoint size, int currLife, uint maxLife, const AltarOfStormsInfo& altarOfStormsInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), altarOfStormsInfo(altarOfStormsInfo)
 {
-	buildingSize = Medium;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -40,13 +38,12 @@ AltarOfStorms::AltarOfStorms(fPoint pos, iPoint size, int currLife, uint maxLife
 
 	texArea = &altarOfStormsInfo.completeTexArea;
 
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	entityCollider->isTrigger = true;
 }
 
-void AltarOfStorms::Move(float dt) {
-
-
+void AltarOfStorms::Move(float dt) 
+{
 }
 
 // Animations

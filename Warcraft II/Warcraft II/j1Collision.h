@@ -86,7 +86,7 @@ struct ColliderGroup
 
 	bool IsColliderInGroup(Collider* collider);
 
-	void CreateOffsetCollider();
+	bool CreateOffsetCollider();
 	Collider* GetCollider(bool left = false, bool right = false, bool top = false, bool bottom = false);
 
 	void RemoveCollider(Collider* collider);

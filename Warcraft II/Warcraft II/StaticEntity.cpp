@@ -11,12 +11,13 @@
 #include "j1EntityFactory.h"
 #include "j1Pathfinding.h"
 #include "j1Printer.h"
+#include "j1Player.h"
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) 
 {
 	this->entityType = EntityCategory_STATIC_ENTITY;
 
-	if (App->GetSecondsSinceAppStartUp() < 700) //Checks for static entities built since startup
+	if (App->GetSecondsSinceAppStartUp() < 700) // Checks for static entities built since startup
 		isBuilt = true;
 
 	constructionTime = 10;
@@ -35,7 +36,7 @@ StaticEntity::~StaticEntity()
 
 		switch (buildingSize) {
 
-		case Small:
+		case StaticEntitySize_Small:
 			buildingTile = App->map->WorldToMap(pos.x, pos.y);
 			App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 1u;
 			App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 1u;
@@ -43,7 +44,7 @@ StaticEntity::~StaticEntity()
 			App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 1)] = 1u;
 			break;
 
-		case Medium:
+		case StaticEntitySize_Medium:
 			buildingTile = App->map->WorldToMap(pos.x, pos.y);
 			App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 1u;
 			App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 1u;
@@ -56,7 +57,7 @@ StaticEntity::~StaticEntity()
 			App->scene->data[App->scene->w * (buildingTile.y + 1) + (buildingTile.x + 2)] = 1u;
 			break;
 
-		case Big:
+		case StaticEntitySize_Big:
 			buildingTile = App->map->WorldToMap(pos.x, pos.y);
 			App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 1u;
 			App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 1u;
@@ -77,7 +78,7 @@ StaticEntity::~StaticEntity()
 			App->scene->data[App->scene->w * (buildingTile.y + 3) + (buildingTile.x + 2)] = 1u;
 			break;
 
-		case None:
+		case StaticEntitySize_None:
 		default:
 			break;
 		}
@@ -174,7 +175,7 @@ bool StaticEntity::MouseHover() const
 }
 
 
-bool StaticEntity::CheckBuildingState() 
+bool StaticEntity::CheckBuildingState()
 {
 	bool ret = true;
 
@@ -191,30 +192,48 @@ bool StaticEntity::CheckBuildingState()
 		buildingState = BuildingState_Normal;
 	}
 
+	if (bs != buildingState) {
 
-	if (bs != buildingState)
 		switch (buildingState)
 		{
 		case BuildingState_Normal:
+
 			fire->isRemove = true;
 			break;
+
 		case BuildingState_LowFire:
+
 			fire = App->particles->AddParticle(App->particles->lowFire, { (int)this->GetPos().x + this->GetSize().x / 3, (int)this->GetPos().y + this->GetSize().y / 3 });
 			break;
 
 		case BuildingState_HardFire:
+
 			fire->isRemove = true;
 			fire = App->particles->AddParticle(App->particles->hardFire, { (int)this->GetPos().x + this->GetSize().x / 5, (int)this->GetPos().y + this->GetSize().y / 5 });
-
 			break;
+
 		case BuildingState_Destroyed:
+
+			if (entitySide == EntitySide_Enemy) {
+
+				// Give gold to the player
+				if (entityType == EntityType_WATCH_TOWER || entityType == EntityType_ENEMY_GUARD_TOWER || entityType == EntityType_ENEMY_CANNON_TOWER)
+					App->player->currentGold += App->entities->DetermineBuildingGold(staticEntityType, buildingSize);
+				else
+					App->player->currentGold += App->entities->DetermineBuildingGold(EntityType_NONE, buildingSize);
+
+				App->scene->hasGoldChanged = true;
+			}
+
 			fire->isRemove = true;
 			isRemove = true;
 			ret = false;
 			break;
+
 		default:
 			break;
 		}
+	}
 
 	return ret;
 }
@@ -297,7 +316,7 @@ ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, ui
 	return colliderGroup;
 }
 
-ColliderGroup * StaticEntity::GetSightRadiusCollider() const
+ColliderGroup* StaticEntity::GetSightRadiusCollider() const
 {
 	return sightRadiusCollider;
 }

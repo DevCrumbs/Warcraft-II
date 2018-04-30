@@ -731,6 +731,7 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 
 		if ((*it)->target == targetInfo->target) {
 
+			delete *it;
 			targets.remove(*it);
 			return true;
 		}

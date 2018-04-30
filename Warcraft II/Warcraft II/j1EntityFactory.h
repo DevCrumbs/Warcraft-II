@@ -144,20 +144,28 @@ public:
 
 	bool RemoveAllUnitsGoals(list<DynamicEntity*> units);
 
-	// ATTACK
+	// Attack
 	bool InvalidateTargetInfo(Entity* target);
+
+	// Movement
 	void InvalidateMovementEntity(Entity* entity);
-	///_SANDRA
 
-	// New selection
+	// Entities
 	Entity* IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide) const;
-	//_New_selection
 
+	// Dynamic Entities
+	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);
+	bool AreAllUnitsDoingSomething(list<DynamicEntity*> units, UnitState unitState = UnitState_NoState);
+
+	// Static Entities
 	bool SelectBuilding(StaticEntity* staticEntity);
 	void UnselectAllBuildings();
 
-	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);
-	bool AreAllUnitsDoingSomething(list<DynamicEntity*> units, UnitState unitState = UnitState_NoState);
+	uint DetermineBuildingMaxLife(ENTITY_TYPE buildingType = EntityType_NONE, StaticEntitySize buildingSize = StaticEntitySize_None);
+	uint DetermineBuildingGold(ENTITY_TYPE buildingType = EntityType_NONE, StaticEntitySize buildingSize = StaticEntitySize_None);
+	///_SANDRA
+
+	// -----
 
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);
@@ -227,7 +235,6 @@ private:
 	//Player buildings
 	TownHallInfo townHallInfo;
 	StrongholdInfo strongholdInfo;
-
 	BarracksInfo barracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
 	ChickenFarmInfo builtChickenFarmInfo;
@@ -261,8 +268,6 @@ private:
 	//Preview tiles
 	uint previewTilesopacity = 255;
 	uint previewBuildingOpacity = 255;
-
-	std::priority_queue<EntitiesDraw_info, std::vector<EntitiesDraw_info>, compareEntPriority> entityDrawOrder;
 
 	TownHall* townHall = nullptr;
 };

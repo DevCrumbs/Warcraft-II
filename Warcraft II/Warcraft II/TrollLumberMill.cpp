@@ -11,8 +11,6 @@
 
 TrollLumberMill::TrollLumberMill(fPoint pos, iPoint size, int currLife, uint maxLife, const TrollLumberMillInfo& trollLumberMillInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), trollLumberMillInfo(trollLumberMillInfo)
 {
-	buildingSize = Medium;
-
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -40,13 +38,12 @@ TrollLumberMill::TrollLumberMill(fPoint pos, iPoint size, int currLife, uint max
 
 	texArea = &trollLumberMillInfo.completeTexArea;
 
-	CreateEntityCollider(EntitySide_Enemy);
+	CreateEntityCollider(EntitySide_Enemy, true);
 	entityCollider->isTrigger = true;
 }
 
-void TrollLumberMill::Move(float dt) {
-
-
+void TrollLumberMill::Move(float dt) 
+{
 }
 
 // Animations
@@ -54,6 +51,7 @@ void TrollLumberMill::LoadAnimationsSpeed()
 {
 
 }
+
 void TrollLumberMill::UpdateAnimations(float dt)
 {
 

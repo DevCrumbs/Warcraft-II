@@ -250,7 +250,7 @@ void j1Player::CheckIfPlaceBuilding()
 		switch (alphaBuilding) 
 		{
 		case EntityType_CHICKEN_FARM:
-			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				StaticEntity* c;
 				c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
@@ -258,45 +258,45 @@ void j1Player::CheckIfPlaceBuilding()
 				AddGold(-App->scene->chickenFarmCost); //Discount gold
 				App->scene->hasGoldChanged = true;
 			}
-			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
+			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
 		case EntityType_STABLES:
-			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->stablesCost); //Discount gold
 				App->scene->hasGoldChanged = true;
 			}
-			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
+			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
 		case EntityType_GRYPHON_AVIARY:
-			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->gryphonAviaryCost); //Discount gold
 				App->scene->hasGoldChanged = true;
 			}
-			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
+			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
 		case EntityType_MAGE_TOWER:
-			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium)) {
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->mageTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
 			}
-			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Medium))
+			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
 		case EntityType_SCOUT_TOWER:
-			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				StaticEntity* s;
 				s = (StaticEntity*)App->entities->AddEntity(EntityType_SCOUT_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_SCOUT_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
@@ -304,28 +304,28 @@ void j1Player::CheckIfPlaceBuilding()
 				AddGold(-App->scene->scoutTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
 			}
-			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
+			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
 		case EntityType_PLAYER_GUARD_TOWER:
-			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				guardTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_GUARD_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_GUARD_TOWER), unitInfo, this));
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->guardTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
 			}
-			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
+			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 		case EntityType_PLAYER_CANNON_TOWER:
-			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small)) {
+			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				cannonTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_CANNON_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_CANNON_TOWER), unitInfo, this));
 				App->scene->SetAplphaBuilding(EntityType_NONE);
 				AddGold(-App->scene->cannonTowerCost); //Discount gold
 				App->scene->hasGoldChanged = true;
 			}
-			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), Small))
+			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 		case EntityType_NONE:
