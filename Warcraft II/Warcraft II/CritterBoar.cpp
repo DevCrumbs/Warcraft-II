@@ -110,7 +110,7 @@ void CritterBoar::Move(float dt)
 
 	if (!isDead) {
 
-		UpdatePaws();
+		//UpdatePaws();
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);

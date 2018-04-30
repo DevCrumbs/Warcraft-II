@@ -32,6 +32,8 @@ enum ParticleType {
 
 	ParticleType_Health,
 
+	ParticleType_Cross,
+
 	ParticleType_DragonFire,
 	ParticleType_DragonSubFire,
 	ParticleType_GryphonFire,
@@ -162,6 +164,9 @@ public:
 
 	// Health +++
 	Particle health;
+
+	//Ground X
+	Particle cross;
 };
 
 #endif //__j1PARTICLES_H__
