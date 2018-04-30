@@ -231,7 +231,6 @@ int j1Player::GetCurrentGold() const
 
 void j1Player::CheckIfPlaceBuilding()
 {
-
 	// Mouse position (world and map coords)
 	float auxX = (int)GetMousePos().x;
 	float auxY = (int)GetMousePos().y;
@@ -1571,7 +1570,7 @@ uint j1Player::GetGroupSpawningSize(list<GroupSpawning> listSpawning)
 	return size;
 }
 
-void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) 
+void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 {
 	if (App->scene->GetPauseMenuActions() == PauseMenuActions_NOT_EXIST)
 		switch (UIevent)
@@ -1598,9 +1597,9 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			if (UIelem == destroyBuildingButton) {
 				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy");
 			}
-				break;
+			break;
 		case UI_EVENT_MOUSE_LEAVE:
-			if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton 
+			if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton
 				|| UIelem == produceMageButton || UIelem == produceGryphonRiderButton || UIelem == destroyBuildingButton) {
 				HideHoverInfoMenu();
 			}
@@ -1616,7 +1615,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->scene->hasGoldChanged = true;
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Constructuion sound
 				}
-				else if(currentGold >= 500) {
+				else if (currentGold >= 500) {
 					townHallUpgrade = true;
 					currentGold -= 500;
 					App->scene->hasGoldChanged = true;
@@ -1627,7 +1626,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 
 			//For destroying a building
-			if (UIelem == destroyBuildingButton) { 
+			if (UIelem == destroyBuildingButton) {
 				DestroyBuilding();
 				HideEntitySelectedInfo();
 				HideHoverInfoMenu();
@@ -1702,11 +1701,11 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						}
 						HandleSpawningUnitsUIElem(&toSpawnUnitBarracks.back(), &barracksSpawningListUI);
 					}
-					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD){
+					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
 						App->scene->terenasDialogTimer.Start();
 						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
 						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
-						}
+					}
 				}
 				else if (currentGold < footmanCost) {
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
@@ -1811,19 +1810,28 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 			}
 			if (UIelem == groupSelectionButtons.selectFootmans) {
-				//TODO SANDRA (seleccion de ese tipo de tropas en camara)
-				// Recuerda la condición "si no hay ninguna unidad de ese tipo en camara -> button error sound"
-				CreateGroupSelection(EntityType_FOOTMAN);
+
+				App->entities->SelectEntitiesOnScreen(EntityType_FOOTMAN);
+
+				if (App->entities->GetLastUnitsSelected().size() == 0)
+
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 			}
 			if (UIelem == groupSelectionButtons.selectElvenArchers) {
-				//TODO SANDRA (seleccion de ese tipo de tropas en camara)
-				// Recuerda la condición "si no hay ninguna unidad de ese tipo en camara -> button error sound"
-				CreateGroupSelection(EntityType_ELVEN_ARCHER);
+
+				App->entities->SelectEntitiesOnScreen(EntityType_ELVEN_ARCHER);
+
+				if (App->entities->GetLastUnitsSelected().size() == 0)
+
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 			}
 			if (UIelem == groupSelectionButtons.selectGryphonRiders) {
-				//TODO SANDRA (seleccion de ese tipo de tropas en camara)
-				// Recuerda la condición "si no hay ninguna unidad de ese tipo en camara -> button error sound"
-				CreateGroupSelection(EntityType_GRYPHON_RIDER);
+
+				App->entities->SelectEntitiesOnScreen(EntityType_GRYPHON_RIDER);
+
+				if (App->entities->GetLastUnitsSelected().size() == 0)
+
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_UP:
@@ -1835,51 +1843,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		default:
 			break;
 		}
-}
-
-bool j1Player::CreateGroupSelection(ENTITY_TYPE type, list<Entity*>* entitiesSelected)
-{
-	bool ret = true;
-
-
-	list<Entity*> newEntitiesSelected = SelectEntityType(type, entitiesSelected);
-
-	if (newEntitiesSelected.empty())
-	{
-		ret = false;
-		App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
-	}
-
-	return ret;
-}
-
-list<Entity*> j1Player::SelectEntityType(ENTITY_TYPE type, list<Entity*>* entitiesSelected)
-{
-	// Esto te devuelve una lista de unidades del tipo type que están dentro de cámara, esta lista serán las entidades seleccionadas
-	list<Entity*> newEntitiesSelected;
-
-	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
-	{
-		if ((*iterator)->dynamicEntityType == type)
-			if (App->render->IsInScreen((*iterator)->GetPos()))
-			{
-				if (newEntitiesSelected.size() < maxUnitsSelected)
-					newEntitiesSelected.push_back(*iterator);
-
-				if (entitiesSelected != nullptr)
-				{
-					if (entitiesSelected->size() < maxUnitsSelected)
-						entitiesSelected->push_back(*iterator);
-					if (entitiesSelected->size() >= maxUnitsSelected)
-						break;
-				}
-
-				if (newEntitiesSelected.size() >= maxUnitsSelected)
-					break;
-			}
-	}
-
-	return newEntitiesSelected;
 }
 
 // GroupSpawning

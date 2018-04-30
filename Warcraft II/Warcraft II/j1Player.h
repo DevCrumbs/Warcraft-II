@@ -132,9 +132,6 @@ public:
 	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
-	bool CreateGroupSelection(ENTITY_TYPE type, list<Entity*>* entitiesSelected = nullptr);
-	list<Entity*> SelectEntityType(ENTITY_TYPE type, list<Entity*>* entitiesSelected = nullptr);
-
 	void CreateEntitiesStatsUI();
 	void CreateGroupSelectionButtons();
 	void CreateUISpawningUnits();

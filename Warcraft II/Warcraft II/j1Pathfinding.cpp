@@ -27,7 +27,7 @@ bool j1PathFinding::CleanUp()
 	distanceHeuristic = DistanceHeuristic_DistanceManhattan;
 
 	open.pathNodeList.clear();
-	close.pathNodeList.clear(); // TODO Sandra: here it crashes sometimes...
+	close.pathNodeList.clear();
 	last_path.clear();
 
 	last_tile = { -1,-1 };
