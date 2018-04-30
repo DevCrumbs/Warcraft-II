@@ -1384,7 +1384,7 @@ void j1Scene::LoadBuildingMenu()
 		CreateBuildingElements({ 496,118,50,41 }, { 585, 325 }, "Cannon Tower",
 			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
 
-		CreateBuildingElements({ 496,118,50,41 }, { 585, 370 }, "Barracks",
+		CreateBuildingElements({ 547,160,50,41 }, { 585, 370 }, "Barracks",
 			"Cost: 1000 gold", { 645, 380 }, { 645, 397 }, barracks2Cost, &buildingMenuButtons.barracks);
 	}
 }
