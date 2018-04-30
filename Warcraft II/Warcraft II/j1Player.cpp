@@ -1826,25 +1826,28 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 				App->entities->SelectEntitiesOnScreen(EntityType_FOOTMAN);
 
-				if (App->entities->GetLastUnitsSelected().size() == 0)
-
+				if (App->entities->GetLastUnitsSelected().size() == 0) {
+					HideEntitySelectedInfo();
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
+				}
 			}
 			if (UIelem == groupSelectionButtons.selectElvenArchers) {
 
 				App->entities->SelectEntitiesOnScreen(EntityType_ELVEN_ARCHER);
 
-				if (App->entities->GetLastUnitsSelected().size() == 0)
-
+				if (App->entities->GetLastUnitsSelected().size() == 0) {
+					HideEntitySelectedInfo();
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
+				}
 			}
 			if (UIelem == groupSelectionButtons.selectGryphonRiders) {
 
 				App->entities->SelectEntitiesOnScreen(EntityType_GRYPHON_RIDER);
 
-				if (App->entities->GetLastUnitsSelected().size() == 0)
-
+				if (App->entities->GetLastUnitsSelected().size() == 0) {
+					HideEntitySelectedInfo();
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
+				}
 			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_UP:
