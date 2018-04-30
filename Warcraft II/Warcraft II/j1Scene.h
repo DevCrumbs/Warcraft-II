@@ -76,6 +76,7 @@ struct BuildingMenu {
 	MenuBuildingButton scoutTower;
 	MenuBuildingButton guardTower;
 	MenuBuildingButton cannonTower;
+	MenuBuildingButton barracks;
 };
 
 struct GroupSelectedElements {

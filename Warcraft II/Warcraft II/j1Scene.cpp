@@ -1271,6 +1271,7 @@ void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem)
 	ChangeBuildingButtState(&elem->mageTower);
 	ChangeBuildingButtState(&elem->scoutTower);
 	ChangeBuildingButtState(&elem->stables);
+	ChangeBuildingButtState(&elem->barracks);
 	if (buildingMenu->isActive)
 	{
 		UpdateLabelsMenu();
@@ -1286,6 +1287,7 @@ void j1Scene::UpdateIconsMenu()
 	ChangeMenuIconsText(buildingMenuButtons.mageTower.icon, mageTowerCost, { 496,202,50,41 }, { 496,202,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.stables.icon, stablesCost, { 343,160,50,41 }, { 343,160,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracks2Cost, { 394,34,50,41 }, { 445,34,50,41 });
 
 
 }
@@ -1306,6 +1308,7 @@ void j1Scene::UpdateLabelsMenu()
 	ChangeMenuLabelColor(buildingMenuButtons.mageTower.cost, mageTowerCost);
 	ChangeMenuLabelColor(buildingMenuButtons.stables.cost, stablesCost);
 	ChangeMenuLabelColor(buildingMenuButtons.scoutTower.cost, scoutTowerCost);
+	ChangeMenuLabelColor(buildingMenuButtons.barracks.cost, barracks2Cost);
 }
 
 void j1Scene::ChangeMenuLabelColor(UILabel * Label, int cost)
@@ -1352,6 +1355,9 @@ void j1Scene::LoadBuildingMenu()
 		
 		CreateBuildingElements({ 496,118,50,41 }, { 585, 325 }, "Cannon Tower",
 			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
+
+		CreateBuildingElements({ 496,118,50,41 }, { 585, 370 }, "Barracks",
+			"You already have it", { 645, 380 }, { 645, 397 }, 500, &buildingMenuButtons.barracks);
 	}
 }
 
