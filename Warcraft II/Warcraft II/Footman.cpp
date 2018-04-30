@@ -270,10 +270,10 @@ void Footman::Move(float dt)
 
 			break;
 		}
-	}
 
-	// PROCESS THE CURRENTLY ACTIVE GOAL
-	brain->Process(dt);
+		// PROCESS THE CURRENTLY ACTIVE GOAL
+		brain->Process(dt);
+	}
 
 	UnitStateMachine(dt);
 
@@ -485,6 +485,12 @@ void Footman::UnitStateMachine(float dt)
 		break;
 
 	case UnitState_Idle:
+
+		// If the unit is doing nothing, make it look around
+		//if (brain->GetSubgoalsList().size() == 0)
+
+			//brain->AddGoal_LookAround();
+
 	case UnitState_Patrol:
 
 		// ATTACK NOTE (Idle and Patrol states): the unit automatically attacks any target (only DYNAMIC ENTITIES) that is in their targets list

@@ -132,6 +132,7 @@ public:
 	// -----
 
 	void AddSubgoal(Goal* goal);
+	list<Goal*> GetSubgoalsList() const;
 
 	// It is called each update step to process the subgoals
 	// It ensures that all completed and failed goals are removed from the list before
@@ -173,6 +174,7 @@ public:
 	void AddGoal_GatherGold(GoldMine* goldMine);
 	void AddGoal_HealRunestone(Runestone* runestone);
 	void AddGoal_RescuePrisoner(DynamicEntity* prisoner);
+	void AddGoal_LookAround();
 };
 
 class Goal_AttackTarget :public CompositeGoal

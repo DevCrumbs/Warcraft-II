@@ -87,6 +87,11 @@ void CompositeGoal::AddSubgoal(Goal* goal)
 	subgoals.push_front(goal);
 }
 
+list<Goal*> CompositeGoal::GetSubgoalsList() const 
+{
+	return subgoals;
+}
+
 GoalStatus CompositeGoal::ProcessSubgoals(float dt)
 {
 	// Remove all completed and failed goals from the front of the subgoal list
@@ -206,6 +211,11 @@ void Goal_Think::AddGoal_HealRunestone(Runestone* runestone)
 void Goal_Think::AddGoal_RescuePrisoner(DynamicEntity* prisoner)
 {
 	AddSubgoal(new Goal_RescuePrisoner(owner, prisoner));
+}
+
+void Goal_Think::AddGoal_LookAround()
+{
+	AddSubgoal(new Goal_LookAround(owner));
 }
 
 // Goal_AttackTarget ---------------------------------------------------------------------
