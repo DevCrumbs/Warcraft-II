@@ -119,6 +119,8 @@ void Footman::Move(float dt)
 			App->entities->InvalidateMovementEntity(this);
 
 			// Remove any path request
+			pathPlanner->SetSearchRequested(false);
+			pathPlanner->SetSearchCompleted(false);
 			App->pathmanager->UnRegister(pathPlanner);
 
 			if (singleUnit != nullptr)
@@ -441,14 +443,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-
-					// If the target is not the currTarget, remove the target info from the targets list
-					if (currTarget != nullptr) {
-
-						if (currTarget->target != c2->entity)
-
-							RemoveTargetInfo(*it);
-					}
+					RemoveTargetInfo(*it);
 					break;
 				}
 				it++;

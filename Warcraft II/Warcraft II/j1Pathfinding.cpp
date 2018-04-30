@@ -515,7 +515,7 @@ PathfindingStatus j1PathFinding::CycleOnceDijkstra()
 	// If the current node is the goal, the path has been found
 	if (trigger != nullptr) {
 
-		if (trigger->isSatisfied(curr->pos)) {
+		if (trigger->IsSatisfied(curr->pos)) {
 
 			last_tile = curr->pos;
 

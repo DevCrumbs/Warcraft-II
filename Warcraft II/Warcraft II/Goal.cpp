@@ -246,7 +246,55 @@ void Goal_AttackTarget::Activate()
 
 		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
 
-			targetTile = App->movement->FindClosestValidTile(targetTile);
+			StaticEntity* building = (StaticEntity*)targetInfo->target;
+			
+			//
+			iPoint neighbors[16];
+
+			for (uint i = 0; i < 16; ++i)
+				neighbors[i] = { -1,-1 };
+
+			neighbors[0].create(targetTile.x, targetTile.y);
+			neighbors[1].create(targetTile.x + 1, targetTile.y + 0);
+			neighbors[2].create(targetTile.x + 0, targetTile.y + 1);
+			neighbors[3].create(targetTile.x + 1, targetTile.y + 1);
+
+			if (building->buildingSize == StaticEntitySize_Medium || building->buildingSize == StaticEntitySize_Big) {
+
+				neighbors[4].create(targetTile.x + 2, targetTile.y + 0);
+				neighbors[5].create(targetTile.x + 0, targetTile.y + 2);
+				neighbors[6].create(targetTile.x + 1, targetTile.y + 2);
+				neighbors[7].create(targetTile.x + 2, targetTile.y + 1);
+				neighbors[8].create(targetTile.x + 2, targetTile.y + 2);
+			}
+			if (building->buildingSize == StaticEntitySize_Big) {
+
+				neighbors[9].create(targetTile.x + 3, targetTile.y + 0);
+				neighbors[10].create(targetTile.x + 3, targetTile.y + 1);
+				neighbors[11].create(targetTile.x + 3, targetTile.y + 2);
+				neighbors[12].create(targetTile.x + 3, targetTile.y + 3);
+				neighbors[13].create(targetTile.x + 0, targetTile.y + 3);	
+				neighbors[14].create(targetTile.x + 1, targetTile.y + 3);
+				neighbors[15].create(targetTile.x + 2, targetTile.y + 3);
+			}
+
+			priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
+			iPointPriority priorityNeighbors;
+
+			for (uint i = 0; i < 8; ++i)
+			{
+				if (neighbors[i].x != -1 && neighbors[i].y != -1) {
+
+					priorityNeighbors.point = neighbors[i];
+					priorityNeighbors.priority = neighbors[i].DistanceManhattan(owner->GetSingleUnit()->currTile);
+					queue.push(priorityNeighbors);
+				}
+			}
+
+			targetTile = queue.top().point;
+			//
+
+			targetTile = App->movement->FindClosestValidTile(targetTile, owner);
 
 			if (targetTile.x == -1 || targetTile.y == -1) {
 
@@ -268,11 +316,6 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
-	if (targetInfo == nullptr) {
-
-		goalStatus = GoalStatus_Completed;
-		return goalStatus;
-	}
 	/// The target has been removed by another unit
 	if (targetInfo->isRemoved) {
 
@@ -450,7 +493,36 @@ void Goal_GatherGold::Activate()
 
 	// 1. Move near the Gold Mine
 	iPoint goldMineTile = App->map->WorldToMap(goldMine->GetPos().x, goldMine->GetPos().y);
-	goldMineTile = App->movement->FindClosestValidTile(goldMineTile);
+
+	//
+	iPoint neighbors[9];
+	neighbors[0].create(goldMineTile.x, goldMineTile.y);
+	neighbors[1].create(goldMineTile.x + 1, goldMineTile.y + 0);
+	neighbors[2].create(goldMineTile.x + 0, goldMineTile.y + 1);
+	neighbors[3].create(goldMineTile.x + 1, goldMineTile.y + 1);
+	neighbors[4].create(goldMineTile.x + 2, goldMineTile.y + 0);
+	neighbors[5].create(goldMineTile.x + 0, goldMineTile.y + 2);
+	neighbors[6].create(goldMineTile.x + 1, goldMineTile.y + 2);
+	neighbors[7].create(goldMineTile.x + 2, goldMineTile.y + 1);
+	neighbors[8].create(goldMineTile.x + 2, goldMineTile.y + 2);
+
+	priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
+	iPointPriority priorityNeighbors;
+
+	for (uint i = 0; i < 8; ++i)
+	{
+		if (neighbors[i].x != -1 && neighbors[i].y != -1) {
+
+			priorityNeighbors.point = neighbors[i];
+			priorityNeighbors.priority = neighbors[i].DistanceManhattan(owner->GetSingleUnit()->currTile);
+			queue.push(priorityNeighbors);
+		}
+	}
+
+	goldMineTile = queue.top().point;
+	//
+
+	goldMineTile = App->movement->FindClosestValidTile(goldMineTile, owner);
 
 	if (goldMineTile.x == -1 || goldMineTile.y == -1) {
 
@@ -504,7 +576,31 @@ void Goal_HealRunestone::Activate()
 
 	// 1. Move near the Runestone
 	iPoint runestoneTile = App->map->WorldToMap(runestone->GetPos().x, runestone->GetPos().y);
-	runestoneTile = App->movement->FindClosestValidTile(runestoneTile);
+
+	//
+	iPoint neighbors[4];
+	neighbors[0].create(runestoneTile.x, runestoneTile.y);
+	neighbors[1].create(runestoneTile.x + 1, runestoneTile.y + 0);
+	neighbors[2].create(runestoneTile.x + 0, runestoneTile.y + 1);
+	neighbors[3].create(runestoneTile.x + 1, runestoneTile.y + 1);
+
+	priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
+	iPointPriority priorityNeighbors;
+
+	for (uint i = 0; i < 8; ++i)
+	{
+		if (neighbors[i].x != -1 && neighbors[i].y != -1) {
+
+			priorityNeighbors.point = neighbors[i];
+			priorityNeighbors.priority = neighbors[i].DistanceManhattan(owner->GetSingleUnit()->currTile);
+			queue.push(priorityNeighbors);
+		}
+	}
+
+	runestoneTile = queue.top().point;
+	//
+
+	runestoneTile = App->movement->FindClosestValidTile(runestoneTile, owner);
 
 	if (runestoneTile.x == -1 || runestoneTile.y == -1) {
 
@@ -585,6 +681,9 @@ void Goal_MoveToPosition::Activate()
 	goalStatus = GoalStatus_Active;
 
 	owner->SetHitting(false);
+
+	if (owner->isSelected)
+		LOG("Move to position");
 
 	if (owner->dynamicEntityType != EntityType_GRYPHON_RIDER && owner->dynamicEntityType != EntityType_DRAGON) {
 
@@ -678,11 +777,6 @@ GoalStatus Goal_HitTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
-	if (targetInfo == nullptr) {
-
-		goalStatus = GoalStatus_Completed;
-		return goalStatus;
-	}
 	/// The target has been removed by another unit
 	if (targetInfo->isRemoved) {
 

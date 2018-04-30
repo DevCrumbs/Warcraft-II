@@ -14,7 +14,6 @@ GoldMine::GoldMine(fPoint pos, iPoint size, int currLife, uint maxLife, const Go
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
-	walkability.push_back({ buildingTile.x, buildingTile.y });
 	App->scene->data[App->scene->w * buildingTile.y + buildingTile.x] = 0u;
 	walkability.push_back({ buildingTile.x, buildingTile.y });
 	App->scene->data[App->scene->w * buildingTile.y + (buildingTile.x + 1)] = 0u;

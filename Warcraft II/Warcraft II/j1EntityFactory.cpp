@@ -1291,7 +1291,7 @@ bool j1EntityFactory::Start()
 	//_Elven_Archer
 
 	// Gryphon Rider
-	gryphonRiderInfo.unitInfo.priority = 3;
+	gryphonRiderInfo.unitInfo.priority = 4;
 
 	/// Radius
 	gryphonRiderInfo.unitInfo.attackRadius = 7;
@@ -1332,7 +1332,7 @@ bool j1EntityFactory::Start()
 	/// HORDE
 	/// Dynamic Entities
 	// Grunt
-	gruntInfo.unitInfo.priority = 2;
+	gruntInfo.unitInfo.priority = 3;
 
 	/// Radius
 	gruntInfo.unitInfo.attackRadius = 2;
@@ -1359,7 +1359,7 @@ bool j1EntityFactory::Start()
 	//_Grunt
 
 	// Troll Axethrower
-	trollAxethrowerInfo.unitInfo.priority = 2;
+	trollAxethrowerInfo.unitInfo.priority = 3;
 
 	/// Radius
 	trollAxethrowerInfo.unitInfo.attackRadius = 5;
@@ -1387,7 +1387,7 @@ bool j1EntityFactory::Start()
 	//_Troll_Axethrower
 
 	// Dragon
-	dragonInfo.unitInfo.priority = 3;
+	dragonInfo.unitInfo.priority = 5;
 
 	/// Radius
 	dragonInfo.unitInfo.attackRadius = 7;

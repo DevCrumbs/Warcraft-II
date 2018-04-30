@@ -96,6 +96,8 @@ void CritterBoar::Move(float dt)
 		App->entities->InvalidateMovementEntity(this);
 
 		// Remove any path request
+		pathPlanner->SetSearchRequested(false);
+		pathPlanner->SetSearchCompleted(false);
 		App->pathmanager->UnRegister(pathPlanner);
 
 		if (singleUnit != nullptr)
