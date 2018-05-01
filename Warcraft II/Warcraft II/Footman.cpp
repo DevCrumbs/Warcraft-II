@@ -324,14 +324,12 @@ void Footman::DebugDrawSelected()
 
 void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
 {
-	LOG("COLLISION!");
-
 	switch (collisionState) {
 
 	case CollisionState_OnEnter:
 
 		/// SET ATTACK PARAMETERS
-		// An enemy unit/enemy building is within the SIGHT RADIUS of this player unit
+		// An enemy unit/building is within the SIGHT RADIUS of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
@@ -398,7 +396,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			}
 		}
 
-		// An enemy unit/enemy building is within the ATTACK RADIUS of this player unit
+		// An enemy unit/building is within the ATTACK RADIUS of this player unit
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
@@ -424,7 +422,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 	case CollisionState_OnExit:
 
 		/// RESET ATTACK PARAMETERS
-		// An enemy unit/enemy building is no longer within the SIGHT RADIUS of this player unit
+		// An enemy unit/building is no longer within the SIGHT RADIUS of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
@@ -447,7 +445,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			}
 		}
 
-		// An enemy unit/enemy building is no longer within the ATTACK RADIUS of this player unit
+		// An enemy unit/building is no longer within the ATTACK RADIUS of this player unit
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {

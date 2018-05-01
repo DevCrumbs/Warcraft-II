@@ -225,8 +225,8 @@ void Dragon::Draw(SDL_Texture* sprites)
 		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_DragonGryphon);
 	}
 
-	if (isSelected)
-		DebugDrawSelected();
+	//if (isSelected)
+		//DebugDrawSelected();
 }
 
 void Dragon::DebugDrawSelected()
@@ -241,14 +241,16 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 
 	case CollisionState_OnEnter:
 
-		// An player is within the sight of this enemy unit
-		if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+		/// SET ATTACK PARAMETERS
+		// An player unit/building is within the SIGHT RADIUS of this enemy unit
+		if ((c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit)
+			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			//	LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
 
-			// The Alliance is within the SIGHT radius
-
+			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
 			bool isTargetFound = false;
 
@@ -263,7 +265,6 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 				}
 				it++;
 			}
-
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
@@ -273,14 +274,50 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 
 				targets.push_back(targetInfo);
 			}
+
+			// 2. MAKE UNIT FACE TOWARDS THE BEST TARGET
+			if (targets.size() > 0) {
+
+				bool isFacingTowardsTarget = false;
+
+				// a) If the unit is not attacking any target
+				if (currTarget == nullptr)
+					isFacingTowardsTarget = true;
+				// b) If the unit is attacking a static target
+				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
+					isFacingTowardsTarget = true;
+
+				if (isFacingTowardsTarget) {
+
+					// Face towards the best target (ONLY DYNAMIC ENTITIES!) (it is expected to be this target)
+					TargetInfo* targetInfo = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+					if (targetInfo != nullptr) {
+
+						fPoint orientation = { targetInfo->target->GetPos().x - pos.x, targetInfo->target->GetPos().y - pos.y };
+
+						float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+
+						if (m > 0.0f) {
+							orientation.x /= m;
+							orientation.y /= m;
+						}
+
+						SetUnitDirectionByValue(orientation);
+					}
+				}
+			}
 		}
-		else if (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			//		LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
+		// An player unit/building is within the ATTACK RADIUS of this enemy unit
+		else if ((c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit)
+			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			// The Alliance is within the ATTACK radius
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
 
+			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
@@ -293,51 +330,43 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 				it++;
 			}
 		}
-
 		break;
 
 	case CollisionState_OnExit:
 
-		// Reset attack parameters
-		if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+		/// RESET ATTACK PARAMETERS
+		// An player unit/building is no longer within the SIGHT RADIUS of this enemy unit
+		if ((c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit)
+			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			//	LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
 
-			// The Alliance is NO longer within the SIGHT radius
-
-			// Remove the target from the targets list
+			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
-					// If currTarget matches the target that needs to be removed, set its isSightSatisfied to false and it will be removed later		
-					if (currTarget != nullptr) {
-
-						if (currTarget->target == c2->entity) {
-
-							currTarget->isSightSatisfied = false;
-							break;
-						}
-					}
-					// If currTarget is different from the target that needs to be removed, remove the target from the list
-					delete *it;
-					targets.erase(it);
-
+					(*it)->isSightSatisfied = false;
+					RemoveTargetInfo(*it);
 					break;
 				}
 				it++;
 			}
 		}
-		else if (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			//LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
+		// An player unit/building is no longer within the ATTACK RADIUS of this enemy unit
+		else if ((c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit)
+			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			// The Alliance is NO longer within the ATTACK radius
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
 
+			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
@@ -350,7 +379,6 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 				it++;
 			}
 		}
-
 		break;
 	}
 }
