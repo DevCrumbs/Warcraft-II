@@ -167,7 +167,6 @@ bool j1Scene::LoadNewMap(int map)
 	{
 		map = rand() % numMaps;
 
-
 		static char path[25];
 		sprintf_s(path, 25, "alphaMap%i.tmx", map);
 

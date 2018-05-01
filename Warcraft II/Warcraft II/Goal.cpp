@@ -381,6 +381,8 @@ void Goal_AttackTarget::Terminate()
 	// -----
 
 	targetInfo = nullptr;
+
+	owner->SetUnitState(UnitState_AttackTarget);
 }
 
 // Goal_Patrol ---------------------------------------------------------------------
@@ -751,6 +753,7 @@ void Goal_MoveToPosition::Terminate()
 	owner->GetSingleUnit()->ResetUnitParameters();
 
 	owner->SetIsStill(true);
+	owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_HitTarget ---------------------------------------------------------------------
@@ -1053,6 +1056,8 @@ void Goal_HitTarget::Terminate()
 
 	targetInfo = nullptr;
 	orientation = { 0,0 };
+
+	owner->SetUnitState(UnitState_AttackTarget);
 }
 
 // Goal_LookAround ---------------------------------------------------------------------
@@ -1207,6 +1212,7 @@ void Goal_LookAround::Terminate()
 	isChanged = false;
 
 	owner->SetIsStill(false);
+	owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_PickNugget ---------------------------------------------------------------------
@@ -1338,6 +1344,8 @@ void Goal_PickNugget::Terminate()
 
 	secondsGathering = 0.0f;
 	msAnimation = 0.0f;
+
+	owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_HealArea ---------------------------------------------------------------------
@@ -1486,6 +1494,8 @@ void Goal_HealArea::Terminate()
 	msAnimation = 0.0f;
 
 	alpha = 0;
+
+	owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_FreePrisoner ---------------------------------------------------------------------
@@ -1593,4 +1603,6 @@ void Goal_FreePrisoner::Terminate()
 	prisoner = nullptr;
 	alleria = nullptr;
 	turalyon = nullptr;
+
+	owner->SetUnitState(UnitState_Idle);
 }
