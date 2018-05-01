@@ -223,8 +223,8 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 	}
 
-	if (isSelected)
-		DebugDrawSelected();
+	//if (isSelected)
+		//DebugDrawSelected();
 }
 
 void TrollAxethrower::DebugDrawSelected()

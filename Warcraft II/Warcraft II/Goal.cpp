@@ -257,60 +257,59 @@ void Goal_AttackTarget::Activate()
 		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
 
 			StaticEntity* building = (StaticEntity*)targetInfo->target;
-			
-			//
-			iPoint neighbors[16];
+			targetTile = { -1,-1 };
 
-			for (uint i = 0; i < 16; ++i)
-				neighbors[i] = { -1,-1 };
-
-			neighbors[0].create(targetTile.x, targetTile.y);
-			neighbors[1].create(targetTile.x + 1, targetTile.y + 0);
-			neighbors[2].create(targetTile.x + 0, targetTile.y + 1);
-			neighbors[3].create(targetTile.x + 1, targetTile.y + 1);
-
-			if (building->buildingSize == StaticEntitySize_Medium || building->buildingSize == StaticEntitySize_Big) {
-
-				neighbors[4].create(targetTile.x + 2, targetTile.y + 0);
-				neighbors[5].create(targetTile.x + 0, targetTile.y + 2);
-				neighbors[6].create(targetTile.x + 1, targetTile.y + 2);
-				neighbors[7].create(targetTile.x + 2, targetTile.y + 1);
-				neighbors[8].create(targetTile.x + 2, targetTile.y + 2);
-			}
-			if (building->buildingSize == StaticEntitySize_Big) {
-
-				neighbors[9].create(targetTile.x + 3, targetTile.y + 0);
-				neighbors[10].create(targetTile.x + 3, targetTile.y + 1);
-				neighbors[11].create(targetTile.x + 3, targetTile.y + 2);
-				neighbors[12].create(targetTile.x + 3, targetTile.y + 3);
-				neighbors[13].create(targetTile.x + 0, targetTile.y + 3);	
-				neighbors[14].create(targetTile.x + 1, targetTile.y + 3);
-				neighbors[15].create(targetTile.x + 2, targetTile.y + 3);
-			}
-
+			// Option a: the unit searches for a free surrounding tile of the building
+			list<iPoint> buildingSurroundingTiles = App->entities->GetBuildingTiles(building, true);
 			priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
 			iPointPriority priorityNeighbors;
 
-			for (uint i = 0; i < 8; ++i)
-			{
-				if (neighbors[i].x != -1 && neighbors[i].y != -1) {
+			list<iPoint>::const_iterator it = buildingSurroundingTiles.begin();
+			while (it != buildingSurroundingTiles.end()) {
 
-					priorityNeighbors.point = neighbors[i];
-					priorityNeighbors.priority = neighbors[i].DistanceManhattan(owner->GetSingleUnit()->currTile);
+				if (App->pathfinding->IsWalkable(*it) && App->movement->IsValidTile(owner->GetSingleUnit(), *it, false, false, true)) {
+
+					priorityNeighbors.point = *it;
+					priorityNeighbors.priority = (*it).DistanceManhattan(owner->GetSingleUnit()->currTile);
 					queue.push(priorityNeighbors);
 				}
+				it++;
 			}
 
-			targetTile = queue.top().point;
-			//
+			if (!queue.empty())
+				targetTile = queue.top().point;
+			//_Option_a
 
-			targetTile = App->movement->FindClosestValidTile(targetTile, owner);
+			// Option b: if all the surrounding tiles of the building are either occupied by other units or unwalkable, the unit searches for the closest valid tile to the building
+			if (targetTile.x == -1 && targetTile.y == -1) {
+
+				list<iPoint> buildingTiles = App->entities->GetBuildingTiles(building);
+				priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
+				iPointPriority priorityNeighbors;
+
+				list<iPoint>::const_iterator it = buildingTiles.begin();
+				while (it != buildingTiles.end()) {
+
+					priorityNeighbors.point = *it;
+					priorityNeighbors.priority = (*it).DistanceManhattan(owner->GetSingleUnit()->currTile);
+					queue.push(priorityNeighbors);
+
+					it++;
+				}
+
+				targetTile = queue.top().point;
+
+				targetTile = App->movement->FindClosestValidTile(targetTile, owner);
+			}
+			//_Option_b
 
 			if (targetTile.x == -1 || targetTile.y == -1) {
 
 				goalStatus = GoalStatus_Failed;
 				return;
 			}
+
+			owner->GetSingleUnit()->SetGoal(targetTile);
 		}
 
 		AddSubgoal(new Goal_MoveToPosition(owner, targetTile));
@@ -511,37 +510,51 @@ void Goal_GatherGold::Activate()
 	AddSubgoal(new Goal_PickNugget(owner, goldMine));
 
 	// 1. Move near the Gold Mine
-	iPoint goldMineTile = App->map->WorldToMap(goldMine->GetPos().x, goldMine->GetPos().y);
+	iPoint goldMineTile = { -1,-1 };
 
-	//
-	iPoint neighbors[9];
-	neighbors[0].create(goldMineTile.x, goldMineTile.y);
-	neighbors[1].create(goldMineTile.x + 1, goldMineTile.y + 0);
-	neighbors[2].create(goldMineTile.x + 0, goldMineTile.y + 1);
-	neighbors[3].create(goldMineTile.x + 1, goldMineTile.y + 1);
-	neighbors[4].create(goldMineTile.x + 2, goldMineTile.y + 0);
-	neighbors[5].create(goldMineTile.x + 0, goldMineTile.y + 2);
-	neighbors[6].create(goldMineTile.x + 1, goldMineTile.y + 2);
-	neighbors[7].create(goldMineTile.x + 2, goldMineTile.y + 1);
-	neighbors[8].create(goldMineTile.x + 2, goldMineTile.y + 2);
-
+	// Option a: the unit searches for a free surrounding tile of the building
+	list<iPoint> buildingSurroundingTiles = App->entities->GetBuildingTiles(goldMine, true);
 	priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
 	iPointPriority priorityNeighbors;
 
-	for (uint i = 0; i < 8; ++i)
-	{
-		if (neighbors[i].x != -1 && neighbors[i].y != -1) {
+	list<iPoint>::const_iterator it = buildingSurroundingTiles.begin();
+	while (it != buildingSurroundingTiles.end()) {
+	
+		if (App->pathfinding->IsWalkable(*it) && App->movement->IsValidTile(owner->GetSingleUnit(), *it, false, false, true)) {
 
-			priorityNeighbors.point = neighbors[i];
-			priorityNeighbors.priority = neighbors[i].DistanceManhattan(owner->GetSingleUnit()->currTile);
+			priorityNeighbors.point = *it;
+			priorityNeighbors.priority = (*it).DistanceManhattan(owner->GetSingleUnit()->currTile);
 			queue.push(priorityNeighbors);
 		}
+		it++;
 	}
 
-	goldMineTile = queue.top().point;
-	//
+	if (!queue.empty())
+		goldMineTile = queue.top().point;
+	//_Option_a
 
-	goldMineTile = App->movement->FindClosestValidTile(goldMineTile, owner);
+	// Option b: if all the surrounding tiles of the building are either occupied by other units or unwalkable, the unit searches for the closest valid tile to the building
+	if (goldMineTile.x == -1 && goldMineTile.y == -1) {
+
+		list<iPoint> buildingTiles = App->entities->GetBuildingTiles(goldMine);
+		priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
+		iPointPriority priorityNeighbors;
+
+		list<iPoint>::const_iterator it = buildingTiles.begin();
+		while (it != buildingTiles.end()) {
+
+			priorityNeighbors.point = *it;
+			priorityNeighbors.priority = (*it).DistanceManhattan(owner->GetSingleUnit()->currTile);
+			queue.push(priorityNeighbors);
+
+			it++;
+		}
+
+		goldMineTile = queue.top().point;
+
+		goldMineTile = App->movement->FindClosestValidTile(goldMineTile, owner);
+	}
+	//_Option_b
 
 	if (goldMineTile.x == -1 || goldMineTile.y == -1) {
 
@@ -594,32 +607,51 @@ void Goal_HealRunestone::Activate()
 	AddSubgoal(new Goal_HealArea(owner, runestone));
 
 	// 1. Move near the Runestone
-	iPoint runestoneTile = App->map->WorldToMap(runestone->GetPos().x, runestone->GetPos().y);
+	iPoint runestoneTile = { -1,-1 };
 
-	//
-	iPoint neighbors[4];
-	neighbors[0].create(runestoneTile.x, runestoneTile.y);
-	neighbors[1].create(runestoneTile.x + 1, runestoneTile.y + 0);
-	neighbors[2].create(runestoneTile.x + 0, runestoneTile.y + 1);
-	neighbors[3].create(runestoneTile.x + 1, runestoneTile.y + 1);
-
+	// Option a: the unit searches for a free surrounding tile of the building
+	list<iPoint> buildingSurroundingTiles = App->entities->GetBuildingTiles(runestone, true);
 	priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
 	iPointPriority priorityNeighbors;
 
-	for (uint i = 0; i < 8; ++i)
-	{
-		if (neighbors[i].x != -1 && neighbors[i].y != -1) {
+	list<iPoint>::const_iterator it = buildingSurroundingTiles.begin();
+	while (it != buildingSurroundingTiles.end()) {
 
-			priorityNeighbors.point = neighbors[i];
-			priorityNeighbors.priority = neighbors[i].DistanceManhattan(owner->GetSingleUnit()->currTile);
+		if (App->pathfinding->IsWalkable(*it) && App->movement->IsValidTile(owner->GetSingleUnit(), *it, false, false, true)) {
+
+			priorityNeighbors.point = *it;
+			priorityNeighbors.priority = (*it).DistanceManhattan(owner->GetSingleUnit()->currTile);
 			queue.push(priorityNeighbors);
 		}
+		it++;
 	}
 
-	runestoneTile = queue.top().point;
-	//
+	if (!queue.empty())
+		runestoneTile = queue.top().point;
+	//_Option_a
 
-	runestoneTile = App->movement->FindClosestValidTile(runestoneTile, owner);
+	// Option b: if all the surrounding tiles of the building are either occupied by other units or unwalkable, the unit searches for the closest valid tile to the building
+	if (runestoneTile.x == -1 && runestoneTile.y == -1) {
+
+		list<iPoint> buildingTiles = App->entities->GetBuildingTiles(runestone);
+		priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
+		iPointPriority priorityNeighbors;
+
+		list<iPoint>::const_iterator it = buildingTiles.begin();
+		while (it != buildingTiles.end()) {
+
+			priorityNeighbors.point = *it;
+			priorityNeighbors.priority = (*it).DistanceManhattan(owner->GetSingleUnit()->currTile);
+			queue.push(priorityNeighbors);
+
+			it++;
+		}
+
+		runestoneTile = queue.top().point;
+
+		runestoneTile = App->movement->FindClosestValidTile(runestoneTile, owner);
+	}
+	//_Option_b
 
 	if (runestoneTile.x == -1 || runestoneTile.y == -1) {
 
