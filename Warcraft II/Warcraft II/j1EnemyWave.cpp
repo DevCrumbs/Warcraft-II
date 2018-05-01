@@ -5,6 +5,9 @@
 #include "j1App.h"
 #include "j1EnemyWave.h"
 #include "j1Map.h"
+#include "j1Input.h"
+#include "DynamicEntity.h"
+#include  "j1EntityFactory.h"
 
 using namespace std;
 
@@ -42,6 +45,28 @@ bool j1EnemyWave::CleanUp()
 
 bool j1EnemyWave::Update(float ft)
 {
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	{
+		int layer = rand() % spawnTiles.size();
+
+		list<iPoint> currentList = spawnTiles[layer];
+
+		for (list<iPoint>::const_iterator iterator = currentList.begin(); iterator != currentList.end(); ++iterator)
+		{
+			bool spawn = rand() % 2;
+
+			if (spawn)
+			{
+				ENTITY_TYPE type = ENTITY_TYPE(rand() % 3 + 381);
+				UnitInfo unitInfo;
+				fPoint pos{ (*iterator).x, (*iterator).y };
+
+				App->entities->AddEntity(type, pos, App->entities->GetUnitInfo(type), unitInfo);
+			}
+
+		}
+
+	}
 
 
 	return true;
@@ -60,7 +85,7 @@ void j1EnemyWave::AddTiles(list<iPoint> tiles)
 
 bool j1EnemyWave::Save(pugi::xml_node& save) const {
 
-	spawnTiles[5];
+	
 
 	return true;
 }
