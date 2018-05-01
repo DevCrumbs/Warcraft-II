@@ -275,6 +275,7 @@ void ElvenArcher::Move(float dt)
 	brain->Process(dt);
 
 	UnitStateMachine(dt);
+	HandleInput(entityEvent);
 
 	// Update animations
 	if (!isStill || isHitting)
