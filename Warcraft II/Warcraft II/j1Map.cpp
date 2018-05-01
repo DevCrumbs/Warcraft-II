@@ -876,10 +876,6 @@ bool j1Map::LoadLogic()
 		{
 			// Save the entities from layerIterator in entityGroupLevel
 			entityGroupLevel.push_back(LoadLayerEntities(*layerIterator));
-			ret = true;
-		}
-		else if ((*layerIterator)->properties.GetProperty("entitiesWave", false))
-		{
 			LoadSpawnTiles(*layerIterator);
 			ret = true;
 		}
@@ -896,6 +892,8 @@ bool j1Map::LoadLogic()
 list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 {
 	list<Entity*>entitiesGroup;
+	list<iPoint> spawnTiles;
+
 	if (layer != nullptr)
 	{		
 		// Iterate layer
@@ -975,6 +973,20 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 						App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
 					break;
 				}
+	
+				
+				/// Enemy waves spawns
+				if (layer->data[i] == 384)///
+				{
+				
+					int x = i % layer->width;
+					int y = i / layer->width;
+
+					iPoint pos = MapToWorld(x, y);
+					if (IsOnBase(pos))
+						spawnTiles.push_back(pos);
+
+				}
 
 				// If the entity is an enemy 
 				if (enemyEntity != nullptr)
@@ -983,7 +995,13 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 					entitiesGroup.push_back(enemyEntity);
 
 				}
+
 			}
+		}
+
+		if (!spawnTiles.empty())
+		{
+			App->wave->AddTiles(spawnTiles);
 		}
 	}
 	return entitiesGroup;
@@ -1104,22 +1122,28 @@ void j1Map::LoadSpawnTiles(MapLayer* layer)
 {
 	if (layer != nullptr)
 	{
+		list<iPoint> spawnTiles;
 		// Iterate layer
 		for (int i = 0; i < layer->sizeData; ++i)
 		{
 			// Check if tile is wave tile
 			if (layer->data[i] == 384)///
 			{
-				int x = i % layer->width;
-				int y = i / layer->width;
-
-				iPoint pos = MapToWorld(x, y);
-
-				App->wave->AddTile(pos);
-				
+			
 			}
 		}
+		if (!spawnTiles.empty())
+		{
+			App->wave->AddTiles(spawnTiles);
+		}
 	}
+}
+
+
+bool j1Map::IsOnBase(iPoint pos)
+{
+	int size = 1;
+	return (playerBase.x < pos.x + size && playerBase.x + playerBase.w > pos.x && playerBase.y < pos.y + size && playerBase.h + playerBase.y > pos.y);
 }
 
 ///*sadface*

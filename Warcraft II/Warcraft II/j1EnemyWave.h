@@ -5,6 +5,7 @@
 #include "Entity.h"
 
 #include <list>
+#include <vector>
 #include <string>
 
 using namespace std;
@@ -19,7 +20,7 @@ struct EnemyInWave
 
 struct EnemyWave
 {
-	list<EnemyInWave> 
+	//list<EnemyInWave> 
 };
 
 class j1EnemyWave : public j1Module
@@ -47,15 +48,15 @@ public:
 	// Load
 	bool Load(pugi::xml_node&);
 
-	void AddTile(iPoint tile);
+	void AddTiles(list<iPoint> tiles);
 
 public:
 
 private:
 	j1Timer timer;
 
-	list<iPoint> spawnTiles;
-
+	vector<list<iPoint>> spawnTiles;
+	
 
 };
 

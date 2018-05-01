@@ -203,6 +203,8 @@ public:
 
 	void LoadSpawnTiles(MapLayer * layer);
 
+	bool IsOnBase(iPoint pos);
+
 	// Unload map
 	bool UnLoad();
 
