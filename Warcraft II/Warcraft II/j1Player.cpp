@@ -1264,13 +1264,44 @@ void j1Player::MakeUnitMenu(Entity* entity)
 
 void j1Player::MakePrisionerMenu(Entity * entity)
 {
+	if (entity == nullptr)
+		return;
+
+	App->entities->UnselectAllEntities();
+	HideEntitySelectedInfo();
+
 	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_ALLERIA)
 	{
-		ShowEntitySelectedInfo(entity->GetStringLife(), "Alleria", { 848, 159, 52, 42 }, entity);
+		//Set entity name
+		entitySelectedStats.entityName->SetText("Alleria");
+		entitySelectedStats.entityName->isActive = true;
+
+		//Set Entity icon image
+		SDL_Rect icon = { 848, 159, 52, 42 };
+		entitySelectedStats.entityIcon->SetNewRect(icon);
+		entitySelectedStats.entityIcon->isActive = true;
+
+		//Prisioner description
+		entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 57 });
+		entitySelectedStats.HP->SetText("Expedition's head scout.");
+		entitySelectedStats.HP->isActive = true;
+
 	}
 	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_TURALYON)
 	{
-		ShowEntitySelectedInfo(entity->GetStringLife(), "Turalyon", { 744, 159, 52, 42 }, entity);
+		//Set entity name
+		entitySelectedStats.entityName->SetText("Turalyon");
+		entitySelectedStats.entityName->isActive = true;
+
+		//Set Entity icon image
+		SDL_Rect icon = { 744, 159, 52, 42 };
+		entitySelectedStats.entityIcon->SetNewRect(icon);
+		entitySelectedStats.entityIcon->isActive = true;
+
+		//Prisioner description
+		entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 57 });
+		entitySelectedStats.HP->SetText("Paladin of the Silver Hand.");
+		entitySelectedStats.HP->isActive = true;
 	}
 }
 
