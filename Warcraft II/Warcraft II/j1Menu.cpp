@@ -340,8 +340,30 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_NONE:
 		break;
 	case UI_EVENT_MOUSE_ENTER:
+		if (UIelem == playButt)
+			playLabel->SetColor(ColorGreen,true);
+		else if (UIelem == exitButt)
+			exitLabel->SetColor(ColorGreen, true);
+
+		else if (UIelem == settingsButt)
+			settingsLabel->SetColor(ColorGreen, true);
+
+		else if (UIelem == returnButt)
+			returnLabel->SetColor(ColorGreen, true);
+
 		break;
 	case UI_EVENT_MOUSE_LEAVE:
+		if (UIelem == playButt)
+			playLabel->SetColor(Black_, true);
+		else if (UIelem == exitButt)
+			exitLabel->SetColor(Black_, true);
+
+		else if (UIelem == settingsButt)
+			settingsLabel->SetColor(Black_, true);
+
+		else if (UIelem == returnButt)
+			returnLabel->SetColor(Black_, true);
+
 		break;
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
