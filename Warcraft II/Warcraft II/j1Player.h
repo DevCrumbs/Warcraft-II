@@ -113,6 +113,8 @@ public:
 	iPoint GetMousePos() const;
 
 	void CheckUnitSpawning(queue<ToSpawnUnit*>* queue);
+	void DiscountGold(int gold);
+
 	void SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
 
 	void UpdateSpawnUnitsStats(list<GroupSpawning>* spawningList);
@@ -142,6 +144,7 @@ public:
 	void ShowEntitySelectedButt(ENTITY_TYPE type);
 	void HideEntitySelectedInfo();
 	void MakeUnitMenu(Entity* entity);
+	void MakePrisionerMenu(Entity* entity);
 	void DeleteEntitiesMenu();
 	void DeleteGroupSelectionButtons();
 	void CreateHoverInfoMenu();

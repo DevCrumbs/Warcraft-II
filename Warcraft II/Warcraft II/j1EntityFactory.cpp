@@ -1651,6 +1651,7 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 	case EntityType_MAGE_TOWER:
 	case EntityType_GRYPHON_AVIARY:
 	case EntityType_STABLES:
+	case EntityType_BARRACKS:
 
 		DrawStaticEntityPreviewTiles(true, StaticEntitySize_Medium, mousePos);
 
