@@ -79,8 +79,6 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
-
-	auxIsSelected = isSelected;
 }
 
 void Footman::Move(float dt)
@@ -113,7 +111,7 @@ void Footman::Move(float dt)
 
 			brain->RemoveAllSubgoals();
 
-			unitState = UnitState_Idle;
+			unitState = UnitState_NoState;
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
@@ -138,11 +136,6 @@ void Footman::Move(float dt)
 	}
 
 	if (!isDead && isValid) {
-
-		if (auxIsSelected != isSelected) {
-
-			auxIsSelected = isSelected;
-		}
 
 		// ---------------------------------------------------------------------
 
@@ -270,10 +263,10 @@ void Footman::Move(float dt)
 
 			break;
 		}
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
 	}
+
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 
@@ -487,9 +480,9 @@ void Footman::UnitStateMachine(float dt)
 	case UnitState_Idle:
 
 		// If the unit is doing nothing, make it look around
-		//if (brain->GetSubgoalsList().size() == 0)
+		if (brain->GetSubgoalsList().size() == 0)
 
-			//brain->AddGoal_LookAround();
+			brain->AddGoal_LookAround(1, 3, 1, 2, 2);
 
 	case UnitState_Patrol:
 

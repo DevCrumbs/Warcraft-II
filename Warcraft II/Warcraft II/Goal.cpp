@@ -213,9 +213,9 @@ void Goal_Think::AddGoal_RescuePrisoner(DynamicEntity* prisoner)
 	AddSubgoal(new Goal_RescuePrisoner(owner, prisoner));
 }
 
-void Goal_Think::AddGoal_LookAround()
+void Goal_Think::AddGoal_LookAround(uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted)
 {
-	AddSubgoal(new Goal_LookAround(owner));
+	AddSubgoal(new Goal_LookAround(owner, minSecondsToChange, maxSecondsToChange, minSecondsUntilNextChange, maxSecondsUntilNextChange, probabilityGoalCompleted));
 }
 
 // Goal_AttackTarget ---------------------------------------------------------------------
@@ -437,7 +437,9 @@ void Goal_Wander::Activate()
 	goalStatus = GoalStatus_Active;
 
 	if (owner != nullptr)
-		AddSubgoal(new Goal_LookAround(owner));
+
+		// This is meant to work with critters
+		AddSubgoal(new Goal_LookAround(owner, 2, 4, 2, 6, 3));
 
 	iPoint destinationTile = { -1,-1 };
 
@@ -1055,7 +1057,7 @@ void Goal_HitTarget::Terminate()
 
 // Goal_LookAround ---------------------------------------------------------------------
 
-Goal_LookAround::Goal_LookAround(DynamicEntity* owner) :AtomicGoal(owner, GoalType_LookAround) {}
+Goal_LookAround::Goal_LookAround(DynamicEntity* owner, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted) :AtomicGoal(owner, GoalType_LookAround), minSecondsToChange(minSecondsToChange), maxSecondsToChange(maxSecondsToChange), minSecondsUntilNextChange(minSecondsUntilNextChange), maxSecondsUntilNextChange(maxSecondsUntilNextChange), probabilityGoalCompleted(probabilityGoalCompleted) {}
 
 void Goal_LookAround::Activate()
 {
@@ -1156,8 +1158,10 @@ void Goal_LookAround::Activate()
 	}
 
 	timer.Start();
-	secondsToChange = (float)(rand() % 4 + 2);
-	secondsUntilNextChange = (float)(rand() % 6 + 2);
+	secondsToChange = (float)(rand() % maxSecondsToChange + minSecondsToChange);
+	secondsUntilNextChange = (float)(rand() % maxSecondsUntilNextChange + minSecondsUntilNextChange);
+
+	owner->SetIsStill(true);
 }
 
 GoalStatus Goal_LookAround::Process(float dt)
@@ -1178,7 +1182,7 @@ GoalStatus Goal_LookAround::Process(float dt)
 
 		if (timer.ReadSec() >= secondsUntilNextChange) {
 
-			uint random = rand() % 3;
+			uint random = rand() % probabilityGoalCompleted;
 
 			if (random % 2 == 0)
 				goalStatus = GoalStatus_Completed;
@@ -1194,7 +1198,15 @@ void Goal_LookAround::Terminate()
 {
 	secondsToChange = 0.0f;
 	secondsUntilNextChange = 0.0f;
+
+	minSecondsToChange = 0;
+	maxSecondsToChange = 0;
+	minSecondsUntilNextChange = 0;
+	maxSecondsUntilNextChange = 0;
+	probabilityGoalCompleted = 0;
 	isChanged = false;
+
+	owner->SetIsStill(false);
 }
 
 // Goal_PickNugget ---------------------------------------------------------------------
@@ -1262,7 +1274,6 @@ void Goal_PickNugget::Activate()
 
 	goldMine->totalGold = gold;
 	goldMine->secondsGathering = secondsGathering;
-
 
 	App->audio->PlayFx(App->audio->GetFX().goldMine, 3); //Gold mine sound
 

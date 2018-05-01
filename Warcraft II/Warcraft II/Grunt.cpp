@@ -114,7 +114,7 @@ void Grunt::Move(float dt)
 			// Initialize the goals
 			brain->RemoveAllSubgoals();
 
-			unitState = UnitState_Idle;
+			unitState = UnitState_NoState;
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);

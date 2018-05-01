@@ -1191,7 +1191,7 @@
       <frame x="400" y="223" w="50" h="50"/>
     </health>
 
-    <cross speed ="0.04" loop="0">
+    <cross speed ="18" loop="0">
       <frame x="314" y="106" w="30" h="30"/>
       <frame x="344" y="106" w="30" h="30"/>
       <frame x="374" y="106" w="30" h="30"/>

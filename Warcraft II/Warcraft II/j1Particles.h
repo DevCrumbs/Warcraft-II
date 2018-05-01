@@ -94,7 +94,7 @@ public:
 	bool CleanUp();
 	bool PostUpdate();
 
-	Particle* AddParticle(const Particle& particle, iPoint pos, fPoint destination = { 0.0f,0.0f }, float speed = 0.0f, uint damage = 0, Uint32 delay = 0);
+	Particle* AddParticle(const Particle& particle, iPoint pos, fPoint destination = { 0.0f,0.0f }, float speed = 0.0f, uint damage = 0, Uint32 delay = 0, double angle = 0.0f);
 
 	void UpdateAnimations(const float dt);
 	void LoadAnimationsSpeed();
@@ -140,6 +140,9 @@ private:
 	float dragonSubFireSpeed = 0.0f;
 	float gryphonSubFireSpeed = 0.0f;
 
+	/// Cross
+	float crossSpeed = 0.0f;
+
 public:
 
 	// Fire
@@ -160,7 +163,8 @@ public:
 	Particle gryphonSubFire;
 
 	// Paws
-	Particle paws;
+	Particle boarPaws;
+	Particle sheepPaws;
 
 	// Health +++
 	Particle health;

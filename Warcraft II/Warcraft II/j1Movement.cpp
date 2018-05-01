@@ -52,7 +52,7 @@ void j1Movement::DebugDraw() const
 							iPoint pos = App->map->MapToWorld((*unit)->path.at(i).x, (*unit)->path.at(i).y);
 							SDL_Rect rect = { pos.x, pos.y, App->map->data.tileWidth, App->map->data.tileHeight };
 							//App->render->DrawQuad(rect, col.r, col.g, col.b, 50);
-							App->printer->PrintQuad(rect, { col.r,col.g,col.b,50 }, true);
+							App->printer->PrintQuad(rect, { col.r,col.g,col.b,50 }, true, true, Layers_FloorColliders);
 						}
 					}
 				}
@@ -61,7 +61,7 @@ void j1Movement::DebugDraw() const
 				iPoint pos = App->map->MapToWorld((*unit)->goal.x, (*unit)->goal.y);
 				SDL_Rect rect = { pos.x, pos.y, App->map->data.tileWidth, App->map->data.tileHeight };
 				//App->render->DrawQuad(rect, col.r, col.g, col.b, 200);
-				App->printer->PrintQuad(rect, { col.r,col.g,col.b,200 }, true);
+				App->printer->PrintQuad(rect, { col.r,col.g,col.b,200 }, true, true, Layers_FloorColliders);
 			}
 		}
 	}

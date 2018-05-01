@@ -80,8 +80,6 @@ ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, co
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
-
-	auxIsSelected = isSelected;
 }
 
 void ElvenArcher::Move(float dt)
@@ -114,7 +112,7 @@ void ElvenArcher::Move(float dt)
 
 			brain->RemoveAllSubgoals();
 
-			unitState = UnitState_Idle;
+			unitState = UnitState_NoState;
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
@@ -142,11 +140,6 @@ void ElvenArcher::Move(float dt)
 	}
 
 	if (!isDead && isValid) {
-
-		if (auxIsSelected != isSelected) {
-
-			auxIsSelected = isSelected;
-		}
 
 		// PROCESS THE COMMANDS
 		switch (unitCommand) {
