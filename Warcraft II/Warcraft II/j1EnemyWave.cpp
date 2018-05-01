@@ -53,13 +53,14 @@ bool j1EnemyWave::Load(pugi::xml_node& save) {
 }
 
 
-void j1EnemyWave::AddTile(iPoint pos)
+void j1EnemyWave::AddTiles(list<iPoint> tiles)
 {
-	spawnTiles.push_back(pos);
+	spawnTiles.push_back(tiles);
 }
 
 bool j1EnemyWave::Save(pugi::xml_node& save) const {
 
+	spawnTiles[5];
 
 	return true;
 }
