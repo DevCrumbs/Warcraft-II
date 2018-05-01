@@ -184,6 +184,7 @@ bool j1Gui::CleanUp()
 	bool ret = true;
 
 	LOG("Freeing GUI");
+	isGuiCleanUp = true;
 
 	// Clear UI_elements list (active elements)
 	list<UIElement*>::const_iterator elem = UIElementsList.begin();

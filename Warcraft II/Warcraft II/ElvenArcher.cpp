@@ -130,8 +130,12 @@ void ElvenArcher::Move(float dt)
 			entityCollider->isValid = false;
 
 			// Hide life bar Will remove in destructor
-			if (lifeBar != nullptr)
-				lifeBar->isActive = false;
+			if (!App->gui->isGuiCleanUp) {
+
+				if (lifeBar != nullptr)
+
+					lifeBar->isActive = false;
+			}
 
 
 			// If the player dies, remove all their goals

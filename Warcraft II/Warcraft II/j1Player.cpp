@@ -498,6 +498,30 @@ bool j1Player::CleanUp()
 {
 	bool ret = true;
 
+	// UI Elements
+	if (!App->gui->isGuiCleanUp) {
+
+		for (; !UIMenuInfoList.empty(); UIMenuInfoList.pop_back())
+		{
+			UIMenuInfoList.back()->toRemove = true;
+		}
+		UIMenuInfoList.clear();
+
+		for (; !imagePrisonersVector.empty(); imagePrisonersVector.pop_back())
+		{
+			imagePrisonersVector.back()->toRemove = true;
+		}
+		imagePrisonersVector.clear();
+
+		if (hoverInfo.background != nullptr) {
+			DeleteHoverInfoMenu();
+		}
+
+		DeleteEntitiesMenu();
+		DeleteGroupSelectionButtons();
+	}
+
+	// Entities
 	for (; !chickenFarm.empty(); chickenFarm.pop_back())
 	{
 		chickenFarm.back()->isRemove = true;
@@ -522,12 +546,6 @@ bool j1Player::CleanUp()
 	}
 	guardTower.clear();
 
-	for (; !UIMenuInfoList.empty(); UIMenuInfoList.pop_back())
-	{
-		UIMenuInfoList.back()->toRemove = true;
-	}
-	UIMenuInfoList.clear();
-
 	for (; !goldMine.empty(); goldMine.pop_back())
 	{
 		goldMine.back()->isRemove = true;
@@ -540,24 +558,11 @@ bool j1Player::CleanUp()
 	}
 	runestone.clear();
 
-	for (; !imagePrisonersVector.empty(); imagePrisonersVector.pop_back())
-	{
-		imagePrisonersVector.back()->toRemove = true;
-	}
-	imagePrisonersVector.clear();
-
-	DeleteEntitiesMenu();
-
-	DeleteGroupSelectionButtons();
-
-	if (hoverInfo.background != nullptr) {
-		DeleteHoverInfoMenu();
-	}
-
 	if (barracks != nullptr) {
 		barracks->isRemove = true;
 		barracks = nullptr;
 	}
+
 	if (townHall) {
 		townHall->isRemove = true;
 		townHall = nullptr;
@@ -578,6 +583,7 @@ bool j1Player::CleanUp()
 		delete toSpawnUnitGrypho.front();
 		toSpawnUnitGrypho.pop();
 	}
+
 	return ret;
 }
 

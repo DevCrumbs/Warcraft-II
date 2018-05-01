@@ -444,10 +444,6 @@ bool j1Scene::Update(float dt)
 
 		if (units.size() > 0) {
 
-			if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
-
-				units.front()->ApplyDamage(20);
-
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 
 				if (!CompareSelectedUnitsLists(units)) {
@@ -468,12 +464,12 @@ bool j1Scene::Update(float dt)
 			if (group != nullptr) {
 
 				/// COMMAND PATROL
-				if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+				if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
 
 					App->entities->CommandToUnits(units, UnitCommand_Patrol);
 
 				/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
-				if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+				if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN)
 
 					App->entities->CommandToUnits(units, UnitCommand_Stop);
 
@@ -733,7 +729,7 @@ bool j1Scene::PostUpdate()
 			isStartedFinalTransition = true;
 		}
 	}
-	else if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) {
+	else if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
 	
 		App->player->isWin = true;
 		App->fade->FadeToBlack(this, App->finish);
@@ -748,7 +744,7 @@ bool j1Scene::PostUpdate()
 	}
 	
 	if (((App->player->currentGold < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
-		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)) {
+		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)) {
 
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
@@ -774,9 +770,10 @@ bool j1Scene::CleanUp()
 	LOG("Freeing scene");
 
 	App->audio->PauseMusic();
-	//App->tex->UnLoad(debugTex);
+	App->tex->UnLoad(debugTex);
 
-	DestroyAllUI();
+	if (!App->gui->isGuiCleanUp)
+		DestroyAllUI();
 	//warcraftActive = false;
 
 	// Set to nullptr the pointers to the UI elements
@@ -906,16 +903,20 @@ void j1Scene::CheckCameraMovement(float dt) {
 	//NOT MOVING WITH App->input->GetKey(buttonMoveUp) == KEY_REPEAT
 	//Move with arrows
 	//UP
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && App->render->camera.y <= 0)
+	if ((App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) 
+		&& App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	//DOWN
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && App->render->camera.y >= downMargin)
+	if ((App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		&& App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	//LEFT
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && App->render->camera.x <= 0)
+	if ((App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		&& App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	//RIGHT
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && App->render->camera.x >= rightMargin)
+	if ((App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		&& App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
 
 	//Move with mouse
