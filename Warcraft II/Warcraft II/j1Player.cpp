@@ -253,10 +253,9 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				StaticEntity* c;
 				c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), unitInfo, this);
-				App->scene->SetAplphaBuilding(EntityType_NONE);
 				chickenFarm.push_back(c);
-				AddGold(-App->scene->chickenFarmCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				DiscountGold(App->scene->chickenFarmCost); //Discount gold
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -266,8 +265,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->stablesCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->stablesCost); //Discount gold
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -277,8 +275,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->gryphonAviaryCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->gryphonAviaryCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -288,8 +285,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->mageTowerCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->mageTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -299,10 +295,9 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				StaticEntity* s;
 				s = (StaticEntity*)App->entities->AddEntity(EntityType_SCOUT_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_SCOUT_TOWER), unitInfo, this);
-				App->scene->SetAplphaBuilding(EntityType_NONE);
 				scoutTower.push_back(s);
-				AddGold(-App->scene->scoutTowerCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				DiscountGold(App->scene->scoutTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -312,8 +307,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				guardTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_GUARD_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_GUARD_TOWER), unitInfo, this));
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->guardTowerCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->guardTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -322,8 +316,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				cannonTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_CANNON_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_CANNON_TOWER), unitInfo, this));
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->cannonTowerCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->cannonTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -332,8 +325,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				barracks = (StaticEntity*)App->entities->AddEntity(EntityType_BARRACKS, buildingPos, App->entities->GetBuildingInfo(EntityType_BARRACKS), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->barracksCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->barracksCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -419,6 +411,12 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 			(*barrackIter).entityLifeBar->SetLife((*(*barrackIter).owner)->toSpawnTimer.ReadSec());
 	}
 
+}
+
+void j1Player::DiscountGold(int gold)
+{
+	AddGold(-gold); //Discount gold
+	App->scene->hasGoldChanged = true;
 }
 
 void j1Player::SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo)
