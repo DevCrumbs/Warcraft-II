@@ -386,6 +386,7 @@ bool j1Scene::Update(float dt)
 			(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
 	}
 
+
 	// *****UNITS*****
 	/// Units cannot be clicked if a building is being placed or Pause Menu is active
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
@@ -470,6 +471,7 @@ bool j1Scene::Update(float dt)
 
 					App->entities->CommandToUnits(units, UnitCommand_Stop);
 
+
 				/// COMMAND ATTACK
 				/// Enemy
 				Entity* target = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
@@ -549,11 +551,21 @@ bool j1Scene::Update(float dt)
 					}
 				}
 
+				//Entities to take in acount when the mouse sprite change
+				Entity* playerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+				Entity* prisioner = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
+
 				// Set the cursor texture
 				if (target != nullptr || critter != nullptr || building != nullptr) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
 					if (r.x != 374)
 						App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
+				}
+				else if (playerUnit != nullptr || playerBuilding != nullptr || prisioner != nullptr) {
+					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+					if (r.x != 374)
+					App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
 				}
 				else {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
