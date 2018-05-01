@@ -1978,7 +1978,11 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 	while (activeDyn != activeDynamicEntities.end()) {
 	
 		iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
-		iPoint entityNextTile = (*activeDyn)->GetSingleUnit()->nextTile;
+
+		iPoint entityNextTile = { -1,-1 };
+
+		if ((*activeDyn)->GetSingleUnit() != nullptr)
+			entityNextTile = (*activeDyn)->GetSingleUnit()->nextTile;
 
 		// This checks the tile of the dynamic entity and its surroundings
 		switch (buildingSize)
@@ -1986,8 +1990,10 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		case StaticEntitySize_Small:
 			for (int i = -1; i < 1; i++) {
 				for (int j = -1; j < 1; j++) {
-					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-						|| (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
+					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+					if ((entityNextTile.x != -1 && entityNextTile.y != -1)
+						&& (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
@@ -1995,8 +2001,10 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		case StaticEntitySize_Medium:
 			for (int i = -2; i < 1; i++) {
 				for (int j = -2; j < 1; j++) {
-					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-						|| (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
+					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+					if ((entityNextTile.x != -1 && entityNextTile.y != -1)
+						&& (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
@@ -2004,8 +2012,10 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		case StaticEntitySize_Big:
 			for (int i = -3; i < 1; i++) {
 				for (int j = -3; j < 1; j++) {
-					if ((tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-						|| (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
+					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+					if ((entityNextTile.x != -1 && entityNextTile.y != -1)
+						&& (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
