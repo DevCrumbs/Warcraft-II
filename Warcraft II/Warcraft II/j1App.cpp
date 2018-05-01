@@ -24,6 +24,7 @@
 #include "j1PathManager.h"
 #include "j1FinishGame.h"
 #include "j1Printer.h"
+#include "j1EnemySurge.h"
 
 #include "j1App.h"
 #include "Brofiler\Brofiler.h"
@@ -54,6 +55,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	pathmanager = new j1PathManager(MS_PATHFINDING);
 	finish = new j1FinishGame();
 	printer = new j1Printer();
+	surge = new j1EnemySurge();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -70,6 +72,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(pathmanager);
 	AddModule(particles);
 	AddModule(entities);
+	AddModule(surge);
 	/// <-- Do not change this order
 
 	AddModule(font);

@@ -147,6 +147,7 @@
     <ClInclude Include="j1Audio.h" />
     <ClInclude Include="j1Collision.h" />
     <ClInclude Include="j1Console.h" />
+    <ClInclude Include="j1EnemySurge.h" />
     <ClInclude Include="j1EntityFactory.h" />
     <ClInclude Include="j1FadeToBlack.h" />
     <ClInclude Include="j1FinishGame.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="j1Audio.cpp" />
     <ClCompile Include="j1Collision.cpp" />
     <ClCompile Include="j1Console.cpp" />
+    <ClCompile Include="j1EnemySurge.cpp" />
     <ClCompile Include="j1EntityFactory.cpp" />
     <ClCompile Include="j1FadeToBlack.cpp" />
     <ClCompile Include="j1FinishGame.cpp" />

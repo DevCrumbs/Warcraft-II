@@ -336,6 +336,9 @@
     <ClInclude Include="j1Printer.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="j1EnemySurge.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -576,6 +579,9 @@
       <Filter>Modules\UIElements</Filter>
     </ClCompile>
     <ClCompile Include="j1Printer.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="j1EnemySurge.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
