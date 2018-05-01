@@ -25,6 +25,7 @@
 #include "j1FinishGame.h"
 #include "j1Printer.h"
 #include "j1EnemyWave.h"
+#include <time.h>
 
 #include "j1App.h"
 #include "Brofiler\Brofiler.h"
@@ -101,6 +102,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	movement->active = false;
 	particles->active = false;
 	wave->active = false;
+
+	srand(time(NULL));
 }
 
 // Destructor

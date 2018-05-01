@@ -4,6 +4,7 @@
 #include "j1Module.h"
 #include "j1App.h"
 #include "p2Point.h"
+#include "p2Log.h"
 
 #include "SDL\include\SDL.h"
 
@@ -13,7 +14,7 @@ class SDL_Texture;
 
 enum Layers
 {
-	Layers_Map = -1,
+	Layers_Map = -2,
 	Layers_Paws = 0,
 	Layers_FloorColliders = 1,
 	Layers_Entities = 2,
@@ -128,7 +129,7 @@ public:
 		}
 		else if (first->type == DrawingElem::DElemType::QUAD && second->type == DrawingElem::DElemType::SPRITE)
 		{
-			return true;
+			return false;
 		}
 		else if (first->type == DrawingElem::DElemType::SPRITE && second->type == DrawingElem::DElemType::QUAD)
 		{
@@ -136,7 +137,7 @@ public:
 		}
 		else if (first->type == DrawingElem::DElemType::SPRITE && second->type == DrawingElem::DElemType::CIRCLE)
 		{
-			return false;
+			return true;
 		}
 		else if (first->type == DrawingElem::DElemType::CIRCLE && second->type == DrawingElem::DElemType::SPRITE)
 		{
@@ -150,8 +151,6 @@ public:
 		{
 			return true;
 		}
-		else
-			return true;
 	}
 };
 

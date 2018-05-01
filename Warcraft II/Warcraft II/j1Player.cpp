@@ -642,16 +642,34 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 				if (units.size() > 0) {
 
+					bool isGryphonRider = false;
+
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						(*it)->SetGoldMine((GoldMine*)staticEntity);
+						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						
+							isGryphonRider = true;
+							break;
+						}
 
 						it++;
 					}
 
-					App->entities->CommandToUnits(units, UnitCommand_GatherGold);
+					if (!isGryphonRider) {
+
+						it = units.begin();
+
+						while (it != units.end()) {
+
+							(*it)->SetGoldMine((GoldMine*)staticEntity);
+
+							it++;
+						}
+
+						App->entities->CommandToUnits(units, UnitCommand_GatherGold);
+					}
 				}
 				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
 					App->scene->terenasDialogTimer.Start();
@@ -756,22 +774,50 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
 
-				GoldMine* goldMine = (GoldMine*)staticEntity;
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
-				if (goldMine->GetGoldMineState() == GoldMineState_Untouched) {
+				if (units.size() > 0) {
 
-					App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
-					App->player->isMouseOnMine = true;
+					bool isGryphonRider = false;
+
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					while (it != units.end()) {
+
+						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+
+							isGryphonRider = true;
+							break;
+						}
+
+						it++;
+					}
+
+					if (!isGryphonRider) {
+
+						GoldMine* goldMine = (GoldMine*)staticEntity;
+
+						if (goldMine->GetGoldMineState() == GoldMineState_Untouched) {
+
+							App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+							App->player->isMouseOnMine = true;
+						}
+					}
 				}
 			}
 			if (staticEntity->staticEntityType == EntityType_RUNESTONE) {
 
-				Runestone* runestone = (Runestone*)staticEntity;
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
-				if (runestone->GetRunestoneState() == RunestoneState_Untouched) {
+				if (units.size() > 0) {
 
-					App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
-					App->player->isMouseOnMine = true;
+					Runestone* runestone = (Runestone*)staticEntity;
+
+					if (runestone->GetRunestoneState() == RunestoneState_Untouched) {
+
+						App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+						App->player->isMouseOnMine = true;
+					}
 				}
 			}
 			if ((staticEntity->staticEntityType == EntityType_TOWN_HALL || staticEntity->staticEntityType == EntityType_BARRACKS) && ent->GetCurrLife() == ent->GetMaxLife())

@@ -59,7 +59,7 @@ CritterBoar::CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, co
 CritterBoar::~CritterBoar()
 {
 	if (lastPaw != nullptr)
-		lastPaw->isRemove = true;
+		lastPaw->isDelete = true;
 	lastPaw = nullptr;
 }
 
@@ -85,6 +85,9 @@ void CritterBoar::Move(float dt)
 
 		isDead = true;
 
+		if (lastPaw != nullptr)
+			lastPaw->isDelete = true;
+
 		// Remove the entity from the unitsSelected list
 		App->entities->RemoveUnitFromUnitsSelected(this);
 
@@ -108,13 +111,12 @@ void CritterBoar::Move(float dt)
 		entityCollider->isValid = false;
 	}
 
-	if (!isDead) {
+	if (!isDead)
 
-		//UpdatePaws();
+		UpdatePaws();
 
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
-	}
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 
@@ -129,10 +131,8 @@ void CritterBoar::Move(float dt)
 
 void CritterBoar::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr) {
-		//App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
+	if (animation != nullptr)
 		App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
-	}
 
 	if (isSelected)
 		DebugDrawSelected();
@@ -259,66 +259,35 @@ void CritterBoar::UpdatePaws()
 {
 	// Add footprints along the critter's path
 	if (singleUnit->currTile.x != -1 && singleUnit->currTile.y != -1
-		&& singleUnit->nextTile.x != -1 && singleUnit->nextTile.y != -1) {
+		&& !isStill) {
 
-		if (lastPaw != nullptr) {
-
-			// Reset the animation of the last paw
-			if (GetUnitDirection() != UnitDirection_NoDirection && !lastPaw->isRemove) {
-
-				lastPaw->isRemove = true;
-
-				switch (GetUnitDirection()) {
-
-				case UnitDirection_Up:
-
-					lastPaw->animation = App->particles->GetPawsInfo(false, true).up;
-					break;
-
-				case UnitDirection_NoDirection:
-				case UnitDirection_Down:
-
-					lastPaw->animation = App->particles->GetPawsInfo(false, true).down;
-					break;
-
-				case UnitDirection_Left:
-
-					lastPaw->animation = App->particles->GetPawsInfo(false, true).left;
-					break;
-
-				case UnitDirection_Right:
-
-					lastPaw->animation = App->particles->GetPawsInfo(false, true).right;
-					break;
-
-				case UnitDirection_UpLeft:
-
-					lastPaw->animation = App->particles->GetPawsInfo(false, true).upLeft;
-					break;
-
-				case UnitDirection_UpRight:
-
-					lastPaw->animation = App->particles->GetPawsInfo(false, true).upRight;
-					break;
-
-				case UnitDirection_DownLeft:
-
-					lastPaw->animation = App->particles->GetPawsInfo(false, true).downLeft;
-					break;
-
-				case UnitDirection_DownRight:
-
-					lastPaw->animation = App->particles->GetPawsInfo(false, true).downRight;
-					break;
-				}
-			}
-		}
-
-		// Create a new paw
 		if (lastPawTile != singleUnit->currTile) {
 
+			// Remove last paw
+			if (lastPaw != nullptr) {
+
+				lastPaw->isRemove = true;
+				lastPaw = nullptr;
+			}
+
+			// Create a new paw
 			iPoint currTilePos = App->map->MapToWorld(singleUnit->currTile.x, singleUnit->currTile.y);
-			lastPaw = App->particles->AddParticle(App->particles->paws, currTilePos);
+
+			fPoint orientation = { (float)singleUnit->currTile.x - (float)lastPawTile.x, (float)singleUnit->currTile.y - (float)lastPawTile.y };
+
+			float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+
+			if (m > 0.0f) {
+				orientation.x /= m;
+				orientation.y /= m;
+			}
+
+			double angle = (atan2(orientation.y, orientation.x) * 180.0f / (float)M_PI);
+
+			if (angle >= 360.0f)
+				angle = 0.0f;
+
+			lastPaw = App->particles->AddParticle(App->particles->boarPaws, currTilePos, { 0.0f,0.0f }, 0.0f, 0, 0, angle);
 
 			lastPawTile = singleUnit->currTile;
 		}

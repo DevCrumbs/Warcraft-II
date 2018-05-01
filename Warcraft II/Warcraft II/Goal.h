@@ -174,7 +174,7 @@ public:
 	void AddGoal_GatherGold(GoldMine* goldMine);
 	void AddGoal_HealRunestone(Runestone* runestone);
 	void AddGoal_RescuePrisoner(DynamicEntity* prisoner);
-	void AddGoal_LookAround();
+	void AddGoal_LookAround(uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted);
 };
 
 class Goal_AttackTarget :public CompositeGoal
@@ -307,7 +307,7 @@ class Goal_LookAround :public AtomicGoal
 {
 public:
 
-	Goal_LookAround(DynamicEntity* owner);
+	Goal_LookAround(DynamicEntity* owner, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted);
 
 	void Activate();
 	GoalStatus Process(float dt);
@@ -318,6 +318,12 @@ private:
 	UnitDirection nextOrientation;
 	float secondsToChange = 0.0f;
 	float secondsUntilNextChange = 0.0f;
+
+	uint minSecondsToChange = 0;
+	uint maxSecondsToChange = 0;
+	uint minSecondsUntilNextChange = 0;
+	uint maxSecondsUntilNextChange = 0;
+	uint probabilityGoalCompleted = 0;
 	bool isChanged = false;
 
 	j1Timer timer;

@@ -197,7 +197,6 @@ public:
 
 	bool isRemove = false;
 	bool isSelected = false;
-	bool auxIsSelected = false; // to play fx
 
 	fPoint pos = { 0.0f,0.0f };
 
