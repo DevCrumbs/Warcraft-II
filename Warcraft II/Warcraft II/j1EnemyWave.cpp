@@ -4,6 +4,7 @@
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1EnemyWave.h"
+#include "j1Map.h"
 
 using namespace std;
 
@@ -49,6 +50,12 @@ bool j1EnemyWave::Update(float ft)
 bool j1EnemyWave::Load(pugi::xml_node& save) {
 
 	return true;
+}
+
+
+void j1EnemyWave::AddTile(iPoint pos)
+{
+	spawnTiles.push_back(pos);
 }
 
 bool j1EnemyWave::Save(pugi::xml_node& save) const {

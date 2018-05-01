@@ -12,6 +12,7 @@
 #include "j1EntityFactory.h"
 #include "j1Player.h"
 #include "j1Printer.h"
+#include "j1EnemyWave.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -877,6 +878,11 @@ bool j1Map::LoadLogic()
 			entityGroupLevel.push_back(LoadLayerEntities(*layerIterator));
 			ret = true;
 		}
+		else if ((*layerIterator)->properties.GetProperty("entitiesWave", false))
+		{
+			LoadSpawnTiles(*layerIterator);
+			ret = true;
+		}
 	}
 
 	if (ret)
@@ -889,7 +895,6 @@ bool j1Map::LoadLogic()
 
 list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 {
-
 	list<Entity*>entitiesGroup;
 	if (layer != nullptr)
 	{		
@@ -1036,6 +1041,9 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 		// Iterate all rooms rects
 		for (list<SDL_Rect>::iterator roomIterator = roomRectList.begin(); roomIterator != roomRectList.end(); ++roomIterator)
 		{
+			if ((*roomIterator) == playerBase)
+				continue;
+
 			list<Entity*> listOnRoom;
 			// Iterate entities
 			for (list<Entity*>::iterator currentEntity = (*iterator).begin(); currentEntity != (*iterator).end(); ++currentEntity)
@@ -1089,6 +1097,29 @@ bool j1Map::IsGoalOnRoom(iPoint origin, iPoint goal)
 	SDL_Rect goalRect{ goal.x, goal.y, defaultTileSize, defaultTileSize };
 
 	return IsGoalOnRoom(originRect, goalRect);
+}
+
+
+void j1Map::LoadSpawnTiles(MapLayer* layer)
+{
+	if (layer != nullptr)
+	{
+		// Iterate layer
+		for (int i = 0; i < layer->sizeData; ++i)
+		{
+			// Check if tile is wave tile
+			if (layer->data[i] == 384)///
+			{
+				int x = i % layer->width;
+				int y = i / layer->width;
+
+				iPoint pos = MapToWorld(x, y);
+
+				App->wave->AddTile(pos);
+				
+			}
+		}
+	}
 }
 
 ///*sadface*

@@ -1863,7 +1863,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						toSpawnUnitGrypho.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD)
 							App->scene->HideTerenasDialog();
-						HandleSpawningUnitsUIElem(&toSpawnUnitBarracks.back(), &gryphoSpawningListUI);
+						HandleSpawningUnitsUIElem(&toSpawnUnitGrypho.back(), &gryphoSpawningListUI);
 					}
 					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
 						App->scene->terenasDialogTimer.Start();
