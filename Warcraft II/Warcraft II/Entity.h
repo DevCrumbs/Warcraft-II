@@ -51,7 +51,7 @@ enum ENTITY_TYPE
 
 	EntityType_GRUNT = 381,
 	EntityType_TROLL_AXETHROWER = 382,
-	EntityType_DRAGON = 385,
+	EntityType_DRAGON = 383,
 
 	EntityType_WATCH_TOWER = 387,
 	EntityType_ENEMY_GUARD_TOWER = 388,

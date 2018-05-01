@@ -8,6 +8,7 @@
 #include "j1Input.h"
 #include "DynamicEntity.h"
 #include  "j1EntityFactory.h"
+#include <time.h>
 
 using namespace std;
 
@@ -47,6 +48,7 @@ bool j1EnemyWave::Update(float ft)
 {
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	{
+
 		int layer = rand() % spawnTiles.size();
 
 		list<iPoint> currentList = spawnTiles[layer];
@@ -59,9 +61,14 @@ bool j1EnemyWave::Update(float ft)
 			{
 				ENTITY_TYPE type = ENTITY_TYPE(rand() % 3 + 381);
 				UnitInfo unitInfo;
-				fPoint pos{ (*iterator).x, (*iterator).y };
+				fPoint pos{ (float)(*iterator).x, (float)(*iterator).y };
 
 				App->entities->AddEntity(type, pos, App->entities->GetUnitInfo(type), unitInfo);
+			}
+
+			else
+			{
+				LOG("NOPE");
 			}
 
 		}
