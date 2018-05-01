@@ -764,6 +764,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		case EntitiesEvent_HOVER:
 
+			//Mouse turns into a lens when hovering
+			if(staticEntity->staticEntityCategory == StaticEntityCategory_HumanBuilding ||
+				staticEntity->staticEntityCategory == StaticEntityCategory_NeutralBuilding)
+				App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); 
+			
+
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
 
 				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
@@ -917,8 +923,11 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 		
 		break;
 	case EntitiesEvent_HOVER:
+		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON)
+			App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
 		break;
 	case EntitiesEvent_LEAVE:
+		App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 		break;
 	case EntitiesEvent_CREATED:
 		break;
