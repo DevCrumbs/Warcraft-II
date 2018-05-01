@@ -797,7 +797,13 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 						if (goldMine->GetGoldMineState() == GoldMineState_Untouched) {
 
-							App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+							App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 }); //Mouse Hammer
+							App->player->isMouseOnMine = true;
+						}
+						else if (goldMine->GetGoldMineState() == GoldMineState_Gathering ||
+							goldMine->GetGoldMineState() == GoldMineState_Gathered) {
+
+							App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); //Mouse Lens
 							App->player->isMouseOnMine = true;
 						}
 					}
@@ -813,7 +819,13 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 					if (runestone->GetRunestoneState() == RunestoneState_Untouched) {
 
-						App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+						App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 }); //Mouse Hammer
+						App->player->isMouseOnMine = true;
+					}
+					if (runestone->GetRunestoneState() == RunestoneState_Gathering || 
+						runestone->GetRunestoneState() == RunestoneState_Gathered) {
+
+						App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); //Mouse Lens
 						App->player->isMouseOnMine = true;
 					}
 				}
@@ -923,11 +935,16 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 		
 		break;
 	case EntitiesEvent_HOVER:
-		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON)
+
+		if (dynamicEntity->entitySide == EntitySide_Player || 
+			dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON)
 			App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
+
 		break;
 	case EntitiesEvent_LEAVE:
-		App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+		if (dynamicEntity->entitySide == EntitySide_Player ||
+			dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON)
+			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 		break;
 	case EntitiesEvent_CREATED:
 		break;

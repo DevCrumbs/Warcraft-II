@@ -42,6 +42,7 @@ public:
 private:
 
 	ElvenArcherInfo elvenArcherInfo;
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	// Animations speed
 	float upSpeed = 0.0f, downSpeed = 0.0f, leftSpeed = 0.0f, rightSpeed = 0.0f;
