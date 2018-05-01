@@ -41,6 +41,8 @@ public:
 	// Save
 	bool Save(pugi::xml_node&) const;
 
+	bool SpawnEnemy(float prob);
+
 	// Load
 	bool Load(pugi::xml_node&);
 
@@ -53,6 +55,7 @@ private:
 
 	vector<list<iPoint>> spawnTiles;
 	
+	float spawnProbability = 0.0f;
 
 };
 

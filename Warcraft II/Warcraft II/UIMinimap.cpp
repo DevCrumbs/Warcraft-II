@@ -103,7 +103,7 @@ void UIMinimap::Draw() const
 
 	for (list<StaticEntity*>::iterator iterator = (*activeStaticEntities).begin(); iterator != (*activeStaticEntities).end(); ++iterator)
 	{
-iPoint size =(*iterator)->GetSize();
+		iPoint size =(*iterator)->GetSize();
 
 		SDL_Rect rect{ (*iterator)->pos.x * scaleFactor + offsetX,
 			(*iterator)->pos.y * scaleFactor + offsetY,
