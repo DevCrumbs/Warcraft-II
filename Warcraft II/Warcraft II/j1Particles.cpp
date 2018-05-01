@@ -829,8 +829,8 @@ bool Particle::Update(float dt)
 		const SDL_Rect rectA = { (int)pos.x, (int)pos.y, size.x, size.y };
 		const SDL_Rect rectB = { destination.x, destination.y,  App->map->data.tileWidth, App->map->data.tileHeight };
 
-		//App->printer->PrintQuad(rectA, ColorWhite, false);
-		//App->printer->PrintQuad(rectB, ColorGreen, false);
+		App->printer->PrintQuad(rectA, ColorWhite, false);
+		App->printer->PrintQuad(rectB, ColorGreen, false);
 
 		if (SDL_HasIntersection(&rectA, &rectB)) {
 
@@ -893,8 +893,8 @@ bool Particle::Update(float dt)
 		// Hits the entities under the fire (per time)
 		Entity* entity = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y });
 
-		//SDL_Rect r = { (int)pos.x, (int)pos.y, size.x, size.y };
-		//App->printer->PrintQuad(r, ColorBlue, false);
+		SDL_Rect r = { (int)pos.x, (int)pos.y, size.x, size.y };
+		App->printer->PrintQuad(r, ColorBlue, false);
 
 		if (entity != nullptr) {
 

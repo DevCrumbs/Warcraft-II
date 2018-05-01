@@ -3914,6 +3914,76 @@ uint j1EntityFactory::DetermineBuildingGold(ENTITY_TYPE buildingType, StaticEnti
 
 	return gold;
 }
+
+list<iPoint> j1EntityFactory::GetBuildingTiles(StaticEntity* building, bool isOnlySurroundingTiles)
+{
+	list<iPoint> buildingTiles;
+
+	if (building == nullptr)
+		return buildingTiles;
+
+	iPoint currTile = App->map->WorldToMap((int)building->GetPos().x, (int)building->GetPos().y);
+	uint size = 0;
+
+	switch (building->buildingSize) {
+	
+	case StaticEntitySize_Small:
+		// 2x2 = 4 tiles
+		// 12 tiles surrounding the building
+		size = 2;
+		break;
+
+	case StaticEntitySize_Medium:
+		// 3x3 = 9 tiles
+		// 16 tiles surrounding the building
+		size = 3;
+		break;
+
+	case StaticEntitySize_Big:
+		// 4x4 = 16 tiles
+		// 23 tiles surrounding the building
+		size = 4;
+		break;
+
+	case StaticEntitySize_None:
+	default:
+		break;
+	}
+
+	for (int i = 0; i < size; ++i) {
+		for (int j = 0; j < size; ++j) {
+
+			iPoint insideTile = { (int)currTile.x + i, (int)currTile.y + j };
+
+			if (isOnlySurroundingTiles) {
+
+				// Normal tiles
+				if (i == 0)
+					buildingTiles.push_back({ insideTile.x - 1, insideTile.y });
+				else if (i == size - 1)
+					buildingTiles.push_back({ insideTile.x + 1, insideTile.y });
+				if (j == 0)
+					buildingTiles.push_back({ insideTile.x, insideTile.y - 1 });
+				else if (j == size - 1)
+					buildingTiles.push_back({ insideTile.x, insideTile.y + 1 });
+
+				// Diagonal tiles
+				if (i == 0 && j == 0)
+					buildingTiles.push_back({ insideTile.x - 1, insideTile.y - 1 });
+				else if (i == size - 1 && j == size - 1)
+					buildingTiles.push_back({ insideTile.x + 1, insideTile.y + 1 });
+				else if (i == 0 && j == size - 1)
+					buildingTiles.push_back({ insideTile.x + 1, insideTile.y - 1 });
+				else if (i == size - 1 && j == 0)
+					buildingTiles.push_back({ insideTile.x - 1, insideTile.y + 1 });
+			}
+			else
+				buildingTiles.push_back(insideTile);
+		}
+	}
+
+	return buildingTiles;
+}
 ///_SANDRA
 
 // -------------------------------------------------------------
