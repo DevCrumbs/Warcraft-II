@@ -129,27 +129,39 @@ public:
 		}
 		else if (first->type == DrawingElem::DElemType::QUAD && second->type == DrawingElem::DElemType::SPRITE)
 		{
-			return false;
+			Quad* firstQuad = (Quad*)first;
+			Sprite* secondSprite = (Sprite*)second;
+
+			if (firstQuad->layer != secondSprite->layer)
+				return firstQuad->layer > secondSprite->layer;
+			else
+				return firstQuad->rect.y + firstQuad->rect.h > secondSprite->pos.y + secondSprite->squareToBlit.h;
 		}
 		else if (first->type == DrawingElem::DElemType::SPRITE && second->type == DrawingElem::DElemType::QUAD)
 		{
-			return false;
+			Sprite* firstSprite = (Sprite*)first;
+			Quad* secondQuad = (Quad*)second;
+
+			if (firstSprite->layer != secondQuad->layer)
+				return firstSprite->layer > secondQuad->layer;
+			else
+				return firstSprite->pos.y + firstSprite->squareToBlit.h > secondQuad->rect.y + secondQuad->rect.h;
 		}
 		else if (first->type == DrawingElem::DElemType::SPRITE && second->type == DrawingElem::DElemType::CIRCLE)
 		{
-			return true;
+			return false;
 		}
 		else if (first->type == DrawingElem::DElemType::CIRCLE && second->type == DrawingElem::DElemType::SPRITE)
 		{
-			return true;
+			return false;
 		}
 		else if (first->type == DrawingElem::DElemType::CIRCLE && second->type == DrawingElem::DElemType::QUAD)
 		{
-			return true;
+			return false;
 		}
 		else if (first->type == DrawingElem::DElemType::QUAD && second->type == DrawingElem::DElemType::CIRCLE)
 		{
-			return true;
+			return false;
 		}
 	}
 };

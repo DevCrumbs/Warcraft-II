@@ -193,9 +193,9 @@ void Goal_Think::AddGoal_MoveToPosition(iPoint destinationTile)
 	AddSubgoal(new Goal_MoveToPosition(owner, destinationTile));
 }
 
-void Goal_Think::AddGoal_Patrol(iPoint originTile, iPoint destinationTile)
+void Goal_Think::AddGoal_Patrol(iPoint originTile, iPoint destinationTile, bool isLookAround)
 {
-	AddSubgoal(new Goal_Patrol(owner, originTile, destinationTile));
+	AddSubgoal(new Goal_Patrol(owner, originTile, destinationTile, isLookAround));
 }
 
 void Goal_Think::AddGoal_GatherGold(GoldMine* goldMine)
@@ -234,7 +234,7 @@ void Goal_AttackTarget::Activate()
 		return;
 	}
 	/// The target has been removed by another unit
-	else if (targetInfo->isRemoved) {
+	else if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		goalStatus = GoalStatus_Completed;
 		return;
@@ -331,7 +331,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 		return goalStatus;
 	}
 	/// The target has been removed by another unit
-	if (targetInfo->isRemoved) {
+	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		if (owner->GetSingleUnit()->IsFittingTile()) {
 
@@ -369,7 +369,7 @@ void Goal_AttackTarget::Terminate()
 		return;
 
 	/// The target has been removed by this/another unit
-	if (targetInfo->isRemoved) {
+	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
@@ -386,13 +386,17 @@ void Goal_AttackTarget::Terminate()
 
 // Goal_Patrol ---------------------------------------------------------------------
 
-Goal_Patrol::Goal_Patrol(DynamicEntity* owner, iPoint originTile, iPoint destinationTile) :CompositeGoal(owner, GoalType_Patrol), originTile(originTile), destinationTile(destinationTile) {}
+Goal_Patrol::Goal_Patrol(DynamicEntity* owner, iPoint originTile, iPoint destinationTile, bool isLookAround) :CompositeGoal(owner, GoalType_Patrol), originTile(originTile), destinationTile(destinationTile), isLookAround(isLookAround) {}
 
 void Goal_Patrol::Activate()
 {
 	goalStatus = GoalStatus_Active;
 
 	RemoveAllSubgoals();
+
+	if (isLookAround)
+
+		AddSubgoal(new Goal_LookAround(owner, 1, 3, 1, 2, 2));
 
 	if (currGoal == destinationTile)
 		currGoal = originTile;
@@ -802,7 +806,7 @@ void Goal_HitTarget::Activate()
 		return;
 	}
 	/// The target has been removed by another unit
-	else if (targetInfo->isRemoved) {
+	else if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		goalStatus = GoalStatus_Completed;
 		return;
@@ -835,7 +839,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		return goalStatus;
 	}
 	/// The target has been removed by another unit
-	if (targetInfo->isRemoved) {
+	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;

@@ -201,6 +201,8 @@ public:
 	bool IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal);
 	bool IsGoalOnRoom(iPoint origin, iPoint goal);
 
+	SDL_Rect GetEntityRoom(Entity * entity);
+
 	// Unload map
 	bool UnLoad();
 
