@@ -976,7 +976,7 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 				{
 					// we add it to the layer group
 					entitiesGroup.push_back(enemyEntity);
-
+					GetEntityRoom(enemyEntity);
 				}
 			}
 		}
@@ -1089,6 +1089,35 @@ bool j1Map::IsGoalOnRoom(iPoint origin, iPoint goal)
 	SDL_Rect goalRect{ goal.x, goal.y, defaultTileSize, defaultTileSize };
 
 	return IsGoalOnRoom(originRect, goalRect);
+}
+
+SDL_Rect j1Map::GetEntityRoom(Entity* entity)
+{
+	SDL_Rect ret{ -1,-1,-1,-1 };
+	SDL_Rect _void{ 0,0,0,0 };
+	SDL_Rect entityRect{ 0,0,0,0 };
+
+	if (entity != nullptr)
+	{
+		fPoint pos = entity->GetPos();
+		entityRect.x = pos.x;
+		entityRect.y = pos.y;
+
+		iPoint  size = entity->GetSize();
+		entityRect.w = size.x;
+		entityRect.h = size.y;
+
+		for (list<SDL_Rect>::iterator iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
+		{
+			if (SDL_IntersectRect(&(*iterator), &entityRect, &_void))
+			{
+				ret = *iterator;
+				break;
+			}
+		}
+	}
+
+	return ret;
 }
 
 ///*sadface*
