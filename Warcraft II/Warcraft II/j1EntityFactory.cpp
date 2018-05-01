@@ -3527,8 +3527,11 @@ bool j1EntityFactory::CommandToUnits(list<DynamicEntity*> units, UnitCommand uni
 
 	while (it != units.end()) {
 
-		if ((*it)->SetUnitCommand(unitCommand))
-			ret = true;
+		if ((*it)->GetIsValid()) {
+
+			if ((*it)->SetUnitCommand(unitCommand))
+				ret = true;
+		}
 
 		it++;
 	}
