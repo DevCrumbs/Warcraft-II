@@ -193,9 +193,9 @@ void Goal_Think::AddGoal_MoveToPosition(iPoint destinationTile)
 	AddSubgoal(new Goal_MoveToPosition(owner, destinationTile));
 }
 
-void Goal_Think::AddGoal_Patrol(iPoint originTile, iPoint destinationTile)
+void Goal_Think::AddGoal_Patrol(iPoint originTile, iPoint destinationTile, bool isLookAround)
 {
-	AddSubgoal(new Goal_Patrol(owner, originTile, destinationTile));
+	AddSubgoal(new Goal_Patrol(owner, originTile, destinationTile, isLookAround));
 }
 
 void Goal_Think::AddGoal_GatherGold(GoldMine* goldMine)
@@ -386,13 +386,17 @@ void Goal_AttackTarget::Terminate()
 
 // Goal_Patrol ---------------------------------------------------------------------
 
-Goal_Patrol::Goal_Patrol(DynamicEntity* owner, iPoint originTile, iPoint destinationTile) :CompositeGoal(owner, GoalType_Patrol), originTile(originTile), destinationTile(destinationTile) {}
+Goal_Patrol::Goal_Patrol(DynamicEntity* owner, iPoint originTile, iPoint destinationTile, bool isLookAround) :CompositeGoal(owner, GoalType_Patrol), originTile(originTile), destinationTile(destinationTile), isLookAround(isLookAround) {}
 
 void Goal_Patrol::Activate()
 {
 	goalStatus = GoalStatus_Active;
 
 	RemoveAllSubgoals();
+
+	if (isLookAround)
+
+		AddSubgoal(new Goal_LookAround(owner, 1, 3, 1, 2, 2));
 
 	if (currGoal == destinationTile)
 		currGoal = originTile;

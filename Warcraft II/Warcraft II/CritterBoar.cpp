@@ -146,7 +146,6 @@ void CritterBoar::DebugDrawSelected()
 
 void CritterBoar::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
 {
-
 }
 
 // State machine

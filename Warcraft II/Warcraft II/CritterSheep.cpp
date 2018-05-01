@@ -145,7 +145,6 @@ void CritterSheep::DebugDrawSelected()
 
 void CritterSheep::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
 {
-
 }
 
 // State machine
