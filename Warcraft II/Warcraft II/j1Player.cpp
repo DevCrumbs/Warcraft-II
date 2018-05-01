@@ -911,6 +911,10 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 		}
 		break;
 	case EntitiesEvent_LEFT_CLICK:
+
+		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON) 
+			MakePrisionerMenu(dynamicEntity);
+		
 		break;
 	case EntitiesEvent_HOVER:
 		break;
@@ -1179,14 +1183,12 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	//	break;
 	case EntityType_GRYPHON_AVIARY:
 		produceGryphonRiderButton->isActive = true;
-		destroyBuildingButton->SetLocalPos({ 270, 2 });
 		destroyBuildingButton->isActive = true;
 		break;
 	case EntityType_CHICKEN_FARM:
 	case EntityType_SCOUT_TOWER:
 	case EntityType_PLAYER_GUARD_TOWER:
 	case EntityType_PLAYER_CANNON_TOWER:
-		destroyBuildingButton->SetLocalPos({ 217, 2 });
 		destroyBuildingButton->isActive = true;
 		break;
 	default:
@@ -1230,6 +1232,19 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		entity->SetStringLife(entity->GetCurrLife(), entity->GetMaxLife());
 		ShowEntitySelectedInfo(entity->GetStringLife(), "Gryphon Rider", { 700, 287, 50, 41 }, entity);
 		ShowDynEntityLabelsInfo("Damage: 12", "Speed: 14", "Sight: 6", "Range: 4");
+	}
+	
+}
+
+void j1Player::MakePrisionerMenu(Entity * entity)
+{
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_ALLERIA)
+	{
+		ShowEntitySelectedInfo(entity->GetStringLife(), "Alleria", { 848, 159, 52, 42 }, entity);
+	}
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_TURALYON)
+	{
+		ShowEntitySelectedInfo(entity->GetStringLife(), "Turalyon", { 744, 159, 52, 42 }, entity);
 	}
 }
 
@@ -1432,7 +1447,7 @@ void j1Player::CreateTownHallButtons()
 }
 void j1Player::CreateDestructionButton()
 {
-	CreateSimpleButton({ 579,76,49,41 }, { 629, 76, 49, 41 }, { 679,76,49,41 }, { 270, 2 }, destroyBuildingButton);
+	CreateSimpleButton({ 579,76,49,41 }, { 629, 76, 49, 41 }, { 679,76,49,41 }, { 320, 42 }, destroyBuildingButton);
 }
 void j1Player::CreateHoverInfoMenu() {
 
@@ -1546,6 +1561,7 @@ void j1Player::DestroyBuilding()
 			else
 				farm++;
 		}
+		toDestroyEnt->isRemove = true; //Remove entity
 	}
 	break;
 	case EntityType_SCOUT_TOWER:
@@ -1558,6 +1574,7 @@ void j1Player::DestroyBuilding()
 			else
 				tower++;
 		}
+		toDestroyEnt->isRemove = true; //Remove entity
 	}
 	break;
 	case EntityType_PLAYER_GUARD_TOWER:
@@ -1570,6 +1587,7 @@ void j1Player::DestroyBuilding()
 			else
 				tower++;
 		}
+		toDestroyEnt->isRemove = true; //Remove entity
 	}
 	break;
 	case EntityType_PLAYER_CANNON_TOWER:
@@ -1582,16 +1600,16 @@ void j1Player::DestroyBuilding()
 			else
 				tower++;
 		}
+		toDestroyEnt->isRemove = true; //Remove entity
 	}
 	break;
 	case EntityType_GRYPHON_AVIARY:
 		gryphonAviary = nullptr;
+		toDestroyEnt->isRemove = true; //Remove entity
 		break;
 	default:
 		break;
 	}
-
-	toDestroyEnt->isRemove = true; //Remove entity
 
 	App->audio->PlayFx(App->audio->GetFX().destroyBuild);
 }

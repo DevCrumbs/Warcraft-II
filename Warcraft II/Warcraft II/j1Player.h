@@ -144,6 +144,7 @@ public:
 	void ShowEntitySelectedButt(ENTITY_TYPE type);
 	void HideEntitySelectedInfo();
 	void MakeUnitMenu(Entity* entity);
+	void MakePrisionerMenu(Entity* entity);
 	void DeleteEntitiesMenu();
 	void DeleteGroupSelectionButtons();
 	void CreateHoverInfoMenu();
