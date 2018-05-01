@@ -118,6 +118,8 @@ public:
 	SDL_Rect skullText{ 0,0,0,0 };
 	SDL_Rect eyeText{ 0,0,0,0 };
 
+	// CleanUp
+	bool isGuiCleanUp = false;
 
 private:
 
@@ -131,7 +133,6 @@ private:
 	float totalTime = 0.0f;
 	float startTime = 0.0f;
 	bool reset = true;
-
 };
 
 #endif //__j1GUI_H__

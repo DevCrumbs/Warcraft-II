@@ -127,8 +127,12 @@ void GryphonRider::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
-			if (lifeBar != nullptr)
-				lifeBar->isActive = false;
+			if (!App->gui->isGuiCleanUp) {
+
+				if (lifeBar != nullptr)
+
+					lifeBar->isActive = false;
+			}
 
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;

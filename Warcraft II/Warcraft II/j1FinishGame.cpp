@@ -12,14 +12,11 @@
 #include "j1FadeToBlack.h"
 #include "j1Audio.h"
 
-
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UIImage.h"
 #include "UICursor.h"
 #include "j1Menu.h"
-
-
 
 j1FinishGame::j1FinishGame()
 {
@@ -71,10 +68,14 @@ bool j1FinishGame::Update(float dt)
 
 bool j1FinishGame::CleanUp() 
 {
-	DeleteScene();
+	bool ret = true;
+
+	if (!App->gui->isGuiCleanUp)
+		DeleteScene();
+
 	active = false;
 
-	return true;
+	return ret;
 }
 
 void j1FinishGame::LoadSceneOne(bool isWin) {

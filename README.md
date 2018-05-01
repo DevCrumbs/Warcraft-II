@@ -32,9 +32,10 @@ In order to complete this objective, the player will have to create troops and c
 # Controls
 
 Space: go to player base
-
-P: set command patrol to the units selected (click a tile to patrol there)
-S: stop the units selected
+Up arrow or W: move the camera up
+Down arrow or S: move the camera down
+Left arrow or A: move the camera left
+Right arrow or D: move the camera right
 
 For the units:
 Mouse Left click: select a group of units
@@ -42,10 +43,36 @@ Mouse Right click: send a group of units to a destination
 Mouse Right click on an enemy or a critter: attack the enemy/critter
 Mouse Right click on a Gold Mine or Runestone: (if there is a unit nearby) collect the gold / heal the units.
 
+Z: stop the units selected
+X: set command patrol to the units selected (click a tile to patrol there)
+
 For the buildings:
 After opening the building dropdown in the top right of the screen:
 Mouse Left click: Place a building somwhere.
 Mouse Right click: Delete the preview building from the view of the player.
+
+# Debug controls
+
+F8: debug mode
+
+If debug mode is on:
+
+	C: -20 HP to last Chicken Farm created
+	G: get + 500 gold
+
+	1: Spawn a Footman at mouse position
+	2: Spawn an Elven Archer at mouse position
+	3: Spawn a Gryphon Rider at mouse position
+	4: Spawn a Grunt at mouse position
+	5: Spawn a Troll Axethrower at mouse position
+	6: Spawn a Dragon at mouse position
+	7: Spawn a sheep at mouse position
+	8: Spawn a boar at mouse position
+	9: Spawn Alleria
+	0: Spawn Turalyon
+
+	F1: direct win
+	F2: direct lose
 
 # Game system
 
@@ -108,29 +135,6 @@ There's a mini map in the top left side of the screen that shows:
 - Allied troops (liight blue)
 - Allied buildings (dark blue)
 - Gold mines and Runestones (yellow)
-
-# Debug controls
-
-F8: debug mode
-
-If debug mode is on:
-
-	C: -20 HP to last Chicken Farm created
-	G: get + 500 gold
-
-	1: Spawn a Footman at mouse position
-	2: Spawn an Elven Archer at mouse position
-	3: Spawn a Gryphon Rider at mouse position
-	4: Spawn a Grunt at mouse position
-	5: Spawn a Troll Axethrower at mouse position
-	6: Spawn a Dragon at mouse position
-	7: Spawn a sheep at mouse position
-	8: Spawn a boar at mouse position
-	9: Spawn Alleria
-	0: Spawn Turalyon
-
-	W: direct win
-	L: direct lose
 
 # Tools used
 
