@@ -642,7 +642,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 			/// TODO Sandra: only Footman and Elven Archer must be able to gather gold (King Terenas says that gold cannot be gathered by using a Gryphon Rider)
 			// Gold Mine (right click to send a unit to gather gold)
- 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
+ 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE && staticEntity->buildingState == BuildingState_Normal) {
 
 				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
