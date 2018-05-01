@@ -173,10 +173,14 @@ bool j1Menu::PostUpdate()
 // Called before quitting
 bool j1Menu::CleanUp()
 {
-	DeteleMenu();
+	bool ret = true;
+
+	if (!App->gui->isGuiCleanUp)
+		DeteleMenu();
+
 	active = false;
 
-	return true;
+	return ret;
 }
 
 void j1Menu::CreateMenu() {
