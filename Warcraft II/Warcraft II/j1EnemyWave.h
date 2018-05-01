@@ -17,11 +17,6 @@ struct EnemyInWave
 	iPoint pos{ 0,0 };
 };
 
-struct EnemyWave
-{
-	list<EnemyInWave> 
-};
-
 class j1EnemyWave : public j1Module
 {
 public:
