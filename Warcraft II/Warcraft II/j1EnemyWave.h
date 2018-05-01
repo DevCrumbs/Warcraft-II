@@ -7,14 +7,14 @@
 #include <string>
 using namespace std;
 
-class j1EnemySurge : public j1Module
+class j1EnemyWave : public j1Module
 {
 public:
 
-	j1EnemySurge();
+	j1EnemyWave();
 
 	// Destructor
-	virtual ~j1EnemySurge();
+	virtual ~j1EnemyWave();
 
 	// Called before render is available
 	bool Awake(pugi::xml_node&);
@@ -35,7 +35,7 @@ public:
 public:
 
 private:
-
+	j1Timer timer;
 };
 
 #endif //__j1EnemySurge_H__

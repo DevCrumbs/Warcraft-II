@@ -34,7 +34,7 @@ class j1Movement;
 class j1PathManager;
 class j1FinishGame;
 class j1Printer;
-class j1EnemySurge;
+class j1EnemyWave;
 
 class j1App
 {
@@ -126,7 +126,7 @@ public:
 	j1PathManager*				pathmanager = nullptr;
 	j1FinishGame*				finish = nullptr;
 	j1Printer*					printer = nullptr;
-	j1EnemySurge*				surge = nullptr;
+	j1EnemyWave*				wave = nullptr;
 
 private:
 

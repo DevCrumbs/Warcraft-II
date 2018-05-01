@@ -29,6 +29,7 @@
 #include "j1Fonts.h"
 #include "j1PathManager.h"
 #include "j1Printer.h"
+#include "j1EnemyWave.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
@@ -101,11 +102,13 @@ bool j1Scene::Start()
 	App->pathmanager->active = true;
 	App->movement->active = true;
 	App->particles->active = true;
+	App->wave->active = true;
 
 	App->player->Start();
 	App->collision->Start();
 	App->particles->Start();
 	App->entities->Start();
+	App->wave->Start();
 
 	isStarted = false;
 
@@ -789,6 +792,7 @@ bool j1Scene::CleanUp()
 	App->pathmanager->active = false;
 	App->movement->active = false;
 	App->particles->active = false;
+	App->wave->active = false;
 
 	App->map->UnLoad();
 	App->player->CleanUp();
@@ -798,6 +802,7 @@ bool j1Scene::CleanUp()
 	App->pathmanager->CleanUp();
 	App->pathfinding->CleanUp();
 	App->collision->CleanUp();
+	App->wave->CleanUp();
 
 	RELEASE_ARRAY(data);
 

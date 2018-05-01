@@ -87,10 +87,12 @@ bool j1Player::Update(float dt)
 		CheckIfPlaceBuilding();
 
 	//Check if the units need to spawn
-	CheckUnitSpawning(&toSpawnUnitBarracks);
+	if (!toSpawnUnitBarracks.empty())
+		CheckUnitSpawning(&toSpawnUnitBarracks);
 
 	if (!toSpawnUnitGrypho.empty())
 		CheckUnitSpawning(&toSpawnUnitGrypho);
+
 
 	/*
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
@@ -138,7 +140,7 @@ bool j1Player::Update(float dt)
 				}
 			}
 	
-	*/
+	
 	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
 		if (barracks != nullptr)
 			if (barracks->GetIsFinishedBuilt()) {
@@ -154,8 +156,8 @@ bool j1Player::Update(float dt)
 					entitySelectedStats.lifeBar->DecreaseLife(200);
 				}
 			}
-	
-	
+	*/
+
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 		if (!chickenFarm.empty()) 
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
@@ -189,6 +191,16 @@ bool j1Player::Update(float dt)
 		StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
 		if (building->staticEntityType == EntityType_GOLD_MINE) {
 			HandleGoldMineUIStates();
+		}
+	}
+
+	//Update Selectet unit HP
+	if (entitySelectedStats.entitySelected != nullptr)
+	{
+		if (entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY)
+		{
+			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
 		}
 	}
 	
