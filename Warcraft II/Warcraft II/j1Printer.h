@@ -95,7 +95,7 @@ class Compare
 {
 public:
 
-	bool operator () (DrawingElem* first, DrawingElem* second)
+	bool operator() (DrawingElem* first, DrawingElem* second)
 	{
 		if (first->type == DrawingElem::DElemType::SPRITE && second->type == DrawingElem::DElemType::SPRITE)
 		{

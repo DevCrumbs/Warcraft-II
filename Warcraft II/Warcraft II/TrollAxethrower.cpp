@@ -77,6 +77,10 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
+
+	// IA
+	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
+	brain->AddGoal_Patrol(spawnTile, spawnTile, true);
 }
 
 void TrollAxethrower::Move(float dt)
