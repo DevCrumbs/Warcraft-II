@@ -488,9 +488,13 @@ bool j1Scene::Update(float dt)
 						it++;
 					}
 
-					if (isTarget)
+					if (isTarget) {
 						// All the group is issued to attack this enemy (DYNAMIC ENTITY: enemy)
 						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+
+						SDL_Rect targetRect = { target->GetPos().x, target->GetPos().y, target->GetSize().x, target->GetSize().y };
+						App->printer->PrintQuad(targetRect, ColorRed);
+					}
 				}
 
 				/// Critter
@@ -510,9 +514,13 @@ bool j1Scene::Update(float dt)
 						it++;
 					}
 
-					if (isTarget)
+					if (isTarget) {
 						// All the group is issued to attack this enemy (DYNAMIC ENTITY: neutral)
 						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+
+						SDL_Rect targetRect = { critter->GetPos().x, critter->GetPos().y, critter->GetSize().x, critter->GetSize().y };
+						App->printer->PrintQuad(targetRect, ColorRed);
+					}
 				}
 
 				/// Buildings
@@ -532,9 +540,13 @@ bool j1Scene::Update(float dt)
 						it++;
 					}
 
-					if (isTarget)
+					if (isTarget) {
 						// All the group is issued to attack this enemy (STATIC ENTITY: enemy)
 						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+
+						SDL_Rect targetRect = { building->GetPos().x, building->GetPos().y, building->GetSize().x, building->GetSize().y };
+						App->printer->PrintQuad(targetRect, ColorRed);
+					}
 				}
 
 				// Set the cursor texture
