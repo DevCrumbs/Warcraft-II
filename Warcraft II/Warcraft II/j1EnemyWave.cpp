@@ -5,9 +5,10 @@
 #include "j1App.h"
 #include "j1EnemyWave.h"
 #include "j1Map.h"
+#include "j1Player.h"
 #include "j1Input.h"
 #include "DynamicEntity.h"
-#include  "j1EntityFactory.h"
+#include "j1EntityFactory.h"
 #include <time.h>
 #include <random>
 
@@ -63,7 +64,20 @@ bool j1EnemyWave::Update(float ft)
 
 		for (list<iPoint>::const_iterator iterator = currentList.begin(); iterator != currentList.end(); ++iterator)
 		{
-			if (SpawnEnemy(spawnProbability))
+			if (iterator == currentList.begin() && App->player->gryphonAviary != nullptr)
+			{
+				if (SpawnEnemy(spawnProbability)) {
+					spawned++;
+
+					ENTITY_TYPE type = EntityType_DRAGON;
+					UnitInfo unitInfo;
+					fPoint pos{ (float)(*iterator).x, (float)(*iterator).y };
+
+					App->entities->AddEntity(type, pos, App->entities->GetUnitInfo(type), unitInfo);
+
+				}
+			}
+			else if (SpawnEnemy(spawnProbability))
 			{
 				spawned++;
 
@@ -73,11 +87,10 @@ bool j1EnemyWave::Update(float ft)
 
 				App->entities->AddEntity(type, pos, App->entities->GetUnitInfo(type), unitInfo);
 			}
+
+			LOG("Spawned %i entities from %i", spawned, size);
 		}
-		LOG("Spawned %i entities from %i", spawned, size);
 	}
-
-
 	return true;
 }
 
