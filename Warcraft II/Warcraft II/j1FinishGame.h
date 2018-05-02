@@ -28,6 +28,7 @@ public:
 private:
 
 	void LoadSceneOne(bool isWin);
+	void ArtifactWon(uint time);
 	void LoadSceneTwo();
 	void DeleteScene();
 	void DeleteSceneTwo();

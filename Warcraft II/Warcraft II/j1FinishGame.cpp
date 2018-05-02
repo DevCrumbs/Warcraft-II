@@ -86,6 +86,9 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
 	if (isWin) {
 		App->audio->PlayMusic(victoryMusicPath.data(), 0.0f); //Music
+	  //get an Artifact 
+		ArtifactWon(App->player->startGameTimer.ReadSec());
+
 		labelInfo.text = "Congratulations! You have defeated the Horde!";
 		labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorBlue;
 	}
@@ -172,6 +175,33 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 
 }
 
+void j1FinishGame::ArtifactWon(uint time)
+{
+
+	UILabel_Info labelInfo;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	labelInfo.text = "Artifact Obtained: ";
+
+	if (time >= 30) {
+		imageVector.push_back(App->menu->AddArtifact({ 525,300 }, App->gui->bookText, App->gui->bookAnim));
+		labelInfo.text += "Book";
+	}
+	else if (time >= 20) {
+		imageVector.push_back(App->menu->AddArtifact({ 525,300 }, App->gui->skullText, App->gui->skullAnim));
+		labelInfo.text += "Skull";
+	}
+	else if (time >= 10) {
+		imageVector.push_back(App->menu->AddArtifact({ 525,300 }, App->gui->eyeText, App->gui->eyeAnim));
+		labelInfo.text += "Eye";
+	}
+	else if (time >= 0) {
+		imageVector.push_back(App->menu->AddArtifact({ 525,300 }, App->gui->scepterText, App->gui->scepterAnim));
+		labelInfo.text += "Scepter";
+	}
+	labelVector.push_back(App->gui->CreateUILabel({ 525, 400 }, labelInfo));
+}
+
 void j1FinishGame::DeleteScene() {
 	
 	for (; !labelVector.empty(); labelVector.pop_back())
@@ -248,6 +278,7 @@ void j1FinishGame::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		if (UIelem == returnButt) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+			DeleteScene();
 			App->fade->FadeToBlack(this, App->menu);
 		}
 		break;
