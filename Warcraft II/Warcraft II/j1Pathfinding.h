@@ -138,8 +138,8 @@ private:
 
 	PathList open; // open list of PathNodes
 	PathList close; // close list of PathNodes
-	vector<iPoint> last_path; // we store the created path here
-	iPoint last_tile = { -1,-1 }; // we store the last tile checked here
+	vector<iPoint> lastPath; // we store the created path here
+	iPoint lastTile = { -1,-1 }; // we store the last tile checked here
 
 	// A Star
 	iPoint goal = { -1,-1 }; // destination tile

@@ -28,9 +28,9 @@ bool j1PathFinding::CleanUp()
 
 	open.pathNodeList.clear();
 	close.pathNodeList.clear();
-	last_path.clear();
+	lastPath.clear();
 
-	last_tile = { -1,-1 };
+	lastTile = { -1,-1 };
 	goal = { -1,-1 };
 
 	trigger = nullptr;
@@ -68,9 +68,8 @@ bool j1PathFinding::IsOnBase(const iPoint& pos)
 	bool ret = false; 
 
 	SDL_Rect entityPos{ pos.x * 32,pos.y* 32, 32,32 };
-	SDL_Rect result{ 0,0,0,0 };
 
-	if (SDL_IntersectRect(&entityPos, &App->map->playerBase, &result))
+	if (RectIntersect(&entityPos, &App->map->playerBase))
 		ret = true;
 	
 
@@ -80,13 +79,13 @@ bool j1PathFinding::IsOnBase(const iPoint& pos)
 // To request all tiles involved in the last generated path
 const vector<iPoint>* j1PathFinding::GetLastPath() const
 {
-	return &last_path;
+	return &lastPath;
 }
 
 // To request the last tile checked by the search algorithm
 iPoint j1PathFinding::GetLastTile() const
 {
-	return last_tile;
+	return lastTile;
 }
 
 // PathNode -------------------------------------------------------------------------
@@ -275,7 +274,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
-	last_path.clear();
+	lastPath.clear();
 	int ret = 0;
 
 	// If origin or destination are not walkable, return -1
@@ -314,15 +313,15 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 				for (PathNode iterator = close.pathNodeList.back(); iterator.parent != nullptr;
 					iterator = *close.Find(iterator.parent->pos)) {
 
-					last_path.push_back(iterator.pos);
+					lastPath.push_back(iterator.pos);
 				}
 
-				last_path.push_back(close.pathNodeList.front().pos);
+				lastPath.push_back(close.pathNodeList.front().pos);
 
 				// Flip() the path when you are finish
-				reverse(last_path.begin(), last_path.end());
+				reverse(lastPath.begin(), lastPath.end());
 
-				ret = last_path.size();
+				ret = lastPath.size();
 
 				return ret;
 
@@ -367,7 +366,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, D
 
 int j1PathFinding::BacktrackToCreatePath()
 {
-	last_path.clear();
+	lastPath.clear();
 
 	// Backtrack to create the final path
 	if (close.pathNodeList.size() > 1) {
@@ -375,16 +374,16 @@ int j1PathFinding::BacktrackToCreatePath()
 		for (PathNode iterator = close.pathNodeList.back(); iterator.parent != nullptr;
 			iterator = *close.Find(iterator.parent->pos)) {
 
-			last_path.push_back(iterator.pos);
+			lastPath.push_back(iterator.pos);
 		}
 	}
 
-	last_path.push_back(close.pathNodeList.front().pos);
+	lastPath.push_back(close.pathNodeList.front().pos);
 
 	// Flip the path
-	reverse(last_path.begin(), last_path.end());
+	reverse(lastPath.begin(), lastPath.end());
 
-	return last_path.size();
+	return lastPath.size();
 }
 
 bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic, bool isWalkabilityChecked)
@@ -517,7 +516,7 @@ PathfindingStatus j1PathFinding::CycleOnceDijkstra()
 
 		if (trigger->IsSatisfied(curr->pos)) {
 
-			last_tile = curr->pos;
+			lastTile = curr->pos;
 
 			if (isPathRequested)
 				BacktrackToCreatePath();

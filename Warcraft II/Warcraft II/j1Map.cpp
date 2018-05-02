@@ -1092,14 +1092,12 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 {
 	bool ret = false;
-	SDL_Rect _void{ 0,0,0,0 };
 	SDL_Rect currRoom{ -1,-1,-1,-1 };
-
 
 	list<SDL_Rect>::iterator iterator;
 	for (iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
 	{
-		if (SDL_IntersectRect(&origin, &*iterator, &_void))
+		if (RectIntersect(&origin, &*iterator))
 		{
 			ret = true;
 			currRoom = *iterator;
@@ -1109,7 +1107,7 @@ bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 
 	if (ret)
 	{
-		ret = SDL_IntersectRect(&goal, &currRoom, &_void);
+		ret = RectIntersect(&goal, &currRoom);
 	}
 
 	return ret;
@@ -1159,7 +1157,6 @@ bool j1Map::IsOnRoom(iPoint pos, SDL_Rect room)
 SDL_Rect j1Map::GetEntityRoom(Entity* entity)
 {
 	SDL_Rect ret{ -1,-1,-1,-1 };
-	SDL_Rect _void{ 0,0,0,0 };
 	SDL_Rect entityRect{ 0,0,0,0 };
 
 	if (entity != nullptr)
@@ -1174,7 +1171,7 @@ SDL_Rect j1Map::GetEntityRoom(Entity* entity)
 
 		for (list<SDL_Rect>::iterator iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
 		{
-			if (SDL_IntersectRect(&(*iterator), &entityRect, &_void))
+			if (RectIntersect(&(*iterator), &entityRect))
 			{
 				ret = *iterator;
 				break;
