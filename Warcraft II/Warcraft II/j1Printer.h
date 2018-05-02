@@ -153,7 +153,7 @@ public:
 			if (firstLine->layer != secondLine->layer)
 				return firstLine->layer > secondLine->layer;
 			else
-				return firstLine->pointA.y > secondLine->pointB.y;
+				return firstLine->pointA.y > secondLine->pointA.y;
 		}
 
 		// Different elements
@@ -236,7 +236,7 @@ public:
 			if (firstSprite->layer != secondLine->layer)
 				return firstSprite->layer > secondLine->layer;
 			else
-				return firstSprite->pos.y + firstSprite->squareToBlit.h > secondLine->pointB.y;
+				return firstSprite->pos.y + firstSprite->squareToBlit.h > secondLine->pointA.y;
 		}
 		else if (first->type == DrawingElem::DElemType::LINE && second->type == DrawingElem::DElemType::QUAD)
 		{
@@ -256,7 +256,7 @@ public:
 			if (firstQuad->layer != secondLine->layer)
 				return firstQuad->layer > secondLine->layer;
 			else
-				return firstQuad->rect.y + firstQuad->rect.h > secondLine->pointB.y;
+				return firstQuad->rect.y + firstQuad->rect.h > secondLine->pointA.y;
 		}
 		else if (first->type == DrawingElem::DElemType::LINE && second->type == DrawingElem::DElemType::CIRCLE)
 		{
@@ -276,8 +276,10 @@ public:
 			if (firstCircle->layer != secondLine->layer)
 				return firstCircle->layer > secondLine->layer;
 			else
-				return firstCircle->pos.y + firstCircle->radius > secondLine->pointB.y;
+				return firstCircle->pos.y + firstCircle->radius > secondLine->pointA.y;
 		}
+		else
+			return true;
 	}
 };
 

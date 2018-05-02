@@ -102,7 +102,7 @@ bool j1Printer::PrintCircle(iPoint pos, int radius, SDL_Color color, bool useCam
 
 bool j1Printer::PrintLine(iPoint pointA, iPoint pointB, SDL_Color color, bool useCamera, int layer) 
 {
-	Line* line = new Line(pointA, pointA, color, useCamera, layer);
+	Line* line = new Line(pointA, pointB, color, useCamera, layer);
 	drawingQueue.push(line);
 
 	return true;
