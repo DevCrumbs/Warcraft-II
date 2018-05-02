@@ -184,22 +184,22 @@ void j1FinishGame::ArtifactWon(uint time)
 	labelInfo.text = "Artifact Obtained: ";
 
 	if (time >= 30) {
-		imageVector.push_back(App->menu->AddArtifact({ 525,300 }, App->gui->bookText, App->gui->bookAnim));
-		labelInfo.text += "Book";
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->bookText, App->gui->bookAnim));
+		labelInfo.text += "Book of Medivh";
 	}
 	else if (time >= 20) {
-		imageVector.push_back(App->menu->AddArtifact({ 525,300 }, App->gui->skullText, App->gui->skullAnim));
-		labelInfo.text += "Skull";
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->skullText, App->gui->skullAnim));
+		labelInfo.text += "Skull of Gul'dan";
 	}
 	else if (time >= 10) {
-		imageVector.push_back(App->menu->AddArtifact({ 525,300 }, App->gui->eyeText, App->gui->eyeAnim));
-		labelInfo.text += "Eye";
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->eyeText, App->gui->eyeAnim));
+		labelInfo.text += "Eye of Dalaran";
 	}
 	else if (time >= 0) {
-		imageVector.push_back(App->menu->AddArtifact({ 525,300 }, App->gui->scepterText, App->gui->scepterAnim));
-		labelInfo.text += "Scepter";
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->scepterText, App->gui->scepterAnim));
+		labelInfo.text += "Scepter of Sagreras";
 	}
-	labelVector.push_back(App->gui->CreateUILabel({ 525, 400 }, labelInfo));
+	labelVector.push_back(App->gui->CreateUILabel({ 575, 400 }, labelInfo));
 }
 
 void j1FinishGame::DeleteScene() {
