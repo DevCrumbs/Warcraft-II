@@ -864,19 +864,19 @@ bool j1Map::LoadLogic()
 			ret = true;
 		}
 
-			// For room rects
+		// For room rects
 		else if ((*layerIterator)->properties.GetProperty("roomLogic", false))
 		{
 			ret = LoadRoomRect(*layerIterator);
 		}
 
-			// For entities groups
+		// For entities groups
 		else if ((*layerIterator)->properties.GetProperty("entitiesGroup", false))
 		{
 			// Save the entities from layerIterator in entityGroupLevel
 			list<Entity*> currLayer = LoadLayerEntities(*layerIterator);
 
-			if(!currLayer.empty())
+			if (!currLayer.empty())
 				entityGroupLevel.push_back(currLayer);
 
 			ret = true;
@@ -1119,27 +1119,6 @@ bool j1Map::IsGoalOnRoom(iPoint origin, iPoint goal)
 	SDL_Rect goalRect{ goal.x, goal.y, defaultTileSize, defaultTileSize };
 
 	return IsGoalOnRoom(originRect, goalRect);
-}
-
-void j1Map::LoadSpawnTiles(MapLayer* layer)
-{
-	if (layer != nullptr)
-	{
-		list<iPoint> spawnTiles;
-		// Iterate layer
-		for (int i = 0; i < layer->sizeData; ++i)
-		{
-			// Check if tile is wave tile
-			if (layer->data[i] == 384)///
-			{
-			
-			}
-		}
-		if (!spawnTiles.empty())
-		{
-			App->wave->AddTiles(spawnTiles);
-		}
-	}
 }
 
 

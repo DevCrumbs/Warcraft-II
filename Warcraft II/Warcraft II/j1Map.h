@@ -202,12 +202,10 @@ public:
 	bool IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal);
 	bool IsGoalOnRoom(iPoint origin, iPoint goal);
 
-	void LoadSpawnTiles(MapLayer * layer);
-
 	bool IsOnBase(iPoint pos);
 	bool IsOnRoom(iPoint pos, SDL_Rect room);
 
-	Room GetEntityRoom(Entity * entity);
+	Room GetEntityRoom(Entity* entity);
 
 
 	// Unload map
