@@ -265,6 +265,7 @@
     <ClCompile Include="PugiXml\src\pugixml.cpp" />
     <ClCompile Include="Runestone.cpp" />
     <ClCompile Include="ScoutTower.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="Stables.cpp" />
     <ClCompile Include="StaticEntity.cpp" />
     <ClCompile Include="Stronghold.cpp" />

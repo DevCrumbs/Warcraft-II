@@ -867,16 +867,18 @@ bool j1Map::LoadLogic()
 			// For room rects
 		else if ((*layerIterator)->properties.GetProperty("roomLogic", false))
 		{
-			LoadRoomRect(*layerIterator);
-			ret = true;
+			ret = LoadRoomRect(*layerIterator);
 		}
 
 			// For entities groups
 		else if ((*layerIterator)->properties.GetProperty("entitiesGroup", false))
 		{
 			// Save the entities from layerIterator in entityGroupLevel
-			entityGroupLevel.push_back(LoadLayerEntities(*layerIterator));
-			LoadSpawnTiles(*layerIterator);
+			list<Entity*> currLayer = LoadLayerEntities(*layerIterator);
+
+			if(!currLayer.empty())
+				entityGroupLevel.push_back(currLayer);
+
 			ret = true;
 		}
 	}
@@ -1069,19 +1071,19 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 			{
 				fPoint pos = (*currentEntity)->GetPos();
 				iPoint size = (*currentEntity)->GetSize();
-				
+
 				SDL_Rect entityRect{ pos.x,pos.y,size.x,size.y };
-				SDL_Rect _void{ 0,0,0,0 };
-				
+
 				// Check if entity belongs to room
-				if (SDL_IntersectRect(&entityRect, &*roomIterator, &_void))
+				if (RectIntersect(&entityRect, &*roomIterator))
 				{
 					// Add entity to room list
 					listOnRoom.push_back(*currentEntity);
 				}
 			}
 			// Add room list to groups list
-			entityGroups.push_back(listOnRoom);
+			if (!listOnRoom.empty())
+				entityGroups.push_back(listOnRoom);
 		}
 	}
 	return true;
@@ -1091,6 +1093,8 @@ bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 {
 	bool ret = false;
 	SDL_Rect _void{ 0,0,0,0 };
+	SDL_Rect currRoom{ -1,-1,-1,-1 };
+
 
 	list<SDL_Rect>::iterator iterator;
 	for (iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
@@ -1098,13 +1102,14 @@ bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 		if (SDL_IntersectRect(&origin, &*iterator, &_void))
 		{
 			ret = true;
+			currRoom = *iterator;
 			break;
 		}
 	}
 
 	if (ret)
 	{
-		ret = SDL_IntersectRect(&goal, &*iterator, &_void);
+		ret = SDL_IntersectRect(&goal, &currRoom, &_void);
 	}
 
 	return ret;
@@ -1142,8 +1147,13 @@ void j1Map::LoadSpawnTiles(MapLayer* layer)
 
 bool j1Map::IsOnBase(iPoint pos)
 {
+	return IsOnRoom(pos, playerBase);
+}
+
+bool j1Map::IsOnRoom(iPoint pos, SDL_Rect room)
+{
 	int size = 1;
-	return (playerBase.x < pos.x + size && playerBase.x + playerBase.w > pos.x && playerBase.y < pos.y + size && playerBase.h + playerBase.y > pos.y);
+	return (room.x < pos.x + size && room.x + room.w > pos.x && room.y < pos.y + size && room.h + room.y > pos.y);
 }
 
 SDL_Rect j1Map::GetEntityRoom(Entity* entity)

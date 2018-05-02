@@ -204,6 +204,8 @@ public:
 	void LoadSpawnTiles(MapLayer * layer);
 
 	bool IsOnBase(iPoint pos);
+	bool IsOnRoom(iPoint pos, SDL_Rect room);
+
 	SDL_Rect GetEntityRoom(Entity * entity);
 
 

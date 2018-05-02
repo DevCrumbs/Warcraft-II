@@ -584,6 +584,9 @@
     <ClCompile Include="j1EnemyWave.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\Game\config.xml">

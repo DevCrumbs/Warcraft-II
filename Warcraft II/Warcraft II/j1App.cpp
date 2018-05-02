@@ -510,3 +510,18 @@ bool j1App::SavegameNow() const
 	wantToSave = false;
 	return ret;
 }
+
+bool RectIntersect(const SDL_Rect* rectA, const SDL_Rect* rectB, SDL_Rect* result)
+{
+	bool ret = false;
+
+	if (result == nullptr)
+	{
+		SDL_Rect _void{ 0,0,0,0 };
+		ret = SDL_IntersectRect(rectA, rectB, &_void);
+	}
+	else
+		ret = SDL_IntersectRect(rectA, rectB, result);
+
+	return ret;
+}
