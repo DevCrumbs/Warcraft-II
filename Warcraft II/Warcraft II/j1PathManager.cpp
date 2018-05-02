@@ -139,7 +139,7 @@ bool PathPlanner::RequestAStar(iPoint origin, iPoint destination)
 		currentSearch = new j1PathFinding();
 
 	// Invalidate if origin or destination are non-walkable
-	ret = currentSearch->InitializeAStar(origin, destination, DistanceHeuristic_DistanceManhattan, isWalkabilityChecked);
+	ret = currentSearch->InitializeAStar(origin, destination, DistanceHeuristic_DistanceManhattan, isWalkabilityChecked, isInSameRoomChecked);
 
 	if (ret)
 		App->pathmanager->Register(this);
@@ -199,7 +199,7 @@ bool PathPlanner::RequestDijkstra(iPoint origin, FindActiveTrigger::ActiveTrigge
 	// Invalidate if origin is non-walkable
 	this->isPathRequested = isPathRequested;
 
-	ret = currentSearch->InitializeDijkstra(origin, trigger, isPathRequested, isWalkabilityChecked);
+	ret = currentSearch->InitializeDijkstra(origin, trigger, isPathRequested, isWalkabilityChecked, isInSameRoomChecked);
 
 	if (ret)
 		App->pathmanager->Register(this);
@@ -272,6 +272,7 @@ iPoint PathPlanner::GetTile() const
 {
 	if (isSearchCompleted)
 		return currentSearch->GetLastTile();
+
 	return { -1,-1 };
 }
 
@@ -323,6 +324,11 @@ j1PathFinding* PathPlanner::GetCurrentSearch() const
 void PathPlanner::SetIsWalkabilityChecked(bool isWalkabilityChecked) 
 {
 	this->isWalkabilityChecked = isWalkabilityChecked;
+}
+
+void PathPlanner::SetIsInSameRoomChecked(bool isInSameRoomChecked) 
+{
+	this->isInSameRoomChecked = isInSameRoomChecked;
 }
 
 // FindActiveTrigger class ---------------------------------------------------------------------------------

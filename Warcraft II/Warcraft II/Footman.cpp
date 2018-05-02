@@ -201,6 +201,9 @@ void Footman::Move(float dt)
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);
 
+					if (unitState == UnitState_Walk)
+						isRunAway = true;
+
 					unitState = UnitState_Walk;
 					unitCommand = UnitCommand_NoCommand;
 				}
@@ -304,9 +307,6 @@ void Footman::Move(float dt)
 
 	// PROCESS THE CURRENTLY ACTIVE GOAL
 	brain->Process(dt);
-
-	if (isSelected)
-		LOG("Targets %i", targets.size());
 
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
@@ -529,6 +529,33 @@ void Footman::UnitStateMachine(float dt)
 	switch (unitState) {
 
 	case UnitState_Walk:
+
+		// DEFENSE NOTE: the unit automatically attacks back their attacking units (if they have any attacking units) to defend themselves
+		/// TODO Sandra: units attacking or units hitting?
+		if (unitsAttacking.size() > 0) {
+
+			if (singleUnit->IsFittingTile()) {
+
+				// If the unit is not ordered to run away...
+				if (!isRunAway) {
+
+					if (currTarget == nullptr) {
+
+						// Check if there are available targets (DYNAMIC ENTITY) 
+						newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+						if (newTarget != nullptr) {
+
+							currTarget = newTarget;
+							brain->AddGoal_AttackTarget(currTarget, false);
+						}
+					}
+				}
+			}
+		}
+		else if (unitsAttacking.size() == 0)
+
+			isRunAway = false;
 
 		break;
 

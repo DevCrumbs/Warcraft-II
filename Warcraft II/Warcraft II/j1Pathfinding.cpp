@@ -32,6 +32,7 @@ bool j1PathFinding::CleanUp()
 
 	last_tile = { -1,-1 };
 	goal = { -1,-1 };
+	origin = { -1,-1 };
 
 	trigger = nullptr;
 	isPathRequested = false;
@@ -104,81 +105,217 @@ PathNode::PathNode(const PathNode& node) : g(node.g), h(node.h), pos(node.pos), 
 // PathNode -------------------------------------------------------------------------
 // Fills a list (PathList) of all valid adjacent pathnodes
 // ----------------------------------------------------------------------------------
-uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityChecked) const
+uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityChecked, iPoint origin) const
 {
 	iPoint cell;
 	uint before = list_to_fill.pathNodeList.size();
 
 	cell.create(pos.x, pos.y + 1);
 	if (isWalkabilityChecked) {
-		if (App->pathfinding->IsWalkable(cell))
+
+		if (App->pathfinding->IsWalkable(cell)) {
+
+			if (origin.x != -1 && origin.y != -1) {
+
+				if (App->map->IsGoalOnRoom(origin, cell))
+					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+			}
+			else
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+		}
+	}
+	else {
+
+		if (origin.x != -1 && origin.y != -1) {
+
+			if (App->map->IsGoalOnRoom(origin, cell))
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+		}
+		else
 			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 	}
-	else
-		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// south
 	cell.create(pos.x, pos.y - 1);
 	if (isWalkabilityChecked) {
-		if (App->pathfinding->IsWalkable(cell))
+
+		if (App->pathfinding->IsWalkable(cell)) {
+
+			if (origin.x != -1 && origin.y != -1) {
+
+				if (App->map->IsGoalOnRoom(origin, cell))
+					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+			}
+			else
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+		}
+	}
+	else {
+	
+		if (origin.x != -1 && origin.y != -1) {
+
+			if (App->map->IsGoalOnRoom(origin, cell))
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+		}
+		else
 			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 	}
-	else
-		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// east
 	cell.create(pos.x + 1, pos.y);
 	if (isWalkabilityChecked) {
-		if (App->pathfinding->IsWalkable(cell))
+		
+		if (App->pathfinding->IsWalkable(cell)) {
+
+			if (origin.x != -1 && origin.y != -1) {
+
+				if (App->map->IsGoalOnRoom(origin, cell))
+					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+			}
+			else
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+		}
+	}
+	else {
+	
+		if (origin.x != -1 && origin.y != -1) {
+
+			if (App->map->IsGoalOnRoom(origin, cell))
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+		}
+		else
 			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 	}
-	else
-		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// west
 	cell.create(pos.x - 1, pos.y);
 	if (isWalkabilityChecked) {
-		if (App->pathfinding->IsWalkable(cell))
+		
+		if (App->pathfinding->IsWalkable(cell)) {
+
+			if (origin.x != -1 && origin.y != -1) {
+
+				if (App->map->IsGoalOnRoom(origin, cell))
+					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+			}
+			else
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+		}
+	}
+	else {
+	
+		if (origin.x != -1 && origin.y != -1) {
+
+			if (App->map->IsGoalOnRoom(origin, cell))
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
+		}
+		else
 			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 	}
-	else
-		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 
 	// north-west
 	cell.create(pos.x + 1, pos.y - 1);
 	if (isWalkabilityChecked) {
-		if (App->pathfinding->IsWalkable(cell))
+		
+		if (App->pathfinding->IsWalkable(cell)) {
+
+			if (origin.x != -1 && origin.y != -1) {
+
+				if (App->map->IsGoalOnRoom(origin, cell))
+					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+			}
+			else
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+		}
+	}
+	else {
+	
+		if (origin.x != -1 && origin.y != -1) {
+
+			if (App->map->IsGoalOnRoom(origin, cell))
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+		}
+		else
 			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 	}
-	else
-		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	// south-west
 	cell.create(pos.x - 1, pos.y - 1);
 	if (isWalkabilityChecked) {
-		if (App->pathfinding->IsWalkable(cell))
+
+		if (App->pathfinding->IsWalkable(cell)) {
+
+			if (origin.x != -1 && origin.y != -1) {
+
+				if (App->map->IsGoalOnRoom(origin, cell))
+					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+			}
+			else
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+		}
+	}
+	else {
+	
+		if (origin.x != -1 && origin.y != -1) {
+
+			if (App->map->IsGoalOnRoom(origin, cell))
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+		}
+		else
 			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 	}
-	else
-		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	// north-west
 	cell.create(pos.x + 1, pos.y + 1);
 	if (isWalkabilityChecked) {
-		if (App->pathfinding->IsWalkable(cell))
+
+		if (App->pathfinding->IsWalkable(cell)) {
+
+			if (origin.x != -1 && origin.y != -1) {
+
+				if (App->map->IsGoalOnRoom(origin, cell))
+					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+			}
+			else
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+		}
+	}
+	else {
+	
+		if (origin.x != -1 && origin.y != -1) {
+
+			if (App->map->IsGoalOnRoom(origin, cell))
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+		}
+		else
 			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 	}
-	else
-		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	// south-est
 	cell.create(pos.x - 1, pos.y + 1);
 	if (isWalkabilityChecked) {
-		if (App->pathfinding->IsWalkable(cell))
+
+		if (App->pathfinding->IsWalkable(cell)) {
+
+			if (origin.x != -1 && origin.y != -1) {
+
+				if (App->map->IsGoalOnRoom(origin, cell))
+					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+			}
+			else
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+		}
+	}
+	else {
+	
+		if (origin.x != -1 && origin.y != -1) {
+
+			if (App->map->IsGoalOnRoom(origin, cell))
+				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
+		}
+		else
 			list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 	}
-	else
-		list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 
 	return list_to_fill.pathNodeList.size();
 }
@@ -387,15 +524,24 @@ int j1PathFinding::BacktrackToCreatePath()
 	return last_path.size();
 }
 
-bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic, bool isWalkabilityChecked)
+bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic, bool isWalkabilityChecked, bool isInSameRoomChecked)
 {
 	this->isWalkabilityChecked = isWalkabilityChecked;
+	this->isInSameRoomChecked = isInSameRoomChecked;
 
 	// If origin or destination are not walkable, return false
 	if (this->isWalkabilityChecked) {
 
 		if (!IsWalkable(origin) || !IsWalkable(destination))
 			return false;
+	}
+
+	if (this->isInSameRoomChecked) {
+
+		this->origin = origin;
+
+		if (!App->map->IsGoalOnRoom(origin, destination))
+			return false; 
 	}
 
 	goal = destination;
@@ -442,7 +588,7 @@ PathfindingStatus j1PathFinding::CycleOnceAStar()
 
 	// Fill a list of all adjancent nodes
 	PathList neighbors;
-	close.pathNodeList.back().FindWalkableAdjacents(neighbors, isWalkabilityChecked);
+	close.pathNodeList.back().FindWalkableAdjacents(neighbors, isWalkabilityChecked, origin);
 
 	list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
 
@@ -479,15 +625,21 @@ PathfindingStatus j1PathFinding::CycleOnceAStar()
 }
 
 // Initialize CycleOnceDijkstra
-bool j1PathFinding::InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger, bool isPathRequested, bool isWalkabilityChecked)
+bool j1PathFinding::InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger, bool isPathRequested, bool isWalkabilityChecked, bool isInSameRoomChecked)
 {
 	this->isWalkabilityChecked = isWalkabilityChecked;
+	this->isInSameRoomChecked = isInSameRoomChecked;
 
 	// If origin is not walkable, return false
 	if (this->isWalkabilityChecked) {
+
 		if (!IsWalkable(origin))
 			return false;
 	}
+
+	if (this->isInSameRoomChecked)
+
+		this->origin = origin;
 
 	this->trigger = trigger;
 	this->isPathRequested = isPathRequested;
@@ -538,7 +690,7 @@ PathfindingStatus j1PathFinding::CycleOnceDijkstra()
 
 	// Fill a list of all adjancent nodes
 	PathList neighbors;
-	close.pathNodeList.back().FindWalkableAdjacents(neighbors, isWalkabilityChecked);
+	close.pathNodeList.back().FindWalkableAdjacents(neighbors, isWalkabilityChecked, origin);
 
 	list<PathNode>::iterator iterator = neighbors.pathNodeList.begin();
 
