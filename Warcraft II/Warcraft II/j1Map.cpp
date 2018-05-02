@@ -1094,7 +1094,7 @@ bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 	bool ret = false;
 	SDL_Rect currRoom{ -1,-1,-1,-1 };
 
-	list<SDL_Rect>::iterator iterator;
+	list<Room>::iterator iterator;
 	for (iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
 	{
 		if (RectIntersect(&origin, &*iterator))
@@ -1148,16 +1148,16 @@ bool j1Map::IsOnBase(iPoint pos)
 	return IsOnRoom(pos, playerBase);
 }
 
-bool j1Map::IsOnRoom(iPoint pos, SDL_Rect room)
+bool j1Map::IsOnRoom(iPoint pos, Room room)
 {
 	int size = 1;
 	return (room.x < pos.x + size && room.x + room.w > pos.x && room.y < pos.y + size && room.h + room.y > pos.y);
 }
 
-SDL_Rect j1Map::GetEntityRoom(Entity* entity)
+Room j1Map::GetEntityRoom(Entity* entity)
 {
-	SDL_Rect ret{ -1,-1,-1,-1 };
-	SDL_Rect entityRect{ 0,0,0,0 };
+	Room ret{ -1,-1,-1,-1 };
+	Room entityRect{ 0,0,0,0 };
 
 	if (entity != nullptr)
 	{
@@ -1169,7 +1169,7 @@ SDL_Rect j1Map::GetEntityRoom(Entity* entity)
 		entityRect.w = size.x;
 		entityRect.h = size.y;
 
-		for (list<SDL_Rect>::iterator iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
+		for (list<Room>::iterator iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
 		{
 			if (RectIntersect(&(*iterator), &entityRect))
 			{

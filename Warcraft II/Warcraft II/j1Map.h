@@ -16,6 +16,7 @@
 #include "SDL\include\SDL_rect.h"
 
 using namespace std;
+typedef SDL_Rect Room;
 
 class Entity;
 
@@ -206,7 +207,7 @@ public:
 	bool IsOnBase(iPoint pos);
 	bool IsOnRoom(iPoint pos, SDL_Rect room);
 
-	SDL_Rect GetEntityRoom(Entity * entity);
+	Room GetEntityRoom(Entity * entity);
 
 
 	// Unload map
@@ -258,7 +259,7 @@ public:
 	mutable	int			walkHeight = 0;
 
 	// Rooms rects
-	list<SDL_Rect>		roomRectList;
+	list<Room>		roomRectList;
 
 	// Default rooms sizes
 	int					defaultRoomSize = 0;
