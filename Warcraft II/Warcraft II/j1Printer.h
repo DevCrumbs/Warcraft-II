@@ -19,8 +19,9 @@ enum Layers
 	Layers_FloorColliders = 1,
 	Layers_Entities = 2,
 	Layers_PreviewBuildings = 3,
-	Layers_BasicParticles = 4,
-	Layers_DragonGryphon = 5
+	Layers_PreviewBuildingsQuad = 4,
+	Layers_BasicParticles = 5,
+	Layers_DragonGryphon = 6
 };
 
 class DrawingElem
