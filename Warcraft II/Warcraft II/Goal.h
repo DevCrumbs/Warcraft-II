@@ -167,7 +167,7 @@ public:
 	// Arbitrate between available strategies, choosing the most appropriate
 	// to be pursued. Calculate the desirability of the strategies
 	//void Arbitrate();
-	void AddGoal_Wander(uint maxDistance);
+	void AddGoal_Wander(uint maxDistance, iPoint startTile, bool isCurrTile, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted);
 	void AddGoal_AttackTarget(TargetInfo* targetInfo);
 	void AddGoal_MoveToPosition(iPoint destinationTile);
 	void AddGoal_Patrol(iPoint originTile, iPoint destinationTile, bool isLookAround = false);
@@ -216,7 +216,7 @@ class Goal_Wander :public CompositeGoal
 {
 public:
 
-	Goal_Wander(DynamicEntity* owner, uint maxDistance);
+	Goal_Wander(DynamicEntity* owner, uint maxDistance, iPoint startTile, bool isCurrTile, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted);
 
 	void Activate();
 	GoalStatus Process(float dt);
@@ -225,6 +225,15 @@ public:
 private:
 
 	uint maxDistance = 0;
+	iPoint startTile = { -1,-1 };
+	bool isCurrTile = false;
+
+	// Goal_LookAround
+	uint minSecondsToChange = 0;
+	uint maxSecondsToChange = 0;
+	uint minSecondsUntilNextChange = 0;
+	uint maxSecondsUntilNextChange = 0;
+	uint probabilityGoalCompleted = 0;
 };
 
 class Goal_GatherGold :public CompositeGoal

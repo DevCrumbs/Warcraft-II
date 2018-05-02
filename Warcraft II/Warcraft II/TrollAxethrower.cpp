@@ -80,7 +80,7 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 
 	// IA
 	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
-	brain->AddGoal_Patrol(spawnTile, spawnTile, true);
+	brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
 void TrollAxethrower::Move(float dt)
@@ -147,46 +147,8 @@ void TrollAxethrower::Move(float dt)
 		}
 	}
 
-	if (!isDead && isValid) {
-
-		/// GOAL: MoveToPosition
-		// The goal of the unit has been changed manually
-		if (singleUnit->isGoalChanged)
-
-			brain->AddGoal_MoveToPosition(singleUnit->goal);
-
-		/// GOAL: AttackTarget
-		// Check if there are available targets
-		/// Prioritize a type of target (static or dynamic)
-		/*
-		if (singleUnit->IsFittingTile()) {
-
-		newTarget = GetBestTargetInfo();
-
-		if (newTarget != nullptr) {
-
-		// A new target has found, update the attacking target
-		if (currTarget != newTarget) {
-
-		if (currTarget != nullptr) {
-
-		if (!currTarget->isRemoved) {
-
-		currTarget->target->RemoveAttackingUnit(this);
-		isHitting = false;
-		}
-		}
-
-		currTarget = newTarget;
-		brain->AddGoal_AttackTarget(currTarget);
-		}
-		}
-		}
-		*/
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
-	}
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 
@@ -249,8 +211,8 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
+			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			//LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -316,8 +278,8 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
+			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			//LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
 
 			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -342,8 +304,8 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
+			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			//LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
 
 			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -365,8 +327,8 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
+			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			//LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
 
 			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -392,9 +354,58 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 	case UnitState_AttackTarget:
 
+		if (singleUnit->IsFittingTile()) {
+
+			if (currTarget == nullptr) {
+
+				// Check if there are available targets (DYNAMIC ENTITY) 
+				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+				if (newTarget != nullptr) {
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+				else
+					unitState = UnitState_Idle;
+			}
+		}
+
 		break;
 
+		break;
+
+	case UnitState_Idle:
+	case UnitState_Wander:
 	case UnitState_Patrol:
+
+		/// Goal_AttackTarget
+
+		if (singleUnit->IsFittingTile()) {
+
+			// Check if there are available targets (DYNAMIC ENTITY)
+			newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+			if (newTarget != nullptr) {
+
+				// A new target has found! Update the currTarget
+				if (currTarget != newTarget) {
+
+					// Anticipate the removing of this unit from the attacking units of the target
+					if (currTarget != nullptr) {
+
+						if (!currTarget->isRemoved)
+
+							currTarget->target->RemoveAttackingUnit(this);
+					}
+
+					isHitting = false;
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
+		}
 
 		break;
 
@@ -406,7 +417,6 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 		break;
 
-	case UnitState_Idle:
 	case UnitState_NoState:
 	default:
 

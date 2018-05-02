@@ -49,7 +49,7 @@ CritterBoar::CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
 
-	brain->AddGoal_Wander(5);
+	brain->AddGoal_Wander(5, singleUnit->currTile, true, 2, 4, 2, 6, 3);
 
 	// Collisions
 	CreateEntityCollider(EntitySide_NoSide);
