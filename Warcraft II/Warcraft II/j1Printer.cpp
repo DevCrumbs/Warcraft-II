@@ -41,12 +41,22 @@ bool j1Printer::PostUpdate()
 		{
 			Quad* quad = (Quad*)delem;
 			App->render->DrawQuad(quad->rect, quad->color.r, quad->color.g, quad->color.b, quad->color.a, quad->filled, quad->useCamera);
+			break;
 		}
 		case DrawingElem::DElemType::CIRCLE:
 		{
 			Circle* circle = (Circle*)delem;
-			App->render->DrawCircle(circle->pos.x, circle->pos.y, circle->radius, circle->color.r, circle->color.g, circle->color.b, circle->color.a, circle->useCamera);		
+			App->render->DrawCircle(circle->pos.x, circle->pos.y, circle->radius, circle->color.r, circle->color.g, circle->color.b, circle->color.a, circle->useCamera);
+			break;
 		}
+		case DrawingElem::DElemType::LINE:
+		{
+			Line* line = (Line*)delem;
+			App->render->DrawLine(line->pointA.x, line->pointA.y, line->pointB.x, line->pointB.y, line->color.r, line->color.g, line->color.b, line->color.a, line->useCamera);
+			break;
+		}
+		default:
+			break;
 		}
 
 		drawingQueue.pop();
@@ -86,6 +96,14 @@ bool j1Printer::PrintCircle(iPoint pos, int radius, SDL_Color color, bool useCam
 {
 	Circle* circle = new Circle(pos, radius, color, useCamera, layer);
 	drawingQueue.push(circle);
+
+	return true;
+}
+
+bool j1Printer::PrintLine(iPoint pointA, iPoint pointB, SDL_Color color, bool useCamera, int layer) 
+{
+	Line* line = new Line(pointA, pointB, color, useCamera, layer);
+	drawingQueue.push(line);
 
 	return true;
 }

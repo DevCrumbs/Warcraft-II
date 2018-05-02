@@ -170,7 +170,7 @@ public:
 	void AddGoal_Wander(uint maxDistance);
 	void AddGoal_AttackTarget(TargetInfo* targetInfo);
 	void AddGoal_MoveToPosition(iPoint destinationTile);
-	void AddGoal_Patrol(iPoint originTile, iPoint destinationTile);
+	void AddGoal_Patrol(iPoint originTile, iPoint destinationTile, bool isLookAround = false);
 	void AddGoal_GatherGold(GoldMine* goldMine);
 	void AddGoal_HealRunestone(Runestone* runestone);
 	void AddGoal_RescuePrisoner(DynamicEntity* prisoner);
@@ -196,7 +196,7 @@ class Goal_Patrol :public CompositeGoal
 {
 public:
 
-	Goal_Patrol(DynamicEntity* owner, iPoint originTile, iPoint destinationTile);
+	Goal_Patrol(DynamicEntity* owner, iPoint originTile, iPoint destinationTile, bool isLookAround = false);
 
 	void Activate();
 	GoalStatus Process(float dt);
@@ -208,6 +208,8 @@ private:
 	iPoint destinationTile = { -1,-1 }; // the position the bot wants to reach
 
 	iPoint currGoal = { -1,-1 };
+
+	bool isLookAround = false;
 };
 
 class Goal_Wander :public CompositeGoal

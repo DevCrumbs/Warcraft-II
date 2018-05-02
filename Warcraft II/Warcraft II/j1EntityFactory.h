@@ -164,6 +164,8 @@ public:
 
 	uint DetermineBuildingMaxLife(ENTITY_TYPE buildingType = EntityType_NONE, StaticEntitySize buildingSize = StaticEntitySize_None);
 	uint DetermineBuildingGold(ENTITY_TYPE buildingType = EntityType_NONE, StaticEntitySize buildingSize = StaticEntitySize_None);
+	
+	list<iPoint> GetBuildingTiles(StaticEntity* building, bool isOnlySurroundingTiles = false);
 	///_SANDRA
 
 	// -----

@@ -265,10 +265,9 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				StaticEntity* c;
 				c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), unitInfo, this);
-				App->scene->SetAplphaBuilding(EntityType_NONE);
 				chickenFarm.push_back(c);
-				AddGold(-App->scene->chickenFarmCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				DiscountGold(App->scene->chickenFarmCost); //Discount gold
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -278,8 +277,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->stablesCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->stablesCost); //Discount gold
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -289,8 +287,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->gryphonAviaryCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->gryphonAviaryCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -300,8 +297,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->mageTowerCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->mageTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -311,10 +307,9 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				StaticEntity* s;
 				s = (StaticEntity*)App->entities->AddEntity(EntityType_SCOUT_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_SCOUT_TOWER), unitInfo, this);
-				App->scene->SetAplphaBuilding(EntityType_NONE);
 				scoutTower.push_back(s);
-				AddGold(-App->scene->scoutTowerCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				App->scene->SetAplphaBuilding(EntityType_NONE);
+				DiscountGold(App->scene->scoutTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -324,8 +319,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				guardTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_GUARD_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_GUARD_TOWER), unitInfo, this));
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->guardTowerCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->guardTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -334,8 +328,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				cannonTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_CANNON_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_CANNON_TOWER), unitInfo, this));
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->cannonTowerCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->cannonTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -344,8 +337,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				barracks = (StaticEntity*)App->entities->AddEntity(EntityType_BARRACKS, buildingPos, App->entities->GetBuildingInfo(EntityType_BARRACKS), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				AddGold(-App->scene->barracksCost); //Discount gold
-				App->scene->hasGoldChanged = true;
+				DiscountGold(App->scene->barracksCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -431,6 +423,12 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 			(*barrackIter).entityLifeBar->SetLife((*(*barrackIter).owner)->toSpawnTimer.ReadSec());
 	}
 
+}
+
+void j1Player::DiscountGold(int gold)
+{
+	AddGold(-gold); //Discount gold
+	App->scene->hasGoldChanged = true;
 }
 
 void j1Player::SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo)
@@ -778,6 +776,12 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		case EntitiesEvent_HOVER:
 
+			//Mouse turns into a lens when hovering
+			if(staticEntity->staticEntityCategory == StaticEntityCategory_HumanBuilding ||
+				staticEntity->staticEntityCategory == StaticEntityCategory_NeutralBuilding)
+				App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); 
+			
+
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
 
 				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
@@ -805,7 +809,13 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 						if (goldMine->GetGoldMineState() == GoldMineState_Untouched) {
 
-							App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+							App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 }); //Mouse Hammer
+							App->player->isMouseOnMine = true;
+						}
+						else if (goldMine->GetGoldMineState() == GoldMineState_Gathering ||
+							goldMine->GetGoldMineState() == GoldMineState_Gathered) {
+
+							App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); //Mouse Lens
 							App->player->isMouseOnMine = true;
 						}
 					}
@@ -821,7 +831,13 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 					if (runestone->GetRunestoneState() == RunestoneState_Untouched) {
 
-						App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 });
+						App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 }); //Mouse Hammer
+						App->player->isMouseOnMine = true;
+					}
+					if (runestone->GetRunestoneState() == RunestoneState_Gathering || 
+						runestone->GetRunestoneState() == RunestoneState_Gathered) {
+
+						App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); //Mouse Lens
 						App->player->isMouseOnMine = true;
 					}
 				}
@@ -925,10 +941,22 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 		}
 		break;
 	case EntitiesEvent_LEFT_CLICK:
+
+		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON) 
+			MakePrisionerMenu(dynamicEntity);
+		
 		break;
 	case EntitiesEvent_HOVER:
+
+		if (dynamicEntity->entitySide == EntitySide_Player || 
+			dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON)
+			App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
+
 		break;
 	case EntitiesEvent_LEAVE:
+		if (dynamicEntity->entitySide == EntitySide_Player ||
+			dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON)
+			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 		break;
 	case EntitiesEvent_CREATED:
 		break;
@@ -1193,14 +1221,12 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	//	break;
 	case EntityType_GRYPHON_AVIARY:
 		produceGryphonRiderButton->isActive = true;
-		destroyBuildingButton->SetLocalPos({ 270, 2 });
 		destroyBuildingButton->isActive = true;
 		break;
 	case EntityType_CHICKEN_FARM:
 	case EntityType_SCOUT_TOWER:
 	case EntityType_PLAYER_GUARD_TOWER:
 	case EntityType_PLAYER_CANNON_TOWER:
-		destroyBuildingButton->SetLocalPos({ 217, 2 });
 		destroyBuildingButton->isActive = true;
 		break;
 	default:
@@ -1244,6 +1270,50 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		entity->SetStringLife(entity->GetCurrLife(), entity->GetMaxLife());
 		ShowEntitySelectedInfo(entity->GetStringLife(), "Gryphon Rider", { 700, 287, 50, 41 }, entity);
 		ShowDynEntityLabelsInfo("Damage: 12", "Speed: 14", "Sight: 6", "Range: 4");
+	}
+	
+}
+
+void j1Player::MakePrisionerMenu(Entity * entity)
+{
+	if (entity == nullptr)
+		return;
+
+	App->entities->UnselectAllEntities();
+	HideEntitySelectedInfo();
+
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_ALLERIA)
+	{
+		//Set entity name
+		entitySelectedStats.entityName->SetText("Alleria");
+		entitySelectedStats.entityName->isActive = true;
+
+		//Set Entity icon image
+		SDL_Rect icon = { 848, 159, 52, 42 };
+		entitySelectedStats.entityIcon->SetNewRect(icon);
+		entitySelectedStats.entityIcon->isActive = true;
+
+		//Prisioner description
+		entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 57 });
+		entitySelectedStats.HP->SetText("Expedition's head scout.");
+		entitySelectedStats.HP->isActive = true;
+
+	}
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_TURALYON)
+	{
+		//Set entity name
+		entitySelectedStats.entityName->SetText("Turalyon");
+		entitySelectedStats.entityName->isActive = true;
+
+		//Set Entity icon image
+		SDL_Rect icon = { 744, 159, 52, 42 };
+		entitySelectedStats.entityIcon->SetNewRect(icon);
+		entitySelectedStats.entityIcon->isActive = true;
+
+		//Prisioner description
+		entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 57 });
+		entitySelectedStats.HP->SetText("Paladin of the Silver Hand.");
+		entitySelectedStats.HP->isActive = true;
 	}
 }
 
@@ -1446,7 +1516,7 @@ void j1Player::CreateTownHallButtons()
 }
 void j1Player::CreateDestructionButton()
 {
-	CreateSimpleButton({ 579,76,49,41 }, { 629, 76, 49, 41 }, { 679,76,49,41 }, { 270, 2 }, destroyBuildingButton);
+	CreateSimpleButton({ 579,76,49,41 }, { 629, 76, 49, 41 }, { 679,76,49,41 }, { 320, 42 }, destroyBuildingButton);
 }
 void j1Player::CreateHoverInfoMenu() {
 
@@ -1560,6 +1630,7 @@ void j1Player::DestroyBuilding()
 			else
 				farm++;
 		}
+		toDestroyEnt->isRemove = true; //Remove entity
 	}
 	break;
 	case EntityType_SCOUT_TOWER:
@@ -1572,6 +1643,7 @@ void j1Player::DestroyBuilding()
 			else
 				tower++;
 		}
+		toDestroyEnt->isRemove = true; //Remove entity
 	}
 	break;
 	case EntityType_PLAYER_GUARD_TOWER:
@@ -1584,6 +1656,7 @@ void j1Player::DestroyBuilding()
 			else
 				tower++;
 		}
+		toDestroyEnt->isRemove = true; //Remove entity
 	}
 	break;
 	case EntityType_PLAYER_CANNON_TOWER:
@@ -1596,16 +1669,16 @@ void j1Player::DestroyBuilding()
 			else
 				tower++;
 		}
+		toDestroyEnt->isRemove = true; //Remove entity
 	}
 	break;
 	case EntityType_GRYPHON_AVIARY:
 		gryphonAviary = nullptr;
+		toDestroyEnt->isRemove = true; //Remove entity
 		break;
 	default:
 		break;
 	}
-
-	toDestroyEnt->isRemove = true; //Remove entity
 
 	App->audio->PlayFx(App->audio->GetFX().destroyBuild);
 }

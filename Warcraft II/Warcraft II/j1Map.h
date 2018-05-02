@@ -204,6 +204,8 @@ public:
 	void LoadSpawnTiles(MapLayer * layer);
 
 	bool IsOnBase(iPoint pos);
+	SDL_Rect GetEntityRoom(Entity * entity);
+
 
 	// Unload map
 	bool UnLoad();

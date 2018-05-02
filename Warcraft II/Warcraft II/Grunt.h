@@ -50,6 +50,8 @@ private:
 	float attackUpSpeed = 0.0f, attackDownSpeed = 0.0f, attackLeftSpeed = 0.0f, attackRightSpeed = 0.0f;
 	float attackUpLeftSpeed = 0.0f, attackUpRightSpeed = 0.0f, attackDownLeftSpeed = 0.0f, attackDownRightSpeed = 0.0f;
 	float deathUpSpeed = 0.0f, deathDownSpeed = 0.0f;
+
+	iPoint spawnTile = { -1,-1 };
 };
 
 #endif //__Grunt_H__
