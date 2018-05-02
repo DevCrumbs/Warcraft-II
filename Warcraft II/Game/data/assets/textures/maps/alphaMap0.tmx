@@ -36252,7 +36252,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 0" width="120" height="150" visible="0" opacity="0.55">
+ <layer name="group 0" width="120" height="150" opacity="0.55">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -54259,7 +54259,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 1" width="120" height="150" visible="0" opacity="0.62">
+ <layer name="group 1" width="120" height="150" opacity="0.62">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -72266,7 +72266,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 2" width="120" height="150" visible="0" opacity="0.52">
+ <layer name="group 2" width="120" height="150" opacity="0.52">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
