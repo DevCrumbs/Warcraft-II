@@ -73,6 +73,7 @@ If debug mode is on:
 
 	F1: direct win
 	F2: direct lose
+	F3: Spawn enemy wave in base
 
 # Game system
 
