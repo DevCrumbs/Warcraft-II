@@ -35,14 +35,17 @@ void j1Movement::DebugDraw() const
 
 				SDL_Color col = (*unit)->unit->GetColor();
 
-				if ((*unit)->movementState != MovementState_WaitForPath && (*unit)->nextTile.x > -1 && (*unit)->nextTile.y > -1) {
+				if ((*unit)->movementState != MovementState_WaitForPath && (*unit)->nextTile.x != -1 && (*unit)->nextTile.y != -1) {
 
 					// Raycast a line between the unit and the nextTile
 					iPoint offset = { App->map->data.tileWidth / 2, App->map->data.tileHeight / 2 };
 					iPoint nextPos = App->map->MapToWorld((*unit)->nextTile.x, (*unit)->nextTile.y);
-					//App->render->DrawLine((*unit)->unit->GetPos().x + offset.x, (*unit)->unit->GetPos().y + offset.y, nextPos.x + offset.x, nextPos.y + offset.y, 255, 255, 255, 255);
-					//App->render->DrawCircle(nextPos.x + offset.x, nextPos.y + offset.y, 10, 255, 255, 255, 255);
-					//App->printer->PrintCircle({ nextPos.x + offset.x, nextPos.y + offset.y }, 10, ColorWhite, true);
+
+					if ((*unit)->nextTile != (*unit)->currTile) {
+
+						App->printer->PrintLine({ (int)(*unit)->unit->GetPos().x + offset.x, (int)(*unit)->unit->GetPos().y + offset.y }, { nextPos.x + offset.x, nextPos.y + offset.y }, ColorWhite, true, Layers_FloorColliders);
+						App->printer->PrintCircle({ nextPos.x + offset.x, nextPos.y + offset.y }, 10, ColorWhite, true, Layers_FloorColliders);
+					}
 
 					// Draw unit's path
 					if (App->scene->debugDrawPath) {
@@ -51,7 +54,6 @@ void j1Movement::DebugDraw() const
 						{
 							iPoint pos = App->map->MapToWorld((*unit)->path.at(i).x, (*unit)->path.at(i).y);
 							SDL_Rect rect = { pos.x, pos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-							//App->render->DrawQuad(rect, col.r, col.g, col.b, 50);
 							App->printer->PrintQuad(rect, { col.r,col.g,col.b,50 }, true, true, Layers_FloorColliders);
 						}
 					}
@@ -60,7 +62,6 @@ void j1Movement::DebugDraw() const
 				// Draw unit's goal
 				iPoint pos = App->map->MapToWorld((*unit)->goal.x, (*unit)->goal.y);
 				SDL_Rect rect = { pos.x, pos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-				//App->render->DrawQuad(rect, col.r, col.g, col.b, 200);
 				App->printer->PrintQuad(rect, { col.r,col.g,col.b,200 }, true, true, Layers_FloorColliders);
 			}
 		}
