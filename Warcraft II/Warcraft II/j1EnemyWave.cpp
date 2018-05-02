@@ -61,15 +61,15 @@ bool j1EnemyWave::Update(float ft)
 
 		int size = currentList.size();
 		int spawned = 0;
-
 		for (list<iPoint>::const_iterator iterator = currentList.begin(); iterator != currentList.end(); ++iterator)
 		{
+			ENTITY_TYPE type = EntityType_NONE;
 			if (iterator == currentList.begin() && App->player->gryphonAviary != nullptr)
 			{
 				if (SpawnEnemy(spawnProbability)) {
 					spawned++;
 
-					ENTITY_TYPE type = EntityType_DRAGON;
+					type = EntityType_DRAGON;
 					UnitInfo unitInfo;
 					fPoint pos{ (float)(*iterator).x, (float)(*iterator).y };
 
@@ -81,14 +81,15 @@ bool j1EnemyWave::Update(float ft)
 			{
 				spawned++;
 
-				ENTITY_TYPE type = ENTITY_TYPE(rand() % 2 + 381);
+				type = ENTITY_TYPE(rand() % 2 + 381);
 				UnitInfo unitInfo;
 				fPoint pos{ (float)(*iterator).x, (float)(*iterator).y };
 
 				App->entities->AddEntity(type, pos, App->entities->GetUnitInfo(type), unitInfo);
 			}
 
-			LOG("Spawned %i entities from %i", spawned, size);
+			LOG("Spawned %i entities from %i, type %i", spawned, size, type);
+			
 		}
 	}
 	return true;
