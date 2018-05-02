@@ -30,6 +30,7 @@ bool j1EnemyWave::Awake(pugi::xml_node& config)
 
 	/// Load from xml
 	spawnProbability = 0.35f;
+	maxSpawn = 5;
 
 	return ret;
 }
@@ -63,6 +64,9 @@ bool j1EnemyWave::Update(float ft)
 		int spawned = 0;
 		for (list<iPoint>::const_iterator iterator = currentList.begin(); iterator != currentList.end(); ++iterator)
 		{
+			if (spawned >= maxSpawn) {
+				break;
+			}
 			ENTITY_TYPE type = EntityType_NONE;
 			if (iterator == currentList.begin() && App->player->gryphonAviary != nullptr)
 			{
@@ -91,6 +95,8 @@ bool j1EnemyWave::Update(float ft)
 			LOG("Spawned %i entities from %i, type %i", spawned, size, type);
 			
 		}
+		maxSpawn++;
+		spawnProbability += 0.05f;
 	}
 	return true;
 }

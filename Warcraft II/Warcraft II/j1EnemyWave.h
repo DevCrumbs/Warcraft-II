@@ -56,6 +56,7 @@ private:
 	vector<list<iPoint>> spawnTiles;
 	
 	float spawnProbability = 0.0f;
+	uint maxSpawn = 0;
 
 };
 
