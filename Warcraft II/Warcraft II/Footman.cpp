@@ -144,6 +144,39 @@ void Footman::Move(float dt)
 		// ---------------------------------------------------------------------
 
 		// PROCESS THE COMMANDS
+
+		// 1. Remove attack
+		switch (unitCommand) {
+
+		case UnitCommand_Stop:
+		case UnitCommand_MoveToPosition:
+		case UnitCommand_Patrol:
+		case UnitCommand_GatherGold:
+		case UnitCommand_HealRunestone:
+		case UnitCommand_RescuePrisoner:
+
+			/// The unit could be attacking before this command
+			if (currTarget != nullptr) {
+
+				if (!currTarget->isRemoved)
+
+					currTarget->target->RemoveAttackingUnit(this);
+
+				currTarget = nullptr;
+			}
+
+			isHitting = false;
+			///
+
+			break;
+
+		case UnitCommand_NoCommand:
+		default:
+
+			break;
+		}
+
+		// 2. Actual command
 		switch (unitCommand) {
 
 		case UnitCommand_Stop:
@@ -272,6 +305,9 @@ void Footman::Move(float dt)
 	// PROCESS THE CURRENTLY ACTIVE GOAL
 	brain->Process(dt);
 
+	if (isSelected)
+		LOG("Targets %i", targets.size());
+
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
 
@@ -335,8 +371,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -402,8 +441,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -428,8 +470,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -451,8 +496,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();

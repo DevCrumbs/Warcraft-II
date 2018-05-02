@@ -1242,7 +1242,7 @@ bool j1EntityFactory::Start()
 
 	/// Radius
 	footmanInfo.unitInfo.attackRadius = 2;
-	footmanInfo.unitInfo.sightRadius = 4;
+	footmanInfo.unitInfo.sightRadius = 7;
 
 	/// Damage
 	footmanInfo.unitInfo.heavyDamage = 6;
@@ -1336,7 +1336,7 @@ bool j1EntityFactory::Start()
 
 	/// Radius
 	gruntInfo.unitInfo.attackRadius = 2;
-	gruntInfo.unitInfo.sightRadius = 4;
+	gruntInfo.unitInfo.sightRadius = 7;
 
 	/// Damage
 	gruntInfo.unitInfo.heavyDamage = 6;

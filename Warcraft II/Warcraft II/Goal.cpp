@@ -178,9 +178,9 @@ void Goal_Think::Terminate()
 	owner->SetUnitState(UnitState_Idle);
 }
 
-void Goal_Think::AddGoal_Wander(uint maxDistance)
+void Goal_Think::AddGoal_Wander(uint maxDistance, iPoint startTile, bool isCurrTile, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted)
 {
-	AddSubgoal(new Goal_Wander(owner, maxDistance));
+	AddSubgoal(new Goal_Wander(owner, maxDistance, startTile, isCurrTile, minSecondsToChange, maxSecondsToChange, minSecondsUntilNextChange, maxSecondsUntilNextChange, probabilityGoalCompleted));
 }
 
 void Goal_Think::AddGoal_AttackTarget(TargetInfo* targetInfo)
@@ -434,17 +434,13 @@ void Goal_Patrol::Terminate()
 
 // Goal_Wander ---------------------------------------------------------------------
 
-Goal_Wander::Goal_Wander(DynamicEntity* owner, uint maxDistance) :CompositeGoal(owner, GoalType_Wander), maxDistance(maxDistance) {}
+Goal_Wander::Goal_Wander(DynamicEntity* owner, uint maxDistance, iPoint startTile, bool isCurrTile, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted) :CompositeGoal(owner, GoalType_Wander), maxDistance(maxDistance), startTile(startTile), isCurrTile(isCurrTile), minSecondsToChange(minSecondsToChange), maxSecondsToChange(maxSecondsToChange), minSecondsUntilNextChange(minSecondsUntilNextChange), maxSecondsUntilNextChange(maxSecondsUntilNextChange), probabilityGoalCompleted(probabilityGoalCompleted) {}
 
 void Goal_Wander::Activate()
 {
-	maxDistance = 5;
 	goalStatus = GoalStatus_Active;
 
-	if (owner != nullptr)
-
-		// This is meant to work with critters
-		AddSubgoal(new Goal_LookAround(owner, 2, 4, 2, 6, 3));
+	AddSubgoal(new Goal_LookAround(owner, minSecondsToChange, maxSecondsToChange, minSecondsUntilNextChange, maxSecondsUntilNextChange, probabilityGoalCompleted));
 
 	iPoint destinationTile = { -1,-1 };
 
@@ -452,15 +448,23 @@ void Goal_Wander::Activate()
 	if (sign == 0)
 		sign = -1;
 
-	destinationTile.x = owner->GetSingleUnit()->currTile.x + sign * (rand() % (maxDistance + 1) + 1);
+	if (isCurrTile)
+		destinationTile.x = owner->GetSingleUnit()->currTile.x + sign * (rand() % (maxDistance + 1) + 1);
+	else
+		destinationTile.x = startTile.x + sign * (rand() % (maxDistance + 1) + 1);
 
 	sign = rand() % 2;
 	if (sign == 0)
 		sign = -1;
 
-	destinationTile.y = owner->GetSingleUnit()->currTile.y + sign * (rand() % (maxDistance + 1) + 1);
+	if (isCurrTile)
+		destinationTile.y = owner->GetSingleUnit()->currTile.y + sign * (rand() % (maxDistance + 1) + 1);
+	else
+		destinationTile.y = startTile.y + sign * (rand() % (maxDistance + 1) + 1);
 
 	AddSubgoal(new Goal_MoveToPosition(owner, destinationTile));
+
+	owner->SetUnitState(UnitState_Wander);
 }
 
 GoalStatus Goal_Wander::Process(float dt)
@@ -487,6 +491,15 @@ void Goal_Wander::Terminate()
 	RemoveAllSubgoals();
 
 	maxDistance = 0;
+	startTile = { -1,-1 };
+	isCurrTile = false;
+
+	// Goal_LookAround
+	minSecondsToChange = 0;
+	maxSecondsToChange = 0;
+	minSecondsUntilNextChange = 0;
+	maxSecondsUntilNextChange = 0;
+	probabilityGoalCompleted = 0;
 
 	owner->SetUnitState(UnitState_Idle);
 }
@@ -820,7 +833,7 @@ void Goal_HitTarget::Activate()
 	/// The target is no longer within the attack nor sight radius of the unit
 	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied) {
 
-		goalStatus = GoalStatus_Completed;
+		goalStatus = GoalStatus_Failed;
 		return;
 	}
 
@@ -879,7 +892,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 	/// The target is no longer within the attack nor sight radius of the unit
 	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied) {
 
-		goalStatus = GoalStatus_Completed;
+		goalStatus = GoalStatus_Failed;
 		return goalStatus;
 	}
 
