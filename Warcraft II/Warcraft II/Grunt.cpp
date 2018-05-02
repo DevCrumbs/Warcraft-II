@@ -79,6 +79,8 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 
 	// IA
 	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
+
+	// Different behaviors for units on the base and units around the map
 	brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
@@ -179,12 +181,16 @@ void Grunt::Draw(SDL_Texture* sprites)
 	if (animation != nullptr) {
 
 		fPoint offset = { 0.0f,0.0f };
-		if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp)
-			offset = { animation->GetCurrentFrame().w / 2.5f, animation->GetCurrentFrame().h / 5.5f };
-		else
-			offset = { animation->GetCurrentFrame().w / 3.2f, animation->GetCurrentFrame().h / 3.1f };
+		if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp) {
 
-		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+			offset = { animation->GetCurrentFrame().w / 2.5f, animation->GetCurrentFrame().h / 5.5f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+		}
+		else {
+
+			offset = { animation->GetCurrentFrame().w / 3.2f, animation->GetCurrentFrame().h / 3.1f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
 	}
 
 	//if (isSelected)

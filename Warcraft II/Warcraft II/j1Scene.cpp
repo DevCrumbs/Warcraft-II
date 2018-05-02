@@ -159,6 +159,26 @@ bool j1Scene::Start()
 
 	isStartedFinalTransition = false;
 
+	// Create the groups of the enemies
+	list<list<Entity*>>::const_iterator enIt = App->map->entityGroups.begin();
+
+	while (enIt != App->map->entityGroups.end()) {
+
+		list<Entity*>::const_iterator groupIt = (*enIt).begin();
+		list<DynamicEntity*> units;
+
+		while (groupIt != (*enIt).end()) {
+
+			units.push_back((DynamicEntity*)(*groupIt));
+			groupIt++;
+		}
+
+		if (units.size() > 0)
+			App->movement->CreateGroupFromUnits(units);
+
+		enIt++;
+	}
+
 	return ret;
 }
 
@@ -192,7 +212,7 @@ bool j1Scene::LoadNewMap(int map)
 	info.minimapInfo = { 30,31,160,161 };
 
 	minimap = App->gui->CreateUIMinimap(info);
-//	minimap->SetMinimap({ 30,31,160,161 }, 32, 32);
+	//minimap->SetMinimap({ 30,31,160,161 }, 32, 32);
 
 	return ret;
 }
@@ -281,71 +301,6 @@ bool j1Scene::PreUpdate()
 	default:
 		break;
 	}
-	/*
-	// 5: spawn a group of Footmans
-	if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
-
-		list<DynamicEntity*> units;
-		uint maxFootmans = 4;
-
-		for (uint i = 0; i < maxFootmans; ++i) {
-
-			iPoint tile = { rand() % App->map->data.width,rand() % App->map->data.height };
-
-			// Make sure that there are no entities on the spawn tile and that the tile is walkable
-			if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-				tile = FindClosestValidTile(tile);
-
-			// Make sure that the spawn tile is valid
-			if (tile.x != -1 && tile.y != -1) {
-
-				iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-				fPoint pos = { (float)tilePos.x,(float)tilePos.y };
-
-				DynamicEntity* dynEnt = (DynamicEntity*)App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo, this);
-
-				if (dynEnt != nullptr)
-					units.push_back(dynEnt);
-			}
-		}
-
-		if (units.size() > 0)
-			App->movement->CreateGroupFromUnits(units);
-	}
-
-	// 6: spawn a group of Grunts
-	if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN) {
-
-		list<DynamicEntity*> units;
-		uint maxGrunts = 4;
-
-		for (uint i = 0; i < maxGrunts; ++i) {
-
-			iPoint tile = { rand() % App->map->data.width,rand() % App->map->data.height };
-
-			// Make sure that there are no entities on the spawn tile and that the tile is walkable
-			if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-				tile = FindClosestValidTile(tile);
-
-			// Make sure that the spawn tile is valid
-			if (tile.x != -1 && tile.y != -1) {
-
-				iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-				fPoint pos = { (float)tilePos.x,(float)tilePos.y };
-
-				DynamicEntity* dynEnt = (DynamicEntity*)App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, this);
-
-				if (dynEnt != nullptr)
-					units.push_back(dynEnt);
-			}
-		}
-
-		if (units.size() > 0)
-			App->movement->CreateGroupFromUnits(units);
-	}
-	*/
 
 	return ret;
 }

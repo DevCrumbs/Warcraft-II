@@ -80,6 +80,8 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 
 	// IA
 	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
+
+	// Different behaviors for units on the base and units around the map
 	brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
@@ -181,12 +183,16 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 
 		fPoint offset = { 0.0f,0.0f };
 
-		if (animation == &trollAxethrowerInfo.deathDown || animation == &trollAxethrowerInfo.deathUp)
-			offset = { animation->GetCurrentFrame().w / 6.0f, animation->GetCurrentFrame().h / 3.8f };
-		else
-			offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 4.0f };
+		if (animation == &trollAxethrowerInfo.deathDown || animation == &trollAxethrowerInfo.deathUp) {
 
-		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+			offset = { animation->GetCurrentFrame().w / 6.0f, animation->GetCurrentFrame().h / 3.8f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+		}
+		else {
+
+			offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 4.0f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
 	}
 
 	//if (isSelected)
