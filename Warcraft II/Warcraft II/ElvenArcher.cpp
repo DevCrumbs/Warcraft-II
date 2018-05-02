@@ -308,12 +308,16 @@ void ElvenArcher::Draw(SDL_Texture* sprites)
 
 		fPoint offset = { 0.0f,0.0f };
 
-		if (animation == &elvenArcherInfo.deathDown || animation == &elvenArcherInfo.deathUp)
-			offset = { animation->GetCurrentFrame().w / 6.3f, animation->GetCurrentFrame().h / 4.3f };
-		else
-			offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 2.1f };
+		if (animation == &elvenArcherInfo.deathDown || animation == &elvenArcherInfo.deathUp) {
 
-		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+			offset = { animation->GetCurrentFrame().w / 6.3f, animation->GetCurrentFrame().h / 4.3f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+		}
+		else {
+
+			offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 2.1f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
 	}
 
 	if (isSelected)
