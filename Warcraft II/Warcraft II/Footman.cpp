@@ -554,9 +554,11 @@ void Footman::UnitStateMachine(float dt)
 
 	case UnitState_Walk:
 
+		if (IsUnitGatheringGold() && IsUnitHealingRunestone() && IsUnitRescuingPrisoner())
+			break;
+
 		// DEFENSE NOTE: the unit automatically attacks back their attacking units (if they have any attacking units) to defend themselves
 		/// TODO Sandra: units attacking or units hitting?
-
 		if (unitsAttacking.size() > 0) {
 
 			if (singleUnit->IsFittingTile()) {
@@ -582,6 +584,9 @@ void Footman::UnitStateMachine(float dt)
 		break;
 
 	case UnitState_Idle:
+
+		if (IsUnitGatheringGold() && IsUnitHealingRunestone() && IsUnitRescuingPrisoner())
+			break;
 
 		// If the unit is doing nothing, make it look around
 		if (brain->GetSubgoalsList().size() == 0)

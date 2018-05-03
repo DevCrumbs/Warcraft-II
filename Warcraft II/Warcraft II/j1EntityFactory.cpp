@@ -3013,13 +3013,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	}
 }
 
-void j1EntityFactory::DestroyStaticEntity(StaticEntity* staticEntity)
-{
-	activeStaticEntities.remove(staticEntity);
-
-	// TODO: if you want to destroy the entity, the remove method is not enough!
-}
-
 //Checks the number of active units on the game 
 uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEGORY entityCategory)
 {
@@ -3081,8 +3074,8 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 
 			while (activeDyn != activeDynamicEntities.end()) {
 
-				// The unit cannot be dead
-				if (!(*activeDyn)->isDead) {
+				// The unit cannot be dead and must be valid
+				if (!(*activeDyn)->isDead && (*activeDyn)->GetIsValid()) {
 
 					iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
 
@@ -3267,67 +3260,6 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 		}
 	}
 
-	// We do also need to check the toSpawn list (just in case)
-	/*
-	list<Entity*>::const_iterator toSpawn = toSpawnEntities.begin();
-
-	while (toSpawn != toSpawnEntities.end()) {
-
-		iPoint entityTile = App->map->WorldToMap((*toSpawn)->GetPos().x, (*toSpawn)->GetPos().y);
-
-		switch (entitySide) {
-
-		case EntitySide_Player:
-
-			if ((*toSpawn)->entitySide == EntitySide_Player) {
-
-				if (entityCategory == EntityCategory_NONE ||
-					(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
-					|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
-
-					if ((*toSpawn)->entitySide == EntitySide_Player)
-						if (tile.x == entityTile.x && tile.y == entityTile.y)
-							return (Entity*)(*toSpawn);
-			}
-			break;
-
-		case EntitySide_Enemy:
-
-			if (entityCategory == EntityCategory_NONE ||
-				(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
-				|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
-				
-				if ((*toSpawn)->entitySide == EntitySide_Enemy)
-					if (tile.x == entityTile.x && tile.y == entityTile.y)
-						return (Entity*)(*toSpawn);
-			break;
-
-		case EntitySide_Neutral:
-
-			if (entityCategory == EntityCategory_NONE ||
-				(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
-				|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
-				
-				if ((*toSpawn)->entitySide == EntitySide_Neutral)
-					if (tile.x == entityTile.x && tile.y == entityTile.y)
-						return (Entity*)(*toSpawn);
-			break;
-
-		case EntitySide_NoSide:
-
-			if (entityCategory == EntityCategory_NONE ||
-				(entityCategory == EntityCategory_DYNAMIC_ENTITY && (*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY)
-				|| (entityCategory == EntityCategory_STATIC_ENTITY && (*toSpawn)->entityType == EntityCategory_STATIC_ENTITY))
-				
-				if (tile.x == entityTile.x && tile.y == entityTile.y)
-					return (Entity*)(*toSpawn);
-			break;
-		}
-
-		toSpawn++;
-	}
-	*/
-
 	return nullptr;
 }
 
@@ -3356,7 +3288,8 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 
 		DynamicEntity* unit = GetDynamicEntityByEntity(entity);
 
-		if (unit->GetIsValid()) {
+		// The unit cannot be dead and must be valid
+		if (!unit->isDead && unit->GetIsValid()) {
 
 			unitsSelected.push_back(unit);
 			(entity)->isSelected = true;
@@ -3384,13 +3317,6 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 
 	while (it != activeDynamicEntities.end()) {
 
-		// The unit cannot be dead
-		if ((*it)->isDead) {
-
-			it++;
-			continue;
-		}
-
 		if (entitySide == EntitySide_NoSide
 			|| (entitySide == EntitySide_Player && (*it)->entitySide == EntitySide_Player)
 			|| (entitySide == EntitySide_Enemy && (*it)->entitySide == EntitySide_Enemy)) {
@@ -3409,7 +3335,8 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 						// If the unit isn't in the unitsSelected list, add it
 						if (find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
 
-							if ((*it)->GetIsValid()) {
+							// The unit cannot be dead and must be valid
+							if (!(*it)->isDead && (*it)->GetIsValid()) {
 
 								unitsSelected.push_back(GetDynamicEntityByEntity(*it));
 								(*it)->isSelected = true;
@@ -3439,13 +3366,6 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 
 		it++;
 	}
-
-	// TODO: Add StaticEntities
-
-	// Update the color of the selection of all entities (Dynamic and Static)
-	//SetUnitsSelectedColor();
-
-
 }
 
 // Unselects all entities
@@ -3535,7 +3455,8 @@ bool j1EntityFactory::CommandToUnits(list<DynamicEntity*> units, UnitCommand uni
 
 	while (it != units.end()) {
 
-		if ((*it)->GetIsValid()) {
+		// The unit cannot be dead and must be valid
+		if (!(*it)->isDead && (*it)->GetIsValid()) {
 
 			if ((*it)->SetUnitCommand(unitCommand))
 				ret = true;
@@ -3628,8 +3549,8 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 
 			while (activeDyn != activeDynamicEntities.end()) {
 
-				// The unit cannot be dead
-				if (!(*activeDyn)->isDead) {
+				// The unit cannot be dead and must be valid
+				if (!(*activeDyn)->isDead && (*activeDyn)->GetIsValid()) {
 
 					// An offset value is applied ONLY to the units selection
 					iPoint offsetValue = { 15,15 };
@@ -3732,6 +3653,13 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
 	while (it != activeDynamicEntities.end()) {
+
+		// The unit cannot be dead and must be valid
+		if ((*it)->isDead || !(*it)->GetIsValid()) {
+
+			it++;
+			continue;
+		}
 
 		if (App->render->IsInScreen((*it)->GetPos())) {
 

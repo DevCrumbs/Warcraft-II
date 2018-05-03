@@ -508,11 +508,6 @@ bool j1Scene::Update(float dt)
 				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
 				Entity* prisoner = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
 
-				if (prisoner == nullptr)
-					LOG("NOPRISONER");
-				else
-					LOG("YESPRISONER");
-
 				// Set the cursor texture
 				if (target != nullptr || critter != nullptr || building != nullptr) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();

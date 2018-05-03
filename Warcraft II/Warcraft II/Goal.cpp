@@ -767,6 +767,12 @@ void Goal_MoveToPosition::Activate()
 		}
 	}
 
+	if (owner->GetSingleUnit()->currTile == destinationTile) {
+	
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+
 	if (owner->GetSingleUnit()->goal != destinationTile)
 
 		owner->GetSingleUnit()->SetGoal(destinationTile);
@@ -1152,6 +1158,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 void Goal_HitTarget::Terminate()
 {
 	owner->SetHitting(false);
+	owner->SetIsStill(true);
 
 	targetInfo = nullptr;
 	orientation = { 0,0 };

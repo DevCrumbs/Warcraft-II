@@ -111,7 +111,6 @@ public:
 	bool IsEntityOnTileBySize(iPoint tile) const;
 
 	Entity* AddEntity(ENTITY_TYPE entityType, fPoint pos, const EntityInfo& entityInfo, const UnitInfo& unitInfo, j1Module* listener = nullptr);
-	void DestroyStaticEntity(StaticEntity* staticEntity);
 
 	uint CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEGORY entityCategory);
 	uint GetNumberOfPlayerUnits() const;
