@@ -44,10 +44,10 @@ void UIMinimap::Update(float dt)
 	movingMap = false;
 
 	SDL_fRect camera = App->render->camera;
-
+	HandleInput(dt);
 	App->render->SetViewPort(minimapInfo);
 
-	HandleInput(dt);
+
 
 	//prevOffsetX = offsetX;
 	//prevOffsetY = offsetY;
@@ -110,6 +110,12 @@ void UIMinimap::HandleInput(float dt)
 				App->render->camera.x = 0;
 			if (App->render->camera.y > 0)
 				App->render->camera.y = 0;
+		}
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+		{
+			iPoint pos = MinimapToMap();
+			SDL_Rect rect{ pos.x,pos.y, 32,32 };
+			App->render->DrawQuad(rect, 255, 255, 255);
 		}
 	}
 
