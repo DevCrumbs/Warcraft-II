@@ -623,7 +623,6 @@ bool j1Player::Load(pugi::xml_node& save)
 
 }
 
-
 void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent)
 {
 	Entity* ent = (Entity*)staticEntity;
@@ -776,12 +775,11 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		case EntitiesEvent_HOVER:
 
-			//Mouse turns into a lens when hovering
+			// Mouse turns into a lens when hovering
 			if(staticEntity->staticEntityCategory == StaticEntityCategory_HumanBuilding ||
 				staticEntity->staticEntityCategory == StaticEntityCategory_NeutralBuilding)
 				App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); 
 			
-
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
 
 				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
@@ -912,22 +910,27 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 		// Alleria (right click to send a unit to rescue her)
 		/// TODO Sandra: only Footman and Elven Archer must be able to rescue a Prisoner (King Terenas says that Alleria cannot be rescued by using a Gryphon Rider)
-		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON) {
+		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA) {
 
-			list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+			Alleria* alleria = (Alleria*)dynamicEntity;
 
-			if (units.size() > 0) {
+			if (!alleria->IsRescued()) {
 
-				list<DynamicEntity*>::const_iterator it = units.begin();
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
-				while (it != units.end()) {
+				if (units.size() > 0) {
 
-					(*it)->SetPrisoner(dynamicEntity);
+					list<DynamicEntity*>::const_iterator it = units.begin();
 
-					it++;
+					while (it != units.end()) {
+
+						(*it)->SetPrisoner(dynamicEntity);
+
+						it++;
+					}
+
+					App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
 				}
-
-				App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
 			}
 			/*
 			else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
@@ -939,7 +942,41 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 			}
 			*/
 		}
+		// Turalyon (right click to send a unit to rescue him)
+		else if (dynamicEntity->dynamicEntityType == EntityType_TURALYON) {
+
+			Turalyon* turalyon = (Turalyon*)dynamicEntity;
+
+			if (!turalyon->IsRescued()) {
+
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+				if (units.size() > 0) {
+
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					while (it != units.end()) {
+
+						(*it)->SetPrisoner(dynamicEntity);
+
+						it++;
+					}
+
+					App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+				}
+			}
+			/*
+			else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
+
+			App->scene->terenasDialogTimer.Start();
+			App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
+			App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+
+			}
+			*/
+		}
 		break;
+
 	case EntitiesEvent_LEFT_CLICK:
 
 		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON) 

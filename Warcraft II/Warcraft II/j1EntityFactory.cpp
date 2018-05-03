@@ -3632,9 +3632,9 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 				if (!(*activeDyn)->isDead) {
 
 					// An offset value is applied ONLY to the units selection
-					iPoint offsetValue = { 20,20 };
+					iPoint offsetValue = { 15,15 };
 
-					iPoint entityPos = { (int)(*activeDyn)->GetPos().x + (*activeDyn)->GetOffsetSize().x - offsetValue.x, (int)(*activeDyn)->GetPos().y + (*activeDyn)->GetOffsetSize().y - offsetValue.y };
+					iPoint entityPos = { (int)(*activeDyn)->GetPos().x + (*activeDyn)->GetOffsetSize().x - offsetValue.x / 2, (int)(*activeDyn)->GetPos().y + (*activeDyn)->GetOffsetSize().y - offsetValue.y / 2 };
 					iPoint entitySize = { (*activeDyn)->GetSize().x + offsetValue.x, (*activeDyn)->GetSize().y + offsetValue.y };
 					uint scale = App->win->GetScale();
 
@@ -3663,8 +3663,9 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 
 					case EntitySide_NoSide:
 
-						if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
-							return (Entity*)(*activeDyn);
+						if ((*activeDyn)->entitySide == EntitySide_NoSide)
+							if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
+								return (Entity*)(*activeDyn);
 						break;
 					}
 				}
@@ -3711,8 +3712,9 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 
 				case EntitySide_NoSide:
 
-					if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
-						return (Entity*)(*activeStat);
+					if ((*activeStat)->entitySide == EntitySide_NoSide)
+						if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
+							return (Entity*)(*activeStat);
 					break;
 				}
 				activeStat++;
@@ -3823,6 +3825,19 @@ void j1EntityFactory::UnselectAllBuildings()
 	while (it != activeStaticEntities.end()) {
 
 		(*it)->isSelected = false;
+
+		it++;
+	}
+}
+
+void j1EntityFactory::UnselectAllPrisoners() 
+{
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	while (it != activeDynamicEntities.end()) {
+
+		if ((*it)->dynamicEntityType == EntityType_ALLERIA || (*it)->dynamicEntityType == EntityType_TURALYON)
+			(*it)->isSelected = false;
 
 		it++;
 	}
