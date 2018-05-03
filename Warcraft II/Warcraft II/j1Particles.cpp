@@ -308,6 +308,7 @@ bool j1Particles::Start()
 	boarPawsInfo.downLeft.speed = 1.0f;
 	boarPawsInfo.downRight.speed = 1.0f;
 
+	if(!isAnimationSpeedCharged)
 	LoadAnimationsSpeed();
 
 	atlasTex = App->tex->Load(atlasTexName.data());
@@ -518,6 +519,8 @@ void j1Particles::LoadAnimationsSpeed()
 
 	/// Cross Speed
 	crossSpeed = cross.animation.speed;
+
+	isAnimationSpeedCharged = true;
 }
 
 void j1Particles::UpdateAnimations(float dt)
