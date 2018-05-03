@@ -934,6 +934,10 @@ int j1Scene::GetCamSpeed(int pos)
 
 	if (distanceTo < 0)
 		distanceTo = 0;
+	else if (distanceTo > camMovMargin)
+	{
+		distanceTo = camMovMargin;
+	}
 
 	float proximity = distanceTo / camMovMargin;
 
