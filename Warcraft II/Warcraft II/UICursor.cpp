@@ -63,13 +63,13 @@ void UICursor::HandleInput()
 	switch (UIevent)
 	{
 	case UI_EVENT_NONE:
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED && !App->gui->IsMouseOnUI()) {
 			UIevent = UI_EVENT_MOUSE_LEFT_CLICK;
 			texArea = onClick;
 			listener->OnUIEvent(this, UIevent);
 			break;
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED && !App->gui->IsMouseOnUI()) {
 			UIevent = UI_EVENT_MOUSE_RIGHT_CLICK;
 			texArea = onClick;
 			listener->OnUIEvent(this, UIevent);
@@ -77,7 +77,7 @@ void UICursor::HandleInput()
 		}
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED) {
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED && !App->gui->IsMouseOnUI()) {
 			UIevent = UI_EVENT_NONE;
 			texArea = default;
 			listener->OnUIEvent(this, UIevent);
@@ -85,7 +85,7 @@ void UICursor::HandleInput()
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED) {
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED && !App->gui->IsMouseOnUI()) {
 			UIevent = UI_EVENT_NONE;
 			texArea = default;
 			listener->OnUIEvent(this, UIevent);

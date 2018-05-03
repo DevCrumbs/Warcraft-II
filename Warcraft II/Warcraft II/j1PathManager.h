@@ -144,6 +144,7 @@ public:
 
 	j1PathFinding* GetCurrentSearch() const;
 	void SetIsWalkabilityChecked(bool isWalkabilityChecked);
+	void SetIsInSameRoomChecked(bool isInSameRoomChecked);
 
 private:
 
@@ -156,6 +157,7 @@ private:
 	PathfindingAlgorithmType pathfindingAlgorithmType = PathfindingAlgorithmType_NoType;
 	j1PathFinding* currentSearch = nullptr; // a pointer to the current search
 	bool isWalkabilityChecked = true;
+	bool isInSameRoomChecked = false;
 
 	// Dijkstra
 	FindActiveTrigger* trigger = nullptr; // a pointer to the FindActiveTrigger class

@@ -183,14 +183,14 @@ void Goal_Think::AddGoal_Wander(uint maxDistance, iPoint startTile, bool isCurrT
 	AddSubgoal(new Goal_Wander(owner, maxDistance, startTile, isCurrTile, minSecondsToChange, maxSecondsToChange, minSecondsUntilNextChange, maxSecondsUntilNextChange, probabilityGoalCompleted));
 }
 
-void Goal_Think::AddGoal_AttackTarget(TargetInfo* targetInfo)
+void Goal_Think::AddGoal_AttackTarget(TargetInfo* targetInfo, bool isStateChanged)
 {
-	AddSubgoal(new Goal_AttackTarget(owner, targetInfo));
+	AddSubgoal(new Goal_AttackTarget(owner, targetInfo, isStateChanged));
 }
 
-void Goal_Think::AddGoal_MoveToPosition(iPoint destinationTile)
+void Goal_Think::AddGoal_MoveToPosition(iPoint destinationTile, bool isStateChanged)
 {
-	AddSubgoal(new Goal_MoveToPosition(owner, destinationTile));
+	AddSubgoal(new Goal_MoveToPosition(owner, destinationTile, isStateChanged));
 }
 
 void Goal_Think::AddGoal_Patrol(iPoint originTile, iPoint destinationTile, bool isLookAround)
@@ -220,7 +220,7 @@ void Goal_Think::AddGoal_LookAround(uint minSecondsToChange, uint maxSecondsToCh
 
 // Goal_AttackTarget ---------------------------------------------------------------------
 
-Goal_AttackTarget::Goal_AttackTarget(DynamicEntity* owner, TargetInfo* targetInfo) :CompositeGoal(owner, GoalType_AttackTarget), targetInfo(targetInfo) {}
+Goal_AttackTarget::Goal_AttackTarget(DynamicEntity* owner, TargetInfo* targetInfo, bool isStateChanged) :CompositeGoal(owner, GoalType_AttackTarget), targetInfo(targetInfo), isStateChanged(isStateChanged) {}
 
 void Goal_AttackTarget::Activate()
 {
@@ -247,7 +247,7 @@ void Goal_AttackTarget::Activate()
 
 	// -----
 
-	AddSubgoal(new Goal_HitTarget(owner, targetInfo));
+	AddSubgoal(new Goal_HitTarget(owner, targetInfo, isStateChanged));
 
 	// If the target is far from the unit, head directly at the target's position
 	if (!targetInfo->isAttackSatisfied) {
@@ -312,13 +312,14 @@ void Goal_AttackTarget::Activate()
 			owner->GetSingleUnit()->SetGoal(targetTile);
 		}
 
-		AddSubgoal(new Goal_MoveToPosition(owner, targetTile));
+		AddSubgoal(new Goal_MoveToPosition(owner, targetTile, isStateChanged));
 	}
 
 	// The target is being attacked by this unit
 	targetInfo->target->AddAttackingUnit(owner);
 
-	owner->SetUnitState(UnitState_AttackTarget);
+	if (isStateChanged)
+		owner->SetUnitState(UnitState_AttackTarget);
 }
 
 GoalStatus Goal_AttackTarget::Process(float dt)
@@ -381,7 +382,8 @@ void Goal_AttackTarget::Terminate()
 
 	targetInfo = nullptr;
 
-	owner->SetUnitState(UnitState_AttackTarget);
+	if (isStateChanged)
+		owner->SetUnitState(UnitState_AttackTarget);
 }
 
 // Goal_Patrol ---------------------------------------------------------------------
@@ -475,6 +477,7 @@ GoalStatus Goal_Wander::Process(float dt)
 
 	// Wander is performed in an infinite loop
 	if (goalStatus == GoalStatus_Completed)
+
 		Activate();
 
 	if (goalStatus == GoalStatus_Failed) {
@@ -742,16 +745,13 @@ void Goal_RescuePrisoner::Terminate()
 // ATOMIC GOALS
 // Goal_MoveToPosition ---------------------------------------------------------------------
 
-Goal_MoveToPosition::Goal_MoveToPosition(DynamicEntity* owner, iPoint destinationTile) :AtomicGoal(owner, GoalType_MoveToPosition), destinationTile(destinationTile) {}
+Goal_MoveToPosition::Goal_MoveToPosition(DynamicEntity* owner, iPoint destinationTile, bool isStateChanged) :AtomicGoal(owner, GoalType_MoveToPosition), destinationTile(destinationTile), isStateChanged(isStateChanged) {}
 
 void Goal_MoveToPosition::Activate()
 {
 	goalStatus = GoalStatus_Active;
 
 	owner->SetHitting(false);
-
-	if (owner->isSelected)
-		LOG("Move to position");
 
 	if (owner->dynamicEntityType != EntityType_GRYPHON_RIDER && owner->dynamicEntityType != EntityType_DRAGON) {
 
@@ -778,11 +778,49 @@ GoalStatus Goal_MoveToPosition::Process(float dt)
 	ActivateIfInactive();
 
 	if (goalStatus == GoalStatus_Failed)
+
 		return goalStatus;
 
 	App->movement->MoveUnit(owner, dt);
 
-	if (owner->GetSingleUnit()->movementState == MovementState_GoalReached) {
+	/*
+	if (owner->isSelected) {
+	
+		switch (owner->GetSingleUnit()->movementState) {
+		
+		case MovementState_WaitForPath:
+			LOG("Wait For Path");
+			break;
+		case MovementState_FollowPath:
+			LOG("Follow Path");
+			break;
+		case MovementState_GoalReached:
+			LOG("Goal Reached");
+			break;
+		case MovementState_IncreaseWaypoint:
+			LOG("Increase Waypoint");
+			break;
+		default:
+			break;
+		}
+	}
+	*/
+
+	if (owner->GetSingleUnit()->movementState == MovementState_WaitForPath) {
+
+		// The unit has changed their goal (because it was not valid) through the GroupMovement module
+		if (owner->GetSingleUnit()->goal != destinationTile)
+
+			destinationTile = owner->GetSingleUnit()->goal;
+	}
+	else if (owner->GetSingleUnit()->movementState == MovementState_GoalReached) {
+
+		// WARNING! movementState == MovementState_GoalReached, but destinationTile is not correct
+		if (owner->GetSingleUnit()->goal != destinationTile) {
+
+			Activate();
+			return goalStatus;
+		}
 
 		if (owner->GetSingleUnit()->group->isShapedGoal) {
 
@@ -802,12 +840,14 @@ void Goal_MoveToPosition::Terminate()
 	owner->GetSingleUnit()->ResetUnitParameters();
 
 	owner->SetIsStill(true);
-	owner->SetUnitState(UnitState_Idle);
+
+	if (isStateChanged)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_HitTarget ---------------------------------------------------------------------
 
-Goal_HitTarget::Goal_HitTarget(DynamicEntity* owner, TargetInfo* targetInfo) :AtomicGoal(owner, GoalType_HitTarget), targetInfo(targetInfo) {}
+Goal_HitTarget::Goal_HitTarget(DynamicEntity* owner, TargetInfo* targetInfo, bool isStateChanged) :AtomicGoal(owner, GoalType_HitTarget), targetInfo(targetInfo), isStateChanged(isStateChanged) {}
 
 void Goal_HitTarget::Activate()
 {
@@ -1106,7 +1146,8 @@ void Goal_HitTarget::Terminate()
 	targetInfo = nullptr;
 	orientation = { 0,0 };
 
-	owner->SetUnitState(UnitState_AttackTarget);
+	if (isStateChanged)
+		owner->SetUnitState(UnitState_AttackTarget);
 }
 
 // Goal_LookAround ---------------------------------------------------------------------
