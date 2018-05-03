@@ -111,7 +111,7 @@ void UILabel::HandleInput()
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED && !App->gui->IsMouseOnUI()) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
 			nextEvent = false;
 			LOG("MOUSE L CLICK START");
 			SetColor(label.pressedColor);
@@ -119,7 +119,7 @@ void UILabel::HandleInput()
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED && !App->gui->IsMouseOnUI()) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
 			nextEvent = false;
 			LOG("MOUSE R CLICK START");
 			SetColor(label.pressedColor);
@@ -145,7 +145,7 @@ void UILabel::HandleInput()
 		break;
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED && !App->gui->IsMouseOnUI()) {
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED) {
 			LOG("MOUSE R CLICK FINISH");
 
 			if (draggable) {
@@ -166,7 +166,7 @@ void UILabel::HandleInput()
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED && !App->gui->IsMouseOnUI()) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED) {
 			LOG("MOUSE L CLICK FINISH");
 			// Uncomment next line and create a new UIEvent if you want to execute a function when mouse button is released
 			//listener->OnUIEvent((UIElement*)this, UIevent);

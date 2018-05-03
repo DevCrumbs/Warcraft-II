@@ -28,7 +28,7 @@
 Dragon::Dragon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const DragonInfo& dragonInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), dragonInfo(dragonInfo)
 {
 	pathPlanner->SetIsWalkabilityChecked(false);
-	pathPlanner->SetIsInSameRoomChecked(true);
+	//pathPlanner->SetIsInSameRoomChecked(true);
 
 	// XML loading
 	/// Animations
@@ -84,6 +84,11 @@ Dragon::Dragon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitIn
 
 	// IA
 	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
+	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
+	// Different behaviors for units on the base and units around the map
+	//if (!App->map->IsOnBase(spawnPos))
+		//brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
 void Dragon::Move(float dt)
@@ -106,7 +111,7 @@ void Dragon::Move(float dt)
 			&& singleUnit->IsFittingTile()
 			&& !isDead) {
 
-			App->audio->PlayFx(App->audio->GetFX().orcDeath, 0); //Dragon death
+			App->audio->PlayFx(App->audio->GetFX().dragonDeath, 0); //Dragon death
 
 			isDead = true;
 			isValid = false;

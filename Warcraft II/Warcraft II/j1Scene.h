@@ -180,6 +180,8 @@ public:
 
 public:
 
+	bool isGoalFromMinimap = false;
+
 	// Walkability map
 	int w = 0, h = 0;
 	uchar* data = NULL;
@@ -236,8 +238,6 @@ public:
 	j1Timer terenasDialogTimer;
 
 	iPoint basePos{ 0,0 };
-
-	UIMinimap* minimap = nullptr;
 
 	list<DynamicEntity*> units;
 	list<GroupSelectedElements> groupElementsList;

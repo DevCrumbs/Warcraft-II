@@ -24,6 +24,7 @@ struct UILabel;
 struct UIImage;
 struct UIButton;
 struct UILifeBar;
+class UIMinimap;
 class Entity;
 
 class StaticEntity;
@@ -239,6 +240,9 @@ private:
 
 	//list<GroupSpawning> toSpawnUnitStats;
 	//list<ToSpawnUnit*> newUnitsToSpawn;
+
+
+	UIMinimap* minimap = nullptr;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
 		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr;

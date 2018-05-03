@@ -340,6 +340,11 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 			return goalStatus;
 		}
 	}
+	else if (!targetInfo->target->GetIsValid()) {
+
+		goalStatus = GoalStatus_Failed;
+		return goalStatus;
+	}
 	else if (subgoals.size() > 0 && subgoals.front()->GetType() == GoalType_MoveToPosition) {
 
 		// The unit was chasing their target, but the attack distance has been suddenly satisfied
@@ -762,6 +767,12 @@ void Goal_MoveToPosition::Activate()
 		}
 	}
 
+	if (owner->GetSingleUnit()->currTile == destinationTile) {
+	
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+
 	if (owner->GetSingleUnit()->goal != destinationTile)
 
 		owner->GetSingleUnit()->SetGoal(destinationTile);
@@ -929,6 +940,11 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
+	else if (!targetInfo->target->GetIsValid()) {
+	
+		goalStatus = GoalStatus_Failed;
+		return goalStatus;
+	}
 	/// The target is no longer within the attack nor sight radius of the unit
 	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied) {
 
@@ -999,7 +1015,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		case EntityType_GRYPHON_RIDER:
 
 			// Flames
-
+			App->audio->PlayFx(App->audio->GetFX().griffonAttack, 0);
 			{
 				GryphonRider* gryphonRider = (GryphonRider*)owner;
 
@@ -1080,7 +1096,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		case EntityType_DRAGON:
 
 			// Flames
-
+			App->audio->PlayFx(App->audio->GetFX().griffonAttack, 0);
 		{
 			Dragon* dragon = (Dragon*)owner;
 
@@ -1142,6 +1158,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 void Goal_HitTarget::Terminate()
 {
 	owner->SetHitting(false);
+	owner->SetIsStill(true);
 
 	targetInfo = nullptr;
 	orientation = { 0,0 };
@@ -1614,7 +1631,7 @@ void Goal_FreePrisoner::Activate()
 	}
 	else if (alleria != nullptr) {
 	
-		if (!alleria->IsUnitRescuingPrisoner()) {
+		if (!alleria->IsUnitRescuingPrisoner() && !alleria->IsRescued()) {
 
 			alleria->SetUnitRescuePrisoner(true);
 			owner->SetUnitRescuePrisoner(true);
@@ -1629,7 +1646,7 @@ void Goal_FreePrisoner::Activate()
 	}
 	else if (turalyon != nullptr) {
 
-		if (!turalyon->IsUnitRescuingPrisoner()) {
+		if (!turalyon->IsUnitRescuingPrisoner() && !turalyon->IsRescued()) {
 
 			turalyon->SetUnitRescuePrisoner(true);
 			owner->SetUnitRescuePrisoner(true);
@@ -1653,6 +1670,7 @@ GoalStatus Goal_FreePrisoner::Process(float dt)
 	ActivateIfInactive();
 
 	if (goalStatus == GoalStatus_Failed)
+
 		return goalStatus;
 
 	/// TODO Sandra: make the prisoner say goodbye or something
@@ -1669,11 +1687,13 @@ void Goal_FreePrisoner::Terminate()
 
 		if (alleria != nullptr) {
 		
+			alleria->SetRescued(true);
 			alleria->SetUnitRescuePrisoner(false);
 			App->player->RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
 		}
 		else if (turalyon != nullptr) {
 		
+			turalyon->SetRescued(true);
 			turalyon->SetUnitRescuePrisoner(false);
 			App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
 		}

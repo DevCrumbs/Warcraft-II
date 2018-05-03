@@ -190,6 +190,10 @@ public:
 	SDL_Color GetColor() const;
 	string GetColorName() const;
 
+	// Valid
+	void SetIsValid(bool isValid);
+	bool GetIsValid() const;
+
 public:
 
 	ENTITY_CATEGORY entityType = EntityCategory_NONE;
@@ -222,6 +226,9 @@ protected:
 	// Selection color
 	SDL_Color color = ColorOlive;
 	string colorName = "Default";
+
+	// Valid
+	bool isValid = true;
 };
 
 #endif //__Entity_H__

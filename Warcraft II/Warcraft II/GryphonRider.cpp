@@ -105,7 +105,7 @@ void GryphonRider::Move(float dt)
 			&& singleUnit->IsFittingTile()
 			&& !isDead) {
 
-			App->audio->PlayFx(App->audio->GetFX().humanDeath, 0); //Gryphon death
+			App->audio->PlayFx(App->audio->GetFX().griffonDeath, 0); //Gryphon death
 
 			isDead = true;
 			isValid = false;
@@ -196,7 +196,6 @@ void GryphonRider::Move(float dt)
 			break;
 
 		case UnitCommand_AttackTarget:
-
 			if (currTarget != nullptr) {
 
 				if (singleUnit->IsFittingTile()) {

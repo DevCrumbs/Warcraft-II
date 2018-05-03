@@ -69,6 +69,7 @@ bool j1Menu::Start()
 	CreateMenu();
 
 	if (!isMouseTextCreated) {
+
 		UICursor_Info mouseInfo;
 		mouseInfo.default = { 243, 525, 28, 33 };
 		mouseInfo.onClick = { 275, 525, 28, 33 };

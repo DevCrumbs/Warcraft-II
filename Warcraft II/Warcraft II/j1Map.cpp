@@ -305,6 +305,13 @@ bool j1Map::UnLoad()
 	collisionLayer = nullptr;
 	aboveLayer = nullptr;
 
+	
+	for (list<list<Entity*>>::iterator iterator = entityGroups.begin(); iterator != entityGroups.end(); ++iterator)
+	{
+		(*iterator).clear();
+	}
+	entityGroups.clear();
+
 	return ret;
 }
 
