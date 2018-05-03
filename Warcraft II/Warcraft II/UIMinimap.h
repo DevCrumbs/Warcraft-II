@@ -39,6 +39,8 @@ public:
 
 	void Update(float dt);
 
+	void Draw() const;
+
 	void HandleInput(float dt);
 
 	iPoint GetMousePos();
@@ -76,9 +78,11 @@ private:
 
 	SDL_Texture* mapTexture = nullptr;
 
+	SDL_Rect textureSize{ 0,0,0,0 };
 
 	mutable list<Entity*> entities;
 
+	iPoint cameraOffset{ 0,0 };
 
 	int maxOffsetX = 0;
 	int maxOffsetY = 0;
