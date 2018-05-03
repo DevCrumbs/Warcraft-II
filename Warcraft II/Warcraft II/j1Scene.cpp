@@ -334,7 +334,6 @@ bool j1Scene::Update(float dt)
 			(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
 	}
 
-
 	// *****UNITS*****
 	/// Units cannot be clicked if a building is being placed or Pause Menu is active
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
@@ -359,6 +358,12 @@ bool j1Scene::Update(float dt)
 
 			if (playerBuilding == nullptr && neutralBuilding == nullptr)
 				App->entities->UnselectAllBuildings();
+
+			Entity* prisonerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
+			if (prisonerUnit != nullptr)
+				prisonerUnit->isSelected = true;
+			else
+				App->entities->UnselectAllPrisoners();
 		}
 
 		int width = mousePos.x - startRectangle.x;
@@ -370,7 +375,6 @@ bool j1Scene::Update(float dt)
 
 			// Draw the rectangle
 			SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
-			//App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
 			App->printer->PrintQuad(mouseRect, { 255,255,255,255 });
 
 			// Select units within the rectangle
@@ -499,10 +503,15 @@ bool j1Scene::Update(float dt)
 					}
 				}
 
-				//Entities to take in acount when the mouse sprite change
+				// Entities to take in account when the mouse sprite changes
 				Entity* playerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
 				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
-				Entity* prisioner = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
+				Entity* prisoner = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
+
+				if (prisoner == nullptr)
+					LOG("NOPRISONER");
+				else
+					LOG("YESPRISONER");
 
 				// Set the cursor texture
 				if (target != nullptr || critter != nullptr || building != nullptr) {
@@ -510,7 +519,7 @@ bool j1Scene::Update(float dt)
 					if (r.x != 374)
 						App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
 				}
-				else if (playerUnit != nullptr || playerBuilding != nullptr || prisioner != nullptr) {
+				else if (playerUnit != nullptr || playerBuilding != nullptr || prisoner != nullptr) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
 					if (r.x != 374)
 					App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
@@ -581,7 +590,7 @@ bool j1Scene::Update(float dt)
 						/// If all units are in the Patrol command or the AttackTarget command, do not set the MoveToPosition command
 						bool isFull = false;
 
-						if (isPatrol == units.size() || target != nullptr || critter != nullptr)
+						if (isPatrol == units.size() || target != nullptr || critter != nullptr || prisoner != nullptr)
 							isFull = true;
 
 						if (!isFull)

@@ -56,3 +56,14 @@ void Turalyon::SetUnitRescuePrisoner(bool isUnitRescuingPrisoner)
 {
 	this->isUnitRescuingPrisoner = isUnitRescuingPrisoner;
 }
+
+
+bool Turalyon::IsRescued() const
+{
+	return isRescued;
+}
+
+void Turalyon::SetRescued(bool isRescued)
+{
+	this->isRescued = isRescued;
+}

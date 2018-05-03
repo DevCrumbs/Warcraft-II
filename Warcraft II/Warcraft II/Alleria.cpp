@@ -56,3 +56,13 @@ void Alleria::SetUnitRescuePrisoner(bool isUnitRescuingPrisoner)
 {
 	this->isUnitRescuingPrisoner = isUnitRescuingPrisoner;
 }
+
+bool Alleria::IsRescued() const 
+{
+	return isRescued;
+}
+
+void Alleria::SetRescued(bool isRescued) 
+{
+	this->isRescued = isRescued;
+}

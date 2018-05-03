@@ -29,12 +29,16 @@ public:
 	bool IsUnitRescuingPrisoner() const;
 	void SetUnitRescuePrisoner(bool isUnitRescuingPrisoner);
 
+	bool IsRescued() const;
+	void SetRescued(bool isRescued);
+
 private:
 
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 	TuralyonInfo turalyonInfo;
 
 	bool isUnitRescuingPrisoner = false;
+	bool isRescued = false;
 };
 
 #endif //__Turalyon_H__

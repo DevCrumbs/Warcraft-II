@@ -161,6 +161,7 @@ public:
 	// Static Entities
 	bool SelectBuilding(StaticEntity* staticEntity);
 	void UnselectAllBuildings();
+	void UnselectAllPrisoners();
 
 	uint DetermineBuildingMaxLife(ENTITY_TYPE buildingType = EntityType_NONE, StaticEntitySize buildingSize = StaticEntitySize_None);
 	uint DetermineBuildingGold(ENTITY_TYPE buildingType = EntityType_NONE, StaticEntitySize buildingSize = StaticEntitySize_None);

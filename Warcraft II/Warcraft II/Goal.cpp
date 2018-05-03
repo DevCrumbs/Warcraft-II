@@ -1624,7 +1624,7 @@ void Goal_FreePrisoner::Activate()
 	}
 	else if (alleria != nullptr) {
 	
-		if (!alleria->IsUnitRescuingPrisoner()) {
+		if (!alleria->IsUnitRescuingPrisoner() && !alleria->IsRescued()) {
 
 			alleria->SetUnitRescuePrisoner(true);
 			owner->SetUnitRescuePrisoner(true);
@@ -1639,7 +1639,7 @@ void Goal_FreePrisoner::Activate()
 	}
 	else if (turalyon != nullptr) {
 
-		if (!turalyon->IsUnitRescuingPrisoner()) {
+		if (!turalyon->IsUnitRescuingPrisoner() && !turalyon->IsRescued()) {
 
 			turalyon->SetUnitRescuePrisoner(true);
 			owner->SetUnitRescuePrisoner(true);
@@ -1680,11 +1680,13 @@ void Goal_FreePrisoner::Terminate()
 
 		if (alleria != nullptr) {
 		
+			alleria->SetRescued(true);
 			alleria->SetUnitRescuePrisoner(false);
 			App->player->RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
 		}
 		else if (turalyon != nullptr) {
 		
+			turalyon->SetRescued(true);
 			turalyon->SetUnitRescuePrisoner(false);
 			App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
 		}
