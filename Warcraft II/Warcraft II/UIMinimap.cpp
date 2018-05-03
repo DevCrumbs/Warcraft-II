@@ -26,7 +26,7 @@ UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j
 	width = info.minimapInfo.w;
 	height = info.minimapInfo.h;
 
-
+	priority = PriorityDraw_FRAMEWORK;
 
 	LoadMap();
 
@@ -77,7 +77,7 @@ void UIMinimap::Update(float dt)
 
 
 	///-----------------	 Draw the map
-	App->render->Blit(mapTexture, offsetX, offsetY, NULL, 0);
+	App->printer->PrintSprite({ offsetX,offsetY }, mapTexture, textArea, PriorityDraw_FRAMEWORK);
 
 	///-----------------	 Draw all entities in the minimap
 	for (list<DynamicEntity*>::iterator iterator = (*activeDynamicEntities).begin(); iterator != (*activeDynamicEntities).end(); ++iterator)
@@ -105,7 +105,7 @@ void UIMinimap::Update(float dt)
 		default:
 			break;
 		}
-		App->render->DrawQuad(rect, color.r, color.g, color.b, color.a, true, false);
+		App->printer->PrintQuad(rect, color, true, false);
 
 	}
 
@@ -134,14 +134,14 @@ void UIMinimap::Update(float dt)
 		default:
 			break;
 		}
-		App->render->DrawQuad(rect, color.r, color.g, color.b, color.a, true, false);
+		App->printer->PrintQuad(rect, color, true, false);
 	}
 
 	///-----------------	 Draw the camera rect
 	SDL_Rect rect{ -camera.x * scaleFactor + offsetX, -camera.y * scaleFactor + offsetY,
 					camera.w * scaleFactor, camera.h * scaleFactor };
 
-	App->render->DrawQuad(rect, 255, 255, 0, 255, false, false);
+	App->printer->PrintQuad(rect, { 255, 255, 0, 255 }, false, false);
 
 	App->render->ResetViewPort();
 
@@ -166,7 +166,7 @@ void UIMinimap::HandleInput(float dt)
 		{
 			iPoint pos = MinimapToMap();
 			SDL_Rect rect{ pos.x,pos.y, 32,32 };
-			App->render->DrawQuad(rect, 255, 255, 255);
+			App->printer->PrintQuad(rect, { 255, 255, 255,255 });
 		}
 	}
 
@@ -286,8 +286,10 @@ bool UIMinimap::LoadMap()
 	}
 	App->tex->UnLoad(tex);
 	
+	textArea = { 0,0, int(App->map->data.width * App->map->data.tileWidth * scaleFactor) , int(App->map->data.height * App->map->data.tileHeight * scaleFactor) };
+
 	///-----------------	Load aux renderer
-	minimapSurface = SDL_CreateRGBSurface(0, App->map->data.width * App->map->data.tileWidth * scaleFactor, App->map->data.height * App->map->data.tileHeight * scaleFactor, 32, 0, 0, 0, 0);
+	minimapSurface = SDL_CreateRGBSurface(0, textArea.w, textArea.h, 32, 0, 0, 0, 0);
 	if (mapSurface == NULL)
 		SDL_Log("SDL_CreateRGBSurface() failed: %s", SDL_GetError());
 
