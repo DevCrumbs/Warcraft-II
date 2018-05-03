@@ -207,7 +207,6 @@ public:
 
 	Room GetEntityRoom(Entity* entity);
 
-
 	// Unload map
 	bool UnLoad();
 
@@ -221,7 +220,6 @@ public:
 
 	TileSet* GetTilesetFromTileId(int id) const;
 
-
 private:
 
 	bool LoadMap();
@@ -233,8 +231,6 @@ private:
 
 	bool LoadObjectGroupDetails(pugi::xml_node& objectGroup_node, ObjectGroup* objectGroup);
 	bool LoadObject(pugi::xml_node& object_node, Object* object);
-
-
 
 public:
 
