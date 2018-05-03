@@ -11,6 +11,7 @@
 #include "j1Scene.h"
 #include "j1PathManager.h"
 #include "Goal.h"
+#include "j1Printer.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -34,13 +35,17 @@ void j1Movement::DebugDraw() const
 
 				SDL_Color col = (*unit)->unit->GetColor();
 
-				if ((*unit)->movementState != MovementState_WaitForPath && (*unit)->nextTile.x > -1 && (*unit)->nextTile.y > -1) {
+				if ((*unit)->movementState != MovementState_WaitForPath && (*unit)->nextTile.x != -1 && (*unit)->nextTile.y != -1) {
 
 					// Raycast a line between the unit and the nextTile
 					iPoint offset = { App->map->data.tileWidth / 2, App->map->data.tileHeight / 2 };
 					iPoint nextPos = App->map->MapToWorld((*unit)->nextTile.x, (*unit)->nextTile.y);
-					App->render->DrawLine((*unit)->unit->GetPos().x + offset.x, (*unit)->unit->GetPos().y + offset.y, nextPos.x + offset.x, nextPos.y + offset.y, 255, 255, 255, 255);
-					App->render->DrawCircle(nextPos.x + offset.x, nextPos.y + offset.y, 10, 255, 255, 255, 255);
+
+					if ((*unit)->nextTile != (*unit)->currTile) {
+
+						App->printer->PrintLine({ (int)(*unit)->unit->GetPos().x + offset.x, (int)(*unit)->unit->GetPos().y + offset.y }, { nextPos.x + offset.x, nextPos.y + offset.y }, ColorWhite, true, Layers_FloorColliders);
+						App->printer->PrintCircle({ nextPos.x + offset.x, nextPos.y + offset.y }, 10, ColorWhite, true, Layers_FloorColliders);
+					}
 
 					// Draw unit's path
 					if (App->scene->debugDrawPath) {
@@ -49,7 +54,7 @@ void j1Movement::DebugDraw() const
 						{
 							iPoint pos = App->map->MapToWorld((*unit)->path.at(i).x, (*unit)->path.at(i).y);
 							SDL_Rect rect = { pos.x, pos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-							App->render->DrawQuad(rect, col.r, col.g, col.b, 50);
+							App->printer->PrintQuad(rect, { col.r,col.g,col.b,50 }, true, true, Layers_FloorColliders);
 						}
 					}
 				}
@@ -57,7 +62,7 @@ void j1Movement::DebugDraw() const
 				// Draw unit's goal
 				iPoint pos = App->map->MapToWorld((*unit)->goal.x, (*unit)->goal.y);
 				SDL_Rect rect = { pos.x, pos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-				App->render->DrawQuad(rect, col.r, col.g, col.b, 200);
+				App->printer->PrintQuad(rect, { col.r,col.g,col.b,200 }, true, true, Layers_FloorColliders);
 			}
 		}
 	}
@@ -72,6 +77,8 @@ bool j1Movement::CleanUp()
 	while (it != unitGroups.end()) {
 
 		delete *it;
+		unitGroups.remove(*it);
+
 		it++;
 	}
 	unitGroups.clear();
@@ -193,7 +200,7 @@ bool j1Movement::RemoveGroup(UnitGroup* unitGroup)
 		delete *it;
 
 		// Remove the group from the list of groups
-		unitGroups.erase(it);
+		unitGroups.remove(*it);
 
 		ret = true;
 	}
@@ -250,17 +257,41 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 		// The unit is still
 		singleUnit->unit->SetIsStill(true);
 
-		// The goal of a unit cannot be the goal of another unit
-		if (!IsValidTile(singleUnit, singleUnit->goal, false, false, true))
+		// The goal of the unit has been invalidated
+		if (singleUnit->isWalkabilityUpdated) {
 
-			singleUnit->isGoalNeeded = true;
+			if (!App->pathfinding->IsWalkable(singleUnit->goal))
+
+				singleUnit->goal = FindClosestValidTile(singleUnit->goal, singleUnit->unit);
+
+			if (singleUnit->goal.x != -1 && singleUnit->goal.y != -1) {
+
+				singleUnit->isWalkabilityUpdated = false;
+				break;
+			}
+
+			// If no valid goal can be found, stop the unit where they are
+			singleUnit->goal = singleUnit->currTile;
+			singleUnit->movementState = MovementState_GoalReached;
+		}
+
+		// The goal of a unit cannot be the goal of another unit
+		if (!IsValidTile(singleUnit, singleUnit->goal, false, false, true)
+			&& singleUnit->goal.x != -1 && singleUnit->goal.y != -1) {
+
+			singleUnit->changedGoal = singleUnit->goal;
+			singleUnit->goal = { -1,-1 };
+
+			singleUnit->isGoalNeeded = true; /// A new goal is needed
+			break;
+		}
 
 		if (singleUnit->isGoalNeeded) {
 
 			// Only one unit at a time can change its goal
 			if (!IsAnyUnitDoingSomething(singleUnit, true)) {
 
-				singleUnit->unit->GetPathPlanner()->RequestDijkstra(singleUnit->goal, FindActiveTrigger::ActiveTriggerType_Goal);
+				singleUnit->unit->GetPathPlanner()->RequestDijkstra(singleUnit->changedGoal, FindActiveTrigger::ActiveTriggerType_Goal);
 
 				singleUnit->isSearching = true; /// The unit is changing its goal
 			}
@@ -275,7 +306,10 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 				singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
 
 				singleUnit->isSearching = false; /// The unit has finished changing its goal
-				singleUnit->isGoalNeeded = false;
+				singleUnit->isGoalNeeded = false; /// A new goal is no longer needed
+
+				if (singleUnit->goal.x == -1 && singleUnit->goal.y == -1)
+					singleUnit->goal = singleUnit->changedGoal;
 			}
 			break;
 		}
@@ -355,7 +389,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 			// ---------------------------------------------------------------------
 
 			// a) The other unit is hitting and won't respond to any movement order
-			if (singleUnit->waitUnit->unit->IsHitting()) {
+			if (singleUnit->waitUnit->unit->IsHitting() || singleUnit->waitUnit->unit->IsUnitGatheringGold() 
+				|| singleUnit->waitUnit->unit->IsUnitHealingRunestone() || singleUnit->waitUnit->unit->IsUnitRescuingPrisoner()) {
 
 				// Current unit must react to the collision
 				// Current unit moves
@@ -405,7 +440,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 						singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
 						singleUnit->isSearching = false; /// The unit has finished changing its nextTile
 
-														 // Always check if the path found is correct
+						// Always check if the path found is correct
 						if (!IsNeighborTile(singleUnit->currTile, path.front()) && singleUnit->currTile != path.front())
 							break;
 
@@ -416,8 +451,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 						//singleUnit->path.erase(singleUnit->path.begin());
 						singleUnit->movementState = MovementState_IncreaseWaypoint;
 
-						if (singleUnit->unit->isSelected)
-							LOG("%s: MOVED AWAY %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
+						//if (singleUnit->unit->isSelected)
+							//LOG("%s: MOVED AWAY %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
 
 						/// COLLISION RESOLVED
 						//if (singleUnit->coll == CollisionType_TowardsCell) {
@@ -437,8 +472,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 					// If the unit cannot change its nextTile, ask the waitUnit to move
 					singleUnit->reversePriority = true;
 
-					if (singleUnit->unit->isSelected)
-						LOG("%s: reversed its priority", singleUnit->waitUnit->unit->GetColorName().data());
+					//if (singleUnit->unit->isSelected)
+						//LOG("%s: reversed its priority", singleUnit->waitUnit->unit->GetColorName().data());
 
 					break;
 				}
@@ -447,9 +482,6 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 			// b) The waitUnit is still on its goal
 			if (singleUnit->nextTile == singleUnit->waitUnit->goal && singleUnit->waitUnit->currTile == singleUnit->waitUnit->goal) {
-
-				// Wake up the unit (it may not be in the UnitState_Walk state)
-				singleUnit->waitUnit->WakeUp();
 
 				// The unit with the higher priority politely asks the other unit to move
 				if ((singleUnit->unit->GetPriority() >= singleUnit->waitUnit->unit->GetPriority() || singleUnit->reversePriority)) {
@@ -473,8 +505,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 							singleUnit->waitUnit->isSearching = false;
 
-							if (singleUnit->unit->isSelected)
-								LOG("%s: MOVED AWAY %s", singleUnit->unit->GetColorName().data(), singleUnit->waitUnit->unit->GetColorName().data());
+							//if (singleUnit->unit->isSelected)
+								//LOG("%s: MOVED AWAY %s", singleUnit->unit->GetColorName().data(), singleUnit->waitUnit->unit->GetColorName().data());
 
 							/// COLLISION RESOLVED
 							//if (singleUnit->coll == CollisionType_TowardsCell) {
@@ -536,7 +568,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 							singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
 							singleUnit->isSearching = false; /// The unit has finished changing its nextTile
 
-															 // Always check if the path found is correct
+							// Always check if the path found is correct
 							if (!IsNeighborTile(singleUnit->currTile, path.front()) && singleUnit->currTile != path.front())
 								break;
 
@@ -547,8 +579,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 							//singleUnit->path.erase(singleUnit->path.begin());
 							singleUnit->movementState = MovementState_IncreaseWaypoint;
 
-							if (singleUnit->unit->isSelected)
-								LOG("%s: MOVED AWAY %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
+							//if (singleUnit->unit->isSelected)
+								//LOG("%s: MOVED AWAY %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
 
 							/// COLLISION RESOLVED
 							singleUnit->ResetUnitCollisionParameters();
@@ -562,8 +594,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 						// If the unit cannot change its nextTile, ask the waitUnit to move
 						singleUnit->reversePriority = true;
 
-						if (singleUnit->unit->isSelected)
-							LOG("%s: reversed its priority", singleUnit->waitUnit->unit->GetColorName().data());
+						//if (singleUnit->unit->isSelected)
+							//LOG("%s: reversed its priority", singleUnit->waitUnit->unit->GetColorName().data());
 
 						break;
 					}
@@ -582,8 +614,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 					singleUnit->ResetUnitCollisionParameters();
 
-					if (singleUnit->unit->isSelected)
-						LOG("%s: RESOLVED ITS CELL", singleUnit->unit->GetColorName().data());
+					//if (singleUnit->unit->isSelected)
+						//LOG("%s: RESOLVED ITS CELL", singleUnit->unit->GetColorName().data());
 
 					break;
 				}
@@ -595,8 +627,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 					singleUnit->ResetUnitCollisionParameters();
 
-					if (singleUnit->unit->isSelected)
-						LOG("%s: RESOLVED SAME CELL", singleUnit->unit->GetColorName().data());
+					//if (singleUnit->unit->isSelected)
+						//LOG("%s: RESOLVED SAME CELL", singleUnit->unit->GetColorName().data());
 
 					break;
 				}
@@ -608,8 +640,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 					singleUnit->ResetUnitCollisionParameters();
 
-					if (singleUnit->unit->isSelected)
-						LOG("%s: RESOLVED CROSSING", singleUnit->unit->GetColorName().data());
+					//if (singleUnit->unit->isSelected)
+						//LOG("%s: RESOLVED CROSSING", singleUnit->unit->GetColorName().data());
 
 					break;
 				}
@@ -662,7 +694,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 						singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
 						singleUnit->isSearching = false; /// The unit has finished changing its nextTile
 
-														 // Always check if the path found is correct
+						// Always check if the path found is correct
 						if (!IsNeighborTile(singleUnit->currTile, path.front()) && singleUnit->currTile != path.front())
 							break;
 
@@ -673,8 +705,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 						//singleUnit->path.erase(singleUnit->path.begin());
 						singleUnit->movementState = MovementState_IncreaseWaypoint;
 
-						if (singleUnit->unit->isSelected)
-							LOG("%s: MOVED AWAY TOWARDS %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
+						//if (singleUnit->unit->isSelected)
+							//LOG("%s: MOVED AWAY TOWARDS %s", singleUnit->waitUnit->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
 
 						/// COLLISION RESOLVED
 						//if (singleUnit->waitUnit->coll == CollisionType_NoCollision)
@@ -691,8 +723,8 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 					// If the unit cannot change its nextTile, change the collision with the waitUnit
 					singleUnit->reversePriority = true;
 
-					if (singleUnit->unit->isSelected)
-						LOG("%s: reversed its priority TOWARDS", singleUnit->waitUnit->unit->GetColorName().data());
+					//if (singleUnit->unit->isSelected)
+						//LOG("%s: reversed its priority TOWARDS", singleUnit->waitUnit->unit->GetColorName().data());
 				}
 				break;
 			}
@@ -722,6 +754,13 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 				// Update the unit's currTile with the nextTile
 				singleUnit->currTile = singleUnit->nextTile;
+
+				// The walkability map has been updated
+				if (singleUnit->isWalkabilityUpdated) {
+
+					singleUnit->movementState = MovementState_WaitForPath;
+					break;
+				}
 
 				// Set the unit's movement state to IncreaseWaypoint
 				singleUnit->movementState = MovementState_IncreaseWaypoint;
@@ -796,6 +835,24 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 			if ((*units) != singleUnit) {
 
+				bool isCheckingCollision = false;
+
+				// Gryphon Riders and Dragons only check collision with other Gryphon Riders and Dragons
+				if (singleUnit->unit->dynamicEntityType == EntityType_GRYPHON_RIDER || singleUnit->unit->dynamicEntityType == EntityType_DRAGON) {
+					if ((*units)->unit->dynamicEntityType == EntityType_GRYPHON_RIDER || (*units)->unit->dynamicEntityType == EntityType_DRAGON)
+						// CHECK COLLISION!
+						isCheckingCollision = true;
+				}
+				else {
+					// The rest of units don't check collision with Gryphon Riders nor Dragons
+					if ((*units)->unit->dynamicEntityType != EntityType_GRYPHON_RIDER || (*units)->unit->dynamicEntityType != EntityType_DRAGON)
+						// CHECK COLLISION!
+						isCheckingCollision = true;
+				}
+
+				if (!isCheckingCollision)
+					continue;
+
 				// TOWARDS COLLISION
 				// Check if two units would reach the tile of each other. Make sure that the collision would be frontal!
 				/// The unit with the lower priority must deal with the collision
@@ -814,7 +871,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 								(*units)->SetCollisionParameters(CollisionType_TowardsCell, singleUnit, (*units)->nextTile);
 								//singleUnit->wait = true;
 
-								LOG("%s: TOWARDS with %s", (*units)->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
+								//LOG("%s: TOWARDS with %s", (*units)->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
 							}
 						}
 						else {
@@ -827,7 +884,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 								singleUnit->SetCollisionParameters(CollisionType_TowardsCell, *units, singleUnit->nextTile);
 								//(*units)->wait = true;
 
-								LOG("%s: TOWARDS with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
+								//LOG("%s: TOWARDS with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
 							}
 						}
 					}
@@ -849,8 +906,8 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 							singleUnit->coll = CollisionType_ItsCell;
 							singleUnit->wait = true;
 
-							if (singleUnit->unit->isSelected)
-								LOG("%s: ITS CELL with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
+							//if (singleUnit->unit->isSelected)
+								//LOG("%s: ITS CELL with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
 						}
 					}
 
@@ -886,8 +943,8 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 								singleUnit->coll = CollisionType_SameCell;
 								singleUnit->wait = true;
 
-								if (singleUnit->unit->isSelected)
-									LOG("%s: SAME CELL with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
+								//if (singleUnit->unit->isSelected)
+									//LOG("%s: SAME CELL with %s", singleUnit->unit->GetColorName().data(), (*units)->unit->GetColorName().data());
 							}
 						}
 						else {
@@ -898,8 +955,8 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 							(*units)->coll = CollisionType_SameCell;
 							(*units)->wait = true;
 
-							if ((*units)->unit->isSelected)
-								LOG("%s: SAME CELL with %s", (*units)->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
+							//if ((*units)->unit->isSelected)
+								//LOG("%s: SAME CELL with %s", (*units)->unit->GetColorName().data(), singleUnit->unit->GetColorName().data());
 						}
 					}
 
@@ -947,7 +1004,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										singleUnit->SetCollisionParameters(CollisionType_DiagonalCrossing, *units, myUp);
 
-										LOG("%s: Up CROSSING", singleUnit->unit->GetColorName().data());
+										//LOG("%s: Up CROSSING", singleUnit->unit->GetColorName().data());
 									}
 								}
 								else {
@@ -956,7 +1013,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										(*units)->SetCollisionParameters(CollisionType_DiagonalCrossing, singleUnit, up);
 
-										LOG("%s: Up CROSSING", (*units)->unit->GetColorName().data());
+										//LOG("%s: Up CROSSING", (*units)->unit->GetColorName().data());
 									}
 								}
 							}
@@ -974,7 +1031,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										singleUnit->SetCollisionParameters(CollisionType_DiagonalCrossing, *units, myDown);
 
-										LOG("%s: Down CROSSING", singleUnit->unit->GetColorName().data());
+										//LOG("%s: Down CROSSING", singleUnit->unit->GetColorName().data());
 									}
 								}
 								else {
@@ -983,7 +1040,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										(*units)->SetCollisionParameters(CollisionType_DiagonalCrossing, singleUnit, down);
 
-										LOG("%s: Down CROSSING", (*units)->unit->GetColorName().data());
+										//LOG("%s: Down CROSSING", (*units)->unit->GetColorName().data());
 									}
 								}
 							}
@@ -1001,7 +1058,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										singleUnit->SetCollisionParameters(CollisionType_DiagonalCrossing, *units, myLeft);
 
-										LOG("%s: Left CROSSING", singleUnit->unit->GetColorName().data());
+										//LOG("%s: Left CROSSING", singleUnit->unit->GetColorName().data());
 									}
 								}
 								else {
@@ -1010,7 +1067,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										(*units)->SetCollisionParameters(CollisionType_DiagonalCrossing, singleUnit, left);
 
-										LOG("%s: Left CROSSING", (*units)->unit->GetColorName().data());
+										//LOG("%s: Left CROSSING", (*units)->unit->GetColorName().data());
 									}
 								}
 							}
@@ -1028,7 +1085,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										singleUnit->SetCollisionParameters(CollisionType_DiagonalCrossing, *units, myRight);
 
-										LOG("%s: Right CROSSING", singleUnit->unit->GetColorName().data());
+										//LOG("%s: Right CROSSING", singleUnit->unit->GetColorName().data());
 									}
 								}
 								else {
@@ -1037,7 +1094,7 @@ void j1Movement::CheckForFutureCollision(SingleUnit* singleUnit) const
 
 										(*units)->SetCollisionParameters(CollisionType_DiagonalCrossing, singleUnit, right);
 
-										LOG("%s: Right CROSSING", (*units)->unit->GetColorName().data());
+										//LOG("%s: Right CROSSING", (*units)->unit->GetColorName().data());
 									}
 								}
 							}
@@ -1217,7 +1274,7 @@ iPoint j1Movement::FindNewValidTile(SingleUnit* singleUnit, bool checkOnlyFront)
 		curr = queue.top();
 		queue.pop();
 
-		if (singleUnit->unit->GetNavgraph()->IsWalkable(curr.point) && IsValidTile(singleUnit, curr.point, true, true))
+		if (App->pathfinding->IsWalkable(curr.point) && IsValidTile(singleUnit, curr.point, true, true))
 			return curr.point;
 	}
 
@@ -1290,7 +1347,7 @@ bool j1Movement::IsOppositeDirection(SingleUnit* singleUnitA, SingleUnit* single
 	}
 }
 
-bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor)
+bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor) const
 {
 	iPoint neighbors[8] = { { -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 },{ -1,-1 } };
 
@@ -1310,6 +1367,140 @@ bool j1Movement::IsNeighborTile(iPoint tile, iPoint neighbor)
 	}
 
 	return false;
+}
+
+// Returns the closest walkable and valid neighbor of the tile passed as an argument
+iPoint j1Movement::FindClosestValidTile(iPoint tile, DynamicEntity* unit) const
+{
+	// No unit: normal queue
+	if (unit == nullptr) {
+
+		// Perform a BFS
+		queue<iPoint> queue;
+		list<iPoint> visited;
+
+		iPoint curr = tile;
+		queue.push(curr);
+
+		while (queue.size() > 0) {
+
+			curr = queue.front();
+			queue.pop();
+
+			if (!App->entities->IsEntityOnTile(curr) && App->pathfinding->IsWalkable(curr))
+				return curr;
+
+			iPoint neighbors[8];
+			neighbors[0].create(curr.x + 1, curr.y + 0);
+			neighbors[1].create(curr.x + 0, curr.y + 1);
+			neighbors[2].create(curr.x - 1, curr.y + 0);
+			neighbors[3].create(curr.x + 0, curr.y - 1);
+			neighbors[4].create(curr.x + 1, curr.y + 1);
+			neighbors[5].create(curr.x + 1, curr.y - 1);
+			neighbors[6].create(curr.x - 1, curr.y + 1);
+			neighbors[7].create(curr.x - 1, curr.y - 1);
+
+			for (uint i = 0; i < 8; ++i)
+			{
+				if (App->pathfinding->IsWalkable(neighbors[i])) {
+
+					if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+						queue.push(neighbors[i]);
+						visited.push_back(neighbors[i]);
+					}
+				}
+			}
+		}
+	}
+	// Unit: priority queue (searches for the tile closest to the unit)
+	else {
+
+		priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> queue;
+		list<iPoint> visited;
+
+		iPointPriority curr;
+		curr.point = tile;
+		curr.priority = tile.DistanceManhattan(unit->GetSingleUnit()->currTile);
+		queue.push(curr);
+
+		while (queue.size() > 0) {
+
+			curr = queue.top();
+			queue.pop();
+
+			if (!App->entities->IsEntityOnTile(curr.point) && App->pathfinding->IsWalkable(curr.point))
+				return curr.point;
+
+			iPointPriority neighbors[8];
+			neighbors[0].point.create(curr.point.x + 1, curr.point.y + 0);
+			neighbors[0].priority = neighbors[0].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[1].point.create(curr.point.x + 0, curr.point.y + 1);
+			neighbors[1].priority = neighbors[1].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[2].point.create(curr.point.x - 1, curr.point.y + 0);
+			neighbors[2].priority = neighbors[2].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[3].point.create(curr.point.x + 0, curr.point.y - 1);
+			neighbors[3].priority = neighbors[3].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[4].point.create(curr.point.x + 1, curr.point.y + 1);
+			neighbors[4].priority = neighbors[4].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[5].point.create(curr.point.x + 1, curr.point.y - 1);
+			neighbors[5].priority = neighbors[5].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[6].point.create(curr.point.x - 1, curr.point.y + 1);
+			neighbors[6].priority = neighbors[6].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+			neighbors[7].point.create(curr.point.x - 1, curr.point.y - 1);
+			neighbors[7].priority = neighbors[7].point.DistanceManhattan(unit->GetSingleUnit()->currTile);
+
+			for (uint i = 0; i < 8; ++i)
+			{
+				if (App->pathfinding->IsWalkable(neighbors[i].point)) {
+
+					if (find(visited.begin(), visited.end(), neighbors[i].point) == visited.end()) {
+
+						queue.push(neighbors[i]);
+						visited.push_back(neighbors[i].point);
+					}
+				}
+			}
+		}
+	}
+
+	return { -1,-1 };
+}
+
+void j1Movement::UpdateUnitsWalkability(vector<iPoint> updatedTiles) const
+{
+	if (updatedTiles.size() == 0)
+		return;
+
+	list<UnitGroup*>::const_iterator groups;
+	list<SingleUnit*>::const_iterator units;
+
+	for (groups = unitGroups.begin(); groups != unitGroups.end(); ++groups) {
+		for (units = (*groups)->units.begin(); units != (*groups)->units.end(); ++units) {
+
+			// If a path of a unit contains an updated tile, request a new path
+			if ((*units)->path.size() > 0) {
+
+				bool isUpdated = false;
+
+				for (uint i = 0; i < (*units)->path.size(); ++i) {
+
+					for (uint j = 0; j < updatedTiles.size(); ++j) {
+
+						if ((*units)->path[i] == updatedTiles[j]) {
+						
+							isUpdated = true;
+							(*units)->isWalkabilityUpdated = true;
+						}
+						if (isUpdated)
+							break;
+					}
+					if (isUpdated)
+						break;
+				}
+			}
+		}
+	}
 }
 
 // UnitGroup struct ---------------------------------------------------------------------------------
@@ -1340,16 +1531,19 @@ bool UnitGroup::AddUnit(SingleUnit* singleUnit)
 {
 	bool ret = false;
 
-	ret = IsUnitInGroup(singleUnit);
+	if(singleUnit != nullptr) {
 
-	// If the unit is not in the group, add it
-	if (!ret) {
+		ret = IsUnitInGroup(singleUnit);
 
-		singleUnit->group = this;
+		// If the unit is not in the group, add it
+		if (!ret) {
 
-		units.push_back(singleUnit);
+			singleUnit->group = this;
 
-		ret = true;
+			units.push_back(singleUnit);
+
+			ret = true;
+		}
 	}
 
 	return ret;
@@ -1396,11 +1590,20 @@ uint UnitGroup::GetSize() const
 }
 
 // Sets the destination tile (goal) of the group
-bool UnitGroup::SetGoal(iPoint goal)
+bool UnitGroup::SetGoal(iPoint goal, bool isWalkabilityChecked)
 {
 	bool ret = false;
 
-	if (App->pathfinding->IsWalkable(goal)) {
+	bool isValid = false;
+
+	if (isWalkabilityChecked) {
+		if (App->pathfinding->IsWalkable(goal))
+			isValid = true;
+	}
+	else
+		isValid = true;
+
+	if (isValid) {
 
 		this->goal = goal;
 		isShapedGoal = false;
@@ -1430,7 +1633,7 @@ iPoint UnitGroup::GetGoal() const
 	return goal;
 }
 
-bool UnitGroup::DrawShapedGoal(iPoint mouseTile)
+bool UnitGroup::DrawShapedGoal(iPoint mouseTile, bool isWalkabilityChecked)
 {
 	bool ret = false;
 
@@ -1444,29 +1647,61 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile)
 
 				// Under the mouseTile there cannot be units nor buildings
 				// mouseTile must be walkable
-				if (!App->entities->IsEntityOnTile(mouseTile) && App->pathfinding->IsWalkable(mouseTile)) {
+				if (isWalkabilityChecked) {
 
-					vector<iPoint>::iterator it = find(shapedGoal.begin(), shapedGoal.end(), mouseTile);
+					if (!App->entities->IsEntityOnTile(mouseTile) && App->pathfinding->IsWalkable(mouseTile)) {
 
-					if (it != shapedGoal.end())
+						vector<iPoint>::iterator it = find(shapedGoal.begin(), shapedGoal.end(), mouseTile);
 
-						// Remove the goal tiles until reaching mouseTile
-						shapedGoal.erase(it, shapedGoal.end());
+						if (it != shapedGoal.end())
 
-					else if (it == shapedGoal.end())
+							// Remove the goal tiles until reaching mouseTile
+							shapedGoal.erase(it, shapedGoal.end());
 
-						// Push the mouseTile
-						if (shapedGoal.size() < units.size())
-							shapedGoal.push_back(mouseTile);
+						else if (it == shapedGoal.end())
+
+							// Push the mouseTile
+							if (shapedGoal.size() < units.size())
+								shapedGoal.push_back(mouseTile);
+					}
+					else {
+
+						// Draw the invalid goal
+						SDL_Color col = ColorRed;
+
+						iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+						const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+						//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+						App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
+					}
 				}
 				else {
+				
+					if (!App->entities->IsEntityOnTile(mouseTile)) {
 
-					// Draw the invalid goal
-					SDL_Color col = ColorRed;
+						vector<iPoint>::iterator it = find(shapedGoal.begin(), shapedGoal.end(), mouseTile);
 
-					iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-					const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-					App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+						if (it != shapedGoal.end())
+
+							// Remove the goal tiles until reaching mouseTile
+							shapedGoal.erase(it, shapedGoal.end());
+
+						else if (it == shapedGoal.end())
+
+							// Push the mouseTile
+							if (shapedGoal.size() < units.size())
+								shapedGoal.push_back(mouseTile);
+					}
+					else {
+
+						// Draw the invalid goal
+						SDL_Color col = ColorRed;
+
+						iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+						const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+						//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+						App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
+					}
 				}
 			}
 			else if (find(shapedGoal.begin(), shapedGoal.end(), mouseTile) != shapedGoal.end()
@@ -1478,8 +1713,17 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile)
 		}
 		else {
 
-			if (!App->entities->IsEntityOnTile(mouseTile) && App->pathfinding->IsWalkable(mouseTile))
-				shapedGoal.push_back(mouseTile);
+			if (!App->entities->IsEntityOnTile(mouseTile)) {
+
+				if (isWalkabilityChecked) {
+
+					if (App->pathfinding->IsWalkable(mouseTile))
+
+						shapedGoal.push_back(mouseTile);
+				}
+				else
+					shapedGoal.push_back(mouseTile);		
+			}
 		}
 	}
 
@@ -1504,7 +1748,8 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile)
 		for (uint i = 0; i < shapedGoal.size(); ++i) {
 			iPoint goalTilePos = App->map->MapToWorld(shapedGoal[i].x, shapedGoal[i].y);
 			const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-			App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+			//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+			App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
 		}
 	}
 
@@ -1573,6 +1818,7 @@ SingleUnit::SingleUnit(DynamicEntity* unit, UnitGroup* group) :unit(unit), group
 SingleUnit::~SingleUnit()
 {
 	group->RemoveUnit(this);
+
 	group = nullptr;
 	unit = nullptr;
 	waitUnit = nullptr;
@@ -1613,37 +1859,12 @@ bool SingleUnit::IsTileReached(iPoint nextPos, fPoint endPos) const
 	return ret;
 }
 
-// Resets the parameters of the unit (general info)
-void SingleUnit::ResetUnitParameters()
+// Returns true if the unit is fitting a tile
+bool SingleUnit::IsFittingTile() const
 {
-	isGoalNeeded = false;
+	iPoint currTilePos = App->map->MapToWorld(currTile.x, currTile.y);
 
-	wakeUp = false;
-	nextTile = { -1,-1 };
-
-	isSearching = false;
-	unit->GetPathPlanner()->SetSearchRequested(false);
-}
-
-// Resets the collision parameters of the unit
-void SingleUnit::ResetUnitCollisionParameters()
-{
-	coll = CollisionType_NoCollision;
-	waitUnit = nullptr;
-	waitTile = { -1,-1 };
-	wait = false;
-
-	reversePriority = false;
-}
-
-// When detected a collision, to set the collision parameters of the unit
-void SingleUnit::SetCollisionParameters(CollisionType collisionType, SingleUnit* waitUnit, iPoint waitTile)
-{
-	coll = collisionType;
-
-	wait = true;
-	this->waitUnit = waitUnit;
-	this->waitTile = waitTile;
+	return (int)unit->GetPos().x == currTilePos.x && (int)unit->GetPos().y == currTilePos.y;
 }
 
 // Prepares the unit for its next movement cycle
@@ -1653,35 +1874,74 @@ bool SingleUnit::GetReadyForNewMove()
 
 	if (IsFittingTile()) {
 
+		// Resets the movement information of the unit
 		ResetUnitParameters();
 
-		unit->GetPathPlanner()->SetSearchRequested(false);
-		isSearching = false;
+		// Resets the collision information of the unit
+		ResetUnitCollisionParameters();
+
+		// -----
 
 		movementState = MovementState_WaitForPath;
 
-		isGoalChanged = false;
-
+		if (unit->isSelected)
+			LOG("GetReady!");
 		ret = true;
 	}
 
 	return ret;
 }
 
-// Sets the state of the unit to UnitState_Walk
-void SingleUnit::WakeUp()
+// Resets the parameters of the unit (general info)
+void SingleUnit::ResetUnitParameters(bool isGoalReset)
 {
-	if (!wakeUp)
-		wakeUp = true;
+	path.clear();
+	nextTile = { -1,-1 };
+
+	isGoalNeeded = false;
+	isGoalChanged = false;
+
+	unit->GetPathPlanner()->SetSearchRequested(false);
+	unit->GetPathPlanner()->SetSearchCompleted(false);
+	App->pathmanager->UnRegister(unit->GetPathPlanner());
+
+	isSearching = false;
+
+	if (isGoalReset) {
+	
+		goal = { -1,-1 };
+		shapedGoal = { -1,-1 };
+		changedGoal = { -1,-1 };
+	}
+
+	// Walkability map
+	isWalkabilityUpdated = false;
 }
 
-bool SingleUnit::IsFittingTile() const
+// Resets the collision parameters of the unit
+void SingleUnit::ResetUnitCollisionParameters()
 {
-	iPoint currTilePos = App->map->MapToWorld(currTile.x, currTile.y);
+	reversePriority = false;
 
-	return (int)unit->GetPos().x == currTilePos.x && (int)unit->GetPos().y == currTilePos.y;
+	wait = false;
+
+	waitTile = { -1,-1 };
+	waitUnit = nullptr;
+	coll = CollisionType_NoCollision;
 }
 
+// When detected a collision, to set the collision parameters of the unit
+void SingleUnit::SetCollisionParameters(CollisionType collisionType, SingleUnit* waitUnit, iPoint waitTile)
+{
+	coll = collisionType;
+
+	wait = true;
+
+	this->waitTile = waitTile;
+	this->waitUnit = waitUnit;
+}
+
+// To set the goal tile of the unit
 void SingleUnit::SetGoal(iPoint goal)
 {
 	this->goal = goal;

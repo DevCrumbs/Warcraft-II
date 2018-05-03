@@ -94,7 +94,7 @@ bool j1Render::PostUpdate()
 
 // Called before quitting
 bool j1Render::CleanUp()
-{
+{	
 	LOG("Destroying SDL render");
 	SDL_DestroyRenderer(renderer);
 	return true;
@@ -259,8 +259,16 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 
 	for (uint i = 0; i < 360; ++i)
 	{
-		points[i].x = (int)(x + radius * cos(i * factor));
-		points[i].y = (int)(y + radius * sin(i * factor));
+		if (useCamera) {
+
+			points[i].x = (int)(x * scale + camera.x + radius * cos(i * factor));
+			points[i].y = (int)(y * scale + camera.y + radius * sin(i * factor));
+		}
+		else {
+
+			points[i].x = (int)(x + radius * cos(i * factor));
+			points[i].y = (int)(y + radius * sin(i * factor));
+		}
 	}
 
 	result = SDL_RenderDrawPoints(renderer, points, 360);
@@ -278,4 +286,19 @@ bool j1Render::IsInScreen(const SDL_Rect& item) const
 {
 	return (-camera.x < item.x + item.w && -camera.x + camera.w > item.x && -camera.y < item.y + item.h && camera.h + -camera.y > item.y);
 }
+
+bool j1Render::IsInScreen(const iPoint& item) const
+{
+	SDL_Rect itemRect{ item.x,item.y,1,1 };
+
+	return IsInScreen(itemRect);
+}
+
+bool j1Render::IsInScreen(const fPoint& item) const
+{
+	SDL_Rect itemRect{ item.x,item.y,1,1 };
+
+	return IsInScreen(itemRect);
+}
+
 

@@ -14,6 +14,7 @@
 #include "Goal.h"
 #include "j1Audio.h"
 #include "j1Particles.h"
+#include "j1Printer.h"
 
 #include "UILifeBar.h"
 
@@ -49,7 +50,14 @@ ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	this->elvenArcherInfo.deathUp = info.deathUp;
 	this->elvenArcherInfo.deathDown = info.deathDown;
 
+	this->size = this->unitInfo.size;
+	offsetSize = this->unitInfo.offsetSize;
+
 	LoadAnimationsSpeed();
+
+	// Set the color of the entity
+	color = ColorYellow;
+	colorName = "YellowArcher";
 
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
@@ -72,8 +80,6 @@ ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, co
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
-
-	auxIsSelected = isSelected;
 }
 
 void ElvenArcher::Move(float dt)
@@ -96,15 +102,23 @@ void ElvenArcher::Move(float dt)
 			&& singleUnit->IsFittingTile()
 			&& !isDead) {
 
-			App->audio->PlayFx(12, 0);
+			App->audio->PlayFx(App->audio->GetFX().humanDeath, 0);
 
 			isDead = true;
+			isValid = false;
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
+			brain->RemoveAllSubgoals();
+
+			unitState = UnitState_NoState;
+
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
+
+			// Remove any path request
+			App->pathmanager->UnRegister(pathPlanner);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
@@ -115,20 +129,21 @@ void ElvenArcher::Move(float dt)
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
 
+			// Hide life bar Will remove in destructor
+			if (!App->gui->isGuiCleanUp) {
+
+				if (lifeBar != nullptr)
+
+					lifeBar->isActive = false;
+			}
+
+
 			// If the player dies, remove all their goals
-			unitCommand = UnitCommand_Stop;
+			//unitCommand = UnitCommand_Stop;
 		}
 	}
 
-	if (!isDead) {
-
-		if (auxIsSelected != isSelected) {
-
-			auxIsSelected = isSelected;
-
-			if (isSelected)
-				App->audio->PlayFx(19, 0);
-		}
+	if (!isDead && isValid) {
 
 		// PROCESS THE COMMANDS
 		switch (unitCommand) {
@@ -152,8 +167,6 @@ void ElvenArcher::Move(float dt)
 
 				if (singleUnit->IsFittingTile()) {
 
-					App->audio->PlayFx(17, 0);
-
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);
 
@@ -169,11 +182,14 @@ void ElvenArcher::Move(float dt)
 			// The goal of the unit has been changed manually (to patrol)
 			if (singleUnit->isGoalChanged) {
 
-				brain->RemoveAllSubgoals();
-				brain->AddGoal_Patrol(singleUnit->currTile, singleUnit->goal);
+				if (singleUnit->IsFittingTile()) {
 
-				unitState = UnitState_Patrol;
-				unitCommand = UnitCommand_NoCommand;
+					brain->RemoveAllSubgoals();
+					brain->AddGoal_Patrol(singleUnit->currTile, singleUnit->goal);
+
+					unitState = UnitState_Patrol;
+					unitCommand = UnitCommand_NoCommand;
+				}
 			}
 
 			break;
@@ -183,12 +199,6 @@ void ElvenArcher::Move(float dt)
 			if (currTarget != nullptr) {
 
 				if (singleUnit->IsFittingTile()) {
-
-					if (particle != nullptr) {
-
-						particle->isRemove = true;
-						particle = nullptr;
-					}
 
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_AttackTarget(currTarget);
@@ -200,110 +210,72 @@ void ElvenArcher::Move(float dt)
 
 			break;
 
+		case UnitCommand_GatherGold:
+
+			if (goldMine != nullptr) {
+
+				if (goldMine->buildingState == BuildingState_Normal) {
+
+					if (singleUnit->IsFittingTile()) {
+
+						brain->RemoveAllSubgoals();
+						brain->AddGoal_GatherGold(goldMine);
+
+						unitState = UnitState_GatherGold;
+						unitCommand = UnitCommand_NoCommand;
+					}
+				}
+			}
+
+			break;
+
+		case UnitCommand_HealRunestone:
+
+			if (runestone != nullptr) {
+
+				if (runestone->buildingState == BuildingState_Normal) {
+
+					if (singleUnit->IsFittingTile()) {
+
+						brain->RemoveAllSubgoals();
+						brain->AddGoal_HealRunestone(runestone);
+
+						unitState = UnitState_HealRunestone;
+						unitCommand = UnitCommand_NoCommand;
+					}
+				}
+			}
+
+			break;
+
+		case UnitCommand_RescuePrisoner:
+
+			if (prisoner != nullptr) {
+
+				if (singleUnit->IsFittingTile()) {
+
+					brain->RemoveAllSubgoals();
+					brain->AddGoal_RescuePrisoner(prisoner);
+
+					unitState = UnitState_RescuePrisoner;
+					unitCommand = UnitCommand_NoCommand;
+				}
+			}
+
+			break;
+
 		case UnitCommand_NoCommand:
 		default:
 
 			break;
 		}
-
-		// ---------------------------------------------------------------------
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
 	}
 
-	/*
-	if (!isDead && currTarget != nullptr) {
-
-		if (particle != nullptr) {
-			
-			particle->pos.x += particle->destination.x * dt * 1.0f;
-			particle->pos.y += particle->destination.y * dt * 1.0f;
-
-			iPoint particleTile = App->map->WorldToMap(particle->pos.x, particle->pos.y);
-			DynamicEntity* dyn = (DynamicEntity*)currTarget->target;
-
-			switch (GetDirection(particleOrientation)) {
-
-			case UnitDirection_DownRight:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_UpRight:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Right:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_DownLeft:
-				if (particleTile.x <= dyn->GetSingleUnit()->currTile.x && particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_UpLeft:
-				if (particleTile.x >= dyn->GetSingleUnit()->currTile.x && particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Left:
-				if (particleTile.x <= dyn->GetSingleUnit()->currTile.x) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Down:
-				if (particleTile.y >= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-
-			case UnitDirection_Up:
-			case UnitDirection_NoDirection:
-			default:
-				if (particleTile.y <= dyn->GetSingleUnit()->currTile.y) {
-					particle->isRemove = true;
-					particle = nullptr;
-					currTarget->target->ApplyDamage(GetDamage());
-					GetAnimation()->Reset();
-				}
-				break;
-			}
-		}
-	}
-	*/
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
+	HandleInput(entityEvent);
 
 	// Update animations
 	if (!isStill || isHitting)
@@ -321,6 +293,7 @@ void ElvenArcher::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
+
 	// Update Unit LifeBar
 	if (lifeBar != nullptr) {
 
@@ -335,12 +308,16 @@ void ElvenArcher::Draw(SDL_Texture* sprites)
 
 		fPoint offset = { 0.0f,0.0f };
 
-		if (animation == &elvenArcherInfo.deathDown || animation == &elvenArcherInfo.deathUp)
-			offset = { animation->GetCurrentFrame().w / 4.0f,0.0f };
-		else
-			offset = { animation->GetCurrentFrame().w / 4.0f, animation->GetCurrentFrame().h / 2.0f };
+		if (animation == &elvenArcherInfo.deathDown || animation == &elvenArcherInfo.deathUp) {
 
-		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
+			offset = { animation->GetCurrentFrame().w / 6.3f, animation->GetCurrentFrame().h / 4.3f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+		}
+		else {
+
+			offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 2.1f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
 	}
 
 	if (isSelected)
@@ -349,13 +326,8 @@ void ElvenArcher::Draw(SDL_Texture* sprites)
 
 void ElvenArcher::DebugDrawSelected()
 {
-	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-
-	for (uint i = 0; i < unitInfo.priority; ++i) {
-		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-	}
+	const SDL_Rect entitySize = { pos.x + offsetSize.x, pos.y + offsetSize.y, size.x, size.y };
+	App->printer->PrintQuad(entitySize, color);
 }
 
 void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
@@ -364,15 +336,16 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 	case CollisionState_OnEnter:
 
-		// An enemy is within the sight of this player unit
+		/// SET ATTACK PARAMETERS
+		// An enemy unit/building is within the SIGHT RADIUS of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 			LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
 
-			// The Horde is within the SIGHT radius
-
+			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
 			bool isTargetFound = false;
 
@@ -387,7 +360,6 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 				}
 				it++;
 			}
-
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
@@ -398,40 +370,49 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 				targets.push_back(targetInfo);
 			}
 
+			// 2. MAKE UNIT FACE TOWARDS THE BEST TARGET
 			if (targets.size() > 0) {
 
-				if (currTarget == nullptr) {
+				bool isFacingTowardsTarget = false;
 
-					// Face towards the closest target (to show the player that the unit is going to be attacked)
-					TargetInfo* targetInfo = GetBestTargetInfo();
+				// a) If the unit is not attacking any target
+				if (currTarget == nullptr)
+					isFacingTowardsTarget = true;
+				// b) If the unit is attacking a static target
+				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
+					isFacingTowardsTarget = true;
+
+				if (isFacingTowardsTarget) {
+
+					// Face towards the best target (ONLY DYNAMIC ENTITIES!) (it is expected to be this target)
+					TargetInfo* targetInfo = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
 					if (targetInfo != nullptr) {
 
-						if (targetInfo->target != nullptr) {
+						fPoint orientation = { targetInfo->target->GetPos().x - pos.x, targetInfo->target->GetPos().y - pos.y };
 
-							fPoint orientation = { targetInfo->target->GetPos().x - pos.x, targetInfo->target->GetPos().y - pos.y };
+						float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
-							float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-							if (m > 0.0f) {
-								orientation.x /= m;
-								orientation.y /= m;
-							}
-
-							SetUnitDirectionByValue(orientation);
+						if (m > 0.0f) {
+							orientation.x /= m;
+							orientation.y /= m;
 						}
+
+						SetUnitDirectionByValue(orientation);
 					}
 				}
 			}
 		}
-		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+		// An enemy unit/building is within the ATTACK RADIUS of this player unit
+		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
+
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 			LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
 
-			// The Horde is within the ATTACK radius
-
+			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
@@ -444,53 +425,43 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 				it++;
 			}
 		}
-
 		break;
 
 	case CollisionState_OnExit:
 
-		// Reset attack parameters
+		/// RESET ATTACK PARAMETERS
+		// An enemy unit/building is no longer within the SIGHT RADIUS of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 			LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
 
-			// The Horde is NO longer within the SIGHT radius
-
-			// Remove the target from the targets list
+			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
-					// If currTarget matches the target that needs to be removed, set its isSightSatisfied to false and it will be removed later		
-					if (currTarget != nullptr) {
-
-						if (currTarget->target == c2->entity) {
-
-							currTarget->isSightSatisfied = false;
-							break;
-						}
-					}
-					// If currTarget is different from the target that needs to be removed, remove the target from the list
-					delete *it;
-					targets.erase(it);
-
+					(*it)->isSightSatisfied = false;
+					RemoveTargetInfo(*it);
 					break;
 				}
 				it++;
 			}
 		}
-		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)) { // || c2->colliderType == ColliderType_PlayerBuilding
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+		// An enemy unit/building is no longer within the ATTACK RADIUS of this player unit
+		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
+
+			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 			LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
 
-			// The Horde is NO longer within the ATTACK radius
-
+			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
@@ -503,7 +474,6 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 				it++;
 			}
 		}
-
 		break;
 	}
 }
@@ -519,9 +489,41 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 	case UnitState_Patrol:
 
+		// Check if there are available targets
+		/// Prioritize a type of target (static or dynamic)
+		if (singleUnit->IsFittingTile()) {
+
+			newTarget = GetBestTargetInfo();
+
+			if (newTarget != nullptr) {
+
+				// A new target has found, update the attacking target
+				if (currTarget != newTarget) {
+
+					if (currTarget != nullptr) {
+
+						if (!currTarget->isRemoved) {
+
+							currTarget->target->RemoveAttackingUnit(this);
+							isHitting = false;
+						}
+					}
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
+		}
+
 		break;
 
 	case UnitState_AttackTarget:
+
+		break;
+
+	case UnitState_HealRunestone:
+	case UnitState_GatherGold:
+	case UnitState_RescuePrisoner:
 
 		break;
 
@@ -838,4 +840,9 @@ bool ElvenArcher::ChangeAnimation()
 		return ret;
 	}
 	return ret;
+}
+
+float ElvenArcher::GetArrowSpeed() const
+{
+	return elvenArcherInfo.arrowSpeed;
 }

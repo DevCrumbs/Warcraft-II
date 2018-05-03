@@ -13,6 +13,9 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 #include "Goal.h"
+#include "j1Player.h"
+#include "j1Particles.h"
+#include "j1Printer.h"
 
 #include "UILifeBar.h"
 
@@ -31,12 +34,8 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 	singleUnit = new SingleUnit(this, nullptr);
 	App->movement->CreateGroupFromUnit(this);
 
-	/// Walkability map
-	navgraph = new Navgraph();
-	navgraph->CreateNavgraph();
-
 	/// PathPlanner
-	pathPlanner = new PathPlanner(this, *navgraph);
+	pathPlanner = new PathPlanner(this);
 
 	// Goals
 	brain = new Goal_Think(this);
@@ -48,23 +47,37 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 
 DynamicEntity::~DynamicEntity()
 {
-	animation = nullptr;
-
-	// Remove Movement
-	if (navgraph != nullptr)
-		delete navgraph;
-	navgraph = nullptr;
-
-	if (pathPlanner != nullptr)
-		delete pathPlanner;
-	pathPlanner = nullptr;
-
 	// Remove Goals
+	brain->RemoveAllSubgoals();
+
 	if (brain != nullptr)
 		delete brain;
 	brain = nullptr;
 
+	// Remove Movement
+	if (pathPlanner != nullptr)
+		delete pathPlanner;
+	pathPlanner = nullptr;
+
+	if (singleUnit != nullptr)
+		delete singleUnit;
+	singleUnit = nullptr;
+
+	if (!App->gui->isGuiCleanUp) {
+
+		if (lifeBar != nullptr) {
+			lifeBar->toRemove = true;
+			lifeBar = nullptr;
+		}
+	}
+
+	animation = nullptr;
+
+	isDead = true;
+	isSpawned = true;
+
 	// Remove Attack
+	App->entities->InvalidateTargetInfo(this);
 	currTarget = nullptr;
 
 	// Remove Colliders
@@ -76,8 +89,28 @@ DynamicEntity::~DynamicEntity()
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
 
-	if (lifeBar != nullptr)
-		App->gui->DestroyElement((UIElement**)&lifeBar);
+	color = ColorWhite;
+	colorName = "White";
+
+	// ----
+
+	// Attack
+	isStill = true;
+
+	if (currTarget != nullptr)
+		currTarget = nullptr;
+
+	if (newTarget != nullptr)
+		newTarget = nullptr;
+
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+
+		delete *it;
+		it++;
+	}
+	targets.clear();
 }
 
 void DynamicEntity::Move(float dt) {}
@@ -85,7 +118,8 @@ void DynamicEntity::Move(float dt) {}
 void DynamicEntity::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr) {
-		App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
+		//App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
+		App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 	}
 	if (isSelected)
 		DebugDrawSelected();
@@ -94,7 +128,8 @@ void DynamicEntity::Draw(SDL_Texture* sprites)
 void DynamicEntity::DebugDrawSelected()
 {
 	SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	App->render->DrawQuad(entitySize, 255, 255, 255, 255, false);
+	//App->render->DrawQuad(entitySize, 255, 255, 255, 255, false);
+	App->printer->PrintQuad(entitySize, ColorWhite);
 }
 
 void DynamicEntity::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState) {}
@@ -191,9 +226,65 @@ uint DynamicEntity::GetPriority() const
 	return unitInfo.priority;
 }
 
-uint DynamicEntity::GetDamage() const
+uint DynamicEntity::GetDamage(Entity* target) const
 {
-	return unitInfo.damage;
+	if (target == nullptr)
+		return 0;
+
+	if (target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+		DynamicEntity* dynEnt = (DynamicEntity*)target;
+
+		switch (dynEnt->dynamicEntityType) {
+
+		case EntityType_FOOTMAN:
+		case EntityType_GRUNT:
+
+			return unitInfo.heavyDamage;
+			break;
+
+		case EntityType_ELVEN_ARCHER:
+		case EntityType_TROLL_AXETHROWER:
+
+			return unitInfo.lightDamage;
+			break;
+
+		case EntityType_GRYPHON_RIDER:
+		case EntityType_DRAGON:
+
+			return unitInfo.airDamage;
+			break;
+
+			// Critters
+		case EntityType_SHEEP:
+
+		{
+			int damage = dynEnt->GetMaxLife();
+			damage /= 3;
+			return damage;
+		}
+		break;
+
+		case EntityType_BOAR:
+
+		{
+			int damage = dynEnt->GetMaxLife();
+			damage /= 4;
+			return damage;
+		}
+		break;
+		}
+	}
+	else if (target->entityType == EntityCategory_STATIC_ENTITY)
+
+		return unitInfo.towerDamage;
+
+	return 0;
+}
+
+UILifeBar* DynamicEntity::GetLifeBar() const
+{
+	return lifeBar;
 }
 
 // State machine
@@ -220,11 +311,6 @@ PathPlanner* DynamicEntity::GetPathPlanner() const
 	return pathPlanner;
 }
 
-Navgraph* DynamicEntity::GetNavgraph() const
-{
-	return navgraph;
-}
-
 void DynamicEntity::SetIsStill(bool isStill)
 {
 	this->isStill = isStill;
@@ -233,17 +319,6 @@ void DynamicEntity::SetIsStill(bool isStill)
 bool DynamicEntity::IsStill() const
 {
 	return isStill;
-}
-
-// Blit
-void DynamicEntity::SetBlitState(bool blitting) const
-{
-	blitting = isBlitting; 
-}
-
-bool DynamicEntity::GetBlitState() const
-{
-	return isBlitting;
 }
 
 // Animations
@@ -402,23 +477,6 @@ fPoint DynamicEntity::GetUnitDirectionByValue() const
 	return direction;
 }
 
-// Selection color
-void DynamicEntity::SetColor(SDL_Color color, string colorName)
-{
-	this->color = color;
-	this->colorName = colorName;
-}
-
-SDL_Color DynamicEntity::GetColor() const
-{
-	return color;
-}
-
-string DynamicEntity::GetColorName() const
-{
-	return colorName;
-}
-
 // Collision
 ColliderGroup* DynamicEntity::GetSightRadiusCollider() const
 {
@@ -461,7 +519,7 @@ ColliderGroup* DynamicEntity::CreateRhombusCollider(ColliderType colliderType, u
 
 		for (uint i = 0; i < 4; ++i)
 		{
-			if (CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
+			if (App->pathfinding->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
 
 				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
 
@@ -532,7 +590,7 @@ void DynamicEntity::UpdateRhombusColliderPos(ColliderGroup* collider, uint radiu
 
 		for (uint i = 0; i < 4; ++i)
 		{
-			if (navgraph->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
+			if (App->pathfinding->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
 
 				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
 
@@ -640,50 +698,25 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 	return ret;
 }
 
-bool DynamicEntity::IsEntityInTargetsList(Entity* entity) const
+bool DynamicEntity::SetIsRemovedTargetInfo(Entity* target)
 {
+	if (target == nullptr)
+		return false;
+
+	// Set isRemoved to true
 	list<TargetInfo*>::const_iterator it = targets.begin();
 
 	while (it != targets.end()) {
 
-		if ((*it)->target == entity)
-			return true;
+		if ((*it)->target == target) {
 
+			(*it)->isRemoved = true;
+			return true;
+		}
 		it++;
 	}
 
 	return false;
-}
-
-bool DynamicEntity::InvalidateTarget(Entity* entity)
-{
-	bool ret = false;
-
-	TargetInfo* targetInfo = nullptr;
-
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	// Find the TargetInfo of the target
-	while (it != targets.end()) {
-
-		if ((*it)->target == entity) {
-
-			targetInfo = *it;
-			break;
-		}
-
-		it++;
-	}
-
-	// If TargetInfo is found, invalidate it
-	if (targetInfo != nullptr) {
-
-		(*it)->target = nullptr;
-		(*it)->isRemoved = true;
-		ret = true;
-	}
-
-	return ret;
 }
 
 bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
@@ -691,23 +724,19 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 	if (targetInfo == nullptr)
 		return false;
 
-	// If the target matches the currTarget, set currTarget to null
-	if (currTarget != nullptr) {
-
-		if (currTarget->target == targetInfo->target)
-			currTarget = nullptr;
-	}
+	// If the target is the currTarget, set currTarget to nullptr
+	if (targetInfo == currTarget)
+		currTarget = nullptr;
 
 	// Remove the target from the targets list
 	list<TargetInfo*>::const_iterator it = targets.begin();
 
 	while (it != targets.end()) {
 
-		if (*it == targetInfo) {
+		if ((*it)->target == targetInfo->target) {
 
 			delete *it;
-			targets.erase(it);
-
+			targets.remove(*it);
 			return true;
 		}
 		it++;
@@ -716,7 +745,7 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 	return false;
 }
 
-TargetInfo* DynamicEntity::GetBestTargetInfo() const
+TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityType) const
 {
 	// If there are no targets, return null
 	if (targets.size() == 0)
@@ -740,7 +769,7 @@ TargetInfo* DynamicEntity::GetBestTargetInfo() const
 			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)(*it)->target;
-				
+
 				if (dynEnt->dynamicEntityType != EntityType_SHEEP && dynEnt->dynamicEntityType != EntityType_BOAR) {
 
 					priorityTargetInfo.targetInfo = *it;
@@ -786,6 +815,67 @@ bool DynamicEntity::IsHitting() const
 	return isHitting;
 }
 
+// Interact with the map
+void DynamicEntity::SetGoldMine(GoldMine* goldMine)
+{
+	this->goldMine = goldMine;
+}
+
+GoldMine* DynamicEntity::GetGoldMine() const
+{
+	return goldMine;
+}
+
+void DynamicEntity::SetUnitGatheringGold(bool isGatheringGold)
+{
+	this->isGatheringGold = isGatheringGold;
+}
+
+bool DynamicEntity::IsUnitGatheringGold() const
+{
+	return isGatheringGold;
+}
+
+void DynamicEntity::SetRunestone(Runestone* runestone)
+{
+	this->runestone = runestone;
+}
+
+Runestone* DynamicEntity::GetRunestone() const
+{
+	return runestone;
+}
+
+void DynamicEntity::SetUnitHealingRunestone(bool isHealingRunestone)
+{
+	this->isHealingRunestone = isHealingRunestone;
+}
+
+bool DynamicEntity::IsUnitHealingRunestone() const
+{
+	return isHealingRunestone;
+}
+
+void DynamicEntity::SetPrisoner(DynamicEntity* prisoner) 
+{
+	this->prisoner = prisoner;
+}
+
+DynamicEntity* DynamicEntity::GetPrisoner() const 
+{
+	return prisoner;
+}
+
+void DynamicEntity::SetUnitRescuePrisoner(bool isRescuingPrisoner) 
+{
+	this->isRescuingPrisoner = isRescuingPrisoner;
+}
+
+bool DynamicEntity::IsUnitRescuingPrisoner() const 
+{
+	return isRescuingPrisoner;
+}
+
 // Player commands
 bool DynamicEntity::SetUnitCommand(UnitCommand unitCommand)
 {
@@ -817,4 +907,26 @@ bool TargetInfo::IsTargetPresent() const
 		return false;
 
 	return true;
+}
+
+// Blit
+void DynamicEntity::SetBlitState(bool isBlit)
+{
+	this->isBlit = isBlit;
+}
+
+bool DynamicEntity::GetBlitState() const
+{
+	return isBlit;
+}
+
+// Valid
+void DynamicEntity::SetIsValid(bool isValid)
+{
+	this->isValid = isValid;
+}
+
+bool DynamicEntity::GetIsValid() const
+{
+	return isValid;
 }

@@ -1,6 +1,8 @@
 #ifndef __j1MAP_H__
 #define __j1MAP_H__
 
+#include <list>
+
 #include "j1Module.h"
 
 #include "p2Point.h"
@@ -11,8 +13,22 @@
 #include "PugiXml/src/pugixml.hpp"
 #include "SDL\include\SDL.h"
 
-#include <list>
+#include "SDL\include\SDL_rect.h"
+
 using namespace std;
+typedef SDL_Rect Room;
+
+class Entity;
+
+enum ROOM_TYPE
+{
+	roomType_NONE = 0,
+
+	roomType_LARGE = 411,
+	roomType_LITTLE = 412,
+	roomType_BASE = 413
+
+};
 
 struct Object {
 	string name;
@@ -80,7 +96,7 @@ struct MapLayer {
 	uint height = 0; //number of tiles in the y axis
 
 	uint* data = nullptr;
-	uint size_data = 0;
+	uint sizeData = 0;
 
 	float speed = 1.0f; //parallax (speed of the layer)
 
@@ -166,11 +182,31 @@ public:
 	// Called each loop iteration
 	void Draw();
 
+	bool PostUpdate();
+
 	// Called before quitting
 	bool CleanUp();
 
 	// Load new map
 	bool Load(const char* path);
+
+	bool LoadLogic();
+
+	list<Entity*> LoadLayerEntities(MapLayer* layer);
+
+	bool LoadRoomRect(MapLayer * layer);
+
+	// This function distributes a list of entities arranged by level to a list of entities arranged by level and room
+	bool CreateEntityGroup(list<list<Entity*>> entityGroupLevel);
+
+	bool IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal);
+	bool IsGoalOnRoom(iPoint origin, iPoint goal);
+
+	bool IsOnBase(iPoint pos);
+	bool IsOnRoom(iPoint pos, SDL_Rect room);
+
+	Room GetEntityRoom(Entity* entity);
+
 
 	// Unload map
 	bool UnLoad();
@@ -181,7 +217,10 @@ public:
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
+	bool LoadWalkabilityMap(int & width, int & height, uchar ** buffer) const;
+
 	TileSet* GetTilesetFromTileId(int id) const;
+
 
 private:
 
@@ -195,7 +234,7 @@ private:
 	bool LoadObjectGroupDetails(pugi::xml_node& objectGroup_node, ObjectGroup* objectGroup);
 	bool LoadObject(pugi::xml_node& object_node, Object* object);
 
-	
+
 
 public:
 
@@ -206,10 +245,32 @@ public:
 	int					blit_offset = 0;
 	bool				camera_blit = false;
 
+	//Base pos
 	SDL_Rect			playerBase{ 0,0,0,0 };
+
+	//Texture path
+	string				tilesetPath;
+
+	// Walkability map
+	mutable	uchar*		walkMap = nullptr;
+	mutable	int         walkWidth = 0;
+	mutable	int			walkHeight = 0;
+
+	// Rooms rects
+	list<Room>		roomRectList;
+
+	// Default rooms sizes
+	int					defaultRoomSize = 0;
+	int					defaultBaseSize = 0;
+	int					defaultLittleSize = 0;
+	int					defaultTileSize = 0;
+	int					defaultHallSize = 0;
+
+	list<list<Entity*>>	entityGroups;
+
 private:
 
-	pugi::xml_document	map_file;
+	pugi::xml_document	mapFile;
 	string				folder;
 	bool				map_loaded = false;
 

@@ -15,8 +15,7 @@ struct ElvenArcherInfo
 	Animation attackUpLeft, attackUpRight, attackDownLeft, attackDownRight;
 	Animation deathUp, deathDown;
 
-	int currLife = 0;
-	uint maxLife = 0;
+	float arrowSpeed = 0.0f;
 };
 
 class ElvenArcher :public DynamicEntity
@@ -38,9 +37,12 @@ public:
 	void UpdateAnimationsSpeed(float dt);
 	bool ChangeAnimation();
 
+	float GetArrowSpeed() const;
+
 private:
 
 	ElvenArcherInfo elvenArcherInfo;
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	// Animations speed
 	float upSpeed = 0.0f, downSpeed = 0.0f, leftSpeed = 0.0f, rightSpeed = 0.0f;
@@ -48,8 +50,6 @@ private:
 	float attackUpSpeed = 0.0f, attackDownSpeed = 0.0f, attackLeftSpeed = 0.0f, attackRightSpeed = 0.0f;
 	float attackUpLeftSpeed = 0.0f, attackUpRightSpeed = 0.0f, attackDownLeftSpeed = 0.0f, attackDownRightSpeed = 0.0f;
 	float deathUpSpeed = 0.0f, deathDownSpeed = 0.0f;
-
-	fPoint particleOrientation = { 0.0f,0.0f };
 };
 
 #endif //__ElvenArcher_H__

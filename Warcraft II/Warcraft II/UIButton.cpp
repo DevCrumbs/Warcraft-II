@@ -6,7 +6,7 @@
 
 UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener, bool isInWorld) : UIElement(localPos, parent, listener, isInWorld), button(info)
 {
-	type = UIE_TYPE::UIE_TYPE_BUTTON;
+	type = UIE_TYPE_BUTTON;
 
 	normalTexArea = info.normalTexArea;
 	hoverTexArea = info.hoverTexArea;
@@ -29,9 +29,28 @@ UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Mo
 	SetOrientation();
 }
 
+UIButton::~UIButton() 
+{
+	tab = false;
+	nextEvent = false;
+
+	bounceValue = 0.0f;
+	 startPos = { 0,0 };
+	firstBounce = true;
+	reset = true;
+	startBouncing = false;
+
+	isInWorld = false;
+	UIevent = UI_EVENT_NONE;
+
+	 normalTexArea = { 0,0,0,0 };
+	 hoverTexArea = { 0,0,0,0 };
+	 pressedTexArea = { 0,0,0,0 };
+}
+
 void UIButton::Update(float dt)
 {
-	if (listener != nullptr && interactive)
+	if (listener != nullptr && interactive && isActive)
 		HandleInput();
 }
 
@@ -61,7 +80,7 @@ void UIButton::HandleInput()
 	case UI_EVENT_MOUSE_ENTER:
 
 		if (!MouseHover() && !tab) {
-			LOG("MOUSE LEAVE");
+			//LOG("MOUSE LEAVE");
 			nextEvent = false;
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
@@ -98,7 +117,7 @@ void UIButton::HandleInput()
 		}
 
 		if (!nextEvent) {
-			LOG("MOUSE ENTER");
+			//LOG("MOUSE ENTER");
 			if (!button.isChecked)
 				ChangeSprite(hoverTexArea);
 			nextEvent = true;
@@ -152,6 +171,21 @@ void UIButton::ChangeSprite(SDL_Rect texArea)
 {
 	this->texArea = texArea;
 }
+
+void UIButton::ChangesTextsAreas(bool isDiferent, SDL_Rect normalText, SDL_Rect hoverText)
+{
+	if (isDiferent) {
+		normalTexArea = normalText;
+		hoverTexArea = hoverText;
+		ChangeSprite(normalTexArea);
+	}
+	else {
+		normalTexArea = hoverTexArea = pressedTexArea;
+		ChangeSprite(pressedTexArea);
+	}
+
+}
+
 
 SDL_Rect UIButton::GetHoverSprite() const
 {

@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include"Brofiler\Brofiler.h"
 
 #include "Defs.h"
@@ -12,6 +14,7 @@
 #include "j1Audio.h"
 #include "j1Collision.h"
 #include "j1Particles.h"
+#include "j1Particles.h"
 #include "j1Render.h"
 #include "j1Window.h"
 #include "j1Map.h"
@@ -24,12 +27,18 @@
 #include "j1Menu.h"
 #include "j1Player.h"
 #include "j1Fonts.h"
+#include "j1PathManager.h"
+#include "j1Printer.h"
+#include "j1EnemyWave.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UIImage.h"
 #include "UICursor.h"
+#include "UISlider.h"
 #include "UIMinimap.h"
+#include "UILifeBar.h"
+
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -61,19 +70,19 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	warcraftMap = maps.child("warcraft").attribute("name").as_string();
 	warcraftActive = maps.child("warcraft").attribute("active").as_bool();
 	warcraftTexName = maps.child("warcraft").attribute("tex").as_string();
-
+	numMaps = maps.child("warcraft").attribute("numMaps").as_int();
 	//Music
 	pugi::xml_node audio = config.child("audioPaths");
 
 	mainThemeMusicName = audio.child("mainTheme").attribute("path").as_string();
 
-	LoadKeys(config.child("buttons"));
+	//LoadKeys(config.child("buttons"));
 
 	//Load camera attributes
 	pugi::xml_node camera = config.child("camera");
 
 	camSpeed = camera.attribute("speed").as_float();
-	camMovMargin = camera.attribute("movMarginPcnt").as_int();
+	camMovMargin = camera.attribute("movMarginPcnt").as_float();
 
 	return ret;
 }
@@ -82,7 +91,26 @@ bool j1Scene::Awake(pugi::xml_node& config)
 bool j1Scene::Start()
 {
 	bool ret = true;
-	App->audio->active = true;
+
+	active = true;
+
+	App->map->active = true;
+	App->player->active = true;
+	App->entities->active = true;
+	App->collision->active = true;
+	App->pathfinding->active = true;
+	App->pathmanager->active = true;
+	App->movement->active = true;
+	App->particles->active = true;
+	App->wave->active = true;
+
+	App->player->Start();
+	App->collision->Start();
+	App->particles->Start();
+	App->entities->Start();
+	App->wave->Start();
+
+	isStarted = false;
 
 	// Save camera info
 	App->win->GetWindowSize(width, height);
@@ -98,18 +126,14 @@ bool j1Scene::Start()
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
 	else if (warcraftActive) {
-		ret = App->map->Load("verticalSliceMap0.tmx");
+		ret = LoadNewMap(0);
+	//	ret = App->map->Load("verticalSliceMap.tmx");
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
 	// Create walkability map
 	if (ret)
-	{
-		if (App->map->CreateWalkabilityMap(w, h, &data))
-			App->pathfinding->SetMap(w, h, data);
-
-		//RELEASE_ARRAY(data);
-	}
+		App->map->CreateWalkabilityMap(w, h, &data);
 
 	//LoadInGameUI
 	LoadInGameUI();
@@ -117,22 +141,69 @@ bool j1Scene::Start()
 	if (terenasDialogEvent == TerenasDialog_NONE) {
 		terenasDialogTimer.Start();
 		terenasDialogEvent = TerenasDialog_START;
-		LoadTerenasDialog(terenasDialogEvent);
+		ShowTerenasDialog(terenasDialogEvent);
 	}
-
+	
 	//Calculate camera movement in pixels through the percentatge given
-	camMovMargin = camMovMargin * ((width + height) / 2) / 100;
+	if (!isCamMovMarginCharged) {
+		camMovMargin = camMovMargin * ((width + height) / 2) / 100;
+		isCamMovMarginCharged = true;
+	}
 
 	alphaBuilding = EntityType_NONE;
 	pauseMenuActions = PauseMenuActions_NOT_EXIST;
 
 	App->audio->PlayMusic(mainThemeMusicName.data(), 2.0f);
 
-	// The camera is in the player base
-	//App->render->camera.x = -2400;
-	//App->render->camera.y = -6720;
-	App->render->camera.x = 0;
-	App->render->camera.y = 0;
+	App->map->LoadLogic();
+
+	isStartedFinalTransition = false;
+
+	// Create the groups of the enemies
+	list<list<Entity*>>::const_iterator enIt = App->map->entityGroups.begin();
+
+	while (enIt != App->map->entityGroups.end()) {
+
+		list<Entity*>::const_iterator groupIt = (*enIt).begin();
+		list<DynamicEntity*> units;
+
+		while (groupIt != (*enIt).end()) {
+
+			units.push_back((DynamicEntity*)(*groupIt));
+			groupIt++;
+		}
+
+		if (units.size() > 0)
+			App->movement->CreateGroupFromUnits(units);
+
+		enIt++;
+	}
+
+	return ret;
+}
+
+bool j1Scene::LoadNewMap(int map) 
+{
+	bool ret = true;
+
+	if (map == -1) 
+	{
+		map = rand() % numMaps;
+
+		static char path[25];
+		sprintf_s(path, 25, "alphaMap%i.tmx", map);
+
+		LOG(path);
+
+		ret = App->map->Load(path);
+	}
+	else
+	{
+		static char path[25];
+		sprintf_s(path, 25, "alphaMap%i.tmx", map);
+
+		ret = App->map->Load(path);
+	}
 
 	UIMinimap_Info info;
 
@@ -141,7 +212,7 @@ bool j1Scene::Start()
 	info.minimapInfo = { 30,31,160,161 };
 
 	minimap = App->gui->CreateUIMinimap(info);
-//	minimap->SetMinimap({ 30,31,160,161 }, 32, 32);
+	//minimap->SetMinimap({ 30,31,160,161 }, 32, 32);
 
 	return ret;
 }
@@ -160,201 +231,76 @@ bool j1Scene::PreUpdate()
 
 	// ---------------------------------------------------------------------
 
-	// Entities info
-	/// Entity
-	iPoint size = { App->map->data.tileWidth,App->map->data.tileHeight };
-	uint maxLife = 30;
-	int currLife = (int)maxLife;
-
-	/// DynamicEntity
-	UnitInfo unitInfo;
-	unitInfo.damage = 2;
-	unitInfo.priority = 1; // TODO: change to 3 or so
-
-	 /// Footman
-	FootmanInfo footmanInfo;
-	GruntInfo gruntInfo;
-	ElvenArcherInfo elvenArcherInfo;
-	TrollAxethrowerInfo trollAxethrowerInfo;
-
-	/// Sheep
-	CritterSheepInfo critterSheepInfo;
-	critterSheepInfo.restoredHealth = 5;
-
-	/// Boar
-	CritterBoarInfo critterBoarInfo;
-	critterBoarInfo.restoredHealth = 10;
-
 	// Entities creation
-
-	// 1: spawn a Footman with priority 1
-	unitInfo.sightRadius = 6;
-	unitInfo.attackRadius = 2;
-	unitInfo.maxSpeed = 80.0f;
-
-	if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN) {
-
-		iPoint tile = { 10,10 };
-
-		// Make sure that there are no entities on the spawn tile and that the tile is walkable
-		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-			tile = App->player->FindClosestValidTile(tile);
-
-		// Make sure that the spawn tile is valid
-		//if (tile.x != -1 && tile.y != -1) {  // TODO: uncomment this line
-
-		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
-
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, this);
-		//}
-	}
-	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
-
-		iPoint tile = { 10,10 };
-
-		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-			tile = App->player->FindClosestValidTile(tile);
-
-		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; 
-		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
-
-		iPoint tile = { 10,10 };
-
-		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-			tile = App->player->FindClosestValidTile(tile);
-
-		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
-		App->entities->AddEntity(EntityType_KHADGAR, pos, App->entities->GetUnitInfo(EntityType_KHADGAR), unitInfo, App->player);
-	}
-
-
-	// 2: spawn a Grunt with priority 1
-	unitInfo.sightRadius = 5;
-	unitInfo.attackRadius = 2;
-	unitInfo.maxSpeed = 50.0f;
-
-	maxLife = 20;
-	currLife = (int)maxLife;
-
-	if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN) {
-
-		iPoint tile = { 15,11 };
-
-		// Make sure that there are no entities on the spawn tile and that the tile is walkable
-		if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-			tile = App->player->FindClosestValidTile(tile);
-
-		// Make sure that the spawn tile is valid
-		//if (tile.x != -1 && tile.y != -1) { // TODO: uncomment this line
-
-		iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-		//fPoint pos = { (float)tilePos.x,(float)tilePos.y }; // TODO: uncomment this line
-
-		fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y }; // TODO: delete this debug
-		App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, this);
-		//}
-	}
-
-	/*
-	// 5: spawn a group of Footmans
-	if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
-
-		list<DynamicEntity*> units;
-		uint maxFootmans = 4;
-
-		for (uint i = 0; i < maxFootmans; ++i) {
-
-			iPoint tile = { rand() % App->map->data.width,rand() % App->map->data.height };
-
-			// Make sure that there are no entities on the spawn tile and that the tile is walkable
-			if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-				tile = FindClosestValidTile(tile);
-
-			// Make sure that the spawn tile is valid
-			if (tile.x != -1 && tile.y != -1) {
-
-				iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-				fPoint pos = { (float)tilePos.x,(float)tilePos.y };
-
-				DynamicEntity* dynEnt = (DynamicEntity*)App->entities->AddEntity(EntityType_FOOTMAN, pos, (EntityInfo&)footmanInfo, unitInfo, this);
-
-				if (dynEnt != nullptr)
-					units.push_back(dynEnt);
-			}
-		}
-
-		if (units.size() > 0)
-			App->movement->CreateGroupFromUnits(units);
-	}
-
-	// 6: spawn a group of Grunts
-	if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN) {
-
-		list<DynamicEntity*> units;
-		uint maxGrunts = 4;
-
-		for (uint i = 0; i < maxGrunts; ++i) {
-
-			iPoint tile = { rand() % App->map->data.width,rand() % App->map->data.height };
-
-			// Make sure that there are no entities on the spawn tile and that the tile is walkable
-			if (App->entities->IsEntityOnTile(tile) != nullptr || !App->pathfinding->IsWalkable(tile))
-
-				tile = FindClosestValidTile(tile);
-
-			// Make sure that the spawn tile is valid
-			if (tile.x != -1 && tile.y != -1) {
-
-				iPoint tilePos = App->map->MapToWorld(tile.x, tile.y);
-				fPoint pos = { (float)tilePos.x,(float)tilePos.y };
-
-				DynamicEntity* dynEnt = (DynamicEntity*)App->entities->AddEntity(EntityType_GRUNT, pos, (EntityInfo&)gruntInfo, unitInfo, this);
-
-				if (dynEnt != nullptr)
-					units.push_back(dynEnt);
-			}
-		}
-
-		if (units.size() > 0)
-			App->movement->CreateGroupFromUnits(units);
-	}
-	*/
-
+	UnitInfo unitInfo;
 	fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
 
-	// 3: spawn a Sheep
-	unitInfo.sightRadius = 0;
-	unitInfo.attackRadius = 0;
-	unitInfo.priority = 1;
-	maxLife = 10;
-	currLife = (int)maxLife;
+	if (isDebug && App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 
-	if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
-		App->entities->AddEntity(EntityType_SHEEP, pos, (EntityInfo&)critterSheepInfo, unitInfo, this);
+		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, App->player);
 
-	// 4: spawn a Boar
-	unitInfo.sightRadius = 0;
-	unitInfo.attackRadius = 0;
-	unitInfo.priority = 2;
-	maxLife = 20;
-	currLife = (int)maxLife;
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 
-	if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
-		App->entities->AddEntity(EntityType_BOAR, pos, (EntityInfo&)critterBoarInfo, unitInfo, this);
+		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, App->player);
+
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+
+		App->entities->AddEntity(EntityType_GRYPHON_RIDER, pos, App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, App->player);
+
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+
+		App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, App->player);
+
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+
+		App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, App->player);
+
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
+
+		App->entities->AddEntity(EntityType_DRAGON, pos, App->entities->GetUnitInfo(EntityType_DRAGON), unitInfo, App->player);
+
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+
+		App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(EntityType_SHEEP), unitInfo, App->player);
+
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+
+		App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
+
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
+
+		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
+
+	else if (isDebug && App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
+
+		App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
+	//_Entities_creation
+
+	if (hasGoldChanged) {
+		UpdateGoldLabel();
+		if (buildingMenu->isActive)
+		{
+			UpdateLabelsMenu();
+			UpdateIconsMenu();
+		}
+		hasGoldChanged = false;
+	}
+	if (hasFoodChanged == true) {
+		UpdateFoodLabel();
+		hasFoodChanged = false;
+	}
+
+	switch (pauseMenuActions) 
+	{
+	case PauseMenuActions_SLIDERFX:
+		App->menu->UpdateSlider(AudioFXPause);
+		break;
+	case PauseMenuActions_SLIDERMUSIC:
+		App->menu->UpdateSlider(AudioMusicPause);
+		break;
+	default:
+		break;
+	}
 
 	return ret;
 }
@@ -372,223 +318,290 @@ bool j1Scene::Update(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 	// ---------------------------------------------------------------------
 
-	// Draw
-	App->map->Draw(); // map
-	App->particles->DrawPaws(); // paws particles
-	App->entities->Draw(); // entities
-
+	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
+		isDebug = !isDebug;
+	
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		debugDrawAttack = !debugDrawAttack;
 
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
 
+	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+		debugDrawMovement = !debugDrawMovement;
+
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
 
-	App->render->Blit(debugTex, mouseTilePos.x, mouseTilePos.y); // tile under the mouse pointer
+	App->printer->PrintSprite(mouseTilePos, debugTex, { 0,0,32,32 }); // tile under the mouse pointer
 
 	// Units ---------------------------------------------------------------------------------
 
-	Entity* isEnemyOnTile = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy); // TODO Sandra: only player side
+	// Update units selected life bars
+	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
 
-	if (isEnemyOnTile != nullptr) {
-		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
-		if (r.x != 374)
-			App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
-	}
-	else {
-		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
-		if (r.x != 243)
-			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+		if ((*iterator).owner != nullptr)
+			(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
 	}
 
-	// Select units by mouse click
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
-		startRectangle = mousePos;
 
-		Entity* entity = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: only player side
+	// *****UNITS*****
+	/// Units cannot be clicked if a building is being placed or Pause Menu is active
+	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 
-		if (entity != nullptr)
-			App->entities->SelectEntity(entity);
-		//else
-			//App->entities->UnselectAllEntities();
-	}
+		// Select units by mouse click
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+			startRectangle = mousePos;
 
-	int width = mousePos.x - startRectangle.x;
-	int height = mousePos.y - startRectangle.y;
+			Entity* entity = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+			if (entity != nullptr)
+				App->entities->SelectEntity(entity);
+			//else
+				//App->entities->UnselectAllEntities();
 
-	/// SELECT UNITS
-	// Select units by rectangle drawing
-	if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
+			Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+			if (playerBuilding != nullptr)
+				App->entities->SelectBuilding((StaticEntity*)playerBuilding);
+			
+			Entity* neutralBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
+			if (neutralBuilding != nullptr)
+				App->entities->SelectBuilding((StaticEntity*)neutralBuilding);
 
-		// Draw the rectangle
-		SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
-		App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
-
-		// Select units within the rectangle
-		if (width < 0) {
-			mouseRect.x = mousePos.x;
-			mouseRect.w *= -1;
-		}
-		if (height < 0) {
-			mouseRect.y = mousePos.y;
-			mouseRect.h *= -1;
+			if (playerBuilding == nullptr && neutralBuilding == nullptr)
+				App->entities->UnselectAllBuildings();
 		}
 
-		App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player); // TODO Sandra: add static entities, only player side
-	}
+		int width = mousePos.x - startRectangle.x;
+		int height = mousePos.y - startRectangle.y;
 
-	list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+		/// SELECT UNITS
+		// Select units by rectangle drawing
+		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
-	if (units.size() > 0) {
+			// Draw the rectangle
+			SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
+			//App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
+			App->printer->PrintQuad(mouseRect, { 255,255,255,255 });
 
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
-			App->player->DeleteEntitiesMenu();
-			App->player->MakeUnitsMenu(units);
+			// Select units within the rectangle
+			if (width < 0) {
+				mouseRect.x = mousePos.x;
+				mouseRect.w *= -1;
+			}
+			if (height < 0) {
+				mouseRect.y = mousePos.y;
+				mouseRect.h *= -1;
+			}
+
+			App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
 		}
 
-		UnitGroup* group = App->movement->GetGroupByUnits(units);
+		units = App->entities->GetLastUnitsSelected();
 
-		if (group == nullptr)
+		if (units.size() > 0) {
 
-			// Selected units will now behave as a group
-			group = App->movement->CreateGroupFromUnits(units);
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 
-		if (group != nullptr) {
-
-			/// COMMAND PATROL
-			/*
-			if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
-
-				App->entities->CommandToUnits(units, UnitCommand_Patrol);
-			*/
-			/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
-			/*
-			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
-
-				App->entities->CommandToUnits(units, UnitCommand_Stop);
-			*/
-			/// COMMAND ATTACK
-			/// Enemy
-			// TODO Sandra: ENTITY CATEGORY MUST BE ALSO STATIC ENTITIES (BUILDINGS)
-			Entity* target = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
-
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr) {
-
-				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
-				list<DynamicEntity*>::const_iterator it = units.begin();
-
-				bool isTarget = true;
-
-				while (it != units.end()) {
-
-					if (!(*it)->SetCurrTarget(target))
-						isTarget = false;
-
-					it++;
+				if (!CompareSelectedUnitsLists(units)) {
+					App->player->HideEntitySelectedInfo();
+					ShowSelectedUnits(units);
+					PlayUnitSound(units, true); //Unit selected sound
 				}
-
-				if (isTarget)
-
-					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+				
 			}
 
-			/// Critter
-			Entity* critter = App->entities->IsEntityOnTile(mouseTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
+			UnitGroup* group = App->movement->GetGroupByUnits(units);
 
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr) {
+			if (group == nullptr)
 
-				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
-				list<DynamicEntity*>::const_iterator it = units.begin();
+				// Selected units will now behave as a group
+				group = App->movement->CreateGroupFromUnits(units);
 
-				bool isTarget = true;
+			if (group != nullptr) {
 
-				while (it != units.end()) {
+				/// COMMAND PATROL
+				if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
 
-					if (!(*it)->SetCurrTarget(critter))
-						isTarget = false;
+					App->entities->CommandToUnits(units, UnitCommand_Patrol);
 
-					it++;
-				}
+				/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
+				if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN)
 
-				if (isTarget)
+					App->entities->CommandToUnits(units, UnitCommand_Stop);
 
-					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
-			}
 
-			/// Buildings
-			Entity* building = App->entities->IsEntityOnTile(mouseTile, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
+				/// COMMAND ATTACK
+				/// Enemy
+				Entity* target = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
 
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr) {
-
-				// All the group is issued to attack this enemy (and other enemies if seen when arrived at destination)
-				list<DynamicEntity*>::const_iterator it = units.begin();
-
-				bool isTarget = true;
-
-				while (it != units.end()) {
-
-					if (!(*it)->SetCurrTarget(building))
-						isTarget = false;
-
-					it++;
-				}
-
-				if (isTarget)
-
-					App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
-			}
-
-			/// SET GOAL (COMMAND MOVE TO POSITION)
-			// Draw a shaped goal
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
-
-				group->DrawShapedGoal(mouseTile);
-
-			// Set a normal or shaped goal
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
-
-				bool isGoal = false;
-
-				if (group->GetShapedGoalSize() <= 1) {
-
-					group->ClearShapedGoal();
-
-					if (group->SetGoal(mouseTile)) /// normal goal
-
-						isGoal = true;
-				}
-				else if (group->SetShapedGoal()) /// shaped goal
-
-					isGoal = true;
-
-				if (isGoal) {
-
-					uint isPatrol = 0;
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr) {
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
+					bool isTarget = true;
+
 					while (it != units.end()) {
 
-						if ((*it)->GetUnitCommand() == UnitCommand_Patrol)
-							isPatrol++;
+						if (!(*it)->SetCurrTarget(target))
+							isTarget = false;
 
 						it++;
 					}
 
-					/// If all units are in the Patrol command or the AttackTarget command, do not set the MoveToPosition command
-					bool isFull = false;
+					if (isTarget) {
+						// All the group is issued to attack this enemy (DYNAMIC ENTITY: enemy)
+						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
 
-					if (isPatrol == units.size() || target != nullptr || critter != nullptr)
-						isFull = true;
+						SDL_Rect targetRect = { target->GetPos().x, target->GetPos().y, target->GetSize().x, target->GetSize().y };
+						App->printer->PrintQuad(targetRect, ColorRed);
+					}
+				}
 
-					if (!isFull)
-						App->entities->CommandToUnits(units, UnitCommand_MoveToPosition);
+				/// Critter
+				Entity* critter = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
+
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr) {
+
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					bool isTarget = true;
+
+					while (it != units.end()) {
+
+						if (!(*it)->SetCurrTarget(critter))
+							isTarget = false;
+
+						it++;
+					}
+
+					if (isTarget) {
+						// All the group is issued to attack this enemy (DYNAMIC ENTITY: neutral)
+						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+
+						SDL_Rect targetRect = { critter->GetPos().x, critter->GetPos().y, critter->GetSize().x, critter->GetSize().y };
+						App->printer->PrintQuad(targetRect, ColorRed);
+					}
+				}
+
+				/// Buildings
+				Entity* building = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
+
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr) {
+
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					bool isTarget = true;
+
+					while (it != units.end()) {
+
+						if (!(*it)->SetCurrTarget(building))
+							isTarget = false;
+
+						it++;
+					}
+
+					if (isTarget) {
+						// All the group is issued to attack this enemy (STATIC ENTITY: enemy)
+						App->entities->CommandToUnits(units, UnitCommand_AttackTarget);
+
+						SDL_Rect targetRect = { building->GetPos().x, building->GetPos().y, building->GetSize().x, building->GetSize().y };
+						App->printer->PrintQuad(targetRect, ColorRed);
+					}
+				}
+
+				//Entities to take in acount when the mouse sprite change
+				Entity* playerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+				Entity* prisioner = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
+
+				// Set the cursor texture
+				if (target != nullptr || critter != nullptr || building != nullptr) {
+					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+					if (r.x != 374)
+						App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
+				}
+				else if (playerUnit != nullptr || playerBuilding != nullptr || prisioner != nullptr) {
+					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+					if (r.x != 374)
+					App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
+				}
+				else {
+					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+					if (r.x != 243)
+						if (!App->player->isMouseOnMine)
+							App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+				}
+
+				/// SET GOAL (COMMAND MOVE TO POSITION)
+				bool isGryphonRider = App->entities->IsOnlyThisTypeOfUnits(units, EntityType_GRYPHON_RIDER);
+				bool isGryphonRiderRunestone = false;
+
+				if (isGryphonRider)			
+					isGryphonRiderRunestone = App->entities->AreAllUnitsDoingSomething(units, UnitState_HealRunestone);
+
+				// Draw a shaped goal
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+
+					if (isGryphonRider && !isGryphonRiderRunestone)
+						group->DrawShapedGoal(mouseTile, false);
+					else
+						group->DrawShapedGoal(mouseTile);
+
+				// Set a normal or shaped goal
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
+
+					bool isGoal = false;
+
+					// Cross particle where the mouse is
+					App->particles->AddParticle(App->particles->cross, App->player->GetMousePos());
+
+					if (group->GetShapedGoalSize() <= 1) {
+					
+						group->ClearShapedGoal();
+
+						if (isGryphonRider && !isGryphonRiderRunestone) {
+							if (group->SetGoal(mouseTile, false)) /// normal goal
+								isGoal = true;
+						}
+						else {
+							if (group->SetGoal(mouseTile)) /// normal goal
+								isGoal = true;
+						}
+					}
+					else if (group->SetShapedGoal()) /// shaped goal
+
+						isGoal = true;
+
+					if (isGoal) {
+						
+						PlayUnitSound(units, false); //Unit command sound
+
+						uint isPatrol = 0;
+
+						list<DynamicEntity*>::const_iterator it = units.begin();
+
+						while (it != units.end()) {
+
+							if ((*it)->GetUnitCommand() == UnitCommand_Patrol)
+								isPatrol++;
+
+							it++;
+						}
+
+						/// If all units are in the Patrol command or the AttackTarget command, do not set the MoveToPosition command
+						bool isFull = false;
+
+						if (isPatrol == units.size() || target != nullptr || critter != nullptr)
+							isFull = true;
+
+						if (!isFull)
+							App->entities->CommandToUnits(units, UnitCommand_MoveToPosition);
+					}
 				}
 			}
 		}
 	}
+	//_*****UNITS*****
 	
 	// ---------------------------------------------------------------------------------
 
@@ -596,26 +609,12 @@ bool j1Scene::Update(float dt)
 	CheckCameraMovement(dt);
 
 	//Checks if resources have changed to update building menu and gold label
-	if (hasGoldChanged) {
-		UnLoadResourcesLabels();
-		LoadResourcesLabels();
-		if (buildingMenuOn) {
-			UnLoadBuildingMenu();
-			LoadBuildingMenu();
-		}
-		hasGoldChanged = false;
-	}
-	if (hasFoodChanged != FoodChange_NONE) {
-		UnLoadResourcesLabels();
-		LoadResourcesLabels();
-		if (hasFoodChanged == FoodChange_LESS)
-			App->entities->SetPlayerSoldiers(App->player->currentFood);
-		hasFoodChanged = FoodChange_NONE;
-	}
 
-	if (terenasDialogTimer.Read() >= 30000 && terenasDialogEvent != TerenasDialog_NONE) {
-		terenasDialogEvent = TerenasDialog_NONE;
-		UnLoadTerenasDialog();
+	if (terenasDialogTimer.Read() >= 25000 && terenasDialogEvent == TerenasDialog_START) {
+		HideTerenasDialog();
+	}
+	if (terenasDialogTimer.Read() >= 5000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
+		HideTerenasDialog();
 	}
 
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
@@ -624,22 +623,67 @@ bool j1Scene::Update(float dt)
 		//App->map->CreateNewMap();
 	}
 
-//	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
-	//	App->win->scale += 0.05f;
-
-//	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT) 
-//		App->win->scale -= 0.05f;
-
-	if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
-	}
-
 	if (parchmentImg != nullptr)
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
 
+
+	switch (pauseMenuActions)
+	{
+	case PauseMenuActions_NONE:
+		break;
+	case PauseMenuActions_NOT_EXIST:
+		break;
+	case PauseMenuActions_CREATED:
+		CreatePauseMenu();
+
+		if (alphaBuilding != EntityType_NONE) {
+			alphaBuilding = EntityType_NONE;
+			if (alphaBuilding != EntityType_MAX)
+			{
+				SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+				SDL_SetTextureAlphaMod(App->entities->GetNeutralBuildingTexture(), 255);
+			}
+		}
+
+		pauseMenuActions = PauseMenuActions_NONE;
+		break;
+	case PauseMenuActions_DESTROY:
+		if (parchmentImg != nullptr) {
+			parchmentImg->toRemove = true;
+			parchmentImg = nullptr;
+		}
+		DestroyPauseMenu();
+		DestroySettingsMenu();
+		pauseMenuActions = PauseMenuActions_NOT_EXIST;
+		break;
+	case PauseMenuActions_RETURN_MENU:
+		pauseMenuActions = PauseMenuActions_NONE;
+		isFadeToMenu = true;
+		break;
+	case PauseMenuActions_SETTINGS_MENU:
+		DestroyPauseMenu();
+		CreateSettingsMenu();
+		pauseMenuActions = PauseMenuActions_NONE;
+		break;
+	
+	default:
+		break;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		if (parchmentImg == nullptr) {
+			UIImage_Info parchmentInfo;
+			parchmentInfo.texArea = App->gui->parchmentArea;
+			parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
+			parchmentImg->StartAnimation(App->gui->parchmentAnim);
+			parchmentImg->SetPriorityDraw(PriorityDraw_WINDOW);
+		}
+		else {
+			pauseMenuActions = PauseMenuActions_DESTROY;
+		}
+	}
 	return ret;
 }
 
@@ -648,51 +692,50 @@ bool j1Scene::PostUpdate()
 {
 	bool ret = true;
 
-	switch (pauseMenuActions)
-	{
-	case PauseMenuActions_NONE:
-		break;
-	case PauseMenuActions_CREATED:
-		CreatePauseMenu();
-		pauseMenuActions = PauseMenuActions_NONE;
-		break;
-	case PauseMenuActions_DESTROY:
-		if (parchmentImg != nullptr) {
-			App->gui->DestroyElement((UIElement**)&parchmentImg);
-		}
-		DestroyPauseMenu();
-		DestroySettingsMenu();
-		pauseMenuActions = PauseMenuActions_NOT_EXIST;
-		break;
-	case PauseMenuActions_RETURN_MENU:
-		pauseMenuActions = PauseMenuActions_NONE;
-		App->fade->FadeToBlack(this, App->menu);
-		App->menu->active = true;
-			break;
-	case PauseMenuActions_SETTINGS_MENU:
-		DestroyPauseMenu();
-		CreateSettingsMenu();
-		pauseMenuActions = PauseMenuActions_NONE;		
-		break;
-	case PauseMenuActions_SLIDERFX:
-		App->menu->UpdateSlider(AudioFXPause);
-		break;
-	case PauseMenuActions_SLIDERMUSIC:
-		App->menu->UpdateSlider(AudioMusicPause);
-	default:
-		break;
-	}
 	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
-		ret = false;
-		if (parchmentImg != nullptr) {
-			App->gui->DestroyElement((UIElement**)&parchmentImg);
-		}
+
+		App->gui->RemoveElem((UIElement**)&parchmentImg);
+		return false;
 	}
 
 	if (App->player->imagePrisonersVector.size() >= 2) {
+
+		App->player->isWin = true;
+
+		if (!isStartedFinalTransition) {
+		
+			finalTransition.Start();
+			isStartedFinalTransition = true;
+		}
+	}
+	else if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
+	
 		App->player->isWin = true;
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
+	}
+
+	// Final transition timer (when win is achieved)
+	if (App->player->isWin && finalTransition.ReadSec() >= 5.0f) {
+
+		App->fade->FadeToBlack(this, App->finish);
+		App->finish->active = true;
+	}
+	
+	if (((App->player->currentGold < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
+		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)) {
+
+		App->player->isWin = false;
+		App->fade->FadeToBlack(this, App->finish);
+		App->finish->active = true;
+	}
+	else
+		isStarted = true;
+
+	if (isFadeToMenu) {
+		App->fade->FadeToBlack(this, App->menu);
+		App->menu->active = true;
+		isFadeToMenu = false;
 	}
 
 	return ret;
@@ -706,29 +749,35 @@ bool j1Scene::CleanUp()
 	LOG("Freeing scene");
 
 	App->audio->PauseMusic();
-	App->map->UnLoad();
 	App->tex->UnLoad(debugTex);
 
-	UnLoadTerenasDialog();
-
-	RELEASE_ARRAY(data);
-	DestroyAllUI();
+	if (!App->gui->isGuiCleanUp)
+		DestroyAllUI();
 	//warcraftActive = false;
 
 	// Set to nullptr the pointers to the UI elements
+	active = false;
 	App->map->active = false;
 	App->player->active = false;
 	App->entities->active = false;
 	App->collision->active = false;
 	App->pathfinding->active = false;
+	App->pathmanager->active = false;
+	App->movement->active = false;
+	App->particles->active = false;
+	App->wave->active = false;
 
 	App->map->UnLoad();
 	App->player->CleanUp();
 	App->entities->CleanUp();
-	App->collision->CleanUp();
+	App->particles->CleanUp();
+	App->movement->CleanUp();
+	App->pathmanager->CleanUp();
 	App->pathfinding->CleanUp();
+	App->collision->CleanUp();
+	App->wave->CleanUp();
 
-	active = false;
+	RELEASE_ARRAY(data);
 
 	return ret;
 }
@@ -749,10 +798,10 @@ void j1Scene::DebugKeys()
 
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 		debugDrawMap = !debugDrawMap;
-	*/
+*/
 
 	// F1: start from the beginning of the first level
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
+	//if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
 		/*
 		if (index == 0)
 			App->entities->playerData->position = App->entities->playerData->startPos;
@@ -761,17 +810,17 @@ void j1Scene::DebugKeys()
 
 		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
-	}
+	//}
 
 	// F2: start from the beginning of the current level
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
+	//if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
 		/*
 		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
-	}
+	//}
 
 	// F4: change between maps
-	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN) {
+	//if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN) {
 		/*
 		if (index == 0)
 			index = 1;
@@ -780,25 +829,25 @@ void j1Scene::DebugKeys()
 
 		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
 		*/
-	}
+	//}
 
 	// F5: save the current state
-	if (App->input->GetKey(buttonSaveGame) == KEY_DOWN) {
-		App->SaveGame();
-	}
+	//if (App->input->GetKey(buttonSaveGame) == KEY_DOWN) {
+	//	App->SaveGame();
+	//}
 
 	// F6: load the previous state
-	if (App->input->GetKey(buttonLoadGame) == KEY_DOWN) {
-		App->LoadGame();
-	}
+	//if (App->input->GetKey(buttonLoadGame) == KEY_DOWN) {
+	//	App->LoadGame();
+	//}
 
 	// F7: fullscreen
 	if (App->input->GetKey(buttonFullScreen) == KEY_DOWN)
 		App->win->SetFullscreen();
 
 	// F10: God mode
-	if (App->input->GetKey(buttonGodMode) == KEY_DOWN)
-		god = !god;
+	//if (App->input->GetKey(buttonGodMode) == KEY_DOWN)
+		//god = !god;
 
 	// 1, 2, 3: camera blit
 	/*
@@ -811,6 +860,17 @@ void j1Scene::DebugKeys()
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
 		App->map->cameraBlit = !App->map->cameraBlit;
 		*/
+
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		App->render->camera.x = -basePos.x;
+		App->render->camera.y = -basePos.y;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN) {
+		ChangeBuildingMenuState(&buildingMenuButtons);
+	}
+
 }
 
 void j1Scene::CheckCameraMovement(float dt) {
@@ -819,18 +879,23 @@ void j1Scene::CheckCameraMovement(float dt) {
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
 	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
 
+	//NOT MOVING WITH App->input->GetKey(buttonMoveUp) == KEY_REPEAT
 	//Move with arrows
 	//UP
-	if (App->input->GetKey(buttonMoveUp) == KEY_REPEAT && App->render->camera.y <= 0)
+	if ((App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) 
+		&& App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	//DOWN
-	if (App->input->GetKey(buttonMoveDown) == KEY_REPEAT && App->render->camera.y >= downMargin)
+	if ((App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		&& App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	//LEFT
-	if (App->input->GetKey(buttonMoveLeft) == KEY_REPEAT && App->render->camera.x <= 0)
+	if ((App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		&& App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	//RIGHT
-	if (App->input->GetKey(buttonMoveRight) == KEY_REPEAT && App->render->camera.x >= rightMargin)
+	if ((App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		&& App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
 
 	//Move with mouse
@@ -838,13 +903,13 @@ void j1Scene::CheckCameraMovement(float dt) {
 	if (mouse.y <= (camMovMargin - App->render->camera.y) /scale && App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	////DOWN
-	if (mouse.y >= (height - (camMovMargin + 15) - App->render->camera.y) / scale && App->render->camera.y >= downMargin)
+	if (mouse.y >= (height - (camMovMargin + 30) - App->render->camera.y) / scale && App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	////LEFT
 	if (mouse.x <= (camMovMargin - App->render->camera.x) / scale && App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	////RIGHT
-	if (mouse.x >= (width - (camMovMargin + 15) - App->render->camera.x) / scale && App->render->camera.x >= rightMargin)
+	if (mouse.x >= (width - (camMovMargin + 30) - App->render->camera.x) / scale && App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
 
 }
@@ -853,15 +918,16 @@ void j1Scene::LoadInGameUI()
 {
 	//Buiding options
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = {0, 0, 126, 26};
+	buttonInfo.normalTexArea = { 0, 0, 126, 26 };
 	buttonInfo.hoverTexArea = { 129, 0, 126, 26 };
 	buttonInfo.pressedTexArea = { 257, 0, 126, 26 };
-	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this, nullptr);
+	buildingButton = App->gui->CreateUIButton({ (int)App->render->camera.w - buttonInfo.normalTexArea.w - 15, 0 }, buttonInfo, this);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.text = "Buildings";
+	labelInfo.interactive = false;
 	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, buildingButton);
 
 
@@ -869,280 +935,493 @@ void j1Scene::LoadInGameUI()
 	pauseMenuButt = App->gui->CreateUIButton({ 5,1 }, buttonInfo, this);
 
 	labelInfo.text = "Menu";
-	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w/2, 8 }, labelInfo, this, pauseMenuButt);
+	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, pauseMenuButt);
 
 
 	UIImage_Info entitiesInfo;
+	entitiesInfo.draggable = false;
 	entitiesInfo.texArea = { 0, 565, 371, 82 };
 	entitiesStats = App->gui->CreateUIImage({ (int)App->render->camera.w - entitiesInfo.texArea.w,(int)App->render->camera.h - entitiesInfo.texArea.h }, entitiesInfo, this);
-	entitiesStats->SetPriorityDraw(PriorityDraw_UIINGAME);
+	entitiesStats->SetPriorityDraw(PriorityDraw_WINDOW);
 
-	entitiesInfo.texArea={ 1006,0,800,600 };
+	entitiesInfo.texArea = { 1006,0,800,600 };
 	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
 	inGameFrameImage->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
 	LoadResourcesLabels();
+	LoadBuildingMenu();
+	LoadUnitsMenuInfo();
+	LoadTerenasDialog();
+	//create this before entitiesInfo (Parent)
+	App->player->CreateEntitiesStatsUI();
+	App->player->CreateGroupSelectionButtons();
+	App->player->CreateUISpawningUnits();
+}
+
+void j1Scene::LoadUnitsMenuInfo()
+{
+	int cont = 0;
+	while (groupElementsList.size() < 8) {
+		UIImage* image = nullptr;
+		UILifeBar* lifeBar = nullptr;
+
+
+		image = App->player->CreateGroupIcon({ 54 * (cont % 4) + 3, 39 * (cont / 4) + 4 }, { 0, 0, 0, 0 });
+		image->isActive = false;
+		lifeBar = CreateGroupLifeBar({ 54 * (cont % 4) + 2, 39 * (cont / 4) + 33 }, { 240,362,47,7 }, { 242,358,42,3 });
+		lifeBar->isActive = false;
+
+		groupElementsList.push_back({ nullptr, image, lifeBar });
+		cont++;
+	}
+	CreateAbilitiesButtons();
+}
+
+UILifeBar* j1Scene::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea)
+{
+	UILifeBar_Info lifeInfo;
+	lifeInfo.background = backgroundTexArea;
+	lifeInfo.bar = barTexArea;
+	lifeInfo.maxWidth = lifeInfo.bar.w;
+	lifeInfo.lifeBarPosition = { 2, 2 };
+	return App->gui->CreateUILifeBar(lifeBarPos, lifeInfo, nullptr, (UIElement*)App->scene->entitiesStats);
+}
+
+void j1Scene::CreateAbilitiesButtons()
+{
+	UIButton_Info infoButton;
+
+	infoButton.normalTexArea = { 802,202,50,41 };
+	infoButton.hoverTexArea = { 904, 202, 50, 41 };
+	infoButton.pressedTexArea = { 853,202,50,41 };
+	commandStopButton = App->gui->CreateUIButton({ 217, 2 }, infoButton, this, (UIElement*)App->scene->entitiesStats);
+	commandStopButton->isActive = false;
+
+	infoButton.normalTexArea = { 649,202,50,41 };
+	infoButton.hoverTexArea = { 751, 202, 50, 41 };
+	infoButton.pressedTexArea = { 700,202,50,41 };
+	commandPatrolButton = App->gui->CreateUIButton({ 268, 2 }, infoButton, this, (UIElement*)App->scene->entitiesStats);
+	commandPatrolButton->isActive = false;
+}
+
+void j1Scene::LoadTerenasDialog()
+{
+	UIImage_Info imageInfo;
+	imageInfo.texArea = { 734,34,70,100 };
+	terenasAdvices.terenasImage = App->gui->CreateUIImage({ 695,32 }, imageInfo, this);
+	terenasAdvices.terenasImage->isActive = false;
+
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.interactive = false;
+	terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
+	terenasAdvices.text->isActive = false;
+}
+
+void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
+{
+	list<DynamicEntity*>::iterator iterator = units.begin();
+	while (iterator != units.end()) {
+		UIImage* image = nullptr;
+		UILifeBar* lifeBar = nullptr;
+		if (units.size() == 1) {
+			App->player->MakeUnitMenu((*iterator));
+		}
+		else {
+			for (list<GroupSelectedElements>::iterator iteratorInfo = groupElementsList.begin(); iteratorInfo != groupElementsList.end(); ++iteratorInfo)
+			{
+				if (!(*iteratorInfo).entityIcon->isActive)
+				{
+					SDL_Rect text;
+					if ((*iterator)->dynamicEntityType == EntityType_FOOTMAN) {
+						text = { 649, 160, 46, 30 };
+						(*iteratorInfo).entityIcon->SetNewRect(text);
+					}
+					else if ((*iterator)->dynamicEntityType == EntityType_ELVEN_ARCHER) {
+						text = { 696, 160, 46, 30 };
+						(*iteratorInfo).entityIcon->SetNewRect(text);
+					}
+					else if ((*iterator)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						text = { 702, 288, 46, 30 };
+						(*iteratorInfo).entityIcon->SetNewRect(text);
+					}
+					(*iteratorInfo).entityIcon->isActive = true;
+					(*iteratorInfo).entityLifeBar->SetLife((*iterator)->GetCurrLife());
+					(*iteratorInfo).entityLifeBar->SetMaxLife((*iterator)->GetMaxLife());
+					(*iteratorInfo).entityLifeBar->isActive = true;
+					(*iteratorInfo).owner = *iterator;
+					break;
+				}
+			}
+		}
+		iterator++;
+	}
+	commandPatrolButton->isActive = true;
+	commandStopButton->isActive = true;
+}
+
+
+void j1Scene::HideUnselectedUnits()
+{
+	//One Selection
+	if (App->player->entitySelectedStats.entitySelected != nullptr)
+	{
+		App->player->entitySelectedStats.entitySight->isActive = false;
+		App->player->entitySelectedStats.entityRange->isActive = false;
+		App->player->entitySelectedStats.entityDamage->isActive = false;
+		App->player->entitySelectedStats.entitySpeed->isActive = false;
+	}
+	//Group Selection
+	else {
+		for (list<GroupSelectedElements>::iterator iteratorInfo = groupElementsList.begin(); iteratorInfo != groupElementsList.end(); ++iteratorInfo)
+		{
+
+			if ((*iteratorInfo).owner != nullptr)
+			{
+				(*iteratorInfo).entityLifeBar->isActive = false;
+				(*iteratorInfo).entityIcon->isActive = false;
+				(*iteratorInfo).owner = nullptr;
+			}
+			else {
+				break;
+			}
+		}
+	}
+	commandPatrolButton->isActive = false;
+	commandStopButton->isActive = false;
+}
+
+//This function executes a unit sound depending on if it is a command sound or selection, and on which entity and 
+//numer of entities are on the selection, depending on the type
+void j1Scene::PlayUnitSound(list<DynamicEntity*> units, bool isSelect)
+{
+	uint footmanNum = 0, archerNum = 0, gryphonNum = 0;
+
+	list<DynamicEntity*>::iterator iterator = units.begin();
+
+	while (iterator != units.end()) {
+		switch ((*iterator)->dynamicEntityType) {
+		case EntityType_FOOTMAN:
+			footmanNum++;
+			break;
+		case EntityType_ELVEN_ARCHER:
+			archerNum++;
+			break;
+		case EntityType_GRYPHON_RIDER:
+			gryphonNum++;
+			break;
+		default:
+			break;
+	}
+		iterator++;
+	}
+
+	//Chooses a random sound to make for the unit
+	FX footmanSound = ChooseRandomUnitSound(EntityType_FOOTMAN, isSelect);
+	FX archerSound = ChooseRandomUnitSound(EntityType_ELVEN_ARCHER, isSelect);
+	FX gryphonSound = ChooseRandomUnitSound(EntityType_GRYPHON_RIDER, isSelect);
+
+	//Selects which sound to play depending on the number of entities that compose the unit selection
+	if (footmanNum > archerNum + gryphonNum) {
+		App->audio->PlayFx(footmanSound, 0);
+	}
+
+	else if (archerNum > footmanNum + gryphonNum) {
+		App->audio->PlayFx(archerSound, 0);
+	}
+
+	else if(gryphonNum > archerNum + footmanNum)
+		App->audio->PlayFx(gryphonSound, 0);
+
+	else if (footmanNum == archerNum && footmanNum != gryphonNum) {
+		uint rng = rand() % 2 + 1;
+
+		if (rng == 1) 
+			App->audio->PlayFx(footmanSound, 0);
+
+		else if (rng == 2)
+			App->audio->PlayFx(archerSound, 0);
+	}
+	else if (footmanNum == gryphonNum && footmanNum != archerNum) {
+		uint rng = rand() % 2 + 1;
+
+		if (rng == 1)
+			App->audio->PlayFx(footmanSound, 0);
+		else if (rng == 2)
+			App->audio->PlayFx(gryphonSound, 0);
+	}
+	else if (archerNum == gryphonNum && archerNum != footmanNum) {
+		uint rng = rand() % 2 + 1;
+
+		if (rng == 1)
+			App->audio->PlayFx(archerSound, 0);
+		else if (rng == 2)
+			App->audio->PlayFx(gryphonSound, 0);
+	}
+	else if (footmanNum == archerNum && footmanNum == gryphonNum) {
+		uint rng = rand() % 2 + 1;
+
+		if (rng == 1)
+			App->audio->PlayFx(footmanSound, 0);
+		else if (rng == 2)
+			App->audio->PlayFx(archerSound, 0);
+		else if (rng == 3)
+			App->audio->PlayFx(gryphonSound, 0);
+	}
+	else
+		App->audio->PlayFx(footmanSound, 0); //default
+}
+
+//This function chooses a random sound for the unit to make when selected or being commanded somwhere
+FX j1Scene::ChooseRandomUnitSound(ENTITY_TYPE unitType, bool isSelect)
+{
+	FX unitSound = 0;
+	list<FX> posibleFX;
+	uint rng = rand() % 4 + 1; //Random number for the sound choosing
+
+	//Looks for which sound it has to choose depending on the entity type and if it is a selection or a command
+	switch (unitType) {
+	case EntityType_FOOTMAN:
+		if (isSelect) {
+			rng = rand() % 5 + 1; //These are five sounds to choose instead of four
+			posibleFX.push_back(App->audio->GetFX().footmanSelected1);
+			posibleFX.push_back(App->audio->GetFX().footmanSelected2);
+			posibleFX.push_back(App->audio->GetFX().footmanSelected3);
+			posibleFX.push_back(App->audio->GetFX().footmanSelected4);
+			posibleFX.push_back(App->audio->GetFX().footmanSelected5);
+		}
+		else if (!isSelect) {
+			posibleFX.push_back(App->audio->GetFX().footmanCommand1);
+			posibleFX.push_back(App->audio->GetFX().footmanCommand2);
+			posibleFX.push_back(App->audio->GetFX().footmanCommand3);
+			posibleFX.push_back(App->audio->GetFX().footmanCommand4);
+		}
+		break;
+	case EntityType_ELVEN_ARCHER:
+		if (isSelect) {
+			posibleFX.push_back(App->audio->GetFX().archerSelected1);
+			posibleFX.push_back(App->audio->GetFX().archerSelected2);
+			posibleFX.push_back(App->audio->GetFX().archerSelected3);
+			posibleFX.push_back(App->audio->GetFX().archerSelected4);
+		}
+		else if (!isSelect) {
+			posibleFX.push_back(App->audio->GetFX().archerCommand1);
+			posibleFX.push_back(App->audio->GetFX().archerCommand2);
+			posibleFX.push_back(App->audio->GetFX().archerCommand3);
+			posibleFX.push_back(App->audio->GetFX().archerCommand4);
+		}
+		break;
+	case EntityType_GRYPHON_RIDER:
+		if (isSelect) {
+			return App->audio->GetFX().griffonSelected;
+		}
+		else if (!isSelect) {
+			return App->audio->GetFX().griffonCommand;
+		}
+		break;
+	default:
+		break;
+	}
+	
+	uint auxNum = 1;
+	list<FX>::const_iterator it = posibleFX.begin();
+	//Chooses the random sound depending on the random number generated (rng)
+	while (it != posibleFX.end()) {
+		if (rng == auxNum)
+			unitSound = (*it);
+		auxNum++;
+		it++;
+	}
+
+	return unitSound;
+}
+	
+void j1Scene::ChangeBuildingButtState(MenuBuildingButton* elem)
+{
+	elem->cost->isActive = !elem->cost->isActive;
+	elem->icon->isActive = !elem->icon->isActive;
+	elem->name->isActive = !elem->name->isActive;
+}
+void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem)
+{
+	buildingMenu->isActive = !buildingMenu->isActive;
+	ChangeBuildingButtState(&elem->cannonTower);
+	ChangeBuildingButtState(&elem->chickenFarm);
+	ChangeBuildingButtState(&elem->gryphonAviary);
+	ChangeBuildingButtState(&elem->guardTower);
+	ChangeBuildingButtState(&elem->mageTower);
+	ChangeBuildingButtState(&elem->scoutTower);
+	ChangeBuildingButtState(&elem->stables);
+	ChangeBuildingButtState(&elem->barracks);
+	if (buildingMenu->isActive)
+	{
+		UpdateLabelsMenu();
+		UpdateIconsMenu();
+	}
+}
+void j1Scene::UpdateIconsMenu()
+{
+	ChangeMenuIconsText(buildingMenuButtons.chickenFarm.icon, chickenFarmCost, { 241,34,50,41 }, { 292,34,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.cannonTower.icon, cannonTowerCost, { 394,118,50,41 }, { 445,118,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.guardTower.icon, guardTowerCost, { 394,76,50,41 }, { 445,76,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.mageTower.icon, mageTowerCost, { 496,202,50,41 }, { 496,202,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.stables.icon, stablesCost, { 343,160,50,41 }, { 343,160,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 });
+	//Only one construction for each one
+	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracksCost, { 394,34,50,41 }, { 445,34,50,41 }, true, App->player->barracks);
+	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 }, true, App->player->gryphonAviary);
+}
+void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle, StaticEntity* stcEntity)
+{
+	if (isSingle) {
+		if (stcEntity == nullptr && App->player->currentGold >= cost)
+			butt->ChangesTextsAreas(true, normalText, hoverText);
+		else
+			butt->ChangesTextsAreas(false);
+	}
+	else {
+		if (App->player->currentGold >= cost)
+			butt->ChangesTextsAreas(true, normalText, hoverText);
+		else 
+			butt->ChangesTextsAreas(false);
+	}
+}
+
+void j1Scene::UpdateLabelsMenu()
+{
+
+	ChangeMenuLabelInfo(buildingMenuButtons.cannonTower.cost, cannonTowerCost);
+	ChangeMenuLabelInfo(buildingMenuButtons.chickenFarm.cost, chickenFarmCost);
+	ChangeMenuLabelInfo(buildingMenuButtons.guardTower.cost, guardTowerCost);
+	ChangeMenuLabelInfo(buildingMenuButtons.mageTower.cost, mageTowerCost);
+	ChangeMenuLabelInfo(buildingMenuButtons.stables.cost, stablesCost);
+	ChangeMenuLabelInfo(buildingMenuButtons.scoutTower.cost, scoutTowerCost);
+	//Only one construction for each one
+	ChangeMenuLabelInfo(buildingMenuButtons.barracks.cost, barracksCost, true, App->player->barracks);
+	ChangeMenuLabelInfo(buildingMenuButtons.gryphonAviary.cost, gryphonAviaryCost, true, App->player->gryphonAviary);
+}
+
+void j1Scene::ChangeMenuLabelInfo(UILabel * Label, int cost, bool isSingle, StaticEntity* stcEntity)
+{
+	//Text if you only can have one building like barracks
+	if (isSingle) {
+		if (stcEntity == nullptr) {
+
+			if (App->player->currentGold >= cost)
+				Label->SetColor(White_, true);
+			else
+				Label->SetColor(BloodyRed_, true);
+
+			Label->SetText("Cost: " + to_string(cost) + " gold");
+		}
+		else {
+			Label->SetColor(BloodyRed_, true);
+			Label->SetText("You already have it");
+		}
+	}
+	else {
+
+		if (App->player->currentGold >= cost)
+			Label->SetColor(White_, true);
+		else
+			Label->SetColor(BloodyRed_, true);
+	}
 }
 
 void j1Scene::LoadBuildingMenu()
 {
+
+	UIImage_Info imageInfo;
+	imageInfo.draggable = false;
+	imageInfo.texArea = { 0,33,240,529 };
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_RIGHT;
+	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this, nullptr);
+	buildingMenuOn = true;
+	buildingMenu->SetPriorityDraw(PriorityDraw_UNDER_FRAMEWORK);
+	buildingMenu->isActive = false;
+
+	if (buildingMenu->type != UIE_TYPE_NO_TYPE)
+	{
+
+		CreateBuildingElements({ 343,34,50,41 }, { 585, 55 }, "Chicken Farm",
+			"Cost: 250 gold", { 645, 65 }, { 645, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
+
+		CreateBuildingElements( { 343,160,50,41 }, { 585, 100 }, "Stables",
+			"Cost: 900 gold", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
+	
+		CreateBuildingElements( { 496,160,50,41 }, { 585, 145 }, "Gryphon Aviary",
+			"Cost: 400 gold", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
+		
+		CreateBuildingElements( { 496,202,50,41 }, { 585, 190 }, "Mage Tower",
+			"Cost: 1000 gold", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
+		
+		CreateBuildingElements( { 496,34,50,41 }, { 585, 235 }, "Scout Tower",
+			"Cost: 400 gold", { 645, 245 }, { 645, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
+		
+		CreateBuildingElements({ 496,76,50,41 }, { 585, 280 }, "Guard Tower",
+			"Cost: 600 gold", { 645, 290 }, { 645, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
+		
+		CreateBuildingElements({ 496,118,50,41 }, { 585, 325 }, "Cannon Tower",
+			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
+
+		CreateBuildingElements({ 547,160,50,41 }, { 585, 370 }, "Barracks",
+			"Cost: 1000 gold", { 645, 380 }, { 645, 397 }, barracksCost, &buildingMenuButtons.barracks);
+	}
+}
+
+void j1Scene::CreateBuildingElements(SDL_Rect TexArea, iPoint buttonPos, string buildingName, string buildingCost,  
+									 iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem)
+{
 	UIButton_Info buttonInfo;
 	UILabel_Info labelInfo;
 
-	UIImage_Info imageInfo;
-	imageInfo.texArea = { 0,33,240,529 };
-	buildingMenu = App->gui->CreateUIImage({ -110, 0 }, imageInfo, this, buildingButton);
-	buildingMenuOn = true;
-	buildingMenu->SetPriorityDraw(PriorityDraw_UIINGAME);
+	buttonInfo.normalTexArea = buttonInfo.hoverTexArea = buttonInfo.pressedTexArea = TexArea;
 
-	buttonInfo.normalTexArea = { 241,34,50,41 };
-	buttonInfo.hoverTexArea = { 292,34,50,41 };
-	buttonInfo.pressedTexArea = { 343,34,50,41 };
-	if (App->player->currentGold < chickenFarmCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	chickenFarmButton = App->gui->CreateUIButton({ 15, 55 }, buttonInfo, this, buildingMenu);
+	elem->icon = App->gui->CreateUIButton(buttonPos, buttonInfo, this);
+	elem->icon->isActive = false;
 
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Chicken Farm";
+	labelInfo.interactive = false;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	labelInfo.text = buildingName;
 	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 65 }, labelInfo, this, buildingMenu));
+
+	elem->name = App->gui->CreateUILabel(namePos, labelInfo, this);
+	elem->name->isActive = false;
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 500 gold";
-	if (App->player->currentGold < chickenFarmCost) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 82 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 343,76,50,41 };
-	buttonInfo.hoverTexArea = { 343,76,50,41 };
-	buttonInfo.pressedTexArea = { 343,76,50,41 };
-	if (App->player->currentGold < elvenLumberCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	elvenLumberButton = App->gui->CreateUIButton({ 15, 100 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Elven Lumber Mill";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 110}, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
+	labelInfo.text = buildingCost;
 	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 127 }, labelInfo, this, buildingMenu));
 
-	buttonInfo.normalTexArea = { 343,118,50,41 };
-	buttonInfo.hoverTexArea = { 343,118,50,41 };
-	buttonInfo.pressedTexArea = { 343,118,50,41 };
-	if (App->player->currentGold < blacksmithCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	blackSmithButton = App->gui->CreateUIButton({ 15, 145 }, buttonInfo, this, buildingMenu);
+	elem->cost = App->gui->CreateUILabel(costPos, labelInfo, this);
+	elem->cost->isActive = false;
+}
 
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Blacksmith";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 155 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 172 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 343,160,50,41 };
-	buttonInfo.hoverTexArea = { 343,160,50,41 };
-	buttonInfo.pressedTexArea = { 343,160,50,41 };
-	if (App->player->currentGold < stablesCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	stablesButton = App->gui->CreateUIButton({ 15, 190 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Stables";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 200 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-	
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 217 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 343,202,50,41 };
-	buttonInfo.hoverTexArea = { 343,202,50,41 };
-	buttonInfo.pressedTexArea = { 343,202,50,41 };
-	if (App->player->currentGold < churchCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	churchButton = App->gui->CreateUIButton({ 15, 235 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Church";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 245 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-	
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 262 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 496,160,50,41 };
-	buttonInfo.hoverTexArea = { 496,160,50,41 };
-	buttonInfo.pressedTexArea = { 496,160,50,41 };
-	if (App->player->currentGold < gryphonAviaryCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	gryphonAviaryButton = App->gui->CreateUIButton({ 15, 280 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Gryphon Aviary";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 290 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-	
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 307 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 496,202,50,41 };
-	buttonInfo.hoverTexArea = { 496,202,50,41 };
-	buttonInfo.pressedTexArea = { 496,202,50,41 };
-	if (App->player->currentGold < mageTowerCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	mageTowerButton = App->gui->CreateUIButton({ 15, 325 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Mage Tower";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 335 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Coming Soon...";
-	labelInfo.normalColor = BloodyRed_;
-	labelInfo.hoverColor = BloodyRed_;
-	labelInfo.pressedColor = BloodyRed_;
-	
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 352 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 394,34,50,41 };
-	buttonInfo.hoverTexArea = { 445,34,50,41 };
-	buttonInfo.pressedTexArea = { 496,34,50,41 };
-	if (App->player->currentGold < scoutTowerCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	scoutTowerButton = App->gui->CreateUIButton({ 15, 370 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Scout Tower";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 380 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 400 gold";
-	if (App->player->currentGold < scoutTowerCost) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 397 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 394,76,50,41 };
-	buttonInfo.hoverTexArea = { 445,76,50,41 };
-	buttonInfo.pressedTexArea = { 496,76,50,41 };
-	if (App->player->currentGold < guardTowerCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	guardTowerButton = App->gui->CreateUIButton({ 15, 415 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Guard Tower";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 425 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 600 gold";
-	if (App->player->currentGold < guardTowerCost) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 442 }, labelInfo, this, buildingMenu));
-
-	buttonInfo.normalTexArea = { 394,118,50,41 };
-	buttonInfo.hoverTexArea = { 445,118,50,41 };
-	buttonInfo.pressedTexArea = { 496,118,50,41 };
-	if (App->player->currentGold < cannonTowerCost) {
-		buttonInfo.hoverTexArea = buttonInfo.pressedTexArea;
-		buttonInfo.normalTexArea = buttonInfo.pressedTexArea;
-	}
-	cannonTowerButton = App->gui->CreateUIButton({ 15, 460 }, buttonInfo, this, buildingMenu);
-
-	labelInfo.fontName = FONT_NAME::FONT_NAME_WARCRAFT;
-	labelInfo.text = "Cannon Tower";
-	labelInfo.normalColor = White_;
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 470 }, labelInfo, this, buildingMenu));
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = "Cost: 800 gold";
-	if (App->player->currentGold < cannonTowerCost) {
-		labelInfo.normalColor = BloodyRed_;
-		labelInfo.hoverColor = BloodyRed_;
-		labelInfo.pressedColor = BloodyRed_;
-	}
-	buildingLabelsList.push_back(App->gui->CreateUILabel({ 75, 487 }, labelInfo, this, buildingMenu));
+void j1Scene::DeleteBuildingElements(MenuBuildingButton* elem)
+{
+	App->gui->RemoveElem((UIElement**)&elem->name);
+	App->gui->RemoveElem((UIElement**)&elem->cost);
+	App->gui->RemoveElem((UIElement**)&elem->icon);
 }
 
 void j1Scene::UnLoadBuildingMenu()
-{
-	App->gui->DestroyElement((UIElement**)&buildingMenu);
-	App->gui->DestroyElement((UIElement**)&chickenFarmButton);
-	App->gui->DestroyElement((UIElement**)&elvenLumberButton);
-	App->gui->DestroyElement((UIElement**)&blackSmithButton);
-	App->gui->DestroyElement((UIElement**)&stablesButton);
-	App->gui->DestroyElement((UIElement**)&churchButton);
-	App->gui->DestroyElement((UIElement**)&gryphonAviaryButton);
-	App->gui->DestroyElement((UIElement**)&mageTowerButton);
-	App->gui->DestroyElement((UIElement**)&scoutTowerButton);
-	App->gui->DestroyElement((UIElement**)&guardTowerButton);
-	App->gui->DestroyElement((UIElement**)&cannonTowerButton);
+{	
+	DeleteBuildingElements(&buildingMenuButtons.chickenFarm);
+	DeleteBuildingElements(&buildingMenuButtons.stables);
+	DeleteBuildingElements(&buildingMenuButtons.gryphonAviary);
+	DeleteBuildingElements(&buildingMenuButtons.mageTower);
+	DeleteBuildingElements(&buildingMenuButtons.scoutTower);
+	DeleteBuildingElements(&buildingMenuButtons.guardTower);
+	DeleteBuildingElements(&buildingMenuButtons.cannonTower);
+	DeleteBuildingElements(&buildingMenuButtons.barracks);
+	App->gui->RemoveElem((UIElement**)&buildingMenu);
 
-	for (; !buildingLabelsList.empty(); buildingLabelsList.pop_back())
-	{
-		App->gui->DestroyElement((UIElement**)&buildingLabelsList.back());
-	}
 	buildingMenuOn = false;
 }
 
 void j1Scene::LoadResourcesLabels()
 {
 	UILabel_Info labelInfo;
+	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = to_string(App->player->currentGold);
 	goldLabel = App->gui->CreateUILabel({ 224, 0 }, labelInfo, this, inGameFrameImage);
@@ -1152,10 +1431,18 @@ void j1Scene::LoadResourcesLabels()
 	foodLabel = App->gui->CreateUILabel({ 334, 0 }, labelInfo, this, inGameFrameImage);
 }
 
+void j1Scene::UpdateGoldLabel()
+{
+	goldLabel->SetText(to_string(App->player->currentGold));
+}
+void j1Scene::UpdateFoodLabel()
+{
+	foodLabel->SetText(to_string(App->player->currentFood));
+}
 void j1Scene::UnLoadResourcesLabels()
 {
-	App->gui->DestroyElement((UIElement**)&goldLabel);
-	App->gui->DestroyElement((UIElement**)&foodLabel);
+	App->gui->RemoveElem((UIElement**)&goldLabel);
+	App->gui->RemoveElem((UIElement**)&foodLabel);
 }
 
 void j1Scene::CreatePauseMenu() {
@@ -1193,13 +1480,12 @@ void j1Scene::CreatePauseMenu() {
 
 void j1Scene::DestroyPauseMenu() {
 
-	App->gui->DestroyElement((UIElement**)&settingsButt);
-	App->gui->DestroyElement((UIElement**)&ReturnMenuButt);
-	App->gui->DestroyElement((UIElement**)&continueButt);
-	App->gui->DestroyElement((UIElement**)&settingsLabel);
-	App->gui->DestroyElement((UIElement**)&continueLabel);
-	App->gui->DestroyElement((UIElement**)&ReturnMenuLabel);
-
+	App->gui->RemoveElem((UIElement**)&settingsButt);
+	App->gui->RemoveElem((UIElement**)&ReturnMenuButt);
+	App->gui->RemoveElem((UIElement**)&continueButt);
+	App->gui->RemoveElem((UIElement**)&settingsLabel);
+	App->gui->RemoveElem((UIElement**)&continueLabel);
+	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
 }
 
 void j1Scene::CreateSettingsMenu() {
@@ -1256,35 +1542,53 @@ void j1Scene::CreateSettingsMenu() {
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
 }
 
-void j1Scene::DestroySettingsMenu() {
-
-	App->gui->DestroyElement((UIElement**)&returnButt);
-	App->gui->DestroyElement((UIElement**)&returnLabel);
-	App->gui->DestroyElement((UIElement**)&fullScreenButt);
-	App->gui->DestroyElement((UIElement**)&fullScreenLabel);
-	App->gui->DestroyElement((UIElement**)&AudioFXPause.slider);
-	App->gui->DestroyElement((UIElement**)&AudioFXPause.name);
-	App->gui->DestroyElement((UIElement**)&AudioFXPause.value);
-	App->gui->DestroyElement((UIElement**)&AudioMusicPause.slider);
-	App->gui->DestroyElement((UIElement**)&AudioMusicPause.name);
-	App->gui->DestroyElement((UIElement**)&AudioMusicPause.value);
+void j1Scene::DestroySettingsMenu() 
+{
+	App->gui->RemoveElem((UIElement**)&returnButt);
+	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&fullScreenButt);
+	App->gui->RemoveElem((UIElement**)&fullScreenLabel);
+	App->gui->RemoveElem((UIElement**)&AudioFXPause.slider);
+	App->gui->RemoveElem((UIElement**)&AudioFXPause.name);
+	App->gui->RemoveElem((UIElement**)&AudioFXPause.value);
+	App->gui->RemoveElem((UIElement**)&AudioMusicPause.slider);
+	App->gui->RemoveElem((UIElement**)&AudioMusicPause.name);
+	App->gui->RemoveElem((UIElement**)&AudioMusicPause.value);
 
 }
 
-void j1Scene::DestroyAllUI() {
+void j1Scene::DestroyAllUI()
+{
 	if (parchmentImg != nullptr) {
-		App->gui->DestroyElement((UIElement**)&parchmentImg);
+		App->gui->RemoveElem((UIElement**)&parchmentImg);
 	}
+
 	DestroyPauseMenu();
 	DestroySettingsMenu();
 	UnLoadBuildingMenu();
 	UnLoadResourcesLabels();
-	App->gui->DestroyElement((UIElement**)&pauseMenuButt);
-	App->gui->DestroyElement((UIElement**)&pauseMenuLabel);
-	App->gui->DestroyElement((UIElement**)&entitiesStats);
-	App->gui->DestroyElement((UIElement**)&buildingButton);
-	App->gui->DestroyElement((UIElement**)&buildingLabel);
-	App->gui->DestroyElement((UIElement**)&inGameFrameImage);
+	UnLoadTerenasDialog();
+
+	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
+	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
+	App->gui->RemoveElem((UIElement**)&entitiesStats);
+	App->gui->RemoveElem((UIElement**)&buildingLabel);
+	App->gui->RemoveElem((UIElement**)&buildingButton);
+	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
+	App->gui->RemoveElem((UIElement**)&minimap);
+
+
+	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
+		App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
+		App->gui->RemoveElem((UIElement**)&(*iterator).entityLifeBar);
+		(*iterator).owner = nullptr;
+	}
+	groupElementsList.clear();
+
+	App->gui->RemoveElem((UIElement**)&commandPatrolButton);
+	App->gui->RemoveElem((UIElement**)&commandStopButton);
+
+	
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()
@@ -1292,47 +1596,120 @@ PauseMenuActions j1Scene::GetPauseMenuActions()
 	return pauseMenuActions;
 }
 
-void j1Scene::LoadTerenasDialog(TerenasDialogEvents dialogEvent)
+bool j1Scene::CompareSelectedUnitsLists(list<DynamicEntity*> units)
 {
-	UIImage_Info imageInfo;
-	UILabel_Info labelInfo;
-	if (dialogEvent == TerenasDialog_START) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 340;
-		labelInfo.interactive = false;
-		labelInfo.text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
-	}
-	else if (dialogEvent == TerenasDialog_RESCUE_ALLERIA) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 350;
-		labelInfo.interactive = false;
-		labelInfo.text = "Congratulations! You have freed Alleria. I thank you in the name of Azeroth. For the alliance!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
-	}
-	else if (dialogEvent == TerenasDialog_RESCUE_KHADGAR) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 350;
-		labelInfo.interactive = false;
-		labelInfo.text = "Congratulations! You have freed Khadgar. I thank you in the name of Azeroth. For the alliance!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
-	}
-	else if (dialogEvent == TerenasDialog_RESCUE_TURALYON) {
-		labelInfo.fontName = FONT_NAME_WARCRAFT14;
-		labelInfo.textWrapLength = 350;
-		labelInfo.interactive = false;
-		labelInfo.text = "Congratulations! You have freed Turalyon. I thank you in the name of Azeroth. For the alliance!";
-		terenasAdvices.text = App->gui->CreateUILabel({ 305,37 }, labelInfo, this);
-	}
+	bool ret = false;
+	int sizeList = 0;//Want to know how many active icons are
 
+
+	if (App->player->entitySelectedStats.entitySelected != nullptr && units.size() == 1)
+		if (units.front() == App->player->entitySelectedStats.entitySelected)
+			ret = true;
+	if (!ret) {
+		if (units.size() == GetGroupElementSize()) {
+			for (list<DynamicEntity*>::iterator unitsIterator = units.begin(); unitsIterator != units.end(); ++unitsIterator)
+			{
+				for (list<GroupSelectedElements>::iterator playerIterator = groupElementsList.begin(); playerIterator != groupElementsList.end(); ++playerIterator)
+				{
+					if (*unitsIterator == playerIterator->owner)
+					{
+						ret = true;
+						sizeList++;
+						break;
+					}
+					//if owner is nullptr, next ones will be nullptr
+					else if (playerIterator->owner == nullptr) {
+						ret = false;
+						break;
+					}
+					else
+						ret = false;
+				}
+				if (!ret)
+					break;
+				//If size are diferent have to redo information
+			}
+		}
+	}
+	return ret;
+}
+
+uint j1Scene::GetGroupElementSize() 
+{
+	uint size = 0u;
+	for (list<GroupSelectedElements>::iterator playerIterator = groupElementsList.begin(); playerIterator != groupElementsList.end(); ++playerIterator)
+	{
+		if (playerIterator->owner != nullptr) {
+			size++;
+		}
+		else
+			break;
+	}
+	return size;
+}
+void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
+{
+	//TODO: Search the same pos and lenght
+	string text;
+	switch (dialogEvent)
+	{
+	case TerenasDialog_START:
+		text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE!";
+		terenasAdvices.text->SetText(text, 340);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_RESCUE_ALLERIA:
+		text = "Congratulations! You have freed Alleria. I thank you in the name of Azeroth. For the Alliance!";
+		terenasAdvices.text->SetText(text, 350);
+		terenasAdvices.text->SetLocalPos({ 355,37 });
+		break;
+	case TerenasDialog_RESCUE_TURALYON:
+		text = "Congratulations! You have freed Turalyon. I thank you in the name of Azeroth. For the Alliance!";
+		terenasAdvices.text->SetText(text, 350);
+		terenasAdvices.text->SetLocalPos({ 355,37 });
+		break;
+	case TerenasDialog_GOLD_MINE:
+		text = "To get gold from the mine you have to select units and they will gather it.";
+		terenasAdvices.text->SetText(text, 320);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_RUNESTONE:
+		//TODO ??
+		//text = "To get gold from the mine you have to select units and they will gather it.";
+		//terenasAdvices.text->SetText(text, 320);
+		//terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_FOOD:
+		text = "To produce units you need to have enough food to feed them.Build more farms.";
+		terenasAdvices.text->SetText(text, 320);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_GOLD:
+		text = "To produce units you need to have enough gold. Get more from mines.";
+		terenasAdvices.text->SetText(text, 320);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_NONE:
+		break;
+	default:
+		break;
+	}
+	terenasAdvices.text->isActive = true;
+	terenasAdvices.terenasImage->isActive = true;
+}
+
+void j1Scene::HideTerenasDialog()
+{
+	terenasDialogEvent = TerenasDialog_NONE;
+	terenasAdvices.text->isActive = false;
+	terenasAdvices.terenasImage->isActive = false;
 }
 
 void j1Scene::UnLoadTerenasDialog()
 {
-	App->gui->DestroyElement((UIElement**)&terenasAdvices.text);
-	App->gui->DestroyElement((UIElement**)&terenasAdvices.terenasImage);
+	App->gui->RemoveElem((UIElement**)&terenasAdvices.text);
+	App->gui->RemoveElem((UIElement**)&terenasAdvices.terenasImage);
 }
-
 
 void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 {
@@ -1347,113 +1724,107 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		break;
 
 	case UI_EVENT_MOUSE_LEFT_CLICK:
-		if (UIelem == buildingButton) {
-			if (parchmentImg == nullptr) {
-				App->audio->PlayFx(1, 0); //Button sound
+		if (parchmentImg == nullptr) {
 
-				if (!buildingMenuOn)
-					LoadBuildingMenu();
-
-				else
-					UnLoadBuildingMenu();
+			if (UIelem == buildingButton) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+				HideTerenasDialog();
+				ChangeBuildingMenuState(&buildingMenuButtons);
 			}
-		}
 
-		if (UIelem == chickenFarmButton) {
-			if (App->player->currentGold >= chickenFarmCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_CHICKEN_FARM;
+
+			else if (UIelem == buildingMenuButtons.chickenFarm.icon) {
+				if (App->player->currentGold >= chickenFarmCost) {
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_CHICKEN_FARM;
+				}
+				else if (App->player->currentGold < chickenFarmCost)
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
-			else if(App->player->currentGold < chickenFarmCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
-		
-		if (UIelem == stablesButton) {
-			if (App->player->currentGold >= stablesCost) {
-				//App->audio->PlayFx(1, 0); //Button sound
-				//UnLoadBuildingMenu();
-				//alphaBuilding = EntityType_STABLES;
-				App->audio->PlayFx(3, 0); //Button error sound
+
+			else if (UIelem == buildingMenuButtons.stables.icon) {
+				if (App->player->currentGold >= stablesCost) {
+					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					//alphaBuilding = EntityType_STABLES;
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
+				else if (App->player->currentGold < stablesCost)
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
-			else if(App->player->currentGold < stablesCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
-		
-		if (UIelem == elvenLumberButton) {
-			App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == blackSmithButton) {
-			App->audio->PlayFx(3, 0); //Button error sound
-		}
-		
-		if (UIelem == gryphonAviaryButton) {
-			if (App->player->currentGold >= gryphonAviaryCost) {
-				//App->audio->PlayFx(1, 0); //Button sound
-				//UnLoadBuildingMenu();
-				//alphaBuilding = EntityType_GRYPHON_AVIARY;
-				App->audio->PlayFx(3, 0); //Button error sound
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon &&  App->player->gryphonAviary == nullptr) {
+				if (App->player->currentGold >= gryphonAviaryCost) {
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_GRYPHON_AVIARY;
+				}
+				else if (App->player->currentGold < gryphonAviaryCost)
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
-			else if(App->player->currentGold < gryphonAviaryCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == mageTowerButton) {
-			if (App->player->currentGold >= mageTowerCost) {
-				//App->audio->PlayFx(1, 0); //Button sound
-				//UnLoadBuildingMenu();
-				//alphaBuilding = EntityType_MAGE_TOWER;
-				App->audio->PlayFx(3, 0); //Button error sound
+			else if (UIelem == buildingMenuButtons.mageTower.icon) {
+				if (App->player->currentGold >= mageTowerCost) {
+					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					//alphaBuilding = EntityType_MAGE_TOWER;
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
+				else if (App->player->currentGold < mageTowerCost)
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
-			else if(App->player->currentGold < mageTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == churchButton) {
-			App->audio->PlayFx(3, 0); //Button error sound
-		}
-
-		if (UIelem == scoutTowerButton) {
-			if (App->player->currentGold >= scoutTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_SCOUT_TOWER;
+			else if (UIelem == buildingMenuButtons.scoutTower.icon) {
+				if (App->player->currentGold >= scoutTowerCost) {
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_SCOUT_TOWER;
+				}
+				else if (App->player->currentGold < scoutTowerCost)
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
-			else if(App->player->currentGold < scoutTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == guardTowerButton) {
-			if (App->player->currentGold >= guardTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
+			else if (UIelem == buildingMenuButtons.guardTower.icon) {
+				if (App->player->currentGold >= guardTowerCost) {
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
+				}
+				else if (App->player->currentGold < guardTowerCost)
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
-			else if (App->player->currentGold < guardTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
-		}
 
-		if (UIelem == cannonTowerButton) {
-			if (App->player->currentGold >= cannonTowerCost) {
-				App->audio->PlayFx(1, 0); //Button sound
-				UnLoadBuildingMenu();
-				alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
+			else if (UIelem == buildingMenuButtons.cannonTower.icon) {
+				if (App->player->currentGold >= cannonTowerCost) {
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
+				}
+				else if (App->player->currentGold < cannonTowerCost)
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
-			else if (App->player->currentGold < cannonTowerCost)
-				App->audio->PlayFx(3, 0); //Button error sound
+
+			else if (UIelem == buildingMenuButtons.barracks.icon && App->player->barracks == nullptr) {
+				if (App->player->currentGold >= barracksCost) {
+					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+					ChangeBuildingMenuState(&buildingMenuButtons);
+					alphaBuilding = EntityType_BARRACKS;
+				}
+				else if (App->player->currentGold < barracksCost)
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+			}
+
 		}
 
-
-
-		else if (UIelem == pauseMenuButt) {
-			App->audio->PlayFx(1, 0); //Button sound
+		if (UIelem == pauseMenuButt) {
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			if (parchmentImg == nullptr) {
 				UIImage_Info parchmentInfo;
 				parchmentInfo.texArea = App->gui->parchmentArea;
 				parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
 				parchmentImg->StartAnimation(App->gui->parchmentAnim);
-				parchmentImg->SetPriorityDraw(PriorityDraw_PAUSEMENU);
+				parchmentImg->SetPriorityDraw(PriorityDraw_WINDOW);
 			}
 			else {
 				pauseMenuActions = PauseMenuActions_DESTROY;
@@ -1461,22 +1832,22 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		}
 
 		else if (UIelem == continueButt) {
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_DESTROY;
 		}
 
 		else if (UIelem == ReturnMenuButt) {
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_RETURN_MENU;
 		}
 
 		else if (UIelem == settingsButt) {
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_SETTINGS_MENU;
 		}
 
 		else if (UIelem == returnButt) {
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			DestroySettingsMenu();
 			pauseMenuActions = PauseMenuActions_CREATED;
 		}
@@ -1489,7 +1860,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 		else if (UIelem == fullScreenButt)
 		{
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			if (App->win->fullscreen) {
 				App->win->fullscreen = false;
 				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
@@ -1501,6 +1872,18 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				break;
 			}
 		}
+
+		else if (UIelem == commandPatrolButton && commandPatrolButton->isActive) {
+			// Command Patrol (SANDRA)
+			if (App->scene->units.size() > 0)
+				App->entities->CommandToUnits(App->scene->units, UnitCommand_Patrol);
+		}
+		else if (UIelem == commandStopButton && commandStopButton->isActive) {
+			// Command Stop (SANDRA)
+			if (App->scene->units.size() > 0)
+				App->entities->CommandToUnits(App->scene->units, UnitCommand_Stop);
+		}
+
 		break;
 
 	case UI_EVENT_MOUSE_LEFT_UP:
@@ -1559,7 +1942,7 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 {
 	bool ret = true;
 
-	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) == SDL_SCANCODE_UNKNOWN)
+	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) ==  SDL_SCANCODE_UNKNOWN)
 	{
 		LOG("Could not load SaveGame button");
 		ret = false;
@@ -1619,7 +2002,5 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 		ret = false;
 	}
 	
-
-
 	return ret;
 }

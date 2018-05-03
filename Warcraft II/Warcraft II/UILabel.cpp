@@ -8,7 +8,7 @@
 
 UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener, bool isInWorld) : UIElement(localPos, parent, listener, isInWorld), label(info)
 {
-	type = UIE_TYPE::UIE_TYPE_LABEL;
+	type = UIE_TYPE_LABEL;
 
 	draggable = label.draggable;
 	interactive = label.interactive;
@@ -18,6 +18,9 @@ UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Modul
 	color = label.normalColor;
 
 	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.textWrapLength);
+
+	text = label.text.data();
+
 	App->font->CalcSize(label.text.data(), width, height, font);
 	priority = PrioriryDraw_LABEL;
 
@@ -26,14 +29,14 @@ UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Modul
 
 void UILabel::Update(float dt)
 {
-	if (listener != nullptr && interactive)
+	if (listener != nullptr && interactive && isActive)
 		HandleInput();
-	Draw();
 }
 
 UILabel::~UILabel()
 {
-	App->tex->UnLoad((SDL_Texture*)tex);
+	if (tex != nullptr)
+		App->tex->UnLoad(tex);
 }
 
 void UILabel::Draw() const
@@ -48,10 +51,13 @@ void UILabel::Draw() const
 		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
 	}
 
-	if (texArea.w > 0)
-		App->render->Blit(tex, blitPos.x, blitPos.y, &texArea);
-	else
-		App->render->Blit(tex, blitPos.x, blitPos.y);
+	if (tex != nullptr) {
+
+		if (texArea.w > 0)
+			App->render->Blit(tex, blitPos.x, blitPos.y, &texArea);
+		else
+			App->render->Blit(tex, blitPos.x, blitPos.y);
+	}
 
 	if (App->gui->isDebug)
 		DebugDraw(blitPos);
@@ -100,7 +106,7 @@ void UILabel::HandleInput()
 	case UI_EVENT_MOUSE_ENTER:
 
 		if (!MouseHover()) {
-			LOG("MOUSE LEAVE");
+			//LOG("MOUSE LEAVE");
 			nextEvent = false;
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
@@ -179,11 +185,14 @@ void UILabel::HandleInput()
 
 //---------------------------------------------------------------
 
-void UILabel::SetText(string text)
+void UILabel::SetText(string text, uint wrapLength)
 {
-	App->tex->UnLoad((SDL_Texture*)tex);
-	tex = App->font->Print(text.data(), color, font);
+	if (tex != nullptr)
+		App->tex->UnLoad(tex);
+
+	tex = App->font->Print(text.data(), color, font, wrapLength);
 }
+
 
 string UILabel::GetText() 
 {
@@ -193,7 +202,10 @@ string UILabel::GetText()
 void UILabel::SetColor(SDL_Color color, bool normal, bool hover, bool pressed)
 {
 	this->color = color;
-	App->tex->UnLoad((SDL_Texture*)tex);
+
+	if (tex != nullptr)
+		App->tex->UnLoad(tex);
+
 	tex = App->font->Print(label.text.data(), color, font);
 
 	if (normal)

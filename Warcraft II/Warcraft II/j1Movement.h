@@ -95,7 +95,12 @@ public:
 	// Returns true if another unit has any of the booleans passed as arguments to true
 	bool IsAnyUnitDoingSomething(SingleUnit* singleUnit, bool isSearching = false) const;
 
-	bool IsNeighborTile(iPoint tile, iPoint neighbor);
+	bool IsNeighborTile(iPoint tile, iPoint neighbor) const;
+
+	// Returns the closest walkable and valid neighbor of the tiled passed as an argument
+	iPoint FindClosestValidTile(iPoint tile, DynamicEntity* unit = nullptr) const;
+
+	void UpdateUnitsWalkability(vector<iPoint> updatedTiles) const;
 
 private:
 
@@ -127,12 +132,12 @@ struct UnitGroup
 	uint GetSize() const;
 
 	// Sets the destination tile (goal) of the group
-	bool SetGoal(iPoint goal);
+	bool SetGoal(iPoint goal, bool isWalkabilityChecked = true);
 
 	// Returns the destination tile (goal) of the group
 	iPoint GetGoal() const;
 
-	bool DrawShapedGoal(iPoint mouseTile);
+	bool DrawShapedGoal(iPoint mouseTile, bool isWalkabilityChecked = true);
 
 	bool SetShapedGoal();
 
@@ -164,8 +169,14 @@ struct SingleUnit
 	/// endPos is the tile that the unit would reach during this move
 	bool IsTileReached(iPoint nextPos, fPoint endPos) const;
 
+	// Returns true if the unit is fitting a tile
+	bool IsFittingTile() const;
+
+	// Prepares the unit for its next movement cycle
+	bool GetReadyForNewMove();
+
 	// Resets the parameters of the unit (general info)
-	void ResetUnitParameters();
+	void ResetUnitParameters(bool isGoalReset = false);
 
 	// Resets the collision parameters of the unit
 	void ResetUnitCollisionParameters();
@@ -173,14 +184,7 @@ struct SingleUnit
 	// When detected a collision, to set the collision parameters of the unit
 	void SetCollisionParameters(CollisionType collisionType, SingleUnit* waitUnit, iPoint waitTile);
 
-	// Prepares the unit for its next movement cycle
-	bool GetReadyForNewMove();
-
-	// Sets the state of the unit to UnitState_Walk
-	void WakeUp();
-
-	bool IsFittingTile() const;
-
+	// To set the goal tile of the unit
 	void SetGoal(iPoint goal);
 
 	// -----
@@ -188,13 +192,13 @@ struct SingleUnit
 	DynamicEntity* unit = nullptr;
 	UnitGroup* group = nullptr;
 	MovementState movementState = MovementState_NoState;
-	bool wakeUp = false; // sets a unit's unitState to UnitState_Walk
 
 	vector<iPoint> path; // path to the unit's goal
 	iPoint currTile = { -1,-1 }; // position of the unit in map coords
 	iPoint nextTile = { -1,-1 }; // next waypoint of the path (next tile the unit is heading to in map coords)
 
 	iPoint goal = { -1,-1 }; // goal of the unit
+	iPoint changedGoal = { -1,-1 };
 	iPoint shapedGoal = { -1,-1 }; // shaped goal of the unit
 
 	 /// Changed goals
@@ -204,11 +208,13 @@ struct SingleUnit
 	bool isGoalNeeded = false; // if true, it means that the unit needs to search for a new goal using Dijkstra
 	bool isSearching = false; // if true, it means that the unit is searching a tile using Dijkstra
 
+	/// Modified walkability
+	bool isWalkabilityUpdated = false;
+
 	bool reversePriority = false; // if true, the priority of the unit is not taken into account
 
 	// COLLISION AVOIDANCE
 	bool wait = false;
-	/// If a unit is not in the UnitState_Walk and another unit needs this unit to move away, set wakeUp to true
 	iPoint waitTile = { -1,-1 }; // conflict tile (tile where the collision has been found)
 	SingleUnit* waitUnit = nullptr; // conflict unit (unit whom the collision has been found with)
 	CollisionType coll = CollisionType_NoCollision; // type of collision

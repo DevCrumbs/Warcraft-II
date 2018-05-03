@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 using namespace std;
+typedef unsigned int FX;
 
 #define RECTANGLE_MIN_AREA 5
 
@@ -20,9 +21,9 @@ struct UIButton;
 struct UIImage;
 struct UISlider;
 class UISlider_Info;
-class UIInputText;
 class UIMinimap;
 
+class Entity;
 enum ENTITY_TYPE;
 
 struct Particle;	
@@ -30,13 +31,19 @@ struct Particle;
 struct SliderStruct;
 
 enum TerenasDialogEvents {
+
 	TerenasDialog_START,
 	TerenasDialog_RESCUE_ALLERIA,
-	TerenasDialog_RESCUE_KHADGAR,
 	TerenasDialog_RESCUE_TURALYON,
+	TerenasDialog_GOLD_MINE,
+	TerenasDialog_RUNESTONE,
+	TerenasDialog_FOOD,
+	TerenasDialog_GOLD,
 	TerenasDialog_NONE
 };
+
 enum PauseMenuActions {
+
 	PauseMenuActions_NOT_EXIST,
 	PauseMenuActions_NONE,
 	PauseMenuActions_CREATED,
@@ -46,16 +53,44 @@ enum PauseMenuActions {
 	PauseMenuActions_SLIDERFX,
 	PauseMenuActions_SLIDERMUSIC
 };
-enum FoodChange
-{
-	FoodChange_NONE,
-	FoodChange_ADD,
-	FoodChange_LESS
-};
+
 struct TerenasAdvices {
-	UIImage* terenasImage;
-	UILabel* text;
+
+	UIImage* terenasImage = nullptr;
+	UILabel* text = nullptr;
 };
+
+struct MenuBuildingButton {
+
+	UIButton* icon = nullptr;
+	UILabel* name = nullptr;
+	UILabel* cost = nullptr;
+};
+
+struct BuildingMenu {
+
+	MenuBuildingButton chickenFarm;
+	MenuBuildingButton stables;
+	MenuBuildingButton gryphonAviary;
+	MenuBuildingButton mageTower;
+	MenuBuildingButton scoutTower;
+	MenuBuildingButton guardTower;
+	MenuBuildingButton cannonTower;
+	MenuBuildingButton barracks;
+};
+
+struct GroupSelectedElements {
+	Entity* owner = nullptr;
+
+	UIImage* entityIcon = nullptr;
+	UILifeBar* entityLifeBar = nullptr;
+
+	bool operator==(GroupSelectedElements group)
+	{
+		return owner == group.owner && entityIcon == group.entityIcon && entityLifeBar == group.entityLifeBar;
+	}
+};
+
 
 class j1Scene : public j1Module
 {
@@ -70,6 +105,8 @@ public:
 
 	// Called before the first frame
 	bool Start();
+
+	bool LoadNewMap(int map = -1);
 
 	// Called before all Updates
 	bool PreUpdate();
@@ -96,11 +133,33 @@ public:
 	void DebugKeys();
 
 	void CheckCameraMovement(float dt);
-
+	//CreatingUI
 	void LoadInGameUI();
 	void LoadBuildingMenu();
+	void LoadUnitsMenuInfo();
+	UILifeBar * CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea);
+	//Patroll and Stop butt
+	void CreateAbilitiesButtons();
+	void CreateBuildingElements(SDL_Rect TexArea, iPoint buttonPos, string buildingName, string buildingCost,
+		iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
+
+	void LoadTerenasDialog();
+
+	void ShowSelectedUnits(list<DynamicEntity*> units);
+	void HideUnselectedUnits();
+	void PlayUnitSound(list<DynamicEntity*> units, bool isSelect);
+	FX ChooseRandomUnitSound(ENTITY_TYPE unitType, bool isSelect);
+	void ChangeBuildingButtState(MenuBuildingButton* elem);
+	void ChangeBuildingMenuState(BuildingMenu* elem);
+	void UpdateLabelsMenu();
+	void UpdateIconsMenu();
+	void ChangeMenuLabelInfo(UILabel* label, int cost, bool isSingle = false, StaticEntity* stcEnt = nullptr);
+	void ChangeMenuIconsText(UIButton* butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle = false, StaticEntity* stcEnt = nullptr);
+	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
+	void UpdateGoldLabel();
+	void UpdateFoodLabel();
 	void UnLoadResourcesLabels();
 	void CreatePauseMenu();
     void DestroyPauseMenu();
@@ -109,22 +168,26 @@ public:
 	void DestroyAllUI();
 	PauseMenuActions GetPauseMenuActions();
 
-	void LoadTerenasDialog(TerenasDialogEvents dialogEvent);
+	bool CompareSelectedUnitsLists(list<DynamicEntity*> units);
+	uint GetGroupElementSize();
+
+	void ShowTerenasDialog(TerenasDialogEvents dialogEvent);
+	void HideTerenasDialog();
 	void UnLoadTerenasDialog();
 
 	bool LoadKeys(pugi::xml_node&);
 
 public:
 
-	// Walkability
+	// Walkability map
 	int w = 0, h = 0;
 	uchar* data = NULL;
 
-	//Building costs
+	// Building costs
 	int keepCost = 500;
 	int castleCost = 1500;
-	int barracks2Cost = 1000;
-	int chickenFarmCost = 500;
+	int barracksCost = 1000;
+	int chickenFarmCost = 250;
 	int stablesCost = 900;
 	int gryphonAviaryCost = 400;
 	int mageTowerCost = 1000;
@@ -134,6 +197,8 @@ public:
 	int scoutTowerCost = 400;
 	int guardTowerCost = 600;
 	int cannonTowerCost = 800;
+
+	int numMaps = 0;
 
 	// Camera
 	float up = false, down = false, left = false, right = false;
@@ -148,9 +213,9 @@ public:
 
 	bool hasGoldChanged = false;
 
-	FoodChange hasFoodChanged = FoodChange_NONE;
+	bool hasFoodChanged = false;
 
-	UIImage* entitiesStats;
+	UIImage* entitiesStats = nullptr;
 	ENTITY_TYPE GetAlphaBuilding();
 	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
 
@@ -162,44 +227,54 @@ public:
 
 	bool isFrameByFrame = false;
 
+	bool isDebug = true;
+
 	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
 	TerenasAdvices terenasAdvices;
 
 	j1Timer terenasDialogTimer;
 
+	iPoint basePos{ 0,0 };
+
 	UIMinimap* minimap = nullptr;
 
+	list<DynamicEntity*> units;
+	list<GroupSelectedElements> groupElementsList;
 
 private:
 
+	j1Timer finalTransition;
+	bool isStartedFinalTransition = false;
+
+	bool isStarted = false;
 	bool isAttackCursor = false;
+	bool isFadeToMenu = false;
 
 	// Draw rectangle
 	iPoint startRectangle = { 0,0 };
 
 	//UI
-	UIButton *buildingButton = nullptr, *chickenFarmButton = nullptr, *elvenLumberButton = nullptr, *blackSmithButton = nullptr, *stablesButton = nullptr;
-	UIButton *gryphonAviaryButton = nullptr, *mageTowerButton = nullptr, *churchButton = nullptr, *scoutTowerButton = nullptr, *guardTowerButton = nullptr, *cannonTowerButton = nullptr;
-	list<UILabel*> buildingLabelsList;
-	UILabel *buildingLabel = nullptr;
-
-	UIImage *buildingMenu = nullptr;
+	BuildingMenu buildingMenuButtons;
+	UIButton* buildingButton = nullptr;
+	UILabel* buildingLabel = nullptr;
+	UIImage* buildingMenu = nullptr;
 
 	//Frame InGame
 	UIImage* inGameFrameImage = nullptr;
 	UILabel* goldLabel, *foodLabel = nullptr;
 
 	//Pause Menu
-	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
-	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;
+	UIButton* pauseMenuButt = nullptr, * settingsButt = nullptr, * continueButt = nullptr, * ReturnMenuButt = nullptr;
+	UILabel* pauseMenuLabel = nullptr, * settingsLabel = nullptr, * continueLabel = nullptr, * ReturnMenuLabel = nullptr;
 	UIImage* parchmentImg = nullptr;
 	//Settings Menu
 	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 	SliderStruct AudioFXPause;
 	SliderStruct AudioMusicPause;
-
-
+	//Entities Buttons
+	UIButton* commandPatrolButton = nullptr, *commandStopButton = nullptr;
+	
 	bool buildingMenuOn = false;
 
 	string orthogonalMap, isometricMap, warcraftMap;
@@ -213,7 +288,8 @@ private:
 
 	//Camera attributes
 	float camSpeed = 0.0f;
-	int camMovMargin = 0;
+	float camMovMargin = 0.0f;
+	bool isCamMovMarginCharged = false;
 
 	SDL_Scancode buttonSaveGame =	SDL_SCANCODE_UNKNOWN;
 	SDL_Scancode buttonLoadGame =	SDL_SCANCODE_UNKNOWN;
@@ -229,7 +305,6 @@ private:
 	ENTITY_TYPE alphaBuilding;
 
 	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
-
 };
 
 #endif //__j1SCENE1_H__

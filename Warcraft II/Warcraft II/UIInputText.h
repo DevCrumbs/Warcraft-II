@@ -14,7 +14,7 @@ private:
 public:
 
 	UIInputText(iPoint localPos, UIElement* parent, j1Module* listener = nullptr, bool isInWorld = false);
-	~UIInputText() {}
+	~UIInputText();
 
 	void Update(float dt);
 	void ChangeInputState();
@@ -28,7 +28,7 @@ private:
 	bool isInputText = false;
 
 	SDL_Texture* texture = nullptr;
-	SDL_Rect r;
+	SDL_Rect r{ 0,0,0,0 };
 
 };
 

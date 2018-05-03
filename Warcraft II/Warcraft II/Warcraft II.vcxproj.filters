@@ -219,9 +219,6 @@
     <ClInclude Include="Turalyon.h">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
     </ClInclude>
-    <ClInclude Include="Khadgar.h">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
-    </ClInclude>
     <ClInclude Include="Barracks.h">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClInclude>
@@ -335,6 +332,12 @@
     </ClInclude>
     <ClInclude Include="UIMinimap.h">
       <Filter>Modules\UIElements</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Printer.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="j1EnemyWave.h">
+      <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -461,9 +464,6 @@
     <ClCompile Include="Turalyon.cpp">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
     </ClCompile>
-    <ClCompile Include="Khadgar.cpp">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
-    </ClCompile>
     <ClCompile Include="Paladin.cpp">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
     </ClCompile>
@@ -577,6 +577,15 @@
     </ClCompile>
     <ClCompile Include="UIMinimap.cpp">
       <Filter>Modules\UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Printer.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="j1EnemyWave.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

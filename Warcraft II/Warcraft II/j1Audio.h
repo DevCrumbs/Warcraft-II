@@ -6,12 +6,68 @@
 #include <list>
 #include <string>
 using namespace std;
+typedef unsigned int FX;
 
 #define DEFAULT_MUSIC_FADE_TIME 2.0f
 #define MAX_AUDIO_VOLUM 128
 
 struct _Mix_Music;
 struct Mix_Chunk;
+
+struct GameSounds {
+
+	FX button = 0;
+	FX buildingConstruction = 0;
+	FX errorButt = 0;
+	FX errorButtBuilding = 0;
+	FX chickenFarm = 0;
+	FX goldMine = 0;
+	FX gryphonAviary = 0;
+	FX mageTower = 0;
+	FX stables = 0;
+	FX repairBuild = 0;
+	FX destroyBuild = 0;
+	FX humanDeath = 0;
+	FX orcDeath = 0;
+	FX prisionerRescue = 0;
+	FX boarDeath = 0;
+	FX sheepDeath = 0;
+
+	//Archer
+	FX archerCommand1 = 0;
+	FX archerCommand2 = 0;
+	FX archerCommand3 = 0;
+	FX archerCommand4 = 0;
+	FX archerReady = 0;
+	FX archerSelected1 = 0;
+	FX archerSelected2 = 0;
+	FX archerSelected3 = 0;
+	FX archerSelected4 = 0;
+
+	//Footman
+	FX footmanCommand1 = 0;
+	FX footmanCommand2 = 0;
+	FX footmanCommand3 = 0;
+	FX footmanCommand4 = 0;
+	FX footmanReady = 0;
+	FX footmanSelected1 = 0;
+	FX footmanSelected2 = 0;
+	FX footmanSelected3 = 0;
+	FX footmanSelected4 = 0;
+	FX footmanSelected5 = 0;
+
+	//Gryphon
+	FX griffonCommand = 0;
+	FX griffonReady = 0;
+	FX griffonSelected = 0;
+	FX griffonDeath = 0;
+
+	FX axeThrow = 0;
+	FX arrowThrow = 0;
+	FX swordClash = 0;
+	FX runeStone = 0;
+
+};
 
 class j1Audio : public j1Module
 {
@@ -24,6 +80,8 @@ public:
 
 	// Called before render is available
 	bool Awake(pugi::xml_node&);
+
+	bool Start();
 
 	// Called before quitting
 	bool CleanUp();
@@ -55,6 +113,15 @@ public:
 	// Pause music
 	void PauseMusic() const;
 
+	//Charge Sound Effects
+	void ChargeFX();
+
+	GameSounds GetFX();
+
+public:
+	int musicVolume = 0;
+	int fxVolume = 40;
+
 private:
 
 	string				musicFolder;
@@ -62,9 +129,63 @@ private:
 	_Mix_Music*			music = nullptr;
 	list<Mix_Chunk*>	fx;
 
-public:
-	int musicVolume = 0;
-	int fxVolume = 40;
+	GameSounds gameSounds;
+
+	//FX paths
+	//---------------------
+	string mainButtonSound;
+	string buildingConstructionSound;
+	string errorButtonSound;
+	string buildingErrorButtonSound;
+	string chickenFarmSound;
+	string goldMineSound;
+	string gryphonAviarySound;
+	string mageTowerSound;
+	string stablesSound;
+	string repairBuildingSound;
+	string destroyBuildingSound;
+	string runeStoneSound;
+
+	string humanDeadSound;
+	string orcDeadSound;
+	string prisonerRescueSound;
+	string crittersBoarDead;
+	string crittersSheepDead;
+
+	//Archer
+	string archerGoToPlaceSound1;
+	string archerGoToPlaceSound2;
+	string archerGoToPlaceSound3;
+	string archerGoToPlaceSound4;
+	string archerReadySound;
+	string archerSelectedSound1;
+	string archerSelectedSound2;
+	string archerSelectedSound3;
+	string archerSelectedSound4;
+
+	//Footman
+	string footmanGoToPlaceSound1;
+	string footmanGoToPlaceSound2;
+	string footmanGoToPlaceSound3;
+	string footmanGoToPlaceSound4;
+	string footmanReadySound;
+	string footmanSelectedSound1;
+	string footmanSelectedSound2;
+	string footmanSelectedSound3;
+	string footmanSelectedSound4;
+	string footmanSelectedSound5;
+
+	//Gryphon
+	string griffonGoToPlaceSound; 
+	string griffonReadySound; 
+	string griffonSelectedSound;  
+	string griffonDeathSound; 
+	
+	string axeThrowSound;
+	string bowFireSound;
+	string swordSound;
+	//---------------------
+
 };
 
 #endif //__j1AUDIO_H__

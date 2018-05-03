@@ -38,12 +38,14 @@ public:
 	~UIMinimap();
 
 	void Update(float dt);
+
 	void HandleInput(float dt);
 
 	iPoint GetMousePos();
 
 	iPoint MinimapToMap(iPoint pos);
 	iPoint MinimapToMap();
+
 
 	bool SetMinimap(SDL_Rect pos, int entityW, int entityH);
 	bool LoadMap();
@@ -74,7 +76,9 @@ private:
 
 	SDL_Texture* mapTexture = nullptr;
 
-	list<DynamicEntity*>* entities;
+
+	mutable list<Entity*> entities;
+
 
 	int maxOffsetX = 0;
 	int maxOffsetY = 0;
@@ -82,6 +86,9 @@ private:
 	int offsetY = 0;
 	int prevOffsetX = 0;
 	int prevOffsetY = 0;
+
+	list<DynamicEntity*>* activeDynamicEntities;
+	list<StaticEntity*>* activeStaticEntities;
 
 };
 

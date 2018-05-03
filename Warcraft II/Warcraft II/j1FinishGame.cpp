@@ -10,14 +10,13 @@
 #include "j1Scene.h"
 #include "j1Player.h"
 #include "j1FadeToBlack.h"
-
+#include "j1Audio.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
 #include "UIImage.h"
-
-
-
+#include "UICursor.h"
+#include "j1Menu.h"
 
 j1FinishGame::j1FinishGame()
 {
@@ -28,9 +27,20 @@ j1FinishGame::j1FinishGame()
 j1FinishGame::~j1FinishGame()
 {}
 
+bool j1FinishGame::Awake(pugi::xml_node& config) {
+
+	//Music paths
+	victoryMusicPath = config.child("audioPaths").child("victoryScreen").attribute("path").as_string();
+	defeatMusicPath = config.child("audioPaths").child("defeatScreen").attribute("path").as_string();
+
+	return true;
+}
+
 // Load assets
 bool j1FinishGame::Start()
 {
+	App->finish->active = true;
+
 	// Get screen size
 	App->render->camera.x = App->render->camera.y = 0;
 	uint width = 0, height = 0, scale = 0;
@@ -41,8 +51,9 @@ bool j1FinishGame::Start()
 	screen = { 0, 0, static_cast<int>(width * scale), static_cast<int>(height * scale) };
 	LoadSceneOne(App->player->isWin);
 
-
 	bg = App->tex->Load(bgTexName.data());
+
+	App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 
 	//DeleteScreen();
 	return true;
@@ -55,10 +66,16 @@ bool j1FinishGame::Update(float dt)
 	return true;
 }
 
-bool j1FinishGame::CleanUp() {
-	DeleteScene();
-	App->menu->active = true;
-	return true;
+bool j1FinishGame::CleanUp() 
+{
+	bool ret = true;
+
+	if (!App->gui->isGuiCleanUp)
+		DeleteScene();
+
+	active = false;
+
+	return ret;
 }
 
 void j1FinishGame::LoadSceneOne(bool isWin) {
@@ -68,10 +85,15 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
 	if (isWin) {
+		App->audio->PlayMusic(victoryMusicPath.data(), 0.0f); //Music
+	  //get an Artifact 
+		ArtifactWon(App->player->startGameTimer.ReadSec());
+
 		labelInfo.text = "Congratulations! You have defeated the Horde!";
 		labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorBlue;
 	}
-	else {
+	else if (!isWin) {
+		App->audio->PlayMusic(defeatMusicPath.data(), 0.0f); //Music
 		labelInfo.text = "Oh, no! You have been defeated by the Horde!";
 		labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorRed;
 	}
@@ -153,19 +175,46 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 
 }
 
+void j1FinishGame::ArtifactWon(uint time)
+{
+
+	UILabel_Info labelInfo;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	labelInfo.text = "Artifact Obtained: ";
+
+	if (time >= 30) {
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->bookText, App->gui->bookAnim));
+		labelInfo.text += "Book of Medivh";
+	}
+	else if (time >= 20) {
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->skullText, App->gui->skullAnim));
+		labelInfo.text += "Skull of Gul'dan";
+	}
+	else if (time >= 10) {
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->eyeText, App->gui->eyeAnim));
+		labelInfo.text += "Eye of Dalaran";
+	}
+	else if (time >= 0) {
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->scepterText, App->gui->scepterAnim));
+		labelInfo.text += "Scepter of Sagreras";
+	}
+	labelVector.push_back(App->gui->CreateUILabel({ 575, 400 }, labelInfo));
+}
+
 void j1FinishGame::DeleteScene() {
 	
 	for (; !labelVector.empty(); labelVector.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&labelVector.back());
+		App->gui->RemoveElem((UIElement**)&labelVector.back());
 	}
 
 	for (; !imageVector.empty(); imageVector.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&imageVector.back());
+		App->gui->RemoveElem((UIElement**)&imageVector.back());
 	}
-	App->gui->DestroyElement((UIElement**)&continueButt);
-	App->gui->DestroyElement((UIElement**)&returnButt);
+	App->gui->RemoveElem((UIElement**)&continueButt);
+	App->gui->RemoveElem((UIElement**)&returnButt);
 
 }
 
@@ -196,7 +245,7 @@ void j1FinishGame::LoadSceneTwo() {
 	labelInfo.hoverColor = labelInfo.pressedColor = White_;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.textWrapLength = 600;
-	string s = "If you want to know which artifact you would have gained, do not forget to play th full game when it is relased! The enemy base awaits for your troops...";
+	string s = "If you want to know which artifact you would have gained, do not forget to play the full game when it is relased! The enemy base awaits for your troops...";
 	labelInfo.text = s;
 	labelVector.push_back(App->gui->CreateUILabel({ 750, 400 }, labelInfo));
 
@@ -222,11 +271,14 @@ void j1FinishGame::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
 		if (UIelem == continueButt) {
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			DeleteScene();
 			LoadSceneTwo();
 		}
 
 		if (UIelem == returnButt) {
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+			DeleteScene();
 			App->fade->FadeToBlack(this, App->menu);
 		}
 		break;

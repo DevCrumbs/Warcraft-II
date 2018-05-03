@@ -8,6 +8,7 @@
 #include "j1Gui.h"
 
 struct UILifeBar_Info {
+
 	SDL_Rect background = {0, 0, 0, 0};
 	SDL_Rect bar =        {0, 0, 0, 0};
 						  
@@ -19,7 +20,6 @@ struct UILifeBar_Info {
 	int maxWidth = 0;
 	iPoint lifeBarPosition = { 0,0 };
 	iPoint bgPosition = { 0,0 };
-
 };
 
 // ---------------------------------------------------
@@ -34,12 +34,13 @@ public:
 	void Update(float dt);
 
 	void SetLife(const int life);
+	void SetMaxLife(const int maxLife);
 	void IncreaseLife(const int life);
 	void DecreaseLife(const int life);
 	int GetLife() const;
 
 private:
-	UILifeBar_Info life_bar;
+	UILifeBar_Info lifeBar;
 	bool isInWorld = false;
 
 	SDL_Rect bar = { 0,0,0,0 };

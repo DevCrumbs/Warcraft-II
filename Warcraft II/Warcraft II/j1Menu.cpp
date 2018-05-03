@@ -17,6 +17,9 @@
 #include "j1Particles.h"
 #include "j1FadeToBlack.h"
 #include "j1Menu.h"
+#include "j1PathManager.h"
+#include "j1Movement.h"
+#include "j1Printer.h"
 
 #include "j1Gui.h"
 #include "UIImage.h"
@@ -30,8 +33,6 @@
 #include <chrono>
 #include <ctime>
 #include <iostream>
-
-
 
 
 j1Menu::j1Menu() : j1Module()
@@ -53,128 +54,45 @@ bool j1Menu::Awake(pugi::xml_node& config)
 
 	mainMenuMusicName = audio.child("mainTheme").attribute("path").as_string();
 
-	//Sounds
-	pugi::xml_node sounds = audio.child("sounds");
-
-	pugi::xml_node uIButtonsSounds = sounds.child("buttonPaths");
-	mainButtonSound = uIButtonsSounds.attribute("menuButton").as_string();
-	errorButtonSound = uIButtonsSounds.attribute("errorBttn").as_string();
-
-	pugi::xml_node buildingSounds = sounds.child("buildingPaths");
-	buildingConstructionSound = buildingSounds.attribute("buildingConstruction").as_string();
-	buildingErrorButtonSound = buildingSounds.attribute("errorBttn").as_string();
-	chickenFarmSound = buildingSounds.attribute("chickenFarm").as_string();
-	goldMineSound = buildingSounds.attribute("goldMine").as_string();
-	gryphonAviarySound = buildingSounds.attribute("gryphAviar").as_string();
-	mageTowerSound = buildingSounds.attribute("mageTower").as_string();
-	stablesSound = buildingSounds.attribute("stables").as_string();
-	repairBuildingSound = buildingSounds.attribute("repair").as_string();
-	destroyBuildingSound = buildingSounds.attribute("buildingDestroy").as_string(); 
-
-	pugi::xml_node unitsSounds = sounds.child("unitsPaths");
-	humanDeadSound = unitsSounds.attribute("humanDeadSound").as_string();
-	orcDeadSound = unitsSounds.attribute("orcDeadSound").as_string();
-	prisonerRescueSound = unitsSounds.attribute("prisonerRescue").as_string();
-
-	pugi::xml_node crittersSounds = sounds.child("crittersPaths");
-	crittersBoarDead = crittersSounds.attribute("boarDead").as_string();
-	crittersSheepDead = crittersSounds.attribute("sheepDead").as_string();
-
-	pugi::xml_node archerSounds = sounds.child("archerPaths");
-	archerGoToPlaceSound = archerSounds.attribute("goToPlace").as_string();
-	archerReadySound = archerSounds.attribute("ready").as_string();
-	archerSelectedSound = archerSounds.attribute("selected").as_string();
-
-	pugi::xml_node footmanSounds = sounds.child("footmanPaths");
-	footmanGoToPlaceSound = footmanSounds.attribute("goToPlace").as_string();
-	footmanReadySound = footmanSounds.attribute("ready").as_string();
-	footmanSelectedSound = footmanSounds.attribute("selected").as_string();
-
-	pugi::xml_node attackSounds = sounds.child("attackPaths");
-	axeThrowSound = attackSounds.attribute("axeThrow").as_string();
-	bowFireSound = attackSounds.attribute("bowFire").as_string();
-	swordSound = attackSounds.attribute("sword").as_string();
-
 	return ret;
 }
 
 // Called before the first frame
 bool j1Menu::Start()
 {
+	active = true;
+	
 	App->audio->PlayMusic(mainMenuMusicName.data(), 0.0f);
-
-	//If it is the first code iteration, change all the sounds
-	if(!App->isSoundCharged)
-	ChargeGameSounds();
 
 	App->render->camera.x = App->render->camera.y = 0;
 
 	CreateMenu();
 
-	UICursor_Info mouseInfo;
-	mouseInfo.default = { 243, 525, 28, 33 };
-	mouseInfo.onClick = { 275, 525, 28, 33 };
-	mouseInfo.onMine = { 310, 525, 28, 33 };
-	mouseInfo.onMineClick = { 338, 525, 28, 33 };
-	mouseInfo.onEnemies = { 374, 527, 28, 33 };
-	mouseInfo.onEnemiesClick = { 402, 527, 28, 33 };
-	mouseText = App->gui->CreateUICursor(mouseInfo, this);
-	return true;
-}
+	if (!isMouseTextCreated) {
+		UICursor_Info mouseInfo;
+		mouseInfo.default = { 243, 525, 28, 33 };
+		mouseInfo.onClick = { 275, 525, 28, 33 };
+		mouseInfo.onMine = { 310, 525, 28, 33 };
+		mouseInfo.onMineClick = { 338, 525, 28, 33 };
+		mouseInfo.onEnemies = { 374, 527, 28, 33 };
+		mouseInfo.onEnemiesClick = { 402, 527, 28, 33 };
+		mouseText = App->gui->CreateUICursor(mouseInfo, this);
 
-// Called each loop iteration
-bool j1Menu::PreUpdate()
-{
-	return true;
-}
+		mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 
-// Called each loop iteration
-bool j1Menu::Update(float dt)
-{
-	App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 100, 100, 100, 255);
-
-	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
-		if (parchment != nullptr) {
-			parchment->isRemove = true;
-			parchment = nullptr;
-		}
+		isMouseTextCreated = true;
 	}
 
 	return true;
 }
 
 // Called each loop iteration
-bool j1Menu::PostUpdate()
+bool j1Menu::PreUpdate()
 {
-	bool ret = true;
-
 	switch (menuActions)
 	{
-	case MenuActions_NONE:
-		break;
-	case MenuActions_EXIT:
-		App->audio->PlayFx(1, 0); //Button sound
-		ret = false;
-		break;
-	case MenuActions_PLAY:
-		App->audio->PlayFx(1, 0); //Button sound
-		App->fade->FadeToBlack(this, App->scene);
-		menuActions = MenuActions_NONE;
-		break;
-	case MenuActions_SETTINGS:
-		App->audio->PlayFx(1, 0); //Button sound
-		DeteleMenu();
-		CreateSettings();
-		menuActions = MenuActions_NONE;
-		break;
-	case MenuActions_RETURN:
-		App->audio->PlayFx(1, 0); //Button sound
-		DeleteSettings();
-		CreateMenu();
-		menuActions = MenuActions_NONE;
-		break;
 	case MenuActions_SLIDERFX:
-		App->audio->PlayFx(1, 0); //Button sound
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		UpdateSlider(audioFX);
 		break;
 	case MenuActions_SLIDERMUSIC:
@@ -183,7 +101,70 @@ bool j1Menu::PostUpdate()
 	default:
 		break;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	return true;
+}
+
+// Called each loop iteration
+bool j1Menu::Update(float dt)
+{
+	/*
+	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
+		if (parchment != nullptr) {
+			parchment->isRemove = true;
+			parchment = nullptr;
+		}
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+		App->audio->PlayFx(App->audio->GetFX().prisionerRescue, 0);
+	}
+	*/
+
+	switch (menuActions)
+	{
+	case MenuActions_NONE:
+		break;
+	case MenuActions_EXIT:
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		isExit = true;
+		break;
+	case MenuActions_PLAY:
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		isFadetoScene = true;
+		menuActions = MenuActions_NONE;
+		break;
+	case MenuActions_SETTINGS:
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		DeteleMenu();
+		CreateSettings();
+		menuActions = MenuActions_NONE;
+		break;
+	case MenuActions_RETURN:
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		DeleteSettings();
+		CreateMenu();
+		menuActions = MenuActions_NONE;
+		break;
+	default:
+		break;
+	}
+	return true;
+}
+
+// Called each loop iteration
+bool j1Menu::PostUpdate()
+{
+	bool ret = true;
+
+	// Blit the background
+	//App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 70, 70, 70, 255);
+	App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, { 70,70,70,255 }, true);
+
+	if (isFadetoScene) {
+		App->fade->FadeToBlack(this, App->scene);
+		isFadetoScene = false;
+	}
+	if (isExit)
 		ret = false;
 
 	return ret;
@@ -192,23 +173,14 @@ bool j1Menu::PostUpdate()
 // Called before quitting
 bool j1Menu::CleanUp()
 {
-	DeteleMenu();
+	bool ret = true;
 
-	App->map->active = true;
-	App->scene->active = true;
-	App->player->active = true;
-	App->entities->active = true;
-	App->collision->active = true;
-	App->pathfinding->active = true;
-
-	App->player->Start();
-	App->entities->Start();
-	App->collision->Start();
-	App->pathfinding->Start();
+	if (!App->gui->isGuiCleanUp)
+		DeteleMenu();
 
 	active = false;
 
-	return true;
+	return ret;
 }
 
 void j1Menu::CreateMenu() {
@@ -234,11 +206,25 @@ void j1Menu::CreateMenu() {
 	labelInfo.text = "Settings";
 	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, settingsButt);
 
-	artifacts.push_back(AddArtifact({ 50,450 }, App->gui->bookText, App->gui->bookAnim));
-	artifacts.push_back(AddArtifact({ 175,500 }, App->gui->skullText, App->gui->skullAnim));
-	artifacts.push_back(AddArtifact({ 300,500 }, App->gui->eyeText, App->gui->eyeAnim));
-	artifacts.push_back(AddArtifact({ 425,450 }, App->gui->scepterText, App->gui->scepterAnim));
 
+	artifacts.push_back(AddArtifact({ 50, 475 }, App->gui->bookText, App->gui->bookAnim));
+	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim));
+	artifacts.push_back(AddArtifact({ 300,525 }, App->gui->eyeText, App->gui->eyeAnim));
+	artifacts.push_back(AddArtifact({ 425,475 }, App->gui->scepterText, App->gui->scepterAnim));
+
+	UIImage_Info imageInfo;
+	imageInfo.texArea = { 1039,740,345,141 };
+	logoImg = App->gui->CreateUIImage({ 95,370 }, imageInfo, this, nullptr);
+	
+	imageInfo.texArea = { 0,954,776,600 };
+	mainMenuImg = App->gui->CreateUIImage({ 0,0 }, imageInfo, this, nullptr);
+	menuImgAnim.speed = 5;
+	menuImgAnim.PushBack({ 0,954,776,600 });
+	menuImgAnim.PushBack({ 829,951,776,600 });
+	menuImgAnim.PushBack({ 0,1564,776,600 });
+	menuImgAnim.PushBack({ 876,1563,776,600 });
+	mainMenuImg->StartAnimation(menuImgAnim);
+	mainMenuImg->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 }
 
 void j1Menu::CreateSettings() {
@@ -322,7 +308,8 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, listener);
 }
 
-UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim) {
+UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim) 
+{
 	UIImage* retImage;
 
 	UIImage_Info imageInfo;
@@ -343,7 +330,7 @@ void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
 	static char vol_text[4];
 	sprintf_s(vol_text, 4, "%.0f", volume * 100);
 	sliderStruct.value->SetText(vol_text);
-	LOG("%f", volume);
+	//LOG("%f", volume);
 }
 
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -353,8 +340,30 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_NONE:
 		break;
 	case UI_EVENT_MOUSE_ENTER:
+		if (UIelem == playButt)
+			playLabel->SetColor(ColorGreen,true);
+		else if (UIelem == exitButt)
+			exitLabel->SetColor(ColorGreen, true);
+
+		else if (UIelem == settingsButt)
+			settingsLabel->SetColor(ColorGreen, true);
+
+		else if (UIelem == returnButt)
+			returnLabel->SetColor(ColorGreen, true);
+
 		break;
 	case UI_EVENT_MOUSE_LEAVE:
+		if (UIelem == playButt)
+			playLabel->SetColor(Black_, true);
+		else if (UIelem == exitButt)
+			exitLabel->SetColor(Black_, true);
+
+		else if (UIelem == settingsButt)
+			settingsLabel->SetColor(Black_, true);
+
+		else if (UIelem == returnButt)
+			returnLabel->SetColor(Black_, true);
+
 		break;
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
@@ -380,7 +389,7 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		else if (UIelem == fullScreenButt)
 		{
-			App->audio->PlayFx(1, 0); //Button sound
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			if (App->win->fullscreen) {
 				App->win->fullscreen = false;
 				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
@@ -406,73 +415,41 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		break;
 	}
-
 }
-void j1Menu::DeteleMenu() {
+void j1Menu::DeteleMenu() 
+{
+	App->gui->RemoveElem((UIElement**)&mainMenuImg);
+	App->gui->RemoveElem((UIElement**)&logoImg);
+	App->gui->RemoveElem((UIElement**)&playLabel);
+	App->gui->RemoveElem((UIElement**)&playButt);
+	App->gui->RemoveElem((UIElement**)&exitLabel);
+	App->gui->RemoveElem((UIElement**)&exitButt);
+	App->gui->RemoveElem((UIElement**)&settingsLabel);
+	App->gui->RemoveElem((UIElement**)&settingsButt);
 
-	App->gui->DestroyElement((UIElement**)&playButt);
-	App->gui->DestroyElement((UIElement**)&playLabel);
-	App->gui->DestroyElement((UIElement**)&exitButt);
-	App->gui->DestroyElement((UIElement**)&exitLabel);
-	App->gui->DestroyElement((UIElement**)&settingsButt);
-	App->gui->DestroyElement((UIElement**)&settingsLabel);
 	
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&artifacts.back());
+		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
-
 }
 
 void j1Menu::DeleteSettings() {
 
-	App->gui->DestroyElement((UIElement**)&returnButt);
-	App->gui->DestroyElement((UIElement**)&returnLabel);
-	App->gui->DestroyElement((UIElement**)&fullScreenButt);
-	App->gui->DestroyElement((UIElement**)&fullScreenLabel);
-	App->gui->DestroyElement((UIElement**)&audioFX.name);
-	App->gui->DestroyElement((UIElement**)&audioFX.value);
-	App->gui->DestroyElement((UIElement**)&audioFX.slider);
-	App->gui->DestroyElement((UIElement**)&audioMusic.name);
-	App->gui->DestroyElement((UIElement**)&audioMusic.value);
-	App->gui->DestroyElement((UIElement**)&audioMusic.slider);
+	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&returnButt);
+	App->gui->RemoveElem((UIElement**)&fullScreenLabel);
+	App->gui->RemoveElem((UIElement**)&fullScreenButt);
+	App->gui->RemoveElem((UIElement**)&audioFX.name);
+	App->gui->RemoveElem((UIElement**)&audioFX.value);
+	App->gui->RemoveElem((UIElement**)&audioFX.slider);
+	App->gui->RemoveElem((UIElement**)&audioMusic.name);
+	App->gui->RemoveElem((UIElement**)&audioMusic.value);
+	App->gui->RemoveElem((UIElement**)&audioMusic.slider);
 
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{
-		App->gui->DestroyElement((UIElement**)&artifacts.back());
+		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
 
 }
-
-void j1Menu::ChargeGameSounds()
-{
-	App->audio->LoadFx(mainButtonSound.data()); //1 Normal bttn sound
-	App->audio->LoadFx(buildingConstructionSound.data()); //2 Construction building
-	App->audio->LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
-	App->audio->LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
-	App->audio->LoadFx(chickenFarmSound.data()); //5 chicken farm sound
-	App->audio->LoadFx(goldMineSound.data()); //6 gold mine sound
-	App->audio->LoadFx(gryphonAviarySound.data()); //7 gryphon aviary sound
-	App->audio->LoadFx(mageTowerSound.data()); //8 mage tower sound
-	App->audio->LoadFx(stablesSound.data()); //9 stables sound
-	App->audio->LoadFx(repairBuildingSound.data()); //10 repair building sound
-	App->audio->LoadFx(destroyBuildingSound.data()); //11 destroy building sound
-
-	App->audio->LoadFx(humanDeadSound.data()); //12
-	App->audio->LoadFx(orcDeadSound.data()); //13
-	App->audio->LoadFx(prisonerRescueSound.data()); //14
-	App->audio->LoadFx(crittersBoarDead.data()); //15
-	App->audio->LoadFx(crittersSheepDead.data()); //16
-	App->audio->LoadFx(archerGoToPlaceSound.data()); //17
-	App->audio->LoadFx(archerReadySound.data()); //18
-	App->audio->LoadFx(archerSelectedSound.data()); //19
-	App->audio->LoadFx(footmanGoToPlaceSound.data()); //20
-	App->audio->LoadFx(footmanReadySound.data()); //21
-	App->audio->LoadFx(footmanSelectedSound.data()); //22
-	App->audio->LoadFx(axeThrowSound.data()); //23
-	App->audio->LoadFx(bowFireSound.data()); //24
-	App->audio->LoadFx(swordSound.data()); //25
-
-	App->isSoundCharged = true;
-}
-

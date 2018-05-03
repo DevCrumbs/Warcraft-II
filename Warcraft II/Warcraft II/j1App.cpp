@@ -23,6 +23,9 @@
 #include "j1Movement.h"
 #include "j1PathManager.h"
 #include "j1FinishGame.h"
+#include "j1Printer.h"
+#include "j1EnemyWave.h"
+#include <time.h>
 
 #include "j1App.h"
 #include "Brofiler\Brofiler.h"
@@ -52,6 +55,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	movement = new j1Movement();
 	pathmanager = new j1PathManager(MS_PATHFINDING);
 	finish = new j1FinishGame();
+	printer = new j1Printer();
+	wave = new j1EnemyWave();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -64,23 +69,24 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	/// Do not change this order -->
 	AddModule(pathfinding);
 	AddModule(collision);
-	AddModule(particles);
+	AddModule(printer);
 	AddModule(movement);
 	AddModule(pathmanager);
-
+	AddModule(particles);
+	AddModule(entities);
+	AddModule(wave);
 	/// <-- Do not change this order
 
 	AddModule(font);
-	AddModule(menu);
+
 	AddModule(player);
-
 	AddModule(scene);
-	AddModule(entities);
+
 	AddModule(finish);
-
+	AddModule(menu);
 	AddModule(console);
-	AddModule(gui);
 
+	AddModule(gui);
 	AddModule(fade);
 
 	// render last to swap buffer
@@ -93,6 +99,12 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	entities->active = false;
 	collision->active = false;
 	pathfinding->active = false;
+	pathmanager->active = false;
+	movement->active = false;
+	particles->active = false;
+	wave->active = false;
+
+	srand(time(NULL));
 }
 
 // Destructor
@@ -239,19 +251,6 @@ void j1App::FinishUpdate()
 	uint32 framesOnLastUpdate = 0;
 	frameCount++;
 
-	/*
-	if (App->entities->playerData != nullptr) {
-		if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN
-			&& (App->entities->playerData->animationPlayer == &App->entities->playerData->player.idle || App->entities->playerData->animationPlayer == &App->entities->playerData->player.idle2)
-			&& !App->menu->active)
-			toCap = !toCap;
-	}
-	else
-		if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN && !App->menu->active)
-			toCap = !toCap;
-	*/
-	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
-		toCap = !toCap;
 	// Cap frames
 	if (!App->render->vsync && toCap) {
 		float toVsync = 1000 / capFrames;
@@ -286,8 +285,8 @@ void j1App::FinishUpdate()
 
 	static char title[256];
 
-	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u | capFrames: %s | Vsync: %s",
-		fps, avgFPS, actualFrameMs, capOnOff.data(), vSyncOnOff.data());
+	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u",
+		fps, avgFPS, lastFrameMs);
 
 	if (App->scene->pause) {
 		auxiliarDt = dt;
@@ -509,5 +508,20 @@ bool j1App::SavegameNow() const
 
 	data.reset();
 	wantToSave = false;
+	return ret;
+}
+
+bool RectIntersect(const SDL_Rect* rectA, const SDL_Rect* rectB, SDL_Rect* result)
+{
+	bool ret = false;
+
+	if (result == nullptr)
+	{
+		SDL_Rect _void{ 0,0,0,0 };
+		ret = SDL_IntersectRect(rectA, rectB, &_void);
+	}
+	else
+		ret = SDL_IntersectRect(rectA, rectB, result);
+
 	return ret;
 }

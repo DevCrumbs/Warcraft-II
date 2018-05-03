@@ -13,6 +13,7 @@
 #include "j1PathManager.h"
 #include "Goal.h"
 #include "j1Audio.h"
+#include "j1Printer.h"
 
 #include "UILifeBar.h"
 
@@ -48,7 +49,14 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	this->footmanInfo.deathUp = info.deathUp;
 	this->footmanInfo.deathDown = info.deathDown;
 
+	this->size = this->unitInfo.size;
+	offsetSize = this->unitInfo.offsetSize;
+
 	LoadAnimationsSpeed();
+
+	// Set the color of the entity
+	color = ColorDarkBlue;
+	colorName = "BlueFootman";
 
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
@@ -71,8 +79,6 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
-
-	auxIsSelected = isSelected;
 }
 
 void Footman::Move(float dt)
@@ -95,41 +101,82 @@ void Footman::Move(float dt)
 			&& singleUnit->IsFittingTile()
 			&& !isDead) {
 
-			App->audio->PlayFx(12, 0);
+			App->audio->PlayFx(App->audio->GetFX().humanDeath, 0);
 
 			isDead = true;
+			isValid = false;
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
+			brain->RemoveAllSubgoals();
+
+			unitState = UnitState_NoState;
+
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
+
+			// Remove any path request
+			pathPlanner->SetSearchRequested(false);
+			pathPlanner->SetSearchCompleted(false);
+			App->pathmanager->UnRegister(pathPlanner);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
 			singleUnit = nullptr;
 
+			if (!App->gui->isGuiCleanUp) {
+
+				if (lifeBar != nullptr)
+
+					lifeBar->isActive = false;
+			}
+
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
-
-			// If the player dies, remove all their goals
-			unitCommand = UnitCommand_Stop;
 		}
 	}
 
-	if (!isDead) {
+	if (!isDead && isValid) {
 
-		if (auxIsSelected != isSelected) {
-
-			auxIsSelected = isSelected;
-
-			if (isSelected)
-				App->audio->PlayFx(22, 0);
-		}
+		// ---------------------------------------------------------------------
 
 		// PROCESS THE COMMANDS
+
+		// 1. Remove attack
+		switch (unitCommand) {
+
+		case UnitCommand_Stop:
+		case UnitCommand_MoveToPosition:
+		case UnitCommand_Patrol:
+		case UnitCommand_GatherGold:
+		case UnitCommand_HealRunestone:
+		case UnitCommand_RescuePrisoner:
+
+			/// The unit could be attacking before this command
+			if (currTarget != nullptr) {
+
+				if (!currTarget->isRemoved)
+
+					currTarget->target->RemoveAttackingUnit(this);
+
+				currTarget = nullptr;
+			}
+
+			isHitting = false;
+			///
+
+			break;
+
+		case UnitCommand_NoCommand:
+		default:
+
+			break;
+		}
+
+		// 2. Actual command
 		switch (unitCommand) {
 
 		case UnitCommand_Stop:
@@ -151,8 +198,6 @@ void Footman::Move(float dt)
 
 				if (singleUnit->IsFittingTile()) {
 
-					App->audio->PlayFx(20, 0);
-
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);
 
@@ -168,11 +213,14 @@ void Footman::Move(float dt)
 			// The goal of the unit has been changed manually (to patrol)
 			if (singleUnit->isGoalChanged) {
 
-				brain->RemoveAllSubgoals();
-				brain->AddGoal_Patrol(singleUnit->currTile, singleUnit->goal);
+				if (singleUnit->IsFittingTile()) {
 
-				unitState = UnitState_Patrol;
-				unitCommand = UnitCommand_NoCommand;
+					brain->RemoveAllSubgoals();
+					brain->AddGoal_Patrol(singleUnit->currTile, singleUnit->goal);
+
+					unitState = UnitState_Patrol;
+					unitCommand = UnitCommand_NoCommand;
+				}
 			}
 
 			break;
@@ -193,19 +241,75 @@ void Footman::Move(float dt)
 
 			break;
 
+		case UnitCommand_GatherGold:
+
+			if (goldMine != nullptr) {
+
+				if (goldMine->buildingState == BuildingState_Normal) {
+
+					if (singleUnit->IsFittingTile()) {
+
+						brain->RemoveAllSubgoals();
+						brain->AddGoal_GatherGold(goldMine);
+
+						unitState = UnitState_GatherGold;
+						unitCommand = UnitCommand_NoCommand;
+					}
+				}
+			}
+
+			break;
+
+		case UnitCommand_HealRunestone:
+
+			if (runestone != nullptr) {
+
+				if (runestone->buildingState == BuildingState_Normal) {
+
+					if (singleUnit->IsFittingTile()) {
+
+						brain->RemoveAllSubgoals();
+						brain->AddGoal_HealRunestone(runestone);
+
+						unitState = UnitState_HealRunestone;
+						unitCommand = UnitCommand_NoCommand;
+					}
+				}
+			}
+
+			break;
+
+		case UnitCommand_RescuePrisoner:
+
+			if (prisoner != nullptr) {
+
+				if (singleUnit->IsFittingTile()) {
+
+					brain->RemoveAllSubgoals();
+					brain->AddGoal_RescuePrisoner(prisoner);
+
+					unitState = UnitState_RescuePrisoner;
+					unitCommand = UnitCommand_NoCommand;
+				}
+			}
+
+			break;
+
 		case UnitCommand_NoCommand:
 		default:
 
 			break;
 		}
-
-		// ---------------------------------------------------------------------
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
 	}
 
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
+
+	if (isSelected)
+		LOG("Targets %i", targets.size());
+
 	UnitStateMachine(dt);
+	HandleInput(entityEvent);
 
 	// Update animations
 	if (!isStill || isHitting)
@@ -236,9 +340,17 @@ void Footman::Draw(SDL_Texture* sprites)
 	if (animation != nullptr) {
 
 		fPoint offset = { 0.0f,0.0f };
-		offset = { animation->GetCurrentFrame().w / 3.0f, animation->GetCurrentFrame().h / 3.0f };
 
-		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
+		if (animation == &footmanInfo.deathDown || animation == &footmanInfo.deathUp) {
+
+			offset = { animation->GetCurrentFrame().w / 3.8f, animation->GetCurrentFrame().h / 3.3f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+		}
+		else {
+
+			offset = { animation->GetCurrentFrame().w / 3.3f, animation->GetCurrentFrame().h / 3.3f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
 	}
 
 	if (isSelected)
@@ -247,13 +359,8 @@ void Footman::Draw(SDL_Texture* sprites)
 
 void Footman::DebugDrawSelected()
 {
-	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-
-	for (uint i = 0; i < unitInfo.priority; ++i) {
-		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-	}
+	const SDL_Rect entitySize = { pos.x + offsetSize.x, pos.y + offsetSize.y, size.x, size.y };
+	App->printer->PrintQuad(entitySize, color);
 }
 
 void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
@@ -262,17 +369,19 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 	case CollisionState_OnEnter:
 
-		// An enemy is within the sight of this player unit
+		/// SET ATTACK PARAMETERS
+		// An enemy unit/building is within the SIGHT RADIUS of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
-		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			// Static Entity
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
 
-			// The Horde is within the SIGHT radius
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+			}
 
+			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
 			bool isTargetFound = false;
 
@@ -287,7 +396,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				}
 				it++;
 			}
-
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
@@ -298,41 +406,52 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				targets.push_back(targetInfo);
 			}
 
+			// 2. MAKE UNIT FACE TOWARDS THE BEST TARGET
 			if (targets.size() > 0) {
 
-				if (currTarget == nullptr) {
+				bool isFacingTowardsTarget = false;
 
-					// Face towards the closest target (to show the player that the unit is going to be attacked)
-					TargetInfo* targetInfo = GetBestTargetInfo();
+				// a) If the unit is not attacking any target
+				if (currTarget == nullptr)
+					isFacingTowardsTarget = true;
+				// b) If the unit is attacking a static target
+				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
+					isFacingTowardsTarget = true;
+
+				if (isFacingTowardsTarget) {
+
+					// Face towards the best target (ONLY DYNAMIC ENTITIES!) (it is expected to be this target)
+					TargetInfo* targetInfo = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
 					if (targetInfo != nullptr) {
 
-						if (targetInfo->target != nullptr) {
+						fPoint orientation = { targetInfo->target->GetPos().x - pos.x, targetInfo->target->GetPos().y - pos.y };
 
-							fPoint orientation = { targetInfo->target->GetPos().x - pos.x, targetInfo->target->GetPos().y - pos.y };
+						float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
-							float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-							if (m > 0.0f) {
-								orientation.x /= m;
-								orientation.y /= m;
-							}
-
-							SetUnitDirectionByValue(orientation);
+						if (m > 0.0f) {
+							orientation.x /= m;
+							orientation.y /= m;
 						}
+
+						SetUnitDirectionByValue(orientation);
 					}
 				}
 			}
 		}
+
+		// An enemy unit/building is within the ATTACK RADIUS of this player unit
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
 
-			// The Horde is within the ATTACK radius
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+			}
 
+			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
@@ -345,55 +464,49 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				it++;
 			}
 		}
-
 		break;
 
 	case CollisionState_OnExit:
 
-		// Reset attack parameters
+		/// RESET ATTACK PARAMETERS
+		// An enemy unit/building is no longer within the SIGHT RADIUS of this player unit
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
-		|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
 
-			// The Horde is NO longer within the SIGHT radius
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+			}
 
-			// Remove the target from the targets list
+			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
-					// If currTarget matches the target that needs to be removed, set its isSightSatisfied to false and it will be removed later		
-					if (currTarget != nullptr) {
-
-						if (currTarget->target == c2->entity) {
-
-							currTarget->isSightSatisfied = false;
-							break;
-						}
-					}
-					// If currTarget is different from the target that needs to be removed, remove the target from the list
-					delete *it;
-					targets.erase(it);
-
+					(*it)->isSightSatisfied = false;
+					RemoveTargetInfo(*it);
 					break;
 				}
 				it++;
 			}
 		}
+
+		// An enemy unit/building is no longer within the ATTACK RADIUS of this player unit
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
-		|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) { // || c2->colliderType == ColliderType_PlayerBuilding
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
 
-			// The Horde is NO longer within the ATTACK radius
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+			}
 
+			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
@@ -406,7 +519,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				it++;
 			}
 		}
-
 		break;
 	}
 }
@@ -420,11 +532,69 @@ void Footman::UnitStateMachine(float dt)
 
 		break;
 
+	case UnitState_Idle:
+
+		// If the unit is doing nothing, make it look around
+		if (brain->GetSubgoalsList().size() == 0)
+
+			brain->AddGoal_LookAround(1, 3, 1, 2, 2);
+
 	case UnitState_Patrol:
+
+		// ATTACK NOTE (Idle and Patrol states): the unit automatically attacks any target (only DYNAMIC ENTITIES) that is in their targets list
+
+		if (singleUnit->IsFittingTile()) {
+
+			// Check if there are available targets (DYNAMIC ENTITY)
+			newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+			if (newTarget != nullptr) {
+
+				// A new target has found! Update the currTarget
+				if (currTarget != newTarget) {
+
+					// Anticipate the removing of this unit from the attacking units of the target
+					if (currTarget != nullptr) {
+
+						if (!currTarget->isRemoved)
+
+							currTarget->target->RemoveAttackingUnit(this);
+					}
+
+					isHitting = false;
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
+		}
 
 		break;
 
 	case UnitState_AttackTarget:
+
+		// ATTACK NOTE (Attack state): if currTarget is dead, the unit automatically attacks the next target (only DYNAMIC ENTITIES) from their targets list
+
+		if (singleUnit->IsFittingTile()) {
+
+			if (currTarget == nullptr) {
+
+				// Check if there are available targets (DYNAMIC ENTITY) 
+				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+				if (newTarget != nullptr) {
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
+		}
+
+		break;
+
+	case UnitState_HealRunestone:
+	case UnitState_GatherGold:
+	case UnitState_RescuePrisoner:
 
 		break;
 
@@ -436,7 +606,6 @@ void Footman::UnitStateMachine(float dt)
 
 		break;
 
-	case UnitState_Idle:
 	case UnitState_NoState:
 	default:
 

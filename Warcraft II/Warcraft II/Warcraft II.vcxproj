@@ -147,6 +147,7 @@
     <ClInclude Include="j1Audio.h" />
     <ClInclude Include="j1Collision.h" />
     <ClInclude Include="j1Console.h" />
+    <ClInclude Include="j1EnemyWave.h" />
     <ClInclude Include="j1EntityFactory.h" />
     <ClInclude Include="j1FadeToBlack.h" />
     <ClInclude Include="j1FinishGame.h" />
@@ -162,12 +163,12 @@
     <ClInclude Include="j1Pathmanager.h" />
     <ClInclude Include="j1PerfTimer.h" />
     <ClInclude Include="j1Player.h" />
+    <ClInclude Include="j1Printer.h" />
     <ClInclude Include="j1Render.h" />
     <ClInclude Include="j1Scene.h" />
     <ClInclude Include="j1Textures.h" />
     <ClInclude Include="j1Timer.h" />
     <ClInclude Include="j1Window.h" />
-    <ClInclude Include="Khadgar.h" />
     <ClInclude Include="Mage.h" />
     <ClInclude Include="MageTower.h" />
     <ClInclude Include="NTree.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="j1Audio.cpp" />
     <ClCompile Include="j1Collision.cpp" />
     <ClCompile Include="j1Console.cpp" />
+    <ClCompile Include="j1EnemyWave.cpp" />
     <ClCompile Include="j1EntityFactory.cpp" />
     <ClCompile Include="j1FadeToBlack.cpp" />
     <ClCompile Include="j1FinishGame.cpp" />
@@ -246,12 +248,12 @@
     <ClCompile Include="j1Pathmanager.cpp" />
     <ClCompile Include="j1PerfTimer.cpp" />
     <ClCompile Include="j1Player.cpp" />
+    <ClCompile Include="j1Printer.cpp" />
     <ClCompile Include="j1Render.cpp" />
     <ClCompile Include="j1Scene.cpp" />
     <ClCompile Include="j1Textures.cpp" />
     <ClCompile Include="j1Timer.cpp" />
     <ClCompile Include="j1Window.cpp" />
-    <ClCompile Include="Khadgar.cpp" />
     <ClCompile Include="Mage.cpp" />
     <ClCompile Include="MageTower.cpp" />
     <ClCompile Include="OgreMound.cpp" />
@@ -263,6 +265,7 @@
     <ClCompile Include="PugiXml\src\pugixml.cpp" />
     <ClCompile Include="Runestone.cpp" />
     <ClCompile Include="ScoutTower.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="Stables.cpp" />
     <ClCompile Include="StaticEntity.cpp" />
     <ClCompile Include="Stronghold.cpp" />
@@ -283,7 +286,9 @@
     <ClCompile Include="WatchTower.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\Game\config.xml" />
+    <Xml Include="..\Game\config.xml">
+      <SubType>Designer</SubType>
+    </Xml>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

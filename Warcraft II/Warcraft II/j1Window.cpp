@@ -4,6 +4,7 @@
 #include "p2Log.h"
 
 #include "j1App.h"
+#include "j1Render.h"
 
 #include "j1Window.h"
 
@@ -39,6 +40,7 @@ bool j1Window::Awake(pugi::xml_node& config)
 	{
 		//Create window
 		Uint32 flags = SDL_WINDOW_SHOWN;
+
 		fullscreen = config.child("fullscreen").attribute("value").as_bool();
 		bool borderless = config.child("borderless").attribute("value").as_bool();
 		bool resizable = config.child("resizable").attribute("value").as_bool();
@@ -67,6 +69,13 @@ bool j1Window::Awake(pugi::xml_node& config)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
+
+		/*
+		flags |= SDL_WINDOW_MOUSE_CAPTURE;
+		flags |= SDL_WINDOW_INPUT_GRABBED;
+		flags |= SDL_WINDOW_INPUT_FOCUS;
+		flags |= SDL_WINDOW_MOUSE_FOCUS;
+		*/
 
 		window = SDL_CreateWindow(App->GetTitle(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 		SDL_SetWindowIcon(window, iconSurface);
@@ -124,9 +133,11 @@ void j1Window::SetFullscreen() {
 	if (fullscreen) {
 		fullscreen = false;
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_SHOWN);
+//		SDL_RenderSetViewport(App->render->renderer, &App->render->viewport);
 	}
 	else {
 		fullscreen = true;
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+		//SDL_RenderSetViewport(App->render->renderer, &App->render->viewport);
 	}
 }

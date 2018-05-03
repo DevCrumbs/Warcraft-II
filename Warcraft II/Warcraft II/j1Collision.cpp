@@ -8,6 +8,7 @@
 #include "j1Render.h"
 #include "Entity.h"
 #include "j1Map.h"
+#include "j1Printer.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -26,6 +27,7 @@ j1Collision::j1Collision()
 	matrix[ColliderType_PlayerUnit][ColliderType_EnemySightRadius] = false;
 	matrix[ColliderType_PlayerUnit][ColliderType_PlayerAttackRadius] = false;
 	matrix[ColliderType_PlayerUnit][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_NeutralBuilding] = false;
 
 	/// EnemyUnit
 	matrix[ColliderType_EnemyUnit][ColliderType_EnemyUnit] = false;
@@ -37,6 +39,7 @@ j1Collision::j1Collision()
 	matrix[ColliderType_EnemyUnit][ColliderType_PlayerSightRadius] = false;
 	matrix[ColliderType_EnemyUnit][ColliderType_EnemyAttackRadius] = false;
 	matrix[ColliderType_EnemyUnit][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_NeutralBuilding] = false;
 
 	/// NeutralUnit
 	matrix[ColliderType_NeutralUnit][ColliderType_NeutralUnit] = false;
@@ -48,6 +51,7 @@ j1Collision::j1Collision()
 	matrix[ColliderType_NeutralUnit][ColliderType_EnemySightRadius] = false;
 	matrix[ColliderType_NeutralUnit][ColliderType_PlayerAttackRadius] = false;
 	matrix[ColliderType_NeutralUnit][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_NeutralUnit][ColliderType_NeutralBuilding] = false;
 
 	/// PlayerBuilding
 	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerBuilding] = false;
@@ -59,6 +63,7 @@ j1Collision::j1Collision()
 	matrix[ColliderType_PlayerBuilding][ColliderType_EnemySightRadius] = true;
 	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerAttackRadius] = false;
 	matrix[ColliderType_PlayerBuilding][ColliderType_EnemyAttackRadius] = true;
+	matrix[ColliderType_PlayerBuilding][ColliderType_NeutralBuilding] = false;
 
 	/// EnemyBuilding
 	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyBuilding] = false;
@@ -70,6 +75,19 @@ j1Collision::j1Collision()
 	matrix[ColliderType_EnemyBuilding][ColliderType_EnemySightRadius] = false;
 	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerAttackRadius] = true;
 	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_NeutralBuilding] = false;
+
+	/// Neutral Building
+	matrix[ColliderType_NeutralBuilding][ColliderType_NeutralBuilding] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_NeutralUnit] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_EnemyBuilding] = false;
 
 	/// PlayerSightRadius
 	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerSightRadius] = false;
@@ -81,6 +99,7 @@ j1Collision::j1Collision()
 	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyBuilding] = true;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerAttackRadius] = false;
 	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_NeutralBuilding] = false;
 
 	/// EnemySightRadius
 	matrix[ColliderType_EnemySightRadius][ColliderType_EnemySightRadius] = false;
@@ -92,6 +111,7 @@ j1Collision::j1Collision()
 	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyBuilding] = false;
 	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyAttackRadius] = false;
 	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_EnemySightRadius][ColliderType_NeutralBuilding] = false;
 
 	/// PlayerAttackRadius
 	matrix[ColliderType_PlayerAttackRadius][ColliderType_PlayerAttackRadius] = false;
@@ -103,6 +123,7 @@ j1Collision::j1Collision()
 	matrix[ColliderType_PlayerAttackRadius][ColliderType_NeutralUnit] = true;
 	matrix[ColliderType_PlayerAttackRadius][ColliderType_PlayerBuilding] = false;
 	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemyBuilding] = true;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_NeutralBuilding] = false;
 
 	/// EnemyAttackRadius
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyAttackRadius] = false;
@@ -114,6 +135,7 @@ j1Collision::j1Collision()
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_NeutralUnit] = true;
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerBuilding] = true;
 	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_NeutralBuilding] = false;
 
 	// DEBUG COLORS
 	debugColors[ColliderType_PlayerUnit] = ColorDarkBlue;
@@ -121,6 +143,7 @@ j1Collision::j1Collision()
 	debugColors[ColliderType_NeutralUnit] = ColorWhite;
 	debugColors[ColliderType_PlayerBuilding] = ColorDarkBlue;
 	debugColors[ColliderType_EnemyBuilding] = ColorDarkRed;
+	debugColors[ColliderType_NeutralBuilding] = ColorWhite;
 	debugColors[ColliderType_PlayerSightRadius] = ColorLightBlue;
 	debugColors[ColliderType_EnemySightRadius] = ColorLightRed;
 	debugColors[ColliderType_PlayerAttackRadius] = ColorLightBlue;
@@ -198,17 +221,69 @@ bool j1Collision::Update(float dt)
 				if (matrix[(*I)->colliderType][(*J)->colliderType]) {
 
 					// Check if there is a collision between the offsetColliders
-					if (offsetCollider1->CheckCollision(offsetCollider2->colliderRect) && offsetCollider1->colliderGroup->callback != nullptr)
+					if (offsetCollider1->CheckCollision(offsetCollider2->colliderRect) && offsetCollider1->colliderGroup->callback != nullptr) {
 
-						ProcessCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup);
+						if (offsetCollider1->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY || offsetCollider2->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY) {
+
+							// If one of the colliders belongs to a Static Entity, process here the collision (by only checking the offsetColliders)
+							if (offsetCollider1->colliderGroup->isTrigger) {
+
+								if (find(offsetCollider1->colliderGroup->collidingGroups.begin(), offsetCollider1->colliderGroup->collidingGroups.end(), offsetCollider2->colliderGroup) == offsetCollider1->colliderGroup->collidingGroups.end()) {
+
+									offsetCollider1->colliderGroup->collidingGroups.push_back(offsetCollider2->colliderGroup);
+									offsetCollider1->colliderGroup->lastCollidingGroups.push_back(offsetCollider2->colliderGroup);
+
+									// Collision!
+									offsetCollider1->colliderGroup->callback->OnCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup, CollisionState_OnEnter);
+									ret = true;
+								}
+								else {
+
+									offsetCollider1->colliderGroup->lastCollidingGroups.push_back(offsetCollider2->colliderGroup);
+									ret = true;
+								}
+							}
+							else
+								offsetCollider1->colliderGroup->callback->OnCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup, CollisionState_OnEnter);
+						}
+						else
+							// Process the collision by checking the sub-colliders
+							ProcessCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup);
+					}
 				}
 
 				if (matrix[(*J)->colliderType][(*I)->colliderType]) {
 
 					// Check if there is a collision between the offsetColliders
-					if (offsetCollider2->CheckCollision(offsetCollider1->colliderRect) && offsetCollider2->colliderGroup->callback != nullptr)
+					if (offsetCollider2->CheckCollision(offsetCollider1->colliderRect) && offsetCollider2->colliderGroup->callback != nullptr) {
 
-						ProcessCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup);
+						if (offsetCollider1->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY || offsetCollider2->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY) {
+
+							// If one of the colliders belongs to a Static Entity, process here the collision (by only checking the offsetColliders)
+							if (offsetCollider2->colliderGroup->isTrigger) {
+
+								if (find(offsetCollider2->colliderGroup->collidingGroups.begin(), offsetCollider2->colliderGroup->collidingGroups.end(), offsetCollider1->colliderGroup) == offsetCollider2->colliderGroup->collidingGroups.end()) {
+
+									offsetCollider2->colliderGroup->collidingGroups.push_back(offsetCollider1->colliderGroup);
+									offsetCollider2->colliderGroup->lastCollidingGroups.push_back(offsetCollider1->colliderGroup);
+
+									// Collision!
+									offsetCollider2->colliderGroup->callback->OnCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup, CollisionState_OnEnter);
+									ret = true;
+								}
+								else {
+
+									offsetCollider2->colliderGroup->lastCollidingGroups.push_back(offsetCollider1->colliderGroup);
+									ret = true;
+								}
+							}
+							else
+								offsetCollider2->colliderGroup->callback->OnCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup, CollisionState_OnEnter);
+						}
+						else
+							// Process the collision by checking the sub-colliders
+							ProcessCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup);
+					}
 				}
 			}
 			J++;
@@ -334,11 +409,15 @@ void j1Collision::DebugDraw()
 
 		color = debugColors[(*it)->colliderType];
 
-		for (uint i = 0; i < (*it)->colliders.size(); ++i)
-			App->render->DrawQuad((*it)->colliders[i]->colliderRect, color.r, color.g, color.b, alpha);
+		for (uint i = 0; i < (*it)->colliders.size(); ++i) {
+			//App->render->DrawQuad((*it)->colliders[i]->colliderRect, color.r, color.g, color.b, alpha);
+			App->printer->PrintQuad((*it)->colliders[i]->colliderRect, { color.r,color.g,color.b,alpha }, true);
+		}
 
-		if ((*it)->offsetCollider != nullptr)
-			App->render->DrawQuad((*it)->offsetCollider->colliderRect, 255, 255, 255, alpha);
+		if ((*it)->offsetCollider != nullptr) {
+			//App->render->DrawQuad((*it)->offsetCollider->colliderRect, 255, 255, 255, alpha);
+			App->printer->PrintQuad((*it)->offsetCollider->colliderRect, { 255,255,255,alpha }, true);
+		}
 
 		it++;
 	}
@@ -477,8 +556,10 @@ bool ColliderGroup::IsColliderInGroup(Collider* collider)
 	return false;
 }
 
-void ColliderGroup::CreateOffsetCollider()
+bool ColliderGroup::CreateOffsetCollider()
 {
+	bool ret = false;
+
 	if (offsetCollider != nullptr)
 		delete offsetCollider;
 	offsetCollider = nullptr;
@@ -490,17 +571,24 @@ void ColliderGroup::CreateOffsetCollider()
 	Collider* bottom = GetCollider(false, false, false, true);
 
 	if (left == nullptr || right == nullptr || top == nullptr || bottom == nullptr)
-		return;
+		return false;
 
 	SDL_Rect colliderRect;
 	colliderRect.x = left->GetPos().x;
 	colliderRect.y = top->GetPos().y;
 
-	colliderRect.w = (right->GetPos().x + App->map->data.tileWidth) - left->GetPos().x;
-	colliderRect.h = (bottom->GetPos().y + App->map->data.tileHeight) - top->GetPos().y;
+	colliderRect.w = (right->GetPos().x + right->colliderRect.w) - left->GetPos().x;
+	colliderRect.h = (bottom->GetPos().y + right->colliderRect.h) - top->GetPos().y;
 
 	offsetCollider = new Collider(colliderRect);
-	offsetCollider->SetColliderGroup(this);
+
+	if (offsetCollider != nullptr) {
+
+		offsetCollider->SetColliderGroup(this);
+		ret = true;
+	}
+
+	return ret;
 }
 
 Collider* ColliderGroup::GetCollider(bool left, bool right, bool top, bool bottom)

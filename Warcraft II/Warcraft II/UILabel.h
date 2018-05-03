@@ -44,7 +44,7 @@ public:
 	void Draw() const;
 	void DebugDraw(iPoint blitPos) const;
 
-	void SetText(string text);
+	void SetText(string text, uint wrapLength = 0);
 	void SetColor(SDL_Color color, bool normal = false, bool hover = false, bool pressed = false);
 	SDL_Color GetColor(bool normal = true, bool hover = false, bool pressed = false);
 
@@ -63,10 +63,12 @@ public:
 private:
 	UILabel_Info label;
 	_TTF_Font* font = nullptr;
-	const SDL_Texture* tex = nullptr;
+	SDL_Texture* tex = nullptr;
 	SDL_Color color = { 255,255,255,255 };
 	UI_EVENT UIevent = UI_EVENT_NONE;
 	bool nextEvent = false;
+
+	const char* text = nullptr;
 
 	// Fade parameters
 	float totalTime = 0.0f;

@@ -5,8 +5,9 @@
 
 struct TuralyonInfo
 {
-	int currLife = 0;
-	uint maxLife = 0;
+	UnitInfo unitInfo;
+
+	Animation idle;
 };
 
 class Turalyon :public DynamicEntity
@@ -17,14 +18,23 @@ public:
 	~Turalyon() {};
 
 	void Move(float dt);
+	void Draw(SDL_Texture* sprites);
+	void DebugDrawSelected();
 
 	// Animations
 	void LoadAnimationsSpeed();
 	void UpdateAnimations(float dt);
 
+	// Prisoner rescue
+	bool IsUnitRescuingPrisoner() const;
+	void SetUnitRescuePrisoner(bool isUnitRescuingPrisoner);
+
 private:
 
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 	TuralyonInfo turalyonInfo;
+
+	bool isUnitRescuingPrisoner = false;
 };
 
 #endif //__Turalyon_H__

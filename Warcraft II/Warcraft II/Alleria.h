@@ -6,10 +6,8 @@
 struct AlleriaInfo
 {
 	UnitInfo unitInfo;
-	Animation idle;
 
-	int currLife = 0;
-	uint maxLife = 0;
+	Animation idle;
 };
 
 class Alleria :public DynamicEntity
@@ -20,15 +18,23 @@ public:
 	~Alleria() {};
 
 	void Move(float dt);
+	void Draw(SDL_Texture* sprites);
+	void DebugDrawSelected();
 
 	// Animations
 	void LoadAnimationsSpeed();
 	void UpdateAnimations(float dt);
 
-private:
-	EntitiesEvent entityEvent = EntitiesEvent_NONE;
+	// Prisoner rescue
+	bool IsUnitRescuingPrisoner() const;
+	void SetUnitRescuePrisoner(bool isUnitRescuingPrisoner);
 
+private:
+
+	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 	AlleriaInfo alleriaInfo;
+
+	bool isUnitRescuingPrisoner = false;
 };
 
 #endif //__Alleria_H__

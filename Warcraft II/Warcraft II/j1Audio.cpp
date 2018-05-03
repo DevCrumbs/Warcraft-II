@@ -60,7 +60,78 @@ bool j1Audio::Awake(pugi::xml_node& config)
 		ret = true;
 	}
 
+	//Sounds
+	pugi::xml_node audioPaths = config.child("audioPaths");
+	pugi::xml_node sounds = audioPaths.child("sounds");
+
+	pugi::xml_node uIButtonsSounds = sounds.child("buttonPaths");
+	mainButtonSound = uIButtonsSounds.attribute("menuButton").as_string();
+	errorButtonSound = uIButtonsSounds.attribute("errorBttn").as_string();
+
+	pugi::xml_node buildingSounds = sounds.child("buildingPaths");
+	buildingConstructionSound = buildingSounds.attribute("buildingConstruction").as_string();
+	buildingErrorButtonSound = buildingSounds.attribute("errorBttn").as_string();
+	chickenFarmSound = buildingSounds.attribute("chickenFarm").as_string();
+	goldMineSound = buildingSounds.attribute("goldMine").as_string();
+	gryphonAviarySound = buildingSounds.attribute("gryphAviar").as_string();
+	mageTowerSound = buildingSounds.attribute("mageTower").as_string();
+	stablesSound = buildingSounds.attribute("stables").as_string();
+	repairBuildingSound = buildingSounds.attribute("repair").as_string();
+	destroyBuildingSound = buildingSounds.attribute("destroyBuilding").as_string();
+	runeStoneSound = buildingSounds.attribute("runeStone").as_string();
+
+	pugi::xml_node unitsSounds = sounds.child("unitsPaths");
+	humanDeadSound = unitsSounds.attribute("humanDeadSound").as_string();
+	orcDeadSound = unitsSounds.attribute("orcDeadSound").as_string();
+	prisonerRescueSound = unitsSounds.attribute("prisonerRescue").as_string();
+
+	pugi::xml_node crittersSounds = sounds.child("crittersPaths");
+	crittersBoarDead = crittersSounds.attribute("boarDead").as_string();
+	crittersSheepDead = crittersSounds.attribute("sheepDead").as_string();
+
+	pugi::xml_node archerSounds = sounds.child("archerPaths");
+	archerGoToPlaceSound1 = archerSounds.attribute("goToPlace1").as_string();
+	archerGoToPlaceSound2 = archerSounds.attribute("goToPlace2").as_string();
+	archerGoToPlaceSound3 = archerSounds.attribute("goToPlace3").as_string();
+	archerGoToPlaceSound4 = archerSounds.attribute("goToPlace4").as_string();
+	archerReadySound = archerSounds.attribute("ready").as_string();
+	archerSelectedSound1 = archerSounds.attribute("selected1").as_string();
+	archerSelectedSound2 = archerSounds.attribute("selected2").as_string();
+	archerSelectedSound3 = archerSounds.attribute("selected3").as_string();
+	archerSelectedSound4 = archerSounds.attribute("selected4").as_string();
+
+	pugi::xml_node footmanSounds = sounds.child("footmanPaths");
+	footmanGoToPlaceSound1 = footmanSounds.attribute("goToPlace1").as_string();
+	footmanGoToPlaceSound2 = footmanSounds.attribute("goToPlace2").as_string();
+	footmanGoToPlaceSound3 = footmanSounds.attribute("goToPlace3").as_string();
+	footmanGoToPlaceSound4 = footmanSounds.attribute("goToPlace4").as_string();
+	footmanReadySound = footmanSounds.attribute("ready").as_string();
+	footmanSelectedSound1 = footmanSounds.attribute("selected1").as_string();
+	footmanSelectedSound2 = footmanSounds.attribute("selected2").as_string();
+	footmanSelectedSound3 = footmanSounds.attribute("selected3").as_string();
+	footmanSelectedSound4 = footmanSounds.attribute("selected4").as_string();
+	footmanSelectedSound5 = footmanSounds.attribute("selected5").as_string();
+
+	pugi::xml_node griffonSounds = sounds.child("griffonPaths");
+	griffonGoToPlaceSound = griffonSounds.attribute("goToPlace").as_string();
+	griffonReadySound = griffonSounds.attribute("goToPlace").as_string();
+	griffonSelectedSound = griffonSounds.attribute("selected").as_string();
+	griffonDeathSound = griffonSounds.attribute("death").as_string();
+
+	pugi::xml_node attackSounds = sounds.child("attackPaths");
+	axeThrowSound = attackSounds.attribute("axeThrow").as_string();
+	bowFireSound = attackSounds.attribute("bowFire").as_string();
+	swordSound = attackSounds.attribute("sword").as_string();
+
+
 	return ret;
+}
+
+bool j1Audio::Start()
+{
+	ChargeFX();
+
+	return true;
 }
 
 // Called before quitting
@@ -224,6 +295,67 @@ bool j1Audio::Save(pugi::xml_node& save) const {
 // Pause music
 void j1Audio::PauseMusic() const {
 	Mix_FadeOutMusic(300);
+}
+
+void j1Audio::ChargeFX()
+{
+	gameSounds.button = App->audio->LoadFx(mainButtonSound.data()); //1 Normal bttn sound
+	gameSounds.buildingConstruction = App->audio->LoadFx(buildingConstructionSound.data()); //2 Construction building
+	gameSounds.errorButt = App->audio->LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
+	gameSounds.errorButtBuilding = App->audio->LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
+	gameSounds.chickenFarm = App->audio->LoadFx(chickenFarmSound.data()); //5 chicken farm sound
+	gameSounds.goldMine = App->audio->LoadFx(goldMineSound.data()); //6 gold mine sound
+	gameSounds.gryphonAviary = App->audio->LoadFx(gryphonAviarySound.data()); //7 gryphon aviary sound
+	gameSounds.mageTower = App->audio->LoadFx(mageTowerSound.data()); //8 mage tower sound
+	gameSounds.stables = App->audio->LoadFx(stablesSound.data()); //9 stables sound
+	gameSounds.repairBuild = App->audio->LoadFx(repairBuildingSound.data()); //10 repair building sound
+	gameSounds.destroyBuild = App->audio->LoadFx(destroyBuildingSound.data()); //11 destroy building sound
+	
+	gameSounds.humanDeath = App->audio->LoadFx(humanDeadSound.data()); 
+	gameSounds.orcDeath = App->audio->LoadFx(orcDeadSound.data()); 
+	gameSounds.prisionerRescue = App->audio->LoadFx(prisonerRescueSound.data()); 
+	gameSounds.boarDeath = App->audio->LoadFx(crittersBoarDead.data()); 
+	gameSounds.sheepDeath = App->audio->LoadFx(crittersSheepDead.data()); 
+
+	//Archer
+	gameSounds.archerCommand1 = App->audio->LoadFx(archerGoToPlaceSound1.data()); 
+	gameSounds.archerCommand2 = App->audio->LoadFx(archerGoToPlaceSound2.data());
+	gameSounds.archerCommand3 = App->audio->LoadFx(archerGoToPlaceSound3.data());
+	gameSounds.archerCommand4 = App->audio->LoadFx(archerGoToPlaceSound4.data());
+	gameSounds.archerReady = App->audio->LoadFx(archerReadySound.data()); 
+	gameSounds.archerSelected1 = App->audio->LoadFx(archerSelectedSound1.data()); 
+	gameSounds.archerSelected2 = App->audio->LoadFx(archerSelectedSound2.data());
+	gameSounds.archerSelected3 = App->audio->LoadFx(archerSelectedSound3.data());
+	gameSounds.archerSelected4 = App->audio->LoadFx(archerSelectedSound4.data());
+
+	//Footman
+	gameSounds.footmanCommand1 = App->audio->LoadFx(footmanGoToPlaceSound1.data()); 
+	gameSounds.footmanCommand2 = App->audio->LoadFx(footmanGoToPlaceSound2.data());
+	gameSounds.footmanCommand3 = App->audio->LoadFx(footmanGoToPlaceSound3.data());
+	gameSounds.footmanCommand4 = App->audio->LoadFx(footmanGoToPlaceSound4.data());
+	gameSounds.footmanReady = App->audio->LoadFx(footmanReadySound.data()); 
+	gameSounds.footmanSelected1 = App->audio->LoadFx(footmanSelectedSound1.data()); 
+	gameSounds.footmanSelected2 = App->audio->LoadFx(footmanSelectedSound2.data());
+	gameSounds.footmanSelected3 = App->audio->LoadFx(footmanSelectedSound3.data());
+	gameSounds.footmanSelected4 = App->audio->LoadFx(footmanSelectedSound4.data());
+	gameSounds.footmanSelected5 = App->audio->LoadFx(footmanSelectedSound5.data());
+	
+	//Gryphon
+	gameSounds.griffonCommand = App->audio->LoadFx(griffonGoToPlaceSound.data());
+	gameSounds.griffonReady = App->audio->LoadFx(griffonReadySound.data());
+	gameSounds.griffonSelected = App->audio->LoadFx(griffonSelectedSound.data());
+	gameSounds.griffonDeath = App->audio->LoadFx(griffonDeathSound.data());
+	
+	gameSounds.axeThrow = App->audio->LoadFx(axeThrowSound.data()); 
+	gameSounds.arrowThrow = App->audio->LoadFx(bowFireSound.data()); 
+	gameSounds.swordClash = App->audio->LoadFx(swordSound.data()); 
+	gameSounds.runeStone = App->audio->LoadFx(runeStoneSound.data()); 
+	
+}
+
+GameSounds j1Audio::GetFX()
+{
+	return gameSounds;
 }
 
 // Set music volume

@@ -15,6 +15,8 @@
 #include "j1Player.h"
 #include "j1Movement.h"
 #include "Goal.h"
+#include "j1Printer.h"
+#include "j1PathManager.h"
 
 #include "Entity.h"
 #include "DynamicEntity.h"
@@ -46,11 +48,14 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	crittersTexName = spritesheets.child("critters").attribute("name").as_string();
 	khadgarTexName = spritesheets.child("khadgarAnimations").attribute("name").as_string();
 	alleriaTexName = spritesheets.child("alleriaAnimations").attribute("name").as_string();
+	turalyonTexName = spritesheets.child("turalyonAnimations").attribute("name").as_string();
 	elvenArcherTexName = spritesheets.child("elvenArcherAnimations").attribute("name").as_string();
 	trollAxethrowerTexName = spritesheets.child("trollAxethrowerAnimations").attribute("name").as_string();
+	gryphonRiderTexName = spritesheets.child("gryphonRiderAnimations").attribute("name").as_string();
+	dragonTexName = spritesheets.child("dragonAnimations").attribute("name").as_string();
 
 	//Debug Textures Properties
-	buildingPreviewTiles.opacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
+	previewTilesopacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
 	previewBuildingOpacity = config.child("previewTexturesProperties").attribute("buildingPlaceOpacity").as_uint();
 
 	// Static entities
@@ -90,26 +95,26 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = humanBuildings.child("scoutTower").child("sprites");
 	scoutTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	scoutTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
-	
+
 	//Player Guard Tower attributes
 	playerGuardTowerInfo.sightRadius = { humanBuildings.child("guardTower").child("attack").attribute("sightRadius").as_uint() };
 	playerGuardTowerInfo.damage = { humanBuildings.child("guardTower").child("attack").attribute("damage").as_uint() };
 	playerGuardTowerInfo.attackWaitTime = { humanBuildings.child("guardTower").child("attack").attribute("attackWaitTime").as_uint() };
 	playerGuardTowerInfo.arrowSpeed = { humanBuildings.child("guardTower").child("attack").attribute("arrowSpeed").as_uint() };
 	playerGuardTowerInfo.maxLife = { humanBuildings.child("guardTower").child("maxLife").attribute("value").as_int() };
-	
+
 	//Player Guard Tower animations
 	aux = humanBuildings.child("guardTower").child("sprites");
 	playerGuardTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	playerGuardTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
-	
+
 	//Player Cannon Tower attributes
 	playerCannonTowerInfo.sightRadius = { humanBuildings.child("canonTower").child("attack").attribute("sightRadius").as_uint() };
 	playerCannonTowerInfo.damage = { humanBuildings.child("canonTower").child("attack").attribute("damage").as_uint() };
 	playerCannonTowerInfo.attackWaitTime = { humanBuildings.child("canonTower").child("attack").attribute("attackWaitTime").as_uint() };
 	playerCannonTowerInfo.arrowSpeed = { humanBuildings.child("canonTower").child("attack").attribute("arrowSpeed").as_uint() };
 	playerCannonTowerInfo.maxLife = { humanBuildings.child("canonTower").child("maxLife").attribute("value").as_int() };
-	
+
 
 	//Player Cannon Tower animations
 	aux = humanBuildings.child("canonTower").child("sprites");
@@ -118,13 +123,13 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	barracksInfo.barracks1MaxLife = { humanBuildings.child("barracks").child("maxLife").attribute("value").as_int() };
 	aux = humanBuildings.child("barracks").child("sprites");
-	barracksInfo.barracksCompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	barracksInfo.inProgressTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 
 	barracksInfo.barracks2MaxLife = { humanBuildings.child("barracks2").child("maxLife").attribute("value").as_int() };
 	aux = humanBuildings.child("barracks2").child("sprites");
-	barracksInfo.barracks2CompleteTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
+	barracksInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 
-	elvenLumberMillInfo.maxLife= { humanBuildings.child("elvenLumberMill").child("maxLife").attribute("value").as_int() };
+	elvenLumberMillInfo.maxLife = { humanBuildings.child("elvenLumberMill").child("maxLife").attribute("value").as_int() };
 	aux = humanBuildings.child("elvenLumberMill").child("sprites");
 	elvenLumberMillInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	elvenLumberMillInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
@@ -161,15 +166,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	mageTowerInfo.constructionPlanks2 = gryphonAviaryInfo.constructionPlanks2 = stablesInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 
 
-	//Building preview tiles
-	pugi::xml_node previewTiles = humanBuildings.child("previewTiles");
-	buildingPreviewTiles.greenTile = { previewTiles.child("green").attribute("x").as_int(), previewTiles.child("green").attribute("y").as_int(), previewTiles.child("green").attribute("w").as_int(), previewTiles.child("green").attribute("h").as_int() };
-	buildingPreviewTiles.redTile = { previewTiles.child("red").attribute("x").as_int(), previewTiles.child("red").attribute("y").as_int(), previewTiles.child("red").attribute("w").as_int(), previewTiles.child("red").attribute("h").as_int() };
-
 	//Neutral buildings
 	pugi::xml_node neutralBuildings = staticEntities.child("neutralBuildings");
-
-	goldMineInfo.maxLife = { neutralBuildings.child("goldMine").child("maxLife").attribute("value").as_int() };
 	aux = neutralBuildings.child("goldMine").child("sprites");
 	goldMineInfo.completeTexArea = { aux.child("active").attribute("x").as_int(), aux.child("active").attribute("y").as_int(), aux.child("active").attribute("w").as_int(), aux.child("active").attribute("h").as_int() };
 	goldMineInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
@@ -177,7 +175,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = neutralBuildings.child("runeStone").child("sprites");
 	runestoneInfo.completeTexArea = { aux.child("active").attribute("x").as_int(), aux.child("active").attribute("y").as_int(), aux.child("active").attribute("w").as_int(), aux.child("active").attribute("h").as_int() };
 	runestoneInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
-	
+
 	//Enemy buildings
 	pugi::xml_node orcishBuildings = staticEntities.child("orcishBuildings");
 
@@ -187,7 +185,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	strongholdInfo.life = { orcishBuildings.child("stronghold").child("maxLife").attribute("value").as_uint() };
 	strongholdInfo.completeTexArea = { orcishBuildings.child("stronghold").child("sprite").attribute("x").as_int(), orcishBuildings.child("stronghold").child("sprite").attribute("y").as_int(), orcishBuildings.child("stronghold").child("sprite").attribute("w").as_int(), orcishBuildings.child("stronghold").child("sprite").attribute("h").as_int() };
 
-    fortressInfo.life = { orcishBuildings.child("fortress").child("maxLife").attribute("value").as_uint() };
+	fortressInfo.life = { orcishBuildings.child("fortress").child("maxLife").attribute("value").as_uint() };
 	fortressInfo.completeTexArea = { orcishBuildings.child("fortress").child("sprite").attribute("x").as_int(), orcishBuildings.child("fortress").child("sprite").attribute("y").as_int(), orcishBuildings.child("fortress").child("sprite").attribute("w").as_int(), orcishBuildings.child("fortress").child("sprite").attribute("h").as_int() };
 
 	enemyBarracksInfo.life = { orcishBuildings.child("barracks").child("maxLife").attribute("value").as_uint() };
@@ -198,13 +196,13 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	trollLumberMillInfo.life = { orcishBuildings.child("trollLumberMill").child("maxLife").attribute("value").as_uint() };
 	trollLumberMillInfo.completeTexArea = { orcishBuildings.child("trollLumberMill").child("sprite").attribute("x").as_int(), orcishBuildings.child("trollLumberMill").child("sprite").attribute("y").as_int(), orcishBuildings.child("trollLumberMill").child("sprite").attribute("w").as_int(), orcishBuildings.child("trollLumberMill").child("sprite").attribute("h").as_int() };
-	
+
 	altarOfStormsInfo.life = { orcishBuildings.child("altarOfStorms").child("maxLife").attribute("value").as_uint() };
 	altarOfStormsInfo.completeTexArea = { orcishBuildings.child("altarOfStorms").child("sprite").attribute("x").as_int(), orcishBuildings.child("altarOfStorms").child("sprite").attribute("y").as_int(), orcishBuildings.child("altarOfStorms").child("sprite").attribute("w").as_int(), orcishBuildings.child("altarOfStorms").child("sprite").attribute("h").as_int() };
 
 	dragonRoostInfo.life = { orcishBuildings.child("dragonRoost").child("maxLife").attribute("value").as_uint() };
 	dragonRoostInfo.completeTexArea = { orcishBuildings.child("dragonRoost").child("sprite").attribute("x").as_int(), orcishBuildings.child("dragonRoost").child("sprite").attribute("y").as_int(), orcishBuildings.child("dragonRoost").child("sprite").attribute("w").as_int(), orcishBuildings.child("dragonRoost").child("sprite").attribute("h").as_int() };
-	
+
 	templeOfTheDamnedInfo.life = { orcishBuildings.child("templeOfTheDamned").child("maxLife").attribute("value").as_uint() };
 	templeOfTheDamnedInfo.completeTexArea = { orcishBuildings.child("templeOfTheDamned").child("sprite").attribute("x").as_int(), orcishBuildings.child("templeOfTheDamned").child("sprite").attribute("y").as_int(), orcishBuildings.child("templeOfTheDamned").child("sprite").attribute("w").as_int(), orcishBuildings.child("templeOfTheDamned").child("sprite").attribute("h").as_int() };
 
@@ -235,136 +233,134 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	enemyCannonTowerInfo.attackWaitTime = { orcishBuildings.child("cannonTower").child("attack").attribute("attackWaitTime").as_uint() };
 	enemyCannonTowerInfo.arrowSpeed = { orcishBuildings.child("cannonTower").child("attack").attribute("arrowSpeed").as_uint() };
 
-
-	//Dynamic entities
-	//Humans
+	// DYNAMIC ENTITIES
+	// Humans
 	pugi::xml_node humanEntities = config.child("dynamicEntities").child("humans");
 
-	footmanInfo.maxLife = footmanInfo.currLife = humanEntities.child("footman").attribute("maxLife").as_int();
-	//Footman animations
+	// Footman animations
 	pugi::xml_node footmanAnimations = humanEntities.child("footman").child("animations");
 	pugi::xml_node currentAnimation;
 
-	//Up animation Footman
+	// Up animation Footman
 	currentAnimation = footmanAnimations.child("up");
 	footmanInfo.up.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down animation Footman
+	// Down animation Footman
 	currentAnimation = footmanAnimations.child("down");
 	footmanInfo.down.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.down.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Right animation Footman
+	// Right animation Footman
 	currentAnimation = footmanAnimations.child("right");
 	footmanInfo.right.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.right.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Left animation Footman
+	// Left animation Footman
 	currentAnimation = footmanAnimations.child("left");
 	footmanInfo.left.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.left.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Right animation Footman
+	// Up Right animation Footman
 	currentAnimation = footmanAnimations.child("upRight");
 	footmanInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Left animation Footman
+	// Up Left animation Footman
 	currentAnimation = footmanAnimations.child("upLeft");
 	footmanInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Right animation Footman
+	// Down Right animation Footman
 	currentAnimation = footmanAnimations.child("downRight");
 	footmanInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Left animation Footman
+	// Down Left animation Footman
 	currentAnimation = footmanAnimations.child("downLeft");
 	footmanInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up animation Footman
+	// Attack Up animation Footman
 	currentAnimation = footmanAnimations.child("attackUp");
 	footmanInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down animation Footman
+	// Attack Down animation Footman
 	currentAnimation = footmanAnimations.child("attackDown");
 	footmanInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Left animation Footman
+	// Attack Left animation Footman
 	currentAnimation = footmanAnimations.child("attackLeft");
 	footmanInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Right animation Footman
+	// Attack Right animation Footman
 	currentAnimation = footmanAnimations.child("attackRight");
 	footmanInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Left animation Footman
+	// Attack Up Left animation Footman
 	currentAnimation = footmanAnimations.child("attackUpLeft");
 	footmanInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Right animation Footman
+	// Attack Up Right animation Footman
 	currentAnimation = footmanAnimations.child("attackUpRight");
 	footmanInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Left animation Footman
+	// Attack Down Left animation Footman
 	currentAnimation = footmanAnimations.child("attackDownLeft");
 	footmanInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Right animation Footman
+	// Attack Down Right animation Footman
 	currentAnimation = footmanAnimations.child("attackDownRight");
 	footmanInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Death Up animation Footman
+	// Death Up animation Footman
 	currentAnimation = footmanAnimations.child("deathUp");
 	footmanInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		footmanInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Death Down animation Footman
+	// Death Down animation Footman
 	currentAnimation = footmanAnimations.child("deathDown");
 	footmanInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
 	footmanInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
@@ -372,129 +368,129 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		footmanInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//Elven Archer animations
+	// Elven Archer animations
 	pugi::xml_node elvenArcherAnimations = humanEntities.child("elvenArcher").child("animations");
 
-	//Up animation Elven Archer
+	// Up animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("up");
 	elvenArcherInfo.up.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down animation Elven Archer
+	// Down animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("down");
 	elvenArcherInfo.down.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.down.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Left animation Elven Archer
+	// Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("left");
 	elvenArcherInfo.left.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.left.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Right animation Elven Archer
+	// Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("right");
 	elvenArcherInfo.right.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.right.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Left animation Elven Archer
+	// Up Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("upLeft");
 	elvenArcherInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Right animation Elven Archer
+	// Up Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("upRight");
 	elvenArcherInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Left animation Elven Archer
+	// Down Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("downLeft");
 	elvenArcherInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Right animation Elven Archer
+	// Down Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("downRight");
 	elvenArcherInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up animation Elven Archer
+	// Attack Up animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackUp");
 	elvenArcherInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down animation Elven Archer
+	// Attack Down animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackDown");
 	elvenArcherInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Left animation Elven Archer
+	// Attack Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackLeft");
 	elvenArcherInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Right animation Elven Archer
+	// Attack Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackRight");
 	elvenArcherInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Left animation Elven Archer
+	// Attack Up Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackUpLeft");
 	elvenArcherInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Right animation Elven Archer
+	// Attack Up Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackUpRight");
 	elvenArcherInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Left animation Elven Archer
+	// Attack Down Left animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackDownLeft");
 	elvenArcherInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Right animation Elven Archer
+	// Attack Down Right animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("attackDownRight");
 	elvenArcherInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Up animation Elven Archer
+	// Attack Death Up animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("deathUp");
 	elvenArcherInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		elvenArcherInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Down animation Elven Archer
+	// Attack Death Down animation Elven Archer
 	currentAnimation = elvenArcherAnimations.child("deathDown");
 	elvenArcherInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
 	elvenArcherInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
@@ -502,133 +498,262 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		elvenArcherInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//Orcs
-	pugi::xml_node orcEntities = config.child("dynamicEntities").child("orcs");
-	gruntInfo.maxLife = gruntInfo.currLife = orcEntities.child("grunt").attribute("maxLife").as_int();
+	// Gryphon Rider animations
+	pugi::xml_node gryphonRiderAnimations = humanEntities.child("gryphonRider").child("animations");
 
-	//Grunt animations
+	// Up animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("up");
+	gryphonRiderInfo.up.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.up.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("down");
+	gryphonRiderInfo.down.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.down.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("left");
+	gryphonRiderInfo.left.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.left.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("right");
+	gryphonRiderInfo.right.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.right.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Up Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("upLeft");
+	gryphonRiderInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Up Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("upRight");
+	gryphonRiderInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("downLeft");
+	gryphonRiderInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("downRight");
+	gryphonRiderInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackUp");
+	gryphonRiderInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackDown");
+	gryphonRiderInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackLeft");
+	gryphonRiderInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackRight");
+	gryphonRiderInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackUpLeft");
+	gryphonRiderInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackUpRight");
+	gryphonRiderInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down Left animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackDownLeft");
+	gryphonRiderInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down Right animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("attackDownRight");
+	gryphonRiderInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Death Up animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("deathUp");
+	gryphonRiderInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Death Down animation Gryphon Rider
+	currentAnimation = gryphonRiderAnimations.child("deathDown");
+	gryphonRiderInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
+	gryphonRiderInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		gryphonRiderInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
+	// Orcs
+	pugi::xml_node orcEntities = config.child("dynamicEntities").child("orcs");
+
+	// Grunt animations
 	pugi::xml_node gruntAnimations = orcEntities.child("grunt").child("animations");
-	
-	//Up animation Grunt
+
+	// Up animation Grunt
 	currentAnimation = gruntAnimations.child("up");
 	gruntInfo.up.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down animation Grunt
+	// Down animation Grunt
 	currentAnimation = gruntAnimations.child("down");
 	gruntInfo.down.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.down.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Left animation Grunt
+	// Left animation Grunt
 	currentAnimation = gruntAnimations.child("left");
 	gruntInfo.left.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.left.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Right animation Grunt
+	// Right animation Grunt
 	currentAnimation = gruntAnimations.child("right");
 	gruntInfo.right.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.right.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Left animation Grunt
+	// Up Left animation Grunt
 	currentAnimation = gruntAnimations.child("upLeft");
 	gruntInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Right animation Grunt
+	// Up Right animation Grunt
 	currentAnimation = gruntAnimations.child("upRight");
 	gruntInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Left animation Grunt
+	// Down Left animation Grunt
 	currentAnimation = gruntAnimations.child("downLeft");
 	gruntInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Right animation Grunt
+	// Down Right animation Grunt
 	currentAnimation = gruntAnimations.child("downRight");
 	gruntInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up animation Grunt
+	// Attack Up animation Grunt
 	currentAnimation = gruntAnimations.child("attackUp");
 	gruntInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down animation Grunt
+	// Attack Down animation Grunt
 	currentAnimation = gruntAnimations.child("attackDown");
 	gruntInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Left animation Grunt
+	// Attack Left animation Grunt
 	currentAnimation = gruntAnimations.child("attackLeft");
 	gruntInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Right animation Grunt
+	// Attack Right animation Grunt
 	currentAnimation = gruntAnimations.child("attackRight");
 	gruntInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Left animation Grunt
+	// Attack Up Left animation Grunt
 	currentAnimation = gruntAnimations.child("attackUpLeft");
 	gruntInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Right animation Grunt
+	// Attack Up Right animation Grunt
 	currentAnimation = gruntAnimations.child("attackUpRight");
 	gruntInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Left animation Grunt
+	// Attack Down Left animation Grunt
 	currentAnimation = gruntAnimations.child("attackDownLeft");
 	gruntInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Right animation Grunt
+	// Attack Down Right animation Grunt
 	currentAnimation = gruntAnimations.child("attackDownRight");
 	gruntInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Up animation Grunt
+	// Attack Death Up animation Grunt
 	currentAnimation = gruntAnimations.child("deathUp");
 	gruntInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		gruntInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Down animation Grunt
+	// Attack Death Down animation Grunt
 	currentAnimation = gruntAnimations.child("deathDown");
 	gruntInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
 	gruntInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
@@ -636,129 +761,129 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		gruntInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//Troll Axethrower animations
+	// Troll Axethrower animations
 	pugi::xml_node trollAxethrowerAnimations = orcEntities.child("trollAxethrower").child("animations");
 
-	//Up animation Troll Axethrower
+	// Up animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("up");
 	trollAxethrowerInfo.up.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down animation Troll Axethrower
+	// Down animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("down");
 	trollAxethrowerInfo.down.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.down.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Left animation Troll Axethrower
+	// Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("left");
 	trollAxethrowerInfo.left.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.left.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Right animation Troll Axethrower
+	// Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("right");
 	trollAxethrowerInfo.right.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.right.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Left animation Troll Axethrower
+	// Up Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("upLeft");
 	trollAxethrowerInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Up Right animation Troll Axethrower
+	// Up Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("upRight");
 	trollAxethrowerInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Left animation Troll Axethrower
+	// Down Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("downLeft");
 	trollAxethrowerInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Down Right animation Troll Axethrower
+	// Down Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("downRight");
 	trollAxethrowerInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up animation Troll Axethrower
+	// Attack Up animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackUp");
 	trollAxethrowerInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down animation Troll Axethrower
+	// Attack Down animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackDown");
 	trollAxethrowerInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Left animation Troll Axethrower
+	// Attack Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackLeft");
 	trollAxethrowerInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Right animation Troll Axethrower
+	// Attack Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackRight");
 	trollAxethrowerInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Left animation Troll Axethrower
+	// Attack Up Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackUpLeft");
 	trollAxethrowerInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Up Right animation Troll Axethrower
+	// Attack Up Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackUpRight");
 	trollAxethrowerInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Left animation Troll Axethrower
+	// Attack Down Left animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackDownLeft");
 	trollAxethrowerInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Down Right animation Troll Axethrower
+	// Attack Down Right animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("attackDownRight");
 	trollAxethrowerInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Up animation Troll Axethrower
+	// Attack Death Up animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("deathUp");
 	trollAxethrowerInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		trollAxethrowerInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	//Attack Death Down animation Troll Axethrower
+	// Attack Death Down animation Troll Axethrower
 	currentAnimation = trollAxethrowerAnimations.child("deathDown");
 	trollAxethrowerInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
 	trollAxethrowerInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
@@ -766,19 +891,140 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		trollAxethrowerInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//Prisoners
-	//Khadgar
-	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisioners");
+	// Dragon animations
+	pugi::xml_node dragonAnimations = orcEntities.child("dragon").child("animations");
 
-	pugi::xml_node khadgarAnimations = prisionerEntities.child("khadgar").child("animations");
-	currentAnimation = khadgarAnimations.child("idle");
-	khadgarInfo.idle.speed = currentAnimation.attribute("speed").as_float();
-	khadgarInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
+	// Up animation Dragon
+	currentAnimation = dragonAnimations.child("up");
+	dragonInfo.up.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
-		khadgarInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+		dragonInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down animation Dragon
+	currentAnimation = dragonAnimations.child("down");
+	dragonInfo.down.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.down.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Left animation Dragon
+	currentAnimation = dragonAnimations.child("left");
+	dragonInfo.left.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.left.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Right animation Dragon
+	currentAnimation = dragonAnimations.child("right");
+	dragonInfo.right.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.right.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Up Left animation Dragon
+	currentAnimation = dragonAnimations.child("upLeft");
+	dragonInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Up Right animation Dragon
+	currentAnimation = dragonAnimations.child("upRight");
+	dragonInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down Left animation Dragon
+	currentAnimation = dragonAnimations.child("downLeft");
+	dragonInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.downLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Down Right animation Dragon
+	currentAnimation = dragonAnimations.child("downRight");
+	dragonInfo.downRight.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.downRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up animation Dragon
+	currentAnimation = dragonAnimations.child("attackUp");
+	dragonInfo.attackUp.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down animation Dragon
+	currentAnimation = dragonAnimations.child("attackDown");
+	dragonInfo.attackDown.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Left animation Dragon
+	currentAnimation = dragonAnimations.child("attackLeft");
+	dragonInfo.attackLeft.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Right animation Dragon
+	currentAnimation = dragonAnimations.child("attackRight");
+	dragonInfo.attackRight.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up Left animation Dragon
+	currentAnimation = dragonAnimations.child("attackUpLeft");
+	dragonInfo.attackUpLeft.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackUpLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackUpLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Up Right animation Dragon
+	currentAnimation = dragonAnimations.child("attackUpRight");
+	dragonInfo.attackUpRight.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackUpRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackUpRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down Left animation Dragon
+	currentAnimation = dragonAnimations.child("attackDownLeft");
+	dragonInfo.attackDownLeft.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackDownLeft.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackDownLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Down Right animation Dragon
+	currentAnimation = dragonAnimations.child("attackDownRight");
+	dragonInfo.attackDownRight.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.attackDownRight.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.attackDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Death Up animation Dragon
+	currentAnimation = dragonAnimations.child("deathUp");
+	dragonInfo.deathUp.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.deathUp.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.deathUp.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	// Attack Death Down animation Dragon
+	currentAnimation = dragonAnimations.child("deathDown");
+	dragonInfo.deathDown.speed = currentAnimation.attribute("speed").as_float();
+	dragonInfo.deathDown.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		dragonInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	//Alleria
+	// Prisoners
+	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
+
+	// Alleria
 	pugi::xml_node alleriaAnimations = prisionerEntities.child("alleria").child("animations");
 	currentAnimation = alleriaAnimations.child("idle");
 	alleriaInfo.idle.speed = currentAnimation.attribute("speed").as_float();
@@ -787,8 +1033,18 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		alleriaInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	// Critter sheep
-	pugi::xml_node sheepAnimations = config.child("dynamicEntities").child("sheep");
+	//Turalyon
+	pugi::xml_node turalyonAnimations = prisionerEntities.child("turalyon").child("animations");
+	currentAnimation = turalyonAnimations.child("idle");
+	turalyonInfo.idle.speed = currentAnimation.attribute("speed").as_float();
+	turalyonInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		turalyonInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+
+	// Critters
+	// Sheep
+	pugi::xml_node sheepAnimations = config.child("dynamicEntities").child("critters").child("sheep").child("animations");
 
 	// up
 	currentAnimation = sheepAnimations.child("up");
@@ -846,7 +1102,6 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		critterSheepInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-
 	// death up-left
 	currentAnimation = sheepAnimations.child("deathUpLeft");
 	critterSheepInfo.deathUpLeft.speed = currentAnimation.attribute("speed").as_float();
@@ -876,8 +1131,8 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		critterSheepInfo.deathDownRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-	// Critter boar
-	pugi::xml_node boarAnimations = config.child("dynamicEntities").child("boar");
+	// Boar
+	pugi::xml_node boarAnimations = config.child("dynamicEntities").child("critters").child("boar").child("animations");
 
 	// up
 	currentAnimation = boarAnimations.child("up");
@@ -935,7 +1190,6 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		critterBoarInfo.downRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-
 	// death up-left
 	currentAnimation = boarAnimations.child("deathUpLeft");
 	critterBoarInfo.deathUpLeft.speed = currentAnimation.attribute("speed").as_float();
@@ -974,80 +1228,268 @@ bool j1EntityFactory::Start()
 
 	LOG("Loading entities textures");
 
-	// Entities Info
-	// Troll Axethrower
-	trollAxethrowerInfo.maxLife = 30;
-	trollAxethrowerInfo.currLife = trollAxethrowerInfo.maxLife;
-
-	trollAxethrowerInfo.unitInfo.maxSpeed = 60.0f;
-	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
-	trollAxethrowerInfo.unitInfo.attackRadius = 3;
-	trollAxethrowerInfo.unitInfo.sightRadius = 5;
-	trollAxethrowerInfo.unitInfo.damage = 5;
-	trollAxethrowerInfo.unitInfo.priority = 3;
-	// -----
-
-	// Grunt
-	gruntInfo.maxLife = 30;
-	gruntInfo.currLife = gruntInfo.maxLife;
-
-	gruntInfo.unitInfo.maxSpeed = 50.0f;
-	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
-	gruntInfo.unitInfo.attackRadius = 2;
-	gruntInfo.unitInfo.sightRadius = 4;
-	gruntInfo.unitInfo.damage = 5;
-	gruntInfo.unitInfo.priority = 3;
-	// -----
-
-	// Elven Archer
-	elvenArcherInfo.maxLife = 30;
-	elvenArcherInfo.currLife = elvenArcherInfo.maxLife;
-
-	elvenArcherInfo.unitInfo.maxSpeed = 60.0f;
-	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
-	elvenArcherInfo.unitInfo.attackRadius = 3;
-	elvenArcherInfo.unitInfo.sightRadius = 5;
-	elvenArcherInfo.unitInfo.damage = 5;
-	elvenArcherInfo.unitInfo.priority = 3;
-	// -----
+	/// TODO Joan (balancing)
+	// ENTITIES INFO
+	/// ALLIANCE
+	/// Dynamic Entities
+	alleriaInfo.unitInfo.size = { 64,64 };
+	alleriaInfo.unitInfo.offsetSize = { -16,-16 };
+	turalyonInfo.unitInfo.size = { 64,64 };
+	turalyonInfo.unitInfo.offsetSize = { -16,-16 };
 
 	// Footman
-	footmanInfo.maxLife = 30;
-	footmanInfo.currLife = footmanInfo.maxLife;
+	footmanInfo.unitInfo.priority = 2;
 
-	footmanInfo.unitInfo.maxSpeed = 50.0f;
-	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+	/// Radius
 	footmanInfo.unitInfo.attackRadius = 2;
-	footmanInfo.unitInfo.sightRadius = 4;
-	footmanInfo.unitInfo.damage = 5;
-	footmanInfo.unitInfo.priority = 3;
-	// -----
+	footmanInfo.unitInfo.sightRadius = 7;
 
-	// Critters
-	critterSheepInfo.currLife = 10;
-	critterSheepInfo.maxLife = critterSheepInfo.currLife;
+	/// Damage
+	footmanInfo.unitInfo.heavyDamage = 6;
+	footmanInfo.unitInfo.lightDamage = 8;
+	footmanInfo.unitInfo.airDamage = 0;
+	footmanInfo.unitInfo.towerDamage = 6;
+
+	/// Speed
+	footmanInfo.unitInfo.maxSpeed = 70.0f;
+	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+
+	/// Life
+	footmanInfo.unitInfo.maxLife = 60;
+	footmanInfo.unitInfo.currLife = footmanInfo.unitInfo.maxLife;
+
+	///
+	footmanInfo.unitInfo.size = { 32,32 };
+	footmanInfo.unitInfo.offsetSize = { 0,0 };
+	//_Footman
+
+	// Elven Archer
+	elvenArcherInfo.unitInfo.priority = 2;
+
+	/// Radius
+	elvenArcherInfo.unitInfo.attackRadius = 5;
+	elvenArcherInfo.unitInfo.sightRadius = 8;
+
+	/// Damage
+	elvenArcherInfo.unitInfo.heavyDamage = 4;
+	elvenArcherInfo.unitInfo.lightDamage = 7;
+	elvenArcherInfo.unitInfo.airDamage = 10;
+	elvenArcherInfo.unitInfo.towerDamage = 11;
+
+	/// Speed
+	elvenArcherInfo.unitInfo.maxSpeed = 90.0f;
+	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
+
+	/// Life	
+	elvenArcherInfo.unitInfo.maxLife = 50;
+	elvenArcherInfo.unitInfo.currLife = elvenArcherInfo.unitInfo.maxLife;
+
+	///
+	elvenArcherInfo.arrowSpeed = 170.0f;
+	elvenArcherInfo.unitInfo.size = { 32,32 };
+	elvenArcherInfo.unitInfo.offsetSize = { 0,0 };
+	//_Elven_Archer
+
+	// Gryphon Rider
+	gryphonRiderInfo.unitInfo.priority = 4;
+
+	/// Radius
+	gryphonRiderInfo.unitInfo.attackRadius = 7;
+	gryphonRiderInfo.unitInfo.sightRadius = 12;
+
+	/// Damage
+	gryphonRiderInfo.unitInfo.heavyDamage = 7;
+	gryphonRiderInfo.unitInfo.lightDamage = 5;
+	gryphonRiderInfo.unitInfo.airDamage = 7;
+	gryphonRiderInfo.unitInfo.towerDamage = 8;
+
+	/// Speed
+	gryphonRiderInfo.unitInfo.maxSpeed = 160.0f;
+	gryphonRiderInfo.unitInfo.currSpeed = gryphonRiderInfo.unitInfo.maxSpeed;
+
+	/// Life
+	gryphonRiderInfo.unitInfo.maxLife = 100;
+	gryphonRiderInfo.unitInfo.currLife = gryphonRiderInfo.unitInfo.maxLife;
+
+	///
+	gryphonRiderInfo.fireSpeed = 120.0f;
+	gryphonRiderInfo.unitInfo.size = { 64,64 };
+	gryphonRiderInfo.unitInfo.offsetSize = { -16,-16 };
+	//_Gryphon_Rider
+
+	/// Static Entities
+	// Towers
+	scoutTowerInfo.life = 150;
+	scoutTowerInfo.damage = 7;
+
+	playerGuardTowerInfo.life = 175;
+	playerGuardTowerInfo.damage = 13;
+
+	playerCannonTowerInfo.life = 200;
+	playerCannonTowerInfo.damage = 17;
+	//_Towers
+
+	/// HORDE
+	/// Dynamic Entities
+	// Grunt
+	gruntInfo.unitInfo.priority = 3;
+
+	/// Radius
+	gruntInfo.unitInfo.attackRadius = 2;
+	gruntInfo.unitInfo.sightRadius = 7;
+
+	/// Damage
+	gruntInfo.unitInfo.heavyDamage = 6;
+	gruntInfo.unitInfo.lightDamage = 8;
+	gruntInfo.unitInfo.airDamage = 0;
+	gruntInfo.unitInfo.towerDamage = 6;
+
+	/// Speed
+	gruntInfo.unitInfo.maxSpeed = 70.0f;
+	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
+
+	/// Life
+	gruntInfo.unitInfo.maxLife = 60;
+	gruntInfo.unitInfo.currLife = gruntInfo.unitInfo.maxLife;
+
+	///
+	gruntInfo.droppedGold = 10;
+	gruntInfo.unitInfo.size = { 32,32 };
+	gruntInfo.unitInfo.offsetSize = { 0,0 };
+	//_Grunt
+
+	// Troll Axethrower
+	trollAxethrowerInfo.unitInfo.priority = 3;
+
+	/// Radius
+	trollAxethrowerInfo.unitInfo.attackRadius = 5;
+	trollAxethrowerInfo.unitInfo.sightRadius = 8;
+
+	/// Damage
+	trollAxethrowerInfo.unitInfo.heavyDamage = 4;
+	trollAxethrowerInfo.unitInfo.lightDamage = 7;
+	trollAxethrowerInfo.unitInfo.airDamage = 10;
+	trollAxethrowerInfo.unitInfo.towerDamage = 11;
+
+	/// Speed
+	trollAxethrowerInfo.unitInfo.maxSpeed = 90.0f;
+	trollAxethrowerInfo.unitInfo.currSpeed = trollAxethrowerInfo.unitInfo.maxSpeed;
+
+	/// Life
+	trollAxethrowerInfo.unitInfo.maxLife = 40;
+	trollAxethrowerInfo.unitInfo.currLife = trollAxethrowerInfo.unitInfo.maxLife;
+
+	///
+	trollAxethrowerInfo.axeSpeed = 160.0f;
+	trollAxethrowerInfo.droppedGold = 10;
+	trollAxethrowerInfo.unitInfo.size = { 32,32 };
+	trollAxethrowerInfo.unitInfo.offsetSize = { 0,0 };
+	//_Troll_Axethrower
+
+	// Dragon
+	dragonInfo.unitInfo.priority = 5;
+
+	/// Radius
+	dragonInfo.unitInfo.attackRadius = 7;
+	dragonInfo.unitInfo.sightRadius = 12;
+
+	/// Damage
+	dragonInfo.unitInfo.heavyDamage = 7;
+	dragonInfo.unitInfo.lightDamage = 5;
+	dragonInfo.unitInfo.airDamage = 7;
+	dragonInfo.unitInfo.towerDamage = 8;
+
+	/// Speed
+	dragonInfo.unitInfo.maxSpeed = 170.0f;
+	dragonInfo.unitInfo.currSpeed = dragonInfo.unitInfo.maxSpeed;
+
+	/// Life
+	dragonInfo.unitInfo.maxLife = 50;
+	dragonInfo.unitInfo.currLife = dragonInfo.unitInfo.maxLife;
+
+	///
+	dragonInfo.fireSpeed = 200.0f;
+	dragonInfo.droppedGold = 10;
+	dragonInfo.unitInfo.size = { 64,64 };
+	dragonInfo.unitInfo.offsetSize = { -16,-16 };
+	//_Dragon
+
+	/// Static Entities
+	// Towers
+	watchTowerInfo.life = 150;
+	watchTowerInfo.damage = 7;
+
+	enemyGuardTowerInfo.life = 175;
+	enemyGuardTowerInfo.damage = 13;
+
+	enemyCannonTowerInfo.life = 200;
+	enemyCannonTowerInfo.damage = 17;
+	//_Towers
+
+	// CRITTERS
+	// Sheep
+	critterSheepInfo.unitInfo.priority = 1;
+
+	/// Speed
+	critterSheepInfo.unitInfo.maxSpeed = 30.0f;
+	critterSheepInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
+
+	/// Life
+	critterSheepInfo.unitInfo.currLife = 100;
+	critterSheepInfo.unitInfo.maxLife = critterSheepInfo.unitInfo.currLife;
+
+	///
 	critterSheepInfo.restoredHealth = 10;
+	critterSheepInfo.unitInfo.size = { 32,32 };
+	critterSheepInfo.unitInfo.offsetSize = { 0,0 };
+	//_Sheep
 
-	critterBoarInfo.currLife = 20;
-	critterBoarInfo.maxLife = critterBoarInfo.currLife;
-	critterSheepInfo.restoredHealth = 15;
+	// Boar
+	critterBoarInfo.unitInfo.priority = 1;
 
-	// -----
+	/// Speed
+	critterBoarInfo.unitInfo.maxSpeed = 30.0f;
+	critterBoarInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
 
+	/// Life
+	critterBoarInfo.unitInfo.currLife = 20;
+	critterBoarInfo.unitInfo.maxLife = critterBoarInfo.unitInfo.currLife;
+
+	///
+	critterBoarInfo.restoredHealth = 20;
+	critterBoarInfo.unitInfo.size = { 32,32 };
+	critterBoarInfo.unitInfo.offsetSize = { 0,0 };
+	//_Boar
+
+	// NEUTRAL BUILDINGS
+	// Runestone
+	runestoneInfo.sightRadius = 7;
+	//_Runestone
+
+	// Load textures
 	humanBuildingsTex = App->tex->Load(humanBuildingsTexName.data());
 	neutralBuildingsTex = App->tex->Load(neutralBuildingsTexName.data());
 	orcishBuildingsTex = App->tex->Load(orcishBuildingsTexName.data());
-	footmanTex = App->tex->Load(footmanTexName.data());
-	gruntTex = App->tex->Load(gruntTexName.data());
-	crittersTex = App->tex->Load(crittersTexName.data());
-	khadgarTex = App->tex->Load(khadgarTexName.data());
-	alleriaTex = App->tex->Load(alleriaTexName.data());
 
 	elvenArcherTex = App->tex->Load(elvenArcherTexName.data());
 	trollAxethrowerTex = App->tex->Load(trollAxethrowerTexName.data());
+	footmanTex = App->tex->Load(footmanTexName.data());
+	gruntTex = App->tex->Load(gruntTexName.data());
+	gryphonRiderTex = App->tex->Load(gryphonRiderTexName.data());
+	dragonTex = App->tex->Load(dragonTexName.data());
 
+	crittersTex = App->tex->Load(crittersTexName.data());
+
+	khadgarTex = App->tex->Load(khadgarTexName.data());
+	alleriaTex = App->tex->Load(alleriaTexName.data());
+	turalyonTex = App->tex->Load(turalyonTexName.data());
+
+	//Already built buildings info
 	builtChickenFarmInfo = chickenFarmInfo;
 	builtChickenFarmInfo.isBuilt = true;
+
+	builtBarracksInfo = barracksInfo;
+	builtBarracksInfo.isBuilt = true;
 
 	return ret;
 }
@@ -1083,31 +1525,6 @@ bool j1EntityFactory::PreUpdate()
 		it++;
 	}
 	toSpawnEntities.clear();
-
-	for (std::list<DynamicEntity*>::iterator iterator = activeDynamicEntities.begin(); iterator != activeDynamicEntities.end(); iterator++) {
-		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
-		if (App->render->IsInScreen(r)) {
-			EntitiesDraw_info info;
-			info.priority = (*iterator)->GetPos().y + (*iterator)->GetSize().y;
-			info.ent = (*iterator);
-			DynamicEntity* dyn = (DynamicEntity*)(*iterator);
-				info.type = dyn->dynamicEntityType;
-			entityDrawOrder.push(info);
-		}
-	}
-
-		for (std::list<StaticEntity*>::iterator iterator = activeStaticEntities.begin(); iterator != activeStaticEntities.end(); iterator++) {
-		SDL_Rect r = { (*iterator)->GetPos().x, (*iterator)->GetPos().y, (*iterator)->GetSize().x, (*iterator)->GetSize().y };
-		if (App->render->IsInScreen(r)) {
-			EntitiesDraw_info info;
-			info.priority = (*iterator)->GetPos().y + (*iterator)->GetSize().y;
-			info.ent = (*iterator);
-			StaticEntity* stc = (StaticEntity*)(*iterator);
-				info.type = stc->staticEntityType;
-			entityDrawOrder.push(info);
-		}
-	}
-
 
 	return ret;
 }
@@ -1157,7 +1574,7 @@ void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 	while (statEntity != activeStaticEntities.end()) {
 
-		// - SightRadiusCollider and AttackRadiusCollider call their owner as the c1 Collider
+		// - SightRadiusCollider calls its owner as the c1 Collider
 		if ((*statEntity)->GetSightRadiusCollider() == c1) {
 
 			(*statEntity)->OnCollision(c1, c2, collisionState);
@@ -1166,81 +1583,6 @@ void j1EntityFactory::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 		statEntity++;
 	}
-
-}
-
-void j1EntityFactory::Draw()
-{
-	// Blit active entities
-
-	// Dynamic entities (one texture per dynamic entity)
-	for (EntitiesDraw_info info; !entityDrawOrder.empty(); entityDrawOrder.pop()) {
-		info = entityDrawOrder.top();
-		switch (info.type) {
-			// Player
-		case EntityType_FOOTMAN:
-			(info.ent)->Draw(footmanTex);
-			break;
-		case EntityType_ELVEN_ARCHER:
-			(info.ent)->Draw(elvenArcherTex);
-			break;
-		case EntityType_GRYPHON_RIDER:
-			(info.ent)->Draw(gryphonRiderTex);
-			break;
-		case EntityType_MAGE:
-			(info.ent)->Draw(mageTex);
-			break;
-		case EntityType_PALADIN:
-			(info.ent)->Draw(paladinTex);
-			break;
-
-		case EntityType_TURALYON:
-			(info.ent)->Draw(turalyonTex);
-			break;
-		case EntityType_KHADGAR:
-			(info.ent)->Draw(khadgarTex);
-			break;
-		case EntityType_ALLERIA:
-			(info.ent)->Draw(alleriaTex);
-			break;
-
-			// Enemy
-		case EntityType_GRUNT:
-			(info.ent)->Draw(gruntTex);
-			break;
-		case EntityType_TROLL_AXETHROWER:
-			(info.ent)->Draw(trollAxethrowerTex);
-			break;
-		case EntityType_DRAGON:
-			(info.ent)->Draw(dragonTex);
-			break;
-
-			// Neutral
-		case EntityType_SHEEP:
-		case EntityType_BOAR:
-			(info.ent)->Draw(crittersTex);
-			break;
-
-		default:
-			StaticEntity* ent = (StaticEntity*)info.ent;
-			switch (ent->staticEntityCategory) {
-			case StaticEntityCategory_HumanBuilding:
-				(info.ent)->Draw(humanBuildingsTex);
-				break;
-			case StaticEntityCategory_NeutralBuilding:
-				(info.ent)->Draw(neutralBuildingsTex);
-				break;
-			case StaticEntityCategory_OrcishBuilding:
-				(info.ent)->Draw(orcishBuildingsTex);
-				break;
-			dafault:
-				break;
-			}
-			break;
-		}
-	}
-	if(App->scene->GetAlphaBuilding() != EntityType_NONE)
-	DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
 }
 
 void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos)
@@ -1248,36 +1590,40 @@ void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoi
 	switch (staticEntityType) {
 
 	case EntityType_CHICKEN_FARM:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &chickenFarmInfo.completeTexArea);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+		App->printer->PrintSprite(mousePos, humanBuildingsTex, chickenFarmInfo.completeTexArea, Layers_PreviewBuildings);
 		break;
 	case EntityType_ELVEN_LUMBER_MILL:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &elvenLumberMillInfo.completeTexArea);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+		App->printer->PrintSprite(mousePos, humanBuildingsTex, elvenLumberMillInfo.completeTexArea, Layers_PreviewBuildings);
 		break;
 	case EntityType_MAGE_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &mageTowerInfo.completeTexArea);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+		App->printer->PrintSprite(mousePos, humanBuildingsTex, mageTowerInfo.completeTexArea, Layers_PreviewBuildings);
 		break;
 	case EntityType_GRYPHON_AVIARY:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &gryphonAviaryInfo.completeTexArea);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+		App->printer->PrintSprite(mousePos, humanBuildingsTex, gryphonAviaryInfo.completeTexArea, Layers_PreviewBuildings);
 		break;
 	case EntityType_STABLES:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &stablesInfo.completeTexArea);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+		App->printer->PrintSprite(mousePos, humanBuildingsTex, stablesInfo.completeTexArea, Layers_PreviewBuildings);
 		break;
 	case EntityType_SCOUT_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &scoutTowerInfo.completeTexArea);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+		App->printer->PrintSprite(mousePos, humanBuildingsTex, scoutTowerInfo.completeTexArea, Layers_PreviewBuildings);
 		break;
 	case EntityType_PLAYER_GUARD_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerGuardTowerInfo.completeTexArea);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerGuardTowerInfo.completeTexArea, Layers_PreviewBuildings);
 		break;
 	case EntityType_PLAYER_CANNON_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, 100);
-		App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &playerCannonTowerInfo.completeTexArea);
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerCannonTowerInfo.completeTexArea, Layers_PreviewBuildings);
+		break;
+	case EntityType_BARRACKS:
+		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
+		App->printer->PrintSprite(mousePos, humanBuildingsTex, barracksInfo.completeTexArea, Layers_PreviewBuildings);
 		break;
 	default:
 		break;
@@ -1286,7 +1632,7 @@ void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoi
 	HandleStaticEntityPreviewTiles(staticEntityType, mousePos);
 }
 
-//Handles when to return green or red tiles 
+// Handles when to return green or red tiles 
 void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityType, iPoint mousePos)
 {
 	switch (staticEntityType) {
@@ -1295,20 +1641,23 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 	case EntityType_SCOUT_TOWER:
 	case EntityType_PLAYER_GUARD_TOWER:
 	case EntityType_PLAYER_CANNON_TOWER:
-		DrawStaticEntityPreviewTiles(true, Small, mousePos);
+		DrawStaticEntityPreviewTiles(true, StaticEntitySize_Small, mousePos);
 
-		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), Small)) 
-			DrawStaticEntityPreviewTiles(false, Small, mousePos);
+		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), StaticEntitySize_Small))
+			DrawStaticEntityPreviewTiles(false, StaticEntitySize_Small, mousePos);
 
 		break;
 	case EntityType_ELVEN_LUMBER_MILL:
 	case EntityType_MAGE_TOWER:
 	case EntityType_GRYPHON_AVIARY:
 	case EntityType_STABLES:
-		DrawStaticEntityPreviewTiles(true, Medium, mousePos);
+	case EntityType_BARRACKS:
 
-		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), Medium)) 
-			DrawStaticEntityPreviewTiles(false, Medium, mousePos);
+		DrawStaticEntityPreviewTiles(true, StaticEntitySize_Medium, mousePos);
+
+
+		if (IsPreviewBuildingOnEntity(App->player->GetMouseTilePos(), StaticEntitySize_Medium))
+			DrawStaticEntityPreviewTiles(false, StaticEntitySize_Medium, mousePos);
 
 		break;
 
@@ -1320,125 +1669,75 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 //Draws green or red tiles on the preview depending on if there's a building on the ground and the preview building size
 void j1EntityFactory::DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntitySize buildingSize, iPoint mousePos)
 {
-	SDL_SetTextureAlphaMod(neutralBuildingsTex, buildingPreviewTiles.opacity);
 	iPoint mouseTilePos = App->player->GetMouseTilePos();
+	SDL_Color green = { 0,255,0, (Uint8)previewTilesopacity };
+	SDL_Color red = { 255,0,0,(Uint8)previewTilesopacity };
 
-	switch (buildingSize) {
-	case Small:
-		if (isPlaceable) {
-			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-		}
-		else if (!isPlaceable)
-		{
-			if(IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) 
-				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile); //0,0
+	if (isPlaceable) { //Small
+		if (!IsEntityOnTileBySize(mouseTilePos) && App->pathfinding->IsWalkable(mouseTilePos))
+			App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, green, true, true, Layers_PreviewBuildingsQuad);
 
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y}) ||  !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y })) 
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile); //32,0
+		if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y }))
+			App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, green, true, true, Layers_PreviewBuildingsQuad);
 
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 }))
-				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile); //0,32
+		if (!IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 }))
+			App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, green, true, true, Layers_PreviewBuildingsQuad);
 
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1}))
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile); //32,32
+		if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
+			App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, green, true, true, Layers_PreviewBuildingsQuad);
+
+		if (buildingSize == StaticEntitySize_Medium || buildingSize == StaticEntitySize_Big) { //Medium
+
+			if (!IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 }))
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 64, 32, 32 }, green, true, true, Layers_PreviewBuildingsQuad);
+
+			if (!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 }))
+				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 32, 32, 32 }, green, true, true, Layers_PreviewBuildingsQuad);
+
+			if (!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y }))
+				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y, 32, 32 }, green, true, true, Layers_PreviewBuildingsQuad);
+
+			if (!IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x , mouseTilePos.y + 2 }))
+				App->printer->PrintQuad({ mousePos.x, mousePos.y + 64, 32, 32 }, green, true, true, Layers_PreviewBuildingsQuad);
+
+			if (!IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) && App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 }))
+				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 64, 32, 32 }, green, true, true, Layers_PreviewBuildingsQuad);
+
 		}
-		break;
-	case Medium:
-		if (isPlaceable) {
-			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-		}
-		else if (!isPlaceable) {
-			if (IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos)) 
-				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile); //0,0
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y }))
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile); //32,0
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 })) 
-				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile); //0,32
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile); //32,32
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 }))
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.redTile); //32,64
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 }))
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.redTile); //64,32
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y}) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y}))
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.redTile); //64,0
-			if (IsEntityOnTileBySize({ mouseTilePos.x , mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 2 }))
-				App->render->Blit(neutralBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.redTile); //0,64
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 })) 
-				App->render->Blit(neutralBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile); //64,64
-		}
-		break;
-	case Big:
-		if (isPlaceable) {
-			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-			App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.greenTile);
-		}
-		else if (!isPlaceable) {
-			if (IsEntityOnTileBySize(mouseTilePos)) //0,0
-				App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y })) //32,0
-				App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 })) //0,32
-				App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 32, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 })) //32,32
-				App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 32, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 })) //32,64
-				App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 64, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 })) //64,32
-				App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 32, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y })) //64,0
-				App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 2 })) //0,64
-				App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 64, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2})) //64,64
-				App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 64, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 3 })) //32,96
-				App->render->Blit(humanBuildingsTex, mousePos.x + 32, mousePos.y + 96, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 3 })) //64,96
-				App->render->Blit(humanBuildingsTex, mousePos.x + 64, mousePos.y + 96, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 3, mouseTilePos.y + 1 })) //96,32
-				App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 32, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 3, mouseTilePos.y + 2 })) //96,32
-				App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 64, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 3, mouseTilePos.y })) //96,0
-				App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 3 })) //0,96
-				App->render->Blit(humanBuildingsTex, mousePos.x, mousePos.y + 96, &buildingPreviewTiles.redTile);
-			if (IsEntityOnTileBySize({ mouseTilePos.x + 3, mouseTilePos.y + 3 })) //96,96
-				App->render->Blit(humanBuildingsTex, mousePos.x + 96, mousePos.y + 96, &buildingPreviewTiles.redTile);
-		}
-		break;
-	case None:
-		break;
-	default:
-		break;
+
 	}
+	else if (!isPlaceable)
+	{
+		if (IsEntityOnTileBySize(mouseTilePos) || !App->pathfinding->IsWalkable(mouseTilePos))
+			App->printer->PrintQuad({ mousePos.x, mousePos.y, 32, 32 }, red, true, true, Layers_PreviewBuildingsQuad);
 
+		if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y }))
+			App->printer->PrintQuad({ mousePos.x + 32, mousePos.y, 32, 32 }, red, true, true, Layers_PreviewBuildingsQuad);
+
+		if (IsEntityOnTileBySize({ mouseTilePos.x, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 1 }))
+			App->printer->PrintQuad({ mousePos.x, mousePos.y + 32, 32, 32 }, red, true, true, Layers_PreviewBuildingsQuad);
+
+		if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 1 }))
+			App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 32, 32, 32 }, red, true, true, Layers_PreviewBuildingsQuad);
+
+		if (buildingSize == StaticEntitySize_Medium || buildingSize == StaticEntitySize_Big) { //Medium
+
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 1, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 1, mouseTilePos.y + 2 }))
+				App->printer->PrintQuad({ mousePos.x + 32, mousePos.y + 64, 32, 32 }, red, true, true, Layers_PreviewBuildingsQuad);
+
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 1 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 1 }))
+				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 32, 32, 32 }, red, true, true, Layers_PreviewBuildingsQuad);
+
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y }))
+				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y , 32, 32 }, red, true, true, Layers_PreviewBuildingsQuad);
+
+			if (IsEntityOnTileBySize({ mouseTilePos.x , mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x, mouseTilePos.y + 2 }))
+				App->printer->PrintQuad({ mousePos.x, mousePos.y + 64, 32, 32 }, red, true, true, Layers_PreviewBuildingsQuad);
+
+			if (IsEntityOnTileBySize({ mouseTilePos.x + 2, mouseTilePos.y + 2 }) || !App->pathfinding->IsWalkable({ mouseTilePos.x + 2, mouseTilePos.y + 2 }))
+				App->printer->PrintQuad({ mousePos.x + 64, mousePos.y + 64, 32, 32 }, red, true, true, Layers_PreviewBuildingsQuad);
+		}
+	}
 }
 
 const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
@@ -1561,19 +1860,30 @@ const EntityInfo& j1EntityFactory::GetUnitInfo(ENTITY_TYPE dynamicEntityType)
 	case EntityType_ALLERIA:
 		return (EntityInfo&)alleriaInfo;
 		break;
-	case EntityType_KHADGAR:
-		return (EntityInfo&)khadgarInfo;
+	case EntityType_TURALYON:
+		return (EntityInfo&)turalyonInfo;
 		break;
-
 	default:
 		return (const EntityInfo&)footmanInfo;
 		break;
 	}
 }
 
-const EntityInfo& j1EntityFactory::GetBuiltBuilding()
+const EntityInfo& j1EntityFactory::GetBuiltBuilding(ENTITY_TYPE staticEntityType)
 {
-	return (const EntityInfo&)builtChickenFarmInfo;
+	switch (staticEntityType) {
+	case EntityType_BARRACKS:
+		return (const EntityInfo&)builtBarracksInfo;
+		break;
+
+	case EntityType_CHICKEN_FARM:
+		return (const EntityInfo&)builtChickenFarmInfo;
+		break;
+
+	default:
+		return (const EntityInfo&)builtChickenFarmInfo;
+		break;
+	}
 }
 
 SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
@@ -1586,10 +1896,10 @@ SDL_Texture* j1EntityFactory::GetNeutralBuildingTexture() {
 	return neutralBuildingsTex;
 }
 
-//It returns true if there's an entity in the tile (it considers the size of the entity)
+// It returns true if there's an entity in the tile (it considers the size of the entity)
 bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 {
-	//Dynamic entities
+	// Dynamic entities
 	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
 
 	while (activeDyn != activeDynamicEntities.end()) {
@@ -1601,7 +1911,7 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 		activeDyn++;
 	}
 
-	//Static entities
+	// Static entities
 	list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
 
 	while (activeStatic != activeStaticEntities.end()) {
@@ -1647,9 +1957,6 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 		toSpawn++;
 	}
 
-
-
-
 	if (!App->pathfinding->IsOnBase({ App->player->GetMouseTilePos().x, App->player->GetMouseTilePos().y }))
 	{
 		LOG("OUT");
@@ -1661,42 +1968,53 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 	return false;
 }
 
-
 // Returns true if a building can NOT be built in that spot
 bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const
 {
-	//Dynamic entities
+	// Dynamic entities
 	list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
-
-
 
 	while (activeDyn != activeDynamicEntities.end()) {
 	
 		iPoint entityTile = App->map->WorldToMap((*activeDyn)->GetPos().x, (*activeDyn)->GetPos().y);
 
-		//This checks the tile of the dynamic entity and its surroundings
+		iPoint entityNextTile = { -1,-1 };
+
+		if ((*activeDyn)->GetSingleUnit() != nullptr)
+			entityNextTile = (*activeDyn)->GetSingleUnit()->nextTile;
+
+		// This checks the tile of the dynamic entity and its surroundings
 		switch (buildingSize)
 		{
-		case Small:
+		case StaticEntitySize_Small:
 			for (int i = -1; i < 1; i++) {
 				for (int j = -1; j < 1; j++) {
 					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
 						return true;
-				}
-			}
-			break;
-		case Medium:
-			for (int i = -2; i < 1; i++) {
-				for (int j = -2; j < 1; j++) {
-					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+					if ((entityNextTile.x != -1 && entityNextTile.y != -1)
+						&& (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
 			break;
-		case Big:
+		case StaticEntitySize_Medium:
+			for (int i = -2; i < 1; i++) {
+				for (int j = -2; j < 1; j++) {
+					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+					if ((entityNextTile.x != -1 && entityNextTile.y != -1)
+						&& (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
+						return true;
+				}
+			}
+			break;
+		case StaticEntitySize_Big:
 			for (int i = -3; i < 1; i++) {
 				for (int j = -3; j < 1; j++) {
 					if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+						return true;
+					if ((entityNextTile.x != -1 && entityNextTile.y != -1)
+						&& (tile.x == entityNextTile.x + i && tile.y == entityNextTile.y + j))
 						return true;
 				}
 			}
@@ -1708,115 +2026,115 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 		activeDyn++;
 	}
 
-	//Static entities
+	// Static entities
 	list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
 
 	while (activeStatic != activeStaticEntities.end()) {
 
-			iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPos().x, (*activeStatic)->GetPos().y);
-			
-			//This checks all of the tiles that conform of the static entity and their surrounding tiles
-			if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
-				switch (buildingSize)
-				{
-				case Small:
-					for (int i = -1; i < 2; i++) {
-						for (int j = -1; j < 2; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-							}
-						}
-					break;
-				case Medium:
-					for (int i = -2; i < 2; i++) {
-						for (int j = -2; j < 2; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Big:
-					for (int i = -3; i < 2; i++) {
-						for (int j = -3; j < 2; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				default:
-					break;
-				}
-			}
-			else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
-				switch (buildingSize)
-				{
-				case Small:
-					for (int i = -1; i < 3; i++) {
-						for (int j = -1; j < 3; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Medium:
-					for (int i = -2; i < 3; i++) {
-						for (int j = -2; j < 3; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Big:
-					for (int i = -3; i < 3; i++) {
-						for (int j = -3; j < 3; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				default:
-					break;
-				}
-			}
-			else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
-				switch (buildingSize)
-				{
-				case Small:
-					for (int i = -1; i < 4; i++) {
-						for (int j = -1; j < 4; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Medium:
-					for (int i = -2; i < 4; i++) {
-						for (int j = -2; j < 4; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				case Big:
-					for (int i = -3; i < 4; i++) {
-						for (int j = -3; j < 4; j++) {
-							if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
-								return true;
-						}
-					}
-					break;
-				default:
-					break;
-				}
-			}
+		iPoint entityTile = App->map->WorldToMap((*activeStatic)->GetPos().x, (*activeStatic)->GetPos().y);
 
-			activeStatic++;
+		//This checks all of the tiles that conform of the static entity and their surrounding tiles
+		if ((*activeStatic)->GetSize().x == 64 && (*activeStatic)->GetSize().y == 64) {
+			switch (buildingSize)
+			{
+			case StaticEntitySize_Small:
+				for (int i = -1; i < 2; i++) {
+					for (int j = -1; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case StaticEntitySize_Medium:
+				for (int i = -2; i < 2; i++) {
+					for (int j = -2; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case StaticEntitySize_Big:
+				for (int i = -3; i < 2; i++) {
+					for (int j = -3; j < 2; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		else if ((*activeStatic)->GetSize().x == 96 && (*activeStatic)->GetSize().y == 96) {
+			switch (buildingSize)
+			{
+			case StaticEntitySize_Small:
+				for (int i = -1; i < 3; i++) {
+					for (int j = -1; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case StaticEntitySize_Medium:
+				for (int i = -2; i < 3; i++) {
+					for (int j = -2; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case StaticEntitySize_Big:
+				for (int i = -3; i < 3; i++) {
+					for (int j = -3; j < 3; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		else if ((*activeStatic)->GetSize().x == 128 && (*activeStatic)->GetSize().y == 128) {
+			switch (buildingSize)
+			{
+			case StaticEntitySize_Small:
+				for (int i = -1; i < 4; i++) {
+					for (int j = -1; j < 4; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case StaticEntitySize_Medium:
+				for (int i = -2; i < 4; i++) {
+					for (int j = -2; j < 4; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			case StaticEntitySize_Big:
+				for (int i = -3; i < 4; i++) {
+					for (int j = -3; j < 4; j++) {
+						if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+							return true;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		activeStatic++;
 	}
 
-	//Check if a building can be edificated, depending on the map walkability
+	// Check if a building can be edificated, depending on the map walkability
 	switch (buildingSize)
 	{
-	case Small:
+	case StaticEntitySize_Small:
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 2; j++) {
 				if (!App->pathfinding->IsWalkable({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
@@ -1824,7 +2142,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			}
 		}
 		break;
-	case Medium:
+	case StaticEntitySize_Medium:
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				if (!App->pathfinding->IsWalkable({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
@@ -1832,7 +2150,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			}
 		}
 		break;
-	case Big:
+	case StaticEntitySize_Big:
 
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -1841,12 +2159,14 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			}
 		}
 		break;
-	}
 
+	default:
+		break;
+	}
 
 	switch (buildingSize)
 	{
-	case Small:
+	case StaticEntitySize_Small:
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 2; j++) {
 				if (!App->pathfinding->IsOnBase({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
@@ -1854,7 +2174,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			}
 		}
 		break;
-	case Medium:
+	case StaticEntitySize_Medium:
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				if (!App->pathfinding->IsOnBase({ App->player->GetMouseTilePos().x + i, App->player->GetMouseTilePos().y + j }))
@@ -1862,7 +2182,7 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			}
 		}
 		break;
-	case Big:
+	case StaticEntitySize_Big:
 
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -1871,10 +2191,10 @@ bool j1EntityFactory::IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize bu
 			}
 		}
 		break;
+
+	default:
+		break;
 	}
-
-
-
 
 	return false;
 }
@@ -1884,7 +2204,7 @@ bool j1EntityFactory::PostUpdate()
 	bool ret = true;
 
 	// Remove active entities
-	// Remove dynamic entities
+	/// Remove dynamic entities
 	list<DynamicEntity*>::iterator dynEnt = activeDynamicEntities.begin();
 
 	while (dynEnt != activeDynamicEntities.end()) {
@@ -1892,7 +2212,7 @@ bool j1EntityFactory::PostUpdate()
 		if ((*dynEnt)->isRemove) {
 
 			delete *dynEnt;
-			activeDynamicEntities.erase(dynEnt);
+			activeDynamicEntities.remove(*dynEnt);
 
 			dynEnt = activeDynamicEntities.begin();
 			continue;
@@ -1902,21 +2222,112 @@ bool j1EntityFactory::PostUpdate()
 	}
 
 	/// Remove static entities
-	list<StaticEntity*>::iterator statEntity = activeStaticEntities.begin();
+	list<StaticEntity*>::iterator statEnt = activeStaticEntities.begin();
 
-	while (statEntity != activeStaticEntities.end()) {
+	while (statEnt != activeStaticEntities.end()) {
 
-		if ((*statEntity)->isRemove) {
+		if ((*statEnt)->isRemove) {
 
-			delete *statEntity;
-			activeStaticEntities.erase(statEntity);
+			delete *statEnt;
+			activeStaticEntities.remove(*statEnt);
 
-			statEntity = activeStaticEntities.begin();
+			statEnt = activeStaticEntities.begin();
 			continue;
 		}
 
-		statEntity++;
+		statEnt++;
 	}
+
+	// Send active entities to blit
+	/// Blit dynamic entities
+	dynEnt = activeDynamicEntities.begin();
+
+	while (dynEnt != activeDynamicEntities.end()) {
+
+		if (!(*dynEnt)->GetBlitState()) {
+
+			dynEnt++;
+			continue;
+		}
+
+		switch ((*dynEnt)->dynamicEntityType) {
+			// Player
+		case EntityType_FOOTMAN:
+			(*dynEnt)->Draw(footmanTex);
+			break;
+		case EntityType_ELVEN_ARCHER:
+			(*dynEnt)->Draw(elvenArcherTex);
+			break;
+		case EntityType_GRYPHON_RIDER:
+			(*dynEnt)->Draw(gryphonRiderTex);
+			break;
+		case EntityType_MAGE:
+			(*dynEnt)->Draw(mageTex);
+			break;
+		case EntityType_PALADIN:
+			(*dynEnt)->Draw(paladinTex);
+			break;
+
+		case EntityType_TURALYON:
+			(*dynEnt)->Draw(turalyonTex);
+			break;
+		case EntityType_ALLERIA:
+			(*dynEnt)->Draw(alleriaTex);
+			break;
+
+			// Enemy
+		case EntityType_GRUNT:
+			(*dynEnt)->Draw(gruntTex);
+			break;
+		case EntityType_TROLL_AXETHROWER:
+			(*dynEnt)->Draw(trollAxethrowerTex);
+			break;
+		case EntityType_DRAGON:
+			(*dynEnt)->Draw(dragonTex);
+			break;
+
+			// Neutral
+		case EntityType_SHEEP:
+		case EntityType_BOAR:
+			(*dynEnt)->Draw(crittersTex);
+			break;
+
+		default:
+			break;
+		}
+
+		dynEnt++;
+	}
+
+	/// Blit static entities
+	statEnt = activeStaticEntities.begin();
+
+	while (statEnt != activeStaticEntities.end()) {
+
+		switch ((*statEnt)->staticEntityCategory) {
+
+		case StaticEntityCategory_HumanBuilding:
+			(*statEnt)->Draw(humanBuildingsTex);
+			break;
+		case StaticEntityCategory_NeutralBuilding:
+			(*statEnt)->Draw(neutralBuildingsTex);
+			break;
+		case StaticEntityCategory_OrcishBuilding:
+			(*statEnt)->Draw(orcishBuildingsTex);
+			break;
+		default:
+			break;
+		}
+
+		statEnt++;
+	}
+
+	if (App->scene->GetAlphaBuilding() != EntityType_NONE) {
+		DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
+		if (App->scene->GetAlphaBuilding() != EntityType_MAX)
+			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+	}
+
 
 	return ret;
 }
@@ -1934,7 +2345,12 @@ bool j1EntityFactory::CleanUp()
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		delete *dynEnt;
+		if ((*dynEnt) != nullptr) {
+			delete *dynEnt;
+			activeDynamicEntities.remove(*dynEnt++);
+			continue;
+		}
+
 		dynEnt++;
 	}
 	activeDynamicEntities.clear();
@@ -1944,7 +2360,12 @@ bool j1EntityFactory::CleanUp()
 
 	while (statEnt != activeStaticEntities.end()) {
 
-		delete *statEnt;
+		if ((*statEnt) != nullptr) {
+			delete *statEnt;
+			activeStaticEntities.remove(*statEnt++);
+			continue;
+		}
+
 		statEnt++;
 	}
 	activeStaticEntities.clear();
@@ -1953,38 +2374,86 @@ bool j1EntityFactory::CleanUp()
 	list<Entity*>::const_iterator it = toSpawnEntities.begin();
 
 	while (it != toSpawnEntities.end()) {
-		delete *it;
+
+		if ((*it) != nullptr) {
+			delete *it;
+			toSpawnEntities.remove(*it++);
+			continue;
+		}
+
 		it++;
 	}
 	toSpawnEntities.clear();
 
+	// Remove units selected
+	list<DynamicEntity*>::const_iterator unitSel = unitsSelected.begin();
+	unitsSelected.clear();
+
 	// Free all textures
-	App->tex->UnLoad(footmanTex);
-	App->tex->UnLoad(gruntTex);
-	App->tex->UnLoad(crittersTex);
-	App->tex->UnLoad(humanBuildingsTex);
-	App->tex->UnLoad(neutralBuildingsTex);
-	App->tex->UnLoad(orcishBuildingsTex);
-	App->tex->UnLoad(khadgarTex);
-	App->tex->UnLoad(alleriaTex);
-	App->tex->UnLoad(elvenArcherTex);
-	App->tex->UnLoad(trollAxethrowerTex);
+	if (footmanTex != nullptr)
+		App->tex->UnLoad(footmanTex);
+
+	if (gruntTex != nullptr)
+		App->tex->UnLoad(gruntTex);
+
+	if (elvenArcherTex != nullptr)
+		App->tex->UnLoad(elvenArcherTex);
+
+	if (gryphonRiderTex != nullptr)
+		App->tex->UnLoad(gryphonRiderTex);
+
+	if (paladinTex != nullptr)
+		App->tex->UnLoad(paladinTex);
+
+	if (alleriaTex != nullptr)
+		App->tex->UnLoad(alleriaTex);
+
+	if (khadgarTex != nullptr)
+		App->tex->UnLoad(khadgarTex);
+
+	if (turalyonTex != nullptr)
+		App->tex->UnLoad(turalyonTex);
+
+	if (gruntTex != nullptr)
+		App->tex->UnLoad(gruntTex);
+
+	if (trollAxethrowerTex != nullptr)
+		App->tex->UnLoad(trollAxethrowerTex);
+
+	if (dragonTex != nullptr)
+		App->tex->UnLoad(dragonTex);
+
+	if (crittersTex != nullptr)
+		App->tex->UnLoad(crittersTex);
+
+	if (humanBuildingsTex != nullptr)
+		App->tex->UnLoad(humanBuildingsTex);
+
+	if (orcishBuildingsTex != nullptr)
+		App->tex->UnLoad(orcishBuildingsTex);
+
+	if (neutralBuildingsTex != nullptr)
+		App->tex->UnLoad(neutralBuildingsTex);
 
 	return ret;
 }
-
 
 Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const EntityInfo& entityInfo, const UnitInfo& unitInfo, j1Module* listener)
 {
 	switch (entityType) {
 
-	// Static entities
+		// STATIC ENTITIES
+		// Player static entities
 	case EntityType_TOWN_HALL:
 	{
-		TownHall* townHall = new TownHall(pos, { 128,128 }, townHallInfo.townHallMaxLife, townHallInfo.townHallMaxLife, (const TownHallInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
+
+		TownHall* townHall = new TownHall(pos, { 128,128 }, maxLife, maxLife, (const TownHallInfo&)entityInfo, listener);
 		townHall->entityType = EntityCategory_STATIC_ENTITY;
 		townHall->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		townHall->staticEntityType = EntityType_TOWN_HALL;
+		townHall->entitySide = EntitySide_Player;
+		townHall->buildingSize = StaticEntitySize_Big;
 		townHall->SetStringLife(townHall->GetCurrLife(), townHall->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)townHall);
@@ -1994,10 +2463,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_CHICKEN_FARM:
 	{
-		ChickenFarm* chickenFarm = new ChickenFarm(pos, { 64,64 }, chickenFarmInfo.maxLife, chickenFarmInfo.maxLife, (const ChickenFarmInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Small);
+
+		ChickenFarm* chickenFarm = new ChickenFarm(pos, { 64,64 }, maxLife, maxLife, (const ChickenFarmInfo&)entityInfo, listener);
 		chickenFarm->entityType = EntityCategory_STATIC_ENTITY;
 		chickenFarm->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		chickenFarm->staticEntityType = EntityType_CHICKEN_FARM;
+		chickenFarm->entitySide = EntitySide_Player;
+		chickenFarm->buildingSize = StaticEntitySize_Small;
 		chickenFarm->SetStringLife(chickenFarm->GetCurrLife(), chickenFarm->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)chickenFarm);
@@ -2007,11 +2480,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_BARRACKS:
 	{
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
-		Barracks* barracks = new Barracks(pos, { 96,96 }, barracksInfo.barracks1MaxLife, barracksInfo.barracks1MaxLife, (const BarracksInfo&)entityInfo, listener);
+		Barracks* barracks = new Barracks(pos, { 96,96 }, maxLife, maxLife, (const BarracksInfo&)entityInfo, listener);
 		barracks->entityType = EntityCategory_STATIC_ENTITY;
 		barracks->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		barracks->staticEntityType = EntityType_BARRACKS;
+		barracks->entitySide = EntitySide_Player;
+		barracks->buildingSize = StaticEntitySize_Medium;
 		barracks->SetStringLife(barracks->GetCurrLife(), barracks->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)barracks);
@@ -2021,11 +2497,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ELVEN_LUMBER_MILL:
 	{
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
-		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 96,96 }, elvenLumberMillInfo.maxLife, elvenLumberMillInfo.maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
+		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 96,96 }, maxLife, maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
 		elvenLumberMill->entityType = EntityCategory_STATIC_ENTITY;
 		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		elvenLumberMill->staticEntityType = EntityType_BARRACKS;
+		elvenLumberMill->entitySide = EntitySide_Player;
+		elvenLumberMill->buildingSize = StaticEntitySize_Medium;
 		elvenLumberMill->SetStringLife(elvenLumberMill->GetCurrLife(), elvenLumberMill->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)elvenLumberMill);
@@ -2035,11 +2514,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_MAGE_TOWER:
 	{
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
-		MageTower* mageTower = new MageTower(pos, { 96,96 }, mageTowerInfo.maxLife, mageTowerInfo.maxLife, (const MageTowerInfo&)entityInfo, listener);
+		MageTower* mageTower = new MageTower(pos, { 96,96 }, maxLife, maxLife, (const MageTowerInfo&)entityInfo, listener);
 		mageTower->entityType = EntityCategory_STATIC_ENTITY;
 		mageTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		mageTower->staticEntityType = EntityType_MAGE_TOWER;
+		mageTower->entitySide = EntitySide_Player;
+		mageTower->buildingSize = StaticEntitySize_Medium;
 		mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)mageTower);
@@ -2049,11 +2531,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRYPHON_AVIARY:
 	{
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
-		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 96,96 }, gryphonAviaryInfo.maxLife, gryphonAviaryInfo.maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
+		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 96,96 }, maxLife, maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
 		gryphonAviary->entityType = EntityCategory_STATIC_ENTITY;
 		gryphonAviary->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		gryphonAviary->staticEntityType = EntityType_GRYPHON_AVIARY;
+		gryphonAviary->entitySide = EntitySide_Player;
+		gryphonAviary->buildingSize = StaticEntitySize_Medium;
 		gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)gryphonAviary);
@@ -2063,11 +2548,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_STABLES:
 	{
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
-		Stables* stables = new Stables(pos, { 96,96 }, stablesInfo.maxLife, stablesInfo.maxLife, (const StablesInfo&)entityInfo, listener);
+		Stables* stables = new Stables(pos, { 96,96 }, maxLife, maxLife, (const StablesInfo&)entityInfo, listener);
 		stables->entityType = EntityCategory_STATIC_ENTITY;
 		stables->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		stables->staticEntityType = EntityType_STABLES;
+		stables->entitySide = EntitySide_Player;
+		stables->buildingSize = StaticEntitySize_Medium;
 		stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)stables);
@@ -2077,10 +2565,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_SCOUT_TOWER:
 	{
-		ScoutTower* scoutTower = new ScoutTower(pos, { 64,64 }, scoutTowerInfo.maxLife, scoutTowerInfo.maxLife, (const ScoutTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_SCOUT_TOWER, StaticEntitySize_Small);
+
+		ScoutTower* scoutTower = new ScoutTower(pos, { 64,64 }, maxLife, maxLife, (const ScoutTowerInfo&)entityInfo, listener);
 		scoutTower->entityType = EntityCategory_STATIC_ENTITY;
 		scoutTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		scoutTower->staticEntityType = EntityType_SCOUT_TOWER;
+		scoutTower->entitySide = EntitySide_Player;
+		scoutTower->buildingSize = StaticEntitySize_Small;
 		scoutTower->SetStringLife(scoutTower->GetCurrLife(), scoutTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)scoutTower);
@@ -2090,10 +2582,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_PLAYER_GUARD_TOWER:
 	{
-		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, { 64,64 }, 12, 12, (const PlayerGuardTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_PLAYER_GUARD_TOWER, StaticEntitySize_Small);
+
+		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, { 64,64 }, maxLife, maxLife, (const PlayerGuardTowerInfo&)entityInfo, listener);
 		playerGuardTower->entityType = EntityCategory_STATIC_ENTITY;
 		playerGuardTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		playerGuardTower->staticEntityType = EntityType_PLAYER_GUARD_TOWER;
+		playerGuardTower->entitySide = EntitySide_Player;
+		playerGuardTower->buildingSize = StaticEntitySize_Small;
 		playerGuardTower->SetStringLife(playerGuardTower->GetCurrLife(), playerGuardTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)playerGuardTower);
@@ -2103,10 +2599,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_PLAYER_CANNON_TOWER:
 	{
-		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, { 64,64 }, 12, 12, (const PlayerCannonTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_PLAYER_CANNON_TOWER, StaticEntitySize_Small);
+
+		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, { 64,64 }, maxLife, maxLife, (const PlayerCannonTowerInfo&)entityInfo, listener);
 		playerCannonTower->entityType = EntityCategory_STATIC_ENTITY;
 		playerCannonTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
 		playerCannonTower->staticEntityType = EntityType_PLAYER_CANNON_TOWER;
+		playerCannonTower->entitySide = EntitySide_Player;
+		playerCannonTower->buildingSize = StaticEntitySize_Small;
 		playerCannonTower->SetStringLife(playerCannonTower->GetCurrLife(), playerCannonTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)playerCannonTower);
@@ -2116,10 +2616,12 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GOLD_MINE:
 	{
-		GoldMine* goldMine = new GoldMine(pos, { 96,96 }, goldMineInfo.maxLife, goldMineInfo.maxLife, (const GoldMineInfo&)entityInfo, listener);
+		GoldMine* goldMine = new GoldMine(pos, { 96,96 }, 0, 0, (const GoldMineInfo&)entityInfo, listener);
 		goldMine->entityType = EntityCategory_STATIC_ENTITY;
 		goldMine->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		goldMine->staticEntityType = EntityType_GOLD_MINE;
+		goldMine->entitySide = EntitySide_Neutral;
+		goldMine->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)goldMine);
 		return (StaticEntity*)goldMine;
@@ -2132,20 +2634,25 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		runestone->entityType = EntityCategory_STATIC_ENTITY;
 		runestone->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
 		runestone->staticEntityType = EntityType_RUNESTONE;
+		runestone->entitySide = EntitySide_Neutral;
+		runestone->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)runestone);
 		return (StaticEntity*)runestone;
 	}
 	break;
 
-	//Enemy Static Entities
-
+		// Enemy static entities
 	case EntityType_GREAT_HALL:
 	{
-		GreatHall* greatHall = new GreatHall(pos, { 128, 128 }, greatHallInfo.life, greatHallInfo.life, (const GreatHallInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
+
+		GreatHall* greatHall = new GreatHall(pos, { 128, 128 }, maxLife, maxLife, (const GreatHallInfo&)entityInfo, listener);
 		greatHall->entityType = EntityCategory_STATIC_ENTITY;
 		greatHall->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		greatHall->staticEntityType = EntityType_GREAT_HALL;
+		greatHall->entitySide = EntitySide_Enemy;
+		greatHall->buildingSize = StaticEntitySize_Big;
 
 		toSpawnEntities.push_back((Entity*)greatHall);
 		return (StaticEntity*)greatHall;
@@ -2154,10 +2661,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_STRONGHOLD:
 	{
-		Stronghold* stronghold = new Stronghold(pos, { 128, 128 }, strongholdInfo.life, strongholdInfo.life, (const StrongholdInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
+
+		Stronghold* stronghold = new Stronghold(pos, { 128, 128 }, maxLife, maxLife, (const StrongholdInfo&)entityInfo, listener);
 		stronghold->entityType = EntityCategory_STATIC_ENTITY;
 		stronghold->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		stronghold->staticEntityType = EntityType_STRONGHOLD;
+		stronghold->entitySide = EntitySide_Enemy;
+		stronghold->buildingSize = StaticEntitySize_Big;
 
 		toSpawnEntities.push_back((Entity*)stronghold);
 		return (StaticEntity*)stronghold;
@@ -2166,10 +2677,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_FORTRESS:
 	{
-		Fortress* fortress = new Fortress(pos, { 128, 128 }, fortressInfo.life, fortressInfo.life, (const FortressInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
+
+		Fortress* fortress = new Fortress(pos, { 128, 128 }, maxLife, maxLife, (const FortressInfo&)entityInfo, listener);
 		fortress->entityType = EntityCategory_STATIC_ENTITY;
 		fortress->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		fortress->staticEntityType = EntityType_FORTRESS;
+		fortress->entitySide = EntitySide_Enemy;
+		fortress->buildingSize = StaticEntitySize_Big;
 
 		toSpawnEntities.push_back((Entity*)fortress);
 		return (StaticEntity*)fortress;
@@ -2178,10 +2693,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ENEMY_BARRACKS:
 	{
-		EnemyBarracks* enemyBarracks = new EnemyBarracks(pos, { 96, 96 }, enemyBarracksInfo.life, enemyBarracksInfo.life, (const EnemyBarracksInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		EnemyBarracks* enemyBarracks = new EnemyBarracks(pos, { 96, 96 }, maxLife, maxLife, (const EnemyBarracksInfo&)entityInfo, listener);
 		enemyBarracks->entityType = EntityCategory_STATIC_ENTITY;
 		enemyBarracks->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyBarracks->staticEntityType = EntityType_ENEMY_BARRACKS;
+		enemyBarracks->entitySide = EntitySide_Enemy;
+		enemyBarracks->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)enemyBarracks);
 		return (StaticEntity*)enemyBarracks;
@@ -2190,10 +2709,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_PIG_FARM:
 	{
-		PigFarm* pigFarm = new PigFarm(pos, { 64, 64 }, pigFarmInfo.life, pigFarmInfo.life, (const PigFarmInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Small);
+
+		PigFarm* pigFarm = new PigFarm(pos, { 64, 64 }, maxLife, maxLife, (const PigFarmInfo&)entityInfo, listener);
 		pigFarm->entityType = EntityCategory_STATIC_ENTITY;
 		pigFarm->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		pigFarm->staticEntityType = EntityType_PIG_FARM;
+		pigFarm->entitySide = EntitySide_Enemy;
+		pigFarm->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)pigFarm);
 		return (StaticEntity*)pigFarm;
@@ -2202,10 +2725,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TROLL_LUMBER_MILL:
 	{
-		TrollLumberMill* trollLumberMill = new TrollLumberMill(pos, { 96, 96 }, trollLumberMillInfo.life, trollLumberMillInfo.life, (const TrollLumberMillInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		TrollLumberMill* trollLumberMill = new TrollLumberMill(pos, { 96, 96 }, maxLife, maxLife, (const TrollLumberMillInfo&)entityInfo, listener);
 		trollLumberMill->entityType = EntityCategory_STATIC_ENTITY;
 		trollLumberMill->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		trollLumberMill->staticEntityType = EntityType_TROLL_LUMBER_MILL;
+		trollLumberMill->entitySide = EntitySide_Enemy;
+		trollLumberMill->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)trollLumberMill);
 		return (StaticEntity*)trollLumberMill;
@@ -2214,10 +2741,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ALTAR_OF_STORMS:
 	{
-		AltarOfStorms* altarOfStorms = new AltarOfStorms(pos, { 96, 96 }, altarOfStormsInfo.life, altarOfStormsInfo.life, (const AltarOfStormsInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		AltarOfStorms* altarOfStorms = new AltarOfStorms(pos, { 96, 96 }, maxLife, maxLife, (const AltarOfStormsInfo&)entityInfo, listener);
 		altarOfStorms->entityType = EntityCategory_STATIC_ENTITY;
 		altarOfStorms->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		altarOfStorms->staticEntityType = EntityType_ALTAR_OF_STORMS;
+		altarOfStorms->entitySide = EntitySide_Enemy;
+		altarOfStorms->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)altarOfStorms);
 		return (StaticEntity*)altarOfStorms;
@@ -2226,10 +2757,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_DRAGON_ROOST:
 	{
-		DragonRoost* dragonRoost = new DragonRoost(pos, { 96, 96 }, dragonRoostInfo.life, dragonRoostInfo.life, (const DragonRoostInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		DragonRoost* dragonRoost = new DragonRoost(pos, { 96, 96 }, maxLife, maxLife, (const DragonRoostInfo&)entityInfo, listener);
 		dragonRoost->entityType = EntityCategory_STATIC_ENTITY;
 		dragonRoost->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		dragonRoost->staticEntityType = EntityType_DRAGON_ROOST;
+		dragonRoost->entitySide = EntitySide_Enemy;
+		dragonRoost->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)dragonRoost);
 		return (StaticEntity*)dragonRoost;
@@ -2238,10 +2773,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TEMPLE_OF_THE_DAMNED:
 	{
-		TempleOfTheDamned* templeOfTheDamned = new TempleOfTheDamned(pos, { 96, 96 }, templeOfTheDamnedInfo.life, templeOfTheDamnedInfo.life, (const TempleOfTheDamnedInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		TempleOfTheDamned* templeOfTheDamned = new TempleOfTheDamned(pos, { 96, 96 }, maxLife, maxLife, (const TempleOfTheDamnedInfo&)entityInfo, listener);
 		templeOfTheDamned->entityType = EntityCategory_STATIC_ENTITY;
 		templeOfTheDamned->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		templeOfTheDamned->staticEntityType = EntityType_TEMPLE_OF_THE_DAMNED;
+		templeOfTheDamned->entitySide = EntitySide_Enemy;
+		templeOfTheDamned->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)templeOfTheDamned);
 		return (StaticEntity*)templeOfTheDamned;
@@ -2250,10 +2789,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_OGRE_MOUND:
 	{
-		OgreMound* ogreMound = new OgreMound(pos, { 96, 96 }, ogreMoundInfo.life, ogreMoundInfo.life, (const OgreMoundInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		OgreMound* ogreMound = new OgreMound(pos, { 96, 96 }, maxLife, maxLife, (const OgreMoundInfo&)entityInfo, listener);
 		ogreMound->entityType = EntityCategory_STATIC_ENTITY;
 		ogreMound->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		ogreMound->staticEntityType = EntityType_OGRE_MOUND;
+		ogreMound->entitySide = EntitySide_Enemy;
+		ogreMound->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)ogreMound);
 		return (StaticEntity*)ogreMound;
@@ -2262,10 +2805,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ENEMY_BLACKSMITH:
 	{
-		EnemyBlacksmith* enemyBlacksmith = new EnemyBlacksmith(pos, { 96, 96 }, enemyBlacksmithInfo.life, enemyBlacksmithInfo.life, (const EnemyBlacksmithInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
+
+		EnemyBlacksmith* enemyBlacksmith = new EnemyBlacksmith(pos, { 96, 96 }, maxLife, maxLife, (const EnemyBlacksmithInfo&)entityInfo, listener);
 		enemyBlacksmith->entityType = EntityCategory_STATIC_ENTITY;
 		enemyBlacksmith->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyBlacksmith->staticEntityType = EntityType_ENEMY_BLACKSMITH;
+		enemyBlacksmith->entitySide = EntitySide_Enemy;
+		enemyBlacksmith->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)enemyBlacksmith);
 		return (StaticEntity*)enemyBlacksmith;
@@ -2274,10 +2821,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_WATCH_TOWER:
 	{
-		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, watchTowerInfo.life, watchTowerInfo.life, (const WatchTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_WATCH_TOWER, StaticEntitySize_Small);
+
+		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, maxLife, maxLife, (const WatchTowerInfo&)entityInfo, listener);
 		watchTower->entityType = EntityCategory_STATIC_ENTITY;
 		watchTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		watchTower->staticEntityType = EntityType_WATCH_TOWER;
+		watchTower->entitySide = EntitySide_Enemy;
+		watchTower->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)watchTower);
 		return (StaticEntity*)watchTower;
@@ -2286,10 +2837,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ENEMY_GUARD_TOWER:
 	{
-		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, enemyGuardTowerInfo.life, enemyGuardTowerInfo.life, (const EnemyGuardTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_ENEMY_GUARD_TOWER, StaticEntitySize_Small);
+
+		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, maxLife, maxLife, (const EnemyGuardTowerInfo&)entityInfo, listener);
 		enemyGuardTower->entityType = EntityCategory_STATIC_ENTITY;
 		enemyGuardTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyGuardTower->staticEntityType = EntityType_ENEMY_GUARD_TOWER;
+		enemyGuardTower->entitySide = EntitySide_Enemy;
+		enemyGuardTower->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)enemyGuardTower);
 		return (StaticEntity*)enemyGuardTower;
@@ -2298,20 +2853,25 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ENEMY_CANNON_TOWER:
 	{
-		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, enemyCannonTowerInfo.life, enemyCannonTowerInfo.life, (const EnemyCannonTowerInfo&)entityInfo, listener);
+		uint maxLife = DetermineBuildingMaxLife(EntityType_ENEMY_CANNON_TOWER, StaticEntitySize_Small);
+
+		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, maxLife, maxLife, (const EnemyCannonTowerInfo&)entityInfo, listener);
 		enemyCannonTower->entityType = EntityCategory_STATIC_ENTITY;
 		enemyCannonTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
 		enemyCannonTower->staticEntityType = EntityType_ENEMY_CANNON_TOWER;
+		enemyCannonTower->entitySide = EntitySide_Enemy;
+		enemyCannonTower->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)enemyCannonTower);
 		return (StaticEntity*)enemyCannonTower;
 	}
 	break;
-	
-	// Dynamic entities
+
+		// DYNAMIC ENTITIES
+		// Player dynamic entities
 	case EntityType_FOOTMAN:
 	{
-		Footman* footman = new Footman(pos, { 32,32 }, footmanInfo.currLife, footmanInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
+		Footman* footman = new Footman(pos, footmanInfo.unitInfo.size, footmanInfo.unitInfo.currLife, footmanInfo.unitInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
 		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
 		footman->dynamicEntityType = EntityType_FOOTMAN;
 		footman->entitySide = EntitySide_Player;
@@ -2324,7 +2884,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ELVEN_ARCHER:
 	{
-		ElvenArcher* elvenArcher = new ElvenArcher(pos, { 32,32 }, elvenArcherInfo.currLife, elvenArcherInfo.maxLife, unitInfo, (const ElvenArcherInfo&)entityInfo, listener);
+		ElvenArcher* elvenArcher = new ElvenArcher(pos, elvenArcherInfo.unitInfo.size, elvenArcherInfo.unitInfo.currLife, elvenArcherInfo.unitInfo.maxLife, unitInfo, (const ElvenArcherInfo&)entityInfo, listener);
 		elvenArcher->entityType = EntityCategory_DYNAMIC_ENTITY;
 		elvenArcher->dynamicEntityType = EntityType_ELVEN_ARCHER;
 		elvenArcher->entitySide = EntitySide_Player;
@@ -2337,7 +2897,14 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GRYPHON_RIDER:
 	{
+		GryphonRider* gryphonRider = new GryphonRider(pos, gryphonRiderInfo.unitInfo.size, gryphonRiderInfo.unitInfo.currLife, gryphonRiderInfo.unitInfo.maxLife, unitInfo, (const GryphonRiderInfo&)entityInfo, listener);
+		gryphonRider->entityType = EntityCategory_DYNAMIC_ENTITY;
+		gryphonRider->dynamicEntityType = EntityType_GRYPHON_RIDER;
+		gryphonRider->entitySide = EntitySide_Player;
+		gryphonRider->SetStringLife(gryphonRider->GetCurrLife(), gryphonRider->GetMaxLife());
 
+		toSpawnEntities.push_back((Entity*)gryphonRider);
+		return (DynamicEntity*)gryphonRider;
 	}
 	break;
 
@@ -2355,27 +2922,22 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TURALYON:
 	{
+		Turalyon* turalyon = new Turalyon(pos, turalyonInfo.unitInfo.size, turalyonInfo.unitInfo.currLife, turalyonInfo.unitInfo.maxLife, unitInfo, (const TuralyonInfo&)entityInfo, listener);
+		turalyon->entityType = EntityCategory_DYNAMIC_ENTITY;
+		turalyon->dynamicEntityType = EntityType_TURALYON;
+		turalyon->entitySide = EntitySide_NoSide;
 
-	}
-	break;
-
-	case EntityType_KHADGAR:
-	{
-		Khadgar* khadgar = new Khadgar(pos, { 64,64 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const KhadgarInfo&)entityInfo, listener);
-		khadgar->entityType = EntityCategory_DYNAMIC_ENTITY;
-		khadgar->dynamicEntityType = EntityType_KHADGAR;
-
-		toSpawnEntities.push_back((Entity*)khadgar);
-		return (DynamicEntity*)khadgar;
-
+		toSpawnEntities.push_back((Entity*)turalyon);
+		return (DynamicEntity*)turalyon;
 	}
 	break;
 
 	case EntityType_ALLERIA:
 	{
-		Alleria* alleria = new Alleria(pos, { 64,64 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const AlleriaInfo&)entityInfo, listener);
+		Alleria* alleria = new Alleria(pos, alleriaInfo.unitInfo.size, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const AlleriaInfo&)entityInfo, listener);
 		alleria->entityType = EntityCategory_DYNAMIC_ENTITY;
 		alleria->dynamicEntityType = EntityType_ALLERIA;
+		alleria->entitySide = EntitySide_NoSide;
 
 		toSpawnEntities.push_back((Entity*)alleria);
 		return (DynamicEntity*)alleria;
@@ -2383,9 +2945,10 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	}
 	break;
 
+		// Enemy dynamic entities
 	case EntityType_GRUNT:
 	{
-		Grunt* grunt = new Grunt(pos, { 32,32 }, gruntInfo.currLife, gruntInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
+		Grunt* grunt = new Grunt(pos, gruntInfo.unitInfo.size, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
 		grunt->entityType = EntityCategory_DYNAMIC_ENTITY;
 		grunt->dynamicEntityType = EntityType_GRUNT;
 		grunt->entitySide = EntitySide_Enemy;
@@ -2397,7 +2960,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_TROLL_AXETHROWER:
 	{
-		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, { 32,32 }, trollAxethrowerInfo.currLife, trollAxethrowerInfo.maxLife, unitInfo, (const TrollAxethrowerInfo&)entityInfo, listener);
+		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, trollAxethrowerInfo.unitInfo.size, trollAxethrowerInfo.unitInfo.currLife, trollAxethrowerInfo.unitInfo.maxLife, unitInfo, (const TrollAxethrowerInfo&)entityInfo, listener);
 		trollAxethrower->entityType = EntityCategory_DYNAMIC_ENTITY;
 		trollAxethrower->dynamicEntityType = EntityType_TROLL_AXETHROWER;
 		trollAxethrower->entitySide = EntitySide_Enemy;
@@ -2409,16 +2972,23 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_DRAGON:
 	{
+		Dragon* dragon = new Dragon(pos, dragonInfo.unitInfo.size, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const DragonInfo&)entityInfo, listener);
+		dragon->entityType = EntityCategory_DYNAMIC_ENTITY;
+		dragon->dynamicEntityType = EntityType_DRAGON;
+		dragon->entitySide = EntitySide_Enemy;
 
+		toSpawnEntities.push_back((Entity*)dragon);
+		return (DynamicEntity*)dragon;
 	}
 	break;
 
+		// Neutral dynamic entities
 	case EntityType_SHEEP:
 	{
-		CritterSheep* critterSheep = new CritterSheep(pos, { 32,32 }, critterSheepInfo.currLife, critterSheepInfo.maxLife, unitInfo, (const CritterSheepInfo&)entityInfo, listener);
+		CritterSheep* critterSheep = new CritterSheep(pos, critterSheepInfo.unitInfo.size, critterSheepInfo.unitInfo.currLife, critterSheepInfo.unitInfo.maxLife, unitInfo, (const CritterSheepInfo&)entityInfo, listener);
 		critterSheep->entityType = EntityCategory_DYNAMIC_ENTITY;
-		critterSheep->entitySide = EntitySide_Neutral;
 		critterSheep->dynamicEntityType = EntityType_SHEEP;
+		critterSheep->entitySide = EntitySide_Neutral;
 
 		toSpawnEntities.push_back((Entity*)critterSheep);
 		return (DynamicEntity*)critterSheep;
@@ -2427,16 +2997,16 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_BOAR:
 	{
-		CritterBoar* critterBoar = new CritterBoar(pos, { 32,32 }, critterBoarInfo.currLife, critterBoarInfo.maxLife, unitInfo, (const CritterBoarInfo&)entityInfo, listener);
+		CritterBoar* critterBoar = new CritterBoar(pos, critterBoarInfo.unitInfo.size, critterBoarInfo.unitInfo.currLife, critterBoarInfo.unitInfo.maxLife, unitInfo, (const CritterBoarInfo&)entityInfo, listener);
 		critterBoar->entityType = EntityCategory_DYNAMIC_ENTITY;
-		critterBoar->entitySide = EntitySide_Neutral;
 		critterBoar->dynamicEntityType = EntityType_BOAR;
+		critterBoar->entitySide = EntitySide_Neutral;
 
 		toSpawnEntities.push_back((Entity*)critterBoar);
 		return (DynamicEntity*)critterBoar;
 	}
 	break;
-	
+
 	default:
 
 		return nullptr;
@@ -2456,6 +3026,7 @@ uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEG
 	uint numOfEntities = 0;
 
 	if (entityCategory == EntityCategory_DYNAMIC_ENTITY) {
+
 		list<DynamicEntity*>::const_iterator activeDynamic = activeDynamicEntities.begin();
 
 		while (activeDynamic != activeDynamicEntities.end()) {
@@ -2465,8 +3036,8 @@ uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEG
 			activeDynamic++;
 		}
 	}
-
 	else if (entityCategory == EntityCategory_STATIC_ENTITY) {
+
 		list<StaticEntity*>::const_iterator activeStatic = activeStaticEntities.begin();
 
 		while (activeStatic != activeStaticEntities.end()) {
@@ -2479,7 +3050,23 @@ uint j1EntityFactory::CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEG
 	else
 		numOfEntities = 0;
 
-	return  numOfEntities;
+	return numOfEntities;
+}
+
+uint j1EntityFactory::GetNumberOfPlayerUnits() const
+{
+	uint ret = 0;
+
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	while (it != activeDynamicEntities.end()) {
+
+		if ((*it)->entitySide == EntitySide_Player)
+			ret++;
+		it++;
+	}
+
+	return ret;
 }
 
 /// SANDRA
@@ -2768,16 +3355,20 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 	if (find(unitsSelected.begin(), unitsSelected.end(), entity) == unitsSelected.end()) {
 
 		DynamicEntity* unit = GetDynamicEntityByEntity(entity);
-		unitsSelected.push_back(unit);
-		(entity)->isSelected = true;
 
-		ret = true;
+		if (unit->GetIsValid()) {
+
+			unitsSelected.push_back(unit);
+			(entity)->isSelected = true;
+
+			ret = true;
+		}
 	}
 
 	// TODO: Add StaticEntities
 
 	// Update the color of the selection of all entities (Dynamic and Static)
-	SetUnitsSelectedColor();
+	//SetUnitsSelectedColor();
 
 	return ret;
 }
@@ -2817,18 +3408,23 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 
 						// If the unit isn't in the unitsSelected list, add it
 						if (find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
-							unitsSelected.push_back(GetDynamicEntityByEntity(*it));
-							(*it)->isSelected = true;
+
+							if ((*it)->GetIsValid()) {
+
+								unitsSelected.push_back(GetDynamicEntityByEntity(*it));
+								(*it)->isSelected = true;
+							}
 						}
 					}
 				}
-			}
-			else {
 
-				// If the unit is in the unitsSelected list, remove it
-				if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
-					unitsSelected.remove(GetDynamicEntityByEntity(*it));
-					(*it)->isSelected = false;
+				else {
+
+					// If the unit is in the unitsSelected list, remove it
+					if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
+						unitsSelected.remove(GetDynamicEntityByEntity(*it));
+						(*it)->isSelected = false;
+					}
 				}
 			}
 		}
@@ -2847,7 +3443,9 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 	// TODO: Add StaticEntities
 
 	// Update the color of the selection of all entities (Dynamic and Static)
-	SetUnitsSelectedColor();
+	//SetUnitsSelectedColor();
+
+
 }
 
 // Unselects all entities
@@ -2905,19 +3503,19 @@ bool j1EntityFactory::RemoveUnitFromUnitsSelected(Entity* entity)
 // Updates the selection color of all entities
 void j1EntityFactory::SetUnitsSelectedColor()
 {
-	SDL_Color colors[10] = { ColorYellow, ColorDarkGreen, ColorBrightBlue, ColorOrange, ColorPink, ColorPurple, ColorGrey, ColorBlack, ColorOlive, ColorViolet };
-	string colorNames[10] = { "Yellow", "DarkGreen", "BrightBlue", "Orange", "Pink", "Purple", "Grey", "Black", "Olive", "Violet" };
+	//SDL_Color colors[10] = { ColorYellow, ColorDarkGreen, ColorBrightBlue, ColorOrange, ColorPink, ColorPurple, ColorGrey, ColorBlack, ColorOlive, ColorViolet };
+	//string colorNames[10] = { "Yellow", "DarkGreen", "BrightBlue", "Orange", "Pink", "Purple", "Grey", "Black", "Olive", "Violet" };
 
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
-	uint i = 0;
+	//uint i = 0;
 
 	while (it != activeDynamicEntities.end())
 	{
 		// If the unit is selected, change its color
 		if ((*it)->isSelected) {
 
-			GetDynamicEntityByEntity(*it)->SetColor(colors[i], colorNames[i]);
-			i++;
+			//GetDynamicEntityByEntity(*it)->SetColor(colors[i], colorNames[i]);
+			//i++;
 		}
 		else {
 
@@ -2937,8 +3535,11 @@ bool j1EntityFactory::CommandToUnits(list<DynamicEntity*> units, UnitCommand uni
 
 	while (it != units.end()) {
 
-		if ((*it)->SetUnitCommand(unitCommand))
-			ret = true;
+		if ((*it)->GetIsValid()) {
+
+			if ((*it)->SetUnitCommand(unitCommand))
+				ret = true;
+		}
 
 		it++;
 	}
@@ -2963,24 +3564,35 @@ bool j1EntityFactory::RemoveAllUnitsGoals(list<DynamicEntity*> units)
 	return ret;
 }
 
-void j1EntityFactory::InvalidateAttackEntity(Entity* entity)
+// Attack
+bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
 {
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+	if (target == nullptr)
+		return false;
 
-	while (it != activeDynamicEntities.end()) {
+	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
 
-		if ((*it)->IsEntityInTargetsList(entity))
+	while (dynEnt != activeDynamicEntities.end()) {
 
-			// The dead entity was a target of another entity
-			(*it)->InvalidateTarget(entity);
+		(*dynEnt)->SetIsRemovedTargetInfo(target);
+		(*dynEnt)->RemoveAttackingUnit(target);
 
-		// The dead entity may be attacking another unit
-		(*it)->RemoveAttackingUnit(entity);
-
-		it++;
+		dynEnt++;
 	}
+
+	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
+
+	while (statEnt != activeStaticEntities.end()) {
+
+		(*statEnt)->RemoveAttackingUnit(target);
+
+		statEnt++;
+	}
+
+	return true;
 }
 
+// Movement
 void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 {
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
@@ -2992,46 +3604,396 @@ void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 			if ((*it)->GetSingleUnit()->waitUnit != nullptr) {
 
 				// The dead entity was the waitUnit of another entity
-				if ((*it)->GetSingleUnit()->waitUnit->unit == entity)
+				if ((*it)->GetSingleUnit()->waitUnit->unit == entity) {
 
 					(*it)->GetSingleUnit()->ResetUnitCollisionParameters();
+					App->pathmanager->UnRegister((*it)->GetSingleUnit()->unit->GetPathPlanner());
+				}
 			}
 		}
 
 		it++;
 	}
 }
-///_SANDRA
 
-int j1EntityFactory::GetPlayerSoldiers() const {
-	int ret = 0;
+// Entities
+Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY entityCategory, EntitySide entitySide) const
+{
+	// DYNAMIC ENTITIES
+	if (entityCategory == EntityCategory_DYNAMIC_ENTITY || entityCategory == EntityCategory_NONE) {
 
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+		if (activeDynamicEntities.size() > 0) {
 
-	while (it != activeDynamicEntities.end()) {
+			list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
 
-		if ((*it)->entitySide == EntitySide_Player)
-			ret++;
-		it++;
+			while (activeDyn != activeDynamicEntities.end()) {
+
+				// The unit cannot be dead
+				if (!(*activeDyn)->isDead) {
+
+					// An offset value is applied ONLY to the units selection
+					iPoint offsetValue = { 20,20 };
+
+					iPoint entityPos = { (int)(*activeDyn)->GetPos().x + (*activeDyn)->GetOffsetSize().x - offsetValue.x, (int)(*activeDyn)->GetPos().y + (*activeDyn)->GetOffsetSize().y - offsetValue.y };
+					iPoint entitySize = { (*activeDyn)->GetSize().x + offsetValue.x, (*activeDyn)->GetSize().y + offsetValue.y };
+					uint scale = App->win->GetScale();
+
+					switch (entitySide) {
+
+					case EntitySide_Player:
+
+						if ((*activeDyn)->entitySide == EntitySide_Player)
+							if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_Enemy:
+
+						if ((*activeDyn)->entitySide == EntitySide_Enemy)
+							if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_Neutral:
+
+						if ((*activeDyn)->entitySide == EntitySide_Neutral)
+							if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_NoSide:
+
+						if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
+							return (Entity*)(*activeDyn);
+						break;
+					}
+				}
+				activeDyn++;
+			}
+		}
 	}
-	return ret;
+
+	// STATIC ENTITIES
+	if (entityCategory == EntityCategory_STATIC_ENTITY) {
+
+		if (activeStaticEntities.size() > 0) {
+
+			list<StaticEntity*>::const_iterator activeStat = activeStaticEntities.begin();
+
+			while (activeStat != activeStaticEntities.end()) {
+
+				iPoint entityPos = { (int)(*activeStat)->GetPos().x, (int)(*activeStat)->GetPos().y };
+				iPoint entitySize = { (*activeStat)->GetSize().x, (*activeStat)->GetSize().y };
+				uint scale = App->win->GetScale();
+
+				switch (entitySide) {
+
+				case EntitySide_Player:
+
+					if ((*activeStat)->entitySide == EntitySide_Player)
+						if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_Enemy:
+
+					if ((*activeStat)->entitySide == EntitySide_Enemy)
+						if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_Neutral:
+
+					if ((*activeStat)->entitySide == EntitySide_Neutral)
+						if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_NoSide:
+
+					if (mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y)
+						return (Entity*)(*activeStat);
+					break;
+				}
+				activeStat++;
+			}
+		}
+	}
+
+	return nullptr;
 }
 
-void j1EntityFactory::SetPlayerSoldiers(int food) {
-	int cont = 0;
+void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
+{
+	UnselectAllEntities();
+
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
 	while (it != activeDynamicEntities.end()) {
 
-		if ((*it)->entitySide == EntitySide_Player) {
-			cont++;
-			if (cont > food)
-				(*it)->isDead = true;
+		if (App->render->IsInScreen((*it)->GetPos())) {
+
+			if (entityType != EntityType_NONE) {
+
+				if ((*it)->dynamicEntityType == entityType && unitsSelected.size() < MAX_UNITS_SELECTED) {
+
+					(*it)->isSelected = true;
+					unitsSelected.push_back(*it);
+				}
+			}
+			else {
+
+				if (unitsSelected.size() < MAX_UNITS_SELECTED) {
+
+					(*it)->isSelected = true;
+					unitsSelected.push_back(*it);
+				}
+			}
 		}
 
 		it++;
 	}
 }
+
+// Dynamic Entities
+bool j1EntityFactory::IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType)
+{
+	if (units.size() == 0)
+		return false;
+
+	list<DynamicEntity*>::const_iterator it = units.begin();
+
+	while (it != units.end()) {
+
+		if ((*it)->dynamicEntityType != entityType)
+			return false;
+
+		it++;
+	}
+
+	return true;
+}
+
+bool j1EntityFactory::AreAllUnitsDoingSomething(list<DynamicEntity*> units, UnitState unitState)
+{
+	if (units.size() == 0)
+		return false;
+
+	list<DynamicEntity*>::const_iterator it = units.begin();
+
+	while (it != units.end()) {
+
+		if ((*it)->GetUnitState() != unitState)
+			return false;
+
+		it++;
+	}
+
+	return true;
+}
+
+// Static Entities
+bool j1EntityFactory::SelectBuilding(StaticEntity* staticEntity) 
+{
+	bool ret = false;
+
+	list<StaticEntity*>::const_iterator it = activeStaticEntities.begin();
+
+	while (it != activeStaticEntities.end()) {
+	
+		if (*it == staticEntity) {
+
+			(*it)->isSelected = true;
+			ret = true;
+		}
+		else if ((*it)->isSelected)
+
+			(*it)->isSelected = false;
+	
+		it++;
+	}
+
+	return ret;
+}
+
+void j1EntityFactory::UnselectAllBuildings() 
+{
+	list<StaticEntity*>::const_iterator it = activeStaticEntities.begin();
+
+	while (it != activeStaticEntities.end()) {
+
+		(*it)->isSelected = false;
+
+		it++;
+	}
+}
+
+uint j1EntityFactory::DetermineBuildingMaxLife(ENTITY_TYPE buildingType, StaticEntitySize buildingSize)
+{
+	/// TODO Joan (balancing)
+	uint maxLife = 0;
+
+		// Towers
+	if (buildingType == EntityType_SCOUT_TOWER || buildingType == EntityType_WATCH_TOWER) {
+
+		maxLife = 150;
+		return maxLife;
+	}
+	else if (buildingType == EntityType_PLAYER_GUARD_TOWER || buildingType == EntityType_ENEMY_GUARD_TOWER) {
+
+		maxLife = 175;
+		return maxLife;
+	}
+	else if (buildingType == EntityType_PLAYER_CANNON_TOWER || buildingType == EntityType_ENEMY_CANNON_TOWER) {
+
+		maxLife = 200;
+		return maxLife;
+	}
+
+	// The rest of buildings
+	switch (buildingSize) {
+
+	case StaticEntitySize_Small:
+
+		maxLife = 150;
+		break;
+
+	case StaticEntitySize_Medium:
+
+		maxLife = 300;
+		break;
+
+	case StaticEntitySize_Big:
+
+		maxLife = 450;
+		break;
+
+	case StaticEntitySize_None:
+	default:
+		break;
+	}
+
+	return maxLife;
+}
+
+uint j1EntityFactory::DetermineBuildingGold(ENTITY_TYPE buildingType, StaticEntitySize buildingSize)
+{
+	/// TODO Joan (balancing)
+	uint gold = 0;
+
+	// Towers
+	if (buildingType == EntityType_SCOUT_TOWER || buildingType == EntityType_WATCH_TOWER) {
+
+		gold = 200;
+		return gold;
+	}
+	else if (buildingType == EntityType_PLAYER_GUARD_TOWER || buildingType == EntityType_ENEMY_GUARD_TOWER) {
+
+		gold = 250;
+		return gold;
+	}
+	else if (buildingType == EntityType_PLAYER_CANNON_TOWER || buildingType == EntityType_ENEMY_CANNON_TOWER) {
+
+		gold = 300;
+		return gold;
+	}
+
+	// The rest of buildings
+	switch (buildingSize) {
+
+	case StaticEntitySize_Small:
+
+		gold = 150;
+		break;
+
+	case StaticEntitySize_Medium:
+
+		gold = 300;
+		break;
+
+	case StaticEntitySize_Big:
+
+		gold = 600;
+		break;
+
+	case StaticEntitySize_None:
+	default:
+		break;
+	}
+
+	return gold;
+}
+
+list<iPoint> j1EntityFactory::GetBuildingTiles(StaticEntity* building, bool isOnlySurroundingTiles)
+{
+	list<iPoint> buildingTiles;
+
+	if (building == nullptr)
+		return buildingTiles;
+
+	iPoint currTile = App->map->WorldToMap((int)building->GetPos().x, (int)building->GetPos().y);
+	uint size = 0;
+
+	switch (building->buildingSize) {
+	
+	case StaticEntitySize_Small:
+		// 2x2 = 4 tiles
+		// 12 tiles surrounding the building
+		size = 2;
+		break;
+
+	case StaticEntitySize_Medium:
+		// 3x3 = 9 tiles
+		// 16 tiles surrounding the building
+		size = 3;
+		break;
+
+	case StaticEntitySize_Big:
+		// 4x4 = 16 tiles
+		// 23 tiles surrounding the building
+		size = 4;
+		break;
+
+	case StaticEntitySize_None:
+	default:
+		break;
+	}
+
+	for (int i = 0; i < size; ++i) {
+		for (int j = 0; j < size; ++j) {
+
+			iPoint insideTile = { (int)currTile.x + i, (int)currTile.y + j };
+
+			if (isOnlySurroundingTiles) {
+
+				// Normal tiles
+				if (i == 0)
+					buildingTiles.push_back({ insideTile.x - 1, insideTile.y });
+				else if (i == size - 1)
+					buildingTiles.push_back({ insideTile.x + 1, insideTile.y });
+				if (j == 0)
+					buildingTiles.push_back({ insideTile.x, insideTile.y - 1 });
+				else if (j == size - 1)
+					buildingTiles.push_back({ insideTile.x, insideTile.y + 1 });
+
+				// Diagonal tiles
+				if (i == 0 && j == 0)
+					buildingTiles.push_back({ insideTile.x - 1, insideTile.y - 1 });
+				else if (i == size - 1 && j == size - 1)
+					buildingTiles.push_back({ insideTile.x + 1, insideTile.y + 1 });
+				else if (i == 0 && j == size - 1)
+					buildingTiles.push_back({ insideTile.x + 1, insideTile.y - 1 });
+				else if (i == size - 1 && j == 0)
+					buildingTiles.push_back({ insideTile.x - 1, insideTile.y + 1 });
+			}
+			else
+				buildingTiles.push_back(insideTile);
+		}
+	}
+
+	return buildingTiles;
+}
+///_SANDRA
 
 // -------------------------------------------------------------
 // -------------------------------------------------------------
@@ -3081,5 +4043,3 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 	return ret;
 }
-
-

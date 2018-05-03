@@ -49,7 +49,8 @@ class UIMinimap;
 struct compareUIPriority {
 	bool operator()(const UIElement* infoA, const UIElement* infoB)
 	{
-		return infoA->GetPriorityDraw() > infoB->GetPriorityDraw();
+		if (infoA != nullptr && infoB != nullptr)
+			return infoA->GetPriorityDraw() > infoB->GetPriorityDraw();
 	}
 };
 class j1Gui : public j1Module
@@ -69,8 +70,6 @@ public:
 
 	// Called before all Updates
 	bool PreUpdate();
-
-	void Draw();
 
 	// Called each loop iteration
 	bool Update(float dt);
@@ -92,11 +91,8 @@ public:
 	UIMinimap * CreateUIMinimap(UIMinimap_Info & info, j1Module * listener = nullptr, UIElement * parent = nullptr);
 
 	bool DestroyElement(UIElement** elem);
-	bool ClearAllUI();
+	bool RemoveElem(UIElement ** elem);
 	bool ClearMapTextures();
-
-	void SetUpDraggingChildren(UIElement* elem, bool dragging);
-	void SetUpDraggingNode(bool drag);
 
 	const SDL_Texture* GetAtlas() const;
 	SDL_Rect GetRectFromAtlas(SDL_Rect rect);
@@ -106,16 +102,24 @@ public:
 	void ResetAlpha();
 
 public:
+
 	std::list<UIElement*> addedElementUI;
 
 	//NTree<UIElement*>* UIElementsTree; Don't delete yet
 	bool isDebug = false;
 	Animation parchmentAnim;
-	SDL_Rect parchmentArea;
+	SDL_Rect parchmentArea{ 0,0,0,0 };
 
 	//artifacts
 	Animation scepterAnim, bookAnim, skullAnim, eyeAnim;
-	SDL_Rect scepterText, bookText, skullText, eyeText;
+
+	SDL_Rect scepterText{ 0,0,0,0 };
+	SDL_Rect bookText{ 0,0,0,0 };
+	SDL_Rect skullText{ 0,0,0,0 };
+	SDL_Rect eyeText{ 0,0,0,0 };
+
+	// CleanUp
+	bool isGuiCleanUp = false;
 
 private:
 
@@ -124,11 +128,11 @@ private:
 
 	list<UIElement*> UIElementsList;
 	priority_queue<UIElement*, vector<UIElement*>, compareUIPriority> drawOrder;
+
 	// Alpha parameters
 	float totalTime = 0.0f;
 	float startTime = 0.0f;
 	bool reset = true;
-
 };
 
 #endif //__j1GUI_H__

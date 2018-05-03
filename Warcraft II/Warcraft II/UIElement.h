@@ -52,9 +52,10 @@ enum PriorityDraw {
 	PriorityDraw_NONE,
 	PriorityDraw_LIFEBAR_INGAME = -1,
 	PriorityDraw_BUTTONSINGAME,
+	PriorityDraw_UNDER_FRAMEWORK,
 	PriorityDraw_FRAMEWORK,
 	PriorityDraw_UIINGAME,
-	PriorityDraw_PAUSEMENU,
+	PriorityDraw_WINDOW,
 	PriorityDraw_SLIDER,
 	PriorityDraw_IMAGE,
 	PrioriryDraw_LABEL,
@@ -102,12 +103,22 @@ public:
 	PriorityDraw GetPriorityDraw() const;
 
 	UIElement* GetParent() const;
+
+	// Blit
+	void SetBlitState(bool isBlit);
+	bool GetBlitState() const;
+
 public:
+
 	bool drag = false;
 	bool toRemove = false;
+	bool isBlit = true;
+	bool isActive = true;
+
+	UIE_TYPE type = UIE_TYPE_NO_TYPE;
 
 protected:
-	UIE_TYPE type = UIE_TYPE_NO_TYPE;
+
 	UIE_HORIZONTAL_POS horizontal = HORIZONTAL_POS_LEFT;
 	UIE_VERTICAL_POS vertical = VERTICAL_POS_TOP;
 
@@ -124,9 +135,9 @@ protected:
 	PriorityDraw priority = PriorityDraw_NONE;
 
 private:
+
 	iPoint localPos = { 0,0 };
 	UIElement* parent = nullptr;
-
 };
 
 #endif //__UIElement_H__

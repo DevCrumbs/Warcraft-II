@@ -29,11 +29,13 @@ class UIButton : public UIElement
 {
 public:
 	UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener = nullptr, bool isInWolrd = false);
+	~UIButton();
 	void Update(float dt);
 	void HandleInput();
 	void DebugDraw(iPoint blitPos) const;
 
 	void ChangeSprite(SDL_Rect texArea);
+	void ChangesTextsAreas(bool isDiferent, SDL_Rect normalText = {0,0,0,0}, SDL_Rect hoverText = { 0,0,0,0 });
 	SDL_Rect GetHoverSprite() const;
 	SDL_Rect GetPressedSprite() const;
 	SDL_Rect GetNormalSprite() const;
@@ -64,7 +66,6 @@ private:
 	SDL_Rect normalTexArea = { 0,0,0,0 };
 	SDL_Rect hoverTexArea = { 0,0,0,0 };
 	SDL_Rect pressedTexArea = { 0,0,0,0 };
-
 };
 
 #endif //__UIButton_H__

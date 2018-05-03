@@ -22,7 +22,7 @@
 #define ColorViolet { 178,102,255,255 }
 
 /// Colliders
-#define ColorDarkBlue { 0,0,153,255 }
+#define ColorDarkBlue { 0,0,204,255 }
 #define ColorLightBlue { 102,178,255,255 }
 #define ColorDarkRed { 153,0,0,255 }
 #define ColorLightRed { 255,102,102,255 }

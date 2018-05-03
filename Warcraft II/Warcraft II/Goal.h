@@ -12,6 +12,11 @@ using namespace std;
 
 class Entity;
 class DynamicEntity;
+class GoldMine;
+class Runestone;
+class Alleria;
+class Turalyon;
+
 struct TargetInfo;
 struct Particle;
 
@@ -26,11 +31,15 @@ enum GoalType {
 	GoalType_AttackTarget,
 	GoalType_Wander,
 	GoalType_Patrol,
+	GoalType_GatherGold,
+	GoalType_HealRunestone,
 
 	// Atomic Goals
 	GoalType_MoveToPosition,
 	GoalType_HitTarget,
 	GoalType_LookAround,
+	GoalType_PickNugget,
+	GoalType_HealArea,
 
 	GoalType_MaxTypes,
 
@@ -123,6 +132,7 @@ public:
 	// -----
 
 	void AddSubgoal(Goal* goal);
+	list<Goal*> GetSubgoalsList() const;
 
 	// It is called each update step to process the subgoals
 	// It ensures that all completed and failed goals are removed from the list before
@@ -157,10 +167,14 @@ public:
 	// Arbitrate between available strategies, choosing the most appropriate
 	// to be pursued. Calculate the desirability of the strategies
 	//void Arbitrate();
-	void AddGoal_Wander(uint maxDistance);
+	void AddGoal_Wander(uint maxDistance, iPoint startTile, bool isCurrTile, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted);
 	void AddGoal_AttackTarget(TargetInfo* targetInfo);
 	void AddGoal_MoveToPosition(iPoint destinationTile);
-	void AddGoal_Patrol(iPoint originTile, iPoint destinationTile);
+	void AddGoal_Patrol(iPoint originTile, iPoint destinationTile, bool isLookAround = false);
+	void AddGoal_GatherGold(GoldMine* goldMine);
+	void AddGoal_HealRunestone(Runestone* runestone);
+	void AddGoal_RescuePrisoner(DynamicEntity* prisoner);
+	void AddGoal_LookAround(uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted);
 };
 
 class Goal_AttackTarget :public CompositeGoal
@@ -182,7 +196,7 @@ class Goal_Patrol :public CompositeGoal
 {
 public:
 
-	Goal_Patrol(DynamicEntity* owner, iPoint originTile, iPoint destinationTile);
+	Goal_Patrol(DynamicEntity* owner, iPoint originTile, iPoint destinationTile, bool isLookAround = false);
 
 	void Activate();
 	GoalStatus Process(float dt);
@@ -194,13 +208,15 @@ private:
 	iPoint destinationTile = { -1,-1 }; // the position the bot wants to reach
 
 	iPoint currGoal = { -1,-1 };
+
+	bool isLookAround = false;
 };
 
 class Goal_Wander :public CompositeGoal
 {
 public:
 
-	Goal_Wander(DynamicEntity* owner, uint maxDistance);
+	Goal_Wander(DynamicEntity* owner, uint maxDistance, iPoint startTile, bool isCurrTile, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted);
 
 	void Activate();
 	GoalStatus Process(float dt);
@@ -209,6 +225,60 @@ public:
 private:
 
 	uint maxDistance = 0;
+	iPoint startTile = { -1,-1 };
+	bool isCurrTile = false;
+
+	// Goal_LookAround
+	uint minSecondsToChange = 0;
+	uint maxSecondsToChange = 0;
+	uint minSecondsUntilNextChange = 0;
+	uint maxSecondsUntilNextChange = 0;
+	uint probabilityGoalCompleted = 0;
+};
+
+class Goal_GatherGold :public CompositeGoal
+{
+public:
+
+	Goal_GatherGold(DynamicEntity* owner, GoldMine* goldMine);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	GoldMine* goldMine = nullptr;
+};
+
+class Goal_HealRunestone :public CompositeGoal
+{
+public:
+
+	Goal_HealRunestone(DynamicEntity* owner, Runestone* runestone);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	Runestone* runestone = nullptr;
+};
+
+class Goal_RescuePrisoner :public CompositeGoal
+{
+public:
+
+	Goal_RescuePrisoner(DynamicEntity* owner, DynamicEntity* prisoner);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	DynamicEntity* prisoner = nullptr;
 };
 
 // Atomic Goals ---------------------------------------------------------------------
@@ -248,7 +318,7 @@ class Goal_LookAround :public AtomicGoal
 {
 public:
 
-	Goal_LookAround(DynamicEntity* owner);
+	Goal_LookAround(DynamicEntity* owner, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted);
 
 	void Activate();
 	GoalStatus Process(float dt);
@@ -259,9 +329,80 @@ private:
 	UnitDirection nextOrientation;
 	float secondsToChange = 0.0f;
 	float secondsUntilNextChange = 0.0f;
+
+	uint minSecondsToChange = 0;
+	uint maxSecondsToChange = 0;
+	uint minSecondsUntilNextChange = 0;
+	uint maxSecondsUntilNextChange = 0;
+	uint probabilityGoalCompleted = 0;
 	bool isChanged = false;
 
 	j1Timer timer;
+};
+
+class Goal_PickNugget :public AtomicGoal
+{
+public:
+
+	Goal_PickNugget(DynamicEntity* owner, GoldMine* goldMine);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	GoldMine* goldMine = nullptr;
+
+	uint gold = 0;
+	float secondsGathering = 0.0f;
+	j1Timer timerGathering;
+
+	double msAnimation = 0.0f;
+	j1PerfTimer timerAnimation;
+};
+
+class Goal_HealArea :public AtomicGoal
+{
+public:
+
+	Goal_HealArea(DynamicEntity* owner, Runestone* runestone);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	Runestone* runestone = nullptr;
+
+	uint health = 0;
+
+	float secondsGathering = 0.0f;
+	j1Timer timerGathering;
+
+	double msAnimation = 0.0f;
+	j1PerfTimer timerAnimation;
+
+	int alpha = 0;
+};
+
+class Goal_FreePrisoner :public AtomicGoal
+{
+public:
+
+	Goal_FreePrisoner(DynamicEntity* owner, DynamicEntity* prisoner);
+
+	void Activate();
+	GoalStatus Process(float dt);
+	void Terminate();
+
+private:
+
+	DynamicEntity* prisoner = nullptr;
+
+	Alleria* alleria = nullptr;
+	Turalyon* turalyon = nullptr;
 };
 
 #endif //__GOAL_H__

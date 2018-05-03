@@ -9,19 +9,19 @@
 	<map />
 	<pathfinding />
 	<collision />
-	<particles />
 	<:anonymous />
 	<pathmanager />
-	<fonts />
-	<menu />
-	<scene />
-	<scene />
 	<entities />
+	<fonts />
+	<scene />
+	<scene />
+	<particles />
 	<finish />
+	<menu />
 	<:anonymous />
 	<gui />
 	<fade />
 	<renderer>
-		<camera x="0" y="0" />
+		<camera x="-416" y="-3943.70825" />
 	</renderer>
 </game_state>

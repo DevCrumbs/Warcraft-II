@@ -15,9 +15,6 @@
 #include "j1Scene.h"
 #include "UILabel.h"
 
-
-
-
 j1FadeToBlack::j1FadeToBlack()
 {
 	name.assign("fade");
@@ -48,7 +45,16 @@ bool j1FadeToBlack::Start()
 // Update: draw background
 bool j1FadeToBlack::Update(float dt)
 {
+	bool ret = true;
+
 	this->dt = dt;
+	
+	return ret;
+}
+
+bool j1FadeToBlack::PostUpdate() 
+{
+	bool ret = true;
 
 	if (currentStep == FADE_STEP_NONE)
 		return true;
@@ -67,8 +73,8 @@ bool j1FadeToBlack::Update(float dt)
 	default:
 		break;
 	}
-
-	return true;
+	
+	return ret;
 }
 
 // Fade to black. At mid point deactivate one module, then activate the other

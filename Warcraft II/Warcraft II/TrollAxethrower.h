@@ -15,8 +15,8 @@ struct TrollAxethrowerInfo
 	Animation attackUpLeft, attackUpRight, attackDownLeft, attackDownRight;
 	Animation deathUp, deathDown;
 
-	int currLife = 0;
-	uint maxLife = 0;
+	float axeSpeed = 0.0f;
+	uint droppedGold = 0;
 };
 
 class TrollAxethrower :public DynamicEntity
@@ -38,6 +38,8 @@ public:
 	void UpdateAnimationsSpeed(float dt);
 	bool ChangeAnimation();
 
+	float GetAxeSpeed() const;
+
 private:
 
 	TrollAxethrowerInfo trollAxethrowerInfo;
@@ -49,7 +51,7 @@ private:
 	float attackUpLeftSpeed = 0.0f, attackUpRightSpeed = 0.0f, attackDownLeftSpeed = 0.0f, attackDownRightSpeed = 0.0f;
 	float deathUpSpeed = 0.0f, deathDownSpeed = 0.0f;
 
-	fPoint particleOrientation = { 0.0f,0.0f };
+	iPoint spawnTile = { -1,-1 };
 };
 
 #endif //__TrollAxethrower_H__

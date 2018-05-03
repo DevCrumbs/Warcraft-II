@@ -24,13 +24,13 @@ enum MenuActions
 	MenuActions_SLIDERFX,
 	MenuActions_SLIDERMUSIC
 };
-
 struct SliderStruct
 {
 	UISlider* slider = nullptr;
 	UILabel*  name = nullptr;
 	UILabel*  value = nullptr; 
 };
+
 
 class j1Menu : public j1Module
 {
@@ -73,14 +73,19 @@ public:
 
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim);
 
+public:
+
 	UICursor* mouseText = nullptr;
 
-private:
-	void ChargeGameSounds();
+	uint tab_button = 0;
+
+	bool debug = false;
 
 private:
 
 	//Main Menu
+	UIImage* mainMenuImg = nullptr;
+	UIImage* logoImg = nullptr;
 	UIButton* playButt = nullptr;
 	UILabel*  playLabel = nullptr;
 	UIButton* exitButt = nullptr;
@@ -88,7 +93,7 @@ private:
 	UIButton* settingsButt = nullptr;
 	UILabel*  settingsLabel = nullptr;
 	vector<UIImage*> artifacts;
-
+	Animation menuImgAnim;
 
 	//Settings
 	SliderStruct audioFX;
@@ -100,42 +105,13 @@ private:
 
 	MenuActions menuActions;
 
-	//Audio paths
+	//Audio path
 	string mainMenuMusicName;
-	string mainButtonSound;
-	string buildingConstructionSound;
-	string errorButtonSound;
-	string buildingErrorButtonSound;
-	string chickenFarmSound;
-	string goldMineSound;
-	string gryphonAviarySound;
-	string mageTowerSound;
-	string stablesSound;
-	string repairBuildingSound;
-	string destroyBuildingSound;
 
-	string humanDeadSound;
-	string orcDeadSound;
-	string prisonerRescueSound;
-	string crittersBoarDead;
-	string crittersSheepDead;
+	bool isExit = false;
+	bool isFadetoScene = false;
+	bool isMouseTextCreated = false;
 
-	string archerGoToPlaceSound;
-	string archerReadySound;
-	string archerSelectedSound;
-	string footmanGoToPlaceSound;
-	string footmanReadySound;
-	string footmanSelectedSound;
-
-	string axeThrowSound;
-	string bowFireSound;
-	string swordSound;
-
-public:
-	uint tab_button = 0;
-	
-
-	bool debug = false;
 };
 
 #endif

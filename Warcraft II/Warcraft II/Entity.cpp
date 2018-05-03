@@ -8,6 +8,7 @@
 #include "j1Collision.h"
 #include "j1Map.h"
 #include "j1EntityFactory.h"
+#include "j1Player.h"
 
 Entity::Entity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) : pos(pos), size(size), currLife(currLife), maxLife(maxLife), listener(listener)
 {
@@ -21,6 +22,9 @@ Entity::~Entity()
 	if (entityCollider != nullptr)
 		entityCollider->isRemove = true;
 	entityCollider = nullptr;
+
+	// Attack
+	unitsAttacking.clear();
 }
 
 void Entity::Draw(SDL_Texture* sprites)
@@ -57,6 +61,11 @@ iPoint Entity::GetSize() const
 	return size;
 }
 
+iPoint Entity::GetOffsetSize() const
+{
+	return offsetSize;
+}
+
 void Entity::SetMaxLife(int life)
 {
 	maxLife = life;
@@ -85,7 +94,7 @@ void Entity::ApplyDamage(int damage)
 	currLife -= damage;
 	if (currLife < 0)
 		currLife = 0;
-	SetStringLife(currLife, maxLife);
+	SetStringLife(currLife, maxLife);	
 }
 
 void Entity::ApplyHealth(int health) 
@@ -131,7 +140,7 @@ bool Entity::CreateEntityCollider(EntitySide entitySide, bool createOffset)
 		else if (this->entityType == EntityCategory_STATIC_ENTITY)
 			collType = ColliderType_EnemyBuilding;
 	}
-	else if (entitySide == EntitySide_NoSide)
+	else if (entitySide == EntitySide_NoSide || entitySide == EntitySide_Neutral)
 
 		collType = ColliderType_NeutralUnit;
 
@@ -143,21 +152,29 @@ bool Entity::CreateEntityCollider(EntitySide entitySide, bool createOffset)
 	collider.push_back(App->collision->CreateCollider(rect));
 	entityCollider = App->collision->CreateAndAddColliderGroup(collider, collType, App->entities, this);
 
-	if (entityCollider != nullptr)
-		return true;
+	if (entityCollider != nullptr) {
 
-	if (createOffset)
-		entityCollider->CreateOffsetCollider();
+		if (createOffset) {
+			entityCollider->CreateOffsetCollider();
+		}
+
+		return true;
+	}
 
 	return false;
 }
 
 void Entity::UpdateEntityColliderPos()
 {
-	entityCollider->colliders.front()->SetPos(pos.x, pos.y);
+	if (entityCollider != nullptr)
+	{
+		Collider* front = entityCollider->colliders.front();
+		if (front != nullptr)
+			entityCollider->colliders.front()->SetPos(pos.x, pos.y);
 
-	// 2. Create/Update the offset collider
-	entityCollider->CreateOffsetCollider();
+		// 2. Create/Update the offset collider
+		entityCollider->CreateOffsetCollider();
+	}
 }
 
 // Attack
@@ -200,6 +217,23 @@ uint Entity::GetAttackingUnitsSize(Entity* attackingUnit) const
 	}
 
 	return size;
+}
+
+// Selection color
+void Entity::SetColor(SDL_Color color, string colorName)
+{
+	this->color = color;
+	this->colorName = colorName;
+}
+
+SDL_Color Entity::GetColor() const
+{
+	return color;
+}
+
+string Entity::GetColorName() const
+{
+	return colorName;
 }
 
 // Struct TargetInfo -------------------------------------------------------------

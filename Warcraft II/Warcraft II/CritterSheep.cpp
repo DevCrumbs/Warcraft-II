@@ -14,6 +14,7 @@
 #include "j1PathManager.h"
 #include "Goal.h"
 #include "j1Audio.h"
+#include "j1Printer.h"
 
 #include "j1Scene.h" // isFrameByFrame
 #include "j1Input.h" // isFrameByFrame
@@ -25,7 +26,7 @@ CritterSheep::CritterSheep(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	// XML loading
 	/// Animations
 	CritterSheepInfo info = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
-
+	this->unitInfo = this->critterSheepInfo.unitInfo;
 	this->critterSheepInfo.up = info.up;
 	this->critterSheepInfo.down = info.down;
 	this->critterSheepInfo.left = info.left;
@@ -39,16 +40,26 @@ CritterSheep::CritterSheep(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	this->critterSheepInfo.deathDownLeft = info.deathDownLeft;
 	this->critterSheepInfo.deathDownRight = info.deathDownRight;
 
+	size = this->unitInfo.size;
+	offsetSize = this->unitInfo.offsetSize;
+
 	LoadAnimationsSpeed();
 
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
 
-	brain->AddGoal_Wander(5);
+	brain->AddGoal_Wander(5, singleUnit->currTile, true, 2, 4, 2, 6, 3);
 
 	// Collisions
 	CreateEntityCollider(EntitySide_NoSide);
 	entityCollider->isTrigger = true;
+}
+
+CritterSheep::~CritterSheep()
+{
+	if (lastPaw != nullptr)
+		lastPaw->isDelete = true;
+	lastPaw = nullptr;
 }
 
 void CritterSheep::Move(float dt)
@@ -69,15 +80,27 @@ void CritterSheep::Move(float dt)
 		&& singleUnit->IsFittingTile()
 		&& !isDead) {
 
-		App->audio->PlayFx(16, 0);
+		App->audio->PlayFx(App->audio->GetFX().sheepDeath, 0);
 
 		isDead = true;
+
+		if (lastPaw != nullptr)
+			lastPaw->isDelete = true;
 
 		// Remove the entity from the unitsSelected list
 		App->entities->RemoveUnitFromUnitsSelected(this);
 
+		brain->RemoveAllSubgoals();
+
+		unitState = UnitState_Idle;
+
 		// Remove Movement (so other units can walk above them)
 		App->entities->InvalidateMovementEntity(this);
+
+		// Remove any path request
+		pathPlanner->SetSearchRequested(false);
+		pathPlanner->SetSearchCompleted(false);
+		App->pathmanager->UnRegister(pathPlanner);
 
 		if (singleUnit != nullptr)
 			delete singleUnit;
@@ -85,19 +108,14 @@ void CritterSheep::Move(float dt)
 
 		// Invalidate colliders
 		entityCollider->isValid = false;
-
-		// If the player dies, remove all their goals
-		brain->RemoveAllSubgoals();
 	}
 
-	if (!isDead) {
+	if (!isDead)
+
 		UpdatePaws();
 
-		// ---------------------------------------------------------------------
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
-	}
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 
@@ -113,7 +131,7 @@ void CritterSheep::Move(float dt)
 void CritterSheep::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr)
-		App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
+		App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 
 	if (isSelected)
 		DebugDrawSelected();
@@ -121,18 +139,12 @@ void CritterSheep::Draw(SDL_Texture* sprites)
 
 void CritterSheep::DebugDrawSelected()
 {
-	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-
-	for (uint i = 0; i < unitInfo.priority; ++i) {
-		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-	}
+	const SDL_Rect entitySize = { pos.x + offsetSize.x, pos.y + offsetSize.y, size.x, size.y };
+	App->printer->PrintQuad(entitySize, color);
 }
 
 void CritterSheep::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
 {
-
 }
 
 // State machine
@@ -245,66 +257,35 @@ void CritterSheep::UpdatePaws()
 {
 	// Add footprints along the critter's path
 	if (singleUnit->currTile.x != -1 && singleUnit->currTile.y != -1
-		&& singleUnit->nextTile.x != -1 && singleUnit->nextTile.y != -1) {
+		&& !isStill) {
 
-		if (lastPaw != nullptr) {
-
-			// Reset the animation of the last paw
-			if (GetUnitDirection() != UnitDirection_NoDirection && !lastPaw->isRemove) {
-
-				lastPaw->isRemove = true;
-
-				switch (GetUnitDirection()) {
-
-				case UnitDirection_Up:
-
-					lastPaw->animation = App->particles->GetSheepPawsInfo().up;
-					break;
-
-				case UnitDirection_NoDirection:
-				case UnitDirection_Down:
-
-					lastPaw->animation = App->particles->GetSheepPawsInfo().down;
-					break;
-
-				case UnitDirection_Left:
-
-					lastPaw->animation = App->particles->GetSheepPawsInfo().left;
-					break;
-
-				case UnitDirection_Right:
-
-					lastPaw->animation = App->particles->GetSheepPawsInfo().right;
-					break;
-
-				case UnitDirection_UpLeft:
-
-					lastPaw->animation = App->particles->GetSheepPawsInfo().upLeft;
-					break;
-
-				case UnitDirection_UpRight:
-
-					lastPaw->animation = App->particles->GetSheepPawsInfo().upRight;
-					break;
-
-				case UnitDirection_DownLeft:
-
-					lastPaw->animation = App->particles->GetSheepPawsInfo().downLeft;
-					break;
-
-				case UnitDirection_DownRight:
-
-					lastPaw->animation = App->particles->GetSheepPawsInfo().downRight;
-					break;
-				}
-			}
-		}
-
-		// Create a new paw
 		if (lastPawTile != singleUnit->currTile) {
 
+			// Remove last paw
+			if (lastPaw != nullptr) {
+
+				lastPaw->isRemove = true;
+				lastPaw = nullptr;
+			}
+
+			// Create a new paw
 			iPoint currTilePos = App->map->MapToWorld(singleUnit->currTile.x, singleUnit->currTile.y);
-			lastPaw = App->particles->AddParticle(App->particles->paws, currTilePos);
+
+			fPoint orientation = { (float)singleUnit->currTile.x - (float)lastPawTile.x, (float)singleUnit->currTile.y - (float)lastPawTile.y };
+
+			float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+
+			if (m > 0.0f) {
+				orientation.x /= m;
+				orientation.y /= m;
+			}
+
+			double angle = (atan2(orientation.y, orientation.x) * 180.0f / (float)M_PI);
+
+			if (angle >= 360.0f)
+				angle = 0.0f;
+
+			lastPaw = App->particles->AddParticle(App->particles->sheepPaws, currTilePos, { 0.0f,0.0f }, 0.0f, 0, 0, angle);
 
 			lastPawTile = singleUnit->currTile;
 		}

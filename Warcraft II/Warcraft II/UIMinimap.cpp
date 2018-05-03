@@ -1,5 +1,6 @@
 #include "p2Log.h"
 
+#include "j1Printer.h"
 #include "j1Render.h"
 #include "j1Window.h"
 #include "j1Map.h"
@@ -11,6 +12,9 @@ UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j
 {
 	type = UIE_TYPE_MINIMAP;
 	
+	width = info.minimapInfo.w;
+	height = info.minimapInfo.h;
+
 	minimapInfo = info.minimapInfo;
 
 	entityWidth = info.entityWidth;
@@ -22,9 +26,12 @@ UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j
 	width = info.minimapInfo.w;
 	height = info.minimapInfo.h;
 
-	entities = &App->entities->activeDynamicEntities;
+
 
 	LoadMap();
+
+	activeDynamicEntities = &App->entities->activeDynamicEntities;
+	activeStaticEntities = &App->entities->activeStaticEntities;
 }
 
 
@@ -41,10 +48,10 @@ UIMinimap::~UIMinimap()
 
 void UIMinimap::Update(float dt)
 {
-	movingMap = false;
-
 	SDL_fRect camera = App->render->camera;
+
 	HandleInput(dt);
+
 	App->render->SetViewPort(minimapInfo);
 
 
@@ -68,23 +75,67 @@ void UIMinimap::Update(float dt)
 	//	offsetY = -maxOffsetY;
 
 
-///-----------------	 Draw the map
-	App->render->Blit(mapTexture, offsetX,offsetY, NULL, 0);
 
+	///-----------------	 Draw the map
+	App->render->Blit(mapTexture, offsetX, offsetY, NULL, 0);
 
 	///-----------------	 Draw all entities in the minimap
-	for (list<DynamicEntity*>::iterator iterator = entities->begin(); iterator != entities->end(); ++iterator)
+	for (list<DynamicEntity*>::iterator iterator = (*activeDynamicEntities).begin(); iterator != (*activeDynamicEntities).end(); ++iterator)
 	{
-		
-		SDL_Rect rect{	(*iterator)->pos.x * scaleFactor /*+ minimapInfo.x*/,
-						(*iterator)->pos.y * scaleFactor /*+ minimapInfo.y*/,
-						entityWidth * scaleFactor, entityHeight * scaleFactor };
+		SDL_Rect rect{ (*iterator)->pos.x * scaleFactor + offsetX,
+					   (*iterator)->pos.y * scaleFactor + offsetY,
+					   entityWidth * scaleFactor, entityHeight * scaleFactor };
 
-		
-		App->render->DrawQuad(rect, 0, 0,
-							255, 255, true, false);
+		SDL_Color color{ 0,0,0,0 };
+		switch ((*iterator)->entitySide)
+		{
+		case EntitySide_NoSide:
+			break;
+		case EntitySide_Player:
+			color = { 0,125,255,255 };
+			break;
+		case EntitySide_Enemy:
+			color = { 255,0,0,255 };
+			break;
+		case EntitySide_EnemyBuildings:
+			color = { 255,0,0,255 };//
+			break;
+		case EntitySide_Neutral:
+			break;
+		default:
+			break;
+		}
+		App->render->DrawQuad(rect, color.r, color.g, color.b, color.a, true, false);
+
 	}
 
+	for (list<StaticEntity*>::iterator iterator = (*activeStaticEntities).begin(); iterator != (*activeStaticEntities).end(); ++iterator)
+	{
+		iPoint size = (*iterator)->GetSize();
+
+		SDL_Rect rect{ (*iterator)->pos.x * scaleFactor + offsetX,
+			(*iterator)->pos.y * scaleFactor + offsetY,
+			size.x * scaleFactor, size.y * scaleFactor };
+
+		SDL_Color color{ 0,0,0,0 };
+		switch ((*iterator)->staticEntityCategory)
+		{
+		case StaticEntityCategory_NoCategory:
+			break;
+		case StaticEntityCategory_HumanBuilding:
+			color = { 0,0,255,255 };
+			break;
+		case StaticEntityCategory_OrcishBuilding:
+			color = { 140,11,20,255 };
+			break;
+		case StaticEntityCategory_NeutralBuilding:
+			color = { 255,255,0,255 };//
+			break;
+		default:
+			break;
+		}
+		App->render->DrawQuad(rect, color.r, color.g, color.b, color.a, true, false);
+	}
 
 	///-----------------	 Draw the camera rect
 	SDL_Rect rect{ -camera.x * scaleFactor + offsetX, -camera.y * scaleFactor + offsetY,
@@ -201,10 +252,7 @@ bool UIMinimap::LoadMap()
 		LOG("Could not create the renderer! SDL_Error: %s\n", SDL_GetError());
 
 
-
-	char* path = "wastelandTiles.png";
-
-	SDL_Texture* tex = App->tex->Load(path, renderer);
+	SDL_Texture* tex = App->tex->Load(App->map->tilesetPath.data(), renderer);
 
 	for (list<MapLayer*>::const_iterator layer = App->map->data.layers.begin();
 		layer != App->map->data.layers.end(); ++layer)

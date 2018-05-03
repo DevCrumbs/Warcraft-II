@@ -29,6 +29,8 @@ class Entity;
 class StaticEntity;
 enum ENTITY_TYPE;
 enum TerenasDialogEvents;
+enum StaticEntitySize;
+struct UnitInfo;
 
 struct HoverButton
 {
@@ -48,38 +50,6 @@ struct HoverInfo
 	UIImage* background = nullptr;
 };
 
-struct GroupSelectedStats
-{
-	UIImage* entity1Icon = nullptr;
-	UIImage* entity2Icon = nullptr;
-	UIImage* entity3Icon = nullptr;
-	UIImage* entity4Icon = nullptr;
-	UIImage* entity5Icon = nullptr;
-	UIImage* entity6Icon = nullptr;
-	UIImage* entity7Icon = nullptr;
-	UIImage* entity8Icon = nullptr;
-	UILifeBar* lifeBar1 = nullptr;
-	UILifeBar* lifeBar2 = nullptr;
-	UILifeBar* lifeBar3 = nullptr;
-	UILifeBar* lifeBar4 = nullptr;
-	UILifeBar* lifeBar5 = nullptr;
-	UILifeBar* lifeBar6 = nullptr;
-	UILifeBar* lifeBar7 = nullptr;
-	UILifeBar* lifeBar8 = nullptr;
-
-	list<DynamicEntity*> units;
-};
-
-struct ToSpawnUnitsStats 
-{
-	UIImage* frstInQueueIcon = nullptr;
-	UIImage* sndInQueueIcon = nullptr;
-	UIImage* trdInQueueIcon = nullptr;
-	UILifeBar* frstInQueueBar = nullptr;
-	UILifeBar* sndInQueueBar = nullptr;
-	UILifeBar* trdInQueueBar = nullptr;
-};
-
 struct ToSpawnUnit {
 	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
 		this->toSpawnTimer = toSpawnTimer;
@@ -89,6 +59,15 @@ struct ToSpawnUnit {
 	ENTITY_TYPE entityType;
 };
 
+struct GroupSpawning {
+	ToSpawnUnit** owner = nullptr;
+
+	UIImage* entityIcon = nullptr;
+	UILifeBar* entityLifeBar = nullptr;
+
+	void IsActive(bool isActive);
+};
+
 struct EntitySelectedStats
 {
 	UILabel* HP = nullptr;
@@ -96,12 +75,18 @@ struct EntitySelectedStats
 	UILabel* entitySight = nullptr;
 	UILabel* entityRange = nullptr;
 	UILabel* entityDamage = nullptr;
-	UILabel* entityMana = nullptr;
-	UILabel* entityMovementSpeed = nullptr;
+	UILabel* entitySpeed = nullptr;
 	UIImage* entityIcon = nullptr;
 	UILifeBar* lifeBar = nullptr;
 
 	Entity* entitySelected = nullptr;
+};
+
+struct GroupSelectionButtons
+{
+	UIButton* selectFootmans = nullptr;
+	UIButton* selectElvenArchers = nullptr;
+	UIButton* selectGryphonRiders = nullptr;
 };
 
 class j1Player : public j1Module
@@ -119,16 +104,20 @@ public:
 	// Called before the first frame
 	bool Start();
 
+	bool PreUpdate();
 	bool Update(float dt);
 	bool PostUpdate();
 
 	void CheckIfPlaceBuilding();
 	iPoint GetMouseTilePos() const;
 	iPoint GetMousePos() const;
-	void CheckUnitSpawning();
 
-	iPoint FindClosestValidTile(iPoint tile) const;
+	void CheckUnitSpawning(queue<ToSpawnUnit*>* queue);
+	void DiscountGold(int gold);
 
+	void SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
+
+	void UpdateSpawnUnitsStats(list<GroupSpawning>* spawningList);
 
 	void AddGold(int sumGold);
 	int GetCurrentGold() const;
@@ -146,42 +135,56 @@ public:
 	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
-
-	void MakeEntitiesMenu(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
+	void CreateEntitiesStatsUI();
+	void CreateGroupSelectionButtons();
+	void CreateUISpawningUnits();
+	void ShowEntitySelectedInfo(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
+	void ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect iconDim, string entName, Entity* currentEntity);
+	void ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range);
+	void ShowEntitySelectedButt(ENTITY_TYPE type);
+	void HideEntitySelectedInfo();
 	void MakeUnitMenu(Entity* entity);
-	void MakeUnitsMenu(list<DynamicEntity*> units);
+	void MakePrisionerMenu(Entity* entity);
 	void DeleteEntitiesMenu();
-	void MakeHoverInfoMenu(string unitProduce, string gold);
+	void DeleteGroupSelectionButtons();
+	void CreateHoverInfoMenu();
+	void ShowHoverInfoMenu(string unitProduce, string gold);
+	void HideHoverInfoMenu();
 	void DeleteHoverInfoMenu();
-	//void CheckBuildingState(Entity* ent);
-	void CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, UIImage* &image);
-	void CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, UILifeBar* &lifeBar, Entity* entity);
-	void CreateToSpawnUnitLifeBar(iPoint lifeBarPos, UILifeBar* &lifeBar);
-
-	void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
-	void DestroyHoverButton(Entity* ent);
+	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, bool isActive = true);
+	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, bool isActive = true);
+	
+	//void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
+	//void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
+	void CreateSimpleSelectionButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateBarracksButtons();
-	void HandleBarracksUIElem();
+	void CreateTownHallButtons();
+	void CreateDestructionButton();
+	void HandleSpawningUnitsUIElem(ToSpawnUnit** toSpawnUnit, list<GroupSpawning>* groupList);
+	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
-	void CreateAbilitiesButtons();
+	uint GetGroupSpawningSize(list<GroupSpawning> listSpawning);
+
+	void DestroyBuilding();
 
 	void RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos);
+
 
 public:
 
 	//Player
 	list<StaticEntity*> chickenFarm;
 	list<StaticEntity*> scoutTower;
+	list<StaticEntity*> cannonTower;
+	list<StaticEntity*> guardTower;
 	StaticEntity* barracks = nullptr;
 	StaticEntity* townHall = nullptr;
 	StaticEntity* blacksmith = nullptr;
 	StaticEntity* stables = nullptr;
 	StaticEntity* church = nullptr;
 	StaticEntity* mageTower = nullptr;
-	StaticEntity* cannonTower = nullptr;
-	StaticEntity* guardTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
 
 	vector<UIImage*> imagePrisonersVector;
@@ -189,6 +192,8 @@ public:
 	//Neutral
 	list<StaticEntity*> goldMine;
 	list<StaticEntity*> runestone;
+	//Update lifeBar
+	//Entity* getEntityDamage = nullptr;
 
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
@@ -196,7 +201,7 @@ public:
 
 	int currentGold = 0; // amount of gold that the player has at the current moment
 	uint totalGold = 0u; // total gold earned during the game
-	int currentFood = 8; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
+	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
 
 	//Units costs
 	int footmanCost = 500;
@@ -204,7 +209,7 @@ public:
 	int paladinCost = 800;
 	int ballistaCost = 900;
 	int mageCost = 1200;
-	int gryphonRiderCost = 2500;
+	int gryphonRiderCost = 900;
 
 	//For finish Screen
 	bool isWin = false;
@@ -213,51 +218,42 @@ public:
 	uint enemiesKill = 0u;
 	uint buildDestroy = 0u;
 
+	EntitySelectedStats entitySelectedStats;
+
+	bool isUnitSpawning = false;
+	bool isMouseOnMine = false;
+
 private:
+
+	uint maxUnitsSelected = 8;
 
 	double timer = 0.0f; // game time
 	HoverCheck hoverCheck = HoverCheck_None;
 	uint totalEnemiesKilled = 0;
 	uint totalUnitsDead = 0;
 
-	// Buildings
-	uint nTownHall = 1;
-	uint nBarracks = 1;
-	uint nChickenFarm = 2;
-	uint nGoldMine = 10;
-
-	uint nStables = 0;
-	uint nGryphonAviary = 0;
-	uint nMageTower = 0;
-	uint nScoutTower = 0;
-	uint nGuardTower = 0;
-	uint nCannonTower = 0;
-
-	// Units
-	uint totalUnits = 0; // total units created during the game
-	uint activeUnits = 0; // units that the player has at the current moment
-	uint maxUnits = 0; // max units that the player can have at the current moment (it depends on the Chicken Farms built)
-
-	HoverButton hoverButtonStruct;
-
+	//HoverButton hoverButtonStruct;
 	HoverInfo hoverInfo;
 
-	EntitySelectedStats entitySelectedStats;
+	GroupSelectionButtons groupSelectionButtons;
 
-	GroupSelectedStats groupSelectedStats;
+	//list<GroupSpawning> toSpawnUnitStats;
+	//list<ToSpawnUnit*> newUnitsToSpawn;
 
-	ToSpawnUnitsStats toSpawnUnitStats;
-
-	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr;
-	UIButton *producePaladinButton = nullptr, *commandPatrolButton = nullptr, *commandStopButton = nullptr;
-
+	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
+		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr;
+	
 
 	list<UIElement*> UIMenuInfoList;
 
 	//Spawning units from barracks queues and variables
-	queue<ToSpawnUnit> toSpawnUnitQueue;
+	queue<ToSpawnUnit*> toSpawnUnitBarracks;
+	queue<ToSpawnUnit*> toSpawnUnitGrypho;
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;
+
+	list<GroupSpawning> barracksSpawningListUI;
+	list<GroupSpawning> gryphoSpawningListUI;
 
 };
 

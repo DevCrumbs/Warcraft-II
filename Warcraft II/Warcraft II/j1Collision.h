@@ -19,6 +19,7 @@ enum ColliderType {
 	ColliderType_NeutralUnit,
 	ColliderType_PlayerBuilding,
 	ColliderType_EnemyBuilding,
+	ColliderType_NeutralBuilding,
 	ColliderType_PlayerSightRadius,
 	ColliderType_EnemySightRadius,
 	ColliderType_PlayerAttackRadius,
@@ -85,7 +86,7 @@ struct ColliderGroup
 
 	bool IsColliderInGroup(Collider* collider);
 
-	void CreateOffsetCollider();
+	bool CreateOffsetCollider();
 	Collider* GetCollider(bool left = false, bool right = false, bool top = false, bool bottom = false);
 
 	void RemoveCollider(Collider* collider);

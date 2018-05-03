@@ -13,6 +13,8 @@
 #include "j1PathManager.h"
 #include "Goal.h"
 #include "j1Audio.h"
+#include "j1Player.h"
+#include "j1Printer.h"
 
 #include "UILifeBar.h"
 
@@ -48,6 +50,9 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	this->gruntInfo.deathUp = info.deathUp;
 	this->gruntInfo.deathDown = info.deathDown;
 
+	this->size = this->unitInfo.size;
+	offsetSize = this->unitInfo.offsetSize;
+
 	LoadAnimationsSpeed();
 
 	// Initialize the goals
@@ -71,6 +76,12 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
+
+	// IA
+	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
+
+	// Different behaviors for units on the base and units around the map
+	brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
 void Grunt::Move(float dt)
@@ -93,73 +104,52 @@ void Grunt::Move(float dt)
 			&& singleUnit->IsFittingTile()
 			&& !isDead) {
 
-			App->audio->PlayFx(13, 0);
+			App->audio->PlayFx(App->audio->GetFX().orcDeath, 0);
 
 			isDead = true;
+			isValid = false;
+			App->player->enemiesKill++;
+
+			// Give gold to the player
+			App->player->currentGold += gruntInfo.droppedGold;
+			App->scene->hasGoldChanged = true;
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
 
+			// Initialize the goals
+			brain->RemoveAllSubgoals();
+
+			unitState = UnitState_NoState;
+
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
+
+			// Remove any path request
+			pathPlanner->SetSearchRequested(false);
+			pathPlanner->SetSearchCompleted(false);
+			App->pathmanager->UnRegister(pathPlanner);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
 			singleUnit = nullptr;
 
+			if (!App->gui->isGuiCleanUp) {
+
+				if (lifeBar != nullptr)
+
+					lifeBar->isActive = false;
+			}
+
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
-
-			// If the player dies, remove all their goals
-			unitCommand = UnitCommand_Stop;
 		}
 	}
 
-	if (!isDead) {
-
-		/// GOAL: MoveToPosition
-		// The goal of the unit has been changed manually
-		if (singleUnit->isGoalChanged)
-
-			brain->AddGoal_MoveToPosition(singleUnit->goal);
-
-		/// GOAL: AttackTarget
-		// Check if there are available targets
-		/// Prioritize a type of target (static or dynamic)
-		/*
-		if (singleUnit->IsFittingTile()) {
-
-			newTarget = GetBestTargetInfo();
-
-			if (newTarget != nullptr) {
-
-				// A new target has found, update the attacking target
-				if (currTarget != newTarget) {
-
-					if (currTarget != nullptr) {
-
-						if (!currTarget->isRemoved) {
-
-							currTarget->target->RemoveAttackingUnit(this);
-							isHitting = false;
-						}
-					}
-
-					currTarget = newTarget;
-					brain->AddGoal_AttackTarget(currTarget);
-				}
-			}
-		}
-		*/
-		// ---------------------------------------------------------------------
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
-	}
-
-	// ---------------------------------------------------------------------
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 
@@ -179,7 +169,7 @@ void Grunt::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
-	//Update Unit LifeBar
+	// Update Unit LifeBar
 	if (lifeBar != nullptr) {
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
@@ -191,27 +181,26 @@ void Grunt::Draw(SDL_Texture* sprites)
 	if (animation != nullptr) {
 
 		fPoint offset = { 0.0f,0.0f };
-		if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp)
-			offset = { animation->GetCurrentFrame().w / 3.0f,0.0f };
-		else
-			offset = { animation->GetCurrentFrame().w / 3.0f, animation->GetCurrentFrame().h / 2.0f };
+		if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp) {
 
-		App->render->Blit(sprites, pos.x - offset.x, pos.y - offset.y, &(animation->GetCurrentFrame()));
+			offset = { animation->GetCurrentFrame().w / 2.5f, animation->GetCurrentFrame().h / 5.5f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+		}
+		else {
+
+			offset = { animation->GetCurrentFrame().w / 3.2f, animation->GetCurrentFrame().h / 3.1f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
 	}
 
-	if (isSelected)
-		DebugDrawSelected();
+	//if (isSelected)
+		//DebugDrawSelected();
 }
 
 void Grunt::DebugDrawSelected()
 {
-	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-
-	for (uint i = 0; i < unitInfo.priority; ++i) {
-		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-	}
+	const SDL_Rect entitySize = { pos.x + offsetSize.x, pos.y + offsetSize.y, size.x, size.y };
+	App->printer->PrintQuad(entitySize, color);
 }
 
 void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
@@ -220,14 +209,16 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 	case CollisionState_OnEnter:
 
-		// An player is within the sight of this enemy unit
-		if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+		/// SET ATTACK PARAMETERS
+		// An player unit/building is within the SIGHT RADIUS of this enemy unit
+		if ((c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit)
+			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
+			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			//LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
 
-			// The Alliance is within the SIGHT radius
-
+			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
 			bool isTargetFound = false;
 
@@ -242,7 +233,6 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 				}
 				it++;
 			}
-
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
@@ -252,14 +242,50 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				targets.push_back(targetInfo);
 			}
+
+			// 2. MAKE UNIT FACE TOWARDS THE BEST TARGET
+			if (targets.size() > 0) {
+
+				bool isFacingTowardsTarget = false;
+
+				// a) If the unit is not attacking any target
+				if (currTarget == nullptr)
+					isFacingTowardsTarget = true;
+				// b) If the unit is attacking a static target
+				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
+					isFacingTowardsTarget = true;
+
+				if (isFacingTowardsTarget) {
+
+					// Face towards the best target (ONLY DYNAMIC ENTITIES!) (it is expected to be this target)
+					TargetInfo* targetInfo = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+					if (targetInfo != nullptr) {
+
+						fPoint orientation = { targetInfo->target->GetPos().x - pos.x, targetInfo->target->GetPos().y - pos.y };
+
+						float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+
+						if (m > 0.0f) {
+							orientation.x /= m;
+							orientation.y /= m;
+						}
+
+						SetUnitDirectionByValue(orientation);
+					}
+				}
+			}
 		}
-		else if (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
+		// An player unit/building is within the ATTACK RADIUS of this enemy unit
+		else if ((c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit)
+			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			// The Alliance is within the ATTACK radius
+			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			//LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
 
+			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
@@ -272,51 +298,43 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 				it++;
 			}
 		}
-
 		break;
 
 	case CollisionState_OnExit:
 
-		// Reset attack parameters
-		if (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
+		/// RESET ATTACK PARAMETERS
+		// An player unit/building is no longer within the SIGHT RADIUS of this enemy unit
+		if ((c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit)
+			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
+			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			//LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
 
-			// The Alliance is NO longer within the SIGHT radius
-
-			// Remove the target from the targets list
+			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
-					// If currTarget matches the target that needs to be removed, set its isSightSatisfied to false and it will be removed later		
-					if (currTarget != nullptr) {
-
-						if (currTarget->target == c2->entity) {
-
-							currTarget->isSightSatisfied = false;
-							break;
-						}
-					}
-					// If currTarget is different from the target that needs to be removed, remove the target from the list
-					delete *it;
-					targets.erase(it);
-
+					(*it)->isSightSatisfied = false;
+					RemoveTargetInfo(*it);
 					break;
 				}
 				it++;
 			}
 		}
-		else if (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit) { // || c2->colliderType == ColliderType_PlayerBuilding
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-			LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
+		// An player unit/building is no longer within the ATTACK RADIUS of this enemy unit
+		else if ((c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit)
+			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
+			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			// The Alliance is NO longer within the ATTACK radius
+			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+			//LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
 
+			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
 
 			while (it != targets.end()) {
@@ -329,7 +347,6 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 				it++;
 			}
 		}
-
 		break;
 	}
 }
@@ -341,9 +358,56 @@ void Grunt::UnitStateMachine(float dt)
 
 	case UnitState_AttackTarget:
 
+		if (singleUnit->IsFittingTile()) {
+
+			if (currTarget == nullptr) {
+
+				// Check if there are available targets (DYNAMIC ENTITY) 
+				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+				if (newTarget != nullptr) {
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+				else
+					unitState = UnitState_Idle;
+			}
+		}
+
 		break;
 
+	case UnitState_Idle:
+	case UnitState_Wander:
 	case UnitState_Patrol:
+
+		/// Goal_AttackTarget
+
+		if (singleUnit->IsFittingTile()) {
+
+			// Check if there are available targets (DYNAMIC ENTITY)
+			newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+			if (newTarget != nullptr) {
+
+				// A new target has found! Update the currTarget
+				if (currTarget != newTarget) {
+
+					// Anticipate the removing of this unit from the attacking units of the target
+					if (currTarget != nullptr) {
+
+						if (!currTarget->isRemoved)
+
+							currTarget->target->RemoveAttackingUnit(this);
+					}
+
+					isHitting = false;
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
+		}
 
 		break;
 
@@ -355,7 +419,6 @@ void Grunt::UnitStateMachine(float dt)
 
 		break;
 
-	case UnitState_Idle:
 	case UnitState_NoState:
 	default:
 

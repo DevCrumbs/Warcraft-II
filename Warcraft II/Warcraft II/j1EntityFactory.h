@@ -9,7 +9,6 @@
 #include "Grunt.h"
 #include "TrollAxethrower.h"
 #include "Alleria.h"
-#include "Khadgar.h"
 #include "Turalyon.h"
 #include "ElvenArcher.h"
 #include "Footman.h"
@@ -95,7 +94,6 @@ public:
 	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
 	bool PostUpdate();
 	bool CleanUp();
-	void Draw();
 
 	void DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoint mousePos);
 	void DrawStaticEntityPreviewTiles(bool isPlaceable, StaticEntitySize buildingSize, iPoint mousePos);
@@ -104,7 +102,7 @@ public:
 	
 	const EntityInfo& GetBuildingInfo(ENTITY_TYPE staticEntityType);
 	const EntityInfo& GetUnitInfo(ENTITY_TYPE dynamicEntityType);
-	const EntityInfo& GetBuiltBuilding();
+	const EntityInfo& GetBuiltBuilding(ENTITY_TYPE staticEntityType);
 
 	SDL_Texture* GetHumanBuildingTexture();
 	SDL_Texture* GetNeutralBuildingTexture();
@@ -116,6 +114,7 @@ public:
 	void DestroyStaticEntity(StaticEntity* staticEntity);
 
 	uint CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEGORY entityCategory);
+	uint GetNumberOfPlayerUnits() const;
 
 	/// SANDRA
 	// Returns a pointer to the Entity that is on the tile or nullptr
@@ -145,16 +144,34 @@ public:
 
 	bool RemoveAllUnitsGoals(list<DynamicEntity*> units);
 
-	// Removes the entity from all the targets and attacking units lists
-	void InvalidateAttackEntity(Entity* entity);
+	// Attack
+	bool InvalidateTargetInfo(Entity* target);
+
+	// Movement
 	void InvalidateMovementEntity(Entity* entity);
+
+	// Entities
+	Entity* IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide) const;
+	void SelectEntitiesOnScreen(ENTITY_TYPE entityType = EntityType_NONE);
+
+	// Dynamic Entities
+	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);
+	bool AreAllUnitsDoingSomething(list<DynamicEntity*> units, UnitState unitState = UnitState_NoState);
+
+	// Static Entities
+	bool SelectBuilding(StaticEntity* staticEntity);
+	void UnselectAllBuildings();
+
+	uint DetermineBuildingMaxLife(ENTITY_TYPE buildingType = EntityType_NONE, StaticEntitySize buildingSize = StaticEntitySize_None);
+	uint DetermineBuildingGold(ENTITY_TYPE buildingType = EntityType_NONE, StaticEntitySize buildingSize = StaticEntitySize_None);
+	
+	list<iPoint> GetBuildingTiles(StaticEntity* building, bool isOnlySurroundingTiles = false);
 	///_SANDRA
+
+	// -----
 
 	bool Save(pugi::xml_node& save) const;
 	bool Load(pugi::xml_node& save);
-
-	int GetPlayerSoldiers() const;
-	void SetPlayerSoldiers(int food);
 
 public:
 
@@ -210,7 +227,6 @@ private:
 	MageInfo mageInfo;
 	PaladinInfo paladinInfo;
 	AlleriaInfo alleriaInfo;
-	KhadgarInfo khadgarInfo;
 	TuralyonInfo turalyonInfo;
 	GruntInfo gruntInfo;
 	TrollAxethrowerInfo trollAxethrowerInfo;
@@ -222,8 +238,8 @@ private:
 	//Player buildings
 	TownHallInfo townHallInfo;
 	StrongholdInfo strongholdInfo;
-
 	BarracksInfo barracksInfo;
+	BarracksInfo builtBarracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
 	ChickenFarmInfo builtChickenFarmInfo;
 	ElvenLumberMillInfo elvenLumberMillInfo;
@@ -231,8 +247,8 @@ private:
 	GryphonAviaryInfo gryphonAviaryInfo;
 	MageTowerInfo mageTowerInfo;
 	ScoutTowerInfo scoutTowerInfo;
-	PlayerGuardTowerInfo playerGuardTowerInfo; // TODO
-	PlayerCannonTowerInfo playerCannonTowerInfo; // TODO
+	PlayerGuardTowerInfo playerGuardTowerInfo; 
+	PlayerCannonTowerInfo playerCannonTowerInfo;
 
 	//Neutral buildings
 	GoldMineInfo goldMineInfo;
@@ -254,10 +270,8 @@ private:
 	EnemyCannonTowerInfo enemyCannonTowerInfo;
 
 	//Preview tiles
-	BuildingPreviewTiles buildingPreviewTiles;
-	uint previewBuildingOpacity;
-
-	std::priority_queue<EntitiesDraw_info, std::vector<EntitiesDraw_info>, compareEntPriority> entityDrawOrder;
+	uint previewTilesopacity = 255;
+	uint previewBuildingOpacity = 255;
 
 	TownHall* townHall = nullptr;
 };

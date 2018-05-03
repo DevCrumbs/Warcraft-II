@@ -91,9 +91,6 @@ bool j1Gui::Start()
 
 	// Load fonts
 
-
-
-
 	return ret;
 }
 
@@ -102,13 +99,14 @@ bool j1Gui::PreUpdate()
 {
 	bool ret = true;
 
-	UIElementsList.clear();
+	list<UIElement*>::const_iterator add = addedElementUI.begin();
 
-	UIElementsList = addedElementUI;
-
-	for (std::list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); iterator++) {
-		drawOrder.push(*iterator);
+	while (add != addedElementUI.end()) {
+	
+		UIElementsList.push_back(*add);
+		add++;
 	}
+	addedElementUI.clear();
 	
 	return ret;
 }
@@ -119,45 +117,17 @@ bool j1Gui::Update(float dt)
 
 	bool ret = true;
 
-	App->particles->Draw(); // the rest of the particles
-
-	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
-		isDebug = !isDebug;
-
+	// Update UI elements
 	list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin();
 
-	while (UI_elem_it != UIElementsList.end()) {
+	while (UI_elem_it != UIElementsList.end())
+	{
 		(*UI_elem_it)->Update(dt);
-
-		/*
-		if (iterator->data->drag && update_drag)
-			(*UI_elem_it)->UpdateDragging(dt);*/
 
 		UI_elem_it++;
 	}
-	
-	UI_elem_it = UIElementsList.begin();
-
-	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
-		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
-			info->Draw();
-		else if (App->render->IsInScreen(info->GetLocalRect()))
-			info->Draw();
-	}
 
 	return ret;
-}
-
-void j1Gui::Draw() 
-{
-	list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin();
-
-	for (UIElement* info = drawOrder.top(); drawOrder.size() > 1; drawOrder.pop(), info = drawOrder.top()) {
-		if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
-			info->Draw();
-		else if (App->render->IsInScreen(info->GetLocalRect()))
-			info->Draw();
-	}
 }
 
 // Called after all Updates
@@ -165,16 +135,44 @@ bool j1Gui::PostUpdate()
 {
 	bool ret = true;
 
-	list<UIElement*>::const_iterator iterator = UIElementsList.begin();
+	// Remove UI elements
+	list<UIElement*>::const_iterator it = UIElementsList.begin();
 
-	while (iterator != UIElementsList.end()) {
+	while (it != UIElementsList.end()) {
 
-		if ((*iterator)->HasToBeRemoved()) {
-			delete *iterator;
-			UIElementsList.remove(*iterator);
+		if ((*it)->HasToBeRemoved()) {
+
+			delete *it;
+			UIElementsList.erase(it);
+
+			it = UIElementsList.begin();
+			continue;
 		}
 
-		iterator++;
+		it++;
+	}
+
+	// Blit UI elements
+	/// Move UI elements to the priority queue
+	for (it = UIElementsList.begin(); it != UIElementsList.end(); it++)
+			drawOrder.push(*it);
+
+	/// Blit UI elements using the priority queue
+	UIElement* info = nullptr;
+	while (!drawOrder.empty())
+	{
+		info = drawOrder.top();
+
+		// Only blit elements with isBlit == true
+		if (info->isBlit && info->isActive) {
+
+			if (info->GetPriorityDraw() != PriorityDraw_LIFEBAR_INGAME)
+				info->Draw();
+			else if (App->render->IsInScreen(info->GetLocalRect())) {
+				info->Draw();
+			}
+		}
+		drawOrder.pop();
 	}
 
 	return ret;
@@ -186,19 +184,27 @@ bool j1Gui::CleanUp()
 	bool ret = true;
 
 	LOG("Freeing GUI");
+	isGuiCleanUp = true;
 
-	if (ClearAllUI()) {
-		//UIElementsTree->clear();
+	// Clear UI_elements list (active elements)
+	list<UIElement*>::const_iterator elem = UIElementsList.begin();
 
-		// Clear UI_elements list (active elements)
-		list<UIElement*>::const_iterator iterator = UIElementsList.begin();
+	while (elem != UIElementsList.end()) {
 
-		while (iterator != UIElementsList.end()) {
-			delete *iterator;
-			iterator++;
-		}
-		UIElementsList.clear();
+		delete *elem;
+		elem++;
 	}
+	UIElementsList.clear();
+		
+	// Clear UI_elements list (active elements)
+	list<UIElement*>::const_iterator add = addedElementUI.begin();
+
+	while (add != addedElementUI.end()) {
+
+		delete *add;
+		add++;
+	}
+	addedElementUI.clear();
 
 	// Remove textures
 	ClearMapTextures();
@@ -210,9 +216,6 @@ UIImage* j1Gui::CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* lis
 {
 	UIImage* image = new UIImage(localPos, parent, info, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)image);
 
 	return image;
@@ -222,11 +225,7 @@ UILabel* j1Gui::CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* lis
 {
 	UILabel* label = new UILabel(localPos, parent, info, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)label);
-	
 
 	return label;
 }
@@ -235,11 +234,7 @@ UISlider* j1Gui::CreateUISlider(iPoint localPos, UISlider_Info& info, j1Module* 
 {
 	UISlider* slider = new UISlider(localPos, parent, info, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)slider);
-
 
 	return slider;
 }
@@ -248,11 +243,7 @@ UIButton* j1Gui::CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* 
 {
 	UIButton* button = new UIButton(localPos, parent, info, listener, isInWorld);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)button);
-
 
 	return button;
 }
@@ -261,11 +252,7 @@ UILifeBar* j1Gui::CreateUILifeBar(iPoint localPos, UILifeBar_Info& info, j1Modul
 {
 	UILifeBar* lifeBar = new UILifeBar(localPos, parent, info, listener, isInWorld);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)lifeBar);
-
 
 	return lifeBar;
 }
@@ -274,11 +261,7 @@ UIInputText* j1Gui::CreateUIInputText(iPoint localPos, j1Module* listener, UIEle
 {
 	UIInputText* inputText = new UIInputText(localPos, parent, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)inputText);
-
 
 	return inputText;
 }
@@ -288,9 +271,6 @@ UICursor* j1Gui::CreateUICursor(UICursor_Info& info, j1Module* listener, UIEleme
 	iPoint localPos = { 0,0 };
 
 	UICursor* cursor = new UICursor(localPos, parent, info, listener);
-
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
 
 	addedElementUI.push_back((UIElement*)cursor);
 
@@ -303,9 +283,6 @@ UIMinimap* j1Gui::CreateUIMinimap(UIMinimap_Info& info, j1Module* listener, UIEl
 
 	UIMinimap* minimap = new UIMinimap(localPos, parent, info, listener);
 
-	if (parent == nullptr)
-		parent = (UIElement*)App->win->window;
-
 	addedElementUI.push_back((UIElement*)minimap);
 
 	return minimap;
@@ -317,46 +294,23 @@ bool j1Gui::DestroyElement(UIElement** elem)
 	bool ret = false;
 
 	if (*elem != nullptr) {
-		addedElementUI.remove(*elem);
+
+		delete *elem;
+		UIElementsList.remove(*elem);
 		*elem = nullptr;
 	}
+
 	return ret;
 }
 
-bool j1Gui::ClearAllUI()
+bool j1Gui::RemoveElem(UIElement** elem)
 {
 	bool ret = false;
 
-	// Clear UI_elements tree
+	if (*elem != nullptr) {
 
-
-	for (list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin(); UI_elem_it != UIElementsList.end(); UI_elem_it++)
-	{
-
-	}
-
-
-
-	addedElementUI.clear();
-	UIElementsList.clear();
-	// Delete trans pointer to cursor?
-	/*
-	App->trans->CreateCursor();
-	*/
-
-	list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin();
-
-	while (UI_elem_it != UIElementsList.end()) {
-
-		/*
-		if (iterator->data != (UIElement*)App->trans->l_level_name && iterator->data != (UIElement*)App->trans->l_cats_picked
-			&& iterator->data != (UIElement*)App->trans->l_level_cats_picked && iterator->data != (UIElement*)App->trans->l_level_cats_picked2
-			&& iterator->data != (UIElement*)App->trans->l_score_text && iterator->data != (UIElement*)App->trans->l_you
-			&& iterator->data != (UIElement*)App->trans->l_died && iterator->data != (UIElement*)App->trans->black_screen_image)
-			iterator->data->toRemove = true;
-		*/
-
-		UI_elem_it++;
+		(*elem)->toRemove = true;
+		*elem = nullptr;
 	}
 
 	return ret;
@@ -419,46 +373,3 @@ float j1Gui::IncreaseDecreaseAlpha(float from, float to, float seconds)
 
 	return calculatedAlpha;
 }
-
-void j1Gui::SetUpDraggingChildren(UIElement* elem, bool drag)
-{
-	// List including toDrag element and all of its children
-	list<UIElement*> toDrag;
-	///UIElementsTree->recursivePreOrderList(UIElementsTree->search(elem), &toDrag);
-
-	// Don't drag elements which are not in the previous list
-	list<UIElement*>::const_iterator iterator = UIElementsList.begin();
-
-	while (iterator != UIElementsList.end() && iterator != toDrag.begin()) {
-		(*iterator)->drag = false;
-		iterator++;
-	}
-
-	/*
-	update_drag = drag;
-	*/
-}
-
-/*void j1Gui::SetUpDraggingNode(bool drag)
-{
-	UIElement* draggingNode = nullptr;
-	int lowest_level = UIElementsTree->getNumLevels(UIElementsTree->getRoot()) + 1;
-
-	// If several elements are clicked at once, select the element in the lowest level in the tree
-	list<UIElement*>::const_iterator iterator = UIElementsList.begin();
-
-	while (iterator != UIElementsList.end()) {
-
-		if ((*iterator)->drag == drag) {
-			int level = UIElementsTree->getNumLevels(UIElementsTree->search(*iterator));
-
-			if (level <= lowest_level) {
-				draggingNode = *iterator;
-			}
-		}
-
-		iterator++;
-	}
-
-	SetUpDraggingChildren(draggingNode, drag);
-}*/

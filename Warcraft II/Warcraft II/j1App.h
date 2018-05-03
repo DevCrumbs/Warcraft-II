@@ -10,7 +10,7 @@
 #include <string>
 using namespace std;
 
-#define MS_PATHFINDING 2.0
+#define MS_PATHFINDING 8.0
 
 // Modules
 class j1Window;
@@ -33,6 +33,13 @@ class j1Menu;
 class j1Movement;
 class j1PathManager;
 class j1FinishGame;
+class j1Printer;
+class j1EnemyWave;
+
+struct SDL_Rect;
+
+bool RectIntersect(const SDL_Rect* rectA, const SDL_Rect* rectB, SDL_Rect* result = nullptr);
+
 
 class j1App
 {
@@ -123,8 +130,8 @@ public:
 	j1Movement*					movement = nullptr;
 	j1PathManager*				pathmanager = nullptr;
 	j1FinishGame*				finish = nullptr;
-
-	bool isSoundCharged = false;
+	j1Printer*					printer = nullptr;
+	j1EnemyWave*				wave = nullptr;
 
 private:
 

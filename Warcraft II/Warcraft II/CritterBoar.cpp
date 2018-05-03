@@ -14,6 +14,7 @@
 #include "j1PathManager.h"
 #include "Goal.h"
 #include "j1Audio.h"
+#include "j1Printer.h"
 
 #include "j1Scene.h" // isFrameByFrame
 #include "j1Input.h" // isFrameByFrame
@@ -25,6 +26,7 @@ CritterBoar::CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	// XML loading
 	/// Animations
 	CritterBoarInfo info = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
+	this->unitInfo = this->critterBoarInfo.unitInfo;
 
 	this->critterBoarInfo.up = info.up;
 	this->critterBoarInfo.down = info.down;
@@ -39,16 +41,26 @@ CritterBoar::CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	this->critterBoarInfo.deathDownLeft = info.deathDownLeft;
 	this->critterBoarInfo.deathDownRight = info.deathDownRight;
 
+	size = this->unitInfo.size;
+	offsetSize = this->unitInfo.offsetSize;
+
 	LoadAnimationsSpeed();
 
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
 
-	brain->AddGoal_Wander(5);
+	brain->AddGoal_Wander(5, singleUnit->currTile, true, 2, 4, 2, 6, 3);
 
 	// Collisions
 	CreateEntityCollider(EntitySide_NoSide);
 	entityCollider->isTrigger = true;
+}
+
+CritterBoar::~CritterBoar()
+{
+	if (lastPaw != nullptr)
+		lastPaw->isDelete = true;
+	lastPaw = nullptr;
 }
 
 void CritterBoar::Move(float dt)
@@ -69,15 +81,27 @@ void CritterBoar::Move(float dt)
 		&& singleUnit->IsFittingTile()
 		&& !isDead) {
 
-		App->audio->PlayFx(15, 0);
+		App->audio->PlayFx(App->audio->GetFX().boarDeath, 0);
 
 		isDead = true;
+
+		if (lastPaw != nullptr)
+			lastPaw->isDelete = true;
 
 		// Remove the entity from the unitsSelected list
 		App->entities->RemoveUnitFromUnitsSelected(this);
 
+		brain->RemoveAllSubgoals();
+
+		unitState = UnitState_Idle;
+
 		// Remove Movement (so other units can walk above them)
 		App->entities->InvalidateMovementEntity(this);
+
+		// Remove any path request
+		pathPlanner->SetSearchRequested(false);
+		pathPlanner->SetSearchCompleted(false);
+		App->pathmanager->UnRegister(pathPlanner);
 
 		if (singleUnit != nullptr)
 			delete singleUnit;
@@ -85,19 +109,14 @@ void CritterBoar::Move(float dt)
 
 		// Invalidate colliders
 		entityCollider->isValid = false;
-
-		// If the player dies, remove all their goals
-		brain->RemoveAllSubgoals();
 	}
 
-	if (!isDead) {
+	if (!isDead)
+
 		UpdatePaws();
 
-		// ---------------------------------------------------------------------
-
-		// PROCESS THE CURRENTLY ACTIVE GOAL
-		brain->Process(dt);
-	}
+	// PROCESS THE CURRENTLY ACTIVE GOAL
+	brain->Process(dt);
 
 	UnitStateMachine(dt);
 
@@ -113,7 +132,7 @@ void CritterBoar::Move(float dt)
 void CritterBoar::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr)
-		App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
+		App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 
 	if (isSelected)
 		DebugDrawSelected();
@@ -121,18 +140,12 @@ void CritterBoar::Draw(SDL_Texture* sprites)
 
 void CritterBoar::DebugDrawSelected()
 {
-	const SDL_Rect entitySize = { pos.x, pos.y, size.x, size.y };
-	App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-
-	for (uint i = 0; i < unitInfo.priority; ++i) {
-		const SDL_Rect entitySize = { pos.x + 2 * i, pos.y + 2 * i, size.x - 4 * i, size.y - 4 * i };
-		App->render->DrawQuad(entitySize, color.r, color.g, color.b, 255, false);
-	}
+	const SDL_Rect entitySize = { pos.x + offsetSize.x, pos.y + offsetSize.y, size.x, size.y };
+	App->printer->PrintQuad(entitySize, color);
 }
 
 void CritterBoar::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState)
 {
-
 }
 
 // State machine
@@ -245,66 +258,35 @@ void CritterBoar::UpdatePaws()
 {
 	// Add footprints along the critter's path
 	if (singleUnit->currTile.x != -1 && singleUnit->currTile.y != -1
-		&& singleUnit->nextTile.x != -1 && singleUnit->nextTile.y != -1) {
+		&& !isStill) {
 
-		if (lastPaw != nullptr) {
-
-			// Reset the animation of the last paw
-			if (GetUnitDirection() != UnitDirection_NoDirection && !lastPaw->isRemove) {
-
-				lastPaw->isRemove = true;
-
-				switch (GetUnitDirection()) {
-
-				case UnitDirection_Up:
-
-					lastPaw->animation = App->particles->GetBoarPawsInfo().up;
-					break;
-
-				case UnitDirection_NoDirection:
-				case UnitDirection_Down:
-
-					lastPaw->animation = App->particles->GetBoarPawsInfo().down;
-					break;
-
-				case UnitDirection_Left:
-
-					lastPaw->animation = App->particles->GetBoarPawsInfo().left;
-					break;
-
-				case UnitDirection_Right:
-
-					lastPaw->animation = App->particles->GetBoarPawsInfo().right;
-					break;
-
-				case UnitDirection_UpLeft:
-
-					lastPaw->animation = App->particles->GetBoarPawsInfo().upLeft;
-					break;
-
-				case UnitDirection_UpRight:
-
-					lastPaw->animation = App->particles->GetBoarPawsInfo().upRight;
-					break;
-
-				case UnitDirection_DownLeft:
-
-					lastPaw->animation = App->particles->GetBoarPawsInfo().downLeft;
-					break;
-
-				case UnitDirection_DownRight:
-
-					lastPaw->animation = App->particles->GetBoarPawsInfo().downRight;
-					break;
-				}
-			}
-		}
-
-		// Create a new paw
 		if (lastPawTile != singleUnit->currTile) {
 
+			// Remove last paw
+			if (lastPaw != nullptr) {
+
+				lastPaw->isRemove = true;
+				lastPaw = nullptr;
+			}
+
+			// Create a new paw
 			iPoint currTilePos = App->map->MapToWorld(singleUnit->currTile.x, singleUnit->currTile.y);
-			lastPaw = App->particles->AddParticle(App->particles->paws, currTilePos);
+
+			fPoint orientation = { (float)singleUnit->currTile.x - (float)lastPawTile.x, (float)singleUnit->currTile.y - (float)lastPawTile.y };
+
+			float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+
+			if (m > 0.0f) {
+				orientation.x /= m;
+				orientation.y /= m;
+			}
+
+			double angle = (atan2(orientation.y, orientation.x) * 180.0f / (float)M_PI);
+
+			if (angle >= 360.0f)
+				angle = 0.0f;
+
+			lastPaw = App->particles->AddParticle(App->particles->boarPaws, currTilePos, { 0.0f,0.0f }, 0.0f, 0, 0, angle);
 
 			lastPawTile = singleUnit->currTile;
 		}

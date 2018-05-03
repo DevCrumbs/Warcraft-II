@@ -9,6 +9,10 @@
 #include "j1Scene.h"
 #include "j1Map.h"
 #include "j1Window.h"
+#include "j1EntityFactory.h"
+#include "j1Player.h"
+#include "j1Printer.h"
+#include "j1EnemyWave.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -35,6 +39,12 @@ bool j1Map::Awake(pugi::xml_node& config)
 	camera_blit = config.child("general").child("camera_blit").attribute("value").as_bool();
 	culing_offset = config.child("general").child("culing").attribute("value").as_int();
 
+	defaultRoomSize = config.child("defaultSizes").child("defaultRoomSize").attribute("size").as_int();
+	defaultBaseSize = config.child("defaultSizes").child("defaultBaseSize").attribute("size").as_int();
+	defaultLittleSize = config.child("defaultSizes").child("defaultLittleRoomSize").attribute("size").as_int();
+	defaultHallSize = config.child("defaultSizes").child("defaultHallSize").attribute("size").as_int();
+	defaultTileSize = config.child("defaultSizes").child("defaultTileSize").attribute("size").as_int();
+
 	playerBase = { 0,0,50,50 };
 
 	return ret;
@@ -42,14 +52,7 @@ bool j1Map::Awake(pugi::xml_node& config)
 
 void j1Map::Draw()
 {
-	BROFILER_CATEGORY("Draw(notAbove)", Profiler::Color::Azure);
-
-
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-	{
-		App->render->camera.x = 0;
-		App->render->camera.y = 0;
-	}
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::PapayaWhip);
 
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
 	{
@@ -81,16 +84,23 @@ void j1Map::Draw()
 					SDL_Rect* section = &rect;
 					iPoint world = MapToWorld(i, j);
 
-
 					App->render->Blit(tileset->texture, world.x, world.y, section, (*layer)->speed);
+					//App->printer->PrintSprite(world, tileset->texture, *section, Layers_Map);
 				}
 			}//for
 		}//for
-
-
 	}
 }
 
+bool j1Map::PostUpdate() 
+{
+	bool ret = true;
+
+	// Send the map to blit
+	Draw();
+
+	return ret;
+}
 
 TileSet* j1Map::GetTilesetFromTileId(int id) const
 {
@@ -117,8 +127,8 @@ iPoint j1Map::MapToWorld(int x, int y) const
 
 	if (data.type == MAPTYPE_ORTHOGONAL)
 	{
-		ret.x = x * data.tileWidth;
-		ret.y = y * data.tileHeight;
+		ret.x = x * (data.tileWidth);
+		ret.y = y * (data.tileHeight);
 	}
 	else if (data.type == MAPTYPE_ISOMETRIC)
 	{
@@ -145,7 +155,6 @@ iPoint j1Map::WorldToMap(int x, int y) const
 	}
 	else if (data.type == MAPTYPE_ISOMETRIC)
 	{
-
 		float half_width = data.tileWidth * 0.5f;
 		float half_height = data.tileHeight * 0.5f;
 		ret.x = int((x / half_width + y / half_height) / 2) - 1;
@@ -224,14 +233,16 @@ bool j1Map::CleanUp()
 	}
 	data.layers.clear();
 
-	delete collisionLayer;
-	delete aboveLayer;
-
+	if (collisionLayer != nullptr)
+		delete collisionLayer;
 	collisionLayer = nullptr;
+
+	if (aboveLayer != nullptr)
+		delete aboveLayer;
 	aboveLayer = nullptr;
 
 	// Clean up the pugui tree
-	map_file.reset();
+	mapFile.reset();
 
 	return ret;
 }
@@ -301,7 +312,7 @@ bool j1Map::UnLoad()
 bool j1Map::LoadMap()
 {
 	bool ret = true;
-	pugi::xml_node map = map_file.child("map");
+	pugi::xml_node map = mapFile.child("map");
 
 	if (map == NULL)
 	{
@@ -395,7 +406,7 @@ bool j1Map::Load(const char* file_name)
 	string tmp = folder.data();
 	tmp += file_name;
 
-	pugi::xml_parse_result result = map_file.loadFile(tmp.data());
+	pugi::xml_parse_result result = mapFile.loadFile(tmp.data());
 
 	if (result == NULL)
 	{
@@ -411,7 +422,7 @@ bool j1Map::Load(const char* file_name)
 
 	// Load all tilesets info ----------------------------------------------
 	pugi::xml_node tileset;
-	for (tileset = map_file.child("map").child("tileset"); tileset && ret; tileset = tileset.next_sibling("tileset"))
+	for (tileset = mapFile.child("map").child("tileset"); tileset && ret; tileset = tileset.next_sibling("tileset"))
 	{
 		TileSet* set = new TileSet();
 
@@ -430,7 +441,7 @@ bool j1Map::Load(const char* file_name)
 
 	// Load layer info ----------------------------------------------
 	pugi::xml_node layer;
-	for (layer = map_file.child("map").child("layer"); layer && ret; layer = layer.next_sibling("layer"))
+	for (layer = mapFile.child("map").child("layer"); layer && ret; layer = layer.next_sibling("layer"))
 	{
 		MapLayer* set = new MapLayer();
 
@@ -446,7 +457,7 @@ bool j1Map::Load(const char* file_name)
 	pugi::xml_node objectGroup;
 	pugi::xml_node object;
 
-	for (objectGroup = map_file.child("map").child("objectgroup"); objectGroup && ret; objectGroup = objectGroup.next_sibling("objectgroup"))
+	for (objectGroup = mapFile.child("map").child("objectgroup"); objectGroup && ret; objectGroup = objectGroup.next_sibling("objectgroup"))
 	{
 		ObjectGroup* set = new ObjectGroup();
 
@@ -539,6 +550,11 @@ bool j1Map::LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set)
 	}
 	else
 	{
+		if (tilesetPath.empty())
+		{
+			tilesetPath = PATH(folder.data(), image.attribute("source").as_string());
+		}
+
 		set->texture = App->tex->Load(PATH(folder.data(), image.attribute("source").as_string()));
 		int w, h;
 		SDL_QueryTexture(set->texture, NULL, NULL, &w, &h);
@@ -572,7 +588,7 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->height = node.attribute("height").as_uint();
 	LoadProperties(node, layer->properties);
 	layer->data = new uint[layer->width * layer->height];
-
+	layer->sizeData = layer->width * layer->height;
 	memset(layer->data, 0, layer->width * layer->height);
 
 	int i = 0;
@@ -625,7 +641,6 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 {
 	bool ret = true;
-
 	list<MapLayer*>::const_iterator item;
 	item = data.layers.begin();
 
@@ -660,12 +675,26 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 			}
 		}
 
-		*buffer = map;
-		width = data.width;
-		height = data.height;
+		*buffer = walkMap = map;
+		width = walkWidth = data.width;
+		height = walkHeight = data.height;
 		ret = true;
 
 		break;
+	}
+
+	return ret;
+}
+
+bool j1Map::LoadWalkabilityMap(int& width, int& height, uchar** buffer) const
+{
+	bool ret = false;
+	if (walkMap != nullptr)
+	{
+		*buffer = walkMap;
+		width = walkWidth;
+		height = walkHeight;
+		ret = true;
 	}
 
 	return ret;
@@ -816,7 +845,323 @@ bool MapData::CheckIfEnter(string groupObject, string object, fPoint position)
 	return (objectPos.x < position.x + 1 && objectPos.x + objectSize.x > position.x && objectPos.y < position.y + 1 && objectSize.y + objectPos.y > position.y);
 }
 
-///*
+bool j1Map::LoadLogic()
+{
+	bool ret = false;
+	// List of all entities 
+	list<list<Entity*>> entityGroupLevel;
+
+	// Iterate all layers
+	for (list<MapLayer*>::iterator layerIterator = data.layers.begin();
+		layerIterator != data.layers.end(); ++layerIterator)
+	{
+		// Check if layer is a logic layer 
+
+			// For default logic
+		if ((*layerIterator)->properties.GetProperty("logic", false))
+		{
+			LoadLayerEntities(*layerIterator);
+			ret = true;
+		}
+
+		// For room rects
+		else if ((*layerIterator)->properties.GetProperty("roomLogic", false))
+		{
+			ret = LoadRoomRect(*layerIterator);
+		}
+
+		// For entities groups
+		else if ((*layerIterator)->properties.GetProperty("entitiesGroup", false))
+		{
+			// Save the entities from layerIterator in entityGroupLevel
+			list<Entity*> currLayer = LoadLayerEntities(*layerIterator);
+
+			if (!currLayer.empty())
+				entityGroupLevel.push_back(currLayer);
+
+			ret = true;
+		}
+	}
+
+	if (ret)
+	{
+		CreateEntityGroup(entityGroupLevel);
+	}
+
+	return ret;
+}
+
+list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
+{
+	list<Entity*>entitiesGroup;
+	list<iPoint> spawnTiles;
+
+	if (layer != nullptr)
+	{		
+		// Iterate layer
+		for (int i = 0; i < layer->sizeData; ++i)
+		{
+			// Check if tile is not empty
+			if (layer->data[i] > 0)
+			{
+				int x = i % layer->width;
+				int y = i / layer->width;
+
+				iPoint auxPos = MapToWorld(x, y);
+				fPoint pos;
+				pos.x = auxPos.x;
+				pos.y = auxPos.y;
+
+				UnitInfo unitInfo;
+				ENTITY_TYPE entityType = (ENTITY_TYPE)layer->data[i];
+
+				Entity* enemyEntity = nullptr;
+				// Decide which entity to spawn
+				switch (entityType)
+				{
+					// Static Entities
+				case EntityType_TOWN_HALL:
+					App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos,
+						App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+					break;
+				case EntityType_CHICKEN_FARM:
+					App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, 
+						App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player));
+					break;
+				case EntityType_BARRACKS:
+					App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, 
+						App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+					break;
+
+				case EntityType_GOLD_MINE:
+				case EntityType_RUNESTONE:
+				case EntityType_GREAT_HALL:
+				case EntityType_STRONGHOLD:
+				case EntityType_FORTRESS:
+				case EntityType_ENEMY_BARRACKS:
+				case EntityType_PIG_FARM:
+				case EntityType_TROLL_LUMBER_MILL:
+				case EntityType_ALTAR_OF_STORMS:
+				case EntityType_DRAGON_ROOST:
+				case EntityType_TEMPLE_OF_THE_DAMNED:
+				case EntityType_OGRE_MOUND:
+				case EntityType_ENEMY_BLACKSMITH:
+				case EntityType_WATCH_TOWER:
+				case EntityType_ENEMY_GUARD_TOWER:
+				case EntityType_ENEMY_CANNON_TOWER:
+					App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+					break;
+
+					// Dynamic entities
+				case EntityType_FOOTMAN:
+				case EntityType_ELVEN_ARCHER:
+				case EntityType_ALLERIA:
+				case EntityType_TURALYON:
+					App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
+					break;
+
+				case EntityType_GRUNT:
+				case EntityType_TROLL_AXETHROWER:
+				case EntityType_DRAGON:
+					enemyEntity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+					break;
+
+				case EntityType_SHEEP:
+				case EntityType_BOAR:
+					int type = rand() % 2;
+
+					if (type == 0)
+						App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+					else
+						App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+					break;
+				}
+	
+				
+				/// Enemy waves spawns
+				if (layer->data[i] == 384)///
+				{
+				
+					int x = i % layer->width;
+					int y = i / layer->width;
+
+					iPoint pos = MapToWorld(x, y);
+					if (IsOnBase(pos))
+						spawnTiles.push_back(pos);
+
+				}
+
+				// If the entity is an enemy 
+				if (enemyEntity != nullptr)
+				{
+					// we add it to the layer group
+					entitiesGroup.push_back(enemyEntity);
+					GetEntityRoom(enemyEntity);
+				}
+
+			}
+		}
+
+		if (!spawnTiles.empty())
+		{
+			App->wave->AddTiles(spawnTiles);
+		}
+	}
+	return entitiesGroup;
+}
+
+bool j1Map::LoadRoomRect(MapLayer* layer)
+{
+	bool ret = false;
+	if (layer != nullptr)
+	{
+		ret = true;
+		// Iterate layer
+		for (int i = 0; i < layer->sizeData; ++i)
+		{
+			// Check if tile is not empty
+			if (layer->data[i] > 0)
+			{
+				int x = i % layer->width;
+				int y = i / layer->width;
+
+				iPoint pos = MapToWorld(x, y);
+				int margin = 8;
+				ROOM_TYPE roomType = (ROOM_TYPE)layer->data[i];
+				switch (roomType)
+				{
+				case roomType_BASE:
+					playerBase = { pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize };
+					roomRectList.push_back(playerBase);
+					App->scene->basePos = { playerBase.x + margin * defaultTileSize, playerBase.y + margin * defaultTileSize };
+
+					App->render->camera.x = -App->scene->basePos.x;
+					App->render->camera.y = -App->scene->basePos.y;
+
+					break;
+				case roomType_LARGE:
+					roomRectList.push_back({ pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultRoomSize * defaultTileSize });
+					break;
+				case roomType_LITTLE:
+					roomRectList.push_back({ pos.x, pos.y, defaultLittleSize * defaultTileSize, defaultLittleSize * defaultTileSize });
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+	return ret;
+}
+
+bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
+{
+	// Iterate entity lists
+	for (list<list<Entity*>>::iterator iterator = entityGroupLevel.begin(); iterator != entityGroupLevel.end(); ++iterator)
+	{
+		// Iterate all rooms rects
+		for (list<SDL_Rect>::iterator roomIterator = roomRectList.begin(); roomIterator != roomRectList.end(); ++roomIterator)
+		{
+			if ((*roomIterator) == playerBase)
+				continue;
+
+			list<Entity*> listOnRoom;
+			// Iterate entities
+			for (list<Entity*>::iterator currentEntity = (*iterator).begin(); currentEntity != (*iterator).end(); ++currentEntity)
+			{
+				fPoint pos = (*currentEntity)->GetPos();
+				iPoint size = (*currentEntity)->GetSize();
+
+				SDL_Rect entityRect{ pos.x,pos.y,size.x,size.y };
+
+				// Check if entity belongs to room
+				if (RectIntersect(&entityRect, &*roomIterator))
+				{
+					// Add entity to room list
+					listOnRoom.push_back(*currentEntity);
+				}
+			}
+			// Add room list to groups list
+			if (!listOnRoom.empty())
+				entityGroups.push_back(listOnRoom);
+		}
+	}
+	return true;
+}
+
+bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
+{
+	bool ret = false;
+	SDL_Rect currRoom{ -1,-1,-1,-1 };
+
+	list<Room>::iterator iterator;
+	for (iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
+	{
+		if (RectIntersect(&origin, &*iterator))
+		{
+			ret = true;
+			currRoom = *iterator;
+			break;
+		}
+	}
+
+	if (ret)
+	{
+		ret = RectIntersect(&goal, &currRoom);
+	}
+
+	return ret;
+}
+
+bool j1Map::IsGoalOnRoom(iPoint origin, iPoint goal)
+{
+	SDL_Rect originRect{ origin.x, origin.y, defaultTileSize, defaultTileSize };
+	SDL_Rect goalRect{ goal.x, goal.y, defaultTileSize, defaultTileSize };
+
+	return IsGoalOnRoom(originRect, goalRect);
+}
+
+
+bool j1Map::IsOnBase(iPoint pos)
+{
+	return IsOnRoom(pos, playerBase);
+}
+
+bool j1Map::IsOnRoom(iPoint pos, Room room)
+{
+	int size = 1;
+	return (room.x < pos.x + size && room.x + room.w > pos.x && room.y < pos.y + size && room.h + room.y > pos.y);
+}
+
+Room j1Map::GetEntityRoom(Entity* entity)
+{
+	Room ret{ -1,-1,-1,-1 };
+	Room entityRect{ 0,0,0,0 };
+
+	if (entity != nullptr)
+	{
+		fPoint pos = entity->GetPos();
+		entityRect.x = pos.x;
+		entityRect.y = pos.y;
+
+		iPoint  size = entity->GetSize();
+		entityRect.w = size.x;
+		entityRect.h = size.y;
+
+		for (list<Room>::iterator iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
+		{
+			if (RectIntersect(&(*iterator), &entityRect))
+			{
+				ret = *iterator;
+				break;
+			}
+		}
+	}
+
+	return ret;
+}
+
+///*sadface*
 //#include <math.h>
 //#include <time.h>
 //

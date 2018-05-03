@@ -35,10 +35,10 @@ enum BuildingState
 
 enum StaticEntitySize
 {
-	None,
-	Small,
-	Medium,
-	Big
+	StaticEntitySize_None,
+	StaticEntitySize_Small,
+	StaticEntitySize_Medium,
+	StaticEntitySize_Big
 };
 
 enum TowerState
@@ -48,12 +48,6 @@ enum TowerState
 	TowerState_Die
 };
 
-struct BuildingPreviewTiles 
-{
-	SDL_Rect greenTile = { 0,0,0,0 };
-	SDL_Rect redTile = { 0,0,0,0 };
-	uint opacity = 0;
-};
 
 class StaticEntity :public Entity
 {
@@ -62,10 +56,11 @@ public:
 	StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener);
 	virtual ~StaticEntity();
 	virtual void Draw(SDL_Texture* sprites);
+	virtual void DebugDrawSelected();
 	virtual void Move(float dt) {}
 
 	//virtual void DebugDrawSelected();
-	
+
 	void HandleInput(EntitiesEvent &EntityEvent);
 	bool MouseHover() const;
 	bool CheckBuildingState();
@@ -73,27 +68,29 @@ public:
 	uint GetConstructionTime() const;
 	bool GetIsFinishedBuilt() const;
 
-	//Colliders
-	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
+	BuildingState GetBuildingState() const;
+
+	// Collision
 	ColliderGroup* GetSightRadiusCollider() const;
+	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
 
 public:
 
 	ENTITY_TYPE staticEntityType = EntityType_NONE;
 	StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
 	BuildingState buildingState = BuildingState_Normal;
-	StaticEntitySize buildingSize = None;
+	StaticEntitySize buildingSize = StaticEntitySize_None;
 
 protected:
 
-	Particle* fire;
+	Particle* fire = nullptr;
 	const SDL_Rect* texArea = nullptr;
 	j1Timer constructionTimer;
 	uint constructionTime = 0;
 	bool isBuilt = false;
 
+	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;
-
 };
 
 #endif //__StaticEntity_H__

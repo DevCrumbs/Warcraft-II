@@ -16,15 +16,13 @@ enum CollisionState;
 struct CritterBoarInfo
 {
 	UnitInfo unitInfo;
-	uint restoredHealth = 0;
 
 	// Unit animations
 	Animation up, down, left, right;
 	Animation upLeft, upRight, downLeft, downRight;
 	Animation deathUpLeft, deathUpRight, deathDownLeft, deathDownRight;
 
-	int currLife = 0;
-	uint maxLife = 0;
+	uint restoredHealth = 0;
 };
 
 class CritterBoar :public DynamicEntity
@@ -32,7 +30,7 @@ class CritterBoar :public DynamicEntity
 public:
 
 	CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const CritterBoarInfo& critterBoarInfo, j1Module* listener);
-	~CritterBoar() {};
+	~CritterBoar();
 	void Move(float dt);
 	void Draw(SDL_Texture* sprites);
 	void DebugDrawSelected();

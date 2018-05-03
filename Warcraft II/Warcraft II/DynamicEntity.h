@@ -20,7 +20,6 @@ struct ColliderGroup;
 struct SingleUnit;
 
 class PathPlanner;
-class Navgraph;
 class Goal_Think;
 class UILifeBar;
 
@@ -29,6 +28,8 @@ enum CollisionState;
 enum DistanceHeuristic;
 
 struct Particle;
+struct GoldMine;
+struct Runestone;
 
 #define TIME_REMOVE_CORPSE 3.0
 
@@ -44,6 +45,9 @@ enum UnitState
 	UnitState_AttackTarget,
 	UnitState_Patrol,
 	UnitState_Wander,
+	UnitState_GatherGold,
+	UnitState_HealRunestone,
+	UnitState_RescuePrisoner,
 
 	UnitState_MaxStates
 };
@@ -70,6 +74,9 @@ enum UnitCommand
 	UnitCommand_MoveToPosition,
 	UnitCommand_AttackTarget,
 	UnitCommand_Patrol,
+	UnitCommand_GatherGold,
+	UnitCommand_HealRunestone,
+	UnitCommand_RescuePrisoner,
 
 	UnitCommand_MaxCommands
 };
@@ -79,12 +86,27 @@ struct UnitInfo
 {
 	uint priority = 1;
 
+	// Radius
 	uint sightRadius = 0;
 	uint attackRadius = 0;
-	uint damage = 0;
 
+	// Damage
+	uint heavyDamage = 0;
+	uint lightDamage = 0;
+	uint airDamage = 0;
+	uint towerDamage = 0;
+
+	// Speed
 	float maxSpeed = 0.0f;
 	float currSpeed = 0.0f;
+
+	// Life
+	int currLife = 0;
+	uint maxLife = 0;
+
+	// Size
+	iPoint size = { 0,0 };
+	iPoint offsetSize = { 0,0 };
 };
 
 class DynamicEntity :public Entity
@@ -97,14 +119,15 @@ public:
 	virtual void Draw(SDL_Texture* sprites);
 	virtual void DebugDrawSelected();
 	virtual void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
-	
+
 	Animation* GetAnimation() const;
 	Goal_Think* GetBrain() const;
 
 	// UnitInfo
 	float GetSpeed() const;
 	uint GetPriority() const;
-	uint GetDamage() const;
+	uint GetDamage(Entity* target) const;
+	UILifeBar* GetLifeBar() const;
 
 	// State machine
 	void UnitStateMachine(float dt);
@@ -115,14 +138,9 @@ public:
 	// Movement
 	SingleUnit* GetSingleUnit() const;
 	PathPlanner* GetPathPlanner() const;
-	Navgraph* GetNavgraph() const;
 
 	void SetIsStill(bool isStill);
 	bool IsStill() const;
-
-	// Blit
-	void SetBlitState(bool isBlitting) const;
-	bool GetBlitState() const;
 
 	// Animations
 	virtual void LoadAnimationsSpeed();
@@ -136,11 +154,6 @@ public:
 
 	void SetUnitDirectionByValue(fPoint unitDirection);
 	fPoint GetUnitDirectionByValue() const;
-
-	// Selection color
-	void SetColor(SDL_Color color, string colorName);
-	SDL_Color GetColor() const;
-	string GetColorName() const;
 
 	// Collision
 	ColliderGroup* GetSightRadiusCollider() const;
@@ -157,18 +170,41 @@ public:
 	Entity* GetCurrTarget() const;
 	bool SetCurrTarget(Entity* target);
 
-	bool IsEntityInTargetsList(Entity* entity) const;
-	bool InvalidateTarget(Entity* entity); // sets isRemove to true
-	bool RemoveTargetInfo(TargetInfo* targetInfo);
+	bool SetIsRemovedTargetInfo(Entity* target); // this action happens first
+	bool RemoveTargetInfo(TargetInfo* targetInfo); // this action happens second
 
-	TargetInfo* GetBestTargetInfo() const; // TODO: add argument EntityType??? For critters vs enemies
+	TargetInfo* GetBestTargetInfo(ENTITY_CATEGORY entityType = EntityCategory_NONE) const; // TODO: add argument EntityType??? For critters vs enemies
 
 	void SetHitting(bool isHitting);
 	bool IsHitting() const;
 
+	// Interact with the map
+	void SetGoldMine(GoldMine* goldMine);
+	GoldMine* GetGoldMine() const;
+	void SetUnitGatheringGold(bool isGatheringGold);
+	bool IsUnitGatheringGold() const;
+
+	void SetRunestone(Runestone* runestone);
+	Runestone* GetRunestone() const;
+	void SetUnitHealingRunestone(bool isHealingRunestone);
+	bool IsUnitHealingRunestone() const;
+
+	void SetPrisoner(DynamicEntity* prisoner);
+	DynamicEntity* GetPrisoner() const;
+	void SetUnitRescuePrisoner(bool isRescuingPrisoner);
+	bool IsUnitRescuingPrisoner() const;
+
 	// Player commands
 	bool SetUnitCommand(UnitCommand unitCommand);
 	UnitCommand GetUnitCommand() const;
+
+	// Blit
+	void SetBlitState(bool isBlit);
+	bool GetBlitState() const;
+
+	// Valid
+	void SetIsValid(bool isValid);
+	bool GetIsValid() const;
 
 public:
 
@@ -179,8 +215,6 @@ public:
 
 	// Spawn
 	bool isSpawned = false;
-
-	Particle* particle = nullptr;
 
 protected:
 
@@ -202,7 +236,6 @@ protected:
 
 	SingleUnit* singleUnit = nullptr;
 	PathPlanner* pathPlanner = nullptr;
-	Navgraph* navgraph = nullptr;
 
 	bool isStill = true; // if true, the unit is still. Else, the unit is moving
 
@@ -213,6 +246,16 @@ protected:
 
 	bool isHitting = false; // if true, the unit is hitting their target
 
+	// Interact with the map
+	GoldMine* goldMine = nullptr;
+	bool isGatheringGold = false;
+
+	Runestone* runestone = nullptr;
+	bool isHealingRunestone = false;
+
+	DynamicEntity* prisoner = nullptr;
+	bool isRescuingPrisoner = false;
+
 	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;
 	ColliderGroup* attackRadiusCollider = nullptr;
@@ -221,14 +264,13 @@ protected:
 	// Death
 	j1Timer deadTimer;
 
-	//Blit
-	bool isBlitting = false;
+	// Blit
+	bool isBlit = true;
 
-	// Selection color
-	SDL_Color color = ColorWhite;
-	string colorName = "White";
+	// Valid
+	bool isValid = true;
 
-	//LifeBar
+	// LifeBar
 	UILifeBar* lifeBar = nullptr;
 	int lifeBarMarginX = 0;
 	int lifeBarMarginY = 0;

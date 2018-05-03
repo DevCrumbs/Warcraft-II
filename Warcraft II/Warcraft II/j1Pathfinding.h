@@ -9,7 +9,7 @@
 #include <algorithm>
 using namespace std;
 
-#define DEFAULT_PATH_LENGTH 50
+#define DEFAULT_PATH_LENGTH 100
 #define INVALID_WALK_CODE -1
 
 enum DistanceHeuristic {
@@ -48,7 +48,7 @@ struct PathNode
 	PathNode(const PathNode& node);
 
 	// Fills a list (PathList) of all valid adjacent pathnodes
-	uint FindWalkableAdjacents(PathList& list_to_fill) const;
+	uint FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityChecked = true) const;
 	// Calculates this tile score
 	float Score() const;
 	// Calculate the F for a specific destination tile
@@ -97,9 +97,6 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Sets up the walkability map
-	void SetMap(uint width, uint height, uchar* data);
-
 	// Main function to request a path from A to B
 	int CreatePath(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
 
@@ -124,33 +121,31 @@ public:
 	bool IsOnBase(const iPoint & pos);
 
 	// Initialize CycleOnceAStar
-	bool InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan);
+	bool InitializeAStar(const iPoint& origin, const iPoint& destination, DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan, bool isWalkabilityChecked = true);
 
 	// CycleOnce A Star
 	PathfindingStatus CycleOnceAStar();
 
 	// Initialize CycleOnceDijkstra
-	bool InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger = nullptr, bool isPathRequested = false);
-
+	bool InitializeDijkstra(const iPoint& origin, FindActiveTrigger* trigger = nullptr, bool isPathRequested = false, bool isWalkabilityChecked = true);
+																			
 	// CycleOnce Dijkstra
 	PathfindingStatus CycleOnceDijkstra();
 
 private:
 
-	uint width = 0; // size of the map (w)
-	uint height = 0; // size of the map (h)
-	uchar* walkabilityMap = nullptr; // all map walkability values [0..255]
 	DistanceHeuristic distanceHeuristic = DistanceHeuristic_DistanceManhattan; // distance heuristic of choice
 
 	PathList open; // open list of PathNodes
 	PathList close; // close list of PathNodes
-	vector<iPoint> last_path; // we store the created path here
-	iPoint last_tile = { -1,-1 }; // we store the last tile checked here
+	vector<iPoint> lastPath; // we store the created path here
+	iPoint lastTile = { -1,-1 }; // we store the last tile checked here
 
-								  // A Star
+	// A Star
 	iPoint goal = { -1,-1 }; // destination tile
+	bool isWalkabilityChecked = true;
 
-							 // Dijkstra
+	// Dijkstra
 	FindActiveTrigger* trigger = nullptr;
 	bool isPathRequested = false;
 };

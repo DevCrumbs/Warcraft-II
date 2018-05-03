@@ -18,13 +18,14 @@ j1Console::~j1Console()
 
 bool j1Console::Start()
 {
-	inputText = App->gui->CreateUIInputText({ 100,100 }, this);
+	//inputText = App->gui->CreateUIInputText({ 100,100 }, this);
 	return true;
 }
 
 
-bool j1Console::Update(float dt) {
-
+bool j1Console::Update(float dt) 
+{
+	/*
 	if (App->input->GetKey(SDL_SCANCODE_GRAVE) == KEY_DOWN) {
 		if (!isConsole) {
 			isConsole = true;
@@ -47,7 +48,7 @@ bool j1Console::Update(float dt) {
 			inputText->CleanText();
 		}
 	}
-
+	*/
 
 	return true;
 }
@@ -56,8 +57,8 @@ bool j1Console::Update(float dt) {
 bool j1Console::PostUpdate() {
 	bool ret = true;
 
-	if (exit)
-		ret = false;
+	//if (exit)
+	//	ret = false;
 
 	return ret;
 }
