@@ -81,9 +81,10 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 
 	// IA
 	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
+	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
 	// Different behaviors for units on the base and units around the map
-	if (!App->map->IsOnBase(spawnTile))
+	if (!App->map->IsOnBase(spawnPos))
 		brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
 }
 

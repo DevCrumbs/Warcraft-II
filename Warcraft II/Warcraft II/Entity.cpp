@@ -236,6 +236,17 @@ string Entity::GetColorName() const
 	return colorName;
 }
 
+// Valid
+void Entity::SetIsValid(bool isValid)
+{
+	this->isValid = isValid;
+}
+
+bool Entity::GetIsValid() const
+{
+	return isValid;
+}
+
 // Struct TargetInfo -------------------------------------------------------------
 
 TargetInfo::TargetInfo() {}
