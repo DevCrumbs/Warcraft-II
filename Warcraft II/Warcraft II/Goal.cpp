@@ -477,6 +477,7 @@ GoalStatus Goal_Wander::Process(float dt)
 
 	// Wander is performed in an infinite loop
 	if (goalStatus == GoalStatus_Completed)
+
 		Activate();
 
 	if (goalStatus == GoalStatus_Failed) {
@@ -777,24 +778,49 @@ GoalStatus Goal_MoveToPosition::Process(float dt)
 	ActivateIfInactive();
 
 	if (goalStatus == GoalStatus_Failed)
+
 		return goalStatus;
-
-	else if (owner->GetSingleUnit()->goal != destinationTile) {
-
-		if (owner->GetSingleUnit()->IsFittingTile()) {
-			Activate();
-			LOG("Activated");
-		}
-	}
 
 	App->movement->MoveUnit(owner, dt);
 
-	if (owner->GetSingleUnit()->goal != destinationTile) {
-		destinationTile = owner->GetSingleUnit()->goal;
-		LOG("Equal");
+	/*
+	if (owner->isSelected) {
+	
+		switch (owner->GetSingleUnit()->movementState) {
+		
+		case MovementState_WaitForPath:
+			LOG("Wait For Path");
+			break;
+		case MovementState_FollowPath:
+			LOG("Follow Path");
+			break;
+		case MovementState_GoalReached:
+			LOG("Goal Reached");
+			break;
+		case MovementState_IncreaseWaypoint:
+			LOG("Increase Waypoint");
+			break;
+		default:
+			break;
+		}
 	}
+	*/
 
-	if (owner->GetSingleUnit()->movementState == MovementState_GoalReached) {
+	if (owner->GetSingleUnit()->movementState == MovementState_WaitForPath) {
+
+		// The unit has changed their goal (because it was not valid) through the GroupMovement module
+		if (owner->GetSingleUnit()->goal != destinationTile)
+
+			destinationTile = owner->GetSingleUnit()->goal;
+	}
+	else if (owner->GetSingleUnit()->movementState == MovementState_GoalReached) {
+
+		// WARNING! movementState == MovementState_GoalReached, but destinationTile is not correct
+		if (owner->GetSingleUnit()->goal != destinationTile) {
+
+			Activate();
+			return goalStatus;
+		}
 
 		if (owner->GetSingleUnit()->group->isShapedGoal) {
 

@@ -532,6 +532,7 @@ void Footman::UnitStateMachine(float dt)
 
 		// DEFENSE NOTE: the unit automatically attacks back their attacking units (if they have any attacking units) to defend themselves
 		/// TODO Sandra: units attacking or units hitting?
+
 		if (unitsAttacking.size() > 0) {
 
 			if (singleUnit->IsFittingTile()) {
@@ -556,7 +557,7 @@ void Footman::UnitStateMachine(float dt)
 		else if (unitsAttacking.size() == 0)
 
 			isRunAway = false;
-
+			
 		break;
 
 	case UnitState_Idle:
