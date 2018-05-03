@@ -143,6 +143,9 @@ private:
 	/// Cross
 	float crossSpeed = 0.0f;
 
+	///
+	bool isAnimationSpeedCharged = false;
+
 public:
 
 	// Fire
