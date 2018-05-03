@@ -1396,6 +1396,8 @@ void j1Player::MakePrisionerMenu(Entity * entity)
 		entitySelectedStats.HP->SetText("One of the first five paladins of the Knights of the Silver Hand.", 140);
 		entitySelectedStats.HP->isActive = true;
 	}
+
+	entitySelectedStats.entitySelected = entity;
 }
 
 UIImage* j1Player::CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, bool isActive)
