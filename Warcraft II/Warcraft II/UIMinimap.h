@@ -67,8 +67,6 @@ private:
 	UI_EVENT UIevent = UI_EVENT_NONE;
 	SDL_Rect normalTexArea = { 0,0,0,0 };
 
-	SDL_Rect textArea{ 0,0,0,0 };
-
 	int entityWidth = 0;
 	int entityHeight = 0;
 
