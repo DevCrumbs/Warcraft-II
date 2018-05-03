@@ -400,8 +400,7 @@ bool j1Scene::Update(float dt)
 					App->player->HideEntitySelectedInfo();
 					ShowSelectedUnits(units);
 					PlayUnitSound(units, true); //Unit selected sound
-				}
-				
+				}			
 			}
 
 			UnitGroup* group = App->movement->GetGroupByUnits(units);
@@ -511,12 +510,12 @@ bool j1Scene::Update(float dt)
 				// Set the cursor texture
 				if (target != nullptr || critter != nullptr || building != nullptr) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
-					if (r.x != 374)
+					if (r.x != 374 && !App->gui->IsMouseOnUI())
 						App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
 				}
 				else if (playerUnit != nullptr || playerBuilding != nullptr || prisoner != nullptr) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
-					if (r.x != 374)
+					if (r.x != 374 && !App->gui->IsMouseOnUI())
 					App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
 				}
 				else {
@@ -542,33 +541,41 @@ bool j1Scene::Update(float dt)
 						group->DrawShapedGoal(mouseTile);
 
 				// Set a normal or shaped goal
-				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP && !App->gui->IsMouseOnUI()) {
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
 
 					bool isGoal = false;
 
 					// Cross particle where the mouse is
-					App->particles->AddParticle(App->particles->cross, App->player->GetMousePos());
+					if (!App->gui->IsMouseOnUI()) {
 
-					if (group->GetShapedGoalSize() <= 1) {
-					
-						group->ClearShapedGoal();
+						App->particles->AddParticle(App->particles->cross, App->player->GetMousePos());
 
-						if (isGryphonRider && !isGryphonRiderRunestone) {
-							if (group->SetGoal(mouseTile, false)) /// normal goal
-								isGoal = true;
+						if (group->GetShapedGoalSize() <= 1) {
+
+							group->ClearShapedGoal();
+
+							if (isGryphonRider && !isGryphonRiderRunestone) {
+								if (group->SetGoal(mouseTile, false)) /// normal goal
+									isGoal = true;
+							}
+							else {
+								if (group->SetGoal(mouseTile)) /// normal goal
+									isGoal = true;
+							}
 						}
-						else {
-							if (group->SetGoal(mouseTile)) /// normal goal
-								isGoal = true;
-						}
+						else if (group->SetShapedGoal()) /// shaped goal
+
+							isGoal = true;
 					}
-					else if (group->SetShapedGoal()) /// shaped goal
 
-						isGoal = true;
+					if (isGoal || isGoalFromMinimap) {
 
-					if (isGoal) {
+						// Reset the goal from the minimap
+						if (isGoalFromMinimap)
+
+							isGoalFromMinimap = false;
 						
-						PlayUnitSound(units, false); //Unit command sound
+						PlayUnitSound(units, false); // Unit command sound
 
 						uint isPatrol = 0;
 
