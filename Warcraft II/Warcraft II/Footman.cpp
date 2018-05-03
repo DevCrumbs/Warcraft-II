@@ -139,6 +139,27 @@ void Footman::Move(float dt)
 		}
 	}
 
+	if (isSelected) {
+
+		switch (unitState) {
+
+		case UnitState_AttackTarget:
+			LOG("AttackTarget");
+			break;
+		case UnitState_Idle:
+			LOG("Idle");
+			break;
+		case UnitState_Walk:
+			LOG("Walk");
+			break;
+		case UnitState_NoState:
+			LOG("NoState");
+			break;
+		default:
+			break;
+		}
+	}
+
 	if (!isDead && isValid) {
 
 		// ---------------------------------------------------------------------
@@ -201,8 +222,7 @@ void Footman::Move(float dt)
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);
 
-					if (unitState == UnitState_Walk)
-						isRunAway = true;
+					isRunAway = true;
 
 					unitState = UnitState_Walk;
 					unitCommand = UnitCommand_NoCommand;
@@ -307,6 +327,27 @@ void Footman::Move(float dt)
 
 	// PROCESS THE CURRENTLY ACTIVE GOAL
 	brain->Process(dt);
+
+	if (isSelected) {
+
+		switch (unitState) {
+
+		case UnitState_AttackTarget:
+			LOG("AttackTarget");
+			break;
+		case UnitState_Idle:
+			LOG("Idle");
+			break;
+		case UnitState_Walk:
+			LOG("Walk");
+			break;
+		case UnitState_NoState:
+			LOG("NoState");
+			break;
+		default:
+			break;
+		}
+	}
 
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
@@ -554,9 +595,6 @@ void Footman::UnitStateMachine(float dt)
 				}
 			}
 		}
-		else if (unitsAttacking.size() == 0)
-
-			isRunAway = false;
 			
 		break;
 
@@ -639,6 +677,11 @@ void Footman::UnitStateMachine(float dt)
 
 		break;
 	}
+
+	/// DEFENSE
+	if (unitsAttacking.size() == 0)
+
+		isRunAway = false;
 }
 
 // -------------------------------------------------------------
