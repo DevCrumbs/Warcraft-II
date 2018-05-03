@@ -340,6 +340,11 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 			return goalStatus;
 		}
 	}
+	else if (!targetInfo->target->GetIsValid()) {
+
+		goalStatus = GoalStatus_Failed;
+		return goalStatus;
+	}
 	else if (subgoals.size() > 0 && subgoals.front()->GetType() == GoalType_MoveToPosition) {
 
 		// The unit was chasing their target, but the attack distance has been suddenly satisfied
@@ -927,6 +932,11 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		}
 
 		goalStatus = GoalStatus_Completed;
+		return goalStatus;
+	}
+	else if (!targetInfo->target->GetIsValid()) {
+	
+		goalStatus = GoalStatus_Failed;
 		return goalStatus;
 	}
 	/// The target is no longer within the attack nor sight radius of the unit
@@ -1653,6 +1663,7 @@ GoalStatus Goal_FreePrisoner::Process(float dt)
 	ActivateIfInactive();
 
 	if (goalStatus == GoalStatus_Failed)
+
 		return goalStatus;
 
 	/// TODO Sandra: make the prisoner say goodbye or something

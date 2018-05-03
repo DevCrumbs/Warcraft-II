@@ -202,10 +202,6 @@ public:
 	void SetBlitState(bool isBlit);
 	bool GetBlitState() const;
 
-	// Valid
-	void SetIsValid(bool isValid);
-	bool GetIsValid() const;
-
 public:
 
 	ENTITY_TYPE dynamicEntityType = EntityType_NONE;
@@ -266,9 +262,6 @@ protected:
 
 	// Blit
 	bool isBlit = true;
-
-	// Valid
-	bool isValid = true;
 
 	// LifeBar
 	UILifeBar* lifeBar = nullptr;
