@@ -470,27 +470,33 @@ void j1Player::SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity,
 
 void j1Player::UpdateSpawnUnitsStats(list<GroupSpawning>* spawningList)
 {
-	auto barrackIter2 = barracksSpawningListUI.begin();
-	auto barrackIter1 = barrackIter2++;
+	
+	auto SpawnIter2 = barracksSpawningListUI.begin();
+	auto SpawnIter1 = SpawnIter2++;
 	auto lastSpwan = barracksSpawningListUI.end();
 
+	if (spawningList == &gryphoSpawningListUI) {
+		SpawnIter2 = gryphoSpawningListUI.begin();
+		SpawnIter1 = SpawnIter2++;
+		lastSpwan = gryphoSpawningListUI.end();
+	}
 	for (;;)
 	{
-		if ((*barrackIter1).owner == nullptr && (*barrackIter2).owner != nullptr)
-			swap(*barrackIter1, *barrackIter2);
+		if ((*SpawnIter1).owner == nullptr && (*SpawnIter2).owner != nullptr)
+			swap(*SpawnIter1, *SpawnIter2);
 
 
-		barrackIter1 = barrackIter2++;
-		if ((*barrackIter1).owner == nullptr && (*barrackIter2).owner != nullptr)
-			swap(*barrackIter1, *barrackIter2);
-		if (barrackIter2 == lastSpwan)
+		SpawnIter1 = SpawnIter2++;
+		if ((*SpawnIter1).owner == nullptr && (*SpawnIter2).owner != nullptr)
+			swap(*SpawnIter1, *SpawnIter2);
+		if (SpawnIter2 == lastSpwan)
 			break;
-		barrackIter1 = barrackIter2++;
-		if (barrackIter2 == lastSpwan)
+		SpawnIter1 = SpawnIter2++;
+		if (SpawnIter2 == lastSpwan)
 			break;
 
 	}
-
+	
 	int cont = 0;
 	for (list<GroupSpawning>::iterator iterator = spawningList->begin(); iterator != spawningList->end(); ++iterator)
 	{
@@ -1288,6 +1294,17 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	case EntityType_GRYPHON_AVIARY:
 		produceGryphonRiderButton->isActive = true;
 		destroyBuildingButton->isActive = true;
+		for (list<GroupSpawning>::iterator iterator = gryphoSpawningListUI.begin(); iterator != gryphoSpawningListUI.end(); ++iterator)
+		{
+			if ((*iterator).owner != nullptr)
+				if (*(*iterator).owner != nullptr)
+				{
+					(*iterator).entityIcon->isActive = true;
+					(*iterator).entityLifeBar->isActive = true;
+				}
+		}
+		UpdateSpawnUnitsStats(&gryphoSpawningListUI);
+
 		break;
 	case EntityType_CHICKEN_FARM:
 	case EntityType_SCOUT_TOWER:
@@ -1402,18 +1419,22 @@ void j1Player::HideEntitySelectedInfo()
 		{
 			(*iterator).entityIcon->isActive = false;
 			(*iterator).entityLifeBar->isActive = false;
-	//		(*iterator).owner = nullptr;
 		}
 	}
 
 	else if (entitySelectedStats.entitySelected == townHall)
 		upgradeTownHallButton->isActive = false;
 
-	else if (entitySelectedStats.entitySelected == gryphonAviary && gryphonAviary != nullptr) {
+	else if (entitySelectedStats.entitySelected == gryphonAviary) {
 		produceGryphonRiderButton->isActive = false;
+
+		for (list<GroupSpawning>::iterator iterator = gryphoSpawningListUI.begin(); iterator != gryphoSpawningListUI.end(); ++iterator)
+		{
+			(*iterator).entityIcon->isActive = false;
+			(*iterator).entityLifeBar->isActive = false;
+		}
+
 	}
-	else if(produceGryphonRiderButton->isActive)
-		produceGryphonRiderButton->isActive = false;
 
 	if (destroyBuildingButton->isActive)
 		destroyBuildingButton->isActive = false;
@@ -1935,7 +1956,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						j1Timer spawnTimer;
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_FOOTMAN);
 						toSpawnUnitBarracks.push(toSpawnUnit);
-						//newUnitsToSpawn.push_back(toSpawnUnit);
 						toSpawnUnitBarracks.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
 							App->scene->HideTerenasDialog();
@@ -1968,7 +1988,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						j1Timer spawnTimer;
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
 						toSpawnUnitBarracks.push(toSpawnUnit);
-						//newUnitsToSpawn.push_back(toSpawnUnit);
 						toSpawnUnitBarracks.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
 							App->scene->HideTerenasDialog();
@@ -2029,7 +2048,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						j1Timer spawnTimer;
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_GRYPHON_RIDER);
 						toSpawnUnitGrypho.push(toSpawnUnit);
-						//	newUnitsToSpawn.push_back(toSpawnUnit);
 						toSpawnUnitGrypho.back()->toSpawnTimer.Start();
 						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD)
 							App->scene->HideTerenasDialog();

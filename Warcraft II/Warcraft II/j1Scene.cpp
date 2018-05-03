@@ -330,8 +330,15 @@ bool j1Scene::Update(float dt)
 	// Update units selected life bars
 	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
 
-		if ((*iterator).owner != nullptr)
-			(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
+		if ((*iterator).owner != nullptr) {
+			if ((*iterator).owner->GetCurrLife() <= 0) {
+				(*iterator).owner == nullptr;
+				(*iterator).entityIcon->isActive = false;
+				(*iterator).entityLifeBar->isActive = false;
+			}
+			else
+				(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
+		}
 	}
 
 	// *****UNITS*****
