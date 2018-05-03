@@ -180,6 +180,8 @@ public:
 
 public:
 
+	bool isGoalFromMinimap = false;
+
 	// Walkability map
 	int w = 0, h = 0;
 	uchar* data = NULL;

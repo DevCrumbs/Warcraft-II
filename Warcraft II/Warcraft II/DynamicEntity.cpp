@@ -194,13 +194,22 @@ bool DynamicEntity::MouseHover() const
 {
 	int x, y;
 	App->input->GetMousePosition(x, y);
+	iPoint mousePos = App->render->ScreenToWorld(x, y);
 	uint scale = App->win->GetScale();
 
+	/*
 	iPoint screen_pos;
 	screen_pos.x = pos.x + App->render->camera.x;
 	screen_pos.y = pos.y + App->render->camera.y;
+	*/
 
-	return x > screen_pos.x / scale && x < screen_pos.x / scale + size.x && y > screen_pos.y / scale && y < screen_pos.y / scale + size.y;
+	// An offset value is applied ONLY to the units selection
+	iPoint offsetValue = { 15,15 };
+
+	iPoint entityPos = { (int)pos.x + offsetSize.x - offsetValue.x / 2, (int)pos.y + offsetSize.y - offsetValue.y / 2 };
+	iPoint entitySize = { size.x + offsetValue.x, size.y + offsetValue.y };
+
+	return mousePos.x > entityPos.x / scale && mousePos.x < entityPos.x / scale + entitySize.x && mousePos.y > entityPos.y / scale && mousePos.y < entityPos.y / scale + entitySize.y;
 }
 
 // -------------------------------------------------------------

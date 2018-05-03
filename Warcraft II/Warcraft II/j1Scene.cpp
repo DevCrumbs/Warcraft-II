@@ -334,7 +334,6 @@ bool j1Scene::Update(float dt)
 			(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
 	}
 
-
 	// *****UNITS*****
 	/// Units cannot be clicked if a building is being placed or Pause Menu is active
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
@@ -359,6 +358,12 @@ bool j1Scene::Update(float dt)
 
 			if (playerBuilding == nullptr && neutralBuilding == nullptr)
 				App->entities->UnselectAllBuildings();
+
+			Entity* prisonerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
+			if (prisonerUnit != nullptr)
+				prisonerUnit->isSelected = true;
+			else
+				App->entities->UnselectAllPrisoners();
 		}
 
 		int width = mousePos.x - startRectangle.x;
@@ -370,7 +375,6 @@ bool j1Scene::Update(float dt)
 
 			// Draw the rectangle
 			SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
-			//App->render->DrawQuad(mouseRect, 255, 255, 255, 255, false);
 			App->printer->PrintQuad(mouseRect, { 255,255,255,255 });
 
 			// Select units within the rectangle
@@ -396,8 +400,7 @@ bool j1Scene::Update(float dt)
 					App->player->HideEntitySelectedInfo();
 					ShowSelectedUnits(units);
 					PlayUnitSound(units, true); //Unit selected sound
-				}
-				
+				}			
 			}
 
 			UnitGroup* group = App->movement->GetGroupByUnits(units);
@@ -499,20 +502,20 @@ bool j1Scene::Update(float dt)
 					}
 				}
 
-				//Entities to take in acount when the mouse sprite change
+				// Entities to take in account when the mouse sprite changes
 				Entity* playerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
 				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
-				Entity* prisioner = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
+				Entity* prisoner = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
 
 				// Set the cursor texture
 				if (target != nullptr || critter != nullptr || building != nullptr) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
-					if (r.x != 374)
+					if (r.x != 374 && !App->gui->IsMouseOnUI())
 						App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
 				}
-				else if (playerUnit != nullptr || playerBuilding != nullptr || prisioner != nullptr) {
+				else if (playerUnit != nullptr || playerBuilding != nullptr || prisoner != nullptr) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
-					if (r.x != 374)
+					if (r.x != 374 && !App->gui->IsMouseOnUI())
 					App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
 				}
 				else {
@@ -538,33 +541,41 @@ bool j1Scene::Update(float dt)
 						group->DrawShapedGoal(mouseTile);
 
 				// Set a normal or shaped goal
-				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP && !App->gui->IsMouseOnUI()) {
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
 
 					bool isGoal = false;
 
 					// Cross particle where the mouse is
-					App->particles->AddParticle(App->particles->cross, App->player->GetMousePos());
+					if (!App->gui->IsMouseOnUI()) {
 
-					if (group->GetShapedGoalSize() <= 1) {
-					
-						group->ClearShapedGoal();
+						App->particles->AddParticle(App->particles->cross, App->player->GetMousePos());
 
-						if (isGryphonRider && !isGryphonRiderRunestone) {
-							if (group->SetGoal(mouseTile, false)) /// normal goal
-								isGoal = true;
+						if (group->GetShapedGoalSize() <= 1) {
+
+							group->ClearShapedGoal();
+
+							if (isGryphonRider && !isGryphonRiderRunestone) {
+								if (group->SetGoal(mouseTile, false)) /// normal goal
+									isGoal = true;
+							}
+							else {
+								if (group->SetGoal(mouseTile)) /// normal goal
+									isGoal = true;
+							}
 						}
-						else {
-							if (group->SetGoal(mouseTile)) /// normal goal
-								isGoal = true;
-						}
+						else if (group->SetShapedGoal()) /// shaped goal
+
+							isGoal = true;
 					}
-					else if (group->SetShapedGoal()) /// shaped goal
 
-						isGoal = true;
+					if (isGoal || isGoalFromMinimap) {
 
-					if (isGoal) {
+						// Reset the goal from the minimap
+						if (isGoalFromMinimap)
+
+							isGoalFromMinimap = false;
 						
-						PlayUnitSound(units, false); //Unit command sound
+						PlayUnitSound(units, false); // Unit command sound
 
 						uint isPatrol = 0;
 
@@ -581,7 +592,7 @@ bool j1Scene::Update(float dt)
 						/// If all units are in the Patrol command or the AttackTarget command, do not set the MoveToPosition command
 						bool isFull = false;
 
-						if (isPatrol == units.size() || target != nullptr || critter != nullptr)
+						if (isPatrol == units.size() || target != nullptr || critter != nullptr || prisoner != nullptr)
 							isFull = true;
 
 						if (!isFull)

@@ -639,7 +639,6 @@ bool j1Player::Load(pugi::xml_node& save)
 
 }
 
-
 void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent)
 {
 	Entity* ent = (Entity*)staticEntity;
@@ -792,12 +791,13 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 		case EntitiesEvent_HOVER:
 
-			//Mouse turns into a lens when hovering
-			if(staticEntity->staticEntityCategory == StaticEntityCategory_HumanBuilding ||
+			// Mouse turns into a lens when hovering
+			if (staticEntity->staticEntityCategory == StaticEntityCategory_HumanBuilding ||
 				staticEntity->staticEntityCategory == StaticEntityCategory_NeutralBuilding)
-				App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); 
-			
 
+				if (!App->gui->IsMouseOnUI())
+					App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
+			
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
 
 				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
@@ -825,14 +825,18 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 						if (goldMine->GetGoldMineState() == GoldMineState_Untouched) {
 
-							App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 }); //Mouse Hammer
-							App->player->isMouseOnMine = true;
+							if (!App->gui->IsMouseOnUI()) {
+								App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 }); //Mouse Hammer
+								App->player->isMouseOnMine = true;
+							}
 						}
 						else if (goldMine->GetGoldMineState() == GoldMineState_Gathering ||
 							goldMine->GetGoldMineState() == GoldMineState_Gathered) {
 
-							App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); //Mouse Lens
-							App->player->isMouseOnMine = true;
+							if (!App->gui->IsMouseOnUI()) {
+								App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); //Mouse Lens
+								App->player->isMouseOnMine = true;
+							}
 						}
 					}
 				}
@@ -847,14 +851,18 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 					if (runestone->GetRunestoneState() == RunestoneState_Untouched) {
 
-						App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 }); //Mouse Hammer
-						App->player->isMouseOnMine = true;
+						if (!App->gui->IsMouseOnUI()) {
+							App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 }); //Mouse Hammer
+							App->player->isMouseOnMine = true;
+						}
 					}
 					if (runestone->GetRunestoneState() == RunestoneState_Gathering || 
 						runestone->GetRunestoneState() == RunestoneState_Gathered) {
 
-						App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); //Mouse Lens
-						App->player->isMouseOnMine = true;
+						if (!App->gui->IsMouseOnUI()) {
+							App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); //Mouse Lens
+							App->player->isMouseOnMine = true;
+						}
 					}
 				}
 			}
@@ -928,22 +936,27 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 		// Alleria (right click to send a unit to rescue her)
 		/// TODO Sandra: only Footman and Elven Archer must be able to rescue a Prisoner (King Terenas says that Alleria cannot be rescued by using a Gryphon Rider)
-		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON) {
+		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA) {
 
-			list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+			Alleria* alleria = (Alleria*)dynamicEntity;
 
-			if (units.size() > 0) {
+			if (!alleria->IsRescued()) {
 
-				list<DynamicEntity*>::const_iterator it = units.begin();
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
 
-				while (it != units.end()) {
+				if (units.size() > 0) {
 
-					(*it)->SetPrisoner(dynamicEntity);
+					list<DynamicEntity*>::const_iterator it = units.begin();
 
-					it++;
+					while (it != units.end()) {
+
+						(*it)->SetPrisoner(dynamicEntity);
+
+						it++;
+					}
+
+					App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
 				}
-
-				App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
 			}
 			/*
 			else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
@@ -955,7 +968,41 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 			}
 			*/
 		}
+		// Turalyon (right click to send a unit to rescue him)
+		else if (dynamicEntity->dynamicEntityType == EntityType_TURALYON) {
+
+			Turalyon* turalyon = (Turalyon*)dynamicEntity;
+
+			if (!turalyon->IsRescued()) {
+
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+				if (units.size() > 0) {
+
+					list<DynamicEntity*>::const_iterator it = units.begin();
+
+					while (it != units.end()) {
+
+						(*it)->SetPrisoner(dynamicEntity);
+
+						it++;
+					}
+
+					App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+				}
+			}
+			/*
+			else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
+
+			App->scene->terenasDialogTimer.Start();
+			App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
+			App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+
+			}
+			*/
+		}
 		break;
+
 	case EntitiesEvent_LEFT_CLICK:
 
 		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON) 
@@ -964,15 +1011,20 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 		break;
 	case EntitiesEvent_HOVER:
 
-		if (dynamicEntity->entitySide == EntitySide_Player || 
+		if (dynamicEntity->entitySide == EntitySide_Player ||
 			dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON)
-			App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
+
+			if (!App->gui->IsMouseOnUI())
+				App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
 
 		break;
 	case EntitiesEvent_LEAVE:
 		if (dynamicEntity->entitySide == EntitySide_Player ||
 			dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON)
-			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+
+			if (!App->gui->IsMouseOnUI())
+				App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+
 		break;
 	case EntitiesEvent_CREATED:
 		break;
@@ -1206,9 +1258,7 @@ void j1Player::ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect ico
 	}
 
 	entitySelectedStats.entitySelected = currentEntity;
-
 }
-
 
 //Show buttons depends which entity is slected
 void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
@@ -1248,7 +1298,6 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	default:
 		break;
 	}
-
 }
 
 void j1Player::ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range)
@@ -1287,7 +1336,6 @@ void j1Player::MakeUnitMenu(Entity* entity)
 		ShowEntitySelectedInfo(entity->GetStringLife(), "Gryphon Rider", { 700, 287, 50, 41 }, entity);
 		ShowDynEntityLabelsInfo("Damage: 12", "Speed: 14", "Sight: 6", "Range: 4");
 	}
-	
 }
 
 void j1Player::MakePrisionerMenu(Entity * entity)
@@ -1771,11 +1819,34 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_CLICK:
-			if (UIelem == minimap)
-			{
-				minimap->GetEntitiesGoal();
+
+			// Order units to move to the minimap position
+			if (UIelem == minimap) {
+
+				iPoint goalPos = minimap->GetEntitiesGoal();
+				iPoint goalTile = App->map->WorldToMap(goalPos.x, goalPos.y);
+
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+				if (units.size() > 0) {
+
+					UnitGroup* group = App->movement->GetGroupByUnits(units);
+
+					if (group == nullptr)
+
+						// Selected units will now behave as a group
+						group = App->movement->CreateGroupFromUnits(units);
+
+					if (group != nullptr) {
+
+						if (group->SetGoal(goalTile)) /// normal goal
+
+							App->scene->isGoalFromMinimap = true;
+					}
+				}
 			}
 			break;
+
 		case UI_EVENT_MOUSE_LEFT_CLICK:
 
 			if (UIelem == upgradeTownHallButton) {

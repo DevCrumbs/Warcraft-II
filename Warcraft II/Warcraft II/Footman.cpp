@@ -139,27 +139,6 @@ void Footman::Move(float dt)
 		}
 	}
 
-	if (isSelected) {
-
-		switch (unitState) {
-
-		case UnitState_AttackTarget:
-			LOG("AttackTarget");
-			break;
-		case UnitState_Idle:
-			LOG("Idle");
-			break;
-		case UnitState_Walk:
-			LOG("Walk");
-			break;
-		case UnitState_NoState:
-			LOG("NoState");
-			break;
-		default:
-			break;
-		}
-	}
-
 	if (!isDead && isValid) {
 
 		// ---------------------------------------------------------------------
@@ -328,6 +307,7 @@ void Footman::Move(float dt)
 	// PROCESS THE CURRENTLY ACTIVE GOAL
 	brain->Process(dt);
 
+	/*
 	if (isSelected) {
 
 		switch (unitState) {
@@ -344,10 +324,13 @@ void Footman::Move(float dt)
 		case UnitState_NoState:
 			LOG("NoState");
 			break;
+		case UnitState_RescuePrisoner:
+			LOG("Rescue prisoner");
 		default:
 			break;
 		}
 	}
+	*/
 
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
@@ -571,9 +554,11 @@ void Footman::UnitStateMachine(float dt)
 
 	case UnitState_Walk:
 
+		if (IsUnitGatheringGold() && IsUnitHealingRunestone() && IsUnitRescuingPrisoner())
+			break;
+
 		// DEFENSE NOTE: the unit automatically attacks back their attacking units (if they have any attacking units) to defend themselves
 		/// TODO Sandra: units attacking or units hitting?
-
 		if (unitsAttacking.size() > 0) {
 
 			if (singleUnit->IsFittingTile()) {
@@ -599,6 +584,9 @@ void Footman::UnitStateMachine(float dt)
 		break;
 
 	case UnitState_Idle:
+
+		if (IsUnitGatheringGold() && IsUnitHealingRunestone() && IsUnitRescuingPrisoner())
+			break;
 
 		// If the unit is doing nothing, make it look around
 		if (brain->GetSubgoalsList().size() == 0)
