@@ -29,9 +29,14 @@ struct GameSounds {
 	FX destroyBuild = 0;
 	FX humanDeath = 0;
 	FX orcDeath = 0;
+	FX dragonDeath = 0;
 	FX prisionerRescue = 0;
 	FX boarDeath = 0;
 	FX sheepDeath = 0;
+
+	//Base under attack
+	FX baseUnderAttack1;
+	FX baseUnderAttack2;
 
 	//Archer
 	FX archerCommand1 = 0;
@@ -61,6 +66,7 @@ struct GameSounds {
 	FX griffonReady = 0;
 	FX griffonSelected = 0;
 	FX griffonDeath = 0;
+	FX griffonAttack = 0;
 
 	FX axeThrow = 0;
 	FX arrowThrow = 0;
@@ -148,9 +154,14 @@ private:
 
 	string humanDeadSound;
 	string orcDeadSound;
+	string dragonDeadSound;
 	string prisonerRescueSound;
 	string crittersBoarDead;
 	string crittersSheepDead;
+
+	//Base under attack
+	string baseUnderAttackSound1;
+	string baseUnderAttackSound2;
 
 	//Archer
 	string archerGoToPlaceSound1;
@@ -180,6 +191,7 @@ private:
 	string griffonReadySound; 
 	string griffonSelectedSound;  
 	string griffonDeathSound; 
+	string griffonAttackSound;
 	
 	string axeThrowSound;
 	string bowFireSound;

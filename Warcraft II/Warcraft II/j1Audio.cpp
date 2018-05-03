@@ -83,7 +83,10 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	pugi::xml_node unitsSounds = sounds.child("unitsPaths");
 	humanDeadSound = unitsSounds.attribute("humanDeadSound").as_string();
 	orcDeadSound = unitsSounds.attribute("orcDeadSound").as_string();
+	dragonDeadSound = unitsSounds.attribute("dragonDeadSound").as_string();
 	prisonerRescueSound = unitsSounds.attribute("prisonerRescue").as_string();
+	baseUnderAttackSound1 = unitsSounds.attribute("baseUnderAttack1").as_string();
+    baseUnderAttackSound2 = unitsSounds.attribute("baseUnderAttack2").as_string();
 
 	pugi::xml_node crittersSounds = sounds.child("crittersPaths");
 	crittersBoarDead = crittersSounds.attribute("boarDead").as_string();
@@ -117,6 +120,7 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	griffonReadySound = griffonSounds.attribute("goToPlace").as_string();
 	griffonSelectedSound = griffonSounds.attribute("selected").as_string();
 	griffonDeathSound = griffonSounds.attribute("death").as_string();
+	griffonAttackSound = griffonSounds.attribute("attack").as_string();
 
 	pugi::xml_node attackSounds = sounds.child("attackPaths");
 	axeThrowSound = attackSounds.attribute("axeThrow").as_string();
@@ -311,11 +315,17 @@ void j1Audio::ChargeFX()
 	gameSounds.repairBuild = App->audio->LoadFx(repairBuildingSound.data()); //10 repair building sound
 	gameSounds.destroyBuild = App->audio->LoadFx(destroyBuildingSound.data()); //11 destroy building sound
 	
+	//Death and rescue sounds
 	gameSounds.humanDeath = App->audio->LoadFx(humanDeadSound.data()); 
 	gameSounds.orcDeath = App->audio->LoadFx(orcDeadSound.data()); 
+	gameSounds.dragonDeath = App->audio->LoadFx(dragonDeadSound.data());
 	gameSounds.prisionerRescue = App->audio->LoadFx(prisonerRescueSound.data()); 
 	gameSounds.boarDeath = App->audio->LoadFx(crittersBoarDead.data()); 
 	gameSounds.sheepDeath = App->audio->LoadFx(crittersSheepDead.data()); 
+
+	//Base Under Attack
+	gameSounds.baseUnderAttack1 = App->audio->LoadFx(baseUnderAttackSound1.data());
+	gameSounds.baseUnderAttack2 = App->audio->LoadFx(baseUnderAttackSound2.data());
 
 	//Archer
 	gameSounds.archerCommand1 = App->audio->LoadFx(archerGoToPlaceSound1.data()); 
@@ -345,6 +355,7 @@ void j1Audio::ChargeFX()
 	gameSounds.griffonReady = App->audio->LoadFx(griffonReadySound.data());
 	gameSounds.griffonSelected = App->audio->LoadFx(griffonSelectedSound.data());
 	gameSounds.griffonDeath = App->audio->LoadFx(griffonDeathSound.data());
+	gameSounds.griffonAttack = App->audio->LoadFx(griffonAttackSound.data());
 	
 	gameSounds.axeThrow = App->audio->LoadFx(axeThrowSound.data()); 
 	gameSounds.arrowThrow = App->audio->LoadFx(bowFireSound.data()); 
