@@ -169,6 +169,7 @@ void UIMinimap::HandleInput(float dt)
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		{
 			entitiesGoal = MinimapToMap();
+			entitiesGoal = App->map->MapToWorld(entitiesGoal.x, entitiesGoal.y);
 			if (listener != nullptr)
 			{
 				listener->OnUIEvent(this, UI_EVENT_MOUSE_RIGHT_CLICK);

@@ -1598,8 +1598,6 @@ void j1Scene::DestroyAllUI()
 	App->gui->RemoveElem((UIElement**)&buildingLabel);
 	App->gui->RemoveElem((UIElement**)&buildingButton);
 	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
-	App->gui->RemoveElem((UIElement**)&minimap);
-
 
 	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
 		App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
@@ -1610,8 +1608,6 @@ void j1Scene::DestroyAllUI()
 
 	App->gui->RemoveElem((UIElement**)&commandPatrolButton);
 	App->gui->RemoveElem((UIElement**)&commandStopButton);
-
-	
 }
 
 PauseMenuActions j1Scene::GetPauseMenuActions()

@@ -531,6 +531,8 @@ bool j1Player::CleanUp()
 
 		DeleteEntitiesMenu();
 		DeleteGroupSelectionButtons();
+
+		App->gui->RemoveElem((UIElement**)&minimap);
 	}
 
 	// Entities
@@ -1401,6 +1403,8 @@ void j1Player::DeleteEntitiesMenu()
 	App->gui->RemoveElem((UIElement**)&produceElvenArcherButton);
 	App->gui->RemoveElem((UIElement**)&produceFootmanButton);
 	App->gui->RemoveElem((UIElement**)&producePaladinButton);
+	App->gui->RemoveElem((UIElement**)&produceGryphonRiderButton);
+
 	for (list<GroupSpawning>::iterator barrackIter = barracksSpawningListUI.begin(), gryphIter = gryphoSpawningListUI.begin(); barrackIter != barracksSpawningListUI.end(); ++barrackIter, ++gryphIter)
 	{
 		//Barracks Spawning
@@ -1411,8 +1415,6 @@ void j1Player::DeleteEntitiesMenu()
 		//Gryphon Spawning
 		App->gui->RemoveElem((UIElement**)&(*gryphIter).entityIcon);
 		App->gui->RemoveElem((UIElement**)&(*gryphIter).entityLifeBar);
-
-
 	}
 	barracksSpawningListUI.clear();
 	gryphoSpawningListUI.clear();

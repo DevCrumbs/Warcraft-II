@@ -92,6 +92,7 @@ public:
 
 	bool DestroyElement(UIElement** elem);
 	bool RemoveElem(UIElement ** elem);
+	bool ClearUI();
 	bool ClearMapTextures();
 
 	const SDL_Texture* GetAtlas() const;

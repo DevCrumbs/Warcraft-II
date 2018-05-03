@@ -316,6 +316,27 @@ bool j1Gui::RemoveElem(UIElement** elem)
 	return ret;
 }
 
+bool j1Gui::ClearUI()
+{
+	bool ret = true;
+
+	UIElement* cursor = nullptr;
+
+	for (list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); ++iterator)
+	{
+		if ((*iterator)->type != UIE_TYPE_CURSOR)
+			delete *iterator;
+		else cursor = *iterator;
+	}
+	UIElementsList.clear();
+
+	if (cursor != nullptr)
+		UIElementsList.push_back(cursor);
+
+	return ret;
+}
+
+
 bool j1Gui::ClearMapTextures()
 {
 	bool ret = true;

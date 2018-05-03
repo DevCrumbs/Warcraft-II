@@ -237,8 +237,6 @@ public:
 
 	iPoint basePos{ 0,0 };
 
-	UIMinimap* minimap = nullptr;
-
 	list<DynamicEntity*> units;
 	list<GroupSelectedElements> groupElementsList;
 
