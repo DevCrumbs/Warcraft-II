@@ -25,7 +25,7 @@
 
 Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GruntInfo& gruntInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), gruntInfo(gruntInfo)
 {
-	//pathPlanner->SetIsInSameRoomChecked(true);
+	pathPlanner->SetIsInSameRoomChecked(true);
 
 	// XML loading
 	/// Animations
@@ -83,7 +83,8 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
 
 	// Different behaviors for units on the base and units around the map
-	brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
+	if (!App->map->IsOnBase(spawnTile))
+		brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
 void Grunt::Move(float dt)
