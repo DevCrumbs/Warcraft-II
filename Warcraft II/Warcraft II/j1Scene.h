@@ -133,6 +133,7 @@ public:
 	void DebugKeys();
 
 	void CheckCameraMovement(float dt);
+	int GetCamSpeed(int pos);
 	//CreatingUI
 	void LoadInGameUI();
 	void LoadBuildingMenu();
