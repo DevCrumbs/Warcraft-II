@@ -43,6 +43,8 @@ public:
 
 	void HandleInput(float dt);
 
+	iPoint GetEntitiesGoal() const;
+
 	iPoint GetMousePos();
 
 	iPoint MinimapToMap(iPoint pos);
@@ -90,6 +92,8 @@ private:
 	int offsetY = 0;
 	int prevOffsetX = 0;
 	int prevOffsetY = 0;
+
+	iPoint entitiesGoal{ 0,0 };
 
 	list<DynamicEntity*>* activeDynamicEntities;
 	list<StaticEntity*>* activeStaticEntities;

@@ -36,7 +36,6 @@
 #include "UIImage.h"
 #include "UICursor.h"
 #include "UISlider.h"
-#include "UIMinimap.h"
 #include "UILifeBar.h"
 
 
@@ -204,15 +203,6 @@ bool j1Scene::LoadNewMap(int map)
 
 		ret = App->map->Load(path);
 	}
-
-	UIMinimap_Info info;
-
-	info.entityHeight = 32;
-	info.entityHeight = 32;
-	info.minimapInfo = { 30,31,160,161 };
-
-	minimap = App->gui->CreateUIMinimap(info);
-	//minimap->SetMinimap({ 30,31,160,161 }, 32, 32);
 
 	return ret;
 }
