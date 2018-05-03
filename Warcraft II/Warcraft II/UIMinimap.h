@@ -85,6 +85,8 @@ private:
 	SDL_Texture* lowLevelMapTexture = nullptr;
 	SDL_Texture* currentMapTexture = nullptr;
 
+	KEY_STATE moveMinimap = KEY_IDLE;
+
 	SDL_Rect hiLevelTextureSize{ 0,0,0,0 };
 	SDL_Rect lowLevelTextureSize{ 0,0,0,0 };
 

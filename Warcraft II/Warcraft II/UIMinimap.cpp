@@ -29,6 +29,8 @@ UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j
 	width = info.minimapInfo.w;
 	height = info.minimapInfo.h;
 
+	moveMinimap = KEY_REPEAT;
+
 	priority = PriorityDraw_FRAMEWORK;
 
 	LoadMap();
@@ -47,6 +49,9 @@ UIMinimap::UIMinimap() : UIElement({ 0,0 }, nullptr, nullptr, false)
 UIMinimap::~UIMinimap()
 {
 	SDL_DestroyTexture(hiLevelMapTexture);
+	SDL_DestroyTexture(lowLevelMapTexture);
+
+	hiLevelMapTexture = lowLevelMapTexture = currentMapTexture = nullptr;
 }
 
 void UIMinimap::Update(float dt)
@@ -157,7 +162,7 @@ void UIMinimap::HandleInput(float dt)
 {
 	if (MouseHover())
 	{
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == moveMinimap)
 		{
 			iPoint newCameraPos = MinimapToMap();
 			App->render->camera.x = -newCameraPos.x + App->render->camera.w / 2;
@@ -185,6 +190,7 @@ void UIMinimap::HandleInput(float dt)
 			currentMapTexture = hiLevelMapTexture;
 			currentScaleFactor = hiLevelScaleFactor;
 			offsetX = offsetY = 0;
+			moveMinimap = KEY_REPEAT;
 		}
 		else
 		{
@@ -192,12 +198,10 @@ void UIMinimap::HandleInput(float dt)
 			zoomFactor = 1;
 			currentMapTexture = lowLevelMapTexture;
 			currentScaleFactor = lowLevelScaleFactor;
+			moveMinimap = KEY_DOWN;
 		}
 		
 	}
-
-	
-
 }
 
 iPoint UIMinimap::GetMousePos() 
@@ -303,9 +307,7 @@ bool UIMinimap::LoadMap()
 
 					SDL_Rect* section = &rect;
 					iPoint world = App->map->MapToWorld(i, j);
-				//	world.x *= scaleFactor;
-				//	world.y *= scaleFactor;
-					//	ret = SaveInRenderer(tex, world.x, world.y, section, scaleFactor, renderer);
+
 					ret = SaveInRenderer(tex, world.x, world.y, section, 1, renderer);
 				}
 			}
@@ -313,8 +315,11 @@ bool UIMinimap::LoadMap()
 	}
 	App->tex->UnLoad(tex);
 
-	hiLevelTextureSize = { 0,0,int(App->map->data.width * App->map->data.tileWidth * hiLevelScaleFactor), int(App->map->data.height * App->map->data.tileHeight * hiLevelScaleFactor) };
-	lowLevelTextureSize = { 0,0, int(40 * 32 * lowLevelScaleFactor),int(40 * 32 * lowLevelScaleFactor) };
+	hiLevelTextureSize = { 0,0,int(App->map->data.width * App->map->data.tileWidth * hiLevelScaleFactor), 
+							int(App->map->data.height * App->map->data.tileHeight * hiLevelScaleFactor) };
+
+	lowLevelTextureSize = { 0,0, int(App->map->data.width * App->map->data.tileWidth * lowLevelScaleFactor), 
+							int(App->map->data.height * App->map->data.tileHeight * lowLevelScaleFactor) };
 
 	int originalW = hiLevelTextureSize.w;
 	int originalH = hiLevelTextureSize.h;
