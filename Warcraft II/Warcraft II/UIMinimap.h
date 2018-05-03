@@ -52,6 +52,9 @@ public:
 	bool SetMinimap(SDL_Rect pos, int entityW, int entityH);
 	bool LoadMap();
 
+	SDL_Texture* CreateMinimapTexture(SDL_Rect mapSize, SDL_Renderer* renderer, SDL_Surface* mapSurface, float scaleFactor);
+
+
 	bool SaveInRenderer(const SDL_Texture* texture, int x, int y, const SDL_Rect* section = NULL, float scale = 1, SDL_Renderer* renderer = nullptr);
 
 
@@ -72,24 +75,33 @@ private:
 	int entityWidth = 0;
 	int entityHeight = 0;
 
-	float scaleFactor = 0.0f;
+	float currentScaleFactor = 0.0f;
+	float hiLevelScaleFactor = 0.0f;
+	float lowLevelScaleFactor = 0.0f;
 
 	SDL_Rect minimapInfo = { 0,0,0,0 };
 
-	SDL_Texture* mapTexture = nullptr;
+	SDL_Texture* hiLevelMapTexture = nullptr;
+	SDL_Texture* lowLevelMapTexture = nullptr;
+	SDL_Texture* currentMapTexture = nullptr;
 
-	SDL_Rect textureSize{ 0,0,0,0 };
+	SDL_Rect hiLevelTextureSize{ 0,0,0,0 };
+	SDL_Rect lowLevelTextureSize{ 0,0,0,0 };
 
 	mutable list<Entity*> entities;
 
 	iPoint cameraOffset{ 0,0 };
 
-	int maxOffsetX = 0;
-	int maxOffsetY = 0;
-	int offsetX = 0;
-	int offsetY = 0;
-	int prevOffsetX = 0;
-	int prevOffsetY = 0;
+	mutable int maxOffsetX = 0;
+	mutable int maxOffsetY = 0;
+	mutable int offsetX = 0;
+	mutable int offsetY = 0;
+	mutable int prevOffsetX = 0;
+	mutable int prevOffsetY = 0;
+
+	int zoomFactor = 1;
+
+	bool lowLevel = false;
 
 	list<DynamicEntity*>* activeDynamicEntities;
 	list<StaticEntity*>* activeStaticEntities;
