@@ -919,14 +919,3 @@ bool DynamicEntity::GetBlitState() const
 {
 	return isBlit;
 }
-
-// Valid
-void DynamicEntity::SetIsValid(bool isValid)
-{
-	this->isValid = isValid;
-}
-
-bool DynamicEntity::GetIsValid() const
-{
-	return isValid;
-}

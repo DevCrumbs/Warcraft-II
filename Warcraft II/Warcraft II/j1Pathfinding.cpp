@@ -109,14 +109,21 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 	iPoint cell;
 	uint before = list_to_fill.pathNodeList.size();
 
+	iPoint originPos = { -1, -1 };
+
+	if (origin.x != -1 && origin.y != -1)
+
+		originPos = App->map->MapToWorld(origin.x, origin.y);
+
 	cell.create(pos.x, pos.y + 1);
+	iPoint cellPos = App->map->MapToWorld(cell.x, cell.y);
 	if (isWalkabilityChecked) {
 
 		if (App->pathfinding->IsWalkable(cell)) {
 
 			if (origin.x != -1 && origin.y != -1) {
 
-				if (App->map->IsGoalOnRoom(origin, cell))
+				if (App->map->IsGoalOnRoom(originPos, cellPos))
 					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 			}
 			else
@@ -127,7 +134,7 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 
 		if (origin.x != -1 && origin.y != -1) {
 
-			if (App->map->IsGoalOnRoom(origin, cell))
+			if (App->map->IsGoalOnRoom(originPos, cellPos))
 				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 		}
 		else
@@ -136,13 +143,14 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 
 	// south
 	cell.create(pos.x, pos.y - 1);
+	cellPos = App->map->MapToWorld(cell.x, cell.y);
 	if (isWalkabilityChecked) {
 
 		if (App->pathfinding->IsWalkable(cell)) {
 
 			if (origin.x != -1 && origin.y != -1) {
 
-				if (App->map->IsGoalOnRoom(origin, cell))
+				if (App->map->IsGoalOnRoom(originPos, cellPos))
 					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 			}
 			else
@@ -153,7 +161,7 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 	
 		if (origin.x != -1 && origin.y != -1) {
 
-			if (App->map->IsGoalOnRoom(origin, cell))
+			if (App->map->IsGoalOnRoom(originPos, cellPos))
 				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 		}
 		else
@@ -162,13 +170,14 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 
 	// east
 	cell.create(pos.x + 1, pos.y);
+	cellPos = App->map->MapToWorld(cell.x, cell.y);
 	if (isWalkabilityChecked) {
 		
 		if (App->pathfinding->IsWalkable(cell)) {
 
 			if (origin.x != -1 && origin.y != -1) {
 
-				if (App->map->IsGoalOnRoom(origin, cell))
+				if (App->map->IsGoalOnRoom(originPos, cellPos))
 					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 			}
 			else
@@ -179,7 +188,7 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 	
 		if (origin.x != -1 && origin.y != -1) {
 
-			if (App->map->IsGoalOnRoom(origin, cell))
+			if (App->map->IsGoalOnRoom(originPos, cellPos))
 				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 		}
 		else
@@ -188,13 +197,14 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 
 	// west
 	cell.create(pos.x - 1, pos.y);
+	cellPos = App->map->MapToWorld(cell.x, cell.y);
 	if (isWalkabilityChecked) {
 		
 		if (App->pathfinding->IsWalkable(cell)) {
 
 			if (origin.x != -1 && origin.y != -1) {
 
-				if (App->map->IsGoalOnRoom(origin, cell))
+				if (App->map->IsGoalOnRoom(originPos, cellPos))
 					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 			}
 			else
@@ -205,7 +215,7 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 	
 		if (origin.x != -1 && origin.y != -1) {
 
-			if (App->map->IsGoalOnRoom(origin, cell))
+			if (App->map->IsGoalOnRoom(originPos, cellPos))
 				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this));
 		}
 		else
@@ -214,13 +224,14 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 
 	// north-west
 	cell.create(pos.x + 1, pos.y - 1);
+	cellPos = App->map->MapToWorld(cell.x, cell.y);
 	if (isWalkabilityChecked) {
 		
 		if (App->pathfinding->IsWalkable(cell)) {
 
 			if (origin.x != -1 && origin.y != -1) {
 
-				if (App->map->IsGoalOnRoom(origin, cell))
+				if (App->map->IsGoalOnRoom(originPos, cellPos))
 					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 			}
 			else
@@ -231,7 +242,7 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 	
 		if (origin.x != -1 && origin.y != -1) {
 
-			if (App->map->IsGoalOnRoom(origin, cell))
+			if (App->map->IsGoalOnRoom(originPos, cellPos))
 				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 		}
 		else
@@ -240,13 +251,14 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 
 	// south-west
 	cell.create(pos.x - 1, pos.y - 1);
+	cellPos = App->map->MapToWorld(cell.x, cell.y);
 	if (isWalkabilityChecked) {
 
 		if (App->pathfinding->IsWalkable(cell)) {
 
 			if (origin.x != -1 && origin.y != -1) {
 
-				if (App->map->IsGoalOnRoom(origin, cell))
+				if (App->map->IsGoalOnRoom(originPos, cellPos))
 					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 			}
 			else
@@ -257,7 +269,7 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 	
 		if (origin.x != -1 && origin.y != -1) {
 
-			if (App->map->IsGoalOnRoom(origin, cell))
+			if (App->map->IsGoalOnRoom(originPos, cellPos))
 				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 		}
 		else
@@ -266,13 +278,14 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 
 	// north-west
 	cell.create(pos.x + 1, pos.y + 1);
+	cellPos = App->map->MapToWorld(cell.x, cell.y);
 	if (isWalkabilityChecked) {
 
 		if (App->pathfinding->IsWalkable(cell)) {
 
 			if (origin.x != -1 && origin.y != -1) {
 
-				if (App->map->IsGoalOnRoom(origin, cell))
+				if (App->map->IsGoalOnRoom(originPos, cellPos))
 					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 			}
 			else
@@ -283,7 +296,7 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 	
 		if (origin.x != -1 && origin.y != -1) {
 
-			if (App->map->IsGoalOnRoom(origin, cell))
+			if (App->map->IsGoalOnRoom(originPos, cellPos))
 				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 		}
 		else
@@ -292,13 +305,14 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 
 	// south-est
 	cell.create(pos.x - 1, pos.y + 1);
+	cellPos = App->map->MapToWorld(cell.x, cell.y);
 	if (isWalkabilityChecked) {
 
 		if (App->pathfinding->IsWalkable(cell)) {
 
 			if (origin.x != -1 && origin.y != -1) {
 
-				if (App->map->IsGoalOnRoom(origin, cell))
+				if (App->map->IsGoalOnRoom(originPos, cellPos))
 					list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 			}
 			else
@@ -309,7 +323,7 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill, bool isWalkabilityC
 	
 		if (origin.x != -1 && origin.y != -1) {
 
-			if (App->map->IsGoalOnRoom(origin, cell))
+			if (App->map->IsGoalOnRoom(originPos, cellPos))
 				list_to_fill.pathNodeList.push_back(PathNode(-1, -1, cell, this, true));
 		}
 		else
@@ -539,7 +553,10 @@ bool j1PathFinding::InitializeAStar(const iPoint& origin, const iPoint& destinat
 
 		this->origin = origin;
 
-		if (!App->map->IsGoalOnRoom(origin, destination))
+		iPoint originPos = App->map->MapToWorld(origin.x, origin.y);
+		iPoint destinationPos = App->map->MapToWorld(destination.x, destination.y);
+
+		if (!App->map->IsGoalOnRoom(originPos, destinationPos))
 			return false; 
 	}
 
