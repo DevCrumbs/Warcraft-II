@@ -31,17 +31,23 @@ In order to complete this objective, the player will have to create troops and c
 
 # Controls
 
-Space: go to player base
-Up arrow or W: move the camera up
-Down arrow or S: move the camera down
-Left arrow or A: move the camera left
-Right arrow or D: move the camera right
+Space: Go to player base
+Up arrow or W: Move the camera up
+Down arrow or S: Move the camera down
+Left arrow or A: Move the camera left
+Right arrow or D: Move the camera right
+
+For the minimap:
+
+TAB: Change minimap zoom
+Mouse Left click: Move camera to the pressed location
+Mouse Right click: Send a group of units to a destination
 
 For the units:
-Mouse Left click: select a group of units
-Mouse Right click: send a group of units to a destination
-Mouse Right click on an enemy or a critter: attack the enemy/critter
-Mouse Right click on a Gold Mine or Runestone: (if there is a unit nearby) collect the gold / heal the units.
+Mouse Left click: Select a group of units
+Mouse Right click: Send a group of units to a destination
+Mouse Right click On an enemy or a critter: attack the enemy/critter
+Mouse Right click On a Gold Mine or Runestone: (if there is a unit nearby) collect the gold / heal the units.
 
 Z: stop the units selected
 X: set command patrol to the units selected (click a tile to patrol there)
