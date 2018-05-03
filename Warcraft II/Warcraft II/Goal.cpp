@@ -959,7 +959,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		case EntityType_GRYPHON_RIDER:
 
 			// Flames
-
+			App->audio->PlayFx(App->audio->GetFX().griffonAttack, 0);
 			{
 				GryphonRider* gryphonRider = (GryphonRider*)owner;
 
@@ -1040,7 +1040,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		case EntityType_DRAGON:
 
 			// Flames
-
+			App->audio->PlayFx(App->audio->GetFX().griffonAttack, 0);
 		{
 			Dragon* dragon = (Dragon*)owner;
 
