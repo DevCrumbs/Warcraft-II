@@ -37,23 +37,31 @@ public:
 
 	~UIMinimap();
 
+	void Update(float dt);
+
 	void Draw() const;
 
-	void Update(float dt) {}
-	
+	void HandleInput(float dt);
+
+	iPoint GetMousePos();
+
+	iPoint MinimapToMap(iPoint pos);
+	iPoint MinimapToMap();
+
 
 	bool SetMinimap(SDL_Rect pos, int entityW, int entityH);
 	bool LoadMap();
 
 	bool SaveInRenderer(const SDL_Texture* texture, int x, int y, const SDL_Rect* section = NULL, float scale = 1, SDL_Renderer* renderer = nullptr);
 
-	bool AddEntity(Entity* entity);
 
 
 public:
 
 	bool tab = false;
 	bool nextEvent = false;
+
+	bool movingMap = false;
 
 
 private:
@@ -70,10 +78,18 @@ private:
 
 	SDL_Texture* mapTexture = nullptr;
 
+	SDL_Rect textureSize{ 0,0,0,0 };
+
 	mutable list<Entity*> entities;
+
+	iPoint cameraOffset{ 0,0 };
 
 	int maxOffsetX = 0;
 	int maxOffsetY = 0;
+	int offsetX = 0;
+	int offsetY = 0;
+	int prevOffsetX = 0;
+	int prevOffsetY = 0;
 
 	list<DynamicEntity*>* activeDynamicEntities;
 	list<StaticEntity*>* activeStaticEntities;

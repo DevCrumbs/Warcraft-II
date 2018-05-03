@@ -1884,8 +1884,6 @@ bool SingleUnit::GetReadyForNewMove()
 
 		movementState = MovementState_WaitForPath;
 
-		if (unit->isSelected)
-			LOG("GetReady!");
 		ret = true;
 	}
 

@@ -350,7 +350,7 @@ bool j1Scene::Update(float dt)
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 
 		// Select units by mouse click
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN && !App->gui->IsMouseOnUI()) {
 			startRectangle = mousePos;
 
 			Entity* entity = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
@@ -376,7 +376,7 @@ bool j1Scene::Update(float dt)
 
 		/// SELECT UNITS
 		// Select units by rectangle drawing
-		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
+		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && !App->gui->IsMouseOnUI()) {
 
 			// Draw the rectangle
 			SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
@@ -400,7 +400,7 @@ bool j1Scene::Update(float dt)
 
 		if (units.size() > 0) {
 
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP && !App->gui->IsMouseOnUI()) {
 
 				if (!CompareSelectedUnitsLists(units)) {
 					App->player->HideEntitySelectedInfo();
@@ -434,7 +434,7 @@ bool j1Scene::Update(float dt)
 				/// Enemy
 				Entity* target = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
 
-				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr) {
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && target != nullptr && !App->gui->IsMouseOnUI()) {
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
@@ -460,7 +460,7 @@ bool j1Scene::Update(float dt)
 				/// Critter
 				Entity* critter = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
 
-				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr) {
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && critter != nullptr && !App->gui->IsMouseOnUI()) {
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
@@ -486,7 +486,7 @@ bool j1Scene::Update(float dt)
 				/// Buildings
 				Entity* building = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
 
-				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr) {
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && building != nullptr && !App->gui->IsMouseOnUI()) {
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
@@ -540,7 +540,7 @@ bool j1Scene::Update(float dt)
 					isGryphonRiderRunestone = App->entities->AreAllUnitsDoingSomething(units, UnitState_HealRunestone);
 
 				// Draw a shaped goal
-				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT && !App->gui->IsMouseOnUI())
 
 					if (isGryphonRider && !isGryphonRiderRunestone)
 						group->DrawShapedGoal(mouseTile, false);
@@ -548,7 +548,7 @@ bool j1Scene::Update(float dt)
 						group->DrawShapedGoal(mouseTile);
 
 				// Set a normal or shaped goal
-				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP && !App->gui->IsMouseOnUI()) {
 
 					bool isGoal = false;
 
@@ -873,7 +873,10 @@ void j1Scene::DebugKeys()
 
 }
 
-void j1Scene::CheckCameraMovement(float dt) {
+void j1Scene::CheckCameraMovement(float dt) 
+{
+	int x = 0, y = 0;
+	App->input->GetMousePosition(x, y);
 
 	mouse = App->player->GetMousePos();
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
@@ -900,19 +903,49 @@ void j1Scene::CheckCameraMovement(float dt) {
 
 	//Move with mouse
 	////UP
-	if (mouse.y <= (camMovMargin - App->render->camera.y) /scale && App->render->camera.y <= 0)
-		App->render->camera.y += camSpeed * dt;
+	if (mouse.y <= (camMovMargin - App->render->camera.y) / scale && App->render->camera.y <= 0)
+	{
+		App->render->camera.y += GetCamSpeed(y) * dt;
+	}
 	////DOWN
 	if (mouse.y >= (height - (camMovMargin + 30) - App->render->camera.y) / scale && App->render->camera.y >= downMargin)
-		App->render->camera.y -= camSpeed * dt;
+	{
+		int newY = App->win->height - y;
+		App->render->camera.y -= GetCamSpeed(newY) * dt;
+	}
 	////LEFT
 	if (mouse.x <= (camMovMargin - App->render->camera.x) / scale && App->render->camera.x <= 0)
-		App->render->camera.x += camSpeed * dt;
+	{
+		App->render->camera.x += GetCamSpeed(x) * dt;
+	}
 	////RIGHT
 	if (mouse.x >= (width - (camMovMargin + 30) - App->render->camera.x) / scale && App->render->camera.x >= rightMargin)
-		App->render->camera.x -= camSpeed * dt;
-
+	{
+		 int newX = App->win->width - x;
+		App->render->camera.x -= GetCamSpeed(newX) * dt;
+	}
 }
+
+int j1Scene::GetCamSpeed(int pos)
+{
+	int speed = 0;
+
+	int distanceTo = -(pos - camMovMargin);
+
+	if (distanceTo < 0)
+		distanceTo = 0;
+	else if (distanceTo > camMovMargin)
+	{
+		distanceTo = camMovMargin;
+	}
+
+	float proximity = distanceTo / camMovMargin;
+
+	speed = camSpeed * proximity;
+
+	return speed;
+}
+
 
 void j1Scene::LoadInGameUI()
 {

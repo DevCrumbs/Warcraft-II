@@ -5,6 +5,7 @@
 
 #include "SDL\include\SDL_gamecontroller.h"
 #include "SDL\include\SDL_scancode.h"
+#include "p2Point.h"
 
 //#define NUM_KEYS 352
 #define NUM_MOUSE_BUTTONS 5
@@ -69,6 +70,7 @@ public:
 
 	// Get mouse / axis position
 	void GetMousePosition(int &x, int &y);
+	iPoint GetMousePosition();
 	void GetMouseMotion(int& x, int& y);
 
 	bool IsAnyKeyPressed();

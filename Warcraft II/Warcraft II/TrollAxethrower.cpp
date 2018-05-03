@@ -26,6 +26,8 @@
 
 TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TrollAxethrowerInfo& trollAxethrowerInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), trollAxethrowerInfo(trollAxethrowerInfo)
 {
+	pathPlanner->SetIsInSameRoomChecked(true);
+
 	// XML loading
 	/// Animations
 	TrollAxethrowerInfo info = (TrollAxethrowerInfo&)App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER);
@@ -82,7 +84,8 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
 
 	// Different behaviors for units on the base and units around the map
-	brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
+	if (!App->map->IsOnBase(spawnTile))
+		brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
 void TrollAxethrower::Move(float dt)

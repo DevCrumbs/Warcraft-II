@@ -12,6 +12,7 @@
 #include "j1Pathfinding.h"
 #include "j1Printer.h"
 #include "j1Player.h"
+#include "j1Gui.h"
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) 
 {
@@ -121,12 +122,12 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 			EntityEvent = EntitiesEvent_LEAVE;
 			break;
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED && !(StaticEntity*)this->isBuilt) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED && !(StaticEntity*)this->isBuilt && !App->gui->IsMouseOnUI()) {
 			EntityEvent = EntitiesEvent_CREATED;
 			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
 			EntityEvent = EntitiesEvent_HOVER;
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED && !App->gui->IsMouseOnUI()) {
 
 			EntityEvent = EntitiesEvent_LEFT_CLICK;
 			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
@@ -134,7 +135,7 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 			break;
 
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED && !App->gui->IsMouseOnUI()) {
 
 			EntityEvent = EntitiesEvent_RIGHT_CLICK;
 			listener->OnStaticEntitiesEvent((StaticEntity*)this, EntityEvent);
