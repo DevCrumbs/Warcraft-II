@@ -71,8 +71,8 @@ void UIMinimap::Draw() const
 		prevOffsetX = offsetX;
 		prevOffsetY = offsetY;
 
-		offsetX = camera.x * lowLevelScaleFactor + 40;
-		offsetY = camera.y * lowLevelScaleFactor + 40;
+		offsetX = camera.x * lowLevelScaleFactor + 16;
+		offsetY = camera.y * lowLevelScaleFactor + 16;
 
 
 		if (offsetX > 0)
