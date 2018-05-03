@@ -21,6 +21,7 @@
 #include "UIImage.h"
 #include "UILifeBar.h"
 #include "UICursor.h"
+#include "UIMinimap.h"
 
 j1Player::j1Player() : j1Module()
 {
@@ -54,10 +55,23 @@ bool j1Player::Start()
 	totalUnitsDead = 0;
 
 	startGameTimer.Start();
+
 	return ret;
 }
 
-bool j1Player::PreUpdate() {
+bool j1Player::PreUpdate() 
+{
+	if (minimap == nullptr)
+	{
+		UIMinimap_Info info;
+
+		info.entityHeight = 32;
+		info.entityHeight = 32;
+		info.minimapInfo = { 30,31,160,161 };
+
+		minimap = App->gui->CreateUIMinimap(info, this);
+	}
+
 
 	//Life Bar on building 
 	if (entitySelectedStats.entitySelected != nullptr) {
@@ -1732,19 +1746,19 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			if (UIelem == produceFootmanButton) {
 				ShowHoverInfoMenu("Produces footman", "Cost: 500 gold");
 			}
-			if (UIelem == produceElvenArcherButton) {
+			else if (UIelem == produceElvenArcherButton) {
 				ShowHoverInfoMenu("Produces archer", "Cost: 400 gold");
 			}
-			if (UIelem == produceMageButton && mageTower != nullptr) {
+			else if (UIelem == produceMageButton && mageTower != nullptr) {
 				ShowHoverInfoMenu("Produces mage", "Cost: 1200 gold");
 			}
-			if (UIelem == producePaladinButton) {
+			else if (UIelem == producePaladinButton) {
 				ShowHoverInfoMenu("Produces paladin", "Cost: 800 gold");
 			}
-			if (UIelem == produceGryphonRiderButton) {
+			else if (UIelem == produceGryphonRiderButton) {
 				ShowHoverInfoMenu("Produces gryphon", "Cost: 900 gold");
 			}
-			if (UIelem == destroyBuildingButton) {
+			else if (UIelem == destroyBuildingButton) {
 				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy");
 			}
 			break;
@@ -1755,6 +1769,10 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_CLICK:
+			if (UIelem == minimap)
+			{
+				minimap->GetEntitiesGoal();
+			}
 			break;
 		case UI_EVENT_MOUSE_LEFT_CLICK:
 
@@ -1776,7 +1794,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 
 			//For destroying a building
-			if (UIelem == destroyBuildingButton) {
+			else if (UIelem == destroyBuildingButton) {
 				DestroyBuilding();
 				HideEntitySelectedInfo();
 				HideHoverInfoMenu();
@@ -1833,7 +1851,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 			}
 			*/
-			if (UIelem == produceFootmanButton) {
+			else if (UIelem == produceFootmanButton) {
 				if (currentGold >= footmanCost && GetGroupSpawningSize(barracksSpawningListUI) <= maxSpawnQueueSize) {
 
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + GetGroupSpawningSize(gryphoSpawningListUI) + GetGroupSpawningSize(barracksSpawningListUI))) {
@@ -1866,7 +1884,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					}
 				}
 			}
-			if (UIelem == produceElvenArcherButton) {
+			else if (UIelem == produceElvenArcherButton) {
 				if (currentGold >= elvenArcherCost && GetGroupSpawningSize(barracksSpawningListUI) <= maxSpawnQueueSize) {
 
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + GetGroupSpawningSize(barracksSpawningListUI) + GetGroupSpawningSize(gryphoSpawningListUI))) {
@@ -1927,7 +1945,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				else if (currentGold < paladinCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}*/
-			if (UIelem == produceGryphonRiderButton) {
+			else if (UIelem == produceGryphonRiderButton) {
 				if (currentGold >= gryphonRiderCost && GetGroupSpawningSize(gryphoSpawningListUI) <= maxSpawnQueueSize) {
 
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + GetGroupSpawningSize(gryphoSpawningListUI) + GetGroupSpawningSize(barracksSpawningListUI))) {
@@ -1959,7 +1977,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					}
 				}
 			}
-			if (UIelem == groupSelectionButtons.selectFootmans) {
+			else if (UIelem == groupSelectionButtons.selectFootmans) {
 
 				App->entities->SelectEntitiesOnScreen(EntityType_FOOTMAN);
 
@@ -1968,7 +1986,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 				}
 			}
-			if (UIelem == groupSelectionButtons.selectElvenArchers) {
+			else if (UIelem == groupSelectionButtons.selectElvenArchers) {
 
 				App->entities->SelectEntitiesOnScreen(EntityType_ELVEN_ARCHER);
 
@@ -1977,7 +1995,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 				}
 			}
-			if (UIelem == groupSelectionButtons.selectGryphonRiders) {
+			else if (UIelem == groupSelectionButtons.selectGryphonRiders) {
 
 				App->entities->SelectEntitiesOnScreen(EntityType_GRYPHON_RIDER);
 

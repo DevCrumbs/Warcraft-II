@@ -9,7 +9,7 @@
 
 #include "UIMinimap.h"
 
-UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j1Module* listener) : UIElement({ info.minimapInfo.x,info.minimapInfo.y }, nullptr, nullptr, false)
+UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j1Module* listener) : UIElement({ info.minimapInfo.x,info.minimapInfo.y }, parent, listener, false)
 {
 	type = UIE_TYPE_MINIMAP;
 	
@@ -153,6 +153,7 @@ void UIMinimap::HandleInput(float dt)
 {
 	if (MouseHover())
 	{
+		//Move minimap
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
 			iPoint newCameraPos = MinimapToMap();
@@ -164,14 +165,22 @@ void UIMinimap::HandleInput(float dt)
 			if (App->render->camera.y > 0)
 				App->render->camera.y = 0;
 		}
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+		//Comand troops to goal
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		{
-			iPoint pos = MinimapToMap();
-			SDL_Rect rect{ pos.x,pos.y, 32,32 };
-			App->render->DrawQuad(rect, 255, 255, 255);
+			entitiesGoal = MinimapToMap();
+			if (listener != nullptr)
+			{
+				listener->OnUIEvent(this, UI_EVENT_MOUSE_RIGHT_CLICK);
+			}
 		}
 	}
 
+}
+
+iPoint UIMinimap::GetEntitiesGoal() const
+{
+	return entitiesGoal;
 }
 
 iPoint UIMinimap::GetMousePos() 
@@ -219,8 +228,6 @@ bool UIMinimap::SetMinimap(SDL_Rect pos, int entityW, int entityH)
 
 
 	ret = LoadMap();
-
-	ret = true;
 
 	return true;
 }
