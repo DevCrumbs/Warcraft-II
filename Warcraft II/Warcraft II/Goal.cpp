@@ -1303,27 +1303,27 @@ void Goal_PickNugget::Activate()
 	int random = rand() % 4;
 
 	switch (random) {
-
+	// TODO Valdivia: Times have to be changed to be shorter and the labels must show accordingly
 	case 0:
-		gold = 550;
-		secondsGathering = 5.0f;
+		gold = 1000;
+		secondsGathering = 10.0f;
 		break;
 	case 1:
-		gold = 600;
-		secondsGathering = 6.0f;
+		gold = 1400;
+		secondsGathering = 14.0f;
 		break;
 	case 2:
-		gold = 650;
-		secondsGathering = 6.5f;
+		gold = 1500;
+		secondsGathering = 15.0f;
 		break;
 	case 3:
-		gold = 700;
-		secondsGathering = 7.0f;
+		gold = 1700;
+		secondsGathering = 17.0f;
 		break;
 
 	default:
-		gold = 800;
-		secondsGathering = 8.0f;
+		gold = 2000;
+		secondsGathering = 20.0f;
 		break;
 	}
 

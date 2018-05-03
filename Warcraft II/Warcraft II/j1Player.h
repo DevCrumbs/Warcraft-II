@@ -209,7 +209,7 @@ public:
 	int paladinCost = 800;
 	int ballistaCost = 900;
 	int mageCost = 1200;
-	int gryphonRiderCost = 2500;
+	int gryphonRiderCost = 900;
 
 	//For finish Screen
 	bool isWin = false;
