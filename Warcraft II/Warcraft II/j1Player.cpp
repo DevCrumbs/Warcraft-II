@@ -1294,8 +1294,8 @@ void j1Player::MakePrisionerMenu(Entity * entity)
 		entitySelectedStats.entityIcon->isActive = true;
 
 		//Prisioner description
-		entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 57 });
-		entitySelectedStats.HP->SetText("Expedition's head scout.");
+		entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 60 });
+		entitySelectedStats.HP->SetText("Head scout of the Alliance Expedition to Draenor.", 140);
 		entitySelectedStats.HP->isActive = true;
 
 	}
@@ -1311,8 +1311,8 @@ void j1Player::MakePrisionerMenu(Entity * entity)
 		entitySelectedStats.entityIcon->isActive = true;
 
 		//Prisioner description
-		entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 57 });
-		entitySelectedStats.HP->SetText("Paladin of the Silver Hand.");
+		entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 64 });
+		entitySelectedStats.HP->SetText("One of the first five paladins of the Knights of the Silver Hand.", 140);
 		entitySelectedStats.HP->isActive = true;
 	}
 }
