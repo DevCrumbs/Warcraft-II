@@ -155,7 +155,7 @@ void DynamicEntity::HandleInput(EntitiesEvent &EntityEvent)
 			EntityEvent = EntitiesEvent_LEAVE;
 			break;
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED && !App->gui->IsMouseOnUI()) {
 
 			EntityEvent = EntitiesEvent_LEFT_CLICK;
 			listener->OnDynamicEntitiesEvent((DynamicEntity*)this, EntityEvent);
@@ -163,7 +163,7 @@ void DynamicEntity::HandleInput(EntitiesEvent &EntityEvent)
 			break;
 
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED && !App->gui->IsMouseOnUI()) {
 
 			EntityEvent = EntitiesEvent_RIGHT_CLICK;
 			listener->OnDynamicEntitiesEvent((DynamicEntity*)this, EntityEvent);
