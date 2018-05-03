@@ -3836,17 +3836,17 @@ uint j1EntityFactory::DetermineBuildingMaxLife(ENTITY_TYPE buildingType, StaticE
 		// Towers
 	if (buildingType == EntityType_SCOUT_TOWER || buildingType == EntityType_WATCH_TOWER) {
 
-		maxLife = 200;
+		maxLife = 150;
 		return maxLife;
 	}
 	else if (buildingType == EntityType_PLAYER_GUARD_TOWER || buildingType == EntityType_ENEMY_GUARD_TOWER) {
 
-		maxLife = 300;
+		maxLife = 175;
 		return maxLife;
 	}
 	else if (buildingType == EntityType_PLAYER_CANNON_TOWER || buildingType == EntityType_ENEMY_CANNON_TOWER) {
 
-		maxLife = 500;
+		maxLife = 200;
 		return maxLife;
 	}
 
@@ -3855,17 +3855,17 @@ uint j1EntityFactory::DetermineBuildingMaxLife(ENTITY_TYPE buildingType, StaticE
 
 	case StaticEntitySize_Small:
 
-		maxLife = 200;
+		maxLife = 150;
 		break;
 
 	case StaticEntitySize_Medium:
 
-		maxLife = 400;
+		maxLife = 300;
 		break;
 
 	case StaticEntitySize_Big:
 
-		maxLife = 600;
+		maxLife = 450;
 		break;
 
 	case StaticEntitySize_None:

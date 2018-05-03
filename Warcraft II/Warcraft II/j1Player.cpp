@@ -1742,7 +1742,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				ShowHoverInfoMenu("Produces paladin", "Cost: 800 gold");
 			}
 			if (UIelem == produceGryphonRiderButton) {
-				ShowHoverInfoMenu("Produces gryphon", "Cost: 2500 gold");
+				ShowHoverInfoMenu("Produces gryphon", "Cost: 900 gold");
 			}
 			if (UIelem == destroyBuildingButton) {
 				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy");
@@ -1838,7 +1838,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + GetGroupSpawningSize(gryphoSpawningListUI) + GetGroupSpawningSize(barracksSpawningListUI))) {
 						App->audio->PlayFx(1, 0); //Button sound
-						currentGold -= 500;
+						currentGold -= footmanCost;
 						App->scene->hasGoldChanged = true;
 						//Timer for the spawning
 						j1Timer spawnTimer;
@@ -1871,7 +1871,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + GetGroupSpawningSize(barracksSpawningListUI) + GetGroupSpawningSize(gryphoSpawningListUI))) {
 						App->audio->PlayFx(1, 0); //Button sound
-						currentGold -= 400;
+						currentGold -= elvenArcherCost;
 						App->scene->hasGoldChanged = true;
 						//Timer for the spawning
 						j1Timer spawnTimer;
@@ -1932,7 +1932,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + GetGroupSpawningSize(gryphoSpawningListUI) + GetGroupSpawningSize(barracksSpawningListUI))) {
 						App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-						currentGold -= 2500;
+						currentGold -= gryphonRiderCost;
 						App->scene->hasGoldChanged = true;
 						//Timer for the spawning
 						j1Timer spawnTimer;
