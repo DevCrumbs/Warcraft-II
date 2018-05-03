@@ -99,6 +99,7 @@ public:
 
 	void SetTextureAlphaMod(float alpha);
 	float IncreaseDecreaseAlpha(float from, float to, float seconds);
+	bool IsMouseOnUI();
 	void ResetAlpha();
 
 public:

@@ -253,7 +253,7 @@ void j1Player::CheckIfPlaceBuilding()
 	ENTITY_TYPE alphaBuilding = App->scene->GetAlphaBuilding();
 
 	//Creates static entities (buildings)
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) 
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN && !App->gui->IsMouseOnUI())
 	{
 		SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 
@@ -351,7 +351,7 @@ void j1Player::CheckIfPlaceBuilding()
 	}
 
 
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && !App->gui->IsMouseOnUI())
 		App->scene->SetAplphaBuilding(EntityType_NONE);
 
 }

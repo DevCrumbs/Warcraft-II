@@ -373,3 +373,27 @@ float j1Gui::IncreaseDecreaseAlpha(float from, float to, float seconds)
 
 	return calculatedAlpha;
 }
+
+bool j1Gui::IsMouseOnUI()
+{
+	bool ret = false;
+
+	iPoint mouse = App->input->GetMousePosition();
+	SDL_Rect mouseRect{ mouse.x,mouse.y,1,1 };
+
+	for (list<UIElement*>::iterator iterator = UIElementsList.begin(); iterator != UIElementsList.end(); ++iterator)
+	{
+		if ((*iterator)->type != UIE_TYPE_CURSOR && (*iterator)->type != UIE_TYPE_LIFE_BAR)
+		{
+			SDL_Rect elementRect = (*iterator)->GetScreenRect();
+			if (elementRect.x != 0 && elementRect.y != 0 && elementRect.w != 800 && elementRect.h != 600)
+				if (RectIntersect(&mouseRect, &elementRect))
+				{
+					ret = true;
+					break;
+				}
+		}
+	}
+
+	return ret;
+}

@@ -27,7 +27,7 @@ void UISlider::Update(float dt)
 		int mouseY = 0;
 		App->input->GetMousePosition(mouseX, mouseY);
 
-		if (App->input->GetMouseButtonDown((SDL_BUTTON_LEFT) == KEY_DOWN) 
+		if (App->input->GetMouseButtonDown((SDL_BUTTON_LEFT) == KEY_DOWN && !App->gui->IsMouseOnUI())
 			&& mouseX > GetScreenPos().x / scale + slider.offset 
 			&& mouseX < (GetScreenPos().x / scale + tex_area.w - button_slider_area.w - slider.offset) 
 			&& mouseY >  GetScreenPos().y / scale && mouseY < GetScreenPos().y / scale + tex_area.h)
@@ -82,14 +82,14 @@ void UISlider::HandleInput()
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED && !App->gui->IsMouseOnUI()) {
 			next_event = false;
 			LOG("MOUSE L CLICK START");
 			UIevent = UI_EVENT_MOUSE_LEFT_CLICK;
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED && !App->gui->IsMouseOnUI()) {
 			next_event = false;
 			LOG("MOUSE R CLICK START");
 
@@ -110,7 +110,7 @@ void UISlider::HandleInput()
 		break;
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED) {
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED && !App->gui->IsMouseOnUI()) {
 			LOG("MOUSE R CLICK FINISH");
 
 			listener->OnUIEvent((UIElement*)this, UIevent);
@@ -126,7 +126,7 @@ void UISlider::HandleInput()
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
-		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED) {
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED && !App->gui->IsMouseOnUI()) {
 			LOG("MOUSE L CLICK FINISH");
 			// Uncomment next line and create a new UIEvent if you want to execute a function when mouse button is released
 			UIevent = UI_EVENT_MOUSE_LEFT_UP;
