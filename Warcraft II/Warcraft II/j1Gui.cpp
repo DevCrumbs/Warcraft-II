@@ -406,13 +406,16 @@ bool j1Gui::IsMouseOnUI()
 	{
 		if ((*iterator)->type != UIE_TYPE_CURSOR && (*iterator)->type != UIE_TYPE_LIFE_BAR)
 		{
-			SDL_Rect elementRect = (*iterator)->GetScreenRect();
-			if (elementRect.x != 0 && elementRect.y != 0 && elementRect.w != App->win->width && elementRect.h != App->win->height)
-				if (RectIntersect(&mouseRect, &elementRect))
-				{
-					ret = true;
-					break;
-				}
+			if ((*iterator)->isActive)
+			{
+				SDL_Rect elementRect = (*iterator)->GetScreenRect();
+				if (elementRect.x != 0 && elementRect.y != 0 && elementRect.w != App->win->width && elementRect.h != App->win->height)
+					if (RectIntersect(&mouseRect, &elementRect))
+					{
+						ret = true;
+						break;
+					}
+			}
 		}
 	}
 

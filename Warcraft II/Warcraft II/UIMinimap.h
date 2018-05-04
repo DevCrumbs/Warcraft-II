@@ -103,6 +103,8 @@ private:
 	mutable int prevOffsetX = 0;
 	mutable int prevOffsetY = 0;
 
+	bool moveCamera = false;
+
 	int zoomFactor = 1;
 
 	bool lowLevel = false;
