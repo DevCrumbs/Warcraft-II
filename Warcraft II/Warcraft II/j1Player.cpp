@@ -532,10 +532,7 @@ bool j1Player::CleanUp()
 		}
 		imagePrisonersVector.clear();
 
-		if (hoverInfo.background != nullptr) {
-			DeleteHoverInfoMenu();
-		}
-
+		DeleteHoverInfoMenu();
 		DeleteEntitiesMenu();
 		DeleteGroupSelectionButtons();
 
@@ -1121,7 +1118,9 @@ void j1Player::CreateEntitiesStatsUI()
 	CreateGryphonAviaryButtons();	
 	CreateTownHallButtons();
 	CreateDestructionButton();
-	CreateHoverInfoMenu();
+	CreateHoverInfoMenu(&footmanHoverInfo);
+	CreateHoverInfoMenu(&archerHoverInfo);
+	CreateHoverInfoMenu(&gryphoHoverInfo);
 }
 
 void j1Player::CreateGroupSelectionButtons()
@@ -1517,29 +1516,36 @@ void j1Player::DeleteGroupSelectionButtons()
 	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectGryphonRiders);
 }
 
-void j1Player::ShowHoverInfoMenu(string unitProduce, string gold) {
+void j1Player::ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo) {
 
-	hoverInfo.background->isActive = true;
+	hoverInfo->background->isActive = true;
 
-	hoverInfo.info->SetText(unitProduce);
-	hoverInfo.cost->SetText(gold);
+	hoverInfo->info->SetText(unitProduce);
+	hoverInfo->cost->SetText(gold);
 
-	hoverInfo.info->isActive = true;
-	hoverInfo.cost->isActive = true;
+	hoverInfo->info->isActive = true;
+	hoverInfo->cost->isActive = true;
 }
 
-void j1Player::HideHoverInfoMenu()
+void j1Player::HideHoverInfoMenu(HoverInfo* hoverInfo)
 {
-	hoverInfo.background->isActive = false;
-	hoverInfo.info->isActive = false;
-	hoverInfo.cost->isActive = false;
+	hoverInfo->background->isActive = false;
+	hoverInfo->info->isActive = false;
+	hoverInfo->cost->isActive = false;
 }
 
 void j1Player::DeleteHoverInfoMenu()
 {
-	App->gui->RemoveElem((UIElement**)&hoverInfo.background);
-	App->gui->RemoveElem((UIElement**)&hoverInfo.cost);
-	App->gui->RemoveElem((UIElement**)&hoverInfo.info);
+	App->gui->RemoveElem((UIElement**)&footmanHoverInfo.background);
+	App->gui->RemoveElem((UIElement**)&footmanHoverInfo.cost);
+	App->gui->RemoveElem((UIElement**)&footmanHoverInfo.info);
+	App->gui->RemoveElem((UIElement**)&archerHoverInfo.background);
+	App->gui->RemoveElem((UIElement**)&archerHoverInfo.cost);
+	App->gui->RemoveElem((UIElement**)&archerHoverInfo.info);
+	App->gui->RemoveElem((UIElement**)&gryphoHoverInfo.background);
+	App->gui->RemoveElem((UIElement**)&gryphoHoverInfo.cost);
+	App->gui->RemoveElem((UIElement**)&gryphoHoverInfo.info);
+
 }
 
 UILifeBar* j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, bool isActive)
@@ -1607,22 +1613,22 @@ void j1Player::CreateDestructionButton()
 {
 	CreateSimpleButton({ 579,76,49,41 }, { 629, 76, 49, 41 }, { 679,76,49,41 }, { 320, 42 }, destroyBuildingButton);
 }
-void j1Player::CreateHoverInfoMenu() {
+void j1Player::CreateHoverInfoMenu(HoverInfo* hoverInfo) {
 
 	UIImage_Info backgroundImageInfo;
 	backgroundImageInfo.texArea = { 241, 384, 85, 38 };
-	hoverInfo.background = App->gui->CreateUIImage({ 643, 481 }, backgroundImageInfo, nullptr);
-	hoverInfo.background->isActive = false;
+	hoverInfo->background = App->gui->CreateUIImage({ 643, 481 }, backgroundImageInfo, nullptr);
+	hoverInfo->background->isActive = false;
 
 	UILabel_Info labelInfo;
 	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT9;
-	hoverInfo.info = App->gui->CreateUILabel({ 5,8 }, labelInfo, nullptr, hoverInfo.background);
-	hoverInfo.info->isActive = false;
+	hoverInfo->info = App->gui->CreateUILabel({ 5,8 }, labelInfo, nullptr, hoverInfo->background);
+	hoverInfo->info->isActive = false;
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT9;
-	hoverInfo.cost = App->gui->CreateUILabel({ 5, 25 }, labelInfo, nullptr, hoverInfo.background);
-	hoverInfo.cost->isActive = false;
+	hoverInfo->cost = App->gui->CreateUILabel({ 5, 25 }, labelInfo, nullptr, hoverInfo->background);
+	hoverInfo->cost->isActive = false;
 }
 void j1Player::HandleSpawningUnitsUIElem(ToSpawnUnit** toSpawnUnit, list<GroupSpawning>* groupList)
 {
@@ -1819,29 +1825,25 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		case UI_EVENT_MOUSE_ENTER:
 
 			if (UIelem == produceFootmanButton) {
-				ShowHoverInfoMenu("Produces footman", "Cost: 500 gold");
+				ShowHoverInfoMenu("Produces footman", "Cost: 500 gold", &footmanHoverInfo);
 			}
 			else if (UIelem == produceElvenArcherButton) {
-				ShowHoverInfoMenu("Produces archer", "Cost: 400 gold");
-			}
-			else if (UIelem == produceMageButton && mageTower != nullptr) {
-				ShowHoverInfoMenu("Produces mage", "Cost: 1200 gold");
-			}
-			else if (UIelem == producePaladinButton) {
-				ShowHoverInfoMenu("Produces paladin", "Cost: 800 gold");
+				ShowHoverInfoMenu("Produces archer", "Cost: 400 gold", &archerHoverInfo);
 			}
 			else if (UIelem == produceGryphonRiderButton) {
-				ShowHoverInfoMenu("Produces gryphon", "Cost: 900 gold");
+				ShowHoverInfoMenu("Produces gryphon", "Cost: 900 gold", &gryphoHoverInfo);
 			}
 			else if (UIelem == destroyBuildingButton) {
-				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy");
+				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy", &footmanHoverInfo);
 			}
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
-			if (UIelem == produceFootmanButton || UIelem == produceElvenArcherButton || UIelem == producePaladinButton
-				|| UIelem == produceMageButton || UIelem == produceGryphonRiderButton || UIelem == destroyBuildingButton) {
-				HideHoverInfoMenu();
-			}
+			if (UIelem == produceFootmanButton || UIelem == destroyBuildingButton) 
+				HideHoverInfoMenu(&footmanHoverInfo);
+			else if (UIelem == produceElvenArcherButton)
+				HideHoverInfoMenu(&archerHoverInfo);
+			else if (UIelem == produceGryphonRiderButton)
+				HideHoverInfoMenu(&gryphoHoverInfo);
 			break;
 		case UI_EVENT_MOUSE_RIGHT_CLICK:
 
@@ -1895,7 +1897,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			else if (UIelem == destroyBuildingButton) {
 				DestroyBuilding();
 				HideEntitySelectedInfo();
-				HideHoverInfoMenu();
+				//HideHoverInfoMenu();
 				entitySelectedStats.entitySelected = nullptr;
 			}
 

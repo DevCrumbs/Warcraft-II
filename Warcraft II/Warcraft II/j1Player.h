@@ -148,9 +148,9 @@ public:
 	void MakePrisionerMenu(Entity* entity);
 	void DeleteEntitiesMenu();
 	void DeleteGroupSelectionButtons();
-	void CreateHoverInfoMenu();
-	void ShowHoverInfoMenu(string unitProduce, string gold);
-	void HideHoverInfoMenu();
+	void CreateHoverInfoMenu(HoverInfo* hoverInfo);
+	void ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo);
+	void HideHoverInfoMenu(HoverInfo* hoverInfo);
 	void DeleteHoverInfoMenu();
 	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, bool isActive = true);
 	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, bool isActive = true);
@@ -234,7 +234,9 @@ private:
 	uint totalUnitsDead = 0;
 
 	//HoverButton hoverButtonStruct;
-	HoverInfo hoverInfo;
+	HoverInfo footmanHoverInfo;
+	HoverInfo archerHoverInfo;
+	HoverInfo gryphoHoverInfo;
 
 	GroupSelectionButtons groupSelectionButtons;
 
