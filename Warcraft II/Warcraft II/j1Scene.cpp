@@ -347,31 +347,34 @@ bool j1Scene::Update(float dt)
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 
 		// Select units by mouse click
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN && !App->gui->IsMouseOnUI()) {
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 			startRectangle = mousePos;
 
-			Entity* entity = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
-			if (entity != nullptr)
-				App->entities->SelectEntity(entity);
-			//else
-				//App->entities->UnselectAllEntities();
+			if (!App->gui->IsMouseOnUI()) {
 
-			Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
-			if (playerBuilding != nullptr)
-				App->entities->SelectBuilding((StaticEntity*)playerBuilding);
-			
-			Entity* neutralBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
-			if (neutralBuilding != nullptr)
-				App->entities->SelectBuilding((StaticEntity*)neutralBuilding);
+				Entity* entity = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+				if (entity != nullptr)
+					App->entities->SelectEntity(entity);
+				//else
+					//App->entities->UnselectAllEntities();
 
-			if (playerBuilding == nullptr && neutralBuilding == nullptr)
-				App->entities->UnselectAllBuildings();
+				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+				if (playerBuilding != nullptr)
+					App->entities->SelectBuilding((StaticEntity*)playerBuilding);
 
-			Entity* prisonerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
-			if (prisonerUnit != nullptr)
-				prisonerUnit->isSelected = true;
-			else
-				App->entities->UnselectAllPrisoners();
+				Entity* neutralBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
+				if (neutralBuilding != nullptr)
+					App->entities->SelectBuilding((StaticEntity*)neutralBuilding);
+
+				if (playerBuilding == nullptr && neutralBuilding == nullptr)
+					App->entities->UnselectAllBuildings();
+
+				Entity* prisonerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
+				if (prisonerUnit != nullptr)
+					prisonerUnit->isSelected = true;
+				else
+					App->entities->UnselectAllPrisoners();
+			}
 		}
 
 		int width = mousePos.x - startRectangle.x;
