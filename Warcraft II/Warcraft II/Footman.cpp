@@ -104,7 +104,6 @@ void Footman::Move(float dt)
 			App->audio->PlayFx(App->audio->GetFX().humanDeath, 0);
 
 			isDead = true;
-			isValid = false;
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);

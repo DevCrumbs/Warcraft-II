@@ -111,7 +111,6 @@ void Grunt::Move(float dt)
 			App->audio->PlayFx(App->audio->GetFX().orcDeath, 0);
 
 			isDead = true;
-			isValid = false;
 			App->player->enemiesKill++;
 
 			// Give gold to the player
