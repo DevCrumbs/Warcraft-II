@@ -307,6 +307,9 @@ private:
 	ENTITY_TYPE alphaBuilding;
 
 	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
+
+	//Quad Fade
+	int alphaCont = 0u;
 };
 
 #endif //__j1SCENE1_H__

@@ -3683,6 +3683,7 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 
 		it++;
 	}
+	App->scene->ShowSelectedUnits(unitsSelected);
 }
 
 // Dynamic Entities

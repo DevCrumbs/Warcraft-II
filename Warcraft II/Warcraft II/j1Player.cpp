@@ -1836,13 +1836,23 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			else if (UIelem == destroyBuildingButton) {
 				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy", &footmanHoverInfo);
 			}
+			else if (UIelem == groupSelectionButtons.selectFootmans) {
+				ShowHoverInfoMenu("Produces footman", "Cost: 500 gold", &footmanHoverInfo);
+			}
+			else if (UIelem == groupSelectionButtons.selectElvenArchers) {
+				ShowHoverInfoMenu("Produces archer", "Cost: 400 gold", &archerHoverInfo);
+			}
+			else if (UIelem == groupSelectionButtons.selectGryphonRiders) {
+				ShowHoverInfoMenu("Produces gryphon", "Cost: 900 gold", &gryphoHoverInfo);
+			}
+
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
-			if (UIelem == produceFootmanButton || UIelem == destroyBuildingButton) 
+			if (UIelem == produceFootmanButton || UIelem == destroyBuildingButton || UIelem == groupSelectionButtons.selectFootmans)
 				HideHoverInfoMenu(&footmanHoverInfo);
-			else if (UIelem == produceElvenArcherButton)
+			else if (UIelem == produceElvenArcherButton || UIelem == groupSelectionButtons.selectElvenArchers)
 				HideHoverInfoMenu(&archerHoverInfo);
-			else if (UIelem == produceGryphonRiderButton)
+			else if (UIelem == produceGryphonRiderButton || UIelem == groupSelectionButtons.selectGryphonRiders)
 				HideHoverInfoMenu(&gryphoHoverInfo);
 			break;
 		case UI_EVENT_MOUSE_RIGHT_CLICK:
@@ -2079,7 +2089,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->entities->SelectEntitiesOnScreen(EntityType_FOOTMAN);
 
 				if (App->entities->GetLastUnitsSelected().size() == 0) {
-					HideEntitySelectedInfo();
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 				}
 			}
@@ -2088,7 +2097,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->entities->SelectEntitiesOnScreen(EntityType_ELVEN_ARCHER);
 
 				if (App->entities->GetLastUnitsSelected().size() == 0) {
-					HideEntitySelectedInfo();
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 				}
 			}
@@ -2097,7 +2105,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				App->entities->SelectEntitiesOnScreen(EntityType_GRYPHON_RIDER);
 
 				if (App->entities->GetLastUnitsSelected().size() == 0) {
-					HideEntitySelectedInfo();
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 				}
 			}

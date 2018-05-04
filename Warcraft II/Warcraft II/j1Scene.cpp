@@ -333,7 +333,6 @@ bool j1Scene::Update(float dt)
 
 		if ((*iterator).owner != nullptr) {
 			if ((*iterator).owner->GetCurrLife() <= 0) {
-				HideUnselectedUnits();
 				ShowSelectedUnits(units);
 			}
 			else
@@ -407,7 +406,6 @@ bool j1Scene::Update(float dt)
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP && !App->gui->IsMouseOnUI()) {
 
 				if (!CompareSelectedUnitsLists(units)) {
-					App->player->HideEntitySelectedInfo();
 					ShowSelectedUnits(units);
 					PlayUnitSound(units, true); //Unit selected sound
 				}			
@@ -635,8 +633,16 @@ bool j1Scene::Update(float dt)
 	}
 
 	if (parchmentImg != nullptr) {
-		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
+		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 			pauseMenuActions = PauseMenuActions_CREATED;
+			alphaCont = 0;
+		}
+
+		else if (parchmentImg->GetAnimation()->speed > 0) {
+			SDL_Rect rect = { -(int)App->render->camera.x, -(int)App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h };
+			alphaCont += 100*dt;
+			App->printer->PrintQuad(rect, { 0,0,0, (Uint8)alphaCont }, true, true, Layers_QuadsPrinters);
+		}
 
 		if (pauseMenuActions != PauseMenuActions_NOT_EXIST) {
 			SDL_Rect rect = { -(int)App->render->camera.x, -(int)App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h };
@@ -1068,6 +1074,8 @@ void j1Scene::LoadTerenasDialog()
 
 void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
 {
+	App->player->HideEntitySelectedInfo();
+	HideUnselectedUnits();
 	list<DynamicEntity*>::iterator iterator = units.begin();
 	while (iterator != units.end()) {
 		UIImage* image = nullptr;
