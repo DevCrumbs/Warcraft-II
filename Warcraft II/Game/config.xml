@@ -134,7 +134,7 @@
   </menu>
   
   <scene>
-    <camera speed ="300.0" movMarginPcnt = "2"/>
+    <camera speed ="600.0" movement ="4" movMarginPcnt = "3"/>
 
     <audioPaths>
       <mainTheme path= "mainTheme.ogg"/>

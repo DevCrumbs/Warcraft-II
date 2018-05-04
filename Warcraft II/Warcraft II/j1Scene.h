@@ -289,6 +289,7 @@ private:
 
 	//Camera attributes
 	float camSpeed = 0.0f;
+	int camMovement = 1;
 	float camMovMargin = 0.0f;
 	bool isCamMovMarginCharged = false;
 
