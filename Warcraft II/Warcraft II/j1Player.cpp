@@ -211,7 +211,8 @@ bool j1Player::Update(float dt)
 	//Update Selectet unit HP
 	if (entitySelectedStats.entitySelected != nullptr)
 	{
-		if (entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY)
+		if (entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY 
+			&& entitySelectedStats.entitySelected->entitySide != EntitySide_NoSide)
 		{
 			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
 			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
@@ -1378,6 +1379,7 @@ void j1Player::MakePrisionerMenu(Entity * entity)
 		entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 60 });
 		entitySelectedStats.HP->SetText("Head scout of the Alliance Expedition to Draenor.", 140);
 		entitySelectedStats.HP->isActive = true;
+
 
 	}
 	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_TURALYON)
