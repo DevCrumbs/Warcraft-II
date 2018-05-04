@@ -81,6 +81,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	pugi::xml_node camera = config.child("camera");
 
 	camSpeed = camera.attribute("speed").as_float();
+	camMovement = camera.attribute("movement").as_int();
 	camMovMargin = camera.attribute("movMarginPcnt").as_float();
 
 	return ret;
@@ -950,7 +951,7 @@ int j1Scene::GetCamSpeed(int pos)
 		distanceTo = camMovMargin;
 	}
 
-	float proximity = distanceTo / camMovMargin;
+	float proximity = pow((distanceTo / camMovMargin), camMovement);
 
 	speed = camSpeed * proximity;
 
