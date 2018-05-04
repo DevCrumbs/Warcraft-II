@@ -554,11 +554,10 @@ void Footman::UnitStateMachine(float dt)
 
 	case UnitState_Walk:
 
-		if (IsUnitGatheringGold() && IsUnitHealingRunestone() && IsUnitRescuingPrisoner())
+		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
 			break;
 
 		// DEFENSE NOTE: the unit automatically attacks back their attacking units (if they have any attacking units) to defend themselves
-		/// TODO Sandra: units attacking or units hitting?
 		if (unitsAttacking.size() > 0) {
 
 			if (singleUnit->IsFittingTile()) {
@@ -585,7 +584,7 @@ void Footman::UnitStateMachine(float dt)
 
 	case UnitState_Idle:
 
-		if (IsUnitGatheringGold() && IsUnitHealingRunestone() && IsUnitRescuingPrisoner())
+		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
 			break;
 
 		// If the unit is doing nothing, make it look around
@@ -594,6 +593,9 @@ void Footman::UnitStateMachine(float dt)
 			brain->AddGoal_LookAround(1, 3, 1, 2, 2);
 
 	case UnitState_Patrol:
+
+		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
+			break;
 
 		// ATTACK NOTE (Idle and Patrol states): the unit automatically attacks any target (only DYNAMIC ENTITIES) that is in their targets list
 
@@ -626,6 +628,9 @@ void Footman::UnitStateMachine(float dt)
 		break;
 
 	case UnitState_AttackTarget:
+
+		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
+			break;
 
 		// ATTACK NOTE (Attack state): if currTarget is dead, the unit automatically attacks the next target (only DYNAMIC ENTITIES) from their targets list
 
