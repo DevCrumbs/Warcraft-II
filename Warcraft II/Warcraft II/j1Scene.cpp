@@ -333,9 +333,8 @@ bool j1Scene::Update(float dt)
 
 		if ((*iterator).owner != nullptr) {
 			if ((*iterator).owner->GetCurrLife() <= 0) {
-				(*iterator).owner == nullptr;
-				(*iterator).entityIcon->isActive = false;
-				(*iterator).entityLifeBar->isActive = false;
+				HideUnselectedUnits();
+				ShowSelectedUnits(units);
 			}
 			else
 				(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
