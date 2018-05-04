@@ -634,11 +634,15 @@ bool j1Scene::Update(float dt)
 		//App->map->CreateNewMap();
 	}
 
-	if (parchmentImg != nullptr)
+	if (parchmentImg != nullptr) {
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
 
-
+		if (pauseMenuActions != PauseMenuActions_NOT_EXIST) {
+			SDL_Rect rect = { -(int)App->render->camera.x, -(int)App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h };
+			App->printer->PrintQuad(rect, { 0,0,0,100 }, true, true, Layers_QuadsPrinters);
+		}
+	}
 	switch (pauseMenuActions)
 	{
 	case PauseMenuActions_NONE:
