@@ -178,7 +178,6 @@ void UIMinimap::HandleInput(float dt)
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		{
 			entitiesGoal = MinimapToMap();
-			entitiesGoal = App->map->MapToWorld(entitiesGoal.x, entitiesGoal.y);
 			if (listener != nullptr)
 			{
 				listener->OnUIEvent(this, UI_EVENT_MOUSE_RIGHT_CLICK);
@@ -420,11 +419,7 @@ bool UIMinimap::SaveInRenderer(const SDL_Texture* texture, int x, int y, const S
 	rect.w *= bScale;
 	rect.h *= bScale;
 
-	SDL_Point* p = NULL;
-	SDL_Point pivot;
-
-
-	if (SDL_RenderCopyEx(renderer, (SDL_Texture*)texture, section, &rect, 0, p, SDL_FLIP_NONE) != 0)
+	if (SDL_RenderCopyEx(renderer, (SDL_Texture*)texture, section, &rect, 0, NULL, SDL_FLIP_NONE) != 0)
 	{
 		LOG("Cannot blit to screen. SDL_RenderCopy error: %s", SDL_GetError());
 		ret = false;

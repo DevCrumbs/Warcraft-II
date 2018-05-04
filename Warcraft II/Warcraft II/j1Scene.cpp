@@ -81,6 +81,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	pugi::xml_node camera = config.child("camera");
 
 	camSpeed = camera.attribute("speed").as_float();
+	camMovement = camera.attribute("movement").as_int();
 	camMovMargin = camera.attribute("movMarginPcnt").as_float();
 
 	return ret;
@@ -330,8 +331,14 @@ bool j1Scene::Update(float dt)
 	// Update units selected life bars
 	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
 
-		if ((*iterator).owner != nullptr)
-			(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
+		if ((*iterator).owner != nullptr) {
+			if ((*iterator).owner->GetCurrLife() <= 0) {
+				HideUnselectedUnits();
+				ShowSelectedUnits(units);
+			}
+			else
+				(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
+		}
 	}
 
 	// *****UNITS*****
@@ -339,31 +346,34 @@ bool j1Scene::Update(float dt)
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 
 		// Select units by mouse click
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN && !App->gui->IsMouseOnUI()) {
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
 			startRectangle = mousePos;
 
-			Entity* entity = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
-			if (entity != nullptr)
-				App->entities->SelectEntity(entity);
-			//else
-				//App->entities->UnselectAllEntities();
+			if (!App->gui->IsMouseOnUI()) {
 
-			Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
-			if (playerBuilding != nullptr)
-				App->entities->SelectBuilding((StaticEntity*)playerBuilding);
-			
-			Entity* neutralBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
-			if (neutralBuilding != nullptr)
-				App->entities->SelectBuilding((StaticEntity*)neutralBuilding);
+				Entity* entity = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+				if (entity != nullptr)
+					App->entities->SelectEntity(entity);
+				//else
+					//App->entities->UnselectAllEntities();
 
-			if (playerBuilding == nullptr && neutralBuilding == nullptr)
-				App->entities->UnselectAllBuildings();
+				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+				if (playerBuilding != nullptr)
+					App->entities->SelectBuilding((StaticEntity*)playerBuilding);
 
-			Entity* prisonerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
-			if (prisonerUnit != nullptr)
-				prisonerUnit->isSelected = true;
-			else
-				App->entities->UnselectAllPrisoners();
+				Entity* neutralBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
+				if (neutralBuilding != nullptr)
+					App->entities->SelectBuilding((StaticEntity*)neutralBuilding);
+
+				if (playerBuilding == nullptr && neutralBuilding == nullptr)
+					App->entities->UnselectAllBuildings();
+
+				Entity* prisonerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
+				if (prisonerUnit != nullptr)
+					prisonerUnit->isSelected = true;
+				else
+					App->entities->UnselectAllPrisoners();
+			}
 		}
 
 		int width = mousePos.x - startRectangle.x;
@@ -624,11 +634,15 @@ bool j1Scene::Update(float dt)
 		//App->map->CreateNewMap();
 	}
 
-	if (parchmentImg != nullptr)
+	if (parchmentImg != nullptr) {
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
 			pauseMenuActions = PauseMenuActions_CREATED;
 
-
+		if (pauseMenuActions != PauseMenuActions_NOT_EXIST) {
+			SDL_Rect rect = { -(int)App->render->camera.x, -(int)App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h };
+			App->printer->PrintQuad(rect, { 0,0,0,100 }, true, true, Layers_QuadsPrinters);
+		}
+	}
 	switch (pauseMenuActions)
 	{
 	case PauseMenuActions_NONE:
@@ -940,7 +954,7 @@ int j1Scene::GetCamSpeed(int pos)
 		distanceTo = camMovMargin;
 	}
 
-	float proximity = distanceTo / camMovMargin;
+	float proximity = pow((distanceTo / camMovMargin), camMovement);
 
 	speed = camSpeed * proximity;
 
