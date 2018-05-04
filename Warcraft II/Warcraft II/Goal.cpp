@@ -244,11 +244,6 @@ void Goal_AttackTarget::Activate()
 		goalStatus = GoalStatus_Completed;
 		return;
 	}
-	else if (!targetInfo->target->GetIsValid()) {
-
-		goalStatus = GoalStatus_Completed;
-		return;
-	}
 
 	// -----
 
@@ -396,13 +391,6 @@ void Goal_AttackTarget::Terminate()
 
 	/// The target has been removed by this/another unit
 	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
-
-		// Remove definitely the target from this owner
-		owner->RemoveTargetInfo(targetInfo);
-	}
-	else if (!targetInfo->target->GetIsValid()) {
-	
-		targetInfo->target->RemoveAttackingUnit(owner);
 
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
@@ -931,6 +919,8 @@ void Goal_HitTarget::Activate()
 	}
 	else if (!targetInfo->target->GetIsValid()) {
 
+		targetInfo->isRemoved = true;
+		targetInfo->target->RemoveAttackingUnit(owner);
 		goalStatus = GoalStatus_Completed;
 		return;
 	}
@@ -995,6 +985,8 @@ GoalStatus Goal_HitTarget::Process(float dt)
 	}
 	else if (!targetInfo->target->GetIsValid()) {
 	
+		targetInfo->isRemoved = true;
+		targetInfo->target->RemoveAttackingUnit(owner);
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
