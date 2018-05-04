@@ -347,6 +347,26 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 	}
 	else if (subgoals.size() > 0 && subgoals.front()->GetType() == GoalType_MoveToPosition) {
 
+		// If the target is a building, also check if DistanceManhattan is <= 1
+		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && !targetInfo->isAttackSatisfied) {
+		
+			list<iPoint> buildingTiles = App->entities->GetBuildingTiles((StaticEntity*)targetInfo->target);
+
+			if (buildingTiles.size() > 0) {
+
+				list<iPoint>::const_iterator it = buildingTiles.begin();
+
+				while (it != buildingTiles.end()) {
+
+					if (owner->GetSingleUnit()->currTile.DistanceManhattan(*it) <= 1)
+
+						targetInfo->isAttackSatisfied = true;
+
+					it++;
+				}
+			}
+		}
+
 		// The unit was chasing their target, but the attack distance has been suddenly satisfied
 		if (targetInfo->isAttackSatisfied) {
 
@@ -380,8 +400,15 @@ void Goal_AttackTarget::Terminate()
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
 	}
-	else
+	else {
+
 		targetInfo->target->RemoveAttackingUnit(owner);
+
+		// If the target is a building, set isAttackSatisfied to false (just in case)
+		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied)
+
+			targetInfo->isAttackSatisfied = false;
+	}
 
 	// -----
 
