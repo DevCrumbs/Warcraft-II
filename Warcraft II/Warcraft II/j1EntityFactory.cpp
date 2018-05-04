@@ -3722,7 +3722,6 @@ bool j1EntityFactory::AreAllUnitsDoingSomething(list<DynamicEntity*> units, Unit
 	return true;
 }
 
-// Static Entities
 bool j1EntityFactory::SelectBuilding(StaticEntity* staticEntity) 
 {
 	bool ret = false;

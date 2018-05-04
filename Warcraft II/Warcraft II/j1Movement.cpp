@@ -1402,8 +1402,22 @@ iPoint j1Movement::FindClosestValidTile(iPoint tile, DynamicEntity* unit) const
 
 			for (uint i = 0; i < 8; ++i)
 			{
-				if (App->pathfinding->IsWalkable(neighbors[i])) {
 
+				if (App->entities->IsEntityOnTile(neighbors[i], EntityCategory_STATIC_ENTITY) == nullptr) {
+
+					// If there isn't a static entity (building) on the tile, check for the walkability of the tile
+					if (App->pathfinding->IsWalkable(neighbors[i])) {
+
+						if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+							queue.push(neighbors[i]);
+							visited.push_back(neighbors[i]);
+						}
+					}
+				}
+				else {
+
+					// If there is a static entity (building) on the tile, don't check for the walkability of the tile
 					if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
 
 						queue.push(neighbors[i]);
@@ -1413,6 +1427,7 @@ iPoint j1Movement::FindClosestValidTile(iPoint tile, DynamicEntity* unit) const
 			}
 		}
 	}
+
 	// Unit: priority queue (searches for the tile closest to the unit)
 	else {
 
@@ -1452,8 +1467,21 @@ iPoint j1Movement::FindClosestValidTile(iPoint tile, DynamicEntity* unit) const
 
 			for (uint i = 0; i < 8; ++i)
 			{
-				if (App->pathfinding->IsWalkable(neighbors[i].point)) {
+				if (App->entities->IsEntityOnTile(neighbors[i].point, EntityCategory_STATIC_ENTITY) == nullptr) {
 
+					// If there isn't a static entity (building) on the tile, check for the walkability of the tile
+					if (App->pathfinding->IsWalkable(neighbors[i].point)) {
+
+						if (find(visited.begin(), visited.end(), neighbors[i].point) == visited.end()) {
+
+							queue.push(neighbors[i]);
+							visited.push_back(neighbors[i].point);
+						}
+					}
+				}
+				else {
+
+					// If there is a static entity (building) on the tile, don't check for the walkability of the tile
 					if (find(visited.begin(), visited.end(), neighbors[i].point) == visited.end()) {
 
 						queue.push(neighbors[i]);

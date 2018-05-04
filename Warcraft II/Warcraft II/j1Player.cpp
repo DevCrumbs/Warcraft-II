@@ -387,7 +387,7 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 
 			case EntityType_FOOTMAN:
 				if (barracks != nullptr) {
-					SpawnUnit(barracks->GetPos(), EntityType_FOOTMAN, unitInfo);
+					SpawnUnitFromBuilding(barracks, EntityType_FOOTMAN, unitInfo);
 					App->audio->PlayFx(App->audio->GetFX().footmanReady, 0);
 					barracksSpawningListUI.front().entityIcon->isActive = false;
 					barracksSpawningListUI.front().entityLifeBar->isActive = false;
@@ -397,7 +397,7 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 
 			case EntityType_ELVEN_ARCHER:
 				if (barracks != nullptr) {
-					SpawnUnit(barracks->GetPos(), EntityType_ELVEN_ARCHER, unitInfo);
+					SpawnUnitFromBuilding(barracks, EntityType_ELVEN_ARCHER, unitInfo);
 					App->audio->PlayFx(App->audio->GetFX().archerReady, 0);
 					barracksSpawningListUI.front().entityIcon->isActive = false;
 					barracksSpawningListUI.front().entityLifeBar->isActive = false;
@@ -407,7 +407,7 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 
 			case EntityType_GRYPHON_RIDER:
 				if (gryphonAviary != nullptr) {
-					SpawnUnit(gryphonAviary->GetPos(), EntityType_GRYPHON_RIDER, unitInfo);
+					SpawnUnitFromBuilding(gryphonAviary, EntityType_GRYPHON_RIDER, unitInfo);
 					gryphoSpawningListUI.front().entityIcon->isActive = false;
 					gryphoSpawningListUI.front().entityLifeBar->isActive = false;
 					gryphoSpawningListUI.front().owner = nullptr;
@@ -446,25 +446,62 @@ void j1Player::DiscountGold(int gold)
 	App->scene->hasGoldChanged = true;
 }
 
-void j1Player::SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo)
+void j1Player::SpawnUnitFromBuilding(StaticEntity* spawnBuilding, ENTITY_TYPE spawningEntity, UnitInfo unitInfo)
 {
-	iPoint buildingTile = App->map->WorldToMap(spawningBuildingPos.x, spawningBuildingPos.y);
-	buildingTile.x -= 1;
+	if (spawnBuilding == nullptr)
+		return;
 
-	// Make sure that there are no entities on the spawn tile and that the tile is walkable
-	if (App->entities->IsEntityOnTile(buildingTile, EntityCategory_DYNAMIC_ENTITY) != nullptr
-		|| App->entities->IsEntityOnTile(buildingTile, EntityCategory_STATIC_ENTITY) != nullptr
-		|| !App->pathfinding->IsWalkable(buildingTile))
+	iPoint spawnTile = { -1, -1 };
 
-		buildingTile = App->movement->FindClosestValidTile(buildingTile);
+	// Option a: find a spawn tile from the surrounding tiles of the spawn building
+	list<iPoint> surroundingBuildingTiles = App->entities->GetBuildingTiles(spawnBuilding, true);
+	list<iPoint>::const_iterator it = surroundingBuildingTiles.begin();
+	while (it != surroundingBuildingTiles.end()) {
+	
+		if (App->pathfinding->IsWalkable(*it)
+			&& App->entities->IsEntityOnTile(*it) == nullptr) {
 
-	// Make sure that the spawn tile is valid
-	if (buildingTile.x != -1 && buildingTile.y != -1) {
+			spawnTile = *it;
+			break;
+		}
+		it++;
+	}
 
-		iPoint buildingTilePos = App->map->MapToWorld(buildingTile.x, buildingTile.y);
-		fPoint pos = { (float)buildingTilePos.x,(float)buildingTilePos.y };
+	// Option b: find a new, valid spawn tile
+	if (spawnTile.x == -1 && spawnTile.y == -1) {
+	
+		iPoint buildingTile = App->map->WorldToMap((int)spawnBuilding->GetPos().x, (int)spawnBuilding->GetPos().y);
+		buildingTile.x -= 1;
+		spawnTile = App->movement->FindClosestValidTile(buildingTile);
+	}
 
-		App->entities->AddEntity(spawningEntity, pos, (EntityInfo&)App->entities->GetUnitInfo(spawningEntity), unitInfo, this);
+	// Spawn the entity on the spawn tile
+	if (spawnTile.x != -1 && spawnTile.y != -1) {
+
+		iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
+		App->entities->AddEntity(spawningEntity, { (float)spawnPos.x, (float)spawnPos.y }, (EntityInfo&)App->entities->GetUnitInfo(spawningEntity), unitInfo, this);
+		isUnitSpawning = false;
+	}
+}
+
+void j1Player::SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, UnitInfo unitInfo) 
+{
+	iPoint toSpawnTile = spawnTile;
+
+	// If the spawnTile is not valid, find a new, valid spawn tile
+	if ((toSpawnTile.x == -1 && toSpawnTile.y == -1)
+		|| App->entities->IsEntityOnTile(toSpawnTile) != nullptr || !App->pathfinding->IsWalkable(toSpawnTile)) {
+
+		toSpawnTile = App->movement->FindClosestValidTile(toSpawnTile);
+	}
+
+	// Spawn the entity on the spawn tile
+	if (toSpawnTile.x != -1 && toSpawnTile.y != -1) {
+
+		iPoint spawnPos = App->map->MapToWorld(toSpawnTile.x, toSpawnTile.y);
+
+		App->entities->AddEntity(spawningEntity, { (float)spawnPos.x, (float)spawnPos.y }, (EntityInfo&)App->entities->GetUnitInfo(spawningEntity), unitInfo, this);
 		isUnitSpawning = false;
 	}
 }
