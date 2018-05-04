@@ -116,7 +116,8 @@ public:
 	void CheckUnitSpawning(queue<ToSpawnUnit*>* queue);
 	void DiscountGold(int gold);
 
-	void SpawnUnit(fPoint spawningBuildingPos, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
+	void SpawnUnitFromBuilding(StaticEntity* spawnBuilding, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
+	void SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
 
 	void UpdateSpawnUnitsStats(list<GroupSpawning>* spawningList);
 

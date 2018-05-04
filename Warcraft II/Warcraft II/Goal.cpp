@@ -244,6 +244,11 @@ void Goal_AttackTarget::Activate()
 		goalStatus = GoalStatus_Completed;
 		return;
 	}
+	else if (!targetInfo->target->GetIsValid()) {
+
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
 
 	// -----
 
@@ -340,11 +345,6 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 			return goalStatus;
 		}
 	}
-	else if (!targetInfo->target->GetIsValid()) {
-
-		goalStatus = GoalStatus_Failed;
-		return goalStatus;
-	}
 	else if (subgoals.size() > 0 && subgoals.front()->GetType() == GoalType_MoveToPosition) {
 
 		// If the target is a building, also check if DistanceManhattan is <= 1
@@ -396,6 +396,13 @@ void Goal_AttackTarget::Terminate()
 
 	/// The target has been removed by this/another unit
 	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
+
+		// Remove definitely the target from this owner
+		owner->RemoveTargetInfo(targetInfo);
+	}
+	else if (!targetInfo->target->GetIsValid()) {
+	
+		targetInfo->target->RemoveAttackingUnit(owner);
 
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
@@ -847,7 +854,8 @@ GoalStatus Goal_MoveToPosition::Process(float dt)
 	if (owner->GetSingleUnit()->movementState == MovementState_WaitForPath) {
 
 		// The unit has changed their goal (because it was not valid) through the GroupMovement module
-		if (owner->GetSingleUnit()->goal != destinationTile)
+		if (owner->GetSingleUnit()->goal != destinationTile 
+			&& owner->GetSingleUnit()->goal.x != -1 && owner->GetSingleUnit()->goal.y != -1)
 
 			destinationTile = owner->GetSingleUnit()->goal;
 	}
@@ -904,6 +912,11 @@ void Goal_HitTarget::Activate()
 	}
 	/// The target has died
 	else if (!targetInfo->IsTargetPresent()) {
+
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+	else if (!targetInfo->target->GetIsValid()) {
 
 		goalStatus = GoalStatus_Completed;
 		return;
@@ -969,7 +982,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 	}
 	else if (!targetInfo->target->GetIsValid()) {
 	
-		goalStatus = GoalStatus_Failed;
+		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
 	/// The target is no longer within the attack nor sight radius of the unit
@@ -1321,7 +1334,10 @@ GoalStatus Goal_LookAround::Process(float dt)
 
 		if (timer.ReadSec() >= secondsUntilNextChange) {
 
-			uint random = rand() % probabilityGoalCompleted;
+			uint random = 0;
+
+			if (probabilityGoalCompleted > 0)
+				random = rand() % probabilityGoalCompleted;
 
 			if (random % 2 == 0)
 				goalStatus = GoalStatus_Completed;
@@ -1386,36 +1402,42 @@ void Goal_PickNugget::Activate()
 
 	// Determine the amount of gold and the time (depending on the gold)
 	int random = rand() % 4;
+	int timesRepeatSound = 0;
 
 	switch (random) {
 	// TODO Valdivia: Times have to be changed to be shorter and the labels must show accordingly
 	case 0:
 		gold = 1000;
 		secondsGathering = 10.0f;
+		timesRepeatSound = 5;
 		break;
 	case 1:
 		gold = 1400;
 		secondsGathering = 14.0f;
+		timesRepeatSound = 6;
 		break;
 	case 2:
 		gold = 1500;
 		secondsGathering = 15.0f;
+		timesRepeatSound = 7;
 		break;
 	case 3:
 		gold = 1700;
 		secondsGathering = 17.0f;
+		timesRepeatSound = 8;
 		break;
 
 	default:
 		gold = 2000;
 		secondsGathering = 20.0f;
+		timesRepeatSound = 9;
 		break;
 	}
 
 	goldMine->totalGold = gold;
 	goldMine->secondsGathering = secondsGathering;
 
-	App->audio->PlayFx(App->audio->GetFX().goldMine, 3); //Gold mine sound
+	App->audio->PlayFx(App->audio->GetFX().goldMine, timesRepeatSound); // Gold mine sound
 
 	owner->SetBlitState(false);
 	owner->SetIsValid(false);

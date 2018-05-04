@@ -169,6 +169,7 @@ public:
 	/// Unit attacks a target
 	Entity* GetCurrTarget() const;
 	bool SetCurrTarget(Entity* target);
+	void InvalidateCurrTarget();
 
 	bool SetIsRemovedTargetInfo(Entity* target); // this action happens first
 	bool RemoveTargetInfo(TargetInfo* targetInfo); // this action happens second

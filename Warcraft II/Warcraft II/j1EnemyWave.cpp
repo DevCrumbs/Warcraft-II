@@ -76,8 +76,10 @@ bool j1EnemyWave::Update(float ft)
 					type = EntityType_DRAGON;
 					UnitInfo unitInfo;
 					fPoint pos{ (float)(*iterator).x, (float)(*iterator).y };
+					iPoint tile = App->map->WorldToMap((int)pos.x, (int)pos.y);
 
-					App->entities->AddEntity(type, pos, App->entities->GetUnitInfo(type), unitInfo);
+					// Spawn the unit (the following searches for a new spawn tile if the tile is not valid)
+					App->player->SpawnUnitAtTile(tile, type, unitInfo);
 
 				}
 			}
@@ -88,8 +90,10 @@ bool j1EnemyWave::Update(float ft)
 				type = ENTITY_TYPE(rand() % 2 + 381);
 				UnitInfo unitInfo;
 				fPoint pos{ (float)(*iterator).x, (float)(*iterator).y };
+				iPoint tile = App->map->WorldToMap((int)pos.x, (int)pos.y);
 
-				App->entities->AddEntity(type, pos, App->entities->GetUnitInfo(type), unitInfo);
+				// Spawn the unit (the following searches for a new spawn tile if the tile is not valid)
+				App->player->SpawnUnitAtTile(tile, type, unitInfo);
 			}
 
 			LOG("Spawned %i entities from %i, type %i", spawned, size, type);
