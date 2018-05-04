@@ -25,7 +25,7 @@
 
 Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GruntInfo& gruntInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), gruntInfo(gruntInfo)
 {
-	//pathPlanner->SetIsInSameRoomChecked(true);
+	pathPlanner->SetIsInSameRoomChecked(true);
 
 	// XML loading
 	/// Animations
@@ -150,6 +150,10 @@ void Grunt::Move(float dt)
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
 		}
+	}
+
+	if (isSelected) {
+		int i = 0;
 	}
 
 	// PROCESS THE CURRENTLY ACTIVE GOAL

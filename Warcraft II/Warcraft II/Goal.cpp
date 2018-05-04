@@ -807,6 +807,19 @@ void Goal_MoveToPosition::Activate()
 		return;
 	}
 
+	// If the owner is an enemy, the destinationTile must be in the same room
+	if (owner->entitySide == EntitySide_Enemy) {
+	
+		iPoint currPos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
+		iPoint destinationPos = App->map->MapToWorld(destinationTile.x, destinationTile.y);
+		
+		if (!App->map->IsGoalOnRoom(currPos, destinationPos)) {
+		
+			goalStatus = GoalStatus_Failed;
+			return;
+		}
+	}
+
 	if (owner->GetSingleUnit()->goal != destinationTile)
 
 		owner->GetSingleUnit()->SetGoal(destinationTile);

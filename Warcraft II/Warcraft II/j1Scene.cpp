@@ -358,6 +358,10 @@ bool j1Scene::Update(float dt)
 				//else
 					//App->entities->UnselectAllEntities();
 
+				Entity* enemy = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
+				if (enemy != nullptr)
+					enemy->isSelected = true;
+
 				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
 				if (playerBuilding != nullptr)
 					App->entities->SelectBuilding((StaticEntity*)playerBuilding);
