@@ -211,6 +211,8 @@ public:
 
 	list<Entity*> GetEntitiesOnRoom(ENTITY_TYPE type, Room room);
 
+	bool IsRoomCleared(Room room);
+
 	// Unload map
 	bool UnLoad();
 

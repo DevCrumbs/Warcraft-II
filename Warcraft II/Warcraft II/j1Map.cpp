@@ -1184,13 +1184,30 @@ list<Entity*> j1Map::GetEntitiesOnRoom(ENTITY_TYPE type, Room room)
 
 	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
 	{
+		if ((*iterator)->dynamicEntityType == type)
+			if (IsOnRoom((*iterator)->GetPos(), room))
+			{
+				entitiesOnRoom.push_back(*iterator);
+			}
+	}
+
+	return entitiesOnRoom;
+}
+
+bool j1Map::IsRoomCleared(Room room)
+{
+	bool ret = false;
+
+	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
+	{
+		if ((*iterator)->entitySide == type)
 		if (IsOnRoom((*iterator)->GetPos(), room))
 		{
 			entitiesOnRoom.push_back(*iterator);
 		}
 	}
 
-	return entitiesOnRoom;
+	return ret;
 }
 
 ///*sadface*
