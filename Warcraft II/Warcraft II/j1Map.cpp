@@ -1208,6 +1208,16 @@ bool j1Map::IsRoomCleared(Room room)
 			}
 	}
 
+	for (list<StaticEntity*>::iterator iterator = App->entities->activeStaticEntities.begin(); iterator != App->entities->activeStaticEntities.end(); ++iterator)
+	{
+		if (App->entities->IsEnemy(*iterator))
+			if (IsOnRoom((*iterator)->GetPos(), room))
+			{
+				ret = false;
+				break;
+			}
+	}
+
 	return ret;
 }
 
