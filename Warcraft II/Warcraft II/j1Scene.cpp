@@ -1330,8 +1330,11 @@ void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText
 		if (stcEntity == nullptr && App->player->currentGold >= cost) {
 			if (stcEntity == App->player->gryphonAviary && !App->player->townHallUpgrade)
 				butt->ChangesTextsAreas(false);
-			else 
+			else {
+				if (stcEntity == App->player->gryphonAviary && App->player->townHall->buildingState == BuildingState_Building)
+					butt->ChangesTextsAreas(false);
 				butt->ChangesTextsAreas(true, normalText, hoverText);
+			}
 		}
 		else
 			butt->ChangesTextsAreas(false);
@@ -1374,8 +1377,13 @@ void j1Scene::ChangeMenuLabelInfo(UILabel * Label, int cost, bool isSingle, Stat
 				Label->SetText("Requires Keep");
 				Label->SetColor(BloodyRed_, true);
 			}
-			else
+			else {
+				if (stcEntity == App->player->gryphonAviary && App->player->townHall->buildingState == BuildingState_Building) {
+					Label->SetText("Requires Keep");
+					Label->SetColor(BloodyRed_, true);
+				}
 				Label->SetText("Cost: " + to_string(cost) + " gold");
+			}
 		}
 		else {
 			Label->SetColor(BloodyRed_, true);
@@ -1813,7 +1821,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
-			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade) {
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade && App->player->townHall->buildingState == BuildingState_Normal) {
 				if (App->player->currentGold >= gryphonAviaryCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
