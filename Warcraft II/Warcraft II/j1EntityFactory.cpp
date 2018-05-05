@@ -3988,7 +3988,7 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 }
 
 
-bool j1EntityFactory::IsEnemy(DynamicEntity* entity)
+bool j1EntityFactory::IsEnemy(Entity* entity)
 {
-	return entity->dynamicEntityType == EntityType_GRUNT || entity->dynamicEntityType == EntityType_TROLL_AXETHROWER || entity->dynamicEntityType == EntityType_DRAGON;
+	return entity->entitySide == EntitySide_Enemy || entity->entitySide == EntitySide_EnemyBuildings;
 }
