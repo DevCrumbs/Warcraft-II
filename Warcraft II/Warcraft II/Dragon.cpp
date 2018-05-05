@@ -119,6 +119,7 @@ void Dragon::Move(float dt)
 
 			// Give gold to the player
 			App->player->AddGold(dragonInfo.droppedGold);
+			App->audio->PlayFx(App->audio->GetFX().goldGetSound);
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
