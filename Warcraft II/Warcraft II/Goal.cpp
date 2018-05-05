@@ -951,9 +951,11 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 				iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
 
-				if (owner->entitySide == EntitySide_Player)
+				if (owner->entitySide == EntitySide_Player) {
 					/// Green particles +++
 					App->particles->AddParticle(App->particles->playerHealth, pos);
+					App->audio->PlayFx(App->audio->GetFX().healSound);
+				}
 				else if (owner->entitySide == EntitySide_Enemy)
 					/// Red particles +++
 					App->particles->AddParticle(App->particles->enemyHealth, pos);
@@ -965,9 +967,11 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 				iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
 
-				if (owner->entitySide == EntitySide_Player)
+				if (owner->entitySide == EntitySide_Player) {
 					/// Green particles +++
 					App->particles->AddParticle(App->particles->playerHealth, pos);
+					App->audio->PlayFx(App->audio->GetFX().healSound);
+				}
 				else if (owner->entitySide == EntitySide_Enemy)
 					/// Red particles +++
 					App->particles->AddParticle(App->particles->enemyHealth, pos);
@@ -1620,6 +1624,8 @@ GoalStatus Goal_HealArea::Process(float dt)
 
 			App->particles->AddParticle(App->particles->playerHealth, pos);
 			entity->ApplyHealth(health);
+			//App->audio->PlayFx(App->audio->GetFX().healSound);
+
 		}
 	}
 
