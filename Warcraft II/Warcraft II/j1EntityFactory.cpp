@@ -1612,14 +1612,20 @@ void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoi
 	case EntityType_SCOUT_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, scoutTowerInfo.completeTexArea, Layers_PreviewBuildings);
+		if(!IsPreviewBuildingOnEntity(mousePos, StaticEntitySize_Small))
+			PrintTowerPreviewCollider(mousePos, scoutTowerInfo.sightRadius);
 		break;
 	case EntityType_PLAYER_GUARD_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerGuardTowerInfo.completeTexArea, Layers_PreviewBuildings);
+		if (!IsPreviewBuildingOnEntity(mousePos, StaticEntitySize_Small))
+			PrintTowerPreviewCollider(mousePos, playerGuardTowerInfo.sightRadius);
 		break;
 	case EntityType_PLAYER_CANNON_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, playerCannonTowerInfo.completeTexArea, Layers_PreviewBuildings);
+		if (!IsPreviewBuildingOnEntity(mousePos, StaticEntitySize_Small))
+			PrintTowerPreviewCollider(mousePos, playerCannonTowerInfo.sightRadius);
 		break;
 	case EntityType_BARRACKS:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
@@ -1966,6 +1972,65 @@ bool j1EntityFactory::IsEntityOnTileBySize(iPoint tile) const
 		LOG("IN");
 
 	return false;
+}
+
+vector<SDL_Rect> j1EntityFactory::MakeTowerPreviewCollider(iPoint pos, uint radius, DistanceHeuristic distanceHeuristic)
+{
+	vector<SDL_Rect> ret;
+
+	// Perform a BFS
+	queue<iPoint> queue;
+	list<iPoint> visited;
+
+	iPoint curr = App->map->WorldToMap(pos.x, pos.y);
+	queue.push(curr);
+
+	while (queue.size() > 0) {
+
+		curr = queue.front();
+		queue.pop();
+
+		iPoint neighbors[4];
+		neighbors[0].create(curr.x + 1, curr.y + 0);
+		neighbors[1].create(curr.x + 0, curr.y + 1);
+		neighbors[2].create(curr.x - 1, curr.y + 0);
+		neighbors[3].create(curr.x + 0, curr.y - 1);
+
+		/*
+		neighbors[4].create(curr.x + 1, curr.y + 1);
+		neighbors[5].create(curr.x + 1, curr.y - 1);
+		neighbors[6].create(curr.x - 1, curr.y + 1);
+		neighbors[7].create(curr.x - 1, curr.y - 1);
+		*/
+
+		for (uint i = 0; i < 4; ++i)
+		{
+			if (App->pathfinding->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], App->map->WorldToMap(pos.x, pos.y), distanceHeuristic) < radius) {
+
+				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+					queue.push(neighbors[i]);
+					visited.push_back(neighbors[i]);
+
+					iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
+					SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+					ret.push_back(rect);
+				}
+			}
+		}
+	}
+
+	return ret;
+}
+
+void j1EntityFactory::PrintTowerPreviewCollider(iPoint pos, uint radius)
+{
+	vector<SDL_Rect> colliderRect = MakeTowerPreviewCollider(pos, radius, DistanceHeuristic_DistanceManhattan);
+	SDL_Color lightBlue = ColorBrightBlue; //Colour
+
+	for (uint i = 0; i < colliderRect.size(); ++i)
+		App->printer->PrintQuad(colliderRect[i], { lightBlue.r, lightBlue.g, lightBlue.b, (Uint8)previewTilesopacity }, Layers_FloorColliders);
+
 }
 
 // Returns true if a building can NOT be built in that spot

@@ -1881,7 +1881,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 
 			else if (UIelem == upgradeTownHallButton) {
-				ShowHoverInfoMenu("Upgrate TownHall", "Cost: 500 gold", &footmanHoverInfo);
+				ShowHoverInfoMenu("Upgrade TownHall", "Cost: 500 gold", &footmanHoverInfo);
 			}
 
 			else if (UIelem == groupSelectionButtons.selectFootmans) {

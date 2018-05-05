@@ -1849,6 +1849,8 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				else if (App->player->GetCurrentGold() < gryphonAviaryCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon)
+				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 
 			else if (UIelem == buildingMenuButtons.mageTower.icon) {
 				if (App->player->GetCurrentGold() >= mageTowerCost) {
@@ -1900,6 +1902,8 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				else if (App->player->GetCurrentGold() < barracksCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
+			else if (UIelem == buildingMenuButtons.barracks.icon)
+				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 
 		}
 
