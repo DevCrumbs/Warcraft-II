@@ -303,33 +303,9 @@ void Footman::Move(float dt)
 		}
 	}
 
-	// PROCESS THE CURRENTLY ACTIVE GOAL
-	brain->Process(dt);
-
-	/*
-	if (isSelected) {
-
-		switch (unitState) {
-
-		case UnitState_AttackTarget:
-			LOG("AttackTarget");
-			break;
-		case UnitState_Idle:
-			LOG("Idle");
-			break;
-		case UnitState_Walk:
-			LOG("Walk");
-			break;
-		case UnitState_NoState:
-			LOG("NoState");
-			break;
-		case UnitState_RescuePrisoner:
-			LOG("Rescue prisoner");
-		default:
-			break;
-		}
-	}
-	*/
+	if (!isDead)
+		// PROCESS THE CURRENTLY ACTIVE GOAL
+		brain->Process(dt);
 
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
@@ -511,8 +487,28 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					RemoveTargetInfo(*it);
-					break;
+
+					if (currTarget != nullptr) {
+
+						if (c2->entity == currTarget->target) {
+
+							(*it)->target->RemoveAttackingUnit(this);
+							SetIsRemovedTargetInfo((*it)->target);
+							break;
+						}
+						else {
+
+							(*it)->target->RemoveAttackingUnit(this);
+							RemoveTargetInfo(*it);
+							break;
+						}
+					}
+					else {
+
+						(*it)->target->RemoveAttackingUnit(this);
+						RemoveTargetInfo(*it);
+						break;
+					}
 				}
 				it++;
 			}

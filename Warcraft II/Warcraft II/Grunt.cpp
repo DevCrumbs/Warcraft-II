@@ -150,12 +150,9 @@ void Grunt::Move(float dt)
 		}
 	}
 
-	if (isSelected) {
-		int i = 0;
-	}
-
-	// PROCESS THE CURRENTLY ACTIVE GOAL
-	brain->Process(dt);
+	if (!isDead)
+		// PROCESS THE CURRENTLY ACTIVE GOAL
+		brain->Process(dt);
 
 	UnitStateMachine(dt);
 

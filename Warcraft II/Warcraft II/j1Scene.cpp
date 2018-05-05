@@ -536,8 +536,8 @@ bool j1Scene::Update(float dt)
 				}
 				else if (playerUnit != nullptr || playerBuilding != nullptr || prisoner != nullptr) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
-					if (r.x != 374 && !App->gui->IsMouseOnUI())
-					App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
+					if (r.x != 503 && !App->gui->IsMouseOnUI())
+						App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
 				}
 				else {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
