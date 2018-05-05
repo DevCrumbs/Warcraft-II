@@ -159,7 +159,7 @@ public:
 	// Dynamic Entities
 	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);
 	bool AreAllUnitsDoingSomething(list<DynamicEntity*> units, UnitState unitState = UnitState_NoState);
-	bool IsEnemy(DynamicEntity * entity);
+	bool IsEnemy(Entity* entity);
 
 	// Static Entities
 	bool SelectBuilding(StaticEntity* staticEntity);

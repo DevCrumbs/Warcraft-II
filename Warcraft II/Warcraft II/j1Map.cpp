@@ -1141,13 +1141,15 @@ bool j1Map::IsOnBase(iPoint pos)
 bool j1Map::IsOnRoom(iPoint pos, Room room)
 {
 	int size = 1;
-	return (room.x < pos.x + size && room.x + room.w > pos.x && room.y < pos.y + size && room.h + room.y > pos.y);
+	SDL_Rect posRect{ pos.x,pos.y,size,size };
+	return RectIntersect(&posRect, &room);
 }
 
 bool j1Map::IsOnRoom(fPoint pos, Room room)
 {
 	int size = 1;
-	return (room.x < pos.x + size && room.x + room.w > pos.x && room.y < pos.y + size && room.h + room.y > pos.y);
+	SDL_Rect posRect{ pos.x,pos.y,size,size };
+	return RectIntersect(&posRect, &room);
 }
 
 Room j1Map::GetEntityRoom(Entity* entity)
@@ -1199,6 +1201,16 @@ bool j1Map::IsRoomCleared(Room room)
 	bool ret = true;
 
 	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
+	{
+		if (App->entities->IsEnemy(*iterator))
+			if (IsOnRoom((*iterator)->GetPos(), room))
+			{
+				ret = false;
+				break;
+			}
+	}
+
+	for (list<StaticEntity*>::iterator iterator = App->entities->activeStaticEntities.begin(); iterator != App->entities->activeStaticEntities.end(); ++iterator)
 	{
 		if (App->entities->IsEnemy(*iterator))
 			if (IsOnRoom((*iterator)->GetPos(), room))
