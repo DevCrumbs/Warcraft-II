@@ -118,8 +118,7 @@ void Dragon::Move(float dt)
 			App->player->enemiesKill++;
 
 			// Give gold to the player
-			App->player->currentGold += dragonInfo.droppedGold;
-			App->scene->hasGoldChanged = true;
+			App->player->AddGold(dragonInfo.droppedGold);
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);

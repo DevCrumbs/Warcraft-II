@@ -1464,7 +1464,6 @@ void Goal_PickNugget::Terminate()
 
 		// Give gold to the player
 		App->player->AddGold(gold);
-		App->scene->hasGoldChanged = true;
 
 		owner->SetGoldMine(nullptr);
 		owner->SetUnitGatheringGold(false);

@@ -191,7 +191,6 @@ bool j1Player::Update(float dt)
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN) {
 		App->audio->PlayFx(App->audio->GetFX().goldMine, 0); //Gold mine sound
 		AddGold(500);
-		App->scene->hasGoldChanged = true;
 	}
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
 		currentFood += 3;
@@ -248,8 +247,12 @@ iPoint j1Player::GetMousePos() const{
 void j1Player::AddGold(int sumGold)
 {
 	currentGold += sumGold;
-	if (sumGold > 0)
+	if (sumGold > 0) {
 		totalGold += sumGold;
+		App->scene->hasGoldChanged = GoldChange_Win;
+	}
+	else 
+		App->scene->hasGoldChanged = GoldChange_Lose;
 }
 
 int j1Player::GetCurrentGold() const
@@ -282,7 +285,7 @@ void j1Player::CheckIfPlaceBuilding()
 				c = (StaticEntity*)App->entities->AddEntity(EntityType_CHICKEN_FARM, buildingPos, App->entities->GetBuildingInfo(EntityType_CHICKEN_FARM), unitInfo, this);
 				chickenFarm.push_back(c);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				DiscountGold(App->scene->chickenFarmCost); //Discount gold
+				AddGold(-App->scene->chickenFarmCost); //Discount gold
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -292,7 +295,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				DiscountGold(App->scene->stablesCost); //Discount gold
+				AddGold(-App->scene->stablesCost); //Discount gold
 			}
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -302,7 +305,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				DiscountGold(App->scene->gryphonAviaryCost); //Discount gold
+				AddGold(-App->scene->gryphonAviaryCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -312,7 +315,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				DiscountGold(App->scene->mageTowerCost); //Discount gold
+				AddGold(-App->scene->mageTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -324,7 +327,7 @@ void j1Player::CheckIfPlaceBuilding()
 				s = (StaticEntity*)App->entities->AddEntity(EntityType_SCOUT_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_SCOUT_TOWER), unitInfo, this);
 				scoutTower.push_back(s);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				DiscountGold(App->scene->scoutTowerCost); //Discount gold
+				AddGold(-App->scene->scoutTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -334,7 +337,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				guardTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_GUARD_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_GUARD_TOWER), unitInfo, this));
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				DiscountGold(App->scene->guardTowerCost); //Discount gold
+				AddGold(-App->scene->guardTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -343,7 +346,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				cannonTower.push_back((StaticEntity*)App->entities->AddEntity(EntityType_PLAYER_CANNON_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_PLAYER_CANNON_TOWER), unitInfo, this));
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				DiscountGold(App->scene->cannonTowerCost); //Discount gold
+				AddGold(-App->scene->cannonTowerCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -352,7 +355,7 @@ void j1Player::CheckIfPlaceBuilding()
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				barracks = (StaticEntity*)App->entities->AddEntity(EntityType_BARRACKS, buildingPos, App->entities->GetBuildingInfo(EntityType_BARRACKS), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
-				DiscountGold(App->scene->barracksCost); //Discount gold
+				AddGold(-App->scene->barracksCost); //Discount gold
 			}
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
@@ -438,12 +441,6 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 			(*barrackIter).entityLifeBar->SetLife((*(*barrackIter).owner)->toSpawnTimer.ReadSec());
 	}
 
-}
-
-void j1Player::DiscountGold(int gold)
-{
-	AddGold(-gold); //Discount gold
-	App->scene->hasGoldChanged = true;
 }
 
 void j1Player::SpawnUnitFromBuilding(StaticEntity* spawnBuilding, ENTITY_TYPE spawningEntity, UnitInfo unitInfo)
@@ -1722,7 +1719,7 @@ void j1Player::HandleGoldMineUIStates()
 		uint currentGold = 0;
 		for (float i = goldMine->secondsGathering; i >= 0; i--) {
 			if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
-				currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
+				AddGold(goldMine->totalGold - ((goldMine->secondsGathering - i) * 100));
 				break;
 			}
 		}
@@ -1930,14 +1927,12 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			if (UIelem == upgradeTownHallButton) {
 				if (townHallUpgrade && currentGold >= 1500) {
 					keepUpgrade = true;
-					currentGold -= 1500;
-					App->scene->hasGoldChanged = true;
+					AddGold(1500);
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Constructuion sound
 				}
 				else if (currentGold >= 500) {
 					townHallUpgrade = true;
-					currentGold -= 500;
-					App->scene->hasGoldChanged = true;
+					AddGold(500);
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 				}
 				else
@@ -2007,8 +2002,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + GetGroupSpawningSize(gryphoSpawningListUI) + GetGroupSpawningSize(barracksSpawningListUI))) {
 						App->audio->PlayFx(1, 0); //Button sound
-						currentGold -= footmanCost;
-						App->scene->hasGoldChanged = true;
+						AddGold(-footmanCost);
 						//Timer for the spawning
 						j1Timer spawnTimer;
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_FOOTMAN);
@@ -2039,8 +2033,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + GetGroupSpawningSize(barracksSpawningListUI) + GetGroupSpawningSize(gryphoSpawningListUI))) {
 						App->audio->PlayFx(1, 0); //Button sound
-						currentGold -= elvenArcherCost;
-						App->scene->hasGoldChanged = true;
+						AddGold(-elvenArcherCost);
 						//Timer for the spawning
 						j1Timer spawnTimer;
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
@@ -2099,8 +2092,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 					if (currentFood > (App->entities->GetNumberOfPlayerUnits() + GetGroupSpawningSize(gryphoSpawningListUI) + GetGroupSpawningSize(barracksSpawningListUI))) {
 						App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-						currentGold -= gryphonRiderCost;
-						App->scene->hasGoldChanged = true;
+						AddGold(-gryphonRiderCost);
 						//Timer for the spawning
 						j1Timer spawnTimer;
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_GRYPHON_RIDER);

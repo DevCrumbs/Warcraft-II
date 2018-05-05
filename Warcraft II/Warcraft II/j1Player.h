@@ -114,7 +114,6 @@ public:
 	iPoint GetMousePos() const;
 
 	void CheckUnitSpawning(queue<ToSpawnUnit*>* queue);
-	void DiscountGold(int gold);
 
 	void SpawnUnitFromBuilding(StaticEntity* spawnBuilding, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
 	void SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
@@ -201,7 +200,6 @@ public:
 	bool townHallUpgrade = false;
 	bool keepUpgrade = false;
 
-	int currentGold = 0; // amount of gold that the player has at the current moment
 	uint totalGold = 0u; // total gold earned during the game
 	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
 
@@ -226,6 +224,8 @@ public:
 	bool isMouseOnMine = false;
 
 private:
+
+	int currentGold = 0; // amount of gold that the player has at the current moment
 
 	uint maxUnitsSelected = 8;
 

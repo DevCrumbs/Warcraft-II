@@ -267,14 +267,14 @@ bool j1Scene::PreUpdate()
 		App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
 	//_Entities_creation
 
-	if (hasGoldChanged) {
-		UpdateGoldLabel();
+	if (hasGoldChanged != GoldChange_NoChange) {
+		UpdateGoldLabel(hasGoldChanged);
 		if (buildingMenu->isActive)
 		{
 			UpdateLabelsMenu();
 			UpdateIconsMenu();
 		}
-		hasGoldChanged = false;
+		hasGoldChanged = GoldChange_NoChange;
 	}
 	if (hasFoodChanged == true) {
 		UpdateFoodLabel();
@@ -293,6 +293,12 @@ bool j1Scene::PreUpdate()
 		break;
 	}
 
+
+	//Change to wite Gold Label Color before 2 sec
+
+	if (goldLabelColorTime.Read() > 1200 /*&& goldLabel->GetColor() != White_*/) {
+		goldLabel->SetColor(White_, true);
+	}
 	return ret;
 }
 
@@ -748,7 +754,7 @@ bool j1Scene::PostUpdate()
 		App->finish->active = true;
 	}
 	
-	if (((App->player->currentGold < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
+	if (((App->player->GetCurrentGold() < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
 		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)) {
 
 		App->player->isWin = false;
@@ -1335,13 +1341,13 @@ void j1Scene::UpdateIconsMenu()
 void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle, StaticEntity* stcEntity)
 {
 	if (isSingle) {
-		if (stcEntity == nullptr && App->player->currentGold >= cost)
+		if (stcEntity == nullptr && App->player->GetCurrentGold() >= cost)
 			butt->ChangesTextsAreas(true, normalText, hoverText);
 		else
 			butt->ChangesTextsAreas(false);
 	}
 	else {
-		if (App->player->currentGold >= cost)
+		if (App->player->GetCurrentGold() >= cost)
 			butt->ChangesTextsAreas(true, normalText, hoverText);
 		else 
 			butt->ChangesTextsAreas(false);
@@ -1368,7 +1374,7 @@ void j1Scene::ChangeMenuLabelInfo(UILabel * Label, int cost, bool isSingle, Stat
 	if (isSingle) {
 		if (stcEntity == nullptr) {
 
-			if (App->player->currentGold >= cost)
+			if (App->player->GetCurrentGold() >= cost)
 				Label->SetColor(White_, true);
 			else
 				Label->SetColor(BloodyRed_, true);
@@ -1382,7 +1388,7 @@ void j1Scene::ChangeMenuLabelInfo(UILabel * Label, int cost, bool isSingle, Stat
 	}
 	else {
 
-		if (App->player->currentGold >= cost)
+		if (App->player->GetCurrentGold() >= cost)
 			Label->SetColor(White_, true);
 		else
 			Label->SetColor(BloodyRed_, true);
@@ -1484,7 +1490,7 @@ void j1Scene::LoadResourcesLabels()
 	UILabel_Info labelInfo;
 	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = to_string(App->player->currentGold);
+	labelInfo.text = to_string(App->player->GetCurrentGold());
 	goldLabel = App->gui->CreateUILabel({ 224, 0 }, labelInfo, this, inGameFrameImage);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;	
@@ -1492,9 +1498,17 @@ void j1Scene::LoadResourcesLabels()
 	foodLabel = App->gui->CreateUILabel({ 334, 0 }, labelInfo, this, inGameFrameImage);
 }
 
-void j1Scene::UpdateGoldLabel()
+void j1Scene::UpdateGoldLabel(GoldChange state)
 {
-	goldLabel->SetText(to_string(App->player->currentGold));
+	if (state == GoldChange_Win)
+		goldLabel->SetColor(ColorYellow);
+	else if (state == GoldChange_Lose)
+		goldLabel->SetColor(ColorRed);
+
+	string label = to_string(App->player->GetCurrentGold());
+	goldLabel->SetText(label);
+
+	goldLabelColorTime.Start();
 }
 void j1Scene::UpdateFoodLabel()
 {
@@ -1791,84 +1805,84 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 
 			else if (UIelem == buildingMenuButtons.chickenFarm.icon) {
-				if (App->player->currentGold >= chickenFarmCost) {
+				if (App->player->GetCurrentGold() >= chickenFarmCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_CHICKEN_FARM;
 				}
-				else if (App->player->currentGold < chickenFarmCost)
+				else if (App->player->GetCurrentGold() < chickenFarmCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.stables.icon) {
-				if (App->player->currentGold >= stablesCost) {
+				if (App->player->GetCurrentGold() >= stablesCost) {
 					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					//alphaBuilding = EntityType_STABLES;
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
-				else if (App->player->currentGold < stablesCost)
+				else if (App->player->GetCurrentGold() < stablesCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon &&  App->player->gryphonAviary == nullptr) {
-				if (App->player->currentGold >= gryphonAviaryCost) {
+				if (App->player->GetCurrentGold() >= gryphonAviaryCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_GRYPHON_AVIARY;
 				}
-				else if (App->player->currentGold < gryphonAviaryCost)
+				else if (App->player->GetCurrentGold() < gryphonAviaryCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.mageTower.icon) {
-				if (App->player->currentGold >= mageTowerCost) {
+				if (App->player->GetCurrentGold() >= mageTowerCost) {
 					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					//alphaBuilding = EntityType_MAGE_TOWER;
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
-				else if (App->player->currentGold < mageTowerCost)
+				else if (App->player->GetCurrentGold() < mageTowerCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.scoutTower.icon) {
-				if (App->player->currentGold >= scoutTowerCost) {
+				if (App->player->GetCurrentGold() >= scoutTowerCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_SCOUT_TOWER;
 				}
-				else if (App->player->currentGold < scoutTowerCost)
+				else if (App->player->GetCurrentGold() < scoutTowerCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.guardTower.icon) {
-				if (App->player->currentGold >= guardTowerCost) {
+				if (App->player->GetCurrentGold() >= guardTowerCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
 				}
-				else if (App->player->currentGold < guardTowerCost)
+				else if (App->player->GetCurrentGold() < guardTowerCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.cannonTower.icon) {
-				if (App->player->currentGold >= cannonTowerCost) {
+				if (App->player->GetCurrentGold() >= cannonTowerCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
 				}
-				else if (App->player->currentGold < cannonTowerCost)
+				else if (App->player->GetCurrentGold() < cannonTowerCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.barracks.icon && App->player->barracks == nullptr) {
-				if (App->player->currentGold >= barracksCost) {
+				if (App->player->GetCurrentGold() >= barracksCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_BARRACKS;
 				}
-				else if (App->player->currentGold < barracksCost)
+				else if (App->player->GetCurrentGold() < barracksCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 

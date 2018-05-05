@@ -219,11 +219,9 @@ bool StaticEntity::CheckBuildingState()
 
 				// Give gold to the player
 				if (entityType == EntityType_WATCH_TOWER || entityType == EntityType_ENEMY_GUARD_TOWER || entityType == EntityType_ENEMY_CANNON_TOWER)
-					App->player->currentGold += App->entities->DetermineBuildingGold(staticEntityType, buildingSize);
+					App->player->AddGold(App->entities->DetermineBuildingGold(staticEntityType, buildingSize));
 				else
-					App->player->currentGold += App->entities->DetermineBuildingGold(EntityType_NONE, buildingSize);
-
-				App->scene->hasGoldChanged = true;
+					App->player->AddGold(App->entities->DetermineBuildingGold(EntityType_NONE, buildingSize));
 			}
 
 			fire->isRemove = true;

@@ -190,6 +190,7 @@ void UILabel::SetText(string text, uint wrapLength)
 	if (tex != nullptr)
 		App->tex->UnLoad(tex);
 
+	label.text = text;
 	tex = App->font->Print(text.data(), color, font, wrapLength);
 }
 

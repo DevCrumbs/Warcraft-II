@@ -54,6 +54,12 @@ enum PauseMenuActions {
 	PauseMenuActions_SLIDERMUSIC
 };
 
+enum GoldChange {
+
+	GoldChange_NoChange,
+	GoldChange_Win,
+	GoldChange_Lose,
+};
 struct TerenasAdvices {
 
 	UIImage* terenasImage = nullptr;
@@ -159,7 +165,7 @@ public:
 	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
-	void UpdateGoldLabel();
+	void UpdateGoldLabel(GoldChange state);
 	void UpdateFoodLabel();
 	void UnLoadResourcesLabels();
 	void CreatePauseMenu();
@@ -214,7 +220,7 @@ public:
 
 	bool pause = false;
 
-	bool hasGoldChanged = false;
+	GoldChange hasGoldChanged = GoldChange_NoChange;
 
 	bool hasFoodChanged = false;
 
@@ -244,6 +250,7 @@ public:
 
 private:
 
+	j1Timer goldLabelColorTime;
 	j1Timer finalTransition;
 	bool isStartedFinalTransition = false;
 

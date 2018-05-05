@@ -116,8 +116,7 @@ void TrollAxethrower::Move(float dt)
 			App->player->enemiesKill++;
 
 			// Give gold to the player
-			App->player->currentGold += trollAxethrowerInfo.droppedGold;
-			App->scene->hasGoldChanged = true;
+			App->player->AddGold(trollAxethrowerInfo.droppedGold);
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
