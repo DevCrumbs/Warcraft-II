@@ -209,7 +209,7 @@ public:
 
 	Room GetEntityRoom(Entity* entity);
 
-	list<Entity*> GetEntitiesOnRoom(ENTITY_TYPE type, Room room);
+	list<Entity*> GetEntitiesOnRoom(Room room, ENTITY_TYPE type);
 
 	bool IsRoomCleared(Room room);
 

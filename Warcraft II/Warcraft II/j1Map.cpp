@@ -1178,7 +1178,7 @@ Room j1Map::GetEntityRoom(Entity* entity)
 	return ret;
 }
 
-list<Entity*> j1Map::GetEntitiesOnRoom(ENTITY_TYPE type, Room room)
+list<Entity*> j1Map::GetEntitiesOnRoom(Room room, ENTITY_TYPE type)
 {
 	list<Entity*> entitiesOnRoom;
 
