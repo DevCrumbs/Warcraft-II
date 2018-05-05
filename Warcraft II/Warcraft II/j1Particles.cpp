@@ -104,25 +104,35 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	trollAxe.size = { trollAxeAnimation.child("frame").attribute("w").as_int(), trollAxeAnimation.child("frame").attribute("h").as_int() };
 
 	// Health
-	pugi::xml_node healthAnimation = config.child("health");
-	health.animation.speed = healthAnimation.attribute("speed").as_float();
-	health.animation.loop = healthAnimation.attribute("loop").as_bool();
-	for (currentAnimation = healthAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
-		health.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	/// Player health
+	pugi::xml_node playerHealthAnimation = config.child("playerHealth");
+	playerHealth.animation.speed = playerHealthAnimation.attribute("speed").as_float();
+	playerHealth.animation.loop = playerHealthAnimation.attribute("loop").as_bool();
+	for (currentAnimation = playerHealthAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		playerHealth.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	health.size = { healthAnimation.child("frame").attribute("w").as_int(), healthAnimation.child("frame").attribute("h").as_int() };
+	playerHealth.size = { playerHealthAnimation.child("frame").attribute("w").as_int(), playerHealthAnimation.child("frame").attribute("h").as_int() };
+	
+	/// Enemy health
+	pugi::xml_node enemyHealthAnimation = config.child("enemyHealth");
+	enemyHealth.animation.speed = enemyHealthAnimation.attribute("speed").as_float();
+	enemyHealth.animation.loop = enemyHealthAnimation.attribute("loop").as_bool();
+	for (currentAnimation = enemyHealthAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		enemyHealth.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	enemyHealth.size = { enemyHealthAnimation.child("frame").attribute("w").as_int(), enemyHealthAnimation.child("frame").attribute("h").as_int() };
 
 	// Sheep Paws
 	pugi::xml_node sheepPawsAnimation = config.child("animations").child("sheepPaws");
 
-	//Cross for the mouse press
+	// Cross for the mouse press
 	pugi::xml_node crossAnimation = config.child("cross");
 	cross.animation.speed = crossAnimation.attribute("speed").as_float();
 	cross.animation.loop = crossAnimation.attribute("loop").as_bool();
 	for (currentAnimation = crossAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		cross.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	cross.size = { healthAnimation.child("frame").attribute("w").as_int(), healthAnimation.child("frame").attribute("h").as_int() };
+	cross.size = { crossAnimation.child("frame").attribute("w").as_int(), crossAnimation.child("frame").attribute("h").as_int() };
 
 	// up
 	currentAnimation = sheepPawsAnimation.child("up");
@@ -275,7 +285,8 @@ bool j1Particles::Start()
 	boarPaws.particleType = ParticleType_Paws;
 	sheepPaws.particleType = ParticleType_Paws;
 
-	health.particleType = ParticleType_Health;
+	playerHealth.particleType = ParticleType_Health;
+	enemyHealth.particleType = ParticleType_Health;
 
 	cross.particleType = ParticleType_Cross;
 
@@ -511,7 +522,7 @@ void j1Particles::LoadAnimationsSpeed()
 	hardFireSpeed = hardFire.animation.speed;
 
 	/// Health
-	healthSpeed = health.animation.speed;
+	healthSpeed = playerHealth.animation.speed;
 
 	/// Dragon and Gryphon Fire
 	dragonSubFireSpeed = dragonSubFire.animation.speed;
@@ -557,7 +568,8 @@ void j1Particles::UpdateAnimations(float dt)
 	hardFire.animation.speed = hardFireSpeed * dt;
 
 	/// Health
-	health.animation.speed = healthSpeed * dt;
+	playerHealth.animation.speed = healthSpeed * dt;
+	enemyHealth.animation.speed = healthSpeed * dt;
 
 	/// Dragon and Gryphon Fire
 	dragonSubFire.animation.speed = dragonSubFireSpeed * dt;

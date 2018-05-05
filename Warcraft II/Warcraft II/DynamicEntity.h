@@ -174,7 +174,7 @@ public:
 	bool SetIsRemovedTargetInfo(Entity* target); // this action happens first
 	bool RemoveTargetInfo(TargetInfo* targetInfo); // this action happens second
 
-	TargetInfo* GetBestTargetInfo(ENTITY_CATEGORY entityType = EntityCategory_NONE) const; // TODO: add argument EntityType??? For critters vs enemies
+	TargetInfo* GetBestTargetInfo(ENTITY_CATEGORY entityCategory = EntityCategory_NONE, ENTITY_TYPE entityType = EntityType_NONE, bool isCrittersCheck = true, bool isOnlyCritters = false) const; // TODO: add argument EntityType??? For critters vs enemies
 
 	void SetHitting(bool isHitting);
 	bool IsHitting() const;

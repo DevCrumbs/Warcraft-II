@@ -192,6 +192,10 @@ private:
 	TargetInfo* targetInfo = nullptr;
 
 	bool isStateChanged = true;
+
+	// Time enemies chase player units
+	j1Timer chaseTimer;
+	float chaseTime = 0.0f;
 };
 
 class Goal_Patrol :public CompositeGoal

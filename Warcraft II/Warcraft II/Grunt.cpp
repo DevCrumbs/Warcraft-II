@@ -398,7 +398,53 @@ void Grunt::UnitStateMachine(float dt)
 		
 		if (singleUnit->IsFittingTile()) {
 
-			// 1. Defend
+			float maxLifeValue = maxLife;
+			bool isSearchingForCritters = false;
+
+			// 1. Low life? Search for critters!
+			if (currLife <= 0.2f * maxLifeValue) {
+			
+				// Check if there are available critters
+				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY, EntityType_NONE, false, true);
+
+				if (newTarget != nullptr) {
+
+					// A new target has found! Update the currTarget
+					if (currTarget != newTarget) {
+
+						// Anticipate the removing of this unit from the attacking units of the target
+						if (currTarget != nullptr) {
+
+							if (!currTarget->isRemoved)
+
+								currTarget->target->RemoveAttackingUnit(this);
+						}
+
+						isHitting = false;
+						isHunting = false;
+
+						currTarget = newTarget;
+						brain->AddGoal_AttackTarget(currTarget);
+
+						isSearchingForCritters = true;
+					}
+				}
+
+				// If no critter is found, move randomly around the area to run away from the attacking units
+				else {
+
+					if (!isHunting) {
+
+						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+						isHunting = true;
+					}				
+				}
+			}
+
+			if (isSearchingForCritters)
+				break;
+
+			// 2. Defend
 			// DEFENSE NOTE: the unit automatically attacks back their attacking units (if they have any attacking units) to defend themselves
 			if (unitsAttacking.size() > 0) {
 
@@ -444,13 +490,13 @@ void Grunt::UnitStateMachine(float dt)
 					// PHASE 3. Move randomly around the area to see if the unit is able to see the attacking units
 					if (!isAttackingUnit && !isHunting) {
 
-						brain->AddGoal_Wander(5, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
 						isHunting = true;
 					}
 				}
 			}
 
-			// 2. Attack
+			// 3. Attack
 			/// Goal_AttackTarget
 			else {
 
@@ -465,9 +511,13 @@ void Grunt::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
-							if (!currTarget->isRemoved)
+							if (!currTarget->isRemoved) {
+
+								if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
+									break;
 
 								currTarget->target->RemoveAttackingUnit(this);
+							}
 						}
 
 						isHitting = false;
