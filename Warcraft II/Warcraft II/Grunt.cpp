@@ -84,7 +84,19 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
 	// Different behaviors for units on the base and units around the map
-	if (!App->map->IsOnBase(spawnPos))
+	if (App->map->IsOnBase(spawnPos)) {
+
+		TargetInfo* targetTownHall = new TargetInfo();
+
+		if (App->player->townHall != nullptr) {
+
+			targetTownHall->target = App->player->townHall;
+			targets.push_back(targetTownHall);
+
+			brain->AddGoal_AttackTarget(targetTownHall);
+		}
+	}
+	else
 		brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
@@ -418,9 +430,12 @@ void Grunt::UnitStateMachine(float dt)
 			float maxLifeValue = maxLife;
 			bool isSearchingForCritters = false;
 
+			iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
 			// 1. Low life? Search for critters!
-			if (currLife <= 0.2f * maxLifeValue) {
-			
+			/// 1. NOTE: units on base don't do this, because they are more agressive
+			if (!App->map->IsOnBase(spawnPos) && currLife <= 0.2f * maxLifeValue) {
+
 				// Check if there are available critters
 				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY, EntityType_NONE, false, true);
 
@@ -454,7 +469,7 @@ void Grunt::UnitStateMachine(float dt)
 
 						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
 						isHunting = true;
-					}				
+					}
 				}
 			}
 
@@ -486,7 +501,7 @@ void Grunt::UnitStateMachine(float dt)
 
 					// PHASE 2. Search for a target that is an attacking unit
 					if (!isAttackingUnit) {
-					
+
 						list<TargetInfo*>::const_iterator it = targets.begin();
 
 						while (it != targets.end()) {
@@ -505,7 +520,10 @@ void Grunt::UnitStateMachine(float dt)
 					}
 
 					// PHASE 3. Move randomly around the area to see if the unit is able to see the attacking units
-					if (!isAttackingUnit && !isHunting) {
+					/// PHASE 3 NOTE: units on base don't do this, because they are more agressive
+					iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
+					if (!App->map->IsOnBase(spawnPos) && !isAttackingUnit && !isHunting) {
 
 						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
 						isHunting = true;
@@ -542,6 +560,40 @@ void Grunt::UnitStateMachine(float dt)
 
 						currTarget = newTarget;
 						brain->AddGoal_AttackTarget(currTarget);
+					}
+				}
+
+				// If the unit is on base, also check for buildings (STATIC ENTITY)
+				else {
+
+					iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
+					if (App->map->IsOnBase(spawnPos)) {
+
+						// Check if there are available targets (DYNAMIC ENTITY)
+						newTarget = GetBestTargetInfo(EntityCategory_STATIC_ENTITY);
+
+						if (newTarget != nullptr) {
+
+							// A new target has found! Update the currTarget
+							if (currTarget != newTarget) {
+
+								// Anticipate the removing of this unit from the attacking units of the target
+								if (currTarget != nullptr) {
+
+									if (!currTarget->isRemoved) {
+
+										currTarget->target->RemoveAttackingUnit(this);
+									}
+								}
+
+								isHitting = false;
+								isHunting = false;
+
+								currTarget = newTarget;
+								brain->AddGoal_AttackTarget(currTarget);
+							}
+						}
 					}
 				}
 			}

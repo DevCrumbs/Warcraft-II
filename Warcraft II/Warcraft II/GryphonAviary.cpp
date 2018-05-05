@@ -8,6 +8,7 @@
 #include "j1Pathfinding.h"
 #include "j1Map.h"
 #include "j1Movement.h"
+#include "j1Collision.h"
 
 GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), gryphonAviaryInfo(gryphonAviaryInfo)
 {
@@ -40,6 +41,10 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife
 	this->constructionTimer.Start();
 	buildingState = BuildingState_Building;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+	
+	// Collision
+	CreateEntityCollider(EntitySide_Player, true);
+	entityCollider->isTrigger = true;
 }
 
 void GryphonAviary::Move(float dt)

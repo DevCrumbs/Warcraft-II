@@ -42,8 +42,8 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 	}
 
-	entitySide = EntitySide_Enemy;
-	CreateEntityCollider(EntitySide_Enemy, true);
+	// Collision
+	CreateEntityCollider(EntitySide_Player, true);
 	entityCollider->isTrigger = true;
 }
 
