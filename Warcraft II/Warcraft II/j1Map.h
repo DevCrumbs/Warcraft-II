@@ -19,6 +19,7 @@ using namespace std;
 typedef SDL_Rect Room;
 
 class Entity;
+enum ENTITY_TYPE;
 
 enum ROOM_TYPE
 {

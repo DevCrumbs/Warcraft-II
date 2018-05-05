@@ -54,6 +54,8 @@ void j1Map::Draw()
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::PapayaWhip);
 
+	GetEntitiesOnRoom(playerBase, EntityType_FOOTMAN);
+
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
 	{
 		if (!(*layer)->properties.GetProperty("Draw", false))
@@ -1164,7 +1166,7 @@ Room j1Map::GetEntityRoom(Entity* entity)
 		entityRect.y = pos.y;
 
 		iPoint  size = entity->GetSize();
-		entityRect.w = size.x;
+		entityRect.w = size.x; 
 		entityRect.h = size.y;
 
 		for (list<Room>::iterator iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
