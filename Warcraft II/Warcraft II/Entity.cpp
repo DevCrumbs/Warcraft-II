@@ -25,7 +25,6 @@ Entity::~Entity()
 
 	// Attack
 	unitsAttacking.clear();
-	LOG("Cleared units attacking");
 }
 
 void Entity::Draw(SDL_Texture* sprites)

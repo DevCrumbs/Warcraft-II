@@ -8,6 +8,8 @@
 #include <vector>
 #include <string>
 
+#define MINUTES_TO_SECONDS(minutes) minutes*60
+
 using namespace std;
 
 struct MapLayer;
@@ -17,7 +19,6 @@ struct EnemyInWave
 	ENTITY_TYPE type = EntityType_NONE;
 	iPoint pos{ 0,0 };
 };
-
 
 class j1EnemyWave : public j1Module
 {
@@ -38,26 +39,39 @@ public:
 
 	bool Update(float ft);
 
+	bool SpawnEnemy(float prob);
+	void AddTiles(list<iPoint> tiles);
+	void PerformWave();
+
 	// Save
 	bool Save(pugi::xml_node&) const;
-
-	bool SpawnEnemy(float prob);
 
 	// Load
 	bool Load(pugi::xml_node&);
 
-	void AddTiles(list<iPoint> tiles);
-
-public:
-
 private:
-	j1Timer timer;
 
 	vector<list<iPoint>> spawnTiles;
 	
 	float spawnProbability = 0.0f;
 	uint maxSpawn = 0;
 
+	uint totalWaves = 0;
+
+	bool isActiveWaves = false;
+
+	// Current wave
+	uint totalPhasesOfCurrWave = 0;
+	uint phasesOfCurrWave = 0;
+
+	bool isStartWave = false;
+
+	// Waves timeline
+	j1Timer nextWaveTimer;
+	j1Timer nextPhaseTimer;
+
+	float secondsToNextWave = 0.0f;
+	float secondsToNextPhase = 0.0f;
 };
 
 #endif //__j1EnemySurge_H__
