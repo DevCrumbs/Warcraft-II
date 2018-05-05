@@ -110,6 +110,9 @@ public:
 	bool IsPreviewBuildingOnEntity(iPoint tile, StaticEntitySize buildingSize) const;
 	bool IsEntityOnTileBySize(iPoint tile) const;
 
+	vector<SDL_Rect> MakeTowerPreviewCollider(iPoint pos, uint radius, DistanceHeuristic distanceHeuristic);
+	void PrintTowerPreviewCollider(iPoint pos, uint radius);
+
 	Entity* AddEntity(ENTITY_TYPE entityType, fPoint pos, const EntityInfo& entityInfo, const UnitInfo& unitInfo, j1Module* listener = nullptr);
 
 	uint CheckNumberOfEntities(ENTITY_TYPE entityType, ENTITY_CATEGORY entityCategory);
