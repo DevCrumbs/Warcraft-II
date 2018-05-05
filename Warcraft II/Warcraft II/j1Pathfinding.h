@@ -9,7 +9,7 @@
 #include <algorithm>
 using namespace std;
 
-#define DEFAULT_PATH_LENGTH 100
+#define DEFAULT_PATH_LENGTH 500
 #define INVALID_WALK_CODE -1
 
 enum DistanceHeuristic {

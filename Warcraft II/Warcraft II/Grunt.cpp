@@ -147,6 +147,8 @@ void Grunt::Move(float dt)
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
+
+			LOG("A grunt died");
 		}
 	}
 
@@ -327,9 +329,27 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 					(*it)->isSightSatisfied = false;
 
-					(*it)->target->RemoveAttackingUnit(this);
-					RemoveTargetInfo(*it);
-					break;
+					if (currTarget != nullptr) {
+
+						if (c2->entity == currTarget->target) {
+
+							(*it)->target->RemoveAttackingUnit(this);
+							SetIsRemovedTargetInfo((*it)->target);
+							break;
+						}
+						else {
+
+							(*it)->target->RemoveAttackingUnit(this);
+							RemoveTargetInfo(*it);
+							break;
+						}
+					}
+					else {
+
+						(*it)->target->RemoveAttackingUnit(this);
+						RemoveTargetInfo(*it);
+						break;
+					}
 				}
 				it++;
 			}
