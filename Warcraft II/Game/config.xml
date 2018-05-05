@@ -1184,7 +1184,7 @@
       <paws name="data/assets/textures/particles/paws.png"/>
     </spritesheets>
 
-   <health speed ="8" loop="0">
+   <playerHealth speed ="8" loop="0">
       <frame x="0" y="223" w="50" h="50"/>
       <frame x="50" y="223" w="50" h="50"/>
       <frame x="100" y="223" w="50" h="50"/>
@@ -1194,8 +1194,20 @@
       <frame x="300" y="223" w="50" h="50"/>
       <frame x="350" y="223" w="50" h="50"/>
       <frame x="400" y="223" w="50" h="50"/>
-    </health>
+    </playerHealth>
 
+    <enemyHealth speed ="8" loop="0">
+      <frame x="0" y="600" w="50" h="50"/>
+      <frame x="50" y="600" w="50" h="50"/>
+      <frame x="100" y="600" w="50" h="50"/>
+      <frame x="150" y="600" w="50" h="50"/>
+      <frame x="200" y="600" w="50" h="50"/>
+      <frame x="250" y="600" w="50" h="50"/>
+      <frame x="300" y="600" w="50" h="50"/>
+      <frame x="350" y="600" w="50" h="50"/>
+      <frame x="400" y="600" w="50" h="50"/>
+    </enemyHealth>
+    
     <cross speed ="18" loop="0">
       <frame x="314" y="106" w="30" h="30"/>
       <frame x="344" y="106" w="30" h="30"/>
