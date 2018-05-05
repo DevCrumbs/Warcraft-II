@@ -1659,8 +1659,8 @@ void j1Player::CreateDestructionButton()
 void j1Player::CreateHoverInfoMenu(HoverInfo* hoverInfo) {
 
 	UIImage_Info backgroundImageInfo;
-	backgroundImageInfo.texArea = { 339, 448, 167, 75 };
-	hoverInfo->background = App->gui->CreateUIImage({ 643, 473 }, backgroundImageInfo, nullptr);
+	backgroundImageInfo.texArea = { 344, 475, 167, 48 };
+	hoverInfo->background = App->gui->CreateUIImage({ 5,487 }, backgroundImageInfo, nullptr);
 	hoverInfo->background->isActive = false;
 
 	UILabel_Info labelInfo;
@@ -1879,14 +1879,19 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			else if (UIelem == destroyBuildingButton) {
 				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy", &footmanHoverInfo);
 			}
+
+			else if (UIelem == upgradeTownHallButton) {
+				ShowHoverInfoMenu("Upgrate TownHall", "Cost: 1500 gold", &footmanHoverInfo);
+			}
+
 			else if (UIelem == groupSelectionButtons.selectFootmans) {
-				ShowHoverInfoMenu("Select all footmans on screen", "Shortcast [?]", &footmanHoverInfo, { 339,448,167,75 }, { 5,465 });
+				ShowHoverInfoMenu("Select all footmans on screen", "Shortcast [?]", &footmanHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
 			}
 			else if (UIelem == groupSelectionButtons.selectElvenArchers) {
-				ShowHoverInfoMenu("Select all archers on screen", "Shortcast [?]", &archerHoverInfo, { 339,448,167,75 }, { 5,465 });
+				ShowHoverInfoMenu("Select all archers on screen", "Shortcast [?]", &archerHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
 			}
 			else if (UIelem == groupSelectionButtons.selectGryphonRiders) {
-				ShowHoverInfoMenu("Select all gryphons on screen", "Shortcast [?]", &gryphoHoverInfo, { 339,448,167,75 }, { 5,465 });
+				ShowHoverInfoMenu("Select all gryphons on screen", "Shortcast [?]", &gryphoHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
 			}
 
 			break;
@@ -1932,12 +1937,12 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			if (UIelem == upgradeTownHallButton) {
 				if (townHallUpgrade && currentGold >= 1500) {
 					keepUpgrade = true;
-					AddGold(1500);
+					AddGold(-1500);
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Constructuion sound
 				}
 				else if (currentGold >= 500) {
 					townHallUpgrade = true;
-					AddGold(500);
+					AddGold(-500);
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 				}
 				else
