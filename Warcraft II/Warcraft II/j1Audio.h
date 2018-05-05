@@ -27,6 +27,8 @@ struct GameSounds {
 	FX stables = 0;
 	FX repairBuild = 0;
 	FX destroyBuild = 0;
+
+	//Death
 	FX humanDeath = 0;
 	FX orcDeath = 0;
 	FX dragonDeath = 0;
@@ -71,7 +73,9 @@ struct GameSounds {
 	FX axeThrow = 0;
 	FX arrowThrow = 0;
 	FX swordClash = 0;
-	FX runeStone = 0;
+	
+	FX healSound = 0;
+	FX goldGetSound = 0;
 
 };
 
@@ -150,7 +154,6 @@ private:
 	string stablesSound;
 	string repairBuildingSound;
 	string destroyBuildingSound;
-	string runeStoneSound;
 
 	string humanDeadSound;
 	string orcDeadSound;
@@ -196,6 +199,9 @@ private:
 	string axeThrowSound;
 	string bowFireSound;
 	string swordSound;
+
+	string healSoundPath;
+	string goldGetSoundPath;
 	//---------------------
 
 };

@@ -115,6 +115,7 @@ void Grunt::Move(float dt)
 
 			// Give gold to the player
 			App->player->AddGold(gruntInfo.droppedGold);
+			App->audio->PlayFx(App->audio->GetFX().goldGetSound);
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);

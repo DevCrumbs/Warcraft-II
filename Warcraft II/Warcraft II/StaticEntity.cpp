@@ -222,6 +222,8 @@ bool StaticEntity::CheckBuildingState()
 					App->player->AddGold(App->entities->DetermineBuildingGold(staticEntityType, buildingSize));
 				else
 					App->player->AddGold(App->entities->DetermineBuildingGold(EntityType_NONE, buildingSize));
+
+				App->audio->PlayFx(App->audio->GetFX().goldGetSound); //Gold sound
 			}
 
 			fire->isRemove = true;
