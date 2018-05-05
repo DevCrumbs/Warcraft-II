@@ -1330,11 +1330,8 @@ void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText
 		if (stcEntity == nullptr && App->player->currentGold >= cost) {
 			if (stcEntity == App->player->gryphonAviary && !App->player->townHallUpgrade)
 				butt->ChangesTextsAreas(false);
-			else {
-				if (stcEntity == App->player->gryphonAviary && App->player->townHall->buildingState == BuildingState_Building)
-					butt->ChangesTextsAreas(false);
+			else
 				butt->ChangesTextsAreas(true, normalText, hoverText);
-			}
 		}
 		else
 			butt->ChangesTextsAreas(false);
@@ -1377,13 +1374,8 @@ void j1Scene::ChangeMenuLabelInfo(UILabel * Label, int cost, bool isSingle, Stat
 				Label->SetText("Requires Keep");
 				Label->SetColor(BloodyRed_, true);
 			}
-			else {
-				if (stcEntity == App->player->gryphonAviary && App->player->townHall->buildingState == BuildingState_Building) {
-					Label->SetText("Requires Keep");
-					Label->SetColor(BloodyRed_, true);
-				}
+			else
 				Label->SetText("Cost: " + to_string(cost) + " gold");
-			}
 		}
 		else {
 			Label->SetColor(BloodyRed_, true);
