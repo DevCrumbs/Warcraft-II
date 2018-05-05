@@ -2014,7 +2014,61 @@ vector<SDL_Rect> j1EntityFactory::MakeTowerPreviewCollider(iPoint pos, uint radi
 
 					iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
 					SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-					ret.push_back(rect);
+
+					bool isRectInVector = false;
+
+					//Up left
+					for (uint i = 0; i < ret.size(); ++i) {
+						if (rect == ret[i]) {
+							isRectInVector = true;
+							break;
+						}
+					}
+					if (!isRectInVector)
+						ret.push_back(rect);
+					isRectInVector = false;
+
+					//Up right
+					if (App->pathfinding->IsWalkable({ neighbors[i].x + 1, neighbors[i].y }) && CalculateDistance({ neighbors[i].x + 1, neighbors[i].y }, App->map->WorldToMap(pos.x + 32, pos.y), distanceHeuristic) < radius) {
+						rect = { collPos.x + 32, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+						for (uint i = 0; i < ret.size(); ++i) {
+							if (rect == ret[i]) {
+								isRectInVector = true;
+								break;
+							}
+						}
+						if (!isRectInVector)
+							ret.push_back(rect);
+						isRectInVector = false;
+					}
+					//Down left
+					if (App->pathfinding->IsWalkable({ neighbors[i].x, neighbors[i].y + 1 }) && CalculateDistance({ neighbors[i].x + 1, neighbors[i].y }, App->map->WorldToMap(pos.x + 32, pos.y), distanceHeuristic) < radius) {
+						rect = { collPos.x, collPos.y + 32, App->map->data.tileWidth, App->map->data.tileHeight };
+						for (uint i = 0; i < ret.size(); ++i) {
+							if (rect == ret[i]) {
+								isRectInVector = true;
+								break;
+							}
+						}
+
+						if (!isRectInVector)
+							ret.push_back(rect);
+						isRectInVector = false;
+					}
+
+					//Down right
+					if (App->pathfinding->IsWalkable({ neighbors[i].x + 1, neighbors[i].y + 1 }) && CalculateDistance({ neighbors[i].x + 1, neighbors[i].y }, App->map->WorldToMap(pos.x + 32, pos.y), distanceHeuristic) < radius) {
+						rect = { collPos.x + 32, collPos.y + 32, App->map->data.tileWidth, App->map->data.tileHeight };
+						for (uint i = 0; i < ret.size(); ++i) {
+							if (rect == ret[i]) {
+								isRectInVector = true;
+								break;
+							}
+						}
+						if (!isRectInVector)
+							ret.push_back(rect);
+					}
+
 				}
 			}
 		}
