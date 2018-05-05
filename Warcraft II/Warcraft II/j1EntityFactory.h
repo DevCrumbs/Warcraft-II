@@ -156,6 +156,7 @@ public:
 	// Dynamic Entities
 	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);
 	bool AreAllUnitsDoingSomething(list<DynamicEntity*> units, UnitState unitState = UnitState_NoState);
+	bool IsEnemy(DynamicEntity * entity);
 
 	// Static Entities
 	bool SelectBuilding(StaticEntity* staticEntity);
@@ -171,6 +172,7 @@ public:
 	// -----
 
 	bool Save(pugi::xml_node& save) const;
+
 	bool Load(pugi::xml_node& save);
 
 public:
