@@ -210,14 +210,15 @@ bool j1Player::Update(float dt)
 	//Update Selectet unit HP
 	if (entitySelectedStats.entitySelected != nullptr)
 	{
-		if (entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY 
-			&& entitySelectedStats.entitySelected->entitySide != EntitySide_NoSide)
+		if (entitySelectedStats.entitySelected->entitySide != EntitySide_NoSide)
 		{
 			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
 			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
+			if (entitySelectedStats.entitySelected->GetCurrLife() <= 0) 
+				HideEntitySelectedInfo();
 		}
 	}
-	
+	CheckBuildingsState();
 	return true;
 }
 
@@ -291,7 +292,7 @@ void j1Player::CheckIfPlaceBuilding()
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
-		case EntityType_STABLES:
+		/*case EntityType_STABLES:
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				stables = (StaticEntity*)App->entities->AddEntity(EntityType_STABLES, buildingPos, App->entities->GetBuildingInfo(EntityType_STABLES), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
@@ -300,7 +301,7 @@ void j1Player::CheckIfPlaceBuilding()
 			else if(App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
-
+			*/
 		case EntityType_GRYPHON_AVIARY:
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				gryphonAviary = (StaticEntity*)App->entities->AddEntity(EntityType_GRYPHON_AVIARY, buildingPos, App->entities->GetBuildingInfo(EntityType_GRYPHON_AVIARY), unitInfo, this);
@@ -311,7 +312,7 @@ void j1Player::CheckIfPlaceBuilding()
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
 
-		case EntityType_MAGE_TOWER:
+		/*case EntityType_MAGE_TOWER:
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium)) {
 				mageTower = (StaticEntity*)App->entities->AddEntity(EntityType_MAGE_TOWER, buildingPos, App->entities->GetBuildingInfo(EntityType_MAGE_TOWER), unitInfo, this);
 				App->scene->SetAplphaBuilding(EntityType_NONE);
@@ -320,7 +321,7 @@ void j1Player::CheckIfPlaceBuilding()
 			else if (App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Medium))
 				App->audio->PlayFx(App->audio->GetFX().errorButtBuilding, 0); //Placement building error button sound
 			break;
-
+*/
 		case EntityType_SCOUT_TOWER:
 			if (!App->entities->IsPreviewBuildingOnEntity(GetMouseTilePos(), StaticEntitySize_Small)) {
 				StaticEntity* s;
@@ -1856,6 +1857,57 @@ uint j1Player::GetGroupSpawningSize(list<GroupSpawning> listSpawning)
 			break;
 	}
 	return size;
+}
+
+void j1Player::CheckBuildingsState() 
+{
+	if (townHall != nullptr) {
+		if(townHall->GetCurrLife() <= 0)
+			townHall = nullptr;
+	}
+
+	if (barracks != nullptr) {
+		if (barracks->GetCurrLife() <= 0)
+			barracks = nullptr;
+	}
+
+	if (gryphonAviary != nullptr) {
+		if (gryphonAviary->GetCurrLife() <= 0)
+			gryphonAviary = nullptr;
+	}
+
+	if (!chickenFarm.empty())
+		for (list<StaticEntity*>::iterator iterator = chickenFarm.begin(); iterator != chickenFarm.end(); ++iterator)
+		{
+			if ((*iterator)->GetCurrLife() <= 0) {
+				chickenFarm.remove((*iterator));
+				iterator = chickenFarm.begin();
+			}
+		}
+	if (!scoutTower.empty())
+		for (list<StaticEntity*>::iterator iterator = scoutTower.begin(); iterator != scoutTower.end(); ++iterator)
+		{
+			if ((*iterator)->GetCurrLife() <= 0) {
+				scoutTower.remove((*iterator));
+				iterator = scoutTower.begin();
+			}
+		}
+	if (!guardTower.empty())
+		for (list<StaticEntity*>::iterator iterator = guardTower.begin(); iterator != guardTower.end(); ++iterator)
+		{
+			if ((*iterator)->GetCurrLife() <= 0) {
+				guardTower.remove((*iterator));
+				iterator = guardTower.begin();
+			}
+		}
+	if(!cannonTower.empty())
+		for (list<StaticEntity*>::iterator iterator = cannonTower.begin(); iterator != cannonTower.end(); ++iterator)
+		{
+			if ((*iterator)->GetCurrLife() <= 0) {
+				cannonTower.remove((*iterator));
+				iterator = cannonTower.begin();
+			}
+		}
 }
 
 void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)

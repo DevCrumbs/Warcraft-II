@@ -757,7 +757,7 @@ bool j1Scene::PostUpdate()
 	}
 	
 	if (((App->player->GetCurrentGold() < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
-		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)) {
+		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) || App->player->townHall == nullptr) {
 
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);

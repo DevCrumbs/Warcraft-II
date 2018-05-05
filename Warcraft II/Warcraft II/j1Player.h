@@ -167,6 +167,7 @@ public:
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 	uint GetGroupSpawningSize(list<GroupSpawning> listSpawning);
+	void CheckBuildingsState();
 
 	void DestroyBuilding();
 
@@ -182,10 +183,10 @@ public:
 	list<StaticEntity*> guardTower;
 	StaticEntity* barracks = nullptr;
 	StaticEntity* townHall = nullptr;
-	StaticEntity* blacksmith = nullptr;
-	StaticEntity* stables = nullptr;
-	StaticEntity* church = nullptr;
-	StaticEntity* mageTower = nullptr;
+	//StaticEntity* blacksmith = nullptr;
+	//StaticEntity* stables = nullptr;
+	//StaticEntity* church = nullptr;
+	//StaticEntity* mageTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
 
 	vector<UIImage*> imagePrisonersVector;
