@@ -829,29 +829,6 @@ GoalStatus Goal_MoveToPosition::Process(float dt)
 
 	App->movement->MoveUnit(owner, dt);
 
-	/*
-	if (owner->isSelected) {
-	
-		switch (owner->GetSingleUnit()->movementState) {
-		
-		case MovementState_WaitForPath:
-			LOG("Wait For Path");
-			break;
-		case MovementState_FollowPath:
-			LOG("Follow Path");
-			break;
-		case MovementState_GoalReached:
-			LOG("Goal Reached");
-			break;
-		case MovementState_IncreaseWaypoint:
-			LOG("Increase Waypoint");
-			break;
-		default:
-			break;
-		}
-	}
-	*/
-
 	if (owner->GetSingleUnit()->movementState == MovementState_WaitForPath) {
 
 		// The unit has changed their goal (because it was not valid) through the GroupMovement module

@@ -994,7 +994,9 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 					while (it != units.end()) {
 
-						(*it)->SetPrisoner(dynamicEntity);
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER)
+
+							(*it)->SetPrisoner(dynamicEntity);
 
 						it++;
 					}
@@ -1027,7 +1029,9 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 					while (it != units.end()) {
 
-						(*it)->SetPrisoner(dynamicEntity);
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER)
+
+							(*it)->SetPrisoner(dynamicEntity);
 
 						it++;
 					}

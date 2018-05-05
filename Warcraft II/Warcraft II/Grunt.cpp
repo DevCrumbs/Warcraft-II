@@ -235,19 +235,6 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = true;
-
-					/// If the target is not valid, remove it
-					if (!(*it)->target->GetIsValid()) {
-
-						if (currTarget != *it) {
-
-							(*it)->target->RemoveAttackingUnit(this);
-							RemoveTargetInfo(*it);
-						}
-						else
-							(*it)->isRemoved = true;
-					}
-
 					isTargetFound = true;
 					break;
 				}
@@ -344,14 +331,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 					(*it)->isSightSatisfied = false;
 
-					if (currTarget != *it) {
-
-						(*it)->target->RemoveAttackingUnit(this);
-						RemoveTargetInfo(*it);
-					}
-					else
-						(*it)->isRemoved = true;
-
+					(*it)->target->RemoveAttackingUnit(this);
+					RemoveTargetInfo(*it);
 					break;
 				}
 				it++;
