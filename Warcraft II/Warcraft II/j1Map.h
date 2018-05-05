@@ -205,7 +205,11 @@ public:
 	bool IsOnBase(iPoint pos);
 	bool IsOnRoom(iPoint pos, SDL_Rect room);
 
+	bool IsOnRoom(fPoint pos, Room room);
+
 	Room GetEntityRoom(Entity* entity);
+
+	list<Entity*> GetEntitiesOnRoom(ENTITY_TYPE type, Room room);
 
 	// Unload map
 	bool UnLoad();
