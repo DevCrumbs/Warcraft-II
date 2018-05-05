@@ -453,7 +453,7 @@ void GryphonRider::UnitStateMachine(float dt)
 		/// Prioritize a type of target (static or dynamic)
 		if (singleUnit->IsFittingTile()) {
 
-			newTarget = GetBestTargetInfo();
+			newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
 			if (newTarget != nullptr) {
 

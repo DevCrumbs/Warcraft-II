@@ -170,7 +170,8 @@ public:
 	Particle sheepPaws;
 
 	// Health +++
-	Particle health;
+	Particle playerHealth;
+	Particle enemyHealth;
 
 	//Ground X
 	Particle cross;
