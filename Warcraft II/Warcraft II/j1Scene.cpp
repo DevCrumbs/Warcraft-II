@@ -1015,6 +1015,11 @@ void j1Scene::LoadInGameUI()
 	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
 	inGameFrameImage->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
+	buttonInfo.normalTexArea = { 241, 453, 30, 21 };
+	buttonInfo.hoverTexArea = { 272, 453, 30, 21 };
+	buttonInfo.pressedTexArea = { 303, 453, 30, 21 };
+	changeMinimapButt = App->gui->CreateUIButton({ 200,27 }, buttonInfo, this);
+
 	LoadResourcesLabels();
 	LoadBuildingMenu();
 	LoadUnitsMenuInfo();
@@ -1504,7 +1509,7 @@ void j1Scene::LoadResourcesLabels()
 	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = to_string(App->player->GetCurrentGold());
-	goldLabel = App->gui->CreateUILabel({ 224, 0 }, labelInfo, this, inGameFrameImage);
+	goldLabel = App->gui->CreateUILabel({ 250, 0 }, labelInfo, this, inGameFrameImage);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;	
 	labelInfo.text = to_string(App->player->currentFood);
@@ -1816,6 +1821,10 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				ChangeBuildingMenuState(&buildingMenuButtons);
 			}
 
+			if (UIelem == changeMinimapButt) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+				isMinimapChanged = !isMinimapChanged;
+			}
 
 			else if (UIelem == buildingMenuButtons.chickenFarm.icon) {
 				if (App->player->GetCurrentGold() >= chickenFarmCost) {

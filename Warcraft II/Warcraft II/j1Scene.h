@@ -189,6 +189,8 @@ public:
 
 	bool isGoalFromMinimap = false;
 
+	bool isMinimapChanged = false;
+
 	// Walkability map
 	int w = 0, h = 0;
 	uchar* data = NULL;
@@ -273,7 +275,7 @@ private:
 	UILabel* goldLabel, *foodLabel = nullptr;
 
 	//Pause Menu
-	UIButton* pauseMenuButt = nullptr, * settingsButt = nullptr, * continueButt = nullptr, * ReturnMenuButt = nullptr;
+	UIButton* pauseMenuButt = nullptr, * settingsButt = nullptr, * continueButt = nullptr, * ReturnMenuButt = nullptr, *changeMinimapButt = nullptr;
 	UILabel* pauseMenuLabel = nullptr, * settingsLabel = nullptr, * continueLabel = nullptr, * ReturnMenuLabel = nullptr;
 	UIImage* parchmentImg = nullptr;
 	//Settings Menu
