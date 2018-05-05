@@ -52,6 +52,7 @@ private:
 	float deathUpSpeed = 0.0f, deathDownSpeed = 0.0f;
 
 	iPoint spawnTile = { -1,-1 };
+	bool isHunting = false;
 };
 
 #endif //__Grunt_H__

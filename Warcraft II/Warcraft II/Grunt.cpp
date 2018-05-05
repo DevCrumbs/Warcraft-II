@@ -25,7 +25,7 @@
 
 Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GruntInfo& gruntInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), gruntInfo(gruntInfo)
 {
-	//pathPlanner->SetIsInSameRoomChecked(true);
+	pathPlanner->SetIsInSameRoomChecked(true);
 
 	// XML loading
 	/// Animations
@@ -111,7 +111,6 @@ void Grunt::Move(float dt)
 			App->audio->PlayFx(App->audio->GetFX().orcDeath, 0);
 
 			isDead = true;
-			isValid = false;
 			App->player->enemiesKill++;
 
 			// Give gold to the player
@@ -150,6 +149,10 @@ void Grunt::Move(float dt)
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
 		}
+	}
+
+	if (isSelected) {
+		int i = 0;
 	}
 
 	// PROCESS THE CURRENTLY ACTIVE GOAL
@@ -240,11 +243,15 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
-				TargetInfo* targetInfo = new TargetInfo();
-				targetInfo->target = c2->entity;
-				targetInfo->isSightSatisfied = true;
+				/// Do it only if the target is valid
+				if (c2->entity->GetIsValid()) {
 
-				targets.push_back(targetInfo);
+					TargetInfo* targetInfo = new TargetInfo();
+					targetInfo->target = c2->entity;
+					targetInfo->isSightSatisfied = true;
+
+					targets.push_back(targetInfo);
+				}
 			}
 
 			// 2. MAKE UNIT FACE TOWARDS THE BEST TARGET
@@ -323,6 +330,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
+
+					(*it)->target->RemoveAttackingUnit(this);
 					RemoveTargetInfo(*it);
 					break;
 				}
@@ -373,6 +382,8 @@ void Grunt::UnitStateMachine(float dt)
 
 					currTarget = newTarget;
 					brain->AddGoal_AttackTarget(currTarget);
+
+					isHunting = false;
 				}
 				else
 					unitState = UnitState_Idle;
@@ -384,31 +395,87 @@ void Grunt::UnitStateMachine(float dt)
 	case UnitState_Idle:
 	case UnitState_Wander:
 	case UnitState_Patrol:
-
-		/// Goal_AttackTarget
-
+		
 		if (singleUnit->IsFittingTile()) {
 
-			// Check if there are available targets (DYNAMIC ENTITY)
-			newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+			// 1. Defend
+			// DEFENSE NOTE: the unit automatically attacks back their attacking units (if they have any attacking units) to defend themselves
+			if (unitsAttacking.size() > 0) {
 
-			if (newTarget != nullptr) {
+				if (currTarget == nullptr) {
 
-				// A new target has found! Update the currTarget
-				if (currTarget != newTarget) {
+					// PHASE 1. Check if there are available targets (DYNAMIC ENTITY) 
+					newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+					bool isAttackingUnit = false;
 
-					// Anticipate the removing of this unit from the attacking units of the target
-					if (currTarget != nullptr) {
+					if (newTarget != nullptr) {
 
-						if (!currTarget->isRemoved)
+						// Is the best target an attacking unit?
+						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
-							currTarget->target->RemoveAttackingUnit(this);
+							currTarget = newTarget;
+							brain->AddGoal_AttackTarget(currTarget, false);
+
+							isAttackingUnit = true;
+							isHunting = false;
+						}
 					}
 
-					isHitting = false;
+					// PHASE 2. Search for a target that is an attacking unit
+					if (!isAttackingUnit) {
+					
+						list<TargetInfo*>::const_iterator it = targets.begin();
 
-					currTarget = newTarget;
-					brain->AddGoal_AttackTarget(currTarget);
+						while (it != targets.end()) {
+
+							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
+
+								currTarget = *it;
+								brain->AddGoal_AttackTarget(currTarget, false);
+
+								isAttackingUnit = true;
+								isHunting = false;
+							}
+
+							it++;
+						}
+					}
+
+					// PHASE 3. Move randomly around the area to see if the unit is able to see the attacking units
+					if (!isAttackingUnit && !isHunting) {
+
+						brain->AddGoal_Wander(5, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+						isHunting = true;
+					}
+				}
+			}
+
+			// 2. Attack
+			/// Goal_AttackTarget
+			else {
+
+				// Check if there are available targets (DYNAMIC ENTITY)
+				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+				if (newTarget != nullptr) {
+
+					// A new target has found! Update the currTarget
+					if (currTarget != newTarget) {
+
+						// Anticipate the removing of this unit from the attacking units of the target
+						if (currTarget != nullptr) {
+
+							if (!currTarget->isRemoved)
+
+								currTarget->target->RemoveAttackingUnit(this);
+						}
+
+						isHitting = false;
+						isHunting = false;
+
+						currTarget = newTarget;
+						brain->AddGoal_AttackTarget(currTarget);
+					}
 				}
 			}
 		}

@@ -707,6 +707,11 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 	return ret;
 }
 
+void DynamicEntity::InvalidateCurrTarget() 
+{
+	currTarget = nullptr;
+}
+
 bool DynamicEntity::SetIsRemovedTargetInfo(Entity* target)
 {
 	if (target == nullptr)
@@ -772,7 +777,7 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityType) const
 
 	while (it != targets.end()) {
 
-		if (!(*it)->isRemoved) {
+		if (!(*it)->isRemoved && (*it)->target->GetIsValid()) {
 
 			// Only dynamic entities
 			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
@@ -890,11 +895,11 @@ bool DynamicEntity::SetUnitCommand(UnitCommand unitCommand)
 {
 	bool ret = false;
 
-	if (this->unitCommand == UnitCommand_NoCommand) {
+	//if (this->unitCommand == UnitCommand_NoCommand) {
 
 		this->unitCommand = unitCommand;
 		ret = true;
-	}
+	//}
 
 	return ret;
 }

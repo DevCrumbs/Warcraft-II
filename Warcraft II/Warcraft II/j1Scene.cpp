@@ -324,7 +324,8 @@ bool j1Scene::Update(float dt)
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
 
-	App->printer->PrintSprite(mouseTilePos, debugTex, { 0,0,32,32 }); // tile under the mouse pointer
+	if (App->pathfinding->IsWalkable(mouseTile))
+		App->printer->PrintSprite(mouseTilePos, debugTex, { 0,0,32,32 }); // tile under the mouse pointer
 
 	// Units ---------------------------------------------------------------------------------
 
@@ -355,6 +356,10 @@ bool j1Scene::Update(float dt)
 					App->entities->SelectEntity(entity);
 				//else
 					//App->entities->UnselectAllEntities();
+
+				Entity* enemy = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
+				if (enemy != nullptr)
+					enemy->isSelected = true;
 
 				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
 				if (playerBuilding != nullptr)

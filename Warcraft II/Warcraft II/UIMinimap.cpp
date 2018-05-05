@@ -163,7 +163,12 @@ void UIMinimap::HandleInput(float dt)
 	if (MouseHover())
 	{
 		//Move minimap
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == moveMinimap)
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
+		{
+			moveCamera = true;
+		}
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == moveMinimap && moveCamera)
 		{
 			iPoint newCameraPos = MinimapToMap();
 			App->render->camera.x = -newCameraPos.x + App->render->camera.w / 2;
@@ -183,6 +188,11 @@ void UIMinimap::HandleInput(float dt)
 				listener->OnUIEvent(this, UI_EVENT_MOUSE_RIGHT_CLICK);
 			}
 		}
+	}
+
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP)
+	{
+		moveCamera = false;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
