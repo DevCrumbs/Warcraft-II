@@ -149,7 +149,7 @@ public:
 	void DeleteEntitiesMenu();
 	void DeleteGroupSelectionButtons();
 	void CreateHoverInfoMenu(HoverInfo* hoverInfo);
-	void ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo);
+	void ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, SDL_Rect = { 241,475,97,48 }, iPoint pos = { 643, 473 });
 	void HideHoverInfoMenu(HoverInfo* hoverInfo);
 	void DeleteHoverInfoMenu();
 	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, bool isActive = true);
@@ -234,7 +234,6 @@ private:
 	uint totalEnemiesKilled = 0;
 	uint totalUnitsDead = 0;
 
-	//HoverButton hoverButtonStruct;
 	HoverInfo footmanHoverInfo;
 	HoverInfo archerHoverInfo;
 	HoverInfo gryphoHoverInfo;

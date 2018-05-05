@@ -59,6 +59,7 @@ enum GoldChange {
 	GoldChange_NoChange,
 	GoldChange_Win,
 	GoldChange_Lose,
+	GoldChange_ChangeColor
 };
 struct TerenasAdvices {
 

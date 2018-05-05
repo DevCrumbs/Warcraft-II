@@ -267,14 +267,14 @@ bool j1Scene::PreUpdate()
 		App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
 	//_Entities_creation
 
-	if (hasGoldChanged != GoldChange_NoChange) {
+	if (hasGoldChanged != GoldChange_NoChange && hasGoldChanged != GoldChange_ChangeColor) {
 		UpdateGoldLabel(hasGoldChanged);
 		if (buildingMenu->isActive)
 		{
 			UpdateLabelsMenu();
 			UpdateIconsMenu();
 		}
-		hasGoldChanged = GoldChange_NoChange;
+		hasGoldChanged = GoldChange_ChangeColor;
 	}
 	if (hasFoodChanged == true) {
 		UpdateFoodLabel();
@@ -296,8 +296,10 @@ bool j1Scene::PreUpdate()
 
 	//Change to wite Gold Label Color before 2 sec
 
-	if (goldLabelColorTime.Read() > 1200 /*&& goldLabel->GetColor() != White_*/) {
+	SDL_Color white = { 255,255,255,255 };
+	if (goldLabelColorTime.Read() > 1200 && hasGoldChanged == GoldChange_ChangeColor) {
 		goldLabel->SetColor(White_, true);
+		hasGoldChanged = GoldChange_NoChange;
 	}
 	return ret;
 }

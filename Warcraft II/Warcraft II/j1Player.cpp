@@ -1554,12 +1554,17 @@ void j1Player::DeleteGroupSelectionButtons()
 	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectGryphonRiders);
 }
 
-void j1Player::ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo) {
+void j1Player::ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, SDL_Rect textArea, iPoint pos) {
 
 	hoverInfo->background->isActive = true;
+	if (hoverInfo->background->GetLocalPos() != pos) {
+		hoverInfo->background->SetLocalPos(pos);
+		hoverInfo->background->SetNewRect(textArea);
+	}
 
 	hoverInfo->info->SetText(unitProduce);
 	hoverInfo->cost->SetText(gold);
+
 
 	hoverInfo->info->isActive = true;
 	hoverInfo->cost->isActive = true;
@@ -1654,17 +1659,17 @@ void j1Player::CreateDestructionButton()
 void j1Player::CreateHoverInfoMenu(HoverInfo* hoverInfo) {
 
 	UIImage_Info backgroundImageInfo;
-	backgroundImageInfo.texArea = { 241, 384, 85, 38 };
-	hoverInfo->background = App->gui->CreateUIImage({ 643, 481 }, backgroundImageInfo, nullptr);
+	backgroundImageInfo.texArea = { 339, 448, 167, 75 };
+	hoverInfo->background = App->gui->CreateUIImage({ 643, 473 }, backgroundImageInfo, nullptr);
 	hoverInfo->background->isActive = false;
 
 	UILabel_Info labelInfo;
 	labelInfo.interactive = false;
-	labelInfo.fontName = FONT_NAME_WARCRAFT9;
+	labelInfo.fontName = FONT_NAME_WARCRAFT11;
 	hoverInfo->info = App->gui->CreateUILabel({ 5,8 }, labelInfo, nullptr, hoverInfo->background);
 	hoverInfo->info->isActive = false;
 
-	labelInfo.fontName = FONT_NAME_WARCRAFT9;
+	labelInfo.fontName = FONT_NAME_WARCRAFT11;
 	hoverInfo->cost = App->gui->CreateUILabel({ 5, 25 }, labelInfo, nullptr, hoverInfo->background);
 	hoverInfo->cost->isActive = false;
 }
@@ -1875,13 +1880,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy", &footmanHoverInfo);
 			}
 			else if (UIelem == groupSelectionButtons.selectFootmans) {
-				ShowHoverInfoMenu("Produces footman", "Cost: 500 gold", &footmanHoverInfo);
+				ShowHoverInfoMenu("Select all footmans on screen", "Shortcast [?]", &footmanHoverInfo, { 339,448,167,75 }, { 5,465 });
 			}
 			else if (UIelem == groupSelectionButtons.selectElvenArchers) {
-				ShowHoverInfoMenu("Produces archer", "Cost: 400 gold", &archerHoverInfo);
+				ShowHoverInfoMenu("Select all archers on screen", "Shortcast [?]", &archerHoverInfo, { 339,448,167,75 }, { 5,465 });
 			}
 			else if (UIelem == groupSelectionButtons.selectGryphonRiders) {
-				ShowHoverInfoMenu("Produces gryphon", "Cost: 900 gold", &gryphoHoverInfo);
+				ShowHoverInfoMenu("Select all gryphons on screen", "Shortcast [?]", &gryphoHoverInfo, { 339,448,167,75 }, { 5,465 });
 			}
 
 			break;
