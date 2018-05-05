@@ -320,6 +320,10 @@ void Goal_AttackTarget::Activate()
 
 	if (isStateChanged)
 		owner->SetUnitState(UnitState_AttackTarget);
+
+	// Time enemies chase player units
+	chaseTimer.Start();
+	chaseTime = 6.0f;
 }
 
 GoalStatus Goal_AttackTarget::Process(float dt)
@@ -408,6 +412,7 @@ void Goal_AttackTarget::Terminate()
 	// -----
 
 	targetInfo = nullptr;
+	chaseTime = 0.0f;
 
 	if (isStateChanged)
 		owner->SetUnitState(UnitState_AttackTarget);
@@ -945,7 +950,13 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				owner->ApplyHealth(c.restoredHealth);
 
 				iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
-				App->particles->AddParticle(App->particles->health, pos);
+
+				if (owner->entitySide == EntitySide_Player)
+					/// Green particles +++
+					App->particles->AddParticle(App->particles->playerHealth, pos);
+				else if (owner->entitySide == EntitySide_Enemy)
+					/// Red particles +++
+					App->particles->AddParticle(App->particles->enemyHealth, pos);
 			}
 			else if (dyn->dynamicEntityType == EntityType_BOAR) {
 
@@ -953,7 +964,13 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				owner->ApplyHealth(b.restoredHealth);
 
 				iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
-				App->particles->AddParticle(App->particles->health, pos);
+
+				if (owner->entitySide == EntitySide_Player)
+					/// Green particles +++
+					App->particles->AddParticle(App->particles->playerHealth, pos);
+				else if (owner->entitySide == EntitySide_Enemy)
+					/// Red particles +++
+					App->particles->AddParticle(App->particles->enemyHealth, pos);
 			}
 		}
 
@@ -1601,7 +1618,7 @@ GoalStatus Goal_HealArea::Process(float dt)
 			DynamicEntity* dynEnt = (DynamicEntity*)entity;
 			iPoint pos = App->map->MapToWorld(dynEnt->GetSingleUnit()->currTile.x, dynEnt->GetSingleUnit()->currTile.y);
 
-			App->particles->AddParticle(App->particles->health, pos);
+			App->particles->AddParticle(App->particles->playerHealth, pos);
 			entity->ApplyHealth(health);
 		}
 	}

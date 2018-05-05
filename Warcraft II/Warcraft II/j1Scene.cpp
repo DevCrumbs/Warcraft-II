@@ -1343,8 +1343,13 @@ void j1Scene::UpdateIconsMenu()
 void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle, StaticEntity* stcEntity)
 {
 	if (isSingle) {
-		if (stcEntity == nullptr && App->player->GetCurrentGold() >= cost)
-			butt->ChangesTextsAreas(true, normalText, hoverText);
+
+		if (stcEntity == nullptr && App->player->GetCurrentGold() >= cost) {
+			if (stcEntity == App->player->gryphonAviary && !App->player->townHallUpgrade)
+				butt->ChangesTextsAreas(false);
+			else
+				butt->ChangesTextsAreas(true, normalText, hoverText);
+		}
 		else
 			butt->ChangesTextsAreas(false);
 	}
@@ -1378,10 +1383,16 @@ void j1Scene::ChangeMenuLabelInfo(UILabel * Label, int cost, bool isSingle, Stat
 
 			if (App->player->GetCurrentGold() >= cost)
 				Label->SetColor(White_, true);
+
 			else
 				Label->SetColor(BloodyRed_, true);
 
-			Label->SetText("Cost: " + to_string(cost) + " gold");
+			if (stcEntity == App->player->gryphonAviary && !App->player->townHallUpgrade) {
+				Label->SetText("Requires Keep");
+				Label->SetColor(BloodyRed_, true);
+			}
+			else
+				Label->SetText("Cost: " + to_string(cost) + " gold");
 		}
 		else {
 			Label->SetColor(BloodyRed_, true);
@@ -1419,7 +1430,7 @@ void j1Scene::LoadBuildingMenu()
 			"Cost: 900 gold", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
 	
 		CreateBuildingElements( { 496,160,50,41 }, { 585, 145 }, "Gryphon Aviary",
-			"Cost: 400 gold", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
+			"Requires Keep", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
 		
 		CreateBuildingElements( { 496,202,50,41 }, { 585, 190 }, "Mage Tower",
 			"Cost: 1000 gold", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
@@ -1827,8 +1838,10 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
-			else if (UIelem == buildingMenuButtons.gryphonAviary.icon &&  App->player->gryphonAviary == nullptr) {
+
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade && App->player->townHall->buildingState == BuildingState_Normal) {
 				if (App->player->GetCurrentGold() >= gryphonAviaryCost) {
+
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_GRYPHON_AVIARY;

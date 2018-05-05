@@ -1881,7 +1881,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 
 			else if (UIelem == upgradeTownHallButton) {
-				ShowHoverInfoMenu("Upgrate TownHall", "Cost: 1500 gold", &footmanHoverInfo);
+				ShowHoverInfoMenu("Upgrate TownHall", "Cost: 500 gold", &footmanHoverInfo);
 			}
 
 			else if (UIelem == groupSelectionButtons.selectFootmans) {
@@ -1896,7 +1896,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
-			if (UIelem == produceFootmanButton || UIelem == destroyBuildingButton || UIelem == groupSelectionButtons.selectFootmans)
+			if (UIelem == produceFootmanButton || UIelem == destroyBuildingButton || UIelem == groupSelectionButtons.selectFootmans || UIelem == upgradeTownHallButton)
 				HideHoverInfoMenu(&footmanHoverInfo);
 			else if (UIelem == produceElvenArcherButton || UIelem == groupSelectionButtons.selectElvenArchers)
 				HideHoverInfoMenu(&archerHoverInfo);

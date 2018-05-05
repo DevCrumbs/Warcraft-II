@@ -759,10 +759,13 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 	return false;
 }
 
-TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityType) const
+TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENTITY_TYPE entityType, bool isCrittersCheck, bool isOnlyCritters) const
 {
 	// If there are no targets, return null
 	if (targets.size() == 0)
+		return nullptr;
+
+	if (isCrittersCheck && isOnlyCritters)
 		return nullptr;
 
 	// Else, check out the available targets
@@ -779,17 +782,51 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityType) const
 
 		if (!(*it)->isRemoved && (*it)->target->GetIsValid()) {
 
-			// Only dynamic entities
-			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_DYNAMIC_ENTITY) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)(*it)->target;
 
-				if (dynEnt->dynamicEntityType != EntityType_SHEEP && dynEnt->dynamicEntityType != EntityType_BOAR) {
+				bool isCheckDone = false;
 
-					priorityTargetInfo.targetInfo = *it;
-					priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
-					queue.push(priorityTargetInfo);
+				if (entityType == EntityType_NONE)
+					isCheckDone = true;
+				else if (dynEnt->dynamicEntityType == entityType)			
+					isCheckDone = true;
+				
+				if (isCheckDone) {
+
+					bool isCrittersValid = true;
+
+					if (isCrittersCheck) {
+
+						if (dynEnt->dynamicEntityType == EntityType_SHEEP || dynEnt->dynamicEntityType == EntityType_BOAR)
+							isCrittersValid = false;
+					}
+					else if (isOnlyCritters) {
+
+						if (dynEnt->dynamicEntityType != EntityType_SHEEP && dynEnt->dynamicEntityType != EntityType_BOAR)
+							isCrittersValid = false;
+					}
+
+					if (isCrittersValid) {
+
+						priorityTargetInfo.targetInfo = *it;
+						priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
+						queue.push(priorityTargetInfo);
+					}
 				}
+			}
+			else if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_STATIC_ENTITY) {
+			
+				StaticEntity* statEnt = (StaticEntity*)(*it)->target;
+
+				// TODO Sandra
+			}
+			else if (entityCategory == EntityCategory_NONE) {
+			
+				priorityTargetInfo.targetInfo = *it;
+				priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
+				queue.push(priorityTargetInfo);		
 			}
 		}
 
