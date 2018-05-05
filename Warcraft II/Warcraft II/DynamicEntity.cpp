@@ -820,7 +820,12 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENT
 			
 				StaticEntity* statEnt = (StaticEntity*)(*it)->target;
 
-				// TODO Sandra
+				if (statEnt->staticEntityType != EntityType_TOWN_HALL) {
+
+					priorityTargetInfo.targetInfo = *it;
+					priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
+					queue.push(priorityTargetInfo);
+				}
 			}
 			else if (entityCategory == EntityCategory_NONE) {
 			

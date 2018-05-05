@@ -8,6 +8,7 @@
 #include "j1Pathfinding.h"
 #include "j1Map.h"
 #include "j1Movement.h"
+#include "j1Collision.h"
 
 Stables::Stables(fPoint pos, iPoint size, int currLife, uint maxLife, const StablesInfo& stablesInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), stablesInfo(stablesInfo)
 {
@@ -39,6 +40,10 @@ Stables::Stables(fPoint pos, iPoint size, int currLife, uint maxLife, const Stab
 	texArea = &stablesInfo.constructionPlanks1;
 	this->constructionTimer.Start();
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+
+	// Collision
+	CreateEntityCollider(EntitySide_Player, true);
+	entityCollider->isTrigger = true;
 }
 
 void Stables::Move(float dt)

@@ -37,7 +37,7 @@ void ScoutTower::Move(float dt)
 {
 	if (!isColliderCreated) {
 
-		CreateEntityCollider(EntitySide_Player);
+		CreateEntityCollider(EntitySide_Player, true);
 		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, scoutTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 		sightRadiusCollider->isTrigger = true;
 		entityCollider->isTrigger = true;

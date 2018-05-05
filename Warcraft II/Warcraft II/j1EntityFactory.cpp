@@ -4051,3 +4051,9 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 	return ret;
 }
+
+
+bool j1EntityFactory::IsEnemy(DynamicEntity* entity)
+{
+	return entity->dynamicEntityType == EntityType_GRUNT || entity->dynamicEntityType == EntityType_TROLL_AXETHROWER || entity->dynamicEntityType == EntityType_DRAGON;
+}

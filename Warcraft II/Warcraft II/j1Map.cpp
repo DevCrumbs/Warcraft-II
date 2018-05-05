@@ -1144,6 +1144,12 @@ bool j1Map::IsOnRoom(iPoint pos, Room room)
 	return (room.x < pos.x + size && room.x + room.w > pos.x && room.y < pos.y + size && room.h + room.y > pos.y);
 }
 
+bool j1Map::IsOnRoom(fPoint pos, Room room)
+{
+	int size = 1;
+	return (room.x < pos.x + size && room.x + room.w > pos.x && room.y < pos.y + size && room.h + room.y > pos.y);
+}
+
 Room j1Map::GetEntityRoom(Entity* entity)
 {
 	Room ret{ -1,-1,-1,-1 };
@@ -1167,6 +1173,39 @@ Room j1Map::GetEntityRoom(Entity* entity)
 				break;
 			}
 		}
+	}
+
+	return ret;
+}
+
+list<Entity*> j1Map::GetEntitiesOnRoom(Room room, ENTITY_TYPE type)
+{
+	list<Entity*> entitiesOnRoom;
+
+	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
+	{
+		if ((*iterator)->dynamicEntityType == type)
+			if (IsOnRoom((*iterator)->GetPos(), room))
+			{
+				entitiesOnRoom.push_back(*iterator);
+			}
+	}
+
+	return entitiesOnRoom;
+}
+
+bool j1Map::IsRoomCleared(Room room)
+{
+	bool ret = true;
+
+	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
+	{
+		if (App->entities->IsEnemy(*iterator))
+			if (IsOnRoom((*iterator)->GetPos(), room))
+			{
+				ret = false;
+				break;
+			}
 	}
 
 	return ret;
