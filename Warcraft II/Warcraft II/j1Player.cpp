@@ -1650,12 +1650,11 @@ void j1Player::DeleteGroupSelectionButtons()
 	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectGryphonRiders);
 }
 
-void j1Player::ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, SDL_Rect textArea, iPoint pos) {
+void j1Player::ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, iPoint pos) {
 
 	hoverInfo->background->isActive = true;
 	if (hoverInfo->background->GetLocalPos() != pos) {
 		hoverInfo->background->SetLocalPos(pos);
-		hoverInfo->background->SetNewRect(textArea);
 	}
 
 	hoverInfo->info->SetText(unitProduce);
@@ -1760,7 +1759,7 @@ void j1Player::CreateHoverInfoMenu(HoverInfo* hoverInfo) {
 
 	UIImage_Info backgroundImageInfo;
 	backgroundImageInfo.texArea = { 344, 475, 167, 48 };
-	hoverInfo->background = App->gui->CreateUIImage({ 5,487 }, backgroundImageInfo, nullptr);
+	hoverInfo->background = App->gui->CreateUIImage({ 6,487 }, backgroundImageInfo, nullptr);
 	hoverInfo->background->isActive = false;
 
 	UILabel_Info labelInfo;
@@ -2084,13 +2083,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 
 			else if (UIelem == groupSelectionButtons.selectFootmans) {
-				ShowHoverInfoMenu("Select all Footman on screen", "Shortcut [Z]", &firstHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
+				ShowHoverInfoMenu("Select all Footman on screen", "Shortcut [Z]", &firstHoverInfo, { 5,487 });
 			}
 			else if (UIelem == groupSelectionButtons.selectElvenArchers) {
-				ShowHoverInfoMenu("Select all Elven Archer on screen", "Shortcut [X]", &secondHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
+				ShowHoverInfoMenu("Select all Archer on screen", "Shortcut [X]", &secondHoverInfo, { 5,487 });
 			}
 			else if (UIelem == groupSelectionButtons.selectGryphonRiders) {
-				ShowHoverInfoMenu("Select all Gryphon Rider on screen", "Shortcut [C]", &thirdHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
+				ShowHoverInfoMenu("Select all Gryphon on screen", "Shortcut [C]", &thirdHoverInfo, { 5,487 });
 			}
 
 			break;
