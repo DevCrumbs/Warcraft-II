@@ -6,6 +6,8 @@
 #include <vector>
 #include <list>
 
+#include "SDL\include\SDL_rect.h"
+
 // defines 1
 #define ORIGINAL_TILE App->map->defaultTileSize				// TILES FROM MAP
 #define FOW_TILE_MULTIPLIER 1								// MULTIPLIER (FOW TILES CAN BE BIGGER)
@@ -44,6 +46,8 @@ public:
 	int TotalDistanceToPlayer(Entity* entity, int tile);
 
 	void ResetTiles();
+
+	void CleanSafeZone(SDL_Rect zone);
 
 public:
 	std::vector<FogOfWarTile*> fowTilesVector;

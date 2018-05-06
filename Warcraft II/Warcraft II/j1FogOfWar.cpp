@@ -132,6 +132,31 @@ void j1FogOfWar::ResetTiles()
 	}
 }
 
+void j1FogOfWar::CleanSafeZone(SDL_Rect zone)
+{
+	iPoint startTile = App->map->WorldToMap(zone.x / App->win->GetScale(),
+		zone.y / App->win->GetScale());
+	iPoint endTile = App->map->WorldToMap(zone.x / App->win->GetScale() + zone.w,
+		zone.y / App->win->GetScale() + zone.h);
+	int i = startTile.x;
+	if (i < 0)
+		i = 0;
+
+	for (; i < 119 && i < endTile.x + 1; ++i)
+	{
+		int j = startTile.y;
+		if (j < 0)
+			j = 0;
+
+		for (; j < 149 && j < endTile.y + 1; ++j)
+		{
+			int pos = (119 * j) + i;
+
+			fowTilesVector[pos]->alpha = 0;
+		}//for
+	}//for
+}
+
 
 void j1FogOfWar::TilesNearPlayer()
 {
@@ -142,6 +167,7 @@ void j1FogOfWar::TilesNearPlayer()
 
 		if ((*iterator)->entitySide == EntitySide_Player)
 		{
+			// Change camera for entity collider
 			iPoint startTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale(),
 				-App->render->camera.y / App->win->GetScale());
 			iPoint endTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
@@ -162,6 +188,10 @@ void j1FogOfWar::TilesNearPlayer()
 					int pos = (119 * j) + i;
 
 					if (fowTilesVector[pos]->alpha == 0)
+						continue;
+
+					SDL_Rect tileRect{ fowTilesVector[pos]->pos.x * FOW_TILE, fowTilesVector[pos]->pos.y * FOW_TILE, fowTilesVector[pos]->size * FOW_TILE, fowTilesVector[pos]->size * FOW_TILE };
+					if (SDL_HasIntersection(&tileRect, &App->map->playerBase))
 						continue;
 
 					//SDL_Rect fowTileRect{ fowTilesVector[i]->pos.x, fowTilesVector[i]->pos.y , 32,32 };
@@ -206,6 +236,7 @@ void j1FogOfWar::TilesNearPlayer()
 
 		}
 	}
+	CleanSafeZone(App->map->playerBase);
 }
 
 
