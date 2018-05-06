@@ -3644,8 +3644,11 @@ bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		(*dynEnt)->SetIsRemovedTargetInfo(target);
-		(*dynEnt)->RemoveAttackingUnit(target);
+		if ((*dynEnt)->dynamicEntityType != EntityType_ALLERIA && (*dynEnt)->dynamicEntityType != EntityType_TURALYON) {
+
+			(*dynEnt)->SetIsRemovedTargetInfo(target);
+			(*dynEnt)->RemoveAttackingUnit(target);
+		}
 
 		dynEnt++;
 	}
@@ -3669,7 +3672,8 @@ void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 
 	while (it != activeDynamicEntities.end()) {
 
-		if (!(*it)->isDead) {
+		if (!(*it)->isDead 
+			&& (*it)->dynamicEntityType != EntityType_ALLERIA && (*it)->dynamicEntityType != EntityType_TURALYON) {
 
 			if ((*it)->GetSingleUnit()->waitUnit != nullptr) {
 
