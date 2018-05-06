@@ -28,10 +28,6 @@ bool j1EnemyWave::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
-	spawnProbability = 0.25f;
-	maxSpawnPerPhase = 3;
-	maxSpawnPerWave = 10;
-
 	return ret;
 }
 
@@ -39,13 +35,30 @@ bool j1EnemyWave::Start()
 {
 	bool ret = true;
 
+	// Reset waves general info
+	totalWaves = 0;
+	isActiveWaves = true;
+	totalPhasesOfCurrWave = 0;
+	phasesOfCurrWave = 0;
+	isStartWave = false;
+	totalSpawnOfCurrWave = 0;
+	secondsToNextWave = 0.0f;
+	secondsToNextPhase = 0.0f;
+
+	// -----
+
+	/// TODO Balancing (Waves)
+	spawnProbability = 0.25f;
+	maxSpawnPerPhase = 3;
+	maxSpawnPerWave = 10;
+
 	nextWaveTimer.Start();
 
 	// Calculate the seconds until the first wave arrives
 	/// NOTE: the first wave takes more time to arrive than the following waves
 	/// rand() % (max - min + 1) + min
 
-	/// TODO Balancing
+	/// TODO Balancing (Waves)
 	int maxMinutesToNextWave = 5;
 	int minMinutesToNextWave = 4;
 
@@ -56,8 +69,7 @@ bool j1EnemyWave::Start()
 
 	secondsToNextWave = MINUTES_TO_SECONDS(secondsToNextWave);
 
-	// TODO Sandra: delete this
-	secondsToNextWave = 0;
+	//secondsToNextWave = 0;
 
 	return ret;
 }
@@ -91,10 +103,6 @@ bool j1EnemyWave::Update(float ft)
 
 	// ---------------------------------------------------------------------------------
 
-
-
-	// ---------------------------------------------------------------------------------
-
 	/// WAVE!
 	if (nextWaveTimer.ReadSec() >= secondsToNextWave) {
 
@@ -104,8 +112,7 @@ bool j1EnemyWave::Update(float ft)
 			int maxPhasesOfCurrWave = 2;
 			int minPhasesOfCurrWave = 1;
 
-			/// TODO Balancing
-			/*
+			/// TODO Balancing (Waves)
 			if (totalWaves == 0) {
 			
 				maxPhasesOfCurrWave = 2;
@@ -121,7 +128,6 @@ bool j1EnemyWave::Update(float ft)
 				maxPhasesOfCurrWave = 4;
 				minPhasesOfCurrWave = 2;
 			}
-			*/
 
 			totalPhasesOfCurrWave = rand() % (maxPhasesOfCurrWave - minPhasesOfCurrWave + 1) + minPhasesOfCurrWave;
 
@@ -144,8 +150,7 @@ bool j1EnemyWave::Update(float ft)
 			int maxSecondsToNextPhase = 15;
 			int minSecondsToNextPhase = 5;
 
-			/// TODO Balancing
-			/*
+			/// TODO Balancing (Waves)
 			if (totalWaves == 0) {
 
 				maxSecondsToNextPhase = 30;
@@ -161,7 +166,6 @@ bool j1EnemyWave::Update(float ft)
 				maxSecondsToNextPhase = 20;
 				minSecondsToNextPhase = 15;
 			}
-			*/
 
 			secondsToNextPhase = rand() % (maxSecondsToNextPhase - minSecondsToNextPhase + 1) + minSecondsToNextPhase;
 
@@ -177,8 +181,7 @@ bool j1EnemyWave::Update(float ft)
 			int maxMinutesToNextWave = 1;
 			int minMinutesToNextWave = 1;
 
-			/// TODO Balancing
-			/*
+			/// TODO Balancing (Waves)
 			if (totalWaves == 1) {
 
 				maxMinutesToNextWave = 5;
@@ -194,7 +197,6 @@ bool j1EnemyWave::Update(float ft)
 				maxMinutesToNextWave = 4;
 				minMinutesToNextWave = 2;
 			}
-			*/
 
 			secondsToNextWave = rand() % (maxMinutesToNextWave - minMinutesToNextWave + 1) + minMinutesToNextWave;
 			int i = rand() % 10;
@@ -283,17 +285,14 @@ void j1EnemyWave::PerformWave()
 	spawnProbability += 0.05f;
 }
 
-bool j1EnemyWave::Load(pugi::xml_node& save) {
+// ---------------------------------------------------------------------------------
 
+bool j1EnemyWave::Load(pugi::xml_node& save) 
+{
 	return true;
 }
 
-
-
-
-bool j1EnemyWave::Save(pugi::xml_node& save) const {
-
-	
-
+bool j1EnemyWave::Save(pugi::xml_node& save) const 
+{
 	return true;
 }

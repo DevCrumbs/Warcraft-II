@@ -58,7 +58,7 @@ private:
 	uint maxSpawnPerWave = 0;
 	uint totalWaves = 0;
 
-	bool isActiveWaves = false;
+	bool isActiveWaves = true;
 
 	// Current wave
 	uint totalPhasesOfCurrWave = 0;
