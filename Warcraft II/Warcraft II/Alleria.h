@@ -8,6 +8,7 @@ struct AlleriaInfo
 	UnitInfo unitInfo;
 
 	Animation idle;
+	Animation rescue;
 };
 
 class Alleria :public DynamicEntity
@@ -36,7 +37,9 @@ private:
 
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 	AlleriaInfo alleriaInfo;
+
 	float idleSpeed = 0.0f;
+	float rescueSpeed = 0.0f;
 
 	bool isUnitRescuingPrisoner = false;
 	bool isRescued = false;

@@ -1025,21 +1025,39 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
 
 	// Alleria
+	/// Idle
 	pugi::xml_node alleriaAnimations = prisionerEntities.child("alleria").child("animations");
+
 	currentAnimation = alleriaAnimations.child("idle");
 	alleriaInfo.idle.speed = currentAnimation.attribute("speed").as_float();
 	alleriaInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		alleriaInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
+	/// Rescue
+	currentAnimation = alleriaAnimations.child("rescue");
+	alleriaInfo.rescue.speed = currentAnimation.attribute("speed").as_float();
+	alleriaInfo.rescue.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		alleriaInfo.rescue.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
 
-	//Turalyon
+	// Turalyon
+	/// Idle
 	pugi::xml_node turalyonAnimations = prisionerEntities.child("turalyon").child("animations");
+
 	currentAnimation = turalyonAnimations.child("idle");
 	turalyonInfo.idle.speed = currentAnimation.attribute("speed").as_float();
 	turalyonInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		turalyonInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	/// Rescue
+	currentAnimation = turalyonAnimations.child("rescue");
+	turalyonInfo.rescue.speed = currentAnimation.attribute("speed").as_float();
+	turalyonInfo.rescue.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		turalyonInfo.rescue.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
 	// Critters
