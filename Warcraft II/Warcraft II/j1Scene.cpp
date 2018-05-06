@@ -418,13 +418,15 @@ bool j1Scene::Update(float dt)
 			}
 		}
 
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP)
+
+			startRectangle = { -1,-1 };
+
 		units = App->entities->GetLastUnitsSelected();
 
 		if (units.size() > 0) {
 
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
-
-				startRectangle = { -1,-1 };
 
 				if (!App->gui->IsMouseOnUI()) {
 
