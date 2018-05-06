@@ -137,7 +137,7 @@ void ElvenArcher::Move(float dt)
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
 
-			LOG("An Elven Archer died");
+			LOG("An Elven Archer has died");
 		}
 	}
 

@@ -1154,9 +1154,9 @@ bool j1Map::IsOnRoom(fPoint pos, Room room)
 	return SDL_HasIntersection(&posRect, &room.roomRect);
 }
 
-Room j1Map::GetEntityRoom(Entity* entity)
+Room* j1Map::GetEntityRoom(Entity* entity)
 {
-	Room ret{ { -1,-1,-1,-1 },false };
+	Room* ret = nullptr;
 	Room entityRect{ { 0,0,0,0 },false };
 
 	if (entity != nullptr)
@@ -1173,7 +1173,7 @@ Room j1Map::GetEntityRoom(Entity* entity)
 		{
 			if (SDL_HasIntersection(&(*iterator).roomRect, &entityRect.roomRect))
 			{
-				ret = *iterator;
+				ret = &(*iterator);
 				break;
 			}
 		}
@@ -1186,29 +1186,47 @@ list<Entity*> j1Map::GetEntitiesOnRoomByCategory(Room room, ENTITY_CATEGORY enti
 {
 	list<Entity*> entitiesOnRoom;
 
-	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
-	{
-		bool isCheckEntity = false;
+	if (entityType == EntityCategory_NONE || entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-		if (entityType == EntityCategory_NONE) {
-		
-			if (entitySide == EntitySide_NoSide)
-				isCheckEntity = true;
-			else if (entitySide == (*iterator)->entitySide)
-				isCheckEntity = true;
+		for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
+		{
+			if (!(*iterator)->isDead && !(*iterator)->isRemove) {
+
+				bool isCheckEntity = false;
+
+				if (entitySide == EntitySide_NoSide)
+					isCheckEntity = true;
+				else if (entitySide == (*iterator)->entitySide)
+					isCheckEntity = true;
+
+				if (isCheckEntity) {
+
+					if (IsOnRoom((*iterator)->GetPos(), room))
+						entitiesOnRoom.push_back(*iterator);
+				}
+			}
 		}
-		else if ((*iterator)->entityType == entityType) {
+	}
 
-			if (entitySide == EntitySide_NoSide)
-				isCheckEntity = true;
-			else if (entitySide == (*iterator)->entitySide)
-				isCheckEntity = true;
-		}
+	if (entityType == EntityCategory_NONE || entityType == EntityCategory_STATIC_ENTITY) {
 
-		if (isCheckEntity) {
+		for (list<StaticEntity*>::iterator iterator = App->entities->activeStaticEntities.begin(); iterator != App->entities->activeStaticEntities.end(); ++iterator)
+		{
+			if (!(*iterator)->isRemove) {
 
-			if (IsOnRoom((*iterator)->GetPos(), room))
-				entitiesOnRoom.push_back(*iterator);
+				bool isCheckEntity = false;
+
+				if (entitySide == EntitySide_NoSide)
+					isCheckEntity = true;
+				else if (entitySide == (*iterator)->entitySide)
+					isCheckEntity = true;
+
+				if (isCheckEntity) {
+
+					if (IsOnRoom((*iterator)->GetPos(), room))
+						entitiesOnRoom.push_back(*iterator);
+				}
+			}
 		}
 	}
 
@@ -1221,17 +1239,39 @@ list<Entity*> j1Map::GetEntitiesOnRoomByType(Room room, ENTITY_TYPE entityType)
 
 	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
 	{
-		bool isCheckEntity = false;
+		if (!(*iterator)->isDead && !(*iterator)->isRemove) {
 
-		if (entityType == EntityType_NONE)
-			isCheckEntity = true;
-		else if ((*iterator)->dynamicEntityType == entityType)
-			isCheckEntity = true;
+			bool isCheckEntity = false;
 
-		if (isCheckEntity) {
+			if (entityType == EntityType_NONE)
+				isCheckEntity = true;
+			else if ((*iterator)->dynamicEntityType == entityType)
+				isCheckEntity = true;
 
-			if (IsOnRoom((*iterator)->GetPos(), room))
-				entitiesOnRoom.push_back(*iterator);
+			if (isCheckEntity) {
+
+				if (IsOnRoom((*iterator)->GetPos(), room))
+					entitiesOnRoom.push_back(*iterator);
+			}
+		}
+	}
+
+	for (list<StaticEntity*>::iterator iterator = App->entities->activeStaticEntities.begin(); iterator != App->entities->activeStaticEntities.end(); ++iterator)
+	{
+		if (!(*iterator)->isRemove) {
+
+			bool isCheckEntity = false;
+
+			if (entityType == EntityType_NONE)
+				isCheckEntity = true;
+			else if ((*iterator)->staticEntityType == entityType)
+				isCheckEntity = true;
+
+			if (isCheckEntity) {
+
+				if (IsOnRoom((*iterator)->GetPos(), room))
+					entitiesOnRoom.push_back(*iterator);
+			}
 		}
 	}
 

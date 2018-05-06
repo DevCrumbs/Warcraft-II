@@ -108,6 +108,40 @@ bool j1Player::Update(float dt)
 	if (!toSpawnUnitGrypho.empty())
 		CheckUnitSpawning(&toSpawnUnitGrypho);
 
+	// Select all units on screen shortcuts
+	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN) {
+
+		App->entities->SelectEntitiesOnScreen(EntityType_FOOTMAN);
+
+		list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+		if (units.size() > 0)
+			App->scene->PlayUnitSound(units, true); // Unit selected sound
+		else
+			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN) {
+
+		App->entities->SelectEntitiesOnScreen(EntityType_ELVEN_ARCHER);
+
+		list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+		if (units.size() > 0)
+			App->scene->PlayUnitSound(units, true); // Unit selected sound
+		else
+			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN) {
+
+		App->entities->SelectEntitiesOnScreen(EntityType_GRYPHON_RIDER);
+
+		list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+		if (units.size() > 0)
+			App->scene->PlayUnitSound(units, true); // Unit selected sound
+		else
+			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
+	}
 
 	/*
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
@@ -173,7 +207,7 @@ bool j1Player::Update(float dt)
 			}
 	*/
 
-	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
+	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
 		if (!chickenFarm.empty()) 
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)chickenFarm.back();
@@ -190,7 +224,7 @@ bool j1Player::Update(float dt)
 			}
 	
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN) {
-		App->audio->PlayFx(App->audio->GetFX().goldMine, 0); //Gold mine sound
+		App->audio->PlayFx(App->audio->GetFX().goldMine, 0); // Gold mine sound
 		AddGold(500);
 	}
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
@@ -424,6 +458,7 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 			case EntityType_GRYPHON_RIDER:
 				if (gryphonAviary != nullptr) {
 					SpawnUnitFromBuilding(gryphonAviary, EntityType_GRYPHON_RIDER, unitInfo);
+					App->audio->PlayFx(App->audio->GetFX().griffonReady, 0);
 					gryphoSpawningListUI.front().entityIcon->isActive = false;
 					gryphoSpawningListUI.front().entityLifeBar->isActive = false;
 					gryphoSpawningListUI.front().owner = nullptr;
@@ -1788,9 +1823,10 @@ void j1Player::HandleGoldMineUIStates()
 	case GoldMineState_Gathering:
 	{
 		uint currentGold = 0;
+
 		for (float i = goldMine->secondsGathering; i >= 0; i--) {
 			if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
-				AddGold(goldMine->totalGold - ((goldMine->secondsGathering - i) * 100));
+				currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
 				break;
 			}
 		}
@@ -2049,13 +2085,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 
 			else if (UIelem == groupSelectionButtons.selectFootmans) {
-				ShowHoverInfoMenu("Select all Footman on screen", "Shortcut [?]", &firstHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
+				ShowHoverInfoMenu("Select all Footman on screen", "Shortcut [Z]", &firstHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
 			}
 			else if (UIelem == groupSelectionButtons.selectElvenArchers) {
-				ShowHoverInfoMenu("Select all Elven Archer on screen", "Shortcut [?]", &secondHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
+				ShowHoverInfoMenu("Select all Elven Archer on screen", "Shortcut [X]", &secondHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
 			}
 			else if (UIelem == groupSelectionButtons.selectGryphonRiders) {
-				ShowHoverInfoMenu("Select all Gryphon Rider on screen", "Shortcut [?]", &thirdHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
+				ShowHoverInfoMenu("Select all Gryphon Rider on screen", "Shortcut [C]", &thirdHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
 			}
 
 			break;
@@ -2306,25 +2342,34 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 				App->entities->SelectEntitiesOnScreen(EntityType_FOOTMAN);
 
-				if (App->entities->GetLastUnitsSelected().size() == 0) {
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+				if (units.size() > 0)
+					App->scene->PlayUnitSound(units, true); // Unit selected sound
+				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
-				}
 			}
 			else if (UIelem == groupSelectionButtons.selectElvenArchers) {
 
 				App->entities->SelectEntitiesOnScreen(EntityType_ELVEN_ARCHER);
 
-				if (App->entities->GetLastUnitsSelected().size() == 0) {
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+				if (units.size() > 0)
+					App->scene->PlayUnitSound(units, true); // Unit selected sound
+				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
-				}
 			}
 			else if (UIelem == groupSelectionButtons.selectGryphonRiders) {
 
 				App->entities->SelectEntitiesOnScreen(EntityType_GRYPHON_RIDER);
 
-				if (App->entities->GetLastUnitsSelected().size() == 0) {
+				list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+				if (units.size() > 0)
+					App->scene->PlayUnitSound(units, true); // Unit selected sound
+				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
-				}
 			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_UP:

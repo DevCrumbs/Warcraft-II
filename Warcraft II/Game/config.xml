@@ -55,7 +55,7 @@
         
         <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" dragonDeadSound="Units/DragonDeath.wav" 
                     prisonerRescue="Units/PrisonerRescue.wav" baseUnderAttack1 ="Units/BaseUnderAttack1.wav" 
-                    baseUnderAttack2 ="Units/BaseUnderAttack2.wav"/>
+                    baseUnderAttack2 ="Units/BaseUnderAttack2.wav" roomClear ="Units/RoomClear.wav"/>
         
         <archerPaths goToPlace1 ="Units/Archer/GoToPlace1.wav" goToPlace2 ="Units/Archer/GoToPlace2.wav" goToPlace3 ="Units/Archer/GoToPlace3.wav"
                      goToPlace4 ="Units/Archer/GoToPlace4.wav" ready="Units/Archer/Ready.wav" selected1 ="Units/Archer/Selected1.wav"
@@ -169,6 +169,7 @@
       <neutralBuildings name ="data/assets/textures/buildings/NeutralBuildings.png"/>
       <orcishBuildings name ="data/assets/textures/buildings/OrcishBuildings.png"/>
       <humanBuildingsAnimation name="data/assets/textures/buildings/HumanBuildingsAnimation.png"/>
+      <orcishBuildingsAnimation name ="data/assets/textures/buildings/OrcishBuildingAnimations.png"/>
       
       <footmanAnimations name = "data/assets/textures/units/humanUnits/FinalFootman.png"/>
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/FinalGrunt.png"/>
@@ -1183,6 +1184,7 @@
           <sprites>
             <active x="16" y="115" w="96" h="96"/>
             <inactive x="16" y="16" w="96" h="96"/>
+            <destroyed x="16" y="228" w="96" h="96"/>
           </sprites>
         </goldMine>
 
@@ -1190,11 +1192,48 @@
           <sprites>
             <active  x="144" y="83" w="64" h="64"/>
             <inactive x="144" y="14" w="64" h="64"/>
+            <destroyed x="144" y="226" w="64" h="64"/>
           </sprites>
         </runeStone>
 
       </neutralBuildings>
 
+      <orcishBuildingsAnimation>
+        <peonAnimations>
+            <carry speed="4" loop="0">
+              <frame x="0" y="0" w="100" h="100"/>
+              <frame x="100" y="0" w="100" h="100"/>
+              <frame x="200" y="0" w="100" h="100"/>
+              <frame x="300" y="0" w="100" h="100"/>
+              <frame x="400" y="0" w="100" h="100"/>
+            </carry>
+          
+            <smallBuilding speed="4" loop="1">
+              <frame x="500" y="0" w="100" h="100"/>
+              <frame x="600" y="0" w="100" h="100"/>
+              <frame x="700" y="0" w="100" h="100"/>
+              <frame x="800" y="0" w="100" h="100"/>
+              <frame x="900" y="0" w="100" h="100"/>
+            </smallBuilding>
+
+            <mediumBuilding speed="4" loop="1">
+              <frame x="0" y="100" w="150" h="150"/>
+              <frame x="150" y="100" w="150" h="150"/>
+              <frame x="300" y="100" w="150" h="150"/>
+              <frame x="450" y="100" w="150" h="150"/>
+              <frame x="600" y="100" w="150" h="150"/>           
+            </mediumBuilding>
+
+            <bigBuilding speed="4" loop="1">
+              <frame x="0" y="250" w="200" h="200"/>
+              <frame x="200" y="250" w="200" h="200"/>
+              <frame x="400" y="250" w="200" h="200"/>
+              <frame x="600" y="250" w="200" h="200"/>
+              <frame x="800" y="250" w="200" h="200"/>           
+            </bigBuilding>
+
+        </peonAnimations>
+      </orcishBuildingsAnimation>
       <orcishBuildings>
 
         <greatHall>

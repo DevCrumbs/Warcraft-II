@@ -36,9 +36,10 @@ struct GameSounds {
 	FX boarDeath = 0;
 	FX sheepDeath = 0;
 
-	//Base under attack
-	FX baseUnderAttack1;
-	FX baseUnderAttack2;
+	//Base under attack && Room Clear
+	FX baseUnderAttack1 = 0;
+	FX baseUnderAttack2 = 0;
+	FX roomClear = 0;
 
 	//Archer
 	FX archerCommand1 = 0;
@@ -162,9 +163,10 @@ private:
 	string crittersBoarDead;
 	string crittersSheepDead;
 
-	//Base under attack
+	//Base under attack && Room Clear
 	string baseUnderAttackSound1;
 	string baseUnderAttackSound2;
+	string roomClearSound;
 
 	//Archer
 	string archerGoToPlaceSound1;

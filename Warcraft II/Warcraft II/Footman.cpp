@@ -136,7 +136,7 @@ void Footman::Move(float dt)
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
 
-			LOG("A Footman died");
+			LOG("A Footman has died");
 		}
 	}
 

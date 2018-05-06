@@ -171,10 +171,12 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = neutralBuildings.child("goldMine").child("sprites");
 	goldMineInfo.completeTexArea = { aux.child("active").attribute("x").as_int(), aux.child("active").attribute("y").as_int(), aux.child("active").attribute("w").as_int(), aux.child("active").attribute("h").as_int() };
 	goldMineInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
+	goldMineInfo.destroyedTexArea = { aux.child("destroyed").attribute("x").as_int(), aux.child("destroyed").attribute("y").as_int(), aux.child("destroyed").attribute("w").as_int(), aux.child("destroyed").attribute("h").as_int() };
 
 	aux = neutralBuildings.child("runeStone").child("sprites");
 	runestoneInfo.completeTexArea = { aux.child("active").attribute("x").as_int(), aux.child("active").attribute("y").as_int(), aux.child("active").attribute("w").as_int(), aux.child("active").attribute("h").as_int() };
 	runestoneInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
+	runestoneInfo.destroyedTexArea = { aux.child("destroyed").attribute("x").as_int(), aux.child("destroyed").attribute("y").as_int(), aux.child("destroyed").attribute("w").as_int(), aux.child("destroyed").attribute("h").as_int() };
 
 	//Enemy buildings
 	pugi::xml_node orcishBuildings = staticEntities.child("orcishBuildings");
@@ -1271,7 +1273,7 @@ bool j1EntityFactory::Start()
 	footmanInfo.unitInfo.towerDamage = 6;
 
 	/// Speed
-	footmanInfo.unitInfo.maxSpeed = 70.0f;
+	footmanInfo.unitInfo.maxSpeed = 80.0f;
 	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
 
 	/// Life
@@ -1287,11 +1289,11 @@ bool j1EntityFactory::Start()
 	elvenArcherInfo.unitInfo.priority = 2;
 
 	/// Radius
-	elvenArcherInfo.unitInfo.attackRadius = 5;
+	elvenArcherInfo.unitInfo.attackRadius = 6;
 	elvenArcherInfo.unitInfo.sightRadius = 8;
 
 	/// Damage
-	elvenArcherInfo.unitInfo.heavyDamage = 4;
+	elvenArcherInfo.unitInfo.heavyDamage = 6;
 	elvenArcherInfo.unitInfo.lightDamage = 7;
 	elvenArcherInfo.unitInfo.airDamage = 10;
 	elvenArcherInfo.unitInfo.towerDamage = 11;
@@ -1324,7 +1326,7 @@ bool j1EntityFactory::Start()
 	gryphonRiderInfo.unitInfo.towerDamage = 8;
 
 	/// Speed
-	gryphonRiderInfo.unitInfo.maxSpeed = 160.0f;
+	gryphonRiderInfo.unitInfo.maxSpeed = 120.0f;
 	gryphonRiderInfo.unitInfo.currSpeed = gryphonRiderInfo.unitInfo.maxSpeed;
 
 	/// Life
@@ -1339,13 +1341,13 @@ bool j1EntityFactory::Start()
 
 	/// Static Entities
 	// Towers
-	scoutTowerInfo.life = 150;
+	scoutTowerInfo.life = 170;
 	scoutTowerInfo.damage = 7;
 
-	playerGuardTowerInfo.life = 175;
+	playerGuardTowerInfo.life = 195;
 	playerGuardTowerInfo.damage = 13;
 
-	playerCannonTowerInfo.life = 200;
+	playerCannonTowerInfo.life = 220;
 	playerCannonTowerInfo.damage = 17;
 	//_Towers
 
@@ -1369,7 +1371,7 @@ bool j1EntityFactory::Start()
 	gruntInfo.unitInfo.currSpeed = gruntInfo.unitInfo.maxSpeed;
 
 	/// Life
-	gruntInfo.unitInfo.maxLife = 60;
+	gruntInfo.unitInfo.maxLife = 50;
 	gruntInfo.unitInfo.currLife = gruntInfo.unitInfo.maxLife;
 
 	///
@@ -1420,7 +1422,7 @@ bool j1EntityFactory::Start()
 	dragonInfo.unitInfo.towerDamage = 8;
 
 	/// Speed
-	dragonInfo.unitInfo.maxSpeed = 170.0f;
+	dragonInfo.unitInfo.maxSpeed = 120.0f;
 	dragonInfo.unitInfo.currSpeed = dragonInfo.unitInfo.maxSpeed;
 
 	/// Life
@@ -1436,13 +1438,13 @@ bool j1EntityFactory::Start()
 
 	/// Static Entities
 	// Towers
-	watchTowerInfo.life = 150;
+	watchTowerInfo.life = 100;
 	watchTowerInfo.damage = 7;
 
-	enemyGuardTowerInfo.life = 175;
+	enemyGuardTowerInfo.life = 125;
 	enemyGuardTowerInfo.damage = 13;
 
-	enemyCannonTowerInfo.life = 200;
+	enemyCannonTowerInfo.life = 150;
 	enemyCannonTowerInfo.damage = 17;
 	//_Towers
 
@@ -4115,17 +4117,17 @@ uint j1EntityFactory::DetermineBuildingGold(ENTITY_TYPE buildingType, StaticEnti
 	// Towers
 	if (buildingType == EntityType_SCOUT_TOWER || buildingType == EntityType_WATCH_TOWER) {
 
-		gold = 200;
+		gold = 300;
 		return gold;
 	}
 	else if (buildingType == EntityType_PLAYER_GUARD_TOWER || buildingType == EntityType_ENEMY_GUARD_TOWER) {
 
-		gold = 250;
+		gold = 350;
 		return gold;
 	}
 	else if (buildingType == EntityType_PLAYER_CANNON_TOWER || buildingType == EntityType_ENEMY_CANNON_TOWER) {
 
-		gold = 300;
+		gold = 450;
 		return gold;
 	}
 
@@ -4134,17 +4136,17 @@ uint j1EntityFactory::DetermineBuildingGold(ENTITY_TYPE buildingType, StaticEnti
 
 	case StaticEntitySize_Small:
 
-		gold = 150;
+		gold = 250;
 		break;
 
 	case StaticEntitySize_Medium:
 
-		gold = 300;
+		gold = 450;
 		break;
 
 	case StaticEntitySize_Big:
 
-		gold = 600;
+		gold = 650;
 		break;
 
 	case StaticEntitySize_None:

@@ -88,6 +88,7 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	prisonerRescueSound = unitsSounds.attribute("prisonerRescue").as_string();
 	baseUnderAttackSound1 = unitsSounds.attribute("baseUnderAttack1").as_string();
     baseUnderAttackSound2 = unitsSounds.attribute("baseUnderAttack2").as_string();
+	roomClearSound = unitsSounds.attribute("roomClear").as_string();
 
 	pugi::xml_node crittersSounds = sounds.child("crittersPaths");
 	crittersBoarDead = crittersSounds.attribute("boarDead").as_string();
@@ -135,7 +136,6 @@ bool j1Audio::Awake(pugi::xml_node& config)
 bool j1Audio::Start()
 {
 	ChargeFX();
-
 	return true;
 }
 
@@ -324,9 +324,10 @@ void j1Audio::ChargeFX()
 	gameSounds.boarDeath = App->audio->LoadFx(crittersBoarDead.data()); 
 	gameSounds.sheepDeath = App->audio->LoadFx(crittersSheepDead.data()); 
 
-	//Base Under Attack
+	//Base Under Attack && Room Clear
 	gameSounds.baseUnderAttack1 = App->audio->LoadFx(baseUnderAttackSound1.data());
 	gameSounds.baseUnderAttack2 = App->audio->LoadFx(baseUnderAttackSound2.data());
+	gameSounds.roomClear = App->audio->LoadFx(roomClearSound.data());
 
 	//Archer
 	gameSounds.archerCommand1 = App->audio->LoadFx(archerGoToPlaceSound1.data()); 

@@ -370,6 +370,12 @@ private:
 
 	double msAnimation = 0.0f;
 	j1PerfTimer timerAnimation;
+
+	//Varibles of the process of gathering gold
+	uint timeForEachGoldUpdate = 100; //Is in ms!
+	j1Timer auxGatherTimer;
+	uint goldGathered = 0;
+	uint goldToAdd = 0;
 };
 
 class Goal_HealArea :public AtomicGoal

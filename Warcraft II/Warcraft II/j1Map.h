@@ -54,7 +54,7 @@ public:
 	}
 	bool operator==(SDL_Rect room)
 	{
-		return roomRect == roomRect;
+		return roomRect == room;
 	}
 
 public:
@@ -241,7 +241,7 @@ public:
 	bool IsOnRoom(iPoint pos, Room room);
 	bool IsOnRoom(fPoint pos, Room room);
 
-	Room GetEntityRoom(Entity* entity);
+	Room* GetEntityRoom(Entity* entity);
 
 	list<Entity*> GetEntitiesOnRoomByCategory(Room room, ENTITY_CATEGORY entityType = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide);
 	list<Entity*> GetEntitiesOnRoomByType(Room room, ENTITY_TYPE entityType = EntityType_NONE);

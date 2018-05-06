@@ -357,40 +357,38 @@ bool j1Scene::Update(float dt)
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 
 		// Select units by mouse click
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN) {
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN && !App->gui->IsMouseOnUI()) {
+
 			startRectangle = mousePos;
 
-			if (!App->gui->IsMouseOnUI()) {
+			Entity* entity = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+			if (entity != nullptr)
+				App->entities->SelectEntity(entity);
+			//else
+				//App->entities->UnselectAllEntities();
 
-				Entity* entity = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
-				if (entity != nullptr)
-					App->entities->SelectEntity(entity);
-				//else
-					//App->entities->UnselectAllEntities();
+			/// **Debug purposes**
+			Entity* enemy = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
+			if (enemy != nullptr)
+				enemy->isSelected = true;
+			///_**Debug_purposes**
 
-				/// **Debug purposes**
-				Entity* enemy = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
-				if (enemy != nullptr)
-					enemy->isSelected = true;
-				///_**Debug_purposes**
+			Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+			if (playerBuilding != nullptr)
+				App->entities->SelectBuilding((StaticEntity*)playerBuilding);
 
-				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
-				if (playerBuilding != nullptr)
-					App->entities->SelectBuilding((StaticEntity*)playerBuilding);
+			Entity* neutralBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
+			if (neutralBuilding != nullptr)
+				App->entities->SelectBuilding((StaticEntity*)neutralBuilding);
 
-				Entity* neutralBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
-				if (neutralBuilding != nullptr)
-					App->entities->SelectBuilding((StaticEntity*)neutralBuilding);
+			if (playerBuilding == nullptr && neutralBuilding == nullptr)
+				App->entities->UnselectAllBuildings();
 
-				if (playerBuilding == nullptr && neutralBuilding == nullptr)
-					App->entities->UnselectAllBuildings();
-
-				Entity* prisonerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
-				if (prisonerUnit != nullptr)
-					prisonerUnit->isSelected = true;
-				else
-					App->entities->UnselectAllPrisoners();
-			}
+			Entity* prisonerUnit = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
+			if (prisonerUnit != nullptr)
+				prisonerUnit->isSelected = true;
+			else
+				App->entities->UnselectAllPrisoners();
 		}
 
 		int width = mousePos.x - startRectangle.x;
@@ -398,35 +396,43 @@ bool j1Scene::Update(float dt)
 
 		/// SELECT UNITS
 		// Select units by rectangle drawing
-		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && !App->gui->IsMouseOnUI()) {
+		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
-			// Draw the rectangle
-			SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
-			App->printer->PrintQuad(mouseRect, { 255,255,255,255 });
+			if (startRectangle.x != -1 && startRectangle.y != -1) {
 
-			// Select units within the rectangle
-			if (width < 0) {
-				mouseRect.x = mousePos.x;
-				mouseRect.w *= -1;
+				// Draw the rectangle
+				SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
+				App->printer->PrintQuad(mouseRect, { 255,255,255,255 });
+
+				// Select units within the rectangle
+				if (width < 0) {
+					mouseRect.x = mousePos.x;
+					mouseRect.w *= -1;
+				}
+				if (height < 0) {
+					mouseRect.y = mousePos.y;
+					mouseRect.h *= -1;
+				}
+
+				App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
 			}
-			if (height < 0) {
-				mouseRect.y = mousePos.y;
-				mouseRect.h *= -1;
-			}
-
-			App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
 		}
 
 		units = App->entities->GetLastUnitsSelected();
 
 		if (units.size() > 0) {
 
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP && !App->gui->IsMouseOnUI()) {
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 
-				if (!CompareSelectedUnitsLists(units)) {
-					ShowSelectedUnits(units);
-					PlayUnitSound(units, true); //Unit selected sound
-				}			
+				startRectangle = { -1,-1 };
+
+				if (!App->gui->IsMouseOnUI()) {
+
+					if (!CompareSelectedUnitsLists(units)) {
+						ShowSelectedUnits(units);
+						PlayUnitSound(units, true); //Unit selected sound
+					}
+				}
 			}
 
 			UnitGroup* group = App->movement->GetGroupByUnits(units);
@@ -439,15 +445,14 @@ bool j1Scene::Update(float dt)
 			if (group != nullptr) {
 
 				/// COMMAND PATROL
-				if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+				if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN)
 
 					App->entities->CommandToUnits(units, UnitCommand_Patrol);
 
 				/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
-				if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN)
+				if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
 
 					App->entities->CommandToUnits(units, UnitCommand_Stop);
-
 
 				/// COMMAND ATTACK
 				/// Enemy
@@ -630,6 +635,9 @@ bool j1Scene::Update(float dt)
 	}
 	//_*****UNITS*****
 	
+	if (isRoomCleared)
+		BlitRoomClearedFloor(dt);
+
 	// ---------------------------------------------------------------------------------
 
 	DebugKeys();
@@ -2109,12 +2117,27 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 	}
 }
 
-ENTITY_TYPE j1Scene::GetAlphaBuilding() {
+ENTITY_TYPE j1Scene::GetAlphaBuilding() 
+{
 	return alphaBuilding;
 }
 
-void j1Scene::SetAplphaBuilding(ENTITY_TYPE alphaBuilding) {
+void j1Scene::SetAplphaBuilding(ENTITY_TYPE alphaBuilding) 
+{
 	this->alphaBuilding = alphaBuilding;
+}
+
+void j1Scene::BlitRoomClearedFloor(float dt)
+{
+	alpha -= 100.0f * dt;
+
+	if (alpha < 0)
+		alpha = 0;
+
+	if (alpha == 0)
+		isRoomCleared = false;
+
+	App->printer->PrintQuad(roomCleared, { 255, 255, 255, (Uint8)alpha }, true, true, Layers_FloorColliders);
 }
 
 // -------------------------------------------------------------
