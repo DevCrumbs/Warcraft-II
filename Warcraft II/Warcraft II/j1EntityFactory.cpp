@@ -1273,7 +1273,7 @@ bool j1EntityFactory::Start()
 	footmanInfo.unitInfo.towerDamage = 6;
 
 	/// Speed
-	footmanInfo.unitInfo.maxSpeed = 80.0f;
+	footmanInfo.unitInfo.maxSpeed = 90.0f;
 	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
 
 	/// Life
@@ -1299,7 +1299,7 @@ bool j1EntityFactory::Start()
 	elvenArcherInfo.unitInfo.towerDamage = 11;
 
 	/// Speed
-	elvenArcherInfo.unitInfo.maxSpeed = 90.0f;
+	elvenArcherInfo.unitInfo.maxSpeed = 100.0f;
 	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
 
 	/// Life	
