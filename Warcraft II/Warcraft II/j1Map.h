@@ -283,7 +283,7 @@ public:
 	bool				camera_blit = false;
 
 	//Base pos
-	SDL_Rect			playerBase{ 0,0,0,0 };
+	Room			playerBase{ { 0,0,0,0 },false };
 
 	//Texture path
 	string				tilesetPath;

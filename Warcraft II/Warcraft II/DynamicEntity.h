@@ -203,6 +203,9 @@ public:
 	void SetBlitState(bool isBlit);
 	bool GetBlitState() const;
 
+	// Minimap
+	iPoint GetLastTile();
+
 public:
 
 	ENTITY_TYPE dynamicEntityType = EntityType_NONE;
