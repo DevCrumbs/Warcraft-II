@@ -1088,7 +1088,7 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 				SDL_Rect entityRect{ pos.x,pos.y,size.x,size.y };
 
 				// Check if entity belongs to room
-				if (RectIntersect(&entityRect, &*roomIterator))
+				if (SDL_HasIntersection(&entityRect, &*roomIterator))
 				{
 					// Add entity to room list
 					listOnRoom.push_back(*currentEntity);
@@ -1110,7 +1110,7 @@ bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 	list<Room>::iterator iterator;
 	for (iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
 	{
-		if (RectIntersect(&origin, &*iterator))
+		if (SDL_HasIntersection(&origin, &*iterator))
 		{
 			ret = true;
 			currRoom = *iterator;
@@ -1120,7 +1120,7 @@ bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 
 	if (ret)
 	{
-		ret = RectIntersect(&goal, &currRoom);
+		ret = SDL_HasIntersection(&goal, &currRoom);
 	}
 
 	return ret;
@@ -1144,14 +1144,14 @@ bool j1Map::IsOnRoom(iPoint pos, Room room)
 {
 	int size = 1;
 	SDL_Rect posRect{ pos.x,pos.y,size,size };
-	return RectIntersect(&posRect, &room);
+	return SDL_HasIntersection(&posRect, &room);
 }
 
 bool j1Map::IsOnRoom(fPoint pos, Room room)
 {
 	int size = 1;
 	SDL_Rect posRect{ pos.x,pos.y,size,size };
-	return RectIntersect(&posRect, &room);
+	return SDL_HasIntersection(&posRect, &room);
 }
 
 Room j1Map::GetEntityRoom(Entity* entity)
@@ -1171,7 +1171,7 @@ Room j1Map::GetEntityRoom(Entity* entity)
 
 		for (list<Room>::iterator iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
 		{
-			if (RectIntersect(&(*iterator), &entityRect))
+			if (SDL_HasIntersection(&(*iterator), &entityRect))
 			{
 				ret = *iterator;
 				break;
