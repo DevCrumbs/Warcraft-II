@@ -154,6 +154,7 @@ public:
 
 	// Entities
 	Entity* IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide) const;
+	Entity* AreEntitiesColliding(SDL_Rect entityRect, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide) const;
 	void SelectEntitiesOnScreen(ENTITY_TYPE entityType = EntityType_NONE);
 
 	// Dynamic Entities

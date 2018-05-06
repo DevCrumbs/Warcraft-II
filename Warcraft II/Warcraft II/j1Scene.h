@@ -52,6 +52,7 @@ enum AdviceMessages {
 	AdviceMessage_MINE,
 	AdviceMessage_GRYPH_MINE,
 	AdviceMessage_GRYPH_PRISONER,
+	AdviceMessage_PRISONER,
 	AdviceMessage_NONE
 };
 
@@ -248,7 +249,7 @@ public:
 	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
 
 	// Movement
-	bool debugDrawMovement = true;
+	bool debugDrawMovement = false;
 	bool debugDrawPath = false;
 	bool debugDrawMap = false;
 	bool debugDrawAttack = false;
