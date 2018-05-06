@@ -2068,7 +2068,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				ShowHoverInfoMenu("Produces Elven Archer", "Cost: 400 gold", &secondHoverInfo);
 			}
 			else if (UIelem == produceGryphonRiderButton) {
-				ShowHoverInfoMenu("Produces Gryphon Rider", "Cost: 900 gold", &thirdHoverInfo);
+				ShowHoverInfoMenu("Produces Gryphon Rider", "Cost: 750 gold", &thirdHoverInfo);
 			}
 
 			else if (UIelem == destroyBuildingButton) {
