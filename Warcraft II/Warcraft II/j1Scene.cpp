@@ -615,7 +615,7 @@ bool j1Scene::Update(float dt)
 						/// If all units are in the Patrol command or the AttackTarget command, do not set the MoveToPosition command
 						bool isFull = false;
 
-						if (isPatrol == units.size() || target != nullptr || critter != nullptr || prisoner != nullptr)
+						if (isPatrol == units.size() || target != nullptr || critter != nullptr || building != nullptr || prisoner != nullptr)
 							isFull = true;
 
 						if (!isFull)
@@ -1881,6 +1881,14 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 		text = "Gryphon riders cannot rescue prisoners.";
 		adviceLabel->SetText(text, 340);
 		adviceLabel->SetLocalPos({ 225,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_PRISONER:
+		text = "Select units to rescue prisoners.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
 		adviceLabel->SetColor(White_);
 		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
 		break;

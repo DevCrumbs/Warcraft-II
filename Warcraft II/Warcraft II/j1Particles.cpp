@@ -297,8 +297,8 @@ bool j1Particles::Start()
 	gryphonSubFire.life = 800;
 
 	/// Others
-	dragonSubFire.secondsToDamage = 0.5f;
-	gryphonSubFire.secondsToDamage = 0.5f;
+	dragonSubFire.secondsToDamage = 0.3f;
+	gryphonSubFire.secondsToDamage = 0.3f;
 
 	/// Animations speed
 	sheepPawsInfo.up.speed = 1.0f;
@@ -658,23 +658,30 @@ bool Particle::Update(float dt)
 	case ParticleType_Enemy_Projectile:
 	case ParticleType_Cannon_Projectile:
 	{
-		iPoint destinationTile = App->map->WorldToMap(destination.x, destination.y);
-
 		const SDL_Rect rectA = { (int)pos.x, (int)pos.y, size.x, size.y };
 		const SDL_Rect rectB = { destination.x, destination.y,  App->map->data.tileWidth, App->map->data.tileHeight };
 
 		if (SDL_HasIntersection(&rectA, &rectB)) {
 
 			// Apply damage on dynamic entities on the way of the particle, if the particle is a cannon bullet
-			Entity* entity = App->entities->IsEntityOnTile({ destinationTile.x, destinationTile.y });
+			Entity* entity = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y });
 
 			if (particleType == ParticleType_Cannon_Projectile) {
 
 				if (entity != nullptr) {
 
 					if (entity->entitySide == EntitySide_Player ||
-						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy)
-						entity->ApplyDamage(damage);
+						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy) {
+
+						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+							entity->ApplyDamage(damage);
+							
+							StaticEntity* statEnt = (StaticEntity*)entity;
+							statEnt->CheckBuildingState();
+						}
+						else
+							entity->ApplyDamage(damage);
+					}
 
 					return false;
 				}
@@ -685,23 +692,50 @@ bool Particle::Update(float dt)
 
 				if (particleType == ParticleType_Player_Projectile) {
 
-					if (entity->entitySide == EntitySide_Enemy || entity->entitySide == EntitySide_Neutral)
-						entity->ApplyDamage(damage);
+					if (entity->entitySide == EntitySide_Enemy || entity->entitySide == EntitySide_Neutral) {
+					
+						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+							entity->ApplyDamage(damage);
+
+							StaticEntity* statEnt = (StaticEntity*)entity;
+							statEnt->CheckBuildingState();
+						}
+						else
+							entity->ApplyDamage(damage);
+					}
 
 					return false;
 				}
 				else if (particleType == ParticleType_Enemy_Projectile) {
 
-					if (entity->entitySide == EntitySide_Player || entity->entitySide == EntitySide_Neutral)
-						entity->ApplyDamage(damage);
+					if (entity->entitySide == EntitySide_Player || entity->entitySide == EntitySide_Neutral) {
+					
+						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+							entity->ApplyDamage(damage);
+
+							StaticEntity* statEnt = (StaticEntity*)entity;
+							statEnt->CheckBuildingState();
+						}
+						else
+							entity->ApplyDamage(damage);
+					}
 
 					return false;
 				}
 				else if (particleType == ParticleType_Cannon_Projectile) {
 
 					if (entity->entitySide == EntitySide_Player ||
-						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy)
-						entity->ApplyDamage(damage);
+						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy) {
+					
+						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+							entity->ApplyDamage(damage);
+
+							StaticEntity* statEnt = (StaticEntity*)entity;
+							statEnt->CheckBuildingState();
+						}
+						else
+							entity->ApplyDamage(damage);
+					}
 
 					return false;
 				}
@@ -744,7 +778,7 @@ bool Particle::Update(float dt)
 
 	case ParticleType_DragonFire:
 	{
-		// Explodes into a new GryphonSubFire particle on each tile it touches
+		// Explodes into a new DragonSubFire particle on each tile it touches
 		iPoint currTile = App->map->WorldToMap(pos.x, pos.y);
 		iPoint currTilePos = App->map->MapToWorld(currTile.x, currTile.y);
 
@@ -766,30 +800,21 @@ bool Particle::Update(float dt)
 			return false;
 		}
 
-		/// Explode into a new GryphonSubFire when a new tile is reached
+		/// Explode into a new DragonSubFire when a new tile is reached
 		if (!App->particles->IsParticleOnTile(currTile, ParticleType_DragonSubFire)) {
 
-			int random = rand() % 10;
+			Entity* player = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y }, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+			Entity* playerBuilding = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y }, EntityCategory_STATIC_ENTITY, EntitySide_Player);
 
-			Entity* entity = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y });
+			if (player != nullptr || playerBuilding != nullptr)
 
-			if (entity != nullptr) {
-
-				if (entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
-
-					DynamicEntity* dynEnt = (DynamicEntity*)entity;
-
-					if (dynEnt->dynamicEntityType != EntityType_DRAGON)
-
-						App->particles->AddParticle(App->particles->dragonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
-				}
-				else
-					App->particles->AddParticle(App->particles->dragonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
-			}
+				App->particles->AddParticle(App->particles->dragonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
 			else {
 
+				int random = rand() % 10;
+
 				if (random < 8)
-					App->particles->AddParticle(App->particles->dragonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
+					App->particles->AddParticle(App->particles->gryphonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
 			}
 		}
 
@@ -801,13 +826,14 @@ bool Particle::Update(float dt)
 	case ParticleType_DragonSubFire:
 	{
 		// Hits the entities under the fire (per time)
-		Entity* player = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y }, EntityCategory_NONE, EntitySide_Player);
-		Entity* critter = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y }, EntityCategory_NONE, EntitySide_Neutral);
+		Entity* player = App->entities->AreEntitiesColliding({ (int)pos.x, (int)pos.y, size.x, size.y }, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+		Entity* playerBuilding = App->entities->AreEntitiesColliding({ (int)pos.x, (int)pos.y, size.x, size.y }, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+		Entity* critter = App->entities->AreEntitiesColliding({ (int)pos.x, (int)pos.y, size.x, size.y }, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
 
 		//SDL_Rect r = { (int)pos.x, (int)pos.y, size.x, size.y };
 		//App->printer->PrintQuad(r, ColorBlue, false);
 
-		if (player != nullptr || critter != nullptr) {
+		if (player != nullptr || playerBuilding != nullptr || critter != nullptr) {
 
 			if (damageTimer.ReadSec() >= secondsToDamage) {
 
@@ -815,6 +841,12 @@ bool Particle::Update(float dt)
 					player->ApplyDamage(damage);
 				else if (critter != nullptr)
 					critter->ApplyDamage(damage);
+				else if (playerBuilding != nullptr) {
+					playerBuilding->ApplyDamage(damage);
+
+					StaticEntity* statEnt = (StaticEntity*)playerBuilding;
+					statEnt->CheckBuildingState();
+				}
 
 				damageTimer.Start();
 			}
@@ -849,24 +881,16 @@ bool Particle::Update(float dt)
 		/// Explode into a new GryphonSubFire when a new tile is reached
 		if (!App->particles->IsParticleOnTile(currTile, ParticleType_GryphonSubFire)) {
 
-			int random = rand() % 10;
+			Entity* enemy = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y }, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
+			Entity* enemyBuilding = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y }, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
+			Entity* critter = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y }, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
 
-			Entity* entity = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y });
+			if (enemy != nullptr || enemyBuilding != nullptr || critter != nullptr)
 
-			if (entity != nullptr) {
-
-				if (entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
-
-					DynamicEntity* dynEnt = (DynamicEntity*)entity;
-
-					if (dynEnt->dynamicEntityType != EntityType_GRYPHON_RIDER)
-
-						App->particles->AddParticle(App->particles->gryphonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
-				}
-				else
-					App->particles->AddParticle(App->particles->gryphonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
-			}
+				App->particles->AddParticle(App->particles->gryphonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
 			else {
+
+				int random = rand() % 10;
 
 				if (random < 8)
 					App->particles->AddParticle(App->particles->gryphonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
@@ -881,13 +905,14 @@ bool Particle::Update(float dt)
 	case ParticleType_GryphonSubFire:
 	{
 		// Hits the entities under the fire (per time)
-		Entity* enemy = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y }, EntityCategory_NONE, EntitySide_Enemy);
-		Entity* critter = App->entities->IsEntityUnderMouse({ (int)pos.x, (int)pos.y }, EntityCategory_NONE, EntitySide_Neutral);
+		Entity* enemy = App->entities->AreEntitiesColliding({ (int)pos.x, (int)pos.y, size.x, size.y }, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
+		Entity* critter = App->entities->AreEntitiesColliding({ (int)pos.x, (int)pos.y, size.x, size.y }, EntityCategory_DYNAMIC_ENTITY, EntitySide_Neutral);
+		Entity* enemyBuilding = App->entities->AreEntitiesColliding({ (int)pos.x, (int)pos.y, size.x, size.y }, EntityCategory_STATIC_ENTITY, EntitySide_Enemy);
 
 		//SDL_Rect r = { (int)pos.x, (int)pos.y, size.x, size.y };
 		//App->printer->PrintQuad(r, ColorBlue, false);
 
-		if (enemy != nullptr || critter != nullptr) {
+		if (enemy != nullptr || enemyBuilding != nullptr || critter != nullptr) {
 
 			if (damageTimer.ReadSec() >= secondsToDamage) {
 
@@ -895,6 +920,12 @@ bool Particle::Update(float dt)
 					enemy->ApplyDamage(damage);
 				else if (critter != nullptr)
 					critter->ApplyDamage(damage);
+				else if (enemyBuilding != nullptr) {
+					enemyBuilding->ApplyDamage(damage);
+
+					StaticEntity* statEnt = (StaticEntity*)enemyBuilding;
+					statEnt->CheckBuildingState();
+				}
 
 				damageTimer.Start();
 			}

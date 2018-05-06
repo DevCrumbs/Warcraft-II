@@ -33,9 +33,17 @@ void Turalyon::Draw(SDL_Texture* sprites)
 	if (animation != nullptr) {
 
 		fPoint offset = { 0.0f,0.0f };
-		offset = { animation->GetCurrentFrame().w / 3.8f, animation->GetCurrentFrame().h / 3.5f };
 
-		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		if (animation == &turalyonInfo.rescue) {
+
+			offset = { animation->GetCurrentFrame().w / 5.0f, animation->GetCurrentFrame().h / 3.5f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
+		else {
+
+			offset = { animation->GetCurrentFrame().w / 5.0f, animation->GetCurrentFrame().h / 3.5f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
 	}
 
 	if (isSelected)

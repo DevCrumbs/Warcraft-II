@@ -1257,15 +1257,15 @@
     </playerHealth>
 
     <enemyHealth speed ="8" loop="0">
-      <frame x="0" y="600" w="50" h="50"/>
-      <frame x="50" y="600" w="50" h="50"/>
-      <frame x="100" y="600" w="50" h="50"/>
-      <frame x="150" y="600" w="50" h="50"/>
-      <frame x="200" y="600" w="50" h="50"/>
-      <frame x="250" y="600" w="50" h="50"/>
-      <frame x="300" y="600" w="50" h="50"/>
-      <frame x="350" y="600" w="50" h="50"/>
-      <frame x="400" y="600" w="50" h="50"/>
+      <frame x="0" y="625" w="50" h="50"/>
+      <frame x="50" y="625" w="50" h="50"/>
+      <frame x="100" y="625" w="50" h="50"/>
+      <frame x="150" y="625" w="50" h="50"/>
+      <frame x="200" y="625" w="50" h="50"/>
+      <frame x="250" y="625" w="50" h="50"/>
+      <frame x="300" y="625" w="50" h="50"/>
+      <frame x="350" y="625" w="50" h="50"/>
+      <frame x="400" y="625" w="50" h="50"/>
     </enemyHealth>
     
     <cross speed ="18" loop="0">
