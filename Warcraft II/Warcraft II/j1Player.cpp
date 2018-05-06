@@ -905,13 +905,13 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					}
 				}
 			}
-			if ((staticEntity->staticEntityType == EntityType_TOWN_HALL || staticEntity->staticEntityType == EntityType_BARRACKS) && ent->GetCurrLife() == ent->GetMaxLife())
+/*			if ((staticEntity->staticEntityType == EntityType_TOWN_HALL || staticEntity->staticEntityType == EntityType_BARRACKS) && ent->GetCurrLife() == ent->GetMaxLife())
 				hoverCheck = HoverCheck_Upgrate;
 			else if (ent->GetCurrLife() < ent->GetMaxLife())
 				hoverCheck = HoverCheck_Repair;
 			else
 				hoverCheck = HoverCheck_None;
-
+*/
 			/*hoverButtonStruct.isCreated = true;
 			hoverButtonStruct.prevEntity = hoverButtonStruct.currentEntity;
 			hoverButtonStruct.nextEntity = staticEntity;
@@ -1157,9 +1157,10 @@ void j1Player::CreateEntitiesStatsUI()
 	CreateGryphonAviaryButtons();	
 	CreateTownHallButtons();
 	CreateDestructionButton();
-	CreateHoverInfoMenu(&footmanHoverInfo);
-	CreateHoverInfoMenu(&archerHoverInfo);
-	CreateHoverInfoMenu(&gryphoHoverInfo);
+	CreateRepairButton();
+	CreateHoverInfoMenu(&firstHoverInfo);
+	CreateHoverInfoMenu(&secondHoverInfo);
+	CreateHoverInfoMenu(&thirdHoverInfo);
 }
 
 void j1Player::CreateGroupSelectionButtons()
@@ -1171,10 +1172,11 @@ void j1Player::CreateGroupSelectionButtons()
 
 void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) 
 {
-	if (currentEntity->entityType == EntityCategory_STATIC_ENTITY) 
-		App->entities->UnselectAllEntities();
 	//Hide Last Entity info
 	HideEntitySelectedInfo();
+
+	if (currentEntity->entityType == EntityCategory_STATIC_ENTITY) 
+		App->entities->UnselectAllEntities();
 
 	//Set Entity Name
 	entitySelectedStats.entityName->SetText(entityName_text);
@@ -1313,10 +1315,12 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	case EntityType_TOWN_HALL:
 		//Have to cap this //TODO
 		upgradeTownHallButton->isActive = true;
+		repairBuildingButton->isActive = true;
 		break;
 	case EntityType_BARRACKS:
 		produceElvenArcherButton->isActive = true;
 		produceFootmanButton->isActive = true;
+		repairBuildingButton->isActive = true;
 		for (list<GroupSpawning>::iterator iterator = barracksSpawningListUI.begin(); iterator != barracksSpawningListUI.end(); ++iterator)
 		{
 			if ((*iterator).owner != nullptr)
@@ -1333,6 +1337,7 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	case EntityType_GRYPHON_AVIARY:
 		produceGryphonRiderButton->isActive = true;
 		destroyBuildingButton->isActive = true;
+		repairBuildingButton->isActive = true;
 		for (list<GroupSpawning>::iterator iterator = gryphoSpawningListUI.begin(); iterator != gryphoSpawningListUI.end(); ++iterator)
 		{
 			if ((*iterator).owner != nullptr)
@@ -1349,6 +1354,7 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	case EntityType_SCOUT_TOWER:
 	case EntityType_PLAYER_GUARD_TOWER:
 	case EntityType_PLAYER_CANNON_TOWER:
+		repairBuildingButton->isActive = true;
 		destroyBuildingButton->isActive = true;
 		break;
 	default:
@@ -1467,6 +1473,13 @@ void j1Player::HideEntitySelectedInfo()
 	else if (entitySelectedStats.entitySelected == townHall)
 		upgradeTownHallButton->isActive = false;
 
+
+	//Hide Dynamic stats
+	else if (App->scene->groupElementsList.front().owner != nullptr || (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY))
+		App->scene->HideUnselectedUnits();
+
+
+
 	else if (entitySelectedStats.entitySelected == gryphonAviary) {
 		produceGryphonRiderButton->isActive = false;
 
@@ -1477,11 +1490,6 @@ void j1Player::HideEntitySelectedInfo()
 		}
 
 	}
-
-	if (destroyBuildingButton->isActive)
-		destroyBuildingButton->isActive = false;
-	
-
 		/*
 	else if (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
 		StaticEntity* ent = (StaticEntity*)entitySelectedStats.entitySelected;
@@ -1495,9 +1503,6 @@ void j1Player::HideEntitySelectedInfo()
 		}
 	}*/
 
-	//Hide Dynamic stats
-	else if (App->scene->groupElementsList.front().owner != nullptr || (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY))
-		App->scene->HideUnselectedUnits();
 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		entitySelectedStats.HP->isActive = false;
@@ -1505,6 +1510,8 @@ void j1Player::HideEntitySelectedInfo()
 		entitySelectedStats.entityIcon->isActive = false;
 		entitySelectedStats.lifeBar->isActive = false;
 		entitySelectedStats.entitySelected = nullptr;
+		destroyBuildingButton->isActive = false;
+		repairBuildingButton->isActive = false;
 	}
 }
 
@@ -1535,6 +1542,9 @@ void j1Player::DeleteEntitiesMenu()
 
 	//Destroy Building Butt
 	App->gui->RemoveElem((UIElement**)&destroyBuildingButton);
+
+	//Repair Butt
+	App->gui->RemoveElem((UIElement**)&repairBuildingButton);
 
 	//Entity Selected Info
 	App->gui->RemoveElem((UIElement**)&entitySelectedStats.HP);
@@ -1580,15 +1590,15 @@ void j1Player::HideHoverInfoMenu(HoverInfo* hoverInfo)
 
 void j1Player::DeleteHoverInfoMenu()
 {
-	App->gui->RemoveElem((UIElement**)&footmanHoverInfo.background);
-	App->gui->RemoveElem((UIElement**)&footmanHoverInfo.cost);
-	App->gui->RemoveElem((UIElement**)&footmanHoverInfo.info);
-	App->gui->RemoveElem((UIElement**)&archerHoverInfo.background);
-	App->gui->RemoveElem((UIElement**)&archerHoverInfo.cost);
-	App->gui->RemoveElem((UIElement**)&archerHoverInfo.info);
-	App->gui->RemoveElem((UIElement**)&gryphoHoverInfo.background);
-	App->gui->RemoveElem((UIElement**)&gryphoHoverInfo.cost);
-	App->gui->RemoveElem((UIElement**)&gryphoHoverInfo.info);
+	App->gui->RemoveElem((UIElement**)&firstHoverInfo.background);
+	App->gui->RemoveElem((UIElement**)&firstHoverInfo.cost);
+	App->gui->RemoveElem((UIElement**)&firstHoverInfo.info);
+	App->gui->RemoveElem((UIElement**)&secondHoverInfo.background);
+	App->gui->RemoveElem((UIElement**)&secondHoverInfo.cost);
+	App->gui->RemoveElem((UIElement**)&secondHoverInfo.info);
+	App->gui->RemoveElem((UIElement**)&thirdHoverInfo.background);
+	App->gui->RemoveElem((UIElement**)&thirdHoverInfo.cost);
+	App->gui->RemoveElem((UIElement**)&thirdHoverInfo.info);
 
 }
 
@@ -1656,6 +1666,10 @@ void j1Player::CreateTownHallButtons()
 void j1Player::CreateDestructionButton()
 {
 	CreateSimpleButton({ 579,76,49,41 }, { 629, 76, 49, 41 }, { 679,76,49,41 }, { 320, 42 }, destroyBuildingButton);
+}
+void j1Player::CreateRepairButton()
+{
+	CreateSimpleButton({ 579,34,49,41 }, { 629, 34, 49, 41 }, { 679,34,49,41 }, { 320, 2 }, repairBuildingButton);
 }
 void j1Player::CreateHoverInfoMenu(HoverInfo* hoverInfo) {
 
@@ -1753,7 +1767,7 @@ void j1Player::CreateMageTowerButtons()
 	CreateSimpleButton({ 342,244,50,41 }, { 597, 244, 50, 41 }, { 852,244,50,41 }, { 217, 2 }, produceMageButton);
 }
 
-void j1Player::DestroyBuilding()
+/*void j1Player::DestroyBuilding()
 {
 	StaticEntity* toDestroyEnt = (StaticEntity*)entitySelectedStats.entitySelected;
 
@@ -1821,7 +1835,7 @@ void j1Player::DestroyBuilding()
 
 	App->audio->PlayFx(App->audio->GetFX().destroyBuild);
 }
-
+*/
 //This button have ACTIVE false, you wont see it
 void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) {
 
@@ -1859,51 +1873,78 @@ uint j1Player::GetGroupSpawningSize(list<GroupSpawning> listSpawning)
 	return size;
 }
 
+uint j1Player::CalculateGoldRepair(StaticEntity* entity)
+{
+	uint gold = 0u;
+
+	switch (entity->GetBuildingState())
+	{
+	case BuildingState_Normal:
+		gold = 50 * entity->buildingSize;
+		break;
+	case BuildingState_LowFire:
+		gold = 100 * entity->buildingSize;
+		break;
+	case BuildingState_HardFire:
+		gold = 150 * entity->buildingSize;
+		break;
+
+	default:
+		break;
+	}
+
+	return gold;
+}
+
 void j1Player::CheckBuildingsState() 
 {
 	if (townHall != nullptr) {
-		if(townHall->GetCurrLife() <= 0)
+		if(townHall->GetCurrLife() <= 0 || townHall->isRemove)
 			townHall = nullptr;
 	}
 
 	if (barracks != nullptr) {
-		if (barracks->GetCurrLife() <= 0)
+		if (barracks->GetCurrLife() <= 0 || barracks->isRemove)
 			barracks = nullptr;
 	}
 
 	if (gryphonAviary != nullptr) {
-		if (gryphonAviary->GetCurrLife() <= 0)
+		if (gryphonAviary->GetCurrLife() <= 0 || gryphonAviary->isRemove)
 			gryphonAviary = nullptr;
 	}
 
-	if (!chickenFarm.empty())
+	if (chickenFarm.size() > 0)
 		for (list<StaticEntity*>::iterator iterator = chickenFarm.begin(); iterator != chickenFarm.end(); ++iterator)
 		{
-			if ((*iterator)->GetCurrLife() <= 0) {
+			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
+				if (chickenFarm.size() == 1) {
+					chickenFarm.remove((*iterator));
+					break;
+				}
 				chickenFarm.remove((*iterator));
 				iterator = chickenFarm.begin();
 			}
 		}
-	if (!scoutTower.empty())
+	if (scoutTower.size() > 0)
 		for (list<StaticEntity*>::iterator iterator = scoutTower.begin(); iterator != scoutTower.end(); ++iterator)
 		{
-			if ((*iterator)->GetCurrLife() <= 0) {
+			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
 				scoutTower.remove((*iterator));
 				iterator = scoutTower.begin();
 			}
 		}
-	if (!guardTower.empty())
+	if (guardTower.size() > 0)
 		for (list<StaticEntity*>::iterator iterator = guardTower.begin(); iterator != guardTower.end(); ++iterator)
 		{
-			if ((*iterator)->GetCurrLife() <= 0) {
+			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
 				guardTower.remove((*iterator));
 				iterator = guardTower.begin();
 			}
 		}
-	if(!cannonTower.empty())
+	if(cannonTower.size() > 0)
 		for (list<StaticEntity*>::iterator iterator = cannonTower.begin(); iterator != cannonTower.end(); ++iterator)
 		{
-			if ((*iterator)->GetCurrLife() <= 0) {
+			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
 				cannonTower.remove((*iterator));
 				iterator = cannonTower.begin();
 			}
@@ -1920,40 +1961,45 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		case UI_EVENT_MOUSE_ENTER:
 
 			if (UIelem == produceFootmanButton) {
-				ShowHoverInfoMenu("Produces footman", "Cost: 500 gold", &footmanHoverInfo);
+				ShowHoverInfoMenu("Produces footman", "Cost: 500 gold", &firstHoverInfo);
 			}
 			else if (UIelem == produceElvenArcherButton) {
-				ShowHoverInfoMenu("Produces archer", "Cost: 400 gold", &archerHoverInfo);
+				ShowHoverInfoMenu("Produces archer", "Cost: 400 gold", &secondHoverInfo);
 			}
 			else if (UIelem == produceGryphonRiderButton) {
-				ShowHoverInfoMenu("Produces gryphon", "Cost: 900 gold", &gryphoHoverInfo);
-			}
-			else if (UIelem == destroyBuildingButton) {
-				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy", &footmanHoverInfo);
+				ShowHoverInfoMenu("Produces gryphon", "Cost: 900 gold", &thirdHoverInfo);
 			}
 
+			else if (UIelem == destroyBuildingButton) {
+				ShowHoverInfoMenu("DESTROY BUILDING", "Press to destroy", &firstHoverInfo);
+			}
+			else if (UIelem == repairBuildingButton) {
+				uint gold = CalculateGoldRepair((StaticEntity*)entitySelectedStats.entitySelected);
+				string cost = "Cost: " + to_string(gold) + " gold";
+				ShowHoverInfoMenu("Repair Building", cost, &thirdHoverInfo);
+			}
 			else if (UIelem == upgradeTownHallButton) {
-				ShowHoverInfoMenu("Upgrade TownHall", "Cost: 500 gold", &footmanHoverInfo);
+				ShowHoverInfoMenu("Upgrade TownHall", "Cost: 500 gold", &firstHoverInfo);
 			}
 
 			else if (UIelem == groupSelectionButtons.selectFootmans) {
-				ShowHoverInfoMenu("Select all footmans on screen", "Shortcast [?]", &footmanHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
+				ShowHoverInfoMenu("Select all footmans on screen", "Shortcast [?]", &firstHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
 			}
 			else if (UIelem == groupSelectionButtons.selectElvenArchers) {
-				ShowHoverInfoMenu("Select all archers on screen", "Shortcast [?]", &archerHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
+				ShowHoverInfoMenu("Select all archers on screen", "Shortcast [?]", &secondHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
 			}
 			else if (UIelem == groupSelectionButtons.selectGryphonRiders) {
-				ShowHoverInfoMenu("Select all gryphons on screen", "Shortcast [?]", &gryphoHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
+				ShowHoverInfoMenu("Select all gryphons on screen", "Shortcast [?]", &thirdHoverInfo, { 344, 475, 167, 48 }, { 5,487 });
 			}
 
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
 			if (UIelem == produceFootmanButton || UIelem == destroyBuildingButton || UIelem == groupSelectionButtons.selectFootmans || UIelem == upgradeTownHallButton)
-				HideHoverInfoMenu(&footmanHoverInfo);
+				HideHoverInfoMenu(&firstHoverInfo);
 			else if (UIelem == produceElvenArcherButton || UIelem == groupSelectionButtons.selectElvenArchers)
-				HideHoverInfoMenu(&archerHoverInfo);
-			else if (UIelem == produceGryphonRiderButton || UIelem == groupSelectionButtons.selectGryphonRiders)
-				HideHoverInfoMenu(&gryphoHoverInfo);
+				HideHoverInfoMenu(&secondHoverInfo);
+			else if (UIelem == produceGryphonRiderButton || UIelem == groupSelectionButtons.selectGryphonRiders || UIelem == repairBuildingButton)
+				HideHoverInfoMenu(&thirdHoverInfo);
 			break;
 		case UI_EVENT_MOUSE_RIGHT_CLICK:
 
@@ -2003,10 +2049,20 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			//For destroying a building
 			else if (UIelem == destroyBuildingButton) {
-				DestroyBuilding();
 				HideEntitySelectedInfo();
-				//HideHoverInfoMenu();
+				entitySelectedStats.entitySelected->isRemove = true;
 				entitySelectedStats.entitySelected = nullptr;
+			}
+
+			else if (UIelem == repairBuildingButton) {
+				if (entitySelectedStats.entitySelected->GetCurrLife() < entitySelectedStats.entitySelected->GetMaxLife()) {
+					uint gold = CalculateGoldRepair((StaticEntity*)entitySelectedStats.entitySelected);
+					if (GetCurrentGold() >= gold) {
+						int negative = gold;
+						AddGold(-negative);
+						entitySelectedStats.entitySelected->SetCurrLife(entitySelectedStats.entitySelected->GetMaxLife());
+					}
+				}
 			}
 
 			/*if (hoverCheck == HoverCheck_Repair) {
