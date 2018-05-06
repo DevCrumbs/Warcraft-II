@@ -80,7 +80,7 @@ void j1FogOfWar::print()
 		{
 
 			int pos = 119 * i + j;
-			LOG("Pos is %i", pos);
+		//	LOG("Pos is %i", pos);
 			App->render->DrawQuad({ i * FOW_TILE, j * FOW_TILE, FOW_TILE, FOW_TILE }, 0, 0, 0, fowTilesVector[pos]->alpha);
 
 		}
