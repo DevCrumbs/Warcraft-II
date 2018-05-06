@@ -9,6 +9,7 @@
 
 #include "j1App.h"
 #include "j1Textures.h"
+#include "Entity.h"
 
 #include "PugiXml/src/pugixml.hpp"
 #include "SDL\include\SDL.h"
@@ -16,7 +17,6 @@
 #include "SDL\include\SDL_rect.h"
 
 using namespace std;
-typedef SDL_Rect Room;
 
 class Entity;
 enum ENTITY_TYPE;
@@ -31,7 +31,40 @@ enum ROOM_TYPE
 
 };
 
-struct Object {
+struct Room
+{
+public:
+	Room(SDL_Rect rect = { 0,0,0,0 }, bool cleared = false)
+	{
+		roomRect = rect;
+		isCleared = cleared;
+	}
+	Room()
+	{
+		roomRect = { 0,0,0,0 };
+		isCleared = false;
+	}
+
+
+
+
+	bool operator==(Room room)
+	{
+		return roomRect == room.roomRect && isCleared == room.isCleared;
+	}
+	bool operator==(SDL_Rect room)
+	{
+		return roomRect == roomRect;
+	}
+
+public:
+	SDL_Rect roomRect{ 0,0,0,0 };
+	bool isCleared = false;
+};
+
+
+struct Object
+{
 	string name;
 	uint id = 0;
 	uint x = 0;
@@ -204,8 +237,8 @@ public:
 	bool IsGoalOnRoom(iPoint origin, iPoint goal);
 
 	bool IsOnBase(iPoint pos);
-	bool IsOnRoom(iPoint pos, SDL_Rect room);
 
+	bool IsOnRoom(iPoint pos, Room room);
 	bool IsOnRoom(fPoint pos, Room room);
 
 	Room GetEntityRoom(Entity* entity);
