@@ -35,6 +35,7 @@ class j1PathManager;
 class j1FinishGame;
 class j1Printer;
 class j1EnemyWave;
+class j1FogOfWar;
 
 struct SDL_Rect;
 
@@ -132,6 +133,7 @@ public:
 	j1FinishGame*				finish = nullptr;
 	j1Printer*					printer = nullptr;
 	j1EnemyWave*				wave = nullptr;
+	j1FogOfWar*					fow = nullptr;
 
 private:
 
