@@ -54,7 +54,7 @@ void j1Map::Draw()
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::PapayaWhip);
 
-	GetEntitiesOnRoom(playerBase, EntityType_FOOTMAN);
+	GetEntitiesOnRoomByType(playerBase, EntityType_FOOTMAN);
 
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
 	{
@@ -1053,10 +1053,10 @@ bool j1Map::LoadRoomRect(MapLayer* layer)
 
 					break;
 				case roomType_LARGE:
-					roomRectList.push_back({ pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultRoomSize * defaultTileSize });
+					roomRectList.push_back({{ pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultRoomSize * defaultTileSize }, false});
 					break;
 				case roomType_LITTLE:
-					roomRectList.push_back({ pos.x, pos.y, defaultLittleSize * defaultTileSize, defaultLittleSize * defaultTileSize });
+					roomRectList.push_back({ { pos.x, pos.y, defaultLittleSize * defaultTileSize, defaultLittleSize * defaultTileSize},false });
 					break;
 				default:
 					break;
@@ -1073,7 +1073,7 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 	for (list<list<Entity*>>::iterator iterator = entityGroupLevel.begin(); iterator != entityGroupLevel.end(); ++iterator)
 	{
 		// Iterate all rooms rects
-		for (list<SDL_Rect>::iterator roomIterator = roomRectList.begin(); roomIterator != roomRectList.end(); ++roomIterator)
+		for (list<Room>::iterator roomIterator = roomRectList.begin(); roomIterator != roomRectList.end(); ++roomIterator)
 		{
 			if ((*roomIterator) == playerBase)
 				continue;
@@ -1088,7 +1088,7 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 				SDL_Rect entityRect{ pos.x,pos.y,size.x,size.y };
 
 				// Check if entity belongs to room
-				if (SDL_HasIntersection(&entityRect, &*roomIterator))
+				if (SDL_HasIntersection(&entityRect, &(*roomIterator).roomRect))
 				{
 					// Add entity to room list
 					listOnRoom.push_back(*currentEntity);
@@ -1105,12 +1105,12 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 {
 	bool ret = false;
-	SDL_Rect currRoom{ -1,-1,-1,-1 };
+	Room currRoom{ { -1,-1,-1,-1 },false };
 
 	list<Room>::iterator iterator;
 	for (iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
 	{
-		if (SDL_HasIntersection(&origin, &*iterator))
+		if (SDL_HasIntersection(&origin, &(*iterator).roomRect))
 		{
 			ret = true;
 			currRoom = *iterator;
@@ -1120,7 +1120,7 @@ bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 
 	if (ret)
 	{
-		ret = SDL_HasIntersection(&goal, &currRoom);
+		ret = SDL_HasIntersection(&goal, &currRoom.roomRect);
 	}
 
 	return ret;
@@ -1144,34 +1144,34 @@ bool j1Map::IsOnRoom(iPoint pos, Room room)
 {
 	int size = 1;
 	SDL_Rect posRect{ pos.x,pos.y,size,size };
-	return SDL_HasIntersection(&posRect, &room);
+	return SDL_HasIntersection(&posRect, &room.roomRect);
 }
 
 bool j1Map::IsOnRoom(fPoint pos, Room room)
 {
 	int size = 1;
 	SDL_Rect posRect{ pos.x,pos.y,size,size };
-	return SDL_HasIntersection(&posRect, &room);
+	return SDL_HasIntersection(&posRect, &room.roomRect);
 }
 
 Room j1Map::GetEntityRoom(Entity* entity)
 {
-	Room ret{ -1,-1,-1,-1 };
-	Room entityRect{ 0,0,0,0 };
+	Room ret{ { -1,-1,-1,-1 },false };
+	Room entityRect{ { 0,0,0,0 },false };
 
 	if (entity != nullptr)
 	{
 		fPoint pos = entity->GetPos();
-		entityRect.x = pos.x;
-		entityRect.y = pos.y;
+		entityRect.roomRect.x = pos.x;
+		entityRect.roomRect.y = pos.y;
 
 		iPoint  size = entity->GetSize();
-		entityRect.w = size.x; 
-		entityRect.h = size.y;
+		entityRect.roomRect.w = size.x;
+		entityRect.roomRect.h = size.y;
 
 		for (list<Room>::iterator iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
 		{
-			if (SDL_HasIntersection(&(*iterator), &entityRect))
+			if (SDL_HasIntersection(&(*iterator).roomRect, &entityRect.roomRect))
 			{
 				ret = *iterator;
 				break;
@@ -1182,17 +1182,57 @@ Room j1Map::GetEntityRoom(Entity* entity)
 	return ret;
 }
 
-list<Entity*> j1Map::GetEntitiesOnRoom(Room room, ENTITY_TYPE type)
+list<Entity*> j1Map::GetEntitiesOnRoomByCategory(Room room, ENTITY_CATEGORY entityType, EntitySide entitySide)
 {
 	list<Entity*> entitiesOnRoom;
 
 	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
 	{
-		if ((*iterator)->dynamicEntityType == type)
+		bool isCheckEntity = false;
+
+		if (entityType == EntityCategory_NONE) {
+		
+			if (entitySide == EntitySide_NoSide)
+				isCheckEntity = true;
+			else if (entitySide == (*iterator)->entitySide)
+				isCheckEntity = true;
+		}
+		else if ((*iterator)->entityType == entityType) {
+
+			if (entitySide == EntitySide_NoSide)
+				isCheckEntity = true;
+			else if (entitySide == (*iterator)->entitySide)
+				isCheckEntity = true;
+		}
+
+		if (isCheckEntity) {
+
 			if (IsOnRoom((*iterator)->GetPos(), room))
-			{
 				entitiesOnRoom.push_back(*iterator);
-			}
+		}
+	}
+
+	return entitiesOnRoom;
+}
+
+list<Entity*> j1Map::GetEntitiesOnRoomByType(Room room, ENTITY_TYPE entityType) 
+{
+	list<Entity*> entitiesOnRoom;
+
+	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
+	{
+		bool isCheckEntity = false;
+
+		if (entityType == EntityType_NONE)
+			isCheckEntity = true;
+		else if ((*iterator)->dynamicEntityType == entityType)
+			isCheckEntity = true;
+
+		if (isCheckEntity) {
+
+			if (IsOnRoom((*iterator)->GetPos(), room))
+				entitiesOnRoom.push_back(*iterator);
+		}
 	}
 
 	return entitiesOnRoom;

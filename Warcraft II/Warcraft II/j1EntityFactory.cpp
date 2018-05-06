@@ -1912,13 +1912,13 @@ const EntityInfo& j1EntityFactory::GetBuiltBuilding(ENTITY_TYPE staticEntityType
 	}
 }
 
-SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
-
+SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() 
+{
 	return humanBuildingsTex;
 }
 
-SDL_Texture* j1EntityFactory::GetNeutralBuildingTexture() {
-
+SDL_Texture* j1EntityFactory::GetNeutralBuildingTexture() 
+{
 	return neutralBuildingsTex;
 }
 
@@ -2383,7 +2383,7 @@ bool j1EntityFactory::PostUpdate()
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		if (!(*dynEnt)->GetBlitState()) {
+		if (!(*dynEnt)->GetBlitState() || !App->render->IsInScreen({ (int)(*dynEnt)->GetPos().x, (int)(*dynEnt)->GetPos().y, (*dynEnt)->GetSize().x, (*dynEnt)->GetSize().y })) {
 
 			dynEnt++;
 			continue;
@@ -2442,6 +2442,12 @@ bool j1EntityFactory::PostUpdate()
 	statEnt = activeStaticEntities.begin();
 
 	while (statEnt != activeStaticEntities.end()) {
+
+		if (!App->render->IsInScreen({ (int)(*statEnt)->GetPos().x, (int)(*statEnt)->GetPos().y, (*statEnt)->GetSize().x, (*statEnt)->GetSize().y })) {
+
+			statEnt++;
+			continue;
+		}
 
 		switch ((*statEnt)->staticEntityCategory) {
 
