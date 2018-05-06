@@ -56,11 +56,37 @@ bool j1FogOfWar::CleanUp()
 
 void j1FogOfWar::print()
 {
-	for (int i = 0; i < fowTilesVector.size(); i++)
+	//for (int i = 0; i < fowTilesVector.size(); i++)
+	//{
+	//	
+	//}
+
+
+	iPoint startTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale(),
+		-App->render->camera.y / App->win->GetScale());
+	iPoint endTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
+		-App->render->camera.y / App->win->GetScale() + App->render->camera.h);
+	int i = startTile.x;
+	if (i < 0 && endTile.x >= 0)
+		i = 0;
+
+	for (; i < 119 && i < endTile.x + 1; ++i) 
 	{
-		App->render->DrawQuad({ fowTilesVector[i]->pos.x * FOW_TILE, fowTilesVector[i]->pos.y * FOW_TILE, FOW_TILE, FOW_TILE }, 0, 0, 0, fowTilesVector[i]->alpha);
-	}
-}
+		int j = startTile.y;
+		if (j < 0 && endTile.y >= 0)
+			j = 0;
+
+		for (; j < 149 && j < endTile.y + 1; ++j) 
+		{
+
+			int pos = 119 * i + j;
+			LOG("Pos is %i", pos);
+			App->render->DrawQuad({ i * FOW_TILE, j * FOW_TILE, FOW_TILE, FOW_TILE }, 0, 0, 0, fowTilesVector[pos]->alpha);
+
+		}
+	}//for
+}//for
+
 
 // =================================== PART 1 ===================================
 
