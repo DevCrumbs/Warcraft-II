@@ -141,7 +141,7 @@ public:
 	void DeleteEntitiesMenu();
 	void DeleteGroupSelectionButtons();
 	void CreateHoverInfoMenu(HoverInfo* hoverInfo);
-	void ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, SDL_Rect = { 241,475,102,48 }, iPoint pos = { 643, 473 });
+	void ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, iPoint pos = { 644, 473 });
 	void HideHoverInfoMenu(HoverInfo* hoverInfo);
 	void DeleteHoverInfoMenu();
 	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, bool isActive = true);
@@ -219,6 +219,10 @@ public:
 	bool isUnitSpawning = false;
 	bool isMouseOnMine = false;
 
+	HoverInfo firstHoverInfo;
+	HoverInfo secondHoverInfo;
+	HoverInfo thirdHoverInfo;
+
 private:
 
 	int currentGold = 0; // amount of gold that the player has at the current moment
@@ -228,10 +232,6 @@ private:
 	double timer = 0.0f; // game time
 	uint totalEnemiesKilled = 0;
 	uint totalUnitsDead = 0;
-
-	HoverInfo firstHoverInfo;
-	HoverInfo secondHoverInfo;
-	HoverInfo thirdHoverInfo;
 
 	GroupSelectionButtons groupSelectionButtons;
 

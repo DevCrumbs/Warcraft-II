@@ -1037,7 +1037,10 @@ void j1Scene::LoadInGameUI()
 	inGameFrameImage->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
 	//changing map button
-	App->player->CreateSimpleButton({ 241, 453, 30, 21 }, { 272, 453, 30, 21 }, { 303, 453, 30, 21 }, { 200,27 }, changeMinimapButt);
+	buttonInfo.normalTexArea = { 241, 453, 30, 21 };
+	buttonInfo.hoverTexArea = { 272, 453, 30, 21 };
+	buttonInfo.pressedTexArea = { 303, 453, 30, 21 };
+	changeMinimapButt = App->gui->CreateUIButton({ 200,27 }, buttonInfo, this);
 
 	LoadResourcesLabels();
 	LoadBuildingMenu();
@@ -1930,10 +1933,20 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 	switch (UIevent)
 	{
 	case UI_EVENT_MOUSE_ENTER:
+		if (UIelem == commandPatrolButton) {
+			App->player->ShowHoverInfoMenu("Patrol units", "", &App->player->firstHoverInfo);
+		}
+		else if (UIelem == commandStopButton) {
+			App->player->ShowHoverInfoMenu("Stop units", "", &App->player->secondHoverInfo);
+		}
 
 		break;
 
 	case UI_EVENT_MOUSE_LEAVE:
+		if (UIelem == commandPatrolButton)
+			App->player->HideHoverInfoMenu(&App->player->firstHoverInfo);
+		else if (UIelem == commandStopButton)
+			App->player->HideHoverInfoMenu(&App->player->secondHoverInfo);
 
 		break;
 

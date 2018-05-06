@@ -820,7 +820,7 @@ bool Particle::Update(float dt)
 				int random = rand() % 10;
 
 				if (random < 8)
-					App->particles->AddParticle(App->particles->gryphonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
+					App->particles->AddParticle(App->particles->dragonSubFire, currTilePos, { 0,0 }, 0.0f, damage);
 			}
 		}
 
