@@ -156,7 +156,9 @@ void UIMinimap::Draw() const
 		App->render->DrawQuad(rect, color.r, color.g, color.b, color.a, true, false);
 	}
 
+
 	//Draw FoW
+	if (App->fow->isActive)
 		DrawFoW();
 
 	///-----------------	 Draw the camera rect
