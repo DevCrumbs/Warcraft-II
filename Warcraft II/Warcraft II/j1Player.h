@@ -12,14 +12,6 @@
 #include <list>
 using namespace std;
 
-enum HoverCheck
-{
-	HoverCheck_None,
-	HoverCheck_Upgrate,
-	HoverCheck_Repair
-};
-
-
 struct UILabel;
 struct UIImage;
 struct UIButton;
@@ -162,14 +154,16 @@ public:
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
 	void CreateDestructionButton();
+	void CreateRepairButton();
 	void HandleSpawningUnitsUIElem(ToSpawnUnit** toSpawnUnit, list<GroupSpawning>* groupList);
 	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 	uint GetGroupSpawningSize(list<GroupSpawning> listSpawning);
+	uint CalculateGoldRepair(StaticEntity * entity);
 	void CheckBuildingsState();
 
-	void DestroyBuilding();
+	//void DestroyBuilding();
 
 	void RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos);
 
@@ -231,13 +225,12 @@ private:
 	uint maxUnitsSelected = 8;
 
 	double timer = 0.0f; // game time
-	HoverCheck hoverCheck = HoverCheck_None;
 	uint totalEnemiesKilled = 0;
 	uint totalUnitsDead = 0;
 
-	HoverInfo footmanHoverInfo;
-	HoverInfo archerHoverInfo;
-	HoverInfo gryphoHoverInfo;
+	HoverInfo firstHoverInfo;
+	HoverInfo secondHoverInfo;
+	HoverInfo thirdHoverInfo;
 
 	GroupSelectionButtons groupSelectionButtons;
 
@@ -248,7 +241,7 @@ private:
 	UIMinimap* minimap = nullptr;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
-		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr;
+		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr, *repairBuildingButton = nullptr;
 	
 
 	list<UIElement*> UIMenuInfoList;
