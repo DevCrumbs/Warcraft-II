@@ -7,6 +7,7 @@ struct GoldMineInfo
 {
 	SDL_Rect completeTexArea = { 0,0,0,0 };
 	SDL_Rect inProgressTexArea = { 0,0,0,0 };
+	SDL_Rect destroyedTexArea = { 0,0,0,0 };
 };
 
 enum GoldMineState {

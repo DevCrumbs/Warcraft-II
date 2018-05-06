@@ -171,10 +171,12 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = neutralBuildings.child("goldMine").child("sprites");
 	goldMineInfo.completeTexArea = { aux.child("active").attribute("x").as_int(), aux.child("active").attribute("y").as_int(), aux.child("active").attribute("w").as_int(), aux.child("active").attribute("h").as_int() };
 	goldMineInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
+	goldMineInfo.destroyedTexArea = { aux.child("destroyed").attribute("x").as_int(), aux.child("destroyed").attribute("y").as_int(), aux.child("destroyed").attribute("w").as_int(), aux.child("destroyed").attribute("h").as_int() };
 
 	aux = neutralBuildings.child("runeStone").child("sprites");
 	runestoneInfo.completeTexArea = { aux.child("active").attribute("x").as_int(), aux.child("active").attribute("y").as_int(), aux.child("active").attribute("w").as_int(), aux.child("active").attribute("h").as_int() };
 	runestoneInfo.inProgressTexArea = { aux.child("inactive").attribute("x").as_int(), aux.child("inactive").attribute("y").as_int(), aux.child("inactive").attribute("w").as_int(), aux.child("inactive").attribute("h").as_int() };
+	runestoneInfo.destroyedTexArea = { aux.child("destroyed").attribute("x").as_int(), aux.child("destroyed").attribute("y").as_int(), aux.child("destroyed").attribute("w").as_int(), aux.child("destroyed").attribute("h").as_int() };
 
 	//Enemy buildings
 	pugi::xml_node orcishBuildings = staticEntities.child("orcishBuildings");
