@@ -150,14 +150,15 @@ void Grunt::Move(float dt)
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
 
-			LOG("A grunt died");
+			LOG("A Grunt died");
 		}
 	}
 
+	/// **Debug purposes**
 	if (isSelected)
-	{
-		int a = 3;
-	}
+
+		int nothingToDoHere = 0;
+	///_**Debug_purposes**
 
 	if (!isDead) {
 
@@ -250,7 +251,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
+				LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// 1. UPDATE TARGETS LIST
@@ -324,7 +325,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
+				LOG("Grunt Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to true
@@ -353,7 +354,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
+				LOG("NO MORE Grunt Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isSightSatisfied to false
@@ -399,7 +400,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
+				LOG("NO MORE Grunt Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to false
