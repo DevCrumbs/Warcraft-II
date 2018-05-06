@@ -1,8 +1,9 @@
 #include "Turalyon.h"
 #include "j1Printer.h"
 #include "j1EntityFactory.h"
+#include "Goal.h"
 
-Turalyon::Turalyon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TuralyonInfo& turalyonInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), turalyonInfo(turalyonInfo)
+Turalyon::Turalyon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TuralyonInfo& turalyonInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener, false), turalyonInfo(turalyonInfo)
 {
 	TuralyonInfo info = (TuralyonInfo&)App->entities->GetUnitInfo(EntityType_TURALYON);
 	this->unitInfo = this->turalyonInfo.unitInfo;
