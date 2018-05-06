@@ -3787,6 +3787,120 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 	return nullptr;
 }
 
+Entity* j1EntityFactory::AreEntitiesColliding(SDL_Rect entityRect, ENTITY_CATEGORY entityCategory, EntitySide entitySide) const 
+{
+	const SDL_Rect rectA = entityRect;
+
+	// DYNAMIC ENTITIES
+	if (entityCategory == EntityCategory_DYNAMIC_ENTITY || entityCategory == EntityCategory_NONE) {
+
+		if (activeDynamicEntities.size() > 0) {
+
+			list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+
+			while (activeDyn != activeDynamicEntities.end()) {
+
+				// The unit cannot be dead and must be valid
+				if (!(*activeDyn)->isDead && (*activeDyn)->GetIsValid()) {
+
+					// An offset value is applied ONLY to the units selection
+					iPoint offsetValue = { 15,15 };
+
+					iPoint entityPos = { (int)(*activeDyn)->GetPos().x + (*activeDyn)->GetOffsetSize().x - offsetValue.x / 2, (int)(*activeDyn)->GetPos().y + (*activeDyn)->GetOffsetSize().y - offsetValue.y / 2 };
+					iPoint entitySize = { (*activeDyn)->GetSize().x + offsetValue.x, (*activeDyn)->GetSize().y + offsetValue.y };
+					uint scale = App->win->GetScale();
+
+					const SDL_Rect rectB = { entityPos.x, entityPos.y, entitySize.x, entitySize.y };
+
+					switch (entitySide) {
+
+					case EntitySide_Player:
+
+						if ((*activeDyn)->entitySide == EntitySide_Player)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_Enemy:
+
+						if ((*activeDyn)->entitySide == EntitySide_Enemy)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_Neutral:
+
+						if ((*activeDyn)->entitySide == EntitySide_Neutral)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_NoSide:
+
+						//if ((*activeDyn)->entitySide == EntitySide_NoSide)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+					}
+				}
+				activeDyn++;
+			}
+		}
+	}
+
+	// STATIC ENTITIES
+	if (entityCategory == EntityCategory_STATIC_ENTITY || entityCategory == EntityCategory_NONE) {
+
+		if (activeStaticEntities.size() > 0) {
+
+			list<StaticEntity*>::const_iterator activeStat = activeStaticEntities.begin();
+
+			while (activeStat != activeStaticEntities.end()) {
+
+				iPoint entityPos = { (int)(*activeStat)->GetPos().x, (int)(*activeStat)->GetPos().y };
+				iPoint entitySize = { (*activeStat)->GetSize().x, (*activeStat)->GetSize().y };
+				uint scale = App->win->GetScale();
+
+				const SDL_Rect rectB = { entityPos.x, entityPos.y, entitySize.x, entitySize.y };
+
+				switch (entitySide) {
+
+				case EntitySide_Player:
+
+					if ((*activeStat)->entitySide == EntitySide_Player)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_Enemy:
+
+					if ((*activeStat)->entitySide == EntitySide_Enemy)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_Neutral:
+
+					if ((*activeStat)->entitySide == EntitySide_Neutral)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_NoSide:
+
+					//if ((*activeStat)->entitySide == EntitySide_NoSide)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+				}
+				activeStat++;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 {
 	UnselectAllEntities();
