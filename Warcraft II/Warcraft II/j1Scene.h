@@ -116,6 +116,7 @@ struct GroupSelectedElements {
 class j1Scene : public j1Module
 {
 public:
+
 	j1Scene();
 
 	// Destructor
@@ -200,13 +201,20 @@ public:
 	void HideAdviceMessage();
 	void UnLoadTerenasDialog();
 
+	// Room cleared!
+	void BlitRoomClearedFloor(float dt);
+
 	bool LoadKeys(pugi::xml_node&);
 
 public:
 
 	bool isGoalFromMinimap = false;
-
 	bool isMinimapChanged = false;
+
+	// Room cleared!
+	bool isRoomCleared = false;
+	SDL_Rect roomCleared = { -1,-1,-1,-1 };
+	int alpha = 0;
 
 	// Walkability map
 	int w = 0, h = 0;

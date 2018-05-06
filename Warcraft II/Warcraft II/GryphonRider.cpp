@@ -140,7 +140,7 @@ void GryphonRider::Move(float dt)
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
 
-			LOG("A Gryphon Rider died");
+			LOG("A Gryphon Rider has died");
 		}
 	}
 
