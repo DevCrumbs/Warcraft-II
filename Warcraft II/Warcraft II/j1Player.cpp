@@ -415,7 +415,6 @@ void j1Player::CheckIfPlaceBuilding()
 		}
 	}
 
-
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && !App->gui->IsMouseOnUI())
 		App->scene->SetAplphaBuilding(EntityType_NONE);
 
