@@ -210,7 +210,8 @@ bool j1Player::Update(float dt)
 	//Update Selectet unit HP
 	if (entitySelectedStats.entitySelected != nullptr)
 	{
-		if (entitySelectedStats.entitySelected->entitySide != EntitySide_NoSide)
+		if (entitySelectedStats.entitySelected->entitySide != EntitySide_NoSide 
+			&& entitySelectedStats.entitySelected->entitySide != EntitySide_Neutral)
 		{
 			if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
 				StaticEntity* ent = (StaticEntity*)entitySelectedStats.entitySelected;
