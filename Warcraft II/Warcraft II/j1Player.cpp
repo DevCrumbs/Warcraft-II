@@ -1788,9 +1788,10 @@ void j1Player::HandleGoldMineUIStates()
 	case GoldMineState_Gathering:
 	{
 		uint currentGold = 0;
+
 		for (float i = goldMine->secondsGathering; i >= 0; i--) {
 			if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
-				AddGold(goldMine->totalGold - ((goldMine->secondsGathering - i) * 100));
+				currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
 				break;
 			}
 		}
