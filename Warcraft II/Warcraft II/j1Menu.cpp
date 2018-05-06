@@ -198,7 +198,7 @@ void j1Menu::CreateMenu() {
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	labelInfo.normalColor = Black_;
 	labelInfo.hoverColor = ColorGreen;
-	labelInfo.text = "Start Demo";
+	labelInfo.text = "New Game";
 	playLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w/2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, playButt);
 
 	labelInfo.text = "Quit Game";
