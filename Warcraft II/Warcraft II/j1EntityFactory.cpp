@@ -3671,15 +3671,9 @@ void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
 	while (it != activeDynamicEntities.end()) {
-
-<<<<<<< HEAD
-		if (!(*it)->isDead) {
-			if ((*it)->GetSingleUnit() != nullptr)
-=======
 		if (!(*it)->isDead 
-			&& (*it)->dynamicEntityType != EntityType_ALLERIA && (*it)->dynamicEntityType != EntityType_TURALYON) {
-
->>>>>>> Develompent
+			&& (*it)->dynamicEntityType != EntityType_ALLERIA && (*it)->dynamicEntityType != EntityType_TURALYON)
+		{
 			if ((*it)->GetSingleUnit()->waitUnit != nullptr) {
 
 				// The dead entity was the waitUnit of another entity
