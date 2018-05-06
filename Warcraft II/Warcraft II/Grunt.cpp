@@ -86,7 +86,7 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	// Different behaviors for units on the base and units around the map
 	if (!App->map->IsOnBase(spawnPos))
 
-		brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
+		brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
 void Grunt::Move(float dt)

@@ -87,7 +87,7 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 	// Different behaviors for units on the base and units around the map
 	if (!App->map->IsOnBase(spawnPos))
 
-		brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
+		brain->AddGoal_Wander(4, spawnTile, false, 1, 3, 1, 2, 4);
 }
 
 void TrollAxethrower::Move(float dt)
@@ -490,7 +490,7 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 					if (!isHunting) {
 
-						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+						brain->AddGoal_Wander(5, singleUnit->currTile, true, 0, 1, 0, 1, 3);
 						isHunting = true;
 					}
 				}
@@ -555,7 +555,7 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 					if (!App->map->IsOnBase(spawnPos) && !isAttackingUnit && !isHunting) {
 
-						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+						brain->AddGoal_Wander(5, singleUnit->currTile, true, 0, 1, 0, 1, 3);
 						isHunting = true;
 					}
 				}
