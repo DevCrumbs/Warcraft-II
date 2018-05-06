@@ -7,6 +7,7 @@
 #include "Entity.h" 
 #include "j1Printer.h"
 #include "j1Scene.h"
+#include "j1FogOfWar.h"
 
 #include "UIMinimap.h"
 
@@ -173,6 +174,9 @@ void UIMinimap::Draw() const
 			roomClearedRect = { 0,0,0,0 };
 		}
 	}
+
+	DrawFoW();
+
 	App->render->ResetViewPort();
 }
 
@@ -212,8 +216,6 @@ void UIMinimap::HandleInput(float dt)
 	{
 		moveCamera = false;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-		DrawRoomCleared(App->map->playerBase);
 
 	if (App->scene->isMinimapChanged)
 	{
@@ -272,7 +274,7 @@ iPoint UIMinimap::MinimapToMap(iPoint pos)
 	return mapPos;
 }
 
-SDL_Rect UIMinimap::MinimapToMap(SDL_Rect pos)
+SDL_Rect UIMinimap::MapToMinimap(SDL_Rect pos) const
 {
 	SDL_Rect minimapPos{ 0,0,0,0 };
 	SDL_Rect mapPos{ 0,0,0,0 };
@@ -290,7 +292,7 @@ SDL_Rect UIMinimap::MinimapToMap(SDL_Rect pos)
 	return mapPos;
 }
 
-iPoint UIMinimap::MinimapToMap()
+iPoint UIMinimap::MinimapToMap() 
 {
 	return MinimapToMap(GetMousePos());
 }
@@ -316,7 +318,7 @@ bool UIMinimap::DrawRoomCleared(Room room)
 
 	//if (room.isCleared)
 	{
-		roomClearedRect = MinimapToMap(room.roomRect);
+		roomClearedRect = MapToMinimap(room.roomRect);
 		isRoomCleared = true;
 		startRoomClearedTimer = true;
 		ret = true;
@@ -325,6 +327,18 @@ bool UIMinimap::DrawRoomCleared(Room room)
 	return ret;
 }
 
+void UIMinimap::DrawFoW() const
+{
+	for (vector<FogOfWarTile*>::iterator tiles = App->fow->fowTilesVector.begin(); tiles != App->fow->fowTilesVector.end();)
+	{
+		SDL_Rect tileRect = MapToMinimap({ (*tiles)->pos.x * 32,(*tiles)->pos.y * 32, (*tiles)->size * zoomFactor, (*tiles)->size * zoomFactor });
+		App->render->DrawQuad(tileRect, 0, 0, 0, (*tiles)->alpha, true, false);
+
+		for (int i = 0; i < zoomFactor; ++i)
+			if (tiles != App->fow->fowTilesVector.end())
+				tiles++;
+	}
+}
 
 bool UIMinimap::LoadMap()
 {
@@ -425,7 +439,6 @@ bool UIMinimap::LoadMap()
 	return ret;
 }
 
-
 SDL_Texture* UIMinimap::CreateMinimapTexture(SDL_Rect mapSize, SDL_Renderer* renderer, SDL_Surface* mapSurface, float scaleFactor)
 {
 	SDL_Texture*  minimapTexture = nullptr;
@@ -468,7 +481,7 @@ bool UIMinimap::SaveInRenderer(const SDL_Texture* texture, int x, int y, const S
 
 	SDL_Rect rect;
 	rect.x = x;
-	rect.y = y;
+		rect.y = y;
 
 	if (section != NULL)
 	{

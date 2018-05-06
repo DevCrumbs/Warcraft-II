@@ -51,13 +51,14 @@ public:
 	iPoint GetMousePos();
 
 	iPoint MinimapToMap(iPoint pos);
-	SDL_Rect MinimapToMap(SDL_Rect pos);
+	SDL_Rect MapToMinimap(SDL_Rect pos) const;
 
 	iPoint MinimapToMap();
 
 
 	bool SetMinimap(SDL_Rect pos, int entityW, int entityH);
 	bool DrawRoomCleared(Room room);
+	void DrawFoW() const;
 	bool LoadMap();
 
 	SDL_Texture* CreateMinimapTexture(SDL_Rect mapSize, SDL_Renderer* renderer, SDL_Surface* mapSurface, float scaleFactor);
