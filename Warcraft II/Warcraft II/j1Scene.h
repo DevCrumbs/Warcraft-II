@@ -249,7 +249,7 @@ public:
 	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
 
 	// Movement
-	bool debugDrawMovement = true;
+	bool debugDrawMovement = false;
 	bool debugDrawPath = false;
 	bool debugDrawMap = false;
 	bool debugDrawAttack = false;
