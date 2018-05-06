@@ -150,26 +150,41 @@ void Grunt::Move(float dt)
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
 
-			LOG("A Grunt died");
+			LOG("A Grunt has died");
 
 			/// Check if the room of this enemy has been cleared
-			Room room = App->map->GetEntityRoom(this);
+			Room* room = App->map->GetEntityRoom(this);
 
-			if (App->map->GetEntitiesOnRoomByCategory(room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
-			
-				// ROOM CLEARED!
-				if (room.roomRect.w != 40) {
+			if (!room->isCleared) {
 
-					// Give gold to the player
-					if (room.roomRect.w == 30)
-						App->player->AddGold(300);
-					else if (room.roomRect.w == 50)
-						App->player->AddGold(800);
+				if (App->map->GetEntitiesOnRoomByCategory(*room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
 
-					App->player->roomsCleared++;
+					// ROOM CLEARED!
+					if (room->roomRect.w != 40 * 32) {
 
-					/// TODO Valdivia: sonido sala limpiada
-					//App->audio->PlayFx(App->audio->GetFX().goldGetSound);
+						// Give gold to the player
+						if (room->roomRect.w == 30 * 32)
+							App->player->AddGold(300);
+						else if (room->roomRect.w == 50 * 32)
+							App->player->AddGold(800);
+
+						room->isCleared = true;
+						App->player->roomsCleared++;
+
+						if (App->scene->adviceMessage != AdviceMessage_ROOM_CLEAR) {
+
+							App->scene->adviceMessageTimer.Start();
+							App->scene->adviceMessage = AdviceMessage_ROOM_CLEAR;
+							App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+						}
+
+						App->scene->alpha = 200;
+						App->scene->isRoomCleared = true;
+						App->scene->roomCleared = room->roomRect;
+
+						/// TODO Valdivia: sonido sala limpiada
+						//App->audio->PlayFx(App->audio->GetFX().goldGetSound);
+					}
 				}
 			}
 		}

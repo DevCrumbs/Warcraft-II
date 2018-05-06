@@ -627,6 +627,9 @@ bool j1Scene::Update(float dt)
 	}
 	//_*****UNITS*****
 	
+	if (isRoomCleared)
+		BlitRoomClearedFloor(dt);
+
 	// ---------------------------------------------------------------------------------
 
 	DebugKeys();
@@ -2106,12 +2109,27 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 	}
 }
 
-ENTITY_TYPE j1Scene::GetAlphaBuilding() {
+ENTITY_TYPE j1Scene::GetAlphaBuilding() 
+{
 	return alphaBuilding;
 }
 
-void j1Scene::SetAplphaBuilding(ENTITY_TYPE alphaBuilding) {
+void j1Scene::SetAplphaBuilding(ENTITY_TYPE alphaBuilding) 
+{
 	this->alphaBuilding = alphaBuilding;
+}
+
+void j1Scene::BlitRoomClearedFloor(float dt)
+{
+	alpha -= 100.0f * dt;
+
+	if (alpha < 0)
+		alpha = 0;
+
+	if (alpha == 0)
+		isRoomCleared = false;
+
+	App->printer->PrintQuad(roomCleared, { 255, 255, 255, (Uint8)alpha }, true, true, Layers_FloorColliders);
 }
 
 // -------------------------------------------------------------
