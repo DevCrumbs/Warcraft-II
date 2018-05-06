@@ -12,14 +12,6 @@
 #include <list>
 using namespace std;
 
-enum HoverCheck
-{
-	HoverCheck_None,
-	HoverCheck_Upgrate,
-	HoverCheck_Repair
-};
-
-
 struct UILabel;
 struct UIImage;
 struct UIButton;
@@ -114,7 +106,6 @@ public:
 	iPoint GetMousePos() const;
 
 	void CheckUnitSpawning(queue<ToSpawnUnit*>* queue);
-	void DiscountGold(int gold);
 
 	void SpawnUnitFromBuilding(StaticEntity* spawnBuilding, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
 	void SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
@@ -149,9 +140,9 @@ public:
 	void MakePrisionerMenu(Entity* entity);
 	void DeleteEntitiesMenu();
 	void DeleteGroupSelectionButtons();
-	void CreateHoverInfoMenu();
-	void ShowHoverInfoMenu(string unitProduce, string gold);
-	void HideHoverInfoMenu();
+	void CreateHoverInfoMenu(HoverInfo* hoverInfo);
+	void ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, SDL_Rect = { 241,475,102,48 }, iPoint pos = { 643, 473 });
+	void HideHoverInfoMenu(HoverInfo* hoverInfo);
 	void DeleteHoverInfoMenu();
 	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, bool isActive = true);
 	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, bool isActive = true);
@@ -163,13 +154,16 @@ public:
 	void CreateBarracksButtons();
 	void CreateTownHallButtons();
 	void CreateDestructionButton();
+	void CreateRepairButton();
 	void HandleSpawningUnitsUIElem(ToSpawnUnit** toSpawnUnit, list<GroupSpawning>* groupList);
 	void HandleGoldMineUIStates();
 	void CreateGryphonAviaryButtons();
 	void CreateMageTowerButtons();
 	uint GetGroupSpawningSize(list<GroupSpawning> listSpawning);
+	uint CalculateGoldRepair(StaticEntity * entity);
+	void CheckBuildingsState();
 
-	void DestroyBuilding();
+	//void DestroyBuilding();
 
 	void RescuePrisoner(TerenasDialogEvents dialogEvent, SDL_Rect iconText, iPoint iconPos);
 
@@ -183,10 +177,10 @@ public:
 	list<StaticEntity*> guardTower;
 	StaticEntity* barracks = nullptr;
 	StaticEntity* townHall = nullptr;
-	StaticEntity* blacksmith = nullptr;
-	StaticEntity* stables = nullptr;
-	StaticEntity* church = nullptr;
-	StaticEntity* mageTower = nullptr;
+	//StaticEntity* blacksmith = nullptr;
+	//StaticEntity* stables = nullptr;
+	//StaticEntity* church = nullptr;
+	//StaticEntity* mageTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
 
 	vector<UIImage*> imagePrisonersVector;
@@ -201,7 +195,6 @@ public:
 	bool townHallUpgrade = false;
 	bool keepUpgrade = false;
 
-	int currentGold = 0; // amount of gold that the player has at the current moment
 	uint totalGold = 0u; // total gold earned during the game
 	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
 
@@ -227,15 +220,17 @@ public:
 
 private:
 
+	int currentGold = 0; // amount of gold that the player has at the current moment
+
 	uint maxUnitsSelected = 8;
 
 	double timer = 0.0f; // game time
-	HoverCheck hoverCheck = HoverCheck_None;
 	uint totalEnemiesKilled = 0;
 	uint totalUnitsDead = 0;
 
-	//HoverButton hoverButtonStruct;
-	HoverInfo hoverInfo;
+	HoverInfo firstHoverInfo;
+	HoverInfo secondHoverInfo;
+	HoverInfo thirdHoverInfo;
 
 	GroupSelectionButtons groupSelectionButtons;
 
@@ -246,7 +241,7 @@ private:
 	UIMinimap* minimap = nullptr;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
-		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr;
+		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr, *repairBuildingButton = nullptr;
 	
 
 	list<UIElement*> UIMenuInfoList;

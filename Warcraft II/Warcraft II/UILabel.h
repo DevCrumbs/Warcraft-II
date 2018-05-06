@@ -46,6 +46,7 @@ public:
 
 	void SetText(string text, uint wrapLength = 0);
 	void SetColor(SDL_Color color, bool normal = false, bool hover = false, bool pressed = false);
+	void SetFontName(FONT_NAME fontName);
 	SDL_Color GetColor(bool normal = true, bool hover = false, bool pressed = false);
 
 	bool IntermitentFade(float seconds = 1.0f, bool loop = true, bool halfLoop = false);

@@ -135,12 +135,12 @@ void Footman::Move(float dt)
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
+
+			LOG("A Footman died");
 		}
 	}
 
 	if (!isDead && isValid) {
-
-		// ---------------------------------------------------------------------
 
 		// PROCESS THE COMMANDS
 
@@ -303,33 +303,9 @@ void Footman::Move(float dt)
 		}
 	}
 
-	// PROCESS THE CURRENTLY ACTIVE GOAL
-	brain->Process(dt);
-
-	/*
-	if (isSelected) {
-
-		switch (unitState) {
-
-		case UnitState_AttackTarget:
-			LOG("AttackTarget");
-			break;
-		case UnitState_Idle:
-			LOG("Idle");
-			break;
-		case UnitState_Walk:
-			LOG("Walk");
-			break;
-		case UnitState_NoState:
-			LOG("NoState");
-			break;
-		case UnitState_RescuePrisoner:
-			LOG("Rescue prisoner");
-		default:
-			break;
-		}
-	}
-	*/
+	if (!isDead)
+		// PROCESS THE CURRENTLY ACTIVE GOAL
+		brain->Process(dt);
 
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
@@ -401,7 +377,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+				LOG("Footman Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// 1. UPDATE TARGETS LIST
@@ -471,7 +447,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+				LOG("Footman Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to true
@@ -500,7 +476,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+				LOG("NO MORE Footman Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isSightSatisfied to false
@@ -511,8 +487,28 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					RemoveTargetInfo(*it);
-					break;
+
+					if (currTarget != nullptr) {
+
+						if (c2->entity == currTarget->target) {
+
+							(*it)->target->RemoveAttackingUnit(this);
+							SetIsRemovedTargetInfo((*it)->target);
+							break;
+						}
+						else {
+
+							(*it)->target->RemoveAttackingUnit(this);
+							RemoveTargetInfo(*it);
+							break;
+						}
+					}
+					else {
+
+						(*it)->target->RemoveAttackingUnit(this);
+						RemoveTargetInfo(*it);
+						break;
+					}
 				}
 				it++;
 			}
@@ -526,7 +522,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+				LOG("NO MORE Footman Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to false

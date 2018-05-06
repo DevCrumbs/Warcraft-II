@@ -19,6 +19,7 @@ using namespace std;
 typedef SDL_Rect Room;
 
 class Entity;
+enum ENTITY_TYPE;
 
 enum ROOM_TYPE
 {
@@ -205,7 +206,13 @@ public:
 	bool IsOnBase(iPoint pos);
 	bool IsOnRoom(iPoint pos, SDL_Rect room);
 
+	bool IsOnRoom(fPoint pos, Room room);
+
 	Room GetEntityRoom(Entity* entity);
+
+	list<Entity*> GetEntitiesOnRoom(Room room, ENTITY_TYPE type);
+
+	bool IsRoomCleared(Room room);
 
 	// Unload map
 	bool UnLoad();

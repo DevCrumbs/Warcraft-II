@@ -8,6 +8,7 @@
 #include "j1Pathfinding.h"
 #include "j1Map.h"
 #include "j1Movement.h"
+#include "j1Collision.h"
 
 ElvenLumberMill::ElvenLumberMill(fPoint pos, iPoint size, int currLife, uint maxLife, const ElvenLumberMillInfo& elvenLumberMillInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), elvenLumberMillInfo(elvenLumberMillInfo)
 {
@@ -38,6 +39,10 @@ ElvenLumberMill::ElvenLumberMill(fPoint pos, iPoint size, int currLife, uint max
 
 	texArea = &elvenLumberMillInfo.constructionPlanks1;
 	this->constructionTimer.Start();
+
+	// Collision
+	CreateEntityCollider(EntitySide_Player, true);
+	entityCollider->isTrigger = true;
 }
 
 

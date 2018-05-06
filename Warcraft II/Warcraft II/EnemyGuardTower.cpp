@@ -33,7 +33,6 @@ EnemyGuardTower::EnemyGuardTower(fPoint pos, iPoint size, int currLife, uint max
 	entityCollider->isTrigger = true;
 	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, enemyGuardTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 	sightRadiusCollider->isTrigger = true;
-
 }
 
 void EnemyGuardTower::Move(float dt)

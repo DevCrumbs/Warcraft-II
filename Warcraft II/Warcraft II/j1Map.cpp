@@ -968,7 +968,7 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 					break;
 
 				case EntityType_GRUNT:
-				//case EntityType_TROLL_AXETHROWER:
+				case EntityType_TROLL_AXETHROWER:
 				case EntityType_DRAGON:
 					enemyEntity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
 					break;
@@ -1141,7 +1141,15 @@ bool j1Map::IsOnBase(iPoint pos)
 bool j1Map::IsOnRoom(iPoint pos, Room room)
 {
 	int size = 1;
-	return (room.x < pos.x + size && room.x + room.w > pos.x && room.y < pos.y + size && room.h + room.y > pos.y);
+	SDL_Rect posRect{ pos.x,pos.y,size,size };
+	return RectIntersect(&posRect, &room);
+}
+
+bool j1Map::IsOnRoom(fPoint pos, Room room)
+{
+	int size = 1;
+	SDL_Rect posRect{ pos.x,pos.y,size,size };
+	return RectIntersect(&posRect, &room);
 }
 
 Room j1Map::GetEntityRoom(Entity* entity)
@@ -1167,6 +1175,49 @@ Room j1Map::GetEntityRoom(Entity* entity)
 				break;
 			}
 		}
+	}
+
+	return ret;
+}
+
+list<Entity*> j1Map::GetEntitiesOnRoom(Room room, ENTITY_TYPE type)
+{
+	list<Entity*> entitiesOnRoom;
+
+	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
+	{
+		if ((*iterator)->dynamicEntityType == type)
+			if (IsOnRoom((*iterator)->GetPos(), room))
+			{
+				entitiesOnRoom.push_back(*iterator);
+			}
+	}
+
+	return entitiesOnRoom;
+}
+
+bool j1Map::IsRoomCleared(Room room)
+{
+	bool ret = true;
+
+	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
+	{
+		if (App->entities->IsEnemy(*iterator))
+			if (IsOnRoom((*iterator)->GetPos(), room))
+			{
+				ret = false;
+				break;
+			}
+	}
+
+	for (list<StaticEntity*>::iterator iterator = App->entities->activeStaticEntities.begin(); iterator != App->entities->activeStaticEntities.end(); ++iterator)
+	{
+		if (App->entities->IsEnemy(*iterator))
+			if (IsOnRoom((*iterator)->GetPos(), room))
+			{
+				ret = false;
+				break;
+			}
 	}
 
 	return ret;

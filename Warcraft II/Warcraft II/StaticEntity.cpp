@@ -182,8 +182,11 @@ bool StaticEntity::CheckBuildingState()
 
 	BuildingState bs = buildingState;
 
-	if (this->GetCurrLife() <= 0)
+	if (this->GetCurrLife() <= 0) {
+
 		buildingState = BuildingState_Destroyed;
+		isValid = false;
+	}
 	else if (this->GetCurrLife() <= this->GetMaxLife() / 4) {// less than 1/4 HP
 		buildingState = BuildingState_HardFire;
 	}
@@ -198,12 +201,14 @@ bool StaticEntity::CheckBuildingState()
 		switch (buildingState)
 		{
 		case BuildingState_Normal:
-
-			fire->isRemove = true;
+			if(fire != nullptr)
+				fire->isRemove = true;
 			break;
 
 		case BuildingState_LowFire:
 
+			if (fire != nullptr)
+				fire->isRemove = true;
 			fire = App->particles->AddParticle(App->particles->lowFire, { (int)this->GetPos().x + this->GetSize().x / 3, (int)this->GetPos().y + this->GetSize().y / 3 });
 			break;
 
@@ -219,11 +224,11 @@ bool StaticEntity::CheckBuildingState()
 
 				// Give gold to the player
 				if (entityType == EntityType_WATCH_TOWER || entityType == EntityType_ENEMY_GUARD_TOWER || entityType == EntityType_ENEMY_CANNON_TOWER)
-					App->player->currentGold += App->entities->DetermineBuildingGold(staticEntityType, buildingSize);
+					App->player->AddGold(App->entities->DetermineBuildingGold(staticEntityType, buildingSize));
 				else
-					App->player->currentGold += App->entities->DetermineBuildingGold(EntityType_NONE, buildingSize);
+					App->player->AddGold(App->entities->DetermineBuildingGold(EntityType_NONE, buildingSize));
 
-				App->scene->hasGoldChanged = true;
+				App->audio->PlayFx(App->audio->GetFX().goldGetSound); //Gold sound
 			}
 
 			fire->isRemove = true;

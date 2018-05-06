@@ -267,14 +267,14 @@ bool j1Scene::PreUpdate()
 		App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
 	//_Entities_creation
 
-	if (hasGoldChanged) {
-		UpdateGoldLabel();
+	if (hasGoldChanged != GoldChange_NoChange && hasGoldChanged != GoldChange_ChangeColor) {
+		UpdateGoldLabel(hasGoldChanged);
 		if (buildingMenu->isActive)
 		{
 			UpdateLabelsMenu();
 			UpdateIconsMenu();
 		}
-		hasGoldChanged = false;
+		hasGoldChanged = GoldChange_ChangeColor;
 	}
 	if (hasFoodChanged == true) {
 		UpdateFoodLabel();
@@ -293,6 +293,14 @@ bool j1Scene::PreUpdate()
 		break;
 	}
 
+
+	//Change to wite Gold Label Color before 2 sec
+
+	SDL_Color white = { 255,255,255,255 };
+	if (goldLabelColorTime.Read() > 1200 && hasGoldChanged == GoldChange_ChangeColor) {
+		goldLabel->SetColor(White_, true);
+		hasGoldChanged = GoldChange_NoChange;
+	}
 	return ret;
 }
 
@@ -334,7 +342,6 @@ bool j1Scene::Update(float dt)
 
 		if ((*iterator).owner != nullptr) {
 			if ((*iterator).owner->GetCurrLife() <= 0) {
-				HideUnselectedUnits();
 				ShowSelectedUnits(units);
 			}
 			else
@@ -358,9 +365,11 @@ bool j1Scene::Update(float dt)
 				//else
 					//App->entities->UnselectAllEntities();
 
+				/// **Debug purposes**
 				Entity* enemy = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
 				if (enemy != nullptr)
 					enemy->isSelected = true;
+				///_**Debug_purposes**
 
 				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
 				if (playerBuilding != nullptr)
@@ -412,7 +421,6 @@ bool j1Scene::Update(float dt)
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP && !App->gui->IsMouseOnUI()) {
 
 				if (!CompareSelectedUnitsLists(units)) {
-					App->player->HideEntitySelectedInfo();
 					ShowSelectedUnits(units);
 					PlayUnitSound(units, true); //Unit selected sound
 				}			
@@ -530,8 +538,8 @@ bool j1Scene::Update(float dt)
 				}
 				else if (playerUnit != nullptr || playerBuilding != nullptr || prisoner != nullptr) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
-					if (r.x != 374 && !App->gui->IsMouseOnUI())
-					App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
+					if (r.x != 503 && !App->gui->IsMouseOnUI())
+						App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
 				}
 				else {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
@@ -633,6 +641,10 @@ bool j1Scene::Update(float dt)
 		HideTerenasDialog();
 	}
 
+	if (adviceMessageTimer.Read() >= 2500 && adviceMessage != AdviceMessage_NONE) {
+		HideAdviceMessage();
+	}
+
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
 		App->map->UnLoad();
@@ -640,8 +652,16 @@ bool j1Scene::Update(float dt)
 	}
 
 	if (parchmentImg != nullptr) {
-		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST)
+		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 			pauseMenuActions = PauseMenuActions_CREATED;
+			alphaCont = 0;
+		}
+
+		else if (parchmentImg->GetAnimation()->speed > 0) {
+			SDL_Rect rect = { -(int)App->render->camera.x, -(int)App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h };
+			alphaCont += 100*dt;
+			App->printer->PrintQuad(rect, { 0,0,0, (Uint8)alphaCont }, true, true, Layers_QuadsPrinters);
+		}
 
 		if (pauseMenuActions != PauseMenuActions_NOT_EXIST) {
 			SDL_Rect rect = { -(int)App->render->camera.x, -(int)App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h };
@@ -742,8 +762,8 @@ bool j1Scene::PostUpdate()
 		App->finish->active = true;
 	}
 	
-	if (((App->player->currentGold < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
-		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)) {
+	if (((App->player->GetCurrentGold() < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
+		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) || App->player->townHall == nullptr) {
 
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
@@ -1001,10 +1021,14 @@ void j1Scene::LoadInGameUI()
 	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
 	inGameFrameImage->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
+	//changing map button
+	App->player->CreateSimpleButton({ 241, 453, 30, 21 }, { 272, 453, 30, 21 }, { 303, 453, 30, 21 }, { 200,27 }, changeMinimapButt);
+
 	LoadResourcesLabels();
 	LoadBuildingMenu();
 	LoadUnitsMenuInfo();
 	LoadTerenasDialog();
+	LoadAdviceMessage();
 	//create this before entitiesInfo (Parent)
 	App->player->CreateEntitiesStatsUI();
 	App->player->CreateGroupSelectionButtons();
@@ -1071,8 +1095,19 @@ void j1Scene::LoadTerenasDialog()
 	terenasAdvices.text->isActive = false;
 }
 
+void j1Scene::LoadAdviceMessage()
+{
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.interactive = false;
+	adviceLabel = App->gui->CreateUILabel({ 300,235 }, labelInfo, this);
+	adviceLabel->isActive = false;
+}
+
 void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
 {
+	App->player->HideEntitySelectedInfo();
+	HideUnselectedUnits();
 	list<DynamicEntity*>::iterator iterator = units.begin();
 	while (iterator != units.end()) {
 		UIImage* image = nullptr;
@@ -1327,7 +1362,8 @@ void j1Scene::UpdateIconsMenu()
 void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle, StaticEntity* stcEntity)
 {
 	if (isSingle) {
-		if (stcEntity == nullptr && App->player->currentGold >= cost) {
+
+		if (stcEntity == nullptr && App->player->GetCurrentGold() >= cost) {
 			if (stcEntity == App->player->gryphonAviary && !App->player->townHallUpgrade)
 				butt->ChangesTextsAreas(false);
 			else
@@ -1337,7 +1373,7 @@ void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText
 			butt->ChangesTextsAreas(false);
 	}
 	else {
-		if (App->player->currentGold >= cost)
+		if (App->player->GetCurrentGold() >= cost)
 			butt->ChangesTextsAreas(true, normalText, hoverText);
 		else 
 			butt->ChangesTextsAreas(false);
@@ -1364,7 +1400,7 @@ void j1Scene::ChangeMenuLabelInfo(UILabel * Label, int cost, bool isSingle, Stat
 	if (isSingle) {
 		if (stcEntity == nullptr) {
 
-			if (App->player->currentGold >= cost)
+			if (App->player->GetCurrentGold() >= cost)
 				Label->SetColor(White_, true);
 
 			else
@@ -1384,7 +1420,7 @@ void j1Scene::ChangeMenuLabelInfo(UILabel * Label, int cost, bool isSingle, Stat
 	}
 	else {
 
-		if (App->player->currentGold >= cost)
+		if (App->player->GetCurrentGold() >= cost)
 			Label->SetColor(White_, true);
 		else
 			Label->SetColor(BloodyRed_, true);
@@ -1486,17 +1522,25 @@ void j1Scene::LoadResourcesLabels()
 	UILabel_Info labelInfo;
 	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
-	labelInfo.text = to_string(App->player->currentGold);
-	goldLabel = App->gui->CreateUILabel({ 224, 0 }, labelInfo, this, inGameFrameImage);
+	labelInfo.text = to_string(App->player->GetCurrentGold());
+	goldLabel = App->gui->CreateUILabel({ 250, 0 }, labelInfo, this, inGameFrameImage);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;	
 	labelInfo.text = to_string(App->player->currentFood);
 	foodLabel = App->gui->CreateUILabel({ 334, 0 }, labelInfo, this, inGameFrameImage);
 }
 
-void j1Scene::UpdateGoldLabel()
+void j1Scene::UpdateGoldLabel(GoldChange state)
 {
-	goldLabel->SetText(to_string(App->player->currentGold));
+	if (state == GoldChange_Win)
+		goldLabel->SetColor(ColorYellow);
+	else if (state == GoldChange_Lose)
+		goldLabel->SetColor(ColorRed);
+
+	string label = to_string(App->player->GetCurrentGold());
+	goldLabel->SetText(label);
+
+	goldLabelColorTime.Start();
 }
 void j1Scene::UpdateFoodLabel()
 {
@@ -1632,12 +1676,14 @@ void j1Scene::DestroyAllUI()
 	UnLoadResourcesLabels();
 	UnLoadTerenasDialog();
 
+	App->gui->RemoveElem((UIElement**)&adviceLabel);
 	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
 	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
 	App->gui->RemoveElem((UIElement**)&entitiesStats);
 	App->gui->RemoveElem((UIElement**)&buildingLabel);
 	App->gui->RemoveElem((UIElement**)&buildingButton);
 	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
+	App->gui->RemoveElem((UIElement**)&changeMinimapButt);
 
 	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
 		App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
@@ -1738,16 +1784,6 @@ void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 		//terenasAdvices.text->SetText(text, 320);
 		//terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
-	case TerenasDialog_FOOD:
-		text = "To produce units you need to have enough food to feed them.Build more farms.";
-		terenasAdvices.text->SetText(text, 320);
-		terenasAdvices.text->SetLocalPos({ 355,47 });
-		break;
-	case TerenasDialog_GOLD:
-		text = "To produce units you need to have enough gold. Get more from mines.";
-		terenasAdvices.text->SetText(text, 320);
-		terenasAdvices.text->SetLocalPos({ 355,47 });
-		break;
 	case TerenasDialog_NONE:
 		break;
 	default:
@@ -1762,6 +1798,102 @@ void j1Scene::HideTerenasDialog()
 	terenasDialogEvent = TerenasDialog_NONE;
 	terenasAdvices.text->isActive = false;
 	terenasAdvices.terenasImage->isActive = false;
+}
+
+void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
+{
+	string text;
+	switch (adviceMessage)
+	{
+	case AdviceMessage_FOOD:
+		text = "Not enough food. Build more farms.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 245,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_GOLD:
+		text = "Not enough gold.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 320,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_FOOTMANS:
+		text = "No footman on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 290,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_ARCHERS:
+		text = "No elven archer on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 285,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_GRYPHS:
+		text = "No gryphon rider on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_ROOM_CLEAR:
+		text = "ROOM CLEARED!";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 285,265 });
+		adviceLabel->SetColor(WarmYellow_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT30);
+		break;
+
+	case AdviceMessage_UNDER_ATTACK:
+		text = "YOUR BASE IS UNDER ATTACK";;
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 205,265 });
+		adviceLabel->SetColor(BloodyRed_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT30);
+		break;
+
+	case AdviceMessage_MINE:
+		text = "Select units to gather gold";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_GRYPH_MINE:
+		text = "Gryphon riders cannot gather gold.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 245,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_GRYPH_PRISONER:
+		text = "Gryphon riders cannot rescue prisoners.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 225,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+	}
+
+
+	adviceLabel->isActive = true;
+}
+
+void j1Scene::HideAdviceMessage()
+{
+	adviceMessage = AdviceMessage_NONE;
+	adviceLabel->isActive = false;
 }
 
 void j1Scene::UnLoadTerenasDialog()
@@ -1791,88 +1923,98 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				ChangeBuildingMenuState(&buildingMenuButtons);
 			}
 
+			if (UIelem == changeMinimapButt) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+				isMinimapChanged = !isMinimapChanged;
+			}
 
 			else if (UIelem == buildingMenuButtons.chickenFarm.icon) {
-				if (App->player->currentGold >= chickenFarmCost) {
+				if (App->player->GetCurrentGold() >= chickenFarmCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_CHICKEN_FARM;
 				}
-				else if (App->player->currentGold < chickenFarmCost)
+				else if (App->player->GetCurrentGold() < chickenFarmCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.stables.icon) {
-				if (App->player->currentGold >= stablesCost) {
+				if (App->player->GetCurrentGold() >= stablesCost) {
 					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					//alphaBuilding = EntityType_STABLES;
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
-				else if (App->player->currentGold < stablesCost)
+				else if (App->player->GetCurrentGold() < stablesCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
+
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade && App->player->townHall->buildingState == BuildingState_Normal) {
-				if (App->player->currentGold >= gryphonAviaryCost) {
+				if (App->player->GetCurrentGold() >= gryphonAviaryCost) {
+
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_GRYPHON_AVIARY;
 				}
-				else if (App->player->currentGold < gryphonAviaryCost)
+				else if (App->player->GetCurrentGold() < gryphonAviaryCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon)
+				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 
 			else if (UIelem == buildingMenuButtons.mageTower.icon) {
-				if (App->player->currentGold >= mageTowerCost) {
+				if (App->player->GetCurrentGold() >= mageTowerCost) {
 					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					//alphaBuilding = EntityType_MAGE_TOWER;
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
-				else if (App->player->currentGold < mageTowerCost)
+				else if (App->player->GetCurrentGold() < mageTowerCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.scoutTower.icon) {
-				if (App->player->currentGold >= scoutTowerCost) {
+				if (App->player->GetCurrentGold() >= scoutTowerCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_SCOUT_TOWER;
 				}
-				else if (App->player->currentGold < scoutTowerCost)
+				else if (App->player->GetCurrentGold() < scoutTowerCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.guardTower.icon) {
-				if (App->player->currentGold >= guardTowerCost) {
+				if (App->player->GetCurrentGold() >= guardTowerCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
 				}
-				else if (App->player->currentGold < guardTowerCost)
+				else if (App->player->GetCurrentGold() < guardTowerCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.cannonTower.icon) {
-				if (App->player->currentGold >= cannonTowerCost) {
+				if (App->player->GetCurrentGold() >= cannonTowerCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
 				}
-				else if (App->player->currentGold < cannonTowerCost)
+				else if (App->player->GetCurrentGold() < cannonTowerCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
 			else if (UIelem == buildingMenuButtons.barracks.icon && App->player->barracks == nullptr) {
-				if (App->player->currentGold >= barracksCost) {
+				if (App->player->GetCurrentGold() >= barracksCost) {
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_BARRACKS;
 				}
-				else if (App->player->currentGold < barracksCost)
+				else if (App->player->GetCurrentGold() < barracksCost)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
+			else if (UIelem == buildingMenuButtons.barracks.icon)
+				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 
 		}
 

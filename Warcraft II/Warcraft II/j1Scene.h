@@ -37,9 +37,22 @@ enum TerenasDialogEvents {
 	TerenasDialog_RESCUE_TURALYON,
 	TerenasDialog_GOLD_MINE,
 	TerenasDialog_RUNESTONE,
-	TerenasDialog_FOOD,
-	TerenasDialog_GOLD,
 	TerenasDialog_NONE
+};
+
+enum AdviceMessages {
+
+	AdviceMessage_FOOD,
+	AdviceMessage_GOLD,
+	AdviceMessage_SELECT_FOOTMANS,
+	AdviceMessage_SELECT_ARCHERS,
+	AdviceMessage_SELECT_GRYPHS,
+	AdviceMessage_ROOM_CLEAR,
+	AdviceMessage_UNDER_ATTACK,
+	AdviceMessage_MINE,
+	AdviceMessage_GRYPH_MINE,
+	AdviceMessage_GRYPH_PRISONER,
+	AdviceMessage_NONE
 };
 
 enum PauseMenuActions {
@@ -54,6 +67,13 @@ enum PauseMenuActions {
 	PauseMenuActions_SLIDERMUSIC
 };
 
+enum GoldChange {
+
+	GoldChange_NoChange,
+	GoldChange_Win,
+	GoldChange_Lose,
+	GoldChange_ChangeColor
+};
 struct TerenasAdvices {
 
 	UIImage* terenasImage = nullptr;
@@ -145,6 +165,7 @@ public:
 		iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
 
 	void LoadTerenasDialog();
+	void LoadAdviceMessage();
 
 	void ShowSelectedUnits(list<DynamicEntity*> units);
 	void HideUnselectedUnits();
@@ -159,7 +180,7 @@ public:
 	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
-	void UpdateGoldLabel();
+	void UpdateGoldLabel(GoldChange state);
 	void UpdateFoodLabel();
 	void UnLoadResourcesLabels();
 	void CreatePauseMenu();
@@ -174,6 +195,8 @@ public:
 
 	void ShowTerenasDialog(TerenasDialogEvents dialogEvent);
 	void HideTerenasDialog();
+	void ShowAdviceMessage(AdviceMessages adviceMessage);
+	void HideAdviceMessage();
 	void UnLoadTerenasDialog();
 
 	bool LoadKeys(pugi::xml_node&);
@@ -181,6 +204,8 @@ public:
 public:
 
 	bool isGoalFromMinimap = false;
+
+	bool isMinimapChanged = false;
 
 	// Walkability map
 	int w = 0, h = 0;
@@ -214,7 +239,7 @@ public:
 
 	bool pause = false;
 
-	bool hasGoldChanged = false;
+	GoldChange hasGoldChanged = GoldChange_NoChange;
 
 	bool hasFoodChanged = false;
 
@@ -235,7 +260,10 @@ public:
 	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
 	TerenasAdvices terenasAdvices;
 
+	AdviceMessages adviceMessage = AdviceMessage_NONE;
+
 	j1Timer terenasDialogTimer;
+	j1Timer adviceMessageTimer;
 
 	iPoint basePos{ 0,0 };
 
@@ -244,6 +272,7 @@ public:
 
 private:
 
+	j1Timer goldLabelColorTime;
 	j1Timer finalTransition;
 	bool isStartedFinalTransition = false;
 
@@ -275,6 +304,10 @@ private:
 	SliderStruct AudioMusicPause;
 	//Entities Buttons
 	UIButton* commandPatrolButton = nullptr, *commandStopButton = nullptr;
+	//Minimap Button
+	UIButton* changeMinimapButt = nullptr;
+	//Advice label
+	UILabel* adviceLabel = nullptr;
 	
 	bool buildingMenuOn = false;
 
@@ -307,6 +340,9 @@ private:
 	ENTITY_TYPE alphaBuilding;
 
 	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
+
+	//Quad Fade
+	int alphaCont = 0u;
 };
 
 #endif //__j1SCENE1_H__

@@ -85,7 +85,8 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 
 	// Different behaviors for units on the base and units around the map
 	if (!App->map->IsOnBase(spawnPos))
-		brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
+
+		brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
 void Grunt::Move(float dt)
@@ -114,8 +115,8 @@ void Grunt::Move(float dt)
 			App->player->enemiesKill++;
 
 			// Give gold to the player
-			App->player->currentGold += gruntInfo.droppedGold;
-			App->scene->hasGoldChanged = true;
+			App->player->AddGold(gruntInfo.droppedGold);
+			App->audio->PlayFx(App->audio->GetFX().goldGetSound);
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
@@ -148,15 +149,40 @@ void Grunt::Move(float dt)
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
+
+			LOG("A Grunt died");
 		}
 	}
 
-	if (isSelected) {
-		int i = 0;
-	}
+	/// **Debug purposes**
+	if (isSelected)
 
-	// PROCESS THE CURRENTLY ACTIVE GOAL
-	brain->Process(dt);
+		int nothingToDoHere = 0;
+	///_**Debug_purposes**
+
+	if (!isDead) {
+
+		iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
+		if (App->map->IsOnBase(spawnPos) && brain->GetSubgoalsList().size() == 0) {
+
+			if (App->player->townHall != nullptr) {
+
+				if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
+
+					TargetInfo* targetTownHall = new TargetInfo();
+
+					targetTownHall->target = App->player->townHall;
+					targets.push_back(targetTownHall);
+
+					brain->AddGoal_AttackTarget(targetTownHall);
+				}
+			}
+		}
+
+		// PROCESS THE CURRENTLY ACTIVE GOAL
+		brain->Process(dt);
+	}
 
 	UnitStateMachine(dt);
 
@@ -222,8 +248,11 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			//LOG("Enemy Sight Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -293,8 +322,11 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			//LOG("Enemy Attack Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Grunt Attack Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -319,8 +351,11 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			//LOG("NO MORE Enemy Sight Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Grunt Sight Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -331,9 +366,27 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 					(*it)->isSightSatisfied = false;
 
-					(*it)->target->RemoveAttackingUnit(this);
-					RemoveTargetInfo(*it);
-					break;
+					if (currTarget != nullptr) {
+
+						if (c2->entity == currTarget->target) {
+
+							(*it)->target->RemoveAttackingUnit(this);
+							SetIsRemovedTargetInfo((*it)->target);
+							break;
+						}
+						else {
+
+							(*it)->target->RemoveAttackingUnit(this);
+							RemoveTargetInfo(*it);
+							break;
+						}
+					}
+					else {
+
+						(*it)->target->RemoveAttackingUnit(this);
+						RemoveTargetInfo(*it);
+						break;
+					}
 				}
 				it++;
 			}
@@ -344,8 +397,11 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
-			//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			//LOG("NO MORE Enemy Attack Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Grunt Attack Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -401,9 +457,12 @@ void Grunt::UnitStateMachine(float dt)
 			float maxLifeValue = maxLife;
 			bool isSearchingForCritters = false;
 
+			iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
 			// 1. Low life? Search for critters!
-			if (currLife <= 0.2f * maxLifeValue) {
-			
+			/// 1. NOTE: units on base don't do this, because they are more agressive
+			if (!App->map->IsOnBase(spawnPos) && currLife <= 0.2f * maxLifeValue) {
+
 				// Check if there are available critters
 				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY, EntityType_NONE, false, true);
 
@@ -437,7 +496,7 @@ void Grunt::UnitStateMachine(float dt)
 
 						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
 						isHunting = true;
-					}				
+					}
 				}
 			}
 
@@ -448,7 +507,14 @@ void Grunt::UnitStateMachine(float dt)
 			// DEFENSE NOTE: the unit automatically attacks back their attacking units (if they have any attacking units) to defend themselves
 			if (unitsAttacking.size() > 0) {
 
-				if (currTarget == nullptr) {
+				bool isDefend = false;
+
+				if (currTarget == nullptr)
+					isDefend = true;
+				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
+					isDefend = true;					
+
+				if (isDefend) {
 
 					// PHASE 1. Check if there are available targets (DYNAMIC ENTITY) 
 					newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
@@ -469,7 +535,7 @@ void Grunt::UnitStateMachine(float dt)
 
 					// PHASE 2. Search for a target that is an attacking unit
 					if (!isAttackingUnit) {
-					
+
 						list<TargetInfo*>::const_iterator it = targets.begin();
 
 						while (it != targets.end()) {
@@ -488,7 +554,10 @@ void Grunt::UnitStateMachine(float dt)
 					}
 
 					// PHASE 3. Move randomly around the area to see if the unit is able to see the attacking units
-					if (!isAttackingUnit && !isHunting) {
+					/// PHASE 3 NOTE: units on base don't do this, because they are more agressive
+					iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
+					if (!App->map->IsOnBase(spawnPos) && !isAttackingUnit && !isHunting) {
 
 						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
 						isHunting = true;
@@ -525,6 +594,40 @@ void Grunt::UnitStateMachine(float dt)
 
 						currTarget = newTarget;
 						brain->AddGoal_AttackTarget(currTarget);
+					}
+				}
+
+				// If the unit is on base, also check for buildings (STATIC ENTITY)
+				else {
+
+					iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
+					if (App->map->IsOnBase(spawnPos)) {
+
+						// Check if there are available targets (DYNAMIC ENTITY)
+						newTarget = GetBestTargetInfo(EntityCategory_STATIC_ENTITY);
+
+						if (newTarget != nullptr) {
+
+							// A new target has found! Update the currTarget
+							if (currTarget != newTarget) {
+
+								// Anticipate the removing of this unit from the attacking units of the target
+								if (currTarget != nullptr) {
+
+									if (!currTarget->isRemoved) {
+
+										currTarget->target->RemoveAttackingUnit(this);
+									}
+								}
+
+								isHitting = false;
+								isHunting = false;
+
+								currTarget = newTarget;
+								brain->AddGoal_AttackTarget(currTarget);
+							}
+						}
 					}
 				}
 			}

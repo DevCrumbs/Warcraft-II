@@ -220,8 +220,6 @@ protected:
 
 	Animation* animation = nullptr;
 
-	bool isFlying = false; /// Dragon and Gryphon Rider fly
-
 	// Root of a bot's goal hierarchy
 	Goal_Think* brain = nullptr;
 

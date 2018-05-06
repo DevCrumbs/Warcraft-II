@@ -8,6 +8,7 @@
 #include "j1Pathfinding.h"
 #include "j1Map.h"
 #include "j1Movement.h"
+#include "j1Collision.h"
 
 Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), barracksInfo(barracksInfo)
 {
@@ -49,9 +50,10 @@ Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const Ba
 		buildingState = BuildingState_Building;
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 	}
-
-	currLife = maxLife;	
 	
+	// Collision
+	CreateEntityCollider(EntitySide_Player, true);
+	entityCollider->isTrigger = true;
 }
 
 void Barracks::Move(float dt)
@@ -85,6 +87,7 @@ void Barracks::LoadAnimationsSpeed()
 {
 
 }
+
 void Barracks::UpdateAnimations(float dt)
 {
 	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)

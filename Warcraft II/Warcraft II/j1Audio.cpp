@@ -67,6 +67,8 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	pugi::xml_node uIButtonsSounds = sounds.child("buttonPaths");
 	mainButtonSound = uIButtonsSounds.attribute("menuButton").as_string();
 	errorButtonSound = uIButtonsSounds.attribute("errorBttn").as_string();
+	healSoundPath = uIButtonsSounds.attribute("healSound").as_string();
+	goldGetSoundPath = uIButtonsSounds.attribute("goldSound").as_string();
 
 	pugi::xml_node buildingSounds = sounds.child("buildingPaths");
 	buildingConstructionSound = buildingSounds.attribute("buildingConstruction").as_string();
@@ -78,7 +80,6 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	stablesSound = buildingSounds.attribute("stables").as_string();
 	repairBuildingSound = buildingSounds.attribute("repair").as_string();
 	destroyBuildingSound = buildingSounds.attribute("destroyBuilding").as_string();
-	runeStoneSound = buildingSounds.attribute("runeStone").as_string();
 
 	pugi::xml_node unitsSounds = sounds.child("unitsPaths");
 	humanDeadSound = unitsSounds.attribute("humanDeadSound").as_string();
@@ -360,8 +361,10 @@ void j1Audio::ChargeFX()
 	gameSounds.axeThrow = App->audio->LoadFx(axeThrowSound.data()); 
 	gameSounds.arrowThrow = App->audio->LoadFx(bowFireSound.data()); 
 	gameSounds.swordClash = App->audio->LoadFx(swordSound.data()); 
-	gameSounds.runeStone = App->audio->LoadFx(runeStoneSound.data()); 
-	
+
+	//Heal and gold sounds
+	gameSounds.healSound = App->audio->LoadFx(healSoundPath.data());
+	gameSounds.goldGetSound = App->audio->LoadFx(goldGetSoundPath.data());
 }
 
 GameSounds j1Audio::GetFX()

@@ -8,6 +8,7 @@
 #include "j1Pathfinding.h"
 #include "j1Map.h"
 #include "j1Movement.h"
+#include "j1Collision.h"
 
 TownHall::TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const TownHallInfo& townHallInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), townHallInfo(townHallInfo)
 {
@@ -50,13 +51,15 @@ TownHall::TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const To
 	// -----
 
 	texArea = &townHallInfo.townHallCompleteTexArea;
-	currLife = maxLife;
 	isBuilt = true;
+
+	// Collision
+	CreateEntityCollider(EntitySide_Player, true);
+	entityCollider->isTrigger = true;
 }
 
 void TownHall::Move(float dt)
 {
-
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 

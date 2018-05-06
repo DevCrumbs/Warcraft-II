@@ -42,15 +42,18 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 	}
 
-	entitySide = EntitySide_Enemy;
-	CreateEntityCollider(EntitySide_Enemy, true);
+	// Collision
+	CreateEntityCollider(EntitySide_Player, true);
 	entityCollider->isTrigger = true;
 }
 
-ChickenFarm::~ChickenFarm() {
+ChickenFarm::~ChickenFarm() 
+{
 	App->player->currentFood -= 3;
 	App->scene->hasFoodChanged = true;
-};
+
+	LOG("Chicken farm destroyed");
+}
 
 void ChickenFarm::Move(float dt)
 {
@@ -64,7 +67,6 @@ void ChickenFarm::Move(float dt)
 		isBuilt = true;
 		App->player->currentFood += 3;
 		App->scene->hasFoodChanged = true;
-
 	}
 }
 
@@ -73,17 +75,17 @@ void ChickenFarm::LoadAnimationsSpeed()
 {
 
 }
+
 void ChickenFarm::UpdateAnimations(float dt)
 {
-		if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
-			texArea = &chickenFarmInfo.constructionPlanks2;
+	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+		texArea = &chickenFarmInfo.constructionPlanks2;
 
-		if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
-			texArea = &chickenFarmInfo.inProgressTexArea;
+	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+		texArea = &chickenFarmInfo.inProgressTexArea;
 
-		if (constructionTimer.Read() >= constructionTime * 1000) {
-			texArea = &chickenFarmInfo.completeTexArea;
-			buildingState = BuildingState_Normal;
-		}
-
+	if (constructionTimer.Read() >= constructionTime * 1000) {
+		texArea = &chickenFarmInfo.completeTexArea;
+		buildingState = BuildingState_Normal;
+	}
 }
