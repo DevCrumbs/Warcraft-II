@@ -11,6 +11,9 @@
 
 #include "UIMinimap.h"
 
+
+#include "Brofiler\Brofiler.h"
+
 UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j1Module* listener) : UIElement({ info.minimapInfo.x,info.minimapInfo.y }, parent, listener, false)
 {
 	type = UIE_TYPE_MINIMAP;
@@ -63,6 +66,8 @@ void UIMinimap::Update(float dt)
 
 void UIMinimap::Draw() const
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Magenta);
+
 	SDL_fRect camera = App->render->camera;
 
 	App->render->SetViewPort(minimapInfo);
@@ -152,7 +157,7 @@ void UIMinimap::Draw() const
 	}
 
 	//Draw FoW
-	DrawFoW();
+		DrawFoW();
 
 	///-----------------	 Draw the camera rect
 	SDL_Rect rect{ -camera.x * currentScaleFactor + offsetX + cameraOffset.x, -camera.y * currentScaleFactor + offsetY + cameraOffset.y,
@@ -333,10 +338,10 @@ void UIMinimap::DrawFoW() const
 {
 	for (vector<FogOfWarTile*>::iterator tiles = App->fow->fowTilesVector.begin(); tiles != App->fow->fowTilesVector.end();)
 	{
-		SDL_Rect tileRect = MapToMinimap({ (*tiles)->pos.x * 32,(*tiles)->pos.y * 32, (*tiles)->size * zoomFactor, (*tiles)->size * zoomFactor });
+		SDL_Rect tileRect = MapToMinimap({ (*tiles)->pos.x * 32,(*tiles)->pos.y * 32, (*tiles)->size * (zoomFactor+1), (*tiles)->size * (zoomFactor+1) });
 		App->render->DrawQuad(tileRect, 0, 0, 0, (*tiles)->alpha, true, false);
 
-		for (int i = 0; i < zoomFactor; ++i)
+		for (int i = 0; i <= zoomFactor; ++i)
 			if (tiles != App->fow->fowTilesVector.end())
 				tiles++;
 	}
