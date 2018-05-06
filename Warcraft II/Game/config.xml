@@ -937,13 +937,13 @@
       <prisoners>
         <alleria>
           <animations>
-            <idle speed="1.5" loop="1">
+            <idle speed="2" loop="1">
               <frame x="768" y="128" w="128" h="64"/>
               <frame x="896" y="128" w="128" h="64"/>
               <frame x="0" y="192" w="128" h="64"/>
               <frame x="128" y="192" w="128" h="64"/>
             </idle>
-            <rescue speed="4" loop="0">
+            <rescue speed="3" loop="0">
                <frame x="0" y="0" w="128" h="64"/>
                <frame x="128" y="0" w="128" h="64"/>
                <frame x="256" y="0" w="128" h="64"/>
@@ -972,7 +972,7 @@
 
         <turalyon>
           <animations>
-            <idle speed="4" loop="1">
+            <idle speed="2" loop="1">
               <frame x="0" y="128" w="80" h="64"/>
               <frame x="80" y="128" w="80" h="64"/>
               <frame x="160" y="128" w="80" h="64"/>
@@ -984,7 +984,7 @@
               <frame x="640" y="128" w="80" h="64"/>
               <frame x="720" y="128" w="80" h="64"/>
             </idle>
-            <rescue speed="4" loop="0">
+            <rescue speed="3" loop="0">
               <frame x="0" y="0" w="80" h="64"/>
               <frame x="80" y="0" w="80" h="64"/>
               <frame x="160" y="0" w="80" h="64"/>

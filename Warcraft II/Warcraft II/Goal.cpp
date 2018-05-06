@@ -1372,13 +1372,31 @@ GoalStatus Goal_LookAround::Process(float dt)
 
 			uint random = 0;
 
-			if (probabilityGoalCompleted > 0)
+			if (probabilityGoalCompleted > 0 && probabilityGoalCompleted <= 3)
+
 				random = rand() % probabilityGoalCompleted;
 
-			if (random % 2 == 0)
-				goalStatus = GoalStatus_Completed;
-			else
-				Activate();
+			if (probabilityGoalCompleted <= 3) {
+
+				if (random % 2 == 0)
+					goalStatus = GoalStatus_Completed;
+				else
+					Activate();
+
+				return goalStatus;
+			}
+			else {
+			
+				uint random = 0;
+				random = rand() % 10;
+
+				if (random <= 4)
+					goalStatus = GoalStatus_Completed;
+				else
+					Activate();
+
+				return goalStatus;
+			}
 		}
 	}
 
@@ -1783,8 +1801,6 @@ void Goal_FreePrisoner::Terminate()
 			turalyon->SetUnitRescuePrisoner(false);
 			App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
 		}
-
-		prisoner->isRemove = true;
 
 		owner->SetPrisoner(nullptr);
 		owner->SetUnitRescuePrisoner(false);
