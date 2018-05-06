@@ -43,7 +43,7 @@ void Runestone::Move(float dt)
 		HandleInput(entityEvent);
 
 	if (buildingState == BuildingState_Destroyed && !isUnitHealingArea)
-		texArea = &runestoneInfo.inProgressTexArea;
+		texArea = &runestoneInfo.destroyedTexArea;
 }
 
 // Heal area
