@@ -198,12 +198,14 @@ bool StaticEntity::CheckBuildingState()
 		switch (buildingState)
 		{
 		case BuildingState_Normal:
-
-			fire->isRemove = true;
+			if(fire != nullptr)
+				fire->isRemove = true;
 			break;
 
 		case BuildingState_LowFire:
 
+			if (fire != nullptr)
+				fire->isRemove = true;
 			fire = App->particles->AddParticle(App->particles->lowFire, { (int)this->GetPos().x + this->GetSize().x / 3, (int)this->GetPos().y + this->GetSize().y / 3 });
 			break;
 

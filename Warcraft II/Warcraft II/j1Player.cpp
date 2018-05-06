@@ -212,8 +212,18 @@ bool j1Player::Update(float dt)
 	{
 		if (entitySelectedStats.entitySelected->entitySide != EntitySide_NoSide)
 		{
-			entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
-			entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
+			if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
+				StaticEntity* ent = (StaticEntity*)entitySelectedStats.entitySelected;
+				if (ent->GetIsFinishedBuilt()) {
+					entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+					entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
+				}
+			}
+			else {
+				entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
+				entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
+
+			}
 			if (entitySelectedStats.entitySelected->GetCurrLife() <= 0) 
 				HideEntitySelectedInfo();
 		}
@@ -1913,7 +1923,7 @@ void j1Player::CheckBuildingsState()
 			gryphonAviary = nullptr;
 	}
 
-	if (chickenFarm.size() > 0)
+	if (!chickenFarm.empty())
 		for (list<StaticEntity*>::iterator iterator = chickenFarm.begin(); iterator != chickenFarm.end(); ++iterator)
 		{
 			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
@@ -1925,25 +1935,40 @@ void j1Player::CheckBuildingsState()
 				iterator = chickenFarm.begin();
 			}
 		}
-	if (scoutTower.size() > 0)
+	if (!scoutTower.empty())
 		for (list<StaticEntity*>::iterator iterator = scoutTower.begin(); iterator != scoutTower.end(); ++iterator)
 		{
 			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
+				if (scoutTower.size() == 1) {
+					scoutTower.remove((*iterator));
+					break;
+				}
+
 				scoutTower.remove((*iterator));
 				iterator = scoutTower.begin();
 			}
 		}
-	if (guardTower.size() > 0)
+	if (!guardTower.empty())
 		for (list<StaticEntity*>::iterator iterator = guardTower.begin(); iterator != guardTower.end(); ++iterator)
 		{
+			if (guardTower.size() == 1) {
+				guardTower.remove((*iterator));
+				break;
+			}
+
 			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
 				guardTower.remove((*iterator));
 				iterator = guardTower.begin();
 			}
 		}
-	if(cannonTower.size() > 0)
+	if(!cannonTower.empty())
 		for (list<StaticEntity*>::iterator iterator = cannonTower.begin(); iterator != cannonTower.end(); ++iterator)
 		{
+			if (cannonTower.size() == 1) {
+				cannonTower.remove((*iterator));
+				break;
+			}
+
 			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
 				cannonTower.remove((*iterator));
 				iterator = cannonTower.begin();
