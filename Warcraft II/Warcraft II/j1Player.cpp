@@ -582,8 +582,8 @@ void j1Player::UpdateSpawnUnitsStats(list<GroupSpawning>* spawningList)
 	int cont = 0;
 	for (list<GroupSpawning>::iterator iterator = spawningList->begin(); iterator != spawningList->end(); ++iterator)
 	{
-		(*iterator).entityIcon->SetLocalPos({ 48 * cont + 72, 5 });
-		(*iterator).entityLifeBar->SetLocalPos({ 48 * cont + 72, 40 });
+		(*iterator).entityIcon->SetLocalPos({ 48 * cont + 72, 17 });
+		(*iterator).entityLifeBar->SetLocalPos({ 48 * cont + 72, 47 });
 		cont++;
 		if ((*iterator).owner != nullptr)
 			if (*(*iterator).owner == nullptr)
@@ -1790,7 +1790,7 @@ void j1Player::HandleSpawningUnitsUIElem(ToSpawnUnit** toSpawnUnit, list<GroupSp
 				(*iterator).entityIcon->SetNewRect(icon);
 				break;
 			case EntityType_GRYPHON_RIDER:
-				icon = { 649,160,39,30 };
+				icon = { 702,290,39,30 };
 				(*iterator).entityIcon->SetNewRect(icon);
 				break;
 			default:
@@ -2150,9 +2150,8 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			//For destroying a building
 			else if (UIelem == destroyBuildingButton) {
-				HideEntitySelectedInfo();
 				entitySelectedStats.entitySelected->isRemove = true;
-				entitySelectedStats.entitySelected = nullptr;
+				HideEntitySelectedInfo();
 			}
 
 			else if (UIelem == repairBuildingButton) {
@@ -2320,7 +2319,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						if (App->scene->adviceMessage == AdviceMessage_FOOD || App->scene->adviceMessage == AdviceMessage_GOLD) {
 							App->scene->HideAdviceMessage();
 						}
-						HandleSpawningUnitsUIElem(&toSpawnUnitBarracks.back(), &barracksSpawningListUI);
+						HandleSpawningUnitsUIElem(&toSpawnUnitGrypho.back(), &gryphoSpawningListUI);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_FOOD) {
 						App->scene->adviceMessageTimer.Start();
