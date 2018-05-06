@@ -55,7 +55,7 @@
         
         <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" dragonDeadSound="Units/DragonDeath.wav" 
                     prisonerRescue="Units/PrisonerRescue.wav" baseUnderAttack1 ="Units/BaseUnderAttack1.wav" 
-                    baseUnderAttack2 ="Units/BaseUnderAttack2.wav"/>
+                    baseUnderAttack2 ="Units/BaseUnderAttack2.wav" roomClear ="Units/RoomClear.wav"/>
         
         <archerPaths goToPlace1 ="Units/Archer/GoToPlace1.wav" goToPlace2 ="Units/Archer/GoToPlace2.wav" goToPlace3 ="Units/Archer/GoToPlace3.wav"
                      goToPlace4 ="Units/Archer/GoToPlace4.wav" ready="Units/Archer/Ready.wav" selected1 ="Units/Archer/Selected1.wav"

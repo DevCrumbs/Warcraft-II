@@ -458,6 +458,7 @@ void j1Player::CheckUnitSpawning(queue<ToSpawnUnit*>* queue)
 			case EntityType_GRYPHON_RIDER:
 				if (gryphonAviary != nullptr) {
 					SpawnUnitFromBuilding(gryphonAviary, EntityType_GRYPHON_RIDER, unitInfo);
+					App->audio->PlayFx(App->audio->GetFX().griffonReady, 0);
 					gryphoSpawningListUI.front().entityIcon->isActive = false;
 					gryphoSpawningListUI.front().entityLifeBar->isActive = false;
 					gryphoSpawningListUI.front().owner = nullptr;

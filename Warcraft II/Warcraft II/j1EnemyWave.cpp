@@ -110,6 +110,11 @@ bool j1EnemyWave::Update(float ft)
 		if (!isStartWave) {
 
 			/// TODO Valdivia: sonido oleadas
+			uint rng = rand() % 1 + 1;
+			if(rng == 1)
+				App->audio->PlayFx(App->audio->GetFX().baseUnderAttack1, 0);
+			else if (rng == 2)
+				App->audio->PlayFx(App->audio->GetFX().baseUnderAttack2, 0);
 
 			if (App->scene->adviceMessage != AdviceMessage_UNDER_ATTACK) {
 				App->scene->adviceMessageTimer.Start();
