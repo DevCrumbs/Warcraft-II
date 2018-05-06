@@ -1786,7 +1786,7 @@ void Goal_FreePrisoner::Activate()
 		}
 	}
 
-	App->audio->PlayFx(14, 0);
+	App->audio->PlayFx(App->audio->GetFX().prisionerRescue, 0);
 
 	owner->SetIsValid(false);
 }
