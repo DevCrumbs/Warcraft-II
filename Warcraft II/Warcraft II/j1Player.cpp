@@ -49,6 +49,7 @@ bool j1Player::Start()
 	unitProduce = 0u;
 	enemiesKill = 0u;
 	buildDestroy = 0u;
+	roomsCleared = 0;
 	isWin = false;
 
 	totalEnemiesKilled = 0;

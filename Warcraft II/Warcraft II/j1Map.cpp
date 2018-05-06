@@ -1180,17 +1180,34 @@ Room j1Map::GetEntityRoom(Entity* entity)
 	return ret;
 }
 
-list<Entity*> j1Map::GetEntitiesOnRoom(Room room, ENTITY_TYPE type)
+list<Entity*> j1Map::GetEntitiesOnRoom(Room room, ENTITY_CATEGORY entityType, EntitySide entitySide)
 {
 	list<Entity*> entitiesOnRoom;
 
 	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
 	{
-		if ((*iterator)->dynamicEntityType == type)
+		bool isCheckEntity = false;
+
+		if (entityType == EntityCategory_NONE) {
+		
+			if (entitySide == EntitySide_NoSide)
+				isCheckEntity = true;
+			else if (entitySide == (*iterator)->entitySide)
+				isCheckEntity = true;
+		}
+		else if ((*iterator)->entityType == entityType) {
+
+			if (entitySide == EntitySide_NoSide)
+				isCheckEntity = true;
+			else if (entitySide == (*iterator)->entitySide)
+				isCheckEntity = true;
+		}
+
+		if (isCheckEntity) {
+
 			if (IsOnRoom((*iterator)->GetPos(), room))
-			{
 				entitiesOnRoom.push_back(*iterator);
-			}
+		}
 	}
 
 	return entitiesOnRoom;

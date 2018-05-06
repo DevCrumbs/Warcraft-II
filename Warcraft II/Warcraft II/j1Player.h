@@ -197,6 +197,7 @@ public:
 
 	uint totalGold = 0u; // total gold earned during the game
 	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
+	uint roomsCleared = 0;
 
 	//Units costs
 	int footmanCost = 500;
