@@ -31,6 +31,9 @@ void j1Movement::DebugDraw() const
 	for (list<UnitGroup*>::const_iterator group = unitGroups.begin(); group != unitGroups.end(); ++group) {
 		for (list<SingleUnit*>::const_iterator unit = (*group)->units.begin(); unit != (*group)->units.end(); ++unit) {
 
+			if (!App->render->IsInScreen({ (int)(*unit)->unit->GetPos().x, (int)(*unit)->unit->GetPos().y, (*unit)->unit->GetSize().x, (*unit)->unit->GetSize().y }))
+				continue;
+
 			if ((*unit)->movementState != MovementState_NoState && (*unit)->movementState != MovementState_GoalReached) {
 
 				SDL_Color col = (*unit)->unit->GetColor();

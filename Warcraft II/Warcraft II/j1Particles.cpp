@@ -411,6 +411,12 @@ bool j1Particles::PostUpdate()
 
 	while (it != activeParticles.end()) {
 
+		if (!App->render->IsInScreen({ (int)(*it)->pos.x, (int)(*it)->pos.y, (*it)->size.x, (*it)->size.y })) {
+		
+			it++;
+			continue;
+		}
+
 		if ((*it)->particleType == ParticleType_Paws)
 			App->printer->PrintSprite({ (int)(*it)->pos.x, (int)(*it)->pos.y }, pawsTex, (*it)->animation.GetCurrentFrame(), Layers_Paws, (*it)->angle);
 		else if ((*it)->particleType == ParticleType_Health)
