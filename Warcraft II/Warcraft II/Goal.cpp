@@ -1661,7 +1661,7 @@ GoalStatus Goal_HealArea::Process(float dt)
 	// Bright the area
 	if (alpha > 0) {
 
-		alpha -= 8;
+		alpha -= 8.0f * dt;
 
 		if (alpha < 0)
 			alpha = 0;
