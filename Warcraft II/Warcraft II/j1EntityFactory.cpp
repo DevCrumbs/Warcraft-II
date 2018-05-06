@@ -1295,7 +1295,7 @@ bool j1EntityFactory::Start()
 	/// Damage
 	elvenArcherInfo.unitInfo.heavyDamage = 6;
 	elvenArcherInfo.unitInfo.lightDamage = 7;
-	elvenArcherInfo.unitInfo.airDamage = 10;
+	elvenArcherInfo.unitInfo.airDamage = 12;
 	elvenArcherInfo.unitInfo.towerDamage = 11;
 
 	/// Speed
@@ -1320,9 +1320,9 @@ bool j1EntityFactory::Start()
 	gryphonRiderInfo.unitInfo.sightRadius = 12;
 
 	/// Damage
-	gryphonRiderInfo.unitInfo.heavyDamage = 7;
-	gryphonRiderInfo.unitInfo.lightDamage = 5;
-	gryphonRiderInfo.unitInfo.airDamage = 7;
+	gryphonRiderInfo.unitInfo.heavyDamage = 4;
+	gryphonRiderInfo.unitInfo.lightDamage = 2;
+	gryphonRiderInfo.unitInfo.airDamage = 4;
 	gryphonRiderInfo.unitInfo.towerDamage = 8;
 
 	/// Speed
@@ -1390,7 +1390,7 @@ bool j1EntityFactory::Start()
 	/// Damage
 	trollAxethrowerInfo.unitInfo.heavyDamage = 4;
 	trollAxethrowerInfo.unitInfo.lightDamage = 7;
-	trollAxethrowerInfo.unitInfo.airDamage = 10;
+	trollAxethrowerInfo.unitInfo.airDamage = 19;
 	trollAxethrowerInfo.unitInfo.towerDamage = 11;
 
 	/// Speed
@@ -1416,9 +1416,9 @@ bool j1EntityFactory::Start()
 	dragonInfo.unitInfo.sightRadius = 12;
 
 	/// Damage
-	dragonInfo.unitInfo.heavyDamage = 7;
-	dragonInfo.unitInfo.lightDamage = 5;
-	dragonInfo.unitInfo.airDamage = 7;
+	dragonInfo.unitInfo.heavyDamage = 5;
+	dragonInfo.unitInfo.lightDamage = 2;
+	dragonInfo.unitInfo.airDamage = 5;
 	dragonInfo.unitInfo.towerDamage = 8;
 
 	/// Speed
