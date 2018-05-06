@@ -210,7 +210,8 @@ public:
 
 	Room GetEntityRoom(Entity* entity);
 
-	list<Entity*> GetEntitiesOnRoom(Room room, ENTITY_CATEGORY entityType = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide);
+	list<Entity*> GetEntitiesOnRoomByCategory(Room room, ENTITY_CATEGORY entityType = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide);
+	list<Entity*> GetEntitiesOnRoomByType(Room room, ENTITY_TYPE entityType = EntityType_NONE);
 
 	bool IsRoomCleared(Room room);
 

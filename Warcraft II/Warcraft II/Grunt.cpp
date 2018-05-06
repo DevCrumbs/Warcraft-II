@@ -155,7 +155,7 @@ void Grunt::Move(float dt)
 			/// Check if the room of this enemy has been cleared
 			Room room = App->map->GetEntityRoom(this);
 
-			if (App->map->GetEntitiesOnRoom(room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
+			if (App->map->GetEntitiesOnRoomByCategory(room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
 			
 				// ROOM CLEARED!
 				if (room.w != 40) {

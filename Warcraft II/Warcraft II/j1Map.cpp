@@ -54,7 +54,7 @@ void j1Map::Draw()
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::PapayaWhip);
 
-	GetEntitiesOnRoom(playerBase, EntityType_FOOTMAN);
+	GetEntitiesOnRoomByType(playerBase, EntityType_FOOTMAN);
 
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
 	{
@@ -1182,7 +1182,7 @@ Room j1Map::GetEntityRoom(Entity* entity)
 	return ret;
 }
 
-list<Entity*> j1Map::GetEntitiesOnRoom(Room room, ENTITY_CATEGORY entityType, EntitySide entitySide)
+list<Entity*> j1Map::GetEntitiesOnRoomByCategory(Room room, ENTITY_CATEGORY entityType, EntitySide entitySide)
 {
 	list<Entity*> entitiesOnRoom;
 
@@ -1204,6 +1204,29 @@ list<Entity*> j1Map::GetEntitiesOnRoom(Room room, ENTITY_CATEGORY entityType, En
 			else if (entitySide == (*iterator)->entitySide)
 				isCheckEntity = true;
 		}
+
+		if (isCheckEntity) {
+
+			if (IsOnRoom((*iterator)->GetPos(), room))
+				entitiesOnRoom.push_back(*iterator);
+		}
+	}
+
+	return entitiesOnRoom;
+}
+
+list<Entity*> j1Map::GetEntitiesOnRoomByType(Room room, ENTITY_TYPE entityType) 
+{
+	list<Entity*> entitiesOnRoom;
+
+	for (list<DynamicEntity*>::iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
+	{
+		bool isCheckEntity = false;
+
+		if (entityType == EntityType_NONE)
+			isCheckEntity = true;
+		else if ((*iterator)->dynamicEntityType == entityType)
+			isCheckEntity = true;
 
 		if (isCheckEntity) {
 
