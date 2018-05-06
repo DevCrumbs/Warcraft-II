@@ -284,7 +284,8 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 
 bool j1Render::IsInScreen(const SDL_Rect& item) const
 {
-	return (-camera.x < item.x + item.w && -camera.x + camera.w > item.x && -camera.y < item.y + item.h && camera.h + -camera.y > item.y);
+	SDL_Rect cameraRect{ -camera.x, -camera.y, camera.w, camera.h };
+	return SDL_HasIntersection(&item, &cameraRect);
 }
 
 bool j1Render::IsInScreen(const iPoint& item) const
