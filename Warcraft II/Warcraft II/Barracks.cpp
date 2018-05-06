@@ -87,6 +87,7 @@ void Barracks::LoadAnimationsSpeed()
 {
 
 }
+
 void Barracks::UpdateAnimations(float dt)
 {
 	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)

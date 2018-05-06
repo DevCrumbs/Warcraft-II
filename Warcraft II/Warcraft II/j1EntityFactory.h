@@ -180,6 +180,8 @@ public:
 
 public:
 
+	bool isEntityFactoryCleanUp = false;
+
 	list<Entity*> toSpawnEntities;
 	list<DynamicEntity*> activeDynamicEntities;
 	list<StaticEntity*> activeStaticEntities;

@@ -1228,6 +1228,8 @@ bool j1EntityFactory::Start()
 
 	LOG("Loading entities textures");
 
+	isEntityFactoryCleanUp = false;
+
 	/// TODO Joan (balancing)
 	// ENTITIES INFO
 	/// ALLIANCE
@@ -2458,22 +2460,9 @@ bool j1EntityFactory::CleanUp()
 
 	LOG("Freeing all entities");
 
+	isEntityFactoryCleanUp = true;
+
 	// Remove active entities
-	/// Remove dynamic entities
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
-
-	while (dynEnt != activeDynamicEntities.end()) {
-
-		if ((*dynEnt) != nullptr) {
-			delete *dynEnt;
-			activeDynamicEntities.remove(*dynEnt++);
-			continue;
-		}
-
-		dynEnt++;
-	}
-	activeDynamicEntities.clear();
-
 	/// Remove static entities
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
 
@@ -2488,6 +2477,21 @@ bool j1EntityFactory::CleanUp()
 		statEnt++;
 	}
 	activeStaticEntities.clear();
+
+	/// Remove dynamic entities
+	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
+
+	while (dynEnt != activeDynamicEntities.end()) {
+
+		if ((*dynEnt) != nullptr) {
+			delete *dynEnt;
+			activeDynamicEntities.remove(*dynEnt++);
+			continue;
+		}
+
+		dynEnt++;
+	}
+	activeDynamicEntities.clear();
 
 	// Remove to spawn entities
 	list<Entity*>::const_iterator it = toSpawnEntities.begin();

@@ -28,9 +28,9 @@ bool j1EnemyWave::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
-	/// Load from xml
-	spawnProbability = 0.35f;
-	maxSpawn = 5;
+	spawnProbability = 0.25f;
+	maxSpawnPerPhase = 3;
+	maxSpawnPerWave = 10;
 
 	return ret;
 }
@@ -88,6 +88,10 @@ bool j1EnemyWave::Update(float ft)
 	if (!isActiveWaves)
 
 		return ret;
+
+	// ---------------------------------------------------------------------------------
+
+
 
 	// ---------------------------------------------------------------------------------
 
@@ -200,6 +204,8 @@ bool j1EnemyWave::Update(float ft)
 			secondsToNextWave = MINUTES_TO_SECONDS(secondsToNextWave);
 
 			phasesOfCurrWave = 0;
+			totalSpawnOfCurrWave = 0;
+			maxSpawnPerWave++;
 			isStartWave = false;
 		}
 	}
@@ -237,14 +243,16 @@ void j1EnemyWave::PerformWave()
 	int spawned = 0;
 	for (list<iPoint>::const_iterator iterator = currentList.begin(); iterator != currentList.end(); ++iterator)
 	{
-		if (spawned >= maxSpawn) {
+		if (spawned >= maxSpawnPerPhase || totalSpawnOfCurrWave >= maxSpawnPerWave) {
 			break;
 		}
 		ENTITY_TYPE type = EntityType_NONE;
 		if (iterator == currentList.begin() && App->player->gryphonAviary != nullptr)
 		{
 			if (SpawnEnemy(spawnProbability)) {
+
 				spawned++;
+				totalSpawnOfCurrWave++;
 
 				type = EntityType_DRAGON;
 				UnitInfo unitInfo;
@@ -256,9 +264,10 @@ void j1EnemyWave::PerformWave()
 				LOG("Spawned %i entities from %i, type %i", spawned, size, type);
 			}
 		}
-		else if (SpawnEnemy(spawnProbability))
-		{
+		else if (SpawnEnemy(spawnProbability)) {
+
 			spawned++;
+			totalSpawnOfCurrWave++;
 
 			type = ENTITY_TYPE(rand() % 2 + 381);
 			UnitInfo unitInfo;
@@ -270,7 +279,7 @@ void j1EnemyWave::PerformWave()
 			LOG("Spawned %i entities from %i, type %i", spawned, size, type);
 		}
 	}
-	maxSpawn++;
+	maxSpawnPerPhase++;
 	spawnProbability += 0.05f;
 }
 

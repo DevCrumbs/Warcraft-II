@@ -54,8 +54,8 @@ private:
 	vector<list<iPoint>> spawnTiles;
 	
 	float spawnProbability = 0.0f;
-	uint maxSpawn = 0;
-
+	uint maxSpawnPerPhase = 0;
+	uint maxSpawnPerWave = 0;
 	uint totalWaves = 0;
 
 	bool isActiveWaves = false;
@@ -65,6 +65,8 @@ private:
 	uint phasesOfCurrWave = 0;
 
 	bool isStartWave = false;
+
+	uint totalSpawnOfCurrWave = 0;
 
 	// Waves timeline
 	j1Timer nextWaveTimer;
