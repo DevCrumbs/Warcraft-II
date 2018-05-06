@@ -335,6 +335,79 @@ bool j1Scene::Update(float dt)
 	if (App->pathfinding->IsWalkable(mouseTile))
 		App->printer->PrintSprite(mouseTilePos, debugTex, { 0,0,32,32 }); // tile under the mouse pointer
 
+	//------------------------------------------------------------------------------------------------------------------
+
+	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN) {
+		if (App->scene->adviceMessage != AdviceMessage_FOOD) {
+			App->scene->adviceMessageTimer.Start();
+			App->scene->adviceMessage = AdviceMessage_FOOD;
+			App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN) {
+		if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+			App->scene->adviceMessageTimer.Start();
+			App->scene->adviceMessage = AdviceMessage_GOLD;
+			App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN) {
+		if (App->scene->adviceMessage != AdviceMessage_SELECT_FOOTMANS) {
+			App->scene->adviceMessageTimer.Start();
+			App->scene->adviceMessage = AdviceMessage_SELECT_FOOTMANS;
+			App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN) {
+		if (App->scene->adviceMessage != AdviceMessage_SELECT_ARCHERS) {
+			App->scene->adviceMessageTimer.Start();
+			App->scene->adviceMessage = AdviceMessage_SELECT_ARCHERS;
+			App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN) {
+		if (App->scene->adviceMessage != AdviceMessage_SELECT_GRYPHS) {
+			App->scene->adviceMessageTimer.Start();
+			App->scene->adviceMessage = AdviceMessage_SELECT_GRYPHS;
+			App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN) {
+		if (App->scene->adviceMessage != AdviceMessage_ROOM_CLEAR) {
+			App->scene->adviceMessageTimer.Start();
+			App->scene->adviceMessage = AdviceMessage_ROOM_CLEAR;
+			App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN) {
+		if (App->scene->adviceMessage != AdviceMessage_UNDER_ATTACK) {
+			App->scene->adviceMessageTimer.Start();
+			App->scene->adviceMessage = AdviceMessage_UNDER_ATTACK;
+			App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) {
+		if (App->scene->adviceMessage != AdviceMessage_MINE) {
+			App->scene->adviceMessageTimer.Start();
+			App->scene->adviceMessage = AdviceMessage_MINE;
+			App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN) {
+		if (App->scene->adviceMessage != AdviceMessage_GRYPH_MINE) {
+			App->scene->adviceMessageTimer.Start();
+			App->scene->adviceMessage = AdviceMessage_GRYPH_MINE;
+			App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) {
+		if (App->scene->adviceMessage != AdviceMessage_GRYPH_PRISONER) {
+			App->scene->adviceMessageTimer.Start();
+			App->scene->adviceMessage = AdviceMessage_GRYPH_PRISONER;
+			App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+		}
+	}
+	//------------------------------------------------------------------------------------------------------------------
 	// Units ---------------------------------------------------------------------------------
 
 	// Update units selected life bars
@@ -637,6 +710,10 @@ bool j1Scene::Update(float dt)
 	}
 	if (terenasDialogTimer.Read() >= 5000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
 		HideTerenasDialog();
+	}
+
+	if (adviceMessageTimer.Read() >= 2500 && adviceMessage != AdviceMessage_NONE) {
+		HideAdviceMessage();
 	}
 
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
@@ -1022,6 +1099,7 @@ void j1Scene::LoadInGameUI()
 	LoadBuildingMenu();
 	LoadUnitsMenuInfo();
 	LoadTerenasDialog();
+	LoadAdviceMessage();
 	//create this before entitiesInfo (Parent)
 	App->player->CreateEntitiesStatsUI();
 	App->player->CreateGroupSelectionButtons();
@@ -1086,6 +1164,15 @@ void j1Scene::LoadTerenasDialog()
 	labelInfo.interactive = false;
 	terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
 	terenasAdvices.text->isActive = false;
+}
+
+void j1Scene::LoadAdviceMessage()
+{
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.interactive = false;
+	adviceLabel = App->gui->CreateUILabel({ 300,235 }, labelInfo, this);
+	adviceLabel->isActive = false;
 }
 
 void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
@@ -1660,6 +1747,7 @@ void j1Scene::DestroyAllUI()
 	UnLoadResourcesLabels();
 	UnLoadTerenasDialog();
 
+	App->gui->RemoveElem((UIElement**)&adviceLabel);
 	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
 	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
 	App->gui->RemoveElem((UIElement**)&entitiesStats);
@@ -1767,16 +1855,6 @@ void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 		//terenasAdvices.text->SetText(text, 320);
 		//terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
-	case TerenasDialog_FOOD:
-		text = "To produce units you need to have enough food to feed them.Build more farms.";
-		terenasAdvices.text->SetText(text, 320);
-		terenasAdvices.text->SetLocalPos({ 355,47 });
-		break;
-	case TerenasDialog_GOLD:
-		text = "To produce units you need to have enough gold. Get more from mines.";
-		terenasAdvices.text->SetText(text, 320);
-		terenasAdvices.text->SetLocalPos({ 355,47 });
-		break;
 	case TerenasDialog_NONE:
 		break;
 	default:
@@ -1791,6 +1869,102 @@ void j1Scene::HideTerenasDialog()
 	terenasDialogEvent = TerenasDialog_NONE;
 	terenasAdvices.text->isActive = false;
 	terenasAdvices.terenasImage->isActive = false;
+}
+
+void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
+{
+	string text;
+	switch (adviceMessage)
+	{
+	case AdviceMessage_FOOD:
+		text = "Not enough food. Build more farms.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 245,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_GOLD:
+		text = "Not enough gold.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 320,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_FOOTMANS:
+		text = "No footman on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 290,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_ARCHERS:
+		text = "No elven archer on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 285,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_GRYPHS:
+		text = "No gryphon rider on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_ROOM_CLEAR:
+		text = "ROOM CLEARED!";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 285,265 });
+		adviceLabel->SetColor(WarmYellow_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT30);
+		break;
+
+	case AdviceMessage_UNDER_ATTACK:
+		text = "YOUR BASE IS UNDER ATTACK";;
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 205,265 });
+		adviceLabel->SetColor(BloodyRed_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT30);
+		break;
+
+	case AdviceMessage_MINE:
+		text = "Select units to gather gold";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_GRYPH_MINE:
+		text = "Gryphon riders cannot gather gold.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 245,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_GRYPH_PRISONER:
+		text = "Gryphon riders cannot rescue prisoners.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 225,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+	}
+
+
+	adviceLabel->isActive = true;
+}
+
+void j1Scene::HideAdviceMessage()
+{
+	adviceMessage = AdviceMessage_NONE;
+	adviceLabel->isActive = false;
 }
 
 void j1Scene::UnLoadTerenasDialog()

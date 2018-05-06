@@ -738,11 +738,16 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 						App->entities->CommandToUnits(units, UnitCommand_GatherGold);
 					}
+					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_MINE) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GRYPH_MINE;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
 				}
-				else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
-					App->scene->terenasDialogTimer.Start();
-					App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
-					App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+				else if (App->scene->adviceMessage != AdviceMessage_MINE) {
+					App->scene->adviceMessageTimer.Start();
+					App->scene->adviceMessage = AdviceMessage_MINE;
+					App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 				}
 			}
 
@@ -2151,23 +2156,23 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_FOOTMAN);
 						toSpawnUnitBarracks.push(toSpawnUnit);
 						toSpawnUnitBarracks.back()->toSpawnTimer.Start();
-						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
-							App->scene->HideTerenasDialog();
+						if (App->scene->adviceMessage == AdviceMessage_FOOD || App->scene->adviceMessage == AdviceMessage_GOLD) {
+							App->scene->HideAdviceMessage();
 						}
 						HandleSpawningUnitsUIElem(&toSpawnUnitBarracks.back(), &barracksSpawningListUI);
 					}
-					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
-						App->scene->terenasDialogTimer.Start();
-						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
-						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+					else if (App->scene->adviceMessage != AdviceMessage_FOOD) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_FOOD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 					}
 				}
 				else if (currentGold < footmanCost) {
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
-						App->scene->terenasDialogTimer.Start();
-						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
-						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 					}
 				}
 			}
@@ -2182,23 +2187,23 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_ELVEN_ARCHER);
 						toSpawnUnitBarracks.push(toSpawnUnit);
 						toSpawnUnitBarracks.back()->toSpawnTimer.Start();
-						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD) {
-							App->scene->HideTerenasDialog();
+						if (App->scene->adviceMessage == AdviceMessage_FOOD || App->scene->adviceMessage == AdviceMessage_GOLD) {
+							App->scene->HideAdviceMessage();
 						}
 						HandleSpawningUnitsUIElem(&toSpawnUnitBarracks.back(), &barracksSpawningListUI);
 					}
-					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
-						App->scene->terenasDialogTimer.Start();
-						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
-						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+					else if (App->scene->adviceMessage != AdviceMessage_FOOD) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_FOOD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 					}
 				}
 				else if (currentGold < elvenArcherCost) {
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
-						App->scene->terenasDialogTimer.Start();
-						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
-						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 					}
 				}
 			}
@@ -2241,22 +2246,23 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						ToSpawnUnit* toSpawnUnit = new ToSpawnUnit(spawnTimer, EntityType_GRYPHON_RIDER);
 						toSpawnUnitGrypho.push(toSpawnUnit);
 						toSpawnUnitGrypho.back()->toSpawnTimer.Start();
-						if (App->scene->terenasDialogEvent == TerenasDialog_FOOD || App->scene->terenasDialogEvent == TerenasDialog_GOLD)
-							App->scene->HideTerenasDialog();
-						HandleSpawningUnitsUIElem(&toSpawnUnitGrypho.back(), &gryphoSpawningListUI);
+						if (App->scene->adviceMessage == AdviceMessage_FOOD || App->scene->adviceMessage == AdviceMessage_GOLD) {
+							App->scene->HideAdviceMessage();
+						}
+						HandleSpawningUnitsUIElem(&toSpawnUnitBarracks.back(), &barracksSpawningListUI);
 					}
-					else if (App->scene->terenasDialogEvent != TerenasDialog_FOOD) {
-						App->scene->terenasDialogTimer.Start();
-						App->scene->terenasDialogEvent = TerenasDialog_FOOD;
-						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+					else if (App->scene->adviceMessage != AdviceMessage_FOOD) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_FOOD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 					}
 				}
 				else if (currentGold < gryphonRiderCost) {
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-					if (App->scene->terenasDialogEvent != TerenasDialog_GOLD) {
-						App->scene->terenasDialogTimer.Start();
-						App->scene->terenasDialogEvent = TerenasDialog_GOLD;
-						App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 					}
 				}
 			}

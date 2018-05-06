@@ -3799,6 +3799,28 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 				}
 			}
 		}
+		else if (entityType == EntityType_FOOTMAN) {
+			if (App->scene->adviceMessage != AdviceMessage_SELECT_FOOTMANS) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_SELECT_FOOTMANS;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+		}
+		else if (entityType == EntityType_ELVEN_ARCHER) {
+			if (App->scene->adviceMessage != AdviceMessage_SELECT_ARCHERS) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_SELECT_ARCHERS;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+		}
+		else if (entityType == EntityType_GRYPHON_RIDER) {
+			if (App->scene->adviceMessage != AdviceMessage_SELECT_GRYPHS) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_SELECT_GRYPHS;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+		}
+
 
 		it++;
 	}
