@@ -158,12 +158,12 @@ void Grunt::Move(float dt)
 			if (App->map->GetEntitiesOnRoomByCategory(room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
 			
 				// ROOM CLEARED!
-				if (room.w != 40) {
+				if (room.roomRect.w != 40) {
 
 					// Give gold to the player
-					if (room.w == 30)
+					if (room.roomRect.w == 30)
 						App->player->AddGold(300);
-					else if (room.w == 50)
+					else if (room.roomRect.w == 50)
 						App->player->AddGold(800);
 
 					App->player->roomsCleared++;
