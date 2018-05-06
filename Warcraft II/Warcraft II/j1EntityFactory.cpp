@@ -3793,6 +3793,8 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
+	bool isInScreen = false;
+
 	while (it != activeDynamicEntities.end()) {
 
 		// The unit cannot be dead and must be valid
@@ -3810,42 +3812,45 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 
 					(*it)->isSelected = true;
 					unitsSelected.push_back(*it);
+					isInScreen = true;
 				}
 			}
 			else {
-
 				if (unitsSelected.size() < MAX_UNITS_SELECTED) {
 
 					(*it)->isSelected = true;
 					unitsSelected.push_back(*it);
+					isInScreen = true;
 				}
 			}
 		}
-		else if (entityType == EntityType_FOOTMAN) {
+
+		it++;
+	}
+	if (!isInScreen) {
+		if (entityType == EntityType_FOOTMAN) {
 			if (App->scene->adviceMessage != AdviceMessage_SELECT_FOOTMANS) {
 				App->scene->adviceMessageTimer.Start();
 				App->scene->adviceMessage = AdviceMessage_SELECT_FOOTMANS;
 				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 			}
 		}
-		else if (entityType == EntityType_ELVEN_ARCHER) {
+		if (entityType == EntityType_ELVEN_ARCHER) {
 			if (App->scene->adviceMessage != AdviceMessage_SELECT_ARCHERS) {
 				App->scene->adviceMessageTimer.Start();
 				App->scene->adviceMessage = AdviceMessage_SELECT_ARCHERS;
 				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 			}
 		}
-		else if (entityType == EntityType_GRYPHON_RIDER) {
+		if (entityType == EntityType_GRYPHON_RIDER) {
 			if (App->scene->adviceMessage != AdviceMessage_SELECT_GRYPHS) {
 				App->scene->adviceMessageTimer.Start();
 				App->scene->adviceMessage = AdviceMessage_SELECT_GRYPHS;
 				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 			}
 		}
-
-
-		it++;
 	}
+	isInScreen = false;
 	App->scene->ShowSelectedUnits(unitsSelected);
 }
 

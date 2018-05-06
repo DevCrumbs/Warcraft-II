@@ -641,7 +641,11 @@ bool j1Scene::Update(float dt)
 		HideTerenasDialog();
 	}
 
-	if (adviceMessageTimer.Read() >= 2500 && adviceMessage != AdviceMessage_NONE) {
+	if (adviceMessageTimer.Read() >= 2500 && adviceMessage != AdviceMessage_NONE && adviceMessage != AdviceMessage_UNDER_ATTACK) {
+		HideAdviceMessage();
+	}
+
+	if (adviceMessageTimer.Read() >= 3500 && adviceMessage == AdviceMessage_UNDER_ATTACK) {
 		HideAdviceMessage();
 	}
 
