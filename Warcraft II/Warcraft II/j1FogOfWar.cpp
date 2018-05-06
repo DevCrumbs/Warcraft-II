@@ -37,13 +37,19 @@ bool j1FogOfWar::Update(float dt)
 
 	ResetTiles();
 	TilesNearPlayer();
+
+	if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN)
+	{
+		isActive = !isActive;
+	}
 	return true;
 }
 
 bool j1FogOfWar::PostUpdate()
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Magenta);
-	print();
+	if (isActive)
+		print();
 	return true;
 }
 

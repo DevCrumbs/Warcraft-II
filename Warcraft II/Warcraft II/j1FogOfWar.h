@@ -52,6 +52,8 @@ public:
 public:
 	std::vector<FogOfWarTile*> fowTilesVector;
 	std::vector<FogOfWarTile*> fowSmallerTilesVector;
+
+	bool isActive = true;
 };
 
 #endif
