@@ -10,6 +10,8 @@ UILifeBar::UILifeBar(iPoint local_pos, UIElement* parent, UILifeBar_Info& info, 
 
 	bar = App->gui->GetRectFromAtlas(lifeBar.bar);
 	background = App->gui->GetRectFromAtlas(lifeBar.background);
+	height = lifeBar.background.h;
+	width = lifeBar.background.w;
 
 	this->isInWorld = isInWorld;
 	priority = PriorityDraw_IMAGE;

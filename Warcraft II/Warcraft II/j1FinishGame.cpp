@@ -117,10 +117,7 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 										  
 	labelInfo.text = "Buildings destroyed: ";
 	labelVector.push_back(App->gui->CreateUILabel({ 50 , 375 }, labelInfo));
-										   
-	/*labelInfo.text = "Rooms explored: ";   
-	labelVector.push_back(App->gui->CreateUILabel({ 50 , 475 }, labelInfo));*/  //COMMING SOON 
-										    
+
 	labelInfo.text = "Total time: ";	    
 	labelVector.push_back(App->gui->CreateUILabel({ 50 , 475 }, labelInfo));
 
@@ -134,7 +131,6 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	imageVector.push_back(App->gui->CreateUIImage({ 275, 325 }, imageInfo));
 	imageVector.push_back(App->gui->CreateUIImage({ 275, 375 }, imageInfo));
 	imageVector.push_back(App->gui->CreateUIImage({ 275, 475 }, imageInfo));
-	//imageVector.push_back(App->gui->CreateUIImage({ 275, 525 }, imageInfo));
 
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 
@@ -149,9 +145,6 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	
 	labelInfo.text = to_string(App->player->buildDestroy);
 	labelVector.push_back(App->gui->CreateUILabel({ 275 , 375 }, labelInfo));
-	
-	/*labelInfo.text = to_string(roomsExploredCont);
-	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));*/
 	
 	string min = to_string((uint)App->player->startGameTimer.ReadSec() / 60);
 	if ((uint)App->player->startGameTimer.ReadSec() / 60 < 10)
@@ -183,15 +176,15 @@ void j1FinishGame::ArtifactWon(uint time)
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
 	labelInfo.text = "Artifact Obtained: ";
 
-	if (time >= 30) {
+	if (time >= 1200) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->bookText, App->gui->bookAnim));
 		labelInfo.text += "Book of Medivh";
 	}
-	else if (time >= 20) {
+	else if (time >= 900) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->skullText, App->gui->skullAnim));
 		labelInfo.text += "Skull of Gul'dan";
 	}
-	else if (time >= 10) {
+	else if (time >= 600) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->eyeText, App->gui->eyeAnim));
 		labelInfo.text += "Eye of Dalaran";
 	}
