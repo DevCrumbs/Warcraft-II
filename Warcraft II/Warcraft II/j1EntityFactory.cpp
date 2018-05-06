@@ -1912,13 +1912,13 @@ const EntityInfo& j1EntityFactory::GetBuiltBuilding(ENTITY_TYPE staticEntityType
 	}
 }
 
-SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() {
-
+SDL_Texture* j1EntityFactory::GetHumanBuildingTexture() 
+{
 	return humanBuildingsTex;
 }
 
-SDL_Texture* j1EntityFactory::GetNeutralBuildingTexture() {
-
+SDL_Texture* j1EntityFactory::GetNeutralBuildingTexture() 
+{
 	return neutralBuildingsTex;
 }
 
@@ -2383,7 +2383,7 @@ bool j1EntityFactory::PostUpdate()
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		if (!(*dynEnt)->GetBlitState()) {
+		if (!(*dynEnt)->GetBlitState() || !App->render->IsInScreen({ (int)(*dynEnt)->GetPos().x, (int)(*dynEnt)->GetPos().y, (*dynEnt)->GetSize().x, (*dynEnt)->GetSize().y })) {
 
 			dynEnt++;
 			continue;
@@ -2442,6 +2442,12 @@ bool j1EntityFactory::PostUpdate()
 	statEnt = activeStaticEntities.begin();
 
 	while (statEnt != activeStaticEntities.end()) {
+
+		if (!App->render->IsInScreen({ (int)(*statEnt)->GetPos().x, (int)(*statEnt)->GetPos().y, (*statEnt)->GetSize().x, (*statEnt)->GetSize().y })) {
+
+			statEnt++;
+			continue;
+		}
 
 		switch ((*statEnt)->staticEntityCategory) {
 
@@ -3787,11 +3793,127 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 	return nullptr;
 }
 
+Entity* j1EntityFactory::AreEntitiesColliding(SDL_Rect entityRect, ENTITY_CATEGORY entityCategory, EntitySide entitySide) const 
+{
+	const SDL_Rect rectA = entityRect;
+
+	// DYNAMIC ENTITIES
+	if (entityCategory == EntityCategory_DYNAMIC_ENTITY || entityCategory == EntityCategory_NONE) {
+
+		if (activeDynamicEntities.size() > 0) {
+
+			list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+
+			while (activeDyn != activeDynamicEntities.end()) {
+
+				// The unit cannot be dead and must be valid
+				if (!(*activeDyn)->isDead && (*activeDyn)->GetIsValid()) {
+
+					// An offset value is applied ONLY to the units selection
+					iPoint offsetValue = { 15,15 };
+
+					iPoint entityPos = { (int)(*activeDyn)->GetPos().x + (*activeDyn)->GetOffsetSize().x - offsetValue.x / 2, (int)(*activeDyn)->GetPos().y + (*activeDyn)->GetOffsetSize().y - offsetValue.y / 2 };
+					iPoint entitySize = { (*activeDyn)->GetSize().x + offsetValue.x, (*activeDyn)->GetSize().y + offsetValue.y };
+					uint scale = App->win->GetScale();
+
+					const SDL_Rect rectB = { entityPos.x, entityPos.y, entitySize.x, entitySize.y };
+
+					switch (entitySide) {
+
+					case EntitySide_Player:
+
+						if ((*activeDyn)->entitySide == EntitySide_Player)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_Enemy:
+
+						if ((*activeDyn)->entitySide == EntitySide_Enemy)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_Neutral:
+
+						if ((*activeDyn)->entitySide == EntitySide_Neutral)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_NoSide:
+
+						//if ((*activeDyn)->entitySide == EntitySide_NoSide)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+					}
+				}
+				activeDyn++;
+			}
+		}
+	}
+
+	// STATIC ENTITIES
+	if (entityCategory == EntityCategory_STATIC_ENTITY || entityCategory == EntityCategory_NONE) {
+
+		if (activeStaticEntities.size() > 0) {
+
+			list<StaticEntity*>::const_iterator activeStat = activeStaticEntities.begin();
+
+			while (activeStat != activeStaticEntities.end()) {
+
+				iPoint entityPos = { (int)(*activeStat)->GetPos().x, (int)(*activeStat)->GetPos().y };
+				iPoint entitySize = { (*activeStat)->GetSize().x, (*activeStat)->GetSize().y };
+				uint scale = App->win->GetScale();
+
+				const SDL_Rect rectB = { entityPos.x, entityPos.y, entitySize.x, entitySize.y };
+
+				switch (entitySide) {
+
+				case EntitySide_Player:
+
+					if ((*activeStat)->entitySide == EntitySide_Player)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_Enemy:
+
+					if ((*activeStat)->entitySide == EntitySide_Enemy)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_Neutral:
+
+					if ((*activeStat)->entitySide == EntitySide_Neutral)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_NoSide:
+
+					//if ((*activeStat)->entitySide == EntitySide_NoSide)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+				}
+				activeStat++;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 {
 	UnselectAllEntities();
 
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	bool isInScreen = false;
 
 	while (it != activeDynamicEntities.end()) {
 
@@ -3810,42 +3932,45 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 
 					(*it)->isSelected = true;
 					unitsSelected.push_back(*it);
+					isInScreen = true;
 				}
 			}
 			else {
-
 				if (unitsSelected.size() < MAX_UNITS_SELECTED) {
 
 					(*it)->isSelected = true;
 					unitsSelected.push_back(*it);
+					isInScreen = true;
 				}
 			}
 		}
-		else if (entityType == EntityType_FOOTMAN) {
+
+		it++;
+	}
+	if (!isInScreen) {
+		if (entityType == EntityType_FOOTMAN) {
 			if (App->scene->adviceMessage != AdviceMessage_SELECT_FOOTMANS) {
 				App->scene->adviceMessageTimer.Start();
 				App->scene->adviceMessage = AdviceMessage_SELECT_FOOTMANS;
 				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 			}
 		}
-		else if (entityType == EntityType_ELVEN_ARCHER) {
+		if (entityType == EntityType_ELVEN_ARCHER) {
 			if (App->scene->adviceMessage != AdviceMessage_SELECT_ARCHERS) {
 				App->scene->adviceMessageTimer.Start();
 				App->scene->adviceMessage = AdviceMessage_SELECT_ARCHERS;
 				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 			}
 		}
-		else if (entityType == EntityType_GRYPHON_RIDER) {
+		if (entityType == EntityType_GRYPHON_RIDER) {
 			if (App->scene->adviceMessage != AdviceMessage_SELECT_GRYPHS) {
 				App->scene->adviceMessageTimer.Start();
 				App->scene->adviceMessage = AdviceMessage_SELECT_GRYPHS;
 				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 			}
 		}
-
-
-		it++;
 	}
+	isInScreen = false;
 	App->scene->ShowSelectedUnits(unitsSelected);
 }
 

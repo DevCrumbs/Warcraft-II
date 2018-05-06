@@ -103,6 +103,7 @@ void Entity::ApplyHealth(int health)
 		currLife = maxLife;
 	else
 		currLife += health;
+
 	SetStringLife(currLife, maxLife);
 }
 

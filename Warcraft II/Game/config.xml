@@ -168,7 +168,9 @@
       <humanBuildings name="data/assets/textures/buildings/HumanBuildings.png"/>
       <neutralBuildings name ="data/assets/textures/buildings/NeutralBuildings.png"/>
       <orcishBuildings name ="data/assets/textures/buildings/OrcishBuildings.png"/>
-
+      <humanBuildingsAnimation name="data/assets/textures/buildings/HumanBuildingsAnimation.png"/>
+      <orcishBuildingsAnimation name ="data/assets/textures/buildings/OrcishBuildingAnimations.png"/>
+      
       <footmanAnimations name = "data/assets/textures/units/humanUnits/FinalFootman.png"/>
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/FinalGrunt.png"/>
       <trollAxethrowerAnimations name = "data/assets/textures/units/orcishUnits/TrollAxethrower.png"/>
@@ -1012,6 +1014,42 @@
     </dynamicEntities>
 
     <staticEntities>
+      <humanBuildingsAnimation>
+        <peasantAnimations>
+          <carry speed="4" loop="0">
+              <frame x="0" y="0" w="100" h="100"/>
+              <frame x="100" y="0" w="100" h="100"/>
+              <frame x="200" y="0" w="100" h="100"/>
+              <frame x="300" y="0" w="100" h="100"/>
+              <frame x="400" y="0" w="100" h="100"/>
+            </carry>
+          
+            <smallBuilding speed="4" loop="1">
+              <frame x="500" y="0" w="100" h="100"/>
+              <frame x="600" y="0" w="100" h="100"/>
+              <frame x="700" y="0" w="100" h="100"/>
+              <frame x="800" y="0" w="100" h="100"/>
+              <frame x="900" y="0" w="100" h="100"/>
+            </smallBuilding>
+
+            <mediumBuilding speed="4" loop="1">
+              <frame x="0" y="100" w="150" h="150"/>
+              <frame x="150" y="100" w="150" h="150"/>
+              <frame x="300" y="100" w="150" h="150"/>
+              <frame x="450" y="100" w="150" h="150"/>
+              <frame x="600" y="100" w="150" h="150"/>           
+            </mediumBuilding>
+
+            <bigBuilding speed="4" loop="1">
+              <frame x="0" y="250" w="200" h="200"/>
+              <frame x="200" y="250" w="200" h="200"/>
+              <frame x="400" y="250" w="200" h="200"/>
+              <frame x="600" y="250" w="200" h="200"/>
+              <frame x="800" y="250" w="200" h="200"/>           
+            </bigBuilding>
+
+        </peasantAnimations>
+      </humanBuildingsAnimation>
       <humanBuildings>
 
         <townHall>
@@ -1158,6 +1196,42 @@
 
       </neutralBuildings>
 
+      <orcishBuildingsAnimation>
+        <peonAnimations>
+            <carry speed="4" loop="0">
+              <frame x="0" y="0" w="100" h="100"/>
+              <frame x="100" y="0" w="100" h="100"/>
+              <frame x="200" y="0" w="100" h="100"/>
+              <frame x="300" y="0" w="100" h="100"/>
+              <frame x="400" y="0" w="100" h="100"/>
+            </carry>
+          
+            <smallBuilding speed="4" loop="1">
+              <frame x="500" y="0" w="100" h="100"/>
+              <frame x="600" y="0" w="100" h="100"/>
+              <frame x="700" y="0" w="100" h="100"/>
+              <frame x="800" y="0" w="100" h="100"/>
+              <frame x="900" y="0" w="100" h="100"/>
+            </smallBuilding>
+
+            <mediumBuilding speed="4" loop="1">
+              <frame x="0" y="100" w="150" h="150"/>
+              <frame x="150" y="100" w="150" h="150"/>
+              <frame x="300" y="100" w="150" h="150"/>
+              <frame x="450" y="100" w="150" h="150"/>
+              <frame x="600" y="100" w="150" h="150"/>           
+            </mediumBuilding>
+
+            <bigBuilding speed="4" loop="1">
+              <frame x="0" y="250" w="200" h="200"/>
+              <frame x="200" y="250" w="200" h="200"/>
+              <frame x="400" y="250" w="200" h="200"/>
+              <frame x="600" y="250" w="200" h="200"/>
+              <frame x="800" y="250" w="200" h="200"/>           
+            </bigBuilding>
+
+        </peonAnimations>
+      </orcishBuildingsAnimation>
       <orcishBuildings>
 
         <greatHall>
@@ -1257,15 +1331,15 @@
     </playerHealth>
 
     <enemyHealth speed ="8" loop="0">
-      <frame x="0" y="600" w="50" h="50"/>
-      <frame x="50" y="600" w="50" h="50"/>
-      <frame x="100" y="600" w="50" h="50"/>
-      <frame x="150" y="600" w="50" h="50"/>
-      <frame x="200" y="600" w="50" h="50"/>
-      <frame x="250" y="600" w="50" h="50"/>
-      <frame x="300" y="600" w="50" h="50"/>
-      <frame x="350" y="600" w="50" h="50"/>
-      <frame x="400" y="600" w="50" h="50"/>
+      <frame x="0" y="625" w="50" h="50"/>
+      <frame x="50" y="625" w="50" h="50"/>
+      <frame x="100" y="625" w="50" h="50"/>
+      <frame x="150" y="625" w="50" h="50"/>
+      <frame x="200" y="625" w="50" h="50"/>
+      <frame x="250" y="625" w="50" h="50"/>
+      <frame x="300" y="625" w="50" h="50"/>
+      <frame x="350" y="625" w="50" h="50"/>
+      <frame x="400" y="625" w="50" h="50"/>
     </enemyHealth>
     
     <cross speed ="18" loop="0">

@@ -49,6 +49,7 @@ bool j1Player::Start()
 	unitProduce = 0u;
 	enemiesKill = 0u;
 	buildDestroy = 0u;
+	roomsCleared = 0;
 	isWin = false;
 
 	totalEnemiesKilled = 0;
@@ -1001,29 +1002,46 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 				if (units.size() > 0) {
 
+					bool isGryphonRider = false;
+
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER)
+						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
 
-							(*it)->SetPrisoner(dynamicEntity);
+							isGryphonRider = true;
+							break;
+						}
 
 						it++;
 					}
 
-					App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+					if (!isGryphonRider) {
+
+						it = units.begin();
+
+						while (it != units.end()) {
+
+							(*it)->SetPrisoner(dynamicEntity);
+
+							it++;
+						}
+
+						App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+					}
+					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_PRISONER) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GRYPH_PRISONER;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
+				else if (App->scene->adviceMessage != AdviceMessage_PRISONER) {
+					App->scene->adviceMessageTimer.Start();
+					App->scene->adviceMessage = AdviceMessage_PRISONER;
+					App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 				}
 			}
-			/*
-			else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
-
-				App->scene->terenasDialogTimer.Start();
-				App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
-				App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
-
-			}
-			*/
 		}
 		// Turalyon (right click to send a unit to rescue him)
 		else if (dynamicEntity->dynamicEntityType == EntityType_TURALYON) {
@@ -1036,29 +1054,46 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 				if (units.size() > 0) {
 
+					bool isGryphonRider = false;
+
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER)
+						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
 
-							(*it)->SetPrisoner(dynamicEntity);
+							isGryphonRider = true;
+							break;
+						}
 
 						it++;
 					}
 
-					App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+					if (!isGryphonRider) {
+
+						it = units.begin();
+
+						while (it != units.end()) {
+
+							(*it)->SetPrisoner(dynamicEntity);
+
+							it++;
+						}
+
+						App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+					}
+					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_PRISONER) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GRYPH_PRISONER;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
+				else if (App->scene->adviceMessage != AdviceMessage_PRISONER) {
+					App->scene->adviceMessageTimer.Start();
+					App->scene->adviceMessage = AdviceMessage_PRISONER;
+					App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 				}
 			}
-			/*
-			else if (App->scene->terenasDialogEvent != TerenasDialog_GOLD_MINE) {
-
-			App->scene->terenasDialogTimer.Start();
-			App->scene->terenasDialogEvent = TerenasDialog_GOLD_MINE;
-			App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
-
-			}
-			*/
 		}
 		break;
 

@@ -1673,26 +1673,35 @@ GoalStatus Goal_HealArea::Process(float dt)
 	}
 
 	// Perform the heal animation and heal the units within the area
-	ColliderGroup* sightRadiusCollider = runestone->GetSightRadiusCollider();
+	Collider* sightRadiusCollider = runestone->GetSightRadiusCollider()->offsetCollider;
+	bool isHealSound = false;
 
-	for (uint i = 0; i < sightRadiusCollider->colliders.size(); ++i) {
+	list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
 
-		iPoint colliderTile = App->map->WorldToMap(sightRadiusCollider->colliders[i]->colliderRect.x, sightRadiusCollider->colliders[i]->colliderRect.y);
+	while (it != App->entities->activeDynamicEntities.end()) {
+	
+		if (!(*it)->isDead && (*it)->entitySide == EntitySide_Player) {
+		
+			const SDL_Rect rectA = sightRadiusCollider->colliderRect;
+			const SDL_Rect rectB = { (*it)->GetPos().x, (*it)->GetPos().y, (*it)->GetSize().x, (*it)->GetSize().y };
 
-		Entity* entity = App->entities->IsEntityOnTile(colliderTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+			if (SDL_HasIntersection(&rectA, &rectB)) {
 
-		if (entity != nullptr) {
+				iPoint pos = App->map->MapToWorld((*it)->GetSingleUnit()->currTile.x, (*it)->GetSingleUnit()->currTile.y);
 
-			DynamicEntity* dynEnt = (DynamicEntity*)entity;
-			iPoint pos = App->map->MapToWorld(dynEnt->GetSingleUnit()->currTile.x, dynEnt->GetSingleUnit()->currTile.y);
+				App->particles->AddParticle(App->particles->playerHealth, pos);
+				(*it)->ApplyHealth(health);
 
-			App->particles->AddParticle(App->particles->playerHealth, pos);
-			entity->ApplyHealth(health);
-			//App->audio->PlayFx(App->audio->GetFX().healSound);
+				if (!isHealSound) {
 
+					App->audio->PlayFx(App->audio->GetFX().healSound);
+					isHealSound = true;
+				}
+			}
 		}
+		it++;
 	}
-
+		
 	goalStatus = GoalStatus_Completed;
 
 	return goalStatus;
