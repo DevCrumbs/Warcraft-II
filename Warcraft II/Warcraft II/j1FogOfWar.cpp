@@ -160,77 +160,85 @@ void j1FogOfWar::CleanSafeZone(SDL_Rect zone)
 
 void j1FogOfWar::TilesNearPlayer()
 {
-	int contador = 0;
-
 	for (list<DynamicEntity*>::const_iterator iterator = App->entities->activeDynamicEntities.begin(); iterator != App->entities->activeDynamicEntities.end(); ++iterator)
 	{
 
 		if ((*iterator)->entitySide == EntitySide_Player)
 		{
 			// Change camera for entity collider
-			iPoint startTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale(),
-				-App->render->camera.y / App->win->GetScale());
-			iPoint endTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
-				-App->render->camera.y / App->win->GetScale() + App->render->camera.h);
-			int i = startTile.x;
-			if (i < 0)
-				i = 0;
-
-			for (; i < 119 && i < endTile.x + 1; ++i)
+			ColliderGroup* entityCollider = (*iterator)->GetSightRadiusCollider();
+	
+			for (vector<Collider*>::iterator colliderIterator = entityCollider->colliders.begin(); colliderIterator != entityCollider->colliders.end(); ++colliderIterator)
 			{
-				int j = startTile.y;
-				if (j < 0)
-					j = 0;
+				int contador = 0;
 
-				for (; j < 149 && j < endTile.y + 1; ++j)
+				iPoint startTile = App->map->WorldToMap((*colliderIterator)->colliderRect.x / App->win->GetScale(),
+					(*colliderIterator)->colliderRect.y / App->win->GetScale());
+				iPoint endTile = App->map->WorldToMap((*colliderIterator)->colliderRect.x / App->win->GetScale() + (*colliderIterator)->colliderRect.w,
+					(*colliderIterator)->colliderRect.y / App->win->GetScale() + (*colliderIterator)->colliderRect.h);
+
+				App->render->DrawQuad((*colliderIterator)->colliderRect, 255, 255, 255, 255);
+
+				int i = startTile.x;
+				if (i < 0)
+					i = 0;
+
+				for (; i < 119 && i < endTile.x + 1; ++i)
 				{
+					int j = startTile.y;
+					if (j < 0)
+						j = 0;
 
-					int pos = (119 * j) + i;
-
-					if (fowTilesVector[pos]->alpha == 0)
-						continue;
-
-					SDL_Rect tileRect{ fowTilesVector[pos]->pos.x * FOW_TILE, fowTilesVector[pos]->pos.y * FOW_TILE, fowTilesVector[pos]->size * FOW_TILE, fowTilesVector[pos]->size * FOW_TILE };
-					if (SDL_HasIntersection(&tileRect, &App->map->playerBase))
-						continue;
-
-					//SDL_Rect fowTileRect{ fowTilesVector[i]->pos.x, fowTilesVector[i]->pos.y , 32,32 };
-					//SDL_Rect collider{ (*iterator)->GetPos().x, (*iterator)->GetPos().y, 128, 128 };
-
-					//if (RectIntersect(&collider, &fowTileRect)) {
-					if (TotalDistanceToPlayer(*iterator, pos) == RADIUS)
+					for (; j < 149 && j < endTile.y + 1; ++j)
 					{
-						for (int x = 0; x < TILE_PARTITIONS; x++)
-							for (int j = 0; j < TILE_PARTITIONS; j++)
-							{
-								if (contador < fowSmallerTilesVector.size())
-								{
-									// TODO 5 (set the smaller tiles position & normalAlpha, example: "fowSmallerTilesVector[contador]->pos.x = ...;" )
-									fowSmallerTilesVector[contador]->pos.x = fowTilesVector[pos]->pos.x * FOW_TILE + (x * FOW_TILE / TILE_PARTITIONS);
-									fowSmallerTilesVector[contador]->pos.y = fowTilesVector[pos]->pos.y * FOW_TILE + (j * FOW_TILE / TILE_PARTITIONS);
-									fowSmallerTilesVector[contador]->normalAlpha = fowTilesVector[pos]->normalAlpha;
-								}
-								else
-								{
-									FogOfWarTile* aux = new FogOfWarTile();
-									aux->pos.x = fowTilesVector[pos]->pos.x * FOW_TILE + (x * FOW_TILE / TILE_PARTITIONS);
-									aux->pos.y = fowTilesVector[pos]->pos.y * FOW_TILE + (j * FOW_TILE / TILE_PARTITIONS);
-									aux->normalAlpha = fowTilesVector[pos]->normalAlpha;
-									fowSmallerTilesVector.push_back(aux);
-								}
-								contador++;
 
-							}
-						fowTilesVector[pos]->alpha = 0;
-					}
+						int pos = (119 * j) + i;
 
-					else if (TotalDistanceToPlayer(*iterator, pos) < RADIUS)
-					{
-						fowTilesVector[pos]->alpha = 0;
-						fowTilesVector[pos]->normalAlpha = TRANSLUCID_ALPHA;
+						if (fowTilesVector[pos]->alpha == 0)
+							continue;
+
+						SDL_Rect tileRect{ fowTilesVector[pos]->pos.x * FOW_TILE, fowTilesVector[pos]->pos.y * FOW_TILE, fowTilesVector[pos]->size * FOW_TILE, fowTilesVector[pos]->size * FOW_TILE };
+						if (SDL_HasIntersection(&tileRect, &App->map->playerBase))
+							continue;
+
+						//SDL_Rect fowTileRect{ fowTilesVector[i]->pos.x, fowTilesVector[i]->pos.y , 32,32 };
+						//SDL_Rect collider{ (*iterator)->GetPos().x, (*iterator)->GetPos().y, 128, 128 };
+
+						//if (RectIntersect(&collider, &fowTileRect)) {
+						if (TotalDistanceToPlayer(*iterator, pos) == RADIUS)
+						{
+							for (int x = 0; x < TILE_PARTITIONS; x++)
+								for (int j = 0; j < TILE_PARTITIONS; j++)
+								{
+									if (contador < fowSmallerTilesVector.size())
+									{
+										// TODO 5 (set the smaller tiles position & normalAlpha, example: "fowSmallerTilesVector[contador]->pos.x = ...;" )
+										fowSmallerTilesVector[contador]->pos.x = fowTilesVector[pos]->pos.x * FOW_TILE + (x * FOW_TILE / TILE_PARTITIONS);
+										fowSmallerTilesVector[contador]->pos.y = fowTilesVector[pos]->pos.y * FOW_TILE + (j * FOW_TILE / TILE_PARTITIONS);
+										fowSmallerTilesVector[contador]->normalAlpha = fowTilesVector[pos]->normalAlpha;
+									}
+									else
+									{
+										FogOfWarTile* aux = new FogOfWarTile();
+										aux->pos.x = fowTilesVector[pos]->pos.x * FOW_TILE + (x * FOW_TILE / TILE_PARTITIONS);
+										aux->pos.y = fowTilesVector[pos]->pos.y * FOW_TILE + (j * FOW_TILE / TILE_PARTITIONS);
+										aux->normalAlpha = fowTilesVector[pos]->normalAlpha;
+										fowSmallerTilesVector.push_back(aux);
+									}
+									contador++;
+
+								}
+							fowTilesVector[pos]->alpha = 0;
+						}
+
+						else if (TotalDistanceToPlayer(*iterator, pos) < RADIUS)
+						{
+							fowTilesVector[pos]->alpha = 0;
+							fowTilesVector[pos]->normalAlpha = TRANSLUCID_ALPHA;
+						}
+						else
+							fowTilesVector[pos]->alpha = fowTilesVector[pos]->normalAlpha;
 					}
-					else
-						fowTilesVector[pos]->alpha = fowTilesVector[pos]->normalAlpha;
 				}
 			}
 
