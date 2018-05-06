@@ -968,7 +968,7 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 					break;
 
 				case EntityType_GRUNT:
-				//case EntityType_TROLL_AXETHROWER:
+				case EntityType_TROLL_AXETHROWER:
 				case EntityType_DRAGON:
 					enemyEntity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
 					break;

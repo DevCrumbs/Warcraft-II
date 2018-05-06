@@ -182,8 +182,11 @@ bool StaticEntity::CheckBuildingState()
 
 	BuildingState bs = buildingState;
 
-	if (this->GetCurrLife() <= 0)
+	if (this->GetCurrLife() <= 0) {
+
 		buildingState = BuildingState_Destroyed;
+		isValid = false;
+	}
 	else if (this->GetCurrLife() <= this->GetMaxLife() / 4) {// less than 1/4 HP
 		buildingState = BuildingState_HardFire;
 	}

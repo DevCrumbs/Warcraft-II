@@ -105,7 +105,6 @@ void ElvenArcher::Move(float dt)
 			App->audio->PlayFx(App->audio->GetFX().humanDeath, 0);
 
 			isDead = true;
-			isValid = false;
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);
@@ -118,18 +117,14 @@ void ElvenArcher::Move(float dt)
 			App->entities->InvalidateMovementEntity(this);
 
 			// Remove any path request
+			pathPlanner->SetSearchRequested(false);
+			pathPlanner->SetSearchCompleted(false);
 			App->pathmanager->UnRegister(pathPlanner);
 
 			if (singleUnit != nullptr)
 				delete singleUnit;
 			singleUnit = nullptr;
 
-			// Invalidate colliders
-			sightRadiusCollider->isValid = false;
-			attackRadiusCollider->isValid = false;
-			entityCollider->isValid = false;
-
-			// Hide life bar Will remove in destructor
 			if (!App->gui->isGuiCleanUp) {
 
 				if (lifeBar != nullptr)
@@ -137,15 +132,51 @@ void ElvenArcher::Move(float dt)
 					lifeBar->isActive = false;
 			}
 
+			// Invalidate colliders
+			sightRadiusCollider->isValid = false;
+			attackRadiusCollider->isValid = false;
+			entityCollider->isValid = false;
 
-			// If the player dies, remove all their goals
-			//unitCommand = UnitCommand_Stop;
+			LOG("An Elven Archer died");
 		}
 	}
 
 	if (!isDead && isValid) {
 
 		// PROCESS THE COMMANDS
+
+		// 1. Remove attack
+		switch (unitCommand) {
+
+		case UnitCommand_Stop:
+		case UnitCommand_MoveToPosition:
+		case UnitCommand_Patrol:
+		case UnitCommand_GatherGold:
+		case UnitCommand_HealRunestone:
+		case UnitCommand_RescuePrisoner:
+
+			/// The unit could be attacking before this command
+			if (currTarget != nullptr) {
+
+				if (!currTarget->isRemoved)
+
+					currTarget->target->RemoveAttackingUnit(this);
+
+				currTarget = nullptr;
+			}
+
+			isHitting = false;
+			///
+
+			break;
+
+		case UnitCommand_NoCommand:
+		default:
+
+			break;
+		}
+
+		// 2. Actual command
 		switch (unitCommand) {
 
 		case UnitCommand_Stop:
@@ -169,6 +200,8 @@ void ElvenArcher::Move(float dt)
 
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);
+
+					isRunAway = true;
 
 					unitState = UnitState_Walk;
 					unitCommand = UnitCommand_NoCommand;
@@ -271,8 +304,9 @@ void ElvenArcher::Move(float dt)
 		}
 	}
 
-	// PROCESS THE CURRENTLY ACTIVE GOAL
-	brain->Process(dt);
+	if (!isDead)
+		// PROCESS THE CURRENTLY ACTIVE GOAL
+		brain->Process(dt);
 
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
@@ -342,8 +376,11 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -409,8 +446,11 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -435,8 +475,11 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -446,8 +489,28 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					RemoveTargetInfo(*it);
-					break;
+
+					if (currTarget != nullptr) {
+
+						if (c2->entity == currTarget->target) {
+
+							(*it)->target->RemoveAttackingUnit(this);
+							SetIsRemovedTargetInfo((*it)->target);
+							break;
+						}
+						else {
+
+							(*it)->target->RemoveAttackingUnit(this);
+							RemoveTargetInfo(*it);
+							break;
+						}
+					}
+					else {
+
+						(*it)->target->RemoveAttackingUnit(this);
+						RemoveTargetInfo(*it);
+						break;
+					}
 				}
 				it++;
 			}
@@ -458,8 +521,11 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
+			}
 
 			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -485,29 +551,70 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 	case UnitState_Walk:
 
+		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
+			break;
+
+		// DEFENSE NOTE: the unit automatically attacks back their attacking units (if they have any attacking units) to defend themselves
+		if (unitsAttacking.size() > 0) {
+
+			if (singleUnit->IsFittingTile()) {
+
+				// If the unit is not ordered to run away...
+				if (!isRunAway) {
+
+					if (currTarget == nullptr) {
+
+						// Check if there are available targets (DYNAMIC ENTITY) 
+						newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+						if (newTarget != nullptr) {
+
+							currTarget = newTarget;
+							brain->AddGoal_AttackTarget(currTarget, false);
+						}
+					}
+				}
+			}
+		}
+
 		break;
+
+	case UnitState_Idle:
+
+		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
+			break;
+
+		// If the unit is doing nothing, make it look around
+		if (brain->GetSubgoalsList().size() == 0)
+
+			brain->AddGoal_LookAround(1, 3, 1, 2, 2);
 
 	case UnitState_Patrol:
 
-		// Check if there are available targets
-		/// Prioritize a type of target (static or dynamic)
+		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
+			break;
+
+		// ATTACK NOTE (Idle and Patrol states): the unit automatically attacks any target (only DYNAMIC ENTITIES) that is in their targets list
+
 		if (singleUnit->IsFittingTile()) {
 
+			// Check if there are available targets (DYNAMIC ENTITY)
 			newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
 			if (newTarget != nullptr) {
 
-				// A new target has found, update the attacking target
+				// A new target has found! Update the currTarget
 				if (currTarget != newTarget) {
 
+					// Anticipate the removing of this unit from the attacking units of the target
 					if (currTarget != nullptr) {
 
-						if (!currTarget->isRemoved) {
+						if (!currTarget->isRemoved)
 
 							currTarget->target->RemoveAttackingUnit(this);
-							isHitting = false;
-						}
 					}
+
+					isHitting = false;
 
 					currTarget = newTarget;
 					brain->AddGoal_AttackTarget(currTarget);
@@ -518,6 +625,26 @@ void ElvenArcher::UnitStateMachine(float dt)
 		break;
 
 	case UnitState_AttackTarget:
+
+		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
+			break;
+
+		// ATTACK NOTE (Attack state): if currTarget is dead, the unit automatically attacks the next target (only DYNAMIC ENTITIES) from their targets list
+
+		if (singleUnit->IsFittingTile()) {
+
+			if (currTarget == nullptr) {
+
+				// Check if there are available targets (DYNAMIC ENTITY) 
+				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+				if (newTarget != nullptr) {
+
+					currTarget = newTarget;
+					brain->AddGoal_AttackTarget(currTarget);
+				}
+			}
+		}
 
 		break;
 
@@ -535,12 +662,16 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 		break;
 
-	case UnitState_Idle:
 	case UnitState_NoState:
 	default:
 
 		break;
 	}
+
+	/// DEFENSE
+	if (unitsAttacking.size() == 0)
+
+		isRunAway = false;
 }
 
 // -------------------------------------------------------------

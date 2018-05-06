@@ -60,7 +60,6 @@ TownHall::TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const To
 
 void TownHall::Move(float dt)
 {
-
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 
