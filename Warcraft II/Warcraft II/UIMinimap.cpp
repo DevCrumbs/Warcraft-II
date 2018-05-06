@@ -128,7 +128,7 @@ void UIMinimap::Draw() const
 		SDL_Rect rect{ (*iterator)->pos.x * currentScaleFactor + offsetX + cameraOffset.x,
 						(*iterator)->pos.y * currentScaleFactor + offsetY + cameraOffset.y,
 						size.x * currentScaleFactor, size.y * currentScaleFactor };
-			
+
 		SDL_Color color{ 0,0,0,0 };
 		switch ((*iterator)->staticEntityCategory)
 		{
@@ -155,8 +155,25 @@ void UIMinimap::Draw() const
 
 	App->render->DrawQuad(rect, 255, 255, 0, 255, false, false);
 
-	App->render->ResetViewPort();
+	if (isRoomCleared)
+	{
+		if (startRoomClearedTimer)
+		{
+			roomClearedTimer.Start();
+			startRoomClearedTimer = false;
+		}
 
+		if (roomClearedTimer.Read() < 50)
+		{
+			App->render->DrawQuad(roomClearedRect, 255, 255, 255, 255, true, false);
+		}
+		else
+		{
+			isRoomCleared = false;
+			roomClearedRect = { 0,0,0,0 };
+		}
+	}
+	App->render->ResetViewPort();
 }
 
 void UIMinimap::HandleInput(float dt) 
@@ -195,6 +212,8 @@ void UIMinimap::HandleInput(float dt)
 	{
 		moveCamera = false;
 	}
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
+		DrawRoomCleared(App->map->playerBase);
 
 	if (App->scene->isMinimapChanged)
 	{
@@ -253,6 +272,24 @@ iPoint UIMinimap::MinimapToMap(iPoint pos)
 	return mapPos;
 }
 
+SDL_Rect UIMinimap::MinimapToMap(SDL_Rect pos)
+{
+	SDL_Rect minimapPos{ 0,0,0,0 };
+	SDL_Rect mapPos{ 0,0,0,0 };
+
+	minimapPos.x = pos.x;
+	minimapPos.y = pos.y;
+	minimapPos.w = pos.w;
+	minimapPos.h = pos.h;
+
+	mapPos.x = (minimapPos.x * currentScaleFactor) - offsetX + cameraOffset.x;
+	mapPos.y = (minimapPos.y * currentScaleFactor) - offsetY + cameraOffset.y;
+	mapPos.w = minimapPos.w * currentScaleFactor;
+	mapPos.h = minimapPos.h * currentScaleFactor;
+
+	return mapPos;
+}
+
 iPoint UIMinimap::MinimapToMap()
 {
 	return MinimapToMap(GetMousePos());
@@ -271,6 +308,21 @@ bool UIMinimap::SetMinimap(SDL_Rect pos, int entityW, int entityH)
 	ret = LoadMap();
 
 	return true;
+}
+
+bool UIMinimap::DrawRoomCleared(Room room)
+{
+	bool ret = false;
+
+	//if (room.isCleared)
+	{
+		roomClearedRect = MinimapToMap(room.roomRect);
+		isRoomCleared = true;
+		startRoomClearedTimer = true;
+		ret = true;
+	}
+
+	return ret;
 }
 
 
@@ -372,6 +424,7 @@ bool UIMinimap::LoadMap()
 
 	return ret;
 }
+
 
 SDL_Texture* UIMinimap::CreateMinimapTexture(SDL_Rect mapSize, SDL_Renderer* renderer, SDL_Surface* mapSurface, float scaleFactor)
 {
