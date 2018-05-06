@@ -530,3 +530,4 @@ bool RectIntersect(const SDL_Rect* rectA, const SDL_Rect* rectB, SDL_Rect* resul
 
 	return ret;
 }
+

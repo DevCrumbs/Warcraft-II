@@ -54,13 +54,7 @@ bool j1FogOfWar::CleanUp()
 }
 
 void j1FogOfWar::print()
-{
-	//for (int i = 0; i < fowTilesVector.size(); i++)
-	//{
-	//	App->render->DrawQuad({ fowTilesVector[i]->pos.x * FOW_TILE, fowTilesVector[i]->pos.y * FOW_TILE, FOW_TILE, FOW_TILE }, 0, 0, 0, fowTilesVector[i]->alpha);
-	//}
-
-
+{	
 	iPoint startTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale(),
 		-App->render->camera.y / App->win->GetScale());
 	iPoint endTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
