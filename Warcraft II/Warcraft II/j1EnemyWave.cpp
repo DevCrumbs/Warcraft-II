@@ -7,6 +7,7 @@
 #include "j1Map.h"
 #include "j1Player.h"
 #include "j1Input.h"
+#include "j1Scene.h"
 #include "DynamicEntity.h"
 #include "j1EntityFactory.h"
 #include <time.h>
@@ -108,6 +109,12 @@ bool j1EnemyWave::Update(float ft)
 
 		if (!isStartWave) {
 
+			if (App->scene->adviceMessage != AdviceMessage_UNDER_ATTACK) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_UNDER_ATTACK;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+			
 			// Calculate the phases of the current wave
 			int maxPhasesOfCurrWave = 2;
 			int minPhasesOfCurrWave = 1;
