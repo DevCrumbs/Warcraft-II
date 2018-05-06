@@ -14,6 +14,7 @@ Turalyon::Turalyon(fPoint pos, iPoint size, int currLife, uint maxLife, const Un
 	LoadAnimationsSpeed();
 
 	animation = &this->turalyonInfo.idle;
+	isStill = true;
 }
 
 void Turalyon::Move(float dt)

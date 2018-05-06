@@ -14,6 +14,7 @@ Alleria::Alleria(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	LoadAnimationsSpeed();
 
 	animation = &this->alleriaInfo.idle;
+	isStill = true;
 }
 
 void Alleria::Move(float dt)

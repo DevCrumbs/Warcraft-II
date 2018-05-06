@@ -407,17 +407,28 @@ void j1Collision::DebugDraw()
 
 	while (it != colliderGroups.end()) {
 
+		if ((*it)->offsetCollider != nullptr) {
+
+			if (!App->render->IsInScreen({ (int)(*it)->offsetCollider->colliderRect.x, (int)(*it)->offsetCollider->colliderRect.y, (*it)->offsetCollider->colliderRect.w, (*it)->offsetCollider->colliderRect.h })) {
+
+				it++;
+				continue;
+			}
+		}
+
 		color = debugColors[(*it)->colliderType];
 
 		for (uint i = 0; i < (*it)->colliders.size(); ++i) {
-			//App->render->DrawQuad((*it)->colliders[i]->colliderRect, color.r, color.g, color.b, alpha);
+
+			if (!App->render->IsInScreen({ (*it)->colliders[i]->colliderRect.x, (*it)->colliders[i]->colliderRect.y, (*it)->colliders[i]->colliderRect.w, (*it)->colliders[i]->colliderRect.h }))
+				continue;
+
 			App->printer->PrintQuad((*it)->colliders[i]->colliderRect, { color.r,color.g,color.b,alpha }, true);
 		}
 
-		if ((*it)->offsetCollider != nullptr) {
-			//App->render->DrawQuad((*it)->offsetCollider->colliderRect, 255, 255, 255, alpha);
+		if ((*it)->offsetCollider != nullptr)
+
 			App->printer->PrintQuad((*it)->offsetCollider->colliderRect, { 255,255,255,alpha }, true);
-		}
 
 		it++;
 	}
