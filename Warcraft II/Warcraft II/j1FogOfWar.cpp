@@ -65,17 +65,17 @@ void j1FogOfWar::print()
 		-App->render->camera.y / App->win->GetScale());
 	iPoint endTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
 		-App->render->camera.y / App->win->GetScale() + App->render->camera.h);
-	int i = startTile.x + 1;
+	int i = startTile.x;
 	if (i < 0)
 		i = 0;
 
-	for (; i < 119 && i < endTile.x + 0; ++i)
+	for (; i < 119 && i < endTile.x + 1; ++i)
 	{
-		int j = startTile.y + 1;
+		int j = startTile.y;
 		if (j < 0)
 			j = 0;
 
-		for (; j < 149 && j < endTile.y + 0; ++j)
+		for (; j < 149 && j < endTile.y + 1; ++j)
 		{
 
 			int pos = (119 * j) + i;
@@ -152,17 +152,17 @@ void j1FogOfWar::TilesNearPlayer()
 				-App->render->camera.y / App->win->GetScale());
 			iPoint endTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
 				-App->render->camera.y / App->win->GetScale() + App->render->camera.h);
-			int i = startTile.x + 1;
+			int i = startTile.x;
 			if (i < 0)
 				i = 0;
 
-			for (; i < 119 && i < endTile.x + 0; ++i)
+			for (; i < 119 && i < endTile.x + 1; ++i)
 			{
-				int j = startTile.y + 1;
+				int j = startTile.y;
 				if (j < 0)
 					j = 0;
 
-				for (; j < 149 && j < endTile.y + 0; ++j)
+				for (; j < 149 && j < endTile.y + 1; ++j)
 				{
 
 					int pos = (119 * j) + i;
