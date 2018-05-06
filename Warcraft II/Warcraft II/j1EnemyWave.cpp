@@ -251,7 +251,7 @@ bool j1EnemyWave::SpawnEnemy(float prob)  // probability between 0.0 and 1.0
 
 void j1EnemyWave::PerformWave()
 {
-	int layer = rand() % spawnTiles.size() + 1;
+	int layer = rand() % spawnTiles.size();
 
 	list<iPoint> currentList = spawnTiles[layer];
 
