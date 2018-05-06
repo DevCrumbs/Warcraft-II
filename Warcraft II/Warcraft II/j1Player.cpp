@@ -2134,15 +2134,18 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		case UI_EVENT_MOUSE_LEFT_CLICK:
 
 			if (UIelem == upgradeTownHallButton) {
+				
 				if (townHallUpgrade && currentGold >= 1500) {
 					keepUpgrade = true;
 					AddGold(-1500);
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Constructuion sound
+					HideHoverInfoMenu(&firstHoverInfo);
 				}
 				else if (currentGold >= 500) {
 					townHallUpgrade = true;
 					AddGold(-500);
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+					HideHoverInfoMenu(&firstHoverInfo);
 				}
 				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
@@ -2151,6 +2154,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			//For destroying a building
 			else if (UIelem == destroyBuildingButton) {
 				HideEntitySelectedInfo();
+				HideHoverInfoMenu(&thirdHoverInfo);
 				entitySelectedStats.entitySelected->isRemove = true;
 				entitySelectedStats.entitySelected = nullptr;
 			}
