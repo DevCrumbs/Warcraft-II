@@ -1008,9 +1008,12 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
 		if (m > 0.0f) {
+
 			orientation.x /= m;
 			orientation.y /= m;
 		}
+
+		owner->SetUnitDirectionByValue(orientation);
 
 		switch (owner->dynamicEntityType) {
 
