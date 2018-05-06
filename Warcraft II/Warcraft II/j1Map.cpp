@@ -139,7 +139,7 @@ iPoint j1Map::MapToWorld(int x, int y) const
 	}
 	else
 	{
-		LOG("Unknown map type");
+	//	LOG("Unknown map type");
 		ret.x = x; ret.y = y;
 	}
 

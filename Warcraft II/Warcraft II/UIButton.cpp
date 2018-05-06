@@ -85,7 +85,9 @@ void UIButton::HandleInput()
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
-		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) || tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+
+		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN))
+		{
 			nextEvent = false;
 			LOG("MOUSE L CLICK START");
 			ChangeSprite(pressedTexArea);
@@ -96,7 +98,8 @@ void UIButton::HandleInput()
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
-		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)) {
+		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)) 
+		{
 			nextEvent = false;
 			LOG("MOUSE R CLICK START");
 

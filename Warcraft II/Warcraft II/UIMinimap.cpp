@@ -468,7 +468,7 @@ bool UIMinimap::SaveInRenderer(const SDL_Texture* texture, int x, int y, const S
 
 	SDL_Rect rect;
 	rect.x = x;
-		rect.y = y;
+	rect.y = y;
 
 	if (section != NULL)
 	{

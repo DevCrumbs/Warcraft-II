@@ -25,6 +25,7 @@
 #include "j1FinishGame.h"
 #include "j1Printer.h"
 #include "j1EnemyWave.h"
+#include "j1FogOfWar.h"
 #include <time.h>
 
 #include "j1App.h"
@@ -57,6 +58,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	finish = new j1FinishGame();
 	printer = new j1Printer();
 	wave = new j1EnemyWave();
+	fow = new j1FogOfWar();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -82,6 +84,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(player);
 	AddModule(scene);
 
+	AddModule(fow);
+
 	AddModule(finish);
 	AddModule(menu);
 	AddModule(console);
@@ -103,6 +107,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	movement->active = false;
 	particles->active = false;
 	wave->active = false;
+	fow->active = false;
 
 	srand(time(NULL));
 }
