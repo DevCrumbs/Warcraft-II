@@ -2166,11 +2166,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else if (UIelem == repairBuildingButton) {
 				if (entitySelectedStats.entitySelected->GetCurrLife() < entitySelectedStats.entitySelected->GetMaxLife()) {
-					uint gold = CalculateGoldRepair((StaticEntity*)entitySelectedStats.entitySelected);
+					StaticEntity* ent = (StaticEntity*)entitySelectedStats.entitySelected;
+					uint gold = CalculateGoldRepair(ent);
 					if (GetCurrentGold() >= gold) {
 						int negative = gold;
 						AddGold(-negative);
 						entitySelectedStats.entitySelected->SetCurrLife(entitySelectedStats.entitySelected->GetMaxLife());
+						ent->CheckBuildingState();
 					}
 				}
 			}
