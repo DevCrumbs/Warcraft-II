@@ -21,7 +21,7 @@
 
 #include "Brofiler\Brofiler.h"
 
-DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, j1Module* listener) : Entity(pos, size, currLife, maxLife, listener), unitInfo(unitInfo)
+DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, j1Module* listener, bool isSingleUnit) : Entity(pos, size, currLife, maxLife, listener), unitInfo(unitInfo)
 {
 	this->entityType = EntityCategory_DYNAMIC_ENTITY;
 
@@ -31,14 +31,17 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 		this->unitInfo.currSpeed = this->unitInfo.maxSpeed;
 
 	/// SingleUnit
-	singleUnit = new SingleUnit(this, nullptr);
-	App->movement->CreateGroupFromUnit(this);
+	if (isSingleUnit) {
 
-	/// PathPlanner
-	pathPlanner = new PathPlanner(this);
+		singleUnit = new SingleUnit(this, nullptr);
+		App->movement->CreateGroupFromUnit(this);
 
-	// Goals
-	brain = new Goal_Think(this);
+		/// PathPlanner
+		pathPlanner = new PathPlanner(this);
+
+		// Goals
+		brain = new Goal_Think(this);
+	}
 
 	// LifeBar
 	lifeBarMarginX = 8;
@@ -48,10 +51,11 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 DynamicEntity::~DynamicEntity()
 {
 	// Remove Goals
-	brain->RemoveAllSubgoals();
+	if (brain != nullptr) {
 
-	if (brain != nullptr)
+		brain->RemoveAllSubgoals();
 		delete brain;
+	}
 	brain = nullptr;
 
 	// Remove Movement

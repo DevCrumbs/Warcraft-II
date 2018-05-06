@@ -7,6 +7,7 @@
 #include "Entity.h" 
 #include "j1Printer.h"
 #include "j1Scene.h"
+#include "j1FogOfWar.h"
 
 #include "UIMinimap.h"
 
@@ -128,7 +129,7 @@ void UIMinimap::Draw() const
 		SDL_Rect rect{ (*iterator)->pos.x * currentScaleFactor + offsetX + cameraOffset.x,
 						(*iterator)->pos.y * currentScaleFactor + offsetY + cameraOffset.y,
 						size.x * currentScaleFactor, size.y * currentScaleFactor };
-			
+
 		SDL_Color color{ 0,0,0,0 };
 		switch ((*iterator)->staticEntityCategory)
 		{
@@ -155,8 +156,28 @@ void UIMinimap::Draw() const
 
 	App->render->DrawQuad(rect, 255, 255, 0, 255, false, false);
 
-	App->render->ResetViewPort();
+	if (isRoomCleared)
+	{
+		if (startRoomClearedTimer)
+		{
+			roomClearedTimer.Start();
+			startRoomClearedTimer = false;
+		}
 
+		if (roomClearedTimer.Read() < 50)
+		{
+			App->render->DrawQuad(roomClearedRect, 255, 255, 255, 255, true, false);
+		}
+		else
+		{
+			isRoomCleared = false;
+			roomClearedRect = { 0,0,0,0 };
+		}
+	}
+
+	DrawFoW();
+
+	App->render->ResetViewPort();
 }
 
 void UIMinimap::HandleInput(float dt) 
@@ -253,7 +274,25 @@ iPoint UIMinimap::MinimapToMap(iPoint pos)
 	return mapPos;
 }
 
-iPoint UIMinimap::MinimapToMap()
+SDL_Rect UIMinimap::MapToMinimap(SDL_Rect pos) const
+{
+	SDL_Rect minimapPos{ 0,0,0,0 };
+	SDL_Rect mapPos{ 0,0,0,0 };
+
+	minimapPos.x = pos.x;
+	minimapPos.y = pos.y;
+	minimapPos.w = pos.w;
+	minimapPos.h = pos.h;
+
+	mapPos.x = (minimapPos.x * currentScaleFactor) - offsetX + cameraOffset.x;
+	mapPos.y = (minimapPos.y * currentScaleFactor) - offsetY + cameraOffset.y;
+	mapPos.w = minimapPos.w * currentScaleFactor;
+	mapPos.h = minimapPos.h * currentScaleFactor;
+
+	return mapPos;
+}
+
+iPoint UIMinimap::MinimapToMap() 
 {
 	return MinimapToMap(GetMousePos());
 }
@@ -273,6 +312,33 @@ bool UIMinimap::SetMinimap(SDL_Rect pos, int entityW, int entityH)
 	return true;
 }
 
+bool UIMinimap::DrawRoomCleared(Room room)
+{
+	bool ret = false;
+
+	//if (room.isCleared)
+	{
+		roomClearedRect = MapToMinimap(room.roomRect);
+		isRoomCleared = true;
+		startRoomClearedTimer = true;
+		ret = true;
+	}
+
+	return ret;
+}
+
+void UIMinimap::DrawFoW() const
+{
+	for (vector<FogOfWarTile*>::iterator tiles = App->fow->fowTilesVector.begin(); tiles != App->fow->fowTilesVector.end();)
+	{
+		SDL_Rect tileRect = MapToMinimap({ (*tiles)->pos.x * 32,(*tiles)->pos.y * 32, (*tiles)->size * zoomFactor, (*tiles)->size * zoomFactor });
+		App->render->DrawQuad(tileRect, 0, 0, 0, (*tiles)->alpha, true, false);
+
+		for (int i = 0; i < zoomFactor; ++i)
+			if (tiles != App->fow->fowTilesVector.end())
+				tiles++;
+	}
+}
 
 bool UIMinimap::LoadMap()
 {
@@ -415,7 +481,7 @@ bool UIMinimap::SaveInRenderer(const SDL_Texture* texture, int x, int y, const S
 
 	SDL_Rect rect;
 	rect.x = x;
-	rect.y = y;
+		rect.y = y;
 
 	if (section != NULL)
 	{

@@ -22,7 +22,7 @@ class Entity;
 struct FogOfWarTile
 {
 	iPoint pos;
-	int size = 0;
+	int size = 32;
 	int alpha = 255;
 	int normalAlpha = 255;
 };
@@ -39,7 +39,6 @@ public:
 	bool CleanUp();
 	void print();
 
-	// Part 1
 	void LoadFoWMap(int mapWidth, int mapHeight);
 	void UnLoadFowMap();
 	void TilesNearPlayer();

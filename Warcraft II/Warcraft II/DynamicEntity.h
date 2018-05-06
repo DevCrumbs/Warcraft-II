@@ -113,7 +113,7 @@ class DynamicEntity :public Entity
 {
 public:
 
-	DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, j1Module* listener);
+	DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, j1Module* listener, bool isSingleUnit = true);
 	virtual ~DynamicEntity();
 	virtual void Move(float dt);
 	virtual void Draw(SDL_Texture* sprites);
