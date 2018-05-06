@@ -9,6 +9,9 @@
 #include "UIElement.h"
 #include "j1EntityFactory.h"
 #include "j1Gui.h"
+#include "j1Timer.h"
+
+struct Room;
 
 struct UIMinimap_Info 
 {
@@ -48,10 +51,14 @@ public:
 	iPoint GetMousePos();
 
 	iPoint MinimapToMap(iPoint pos);
+	SDL_Rect MapToMinimap(SDL_Rect pos) const;
+
 	iPoint MinimapToMap();
 
 
 	bool SetMinimap(SDL_Rect pos, int entityW, int entityH);
+	bool DrawRoomCleared(Room room);
+	void DrawFoW() const;
 	bool LoadMap();
 
 	SDL_Texture* CreateMinimapTexture(SDL_Rect mapSize, SDL_Renderer* renderer, SDL_Surface* mapSurface, float scaleFactor);
@@ -112,6 +119,12 @@ private:
 
 	list<DynamicEntity*>* activeDynamicEntities;
 	list<StaticEntity*>* activeStaticEntities;
+
+	mutable bool isRoomCleared = false;
+	mutable SDL_Rect roomClearedRect{ 0,0,0,0 };
+	mutable bool startRoomClearedTimer = false;
+	mutable j1Timer roomClearedTimer;
+
 
 };
 

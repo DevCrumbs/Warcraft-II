@@ -1399,7 +1399,9 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	{
 	case EntityType_TOWN_HALL:
 		//Have to cap this //TODO
+		if(!townHallUpgrade)
 		upgradeTownHallButton->isActive = true;
+
 		repairBuildingButton->isActive = true;
 		break;
 	case EntityType_BARRACKS:
@@ -2134,17 +2136,21 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			if (UIelem == upgradeTownHallButton) {
 				
-				if (townHallUpgrade && currentGold >= 1500) {
-					keepUpgrade = true;
-					AddGold(-1500);
-					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Constructuion sound
-					HideHoverInfoMenu(&firstHoverInfo);
-				}
-				else if (currentGold >= 500) {
+				//if (townHallUpgrade && currentGold >= 1500) {
+				//	keepUpgrade = true;
+				//	AddGold(-1500);
+				//	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Constructuion sound
+				//	HideHoverInfoMenu(&firstHoverInfo);
+				//	entitySelectedStats.entitySelected = townHall;
+				//	ShowEntitySelectedInfo(entitySelectedStats.entitySelected->GetStringLife(), "Keep", { 597,202,50,41 }, entitySelectedStats.entitySelected);
+				//}
+				if (currentGold >= 500) {
 					townHallUpgrade = true;
 					AddGold(-500);
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 					HideHoverInfoMenu(&firstHoverInfo);
+					upgradeTownHallButton->isActive = false;
+					ShowEntitySelectedInfo(entitySelectedStats.entitySelected->GetStringLife(), "Keep", { 597,202,50,41 }, entitySelectedStats.entitySelected);
 				}
 				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
@@ -2152,6 +2158,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			//For destroying a building
 			else if (UIelem == destroyBuildingButton) {
+				App->audio->PlayFx(App->audio->GetFX().destroyBuild);
 				HideHoverInfoMenu(&thirdHoverInfo);
 				entitySelectedStats.entitySelected->isRemove = true;
 				HideEntitySelectedInfo();

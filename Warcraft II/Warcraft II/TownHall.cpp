@@ -75,7 +75,7 @@ void TownHall::Move(float dt)
 	else if (App->player->townHallUpgrade) {
 		if (startTimer) {
 			this->constructionTimer.Start();
-			App->player->HideEntitySelectedInfo();
+			//App->player->HideEntitySelectedInfo();
 			startTimer = false;
 		}
 		townHallInfo.townHallType = TownHallType_Keep;

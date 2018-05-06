@@ -76,6 +76,9 @@
     <Filter Include="Modules\Entities\DynamicEntities\Critters">
       <UniqueIdentifier>{f78f8479-857f-4113-98c8-475f22c6346f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\FoW">
+      <UniqueIdentifier>{2910bc40-84cd-48b8-bc49-f4c3792d98fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PugiXml\src\pugiconfig.hpp">
@@ -339,6 +342,9 @@
     <ClInclude Include="j1EnemyWave.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="j1FogOfWar.h">
+      <Filter>Modules\FoW</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -586,6 +592,9 @@
     </ClCompile>
     <ClCompile Include="Source.cpp">
       <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="j1FogOfWar.cpp">
+      <Filter>Modules\FoW</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

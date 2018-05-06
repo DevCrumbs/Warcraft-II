@@ -979,3 +979,8 @@ bool DynamicEntity::GetBlitState() const
 {
 	return isBlit;
 }
+
+iPoint DynamicEntity::GetLastTile()
+{
+	return lastColliderUpdateTile;
+}

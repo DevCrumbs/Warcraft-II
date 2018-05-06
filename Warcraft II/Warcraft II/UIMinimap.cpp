@@ -7,8 +7,12 @@
 #include "Entity.h" 
 #include "j1Printer.h"
 #include "j1Scene.h"
+#include "j1FogOfWar.h"
 
 #include "UIMinimap.h"
+
+
+#include "Brofiler\Brofiler.h"
 
 UIMinimap::UIMinimap(iPoint localPos, UIElement* parent, UIMinimap_Info& info, j1Module* listener) : UIElement({ info.minimapInfo.x,info.minimapInfo.y }, parent, listener, false)
 {
@@ -62,6 +66,8 @@ void UIMinimap::Update(float dt)
 
 void UIMinimap::Draw() const
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Magenta);
+
 	SDL_fRect camera = App->render->camera;
 
 	App->render->SetViewPort(minimapInfo);
@@ -94,8 +100,9 @@ void UIMinimap::Draw() const
 	///-----------------	 Draw all entities in the minimap
 	for (list<DynamicEntity*>::iterator iterator = (*activeDynamicEntities).begin(); iterator != (*activeDynamicEntities).end(); ++iterator)
 	{
-		SDL_Rect rect{ (*iterator)->pos.x * currentScaleFactor + offsetX + cameraOffset.x,
-						(*iterator)->pos.y * currentScaleFactor + offsetY + cameraOffset.y,
+		iPoint pos = (*iterator)->GetLastTile();
+		SDL_Rect rect{ pos.x * 32 * currentScaleFactor + offsetX + cameraOffset.x,
+						pos.y *32 * currentScaleFactor + offsetY + cameraOffset.y,
 						entityWidth * currentScaleFactor * zoomFactor, entityHeight * currentScaleFactor * zoomFactor };
 
 		SDL_Color color{ 0,0,0,0 };
@@ -128,7 +135,7 @@ void UIMinimap::Draw() const
 		SDL_Rect rect{ (*iterator)->pos.x * currentScaleFactor + offsetX + cameraOffset.x,
 						(*iterator)->pos.y * currentScaleFactor + offsetY + cameraOffset.y,
 						size.x * currentScaleFactor, size.y * currentScaleFactor };
-			
+
 		SDL_Color color{ 0,0,0,0 };
 		switch ((*iterator)->staticEntityCategory)
 		{
@@ -149,14 +156,37 @@ void UIMinimap::Draw() const
 		App->render->DrawQuad(rect, color.r, color.g, color.b, color.a, true, false);
 	}
 
+
+	//Draw FoW
+	if (App->fow->isActive)
+		DrawFoW();
+
 	///-----------------	 Draw the camera rect
 	SDL_Rect rect{ -camera.x * currentScaleFactor + offsetX + cameraOffset.x, -camera.y * currentScaleFactor + offsetY + cameraOffset.y,
 		camera.w * currentScaleFactor, camera.h * currentScaleFactor };
 
 	App->render->DrawQuad(rect, 255, 255, 0, 255, false, false);
 
-	App->render->ResetViewPort();
+	if (isRoomCleared)
+	{
+		if (startRoomClearedTimer)
+		{
+			roomClearedTimer.Start();
+			startRoomClearedTimer = false;
+		}
 
+		if (roomClearedTimer.Read() < 50)
+		{
+			App->render->DrawQuad(roomClearedRect, 255, 255, 255, 255, true, false);
+		}
+		else
+		{
+			isRoomCleared = false;
+			roomClearedRect = { 0,0,0,0 };
+		}
+	}
+
+	App->render->ResetViewPort();
 }
 
 void UIMinimap::HandleInput(float dt) 
@@ -196,7 +226,7 @@ void UIMinimap::HandleInput(float dt)
 		moveCamera = false;
 	}
 
-	if (App->scene->isMinimapChanged)
+	if (App->scene->isMinimapChanged || App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
 	{
 		if (lowLevel)
 		{
@@ -215,7 +245,7 @@ void UIMinimap::HandleInput(float dt)
 			currentScaleFactor = lowLevelScaleFactor;
 			moveMinimap = KEY_DOWN;
 		}
-		App->scene->isMinimapChanged = !App->scene->isMinimapChanged;
+		App->scene->isMinimapChanged = false;
 	}
 }
 
@@ -253,7 +283,25 @@ iPoint UIMinimap::MinimapToMap(iPoint pos)
 	return mapPos;
 }
 
-iPoint UIMinimap::MinimapToMap()
+SDL_Rect UIMinimap::MapToMinimap(SDL_Rect pos) const
+{
+	SDL_Rect minimapPos{ 0,0,0,0 };
+	SDL_Rect mapPos{ 0,0,0,0 };
+
+	minimapPos.x = pos.x;
+	minimapPos.y = pos.y;
+	minimapPos.w = pos.w;
+	minimapPos.h = pos.h;
+
+	mapPos.x = (minimapPos.x * currentScaleFactor) + offsetX + cameraOffset.x;
+	mapPos.y = (minimapPos.y * currentScaleFactor) + offsetY + cameraOffset.y;
+	mapPos.w = minimapPos.w * currentScaleFactor;
+	mapPos.h = minimapPos.h * currentScaleFactor;
+
+	return mapPos;
+}
+
+iPoint UIMinimap::MinimapToMap() 
 {
 	return MinimapToMap(GetMousePos());
 }
@@ -273,6 +321,41 @@ bool UIMinimap::SetMinimap(SDL_Rect pos, int entityW, int entityH)
 	return true;
 }
 
+bool UIMinimap::DrawRoomCleared(Room room)
+{
+	bool ret = false;
+
+	//if (room.isCleared)
+	{
+		roomClearedRect = MapToMinimap(room.roomRect);
+		isRoomCleared = true;
+		startRoomClearedTimer = true;
+		ret = true;
+	}
+
+	return ret;
+}
+
+void UIMinimap::DrawFoW() const
+{
+	for (vector<FogOfWarTile*>::iterator tiles = App->fow->fowTilesVector.begin(); tiles != App->fow->fowTilesVector.end();)
+	{
+		SDL_Rect tileRect = MapToMinimap({ (*tiles)->pos.x * 32,(*tiles)->pos.y * 32, (*tiles)->size * (zoomFactor+1), (*tiles)->size * (zoomFactor+1) });
+		App->render->DrawQuad(tileRect, 0, 0, 0, (*tiles)->alpha, true, false);
+
+		for (int i = 0; i <= zoomFactor; ++i)
+			if (tiles != App->fow->fowTilesVector.end())
+				tiles++;
+	}
+
+
+	//iPoint startTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale(),
+	//	-App->render->camera.y / App->win->GetScale());
+	//iPoint endTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
+	//	-App->render->camera.y / App->win->GetScale() + App->render->camera.h);
+
+
+}
 
 bool UIMinimap::LoadMap()
 {
