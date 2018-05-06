@@ -86,14 +86,17 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	// Different behaviors for units on the base and units around the map
 	if (App->map->IsOnBase(spawnPos)) {
 
-		TargetInfo* targetTownHall = new TargetInfo();
-
 		if (App->player->townHall != nullptr) {
 
-			targetTownHall->target = App->player->townHall;
-			targets.push_back(targetTownHall);
+			if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
 
-			brain->AddGoal_AttackTarget(targetTownHall);
+				TargetInfo* targetTownHall = new TargetInfo();
+
+				targetTownHall->target = App->player->townHall;
+				targets.push_back(targetTownHall);
+
+				brain->AddGoal_AttackTarget(targetTownHall);
+			}
 		}
 	}
 	else
@@ -170,6 +173,24 @@ void Grunt::Move(float dt)
 		brain->Process(dt);
 
 	UnitStateMachine(dt);
+
+	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
+	if (App->map->IsOnBase(spawnPos) && brain->GetSubgoalsList().size() == 0) {
+
+		if (App->player->townHall != nullptr) {
+
+			if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
+
+				TargetInfo* targetTownHall = new TargetInfo();
+
+				targetTownHall->target = App->player->townHall;
+				targets.push_back(targetTownHall);
+
+				brain->AddGoal_AttackTarget(targetTownHall);
+			}
+		}
+	}
 
 	// Update animations
 	if (!isStill || isHitting)
