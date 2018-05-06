@@ -54,7 +54,7 @@ public:
 	}
 	bool operator==(SDL_Rect room)
 	{
-		return roomRect == roomRect;
+		return roomRect == room;
 	}
 
 public:

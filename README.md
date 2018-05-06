@@ -37,25 +37,28 @@ Down arrow or S: Move the camera down
 Left arrow or A: Move the camera left
 Right arrow or D: Move the camera right
 
-For the minimap:
+Z: Select all Footman on screen
+X: Select all Elven Archer on screen
+C: Select all Gryphon Rider on screen
 
+## For the minimap:
 TAB: Change minimap zoom
 Mouse Left click: Move camera to the pressed location
 Mouse Right click: Send a group of units to a destination
 
-For the units:
+## For the units:
 Mouse Left click: Select a group of units
 Mouse Right click: Send a group of units to a destination
 Mouse Right click On an enemy or a critter: attack the enemy/critter
-Mouse Right click On a Gold Mine or Runestone: (if there is a unit nearby) collect the gold / heal the units.
+Mouse Right click On a Gold Mine or Runestone: (if there is a unit nearby) collect the gold / heal the units
 
-Z: stop the units selected
-X: set command patrol to the units selected (click a tile to patrol there)
+N: Set command patrol to the units selected (click a tile to patrol there)
+M: Stop the units selected
 
-For the buildings:
+## For the buildings:
 After opening the building dropdown in the top right of the screen:
-Mouse Left click: Place a building somwhere.
-Mouse Right click: Delete the preview building from the view of the player.
+Mouse Left click: Place a building somwhere
+Mouse Right click: Delete the preview building from the view of the player
 
 # Debug controls
 
@@ -63,8 +66,9 @@ F8: debug mode
 
 If debug mode is on:
 
-	C: -20 HP to last Chicken Farm created
-	G: get + 500 gold
+	H: -20 HP to last Chicken Farm created
+	G: Get + 500 gold
+	F: Get +3 food
 
 	1: Spawn a Footman at mouse position
 	2: Spawn an Elven Archer at mouse position
@@ -77,10 +81,10 @@ If debug mode is on:
 	9: Spawn Alleria
 	0: Spawn Turalyon
 
-	F1: direct win
-	F2: direct lose
-	F3: spawn a new enemy wave (in player base)
-	F4: activates or stops the spawn of waves
+	F1: Direct win
+	F2: Direct lose
+	F3: Spawn a new enemy wave (in player base)
+	F4: Activate or stop the spawn of waves
 
 # Game system
 

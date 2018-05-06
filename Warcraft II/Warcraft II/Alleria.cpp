@@ -1,8 +1,9 @@
 #include "Alleria.h"
 #include "j1Printer.h"
 #include "j1EntityFactory.h"
+#include "Goal.h"
 
-Alleria::Alleria(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const AlleriaInfo& alleriaInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), alleriaInfo(alleriaInfo)
+Alleria::Alleria(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const AlleriaInfo& alleriaInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener, false), alleriaInfo(alleriaInfo)
 {
 	AlleriaInfo info = (AlleriaInfo&)App->entities->GetUnitInfo(EntityType_ALLERIA);
 	this->unitInfo = this->alleriaInfo.unitInfo;

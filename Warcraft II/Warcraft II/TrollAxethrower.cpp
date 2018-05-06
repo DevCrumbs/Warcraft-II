@@ -184,7 +184,7 @@ void TrollAxethrower::Move(float dt)
 						App->scene->roomCleared = room->roomRect;
 
 						/// TODO Valdivia: sonido sala limpiada
-						//App->audio->PlayFx(App->audio->GetFX().goldGetSound);
+						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 					}
 				}
 			}
