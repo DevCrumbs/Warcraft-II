@@ -937,7 +937,7 @@
       <prisoners>
         <alleria>
           <animations>
-            <idle speed="4" loop="1">
+            <idle speed="1.5" loop="1">
               <frame x="768" y="128" w="128" h="64"/>
               <frame x="896" y="128" w="128" h="64"/>
               <frame x="0" y="192" w="128" h="64"/>

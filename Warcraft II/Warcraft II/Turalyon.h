@@ -36,6 +36,7 @@ private:
 
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 	TuralyonInfo turalyonInfo;
+	float idleSpeed = 0.0f;
 
 	bool isUnitRescuingPrisoner = false;
 	bool isRescued = false;

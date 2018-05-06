@@ -5,6 +5,7 @@
 Alleria::Alleria(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const AlleriaInfo& alleriaInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), alleriaInfo(alleriaInfo)
 {
 	animation = &this->alleriaInfo.idle;
+	idleSpeed = alleriaInfo.idle.speed;
 
 	AlleriaInfo info = (AlleriaInfo&)App->entities->GetUnitInfo(EntityType_ALLERIA);
 	this->unitInfo = this->alleriaInfo.unitInfo;
@@ -14,6 +15,7 @@ Alleria::Alleria(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 void Alleria::Move(float dt)
 {
 	HandleInput(entityEvent);
+	UpdateAnimations(dt);
 }
 
 void Alleria::Draw(SDL_Texture* sprites) 
@@ -43,7 +45,7 @@ void Alleria::LoadAnimationsSpeed()
 }
 void Alleria::UpdateAnimations(float dt)
 {
-
+	alleriaInfo.idle.speed = idleSpeed * dt;
 }
 
 // Prisoner rescue

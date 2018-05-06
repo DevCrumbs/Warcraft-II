@@ -5,6 +5,7 @@
 Turalyon::Turalyon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TuralyonInfo& turalyonInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), turalyonInfo(turalyonInfo)
 {
 	animation = &this->turalyonInfo.idle;
+	idleSpeed = turalyonInfo.idle.speed;
 
 	TuralyonInfo info = (TuralyonInfo&)App->entities->GetUnitInfo(EntityType_TURALYON);
 	this->unitInfo = this->turalyonInfo.unitInfo;
@@ -14,6 +15,7 @@ Turalyon::Turalyon(fPoint pos, iPoint size, int currLife, uint maxLife, const Un
 void Turalyon::Move(float dt)
 {
 	HandleInput(entityEvent);
+	UpdateAnimations(dt);
 }
 
 void Turalyon::Draw(SDL_Texture* sprites)
@@ -43,7 +45,7 @@ void Turalyon::LoadAnimationsSpeed()
 }
 void Turalyon::UpdateAnimations(float dt)
 {
-
+	turalyonInfo.idle.speed = idleSpeed * dt;
 }
 
 // Prisoner rescue
