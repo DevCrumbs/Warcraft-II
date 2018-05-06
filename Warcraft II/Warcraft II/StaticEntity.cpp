@@ -341,9 +341,68 @@ ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, ui
 
 					iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
 					SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+					bool isRectInVector = false;
 
-					Collider* coll = App->collision->CreateCollider(rect);
-					colliders.push_back(coll);
+					//Up left
+					for (uint i = 0; i < colliders.size(); ++i) {
+						if (rect == colliders[i]->colliderRect) {
+							isRectInVector = true;
+							break;
+						}
+					}
+					if (!isRectInVector) {
+						Collider* coll = App->collision->CreateCollider(rect);
+						colliders.push_back(coll);
+					}
+					isRectInVector = false;
+
+					//Up right
+					if (App->pathfinding->IsWalkable({ neighbors[i].x + 1, neighbors[i].y }) && CalculateDistance({ neighbors[i].x + 1, neighbors[i].y }, App->map->WorldToMap(pos.x + 32, pos.y), distanceHeuristic) < radius) {
+						rect = { collPos.x + 32, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+						for (uint i = 0; i < colliders.size(); ++i) {
+							if (rect == colliders[i]->colliderRect) {
+								isRectInVector = true;
+								break;
+							}
+						}
+						if (!isRectInVector) {
+							Collider* coll = App->collision->CreateCollider(rect);
+							colliders.push_back(coll);
+						}
+						isRectInVector = false;
+					}
+					//Down left
+					if (App->pathfinding->IsWalkable({ neighbors[i].x, neighbors[i].y + 1 }) && CalculateDistance({ neighbors[i].x + 1, neighbors[i].y }, App->map->WorldToMap(pos.x + 32, pos.y), distanceHeuristic) < radius) {
+						rect = { collPos.x, collPos.y + 32, App->map->data.tileWidth, App->map->data.tileHeight };
+						for (uint i = 0; i < colliders.size(); ++i) {
+							if (rect == colliders[i]->colliderRect) {
+								isRectInVector = true;
+								break;
+							}
+						}
+
+						if (!isRectInVector){
+							Collider* coll = App->collision->CreateCollider(rect);
+							colliders.push_back(coll);
+						}
+						isRectInVector = false;
+					}
+
+					//Down right
+					if (App->pathfinding->IsWalkable({ neighbors[i].x + 1, neighbors[i].y + 1 }) && CalculateDistance({ neighbors[i].x + 1, neighbors[i].y }, App->map->WorldToMap(pos.x + 32, pos.y), distanceHeuristic) < radius) {
+						rect = { collPos.x + 32, collPos.y + 32, App->map->data.tileWidth, App->map->data.tileHeight };
+						for (uint i = 0; i < colliders.size(); ++i) {
+							if (rect == colliders[i]->colliderRect) {
+								isRectInVector = true;
+								break;
+							}
+						}
+						if (!isRectInVector) {
+							Collider* coll = App->collision->CreateCollider(rect);
+							colliders.push_back(coll);
+						}
+					}
+					
 				}
 			}
 		}
