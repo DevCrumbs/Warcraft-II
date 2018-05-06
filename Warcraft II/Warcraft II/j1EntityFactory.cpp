@@ -3670,7 +3670,7 @@ void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 	while (it != activeDynamicEntities.end()) {
 
 		if (!(*it)->isDead) {
-
+			if ((*it)->GetSingleUnit() != nullptr)
 			if ((*it)->GetSingleUnit()->waitUnit != nullptr) {
 
 				// The dead entity was the waitUnit of another entity

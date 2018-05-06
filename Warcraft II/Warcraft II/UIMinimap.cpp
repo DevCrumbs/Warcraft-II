@@ -95,8 +95,9 @@ void UIMinimap::Draw() const
 	///-----------------	 Draw all entities in the minimap
 	for (list<DynamicEntity*>::iterator iterator = (*activeDynamicEntities).begin(); iterator != (*activeDynamicEntities).end(); ++iterator)
 	{
-		SDL_Rect rect{ (*iterator)->pos.x * currentScaleFactor + offsetX + cameraOffset.x,
-						(*iterator)->pos.y * currentScaleFactor + offsetY + cameraOffset.y,
+		iPoint pos = (*iterator)->GetLastTile();
+		SDL_Rect rect{ pos.x * 32 * currentScaleFactor + offsetX + cameraOffset.x,
+						pos.y *32 * currentScaleFactor + offsetY + cameraOffset.y,
 						entityWidth * currentScaleFactor * zoomFactor, entityHeight * currentScaleFactor * zoomFactor };
 
 		SDL_Color color{ 0,0,0,0 };
@@ -150,6 +151,9 @@ void UIMinimap::Draw() const
 		App->render->DrawQuad(rect, color.r, color.g, color.b, color.a, true, false);
 	}
 
+	//Draw FoW
+	DrawFoW();
+
 	///-----------------	 Draw the camera rect
 	SDL_Rect rect{ -camera.x * currentScaleFactor + offsetX + cameraOffset.x, -camera.y * currentScaleFactor + offsetY + cameraOffset.y,
 		camera.w * currentScaleFactor, camera.h * currentScaleFactor };
@@ -174,8 +178,6 @@ void UIMinimap::Draw() const
 			roomClearedRect = { 0,0,0,0 };
 		}
 	}
-
-	DrawFoW();
 
 	App->render->ResetViewPort();
 }
@@ -217,7 +219,7 @@ void UIMinimap::HandleInput(float dt)
 		moveCamera = false;
 	}
 
-	if (App->scene->isMinimapChanged)
+	if (App->scene->isMinimapChanged || App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
 	{
 		if (lowLevel)
 		{
@@ -236,7 +238,7 @@ void UIMinimap::HandleInput(float dt)
 			currentScaleFactor = lowLevelScaleFactor;
 			moveMinimap = KEY_DOWN;
 		}
-		App->scene->isMinimapChanged = !App->scene->isMinimapChanged;
+		App->scene->isMinimapChanged = false;
 	}
 }
 
@@ -284,8 +286,8 @@ SDL_Rect UIMinimap::MapToMinimap(SDL_Rect pos) const
 	minimapPos.w = pos.w;
 	minimapPos.h = pos.h;
 
-	mapPos.x = (minimapPos.x * currentScaleFactor) - offsetX + cameraOffset.x;
-	mapPos.y = (minimapPos.y * currentScaleFactor) - offsetY + cameraOffset.y;
+	mapPos.x = (minimapPos.x * currentScaleFactor) + offsetX + cameraOffset.x;
+	mapPos.y = (minimapPos.y * currentScaleFactor) + offsetY + cameraOffset.y;
 	mapPos.w = minimapPos.w * currentScaleFactor;
 	mapPos.h = minimapPos.h * currentScaleFactor;
 
@@ -338,6 +340,14 @@ void UIMinimap::DrawFoW() const
 			if (tiles != App->fow->fowTilesVector.end())
 				tiles++;
 	}
+
+
+	//iPoint startTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale(),
+	//	-App->render->camera.y / App->win->GetScale());
+	//iPoint endTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
+	//	-App->render->camera.y / App->win->GetScale() + App->render->camera.h);
+
+
 }
 
 bool UIMinimap::LoadMap()

@@ -203,8 +203,8 @@ void j1FogOfWar::TilesNearPlayer()
 						if (fowTilesVector[pos]->alpha == 0)
 							continue;
 
-						SDL_Rect tileRect{ fowTilesVector[pos]->pos.x * FOW_TILE, fowTilesVector[pos]->pos.y * FOW_TILE, fowTilesVector[pos]->size * FOW_TILE, fowTilesVector[pos]->size * FOW_TILE };
-						if (SDL_HasIntersection(&tileRect, &App->map->playerBase))
+						SDL_Rect tileRect{ fowTilesVector[pos]->pos.x * FOW_TILE, fowTilesVector[pos]->pos.y * FOW_TILE, fowTilesVector[pos]->size, fowTilesVector[pos]->size };
+						if (SDL_HasIntersection(&tileRect, &App->map->playerBase.roomRect))
 							continue;
 
 						//SDL_Rect fowTileRect{ fowTilesVector[i]->pos.x, fowTilesVector[i]->pos.y , 32,32 };
@@ -250,7 +250,7 @@ void j1FogOfWar::TilesNearPlayer()
 
 		}
 	}
-	CleanSafeZone(App->map->playerBase);
+	CleanSafeZone(App->map->playerBase.roomRect);
 }
 
 

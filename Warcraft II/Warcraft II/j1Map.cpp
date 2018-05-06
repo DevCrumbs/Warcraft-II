@@ -45,8 +45,6 @@ bool j1Map::Awake(pugi::xml_node& config)
 	defaultHallSize = config.child("defaultSizes").child("defaultHallSize").attribute("size").as_int();
 	defaultTileSize = config.child("defaultSizes").child("defaultTileSize").attribute("size").as_int();
 
-	playerBase = { 0,0,50,50 };
-
 	return ret;
 }
 
@@ -1044,9 +1042,9 @@ bool j1Map::LoadRoomRect(MapLayer* layer)
 				switch (roomType)
 				{
 				case roomType_BASE:
-					playerBase = { pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize };
+					playerBase.roomRect = { pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize };
 					roomRectList.push_back(playerBase);
-					App->scene->basePos = { playerBase.x + margin * defaultTileSize, playerBase.y + margin * defaultTileSize };
+					App->scene->basePos = { playerBase.roomRect.x + margin * defaultTileSize, playerBase.roomRect.y + margin * defaultTileSize };
 
 					App->render->camera.x = -App->scene->basePos.x;
 					App->render->camera.y = -App->scene->basePos.y;
