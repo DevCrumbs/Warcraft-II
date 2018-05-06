@@ -136,13 +136,11 @@ void Footman::Move(float dt)
 			attackRadiusCollider->isValid = false;
 			entityCollider->isValid = false;
 
-			LOG("A footman died");
+			LOG("A Footman died");
 		}
 	}
 
 	if (!isDead && isValid) {
-
-		// ---------------------------------------------------------------------
 
 		// PROCESS THE COMMANDS
 
@@ -379,7 +377,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Player Sight Radius %s", dynEnt->GetColorName().data());
+				LOG("Footman Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// 1. UPDATE TARGETS LIST
@@ -449,7 +447,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Player Attack Radius %s", dynEnt->GetColorName().data());
+				LOG("Footman Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to true
@@ -478,7 +476,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Player Sight Radius %s", dynEnt->GetColorName().data());
+				LOG("NO MORE Footman Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isSightSatisfied to false
@@ -524,7 +522,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Player Attack Radius %s", dynEnt->GetColorName().data());
+				LOG("NO MORE Footman Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to false

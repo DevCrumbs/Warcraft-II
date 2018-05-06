@@ -4,18 +4,28 @@
 
 Turalyon::Turalyon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TuralyonInfo& turalyonInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), turalyonInfo(turalyonInfo)
 {
-	animation = &this->turalyonInfo.idle;
-	idleSpeed = turalyonInfo.idle.speed;
-
 	TuralyonInfo info = (TuralyonInfo&)App->entities->GetUnitInfo(EntityType_TURALYON);
 	this->unitInfo = this->turalyonInfo.unitInfo;
+	this->turalyonInfo.idle = info.idle;
+	this->turalyonInfo.rescue = info.rescue;
+
 	offsetSize = this->unitInfo.offsetSize;
+
+	LoadAnimationsSpeed();
+
+	animation = &this->turalyonInfo.idle;
 }
 
 void Turalyon::Move(float dt)
 {
 	HandleInput(entityEvent);
 	UpdateAnimations(dt);
+
+	if (isRescued) {
+
+		if (animation->Finished())
+			isRemove = true;
+	}
 }
 
 void Turalyon::Draw(SDL_Texture* sprites)
@@ -23,9 +33,17 @@ void Turalyon::Draw(SDL_Texture* sprites)
 	if (animation != nullptr) {
 
 		fPoint offset = { 0.0f,0.0f };
-		offset = { animation->GetCurrentFrame().w / 3.8f, animation->GetCurrentFrame().h / 3.5f };
 
-		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		if (animation == &turalyonInfo.rescue) {
+
+			offset = { animation->GetCurrentFrame().w / 5.0f, animation->GetCurrentFrame().h / 3.5f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
+		else {
+
+			offset = { animation->GetCurrentFrame().w / 5.0f, animation->GetCurrentFrame().h / 3.5f };
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
 	}
 
 	if (isSelected)
@@ -41,11 +59,14 @@ void Turalyon::DebugDrawSelected()
 // Animations
 void Turalyon::LoadAnimationsSpeed()
 {
-
+	idleSpeed = turalyonInfo.idle.speed;
+	rescueSpeed = turalyonInfo.rescue.speed;
 }
+
 void Turalyon::UpdateAnimations(float dt)
 {
 	turalyonInfo.idle.speed = idleSpeed * dt;
+	turalyonInfo.rescue.speed = rescueSpeed * dt;
 }
 
 // Prisoner rescue
@@ -68,4 +89,8 @@ bool Turalyon::IsRescued() const
 void Turalyon::SetRescued(bool isRescued)
 {
 	this->isRescued = isRescued;
+
+	if (this->isRescued)
+	
+		animation = &this->turalyonInfo.rescue;
 }

@@ -217,6 +217,15 @@ void UILabel::SetColor(SDL_Color color, bool normal, bool hover, bool pressed)
 		label.pressedColor = color;
 }
 
+void UILabel::SetFontName(FONT_NAME fontName)
+{
+	if (this->tex != nullptr)
+		App->tex->UnLoad(tex);
+
+	font = App->font->GetFont(fontName);
+	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.textWrapLength);
+}
+
 SDL_Color UILabel::GetColor(bool normal, bool hover, bool pressed)
 {
 	if (normal)

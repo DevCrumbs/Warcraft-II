@@ -9,7 +9,6 @@
 #include "j1PathManager.h"
 #include "j1Movement.h"
 #include "j1EntityFactory.h"
-#include "j1EntityFactory.h"
 #include "j1Particles.h"
 #include "j1Gui.h"
 #include "UILifeBar.h"
@@ -324,6 +323,12 @@ void Goal_AttackTarget::Activate()
 	// Time enemies chase player units
 	chaseTimer.Start();
 	chaseTime = 6.0f;
+
+	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
+
+	if (owner->GetCurrTarget() == nullptr)
+
+		owner->SetCurrTarget(targetInfo->target);
 }
 
 GoalStatus Goal_AttackTarget::Process(float dt)
@@ -383,6 +388,12 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 	ReactivateIfFailed();
 
+	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
+
+	if (owner->GetCurrTarget() == nullptr)
+
+		owner->SetCurrTarget(targetInfo->target);
+
 	return goalStatus;
 }
 
@@ -401,12 +412,15 @@ void Goal_AttackTarget::Terminate()
 	}
 	else {
 
-		targetInfo->target->RemoveAttackingUnit(owner);
+		if (!App->entities->isEntityFactoryCleanUp) {
 
-		// If the target is a building, set isAttackSatisfied to false (just in case)
-		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied)
+			targetInfo->target->RemoveAttackingUnit(owner);
 
-			targetInfo->isAttackSatisfied = false;
+			// If the target is a building, set isAttackSatisfied to false (just in case)
+			if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied)
+
+				targetInfo->isAttackSatisfied = false;
+		}
 	}
 
 	// -----
@@ -916,6 +930,12 @@ void Goal_HitTarget::Activate()
 	// -----
 
 	owner->SetHitting(true);
+
+	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
+
+	if (owner->GetCurrTarget() == nullptr)
+
+		owner->SetCurrTarget(targetInfo->target);
 }
 
 GoalStatus Goal_HitTarget::Process(float dt)
@@ -997,6 +1017,10 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 	// -----
 
+	if (!owner->IsHitting())
+
+		owner->SetHitting(true);
+
 	// Do things at the end of the animation
 	if (((DynamicEntity*)owner)->GetAnimation()->Finished()) {
 
@@ -1008,9 +1032,12 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
 		if (m > 0.0f) {
+
 			orientation.x /= m;
 			orientation.y /= m;
 		}
+
+		owner->SetUnitDirectionByValue(orientation);
 
 		switch (owner->dynamicEntityType) {
 
@@ -1195,6 +1222,12 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		((DynamicEntity*)owner)->GetAnimation()->Reset();
 	}
 
+	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
+
+	if (owner->GetCurrTarget() == nullptr)
+
+		owner->SetCurrTarget(targetInfo->target);
+
 	return goalStatus;
 }
 
@@ -1339,13 +1372,31 @@ GoalStatus Goal_LookAround::Process(float dt)
 
 			uint random = 0;
 
-			if (probabilityGoalCompleted > 0)
+			if (probabilityGoalCompleted > 0 && probabilityGoalCompleted <= 3)
+
 				random = rand() % probabilityGoalCompleted;
 
-			if (random % 2 == 0)
-				goalStatus = GoalStatus_Completed;
-			else
-				Activate();
+			if (probabilityGoalCompleted <= 3) {
+
+				if (random % 2 == 0)
+					goalStatus = GoalStatus_Completed;
+				else
+					Activate();
+
+				return goalStatus;
+			}
+			else {
+			
+				uint random = 0;
+				random = rand() % 10;
+
+				if (random <= 4)
+					goalStatus = GoalStatus_Completed;
+				else
+					Activate();
+
+				return goalStatus;
+			}
 		}
 	}
 
@@ -1609,26 +1660,35 @@ GoalStatus Goal_HealArea::Process(float dt)
 	}
 
 	// Perform the heal animation and heal the units within the area
-	ColliderGroup* sightRadiusCollider = runestone->GetSightRadiusCollider();
+	Collider* sightRadiusCollider = runestone->GetSightRadiusCollider()->offsetCollider;
+	bool isHealSound = false;
 
-	for (uint i = 0; i < sightRadiusCollider->colliders.size(); ++i) {
+	list<DynamicEntity*>::const_iterator it = App->entities->activeDynamicEntities.begin();
 
-		iPoint colliderTile = App->map->WorldToMap(sightRadiusCollider->colliders[i]->colliderRect.x, sightRadiusCollider->colliders[i]->colliderRect.y);
+	while (it != App->entities->activeDynamicEntities.end()) {
+	
+		if (!(*it)->isDead && (*it)->entitySide == EntitySide_Player) {
+		
+			const SDL_Rect rectA = sightRadiusCollider->colliderRect;
+			const SDL_Rect rectB = { (*it)->GetPos().x, (*it)->GetPos().y, (*it)->GetSize().x, (*it)->GetSize().y };
 
-		Entity* entity = App->entities->IsEntityOnTile(colliderTile, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+			if (SDL_HasIntersection(&rectA, &rectB)) {
 
-		if (entity != nullptr) {
+				iPoint pos = App->map->MapToWorld((*it)->GetSingleUnit()->currTile.x, (*it)->GetSingleUnit()->currTile.y);
 
-			DynamicEntity* dynEnt = (DynamicEntity*)entity;
-			iPoint pos = App->map->MapToWorld(dynEnt->GetSingleUnit()->currTile.x, dynEnt->GetSingleUnit()->currTile.y);
+				App->particles->AddParticle(App->particles->playerHealth, pos);
+				(*it)->ApplyHealth(health);
 
-			App->particles->AddParticle(App->particles->playerHealth, pos);
-			entity->ApplyHealth(health);
-			//App->audio->PlayFx(App->audio->GetFX().healSound);
+				if (!isHealSound) {
 
+					App->audio->PlayFx(App->audio->GetFX().healSound);
+					isHealSound = true;
+				}
+			}
 		}
+		it++;
 	}
-
+		
 	goalStatus = GoalStatus_Completed;
 
 	return goalStatus;
@@ -1750,8 +1810,6 @@ void Goal_FreePrisoner::Terminate()
 			turalyon->SetUnitRescuePrisoner(false);
 			App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
 		}
-
-		prisoner->isRemove = true;
 
 		owner->SetPrisoner(nullptr);
 		owner->SetUnitRescuePrisoner(false);

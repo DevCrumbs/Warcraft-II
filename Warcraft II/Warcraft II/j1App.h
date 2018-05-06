@@ -39,9 +39,6 @@ class j1FogOfWar;
 
 struct SDL_Rect;
 
-bool RectIntersect(const SDL_Rect* rectA, const SDL_Rect* rectB, SDL_Rect* result = nullptr);
-
-
 class j1App
 {
 public:

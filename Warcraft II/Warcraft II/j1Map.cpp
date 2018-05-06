@@ -54,6 +54,8 @@ void j1Map::Draw()
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::PapayaWhip);
 
+	GetEntitiesOnRoom(playerBase, EntityType_FOOTMAN);
+
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
 	{
 		if (!(*layer)->properties.GetProperty("Draw", false))
@@ -968,7 +970,7 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 					break;
 
 				case EntityType_GRUNT:
-				//case EntityType_TROLL_AXETHROWER:
+				case EntityType_TROLL_AXETHROWER:
 				case EntityType_DRAGON:
 					enemyEntity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
 					break;
@@ -1086,7 +1088,7 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 				SDL_Rect entityRect{ pos.x,pos.y,size.x,size.y };
 
 				// Check if entity belongs to room
-				if (RectIntersect(&entityRect, &*roomIterator))
+				if (SDL_HasIntersection(&entityRect, &*roomIterator))
 				{
 					// Add entity to room list
 					listOnRoom.push_back(*currentEntity);
@@ -1108,7 +1110,7 @@ bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 	list<Room>::iterator iterator;
 	for (iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
 	{
-		if (RectIntersect(&origin, &*iterator))
+		if (SDL_HasIntersection(&origin, &*iterator))
 		{
 			ret = true;
 			currRoom = *iterator;
@@ -1118,7 +1120,7 @@ bool j1Map::IsGoalOnRoom(SDL_Rect origin, SDL_Rect goal)
 
 	if (ret)
 	{
-		ret = RectIntersect(&goal, &currRoom);
+		ret = SDL_HasIntersection(&goal, &currRoom);
 	}
 
 	return ret;
@@ -1142,14 +1144,14 @@ bool j1Map::IsOnRoom(iPoint pos, Room room)
 {
 	int size = 1;
 	SDL_Rect posRect{ pos.x,pos.y,size,size };
-	return RectIntersect(&posRect, &room);
+	return SDL_HasIntersection(&posRect, &room);
 }
 
 bool j1Map::IsOnRoom(fPoint pos, Room room)
 {
 	int size = 1;
 	SDL_Rect posRect{ pos.x,pos.y,size,size };
-	return RectIntersect(&posRect, &room);
+	return SDL_HasIntersection(&posRect, &room);
 }
 
 Room j1Map::GetEntityRoom(Entity* entity)
@@ -1164,12 +1166,12 @@ Room j1Map::GetEntityRoom(Entity* entity)
 		entityRect.y = pos.y;
 
 		iPoint  size = entity->GetSize();
-		entityRect.w = size.x;
+		entityRect.w = size.x; 
 		entityRect.h = size.y;
 
 		for (list<Room>::iterator iterator = roomRectList.begin(); iterator != roomRectList.end(); ++iterator)
 		{
-			if (RectIntersect(&(*iterator), &entityRect))
+			if (SDL_HasIntersection(&(*iterator), &entityRect))
 			{
 				ret = *iterator;
 				break;

@@ -1025,21 +1025,39 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
 
 	// Alleria
+	/// Idle
 	pugi::xml_node alleriaAnimations = prisionerEntities.child("alleria").child("animations");
+
 	currentAnimation = alleriaAnimations.child("idle");
 	alleriaInfo.idle.speed = currentAnimation.attribute("speed").as_float();
 	alleriaInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		alleriaInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
+	/// Rescue
+	currentAnimation = alleriaAnimations.child("rescue");
+	alleriaInfo.rescue.speed = currentAnimation.attribute("speed").as_float();
+	alleriaInfo.rescue.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		alleriaInfo.rescue.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
 
-	//Turalyon
+	// Turalyon
+	/// Idle
 	pugi::xml_node turalyonAnimations = prisionerEntities.child("turalyon").child("animations");
+
 	currentAnimation = turalyonAnimations.child("idle");
 	turalyonInfo.idle.speed = currentAnimation.attribute("speed").as_float();
 	turalyonInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		turalyonInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	/// Rescue
+	currentAnimation = turalyonAnimations.child("rescue");
+	turalyonInfo.rescue.speed = currentAnimation.attribute("speed").as_float();
+	turalyonInfo.rescue.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		turalyonInfo.rescue.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
 	// Critters
@@ -1227,6 +1245,8 @@ bool j1EntityFactory::Start()
 	bool ret = true;
 
 	LOG("Loading entities textures");
+
+	isEntityFactoryCleanUp = false;
 
 	/// TODO Joan (balancing)
 	// ENTITIES INFO
@@ -2458,22 +2478,9 @@ bool j1EntityFactory::CleanUp()
 
 	LOG("Freeing all entities");
 
+	isEntityFactoryCleanUp = true;
+
 	// Remove active entities
-	/// Remove dynamic entities
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
-
-	while (dynEnt != activeDynamicEntities.end()) {
-
-		if ((*dynEnt) != nullptr) {
-			delete *dynEnt;
-			activeDynamicEntities.remove(*dynEnt++);
-			continue;
-		}
-
-		dynEnt++;
-	}
-	activeDynamicEntities.clear();
-
 	/// Remove static entities
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
 
@@ -2488,6 +2495,21 @@ bool j1EntityFactory::CleanUp()
 		statEnt++;
 	}
 	activeStaticEntities.clear();
+
+	/// Remove dynamic entities
+	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
+
+	while (dynEnt != activeDynamicEntities.end()) {
+
+		if ((*dynEnt) != nullptr) {
+			delete *dynEnt;
+			activeDynamicEntities.remove(*dynEnt++);
+			continue;
+		}
+
+		dynEnt++;
+	}
+	activeDynamicEntities.clear();
 
 	// Remove to spawn entities
 	list<Entity*>::const_iterator it = toSpawnEntities.begin();
@@ -3765,11 +3787,127 @@ Entity* j1EntityFactory::IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY ent
 	return nullptr;
 }
 
+Entity* j1EntityFactory::AreEntitiesColliding(SDL_Rect entityRect, ENTITY_CATEGORY entityCategory, EntitySide entitySide) const 
+{
+	const SDL_Rect rectA = entityRect;
+
+	// DYNAMIC ENTITIES
+	if (entityCategory == EntityCategory_DYNAMIC_ENTITY || entityCategory == EntityCategory_NONE) {
+
+		if (activeDynamicEntities.size() > 0) {
+
+			list<DynamicEntity*>::const_iterator activeDyn = activeDynamicEntities.begin();
+
+			while (activeDyn != activeDynamicEntities.end()) {
+
+				// The unit cannot be dead and must be valid
+				if (!(*activeDyn)->isDead && (*activeDyn)->GetIsValid()) {
+
+					// An offset value is applied ONLY to the units selection
+					iPoint offsetValue = { 15,15 };
+
+					iPoint entityPos = { (int)(*activeDyn)->GetPos().x + (*activeDyn)->GetOffsetSize().x - offsetValue.x / 2, (int)(*activeDyn)->GetPos().y + (*activeDyn)->GetOffsetSize().y - offsetValue.y / 2 };
+					iPoint entitySize = { (*activeDyn)->GetSize().x + offsetValue.x, (*activeDyn)->GetSize().y + offsetValue.y };
+					uint scale = App->win->GetScale();
+
+					const SDL_Rect rectB = { entityPos.x, entityPos.y, entitySize.x, entitySize.y };
+
+					switch (entitySide) {
+
+					case EntitySide_Player:
+
+						if ((*activeDyn)->entitySide == EntitySide_Player)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_Enemy:
+
+						if ((*activeDyn)->entitySide == EntitySide_Enemy)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_Neutral:
+
+						if ((*activeDyn)->entitySide == EntitySide_Neutral)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+
+					case EntitySide_NoSide:
+
+						//if ((*activeDyn)->entitySide == EntitySide_NoSide)
+							if (SDL_HasIntersection(&rectA, &rectB))
+								return (Entity*)(*activeDyn);
+						break;
+					}
+				}
+				activeDyn++;
+			}
+		}
+	}
+
+	// STATIC ENTITIES
+	if (entityCategory == EntityCategory_STATIC_ENTITY || entityCategory == EntityCategory_NONE) {
+
+		if (activeStaticEntities.size() > 0) {
+
+			list<StaticEntity*>::const_iterator activeStat = activeStaticEntities.begin();
+
+			while (activeStat != activeStaticEntities.end()) {
+
+				iPoint entityPos = { (int)(*activeStat)->GetPos().x, (int)(*activeStat)->GetPos().y };
+				iPoint entitySize = { (*activeStat)->GetSize().x, (*activeStat)->GetSize().y };
+				uint scale = App->win->GetScale();
+
+				const SDL_Rect rectB = { entityPos.x, entityPos.y, entitySize.x, entitySize.y };
+
+				switch (entitySide) {
+
+				case EntitySide_Player:
+
+					if ((*activeStat)->entitySide == EntitySide_Player)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_Enemy:
+
+					if ((*activeStat)->entitySide == EntitySide_Enemy)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_Neutral:
+
+					if ((*activeStat)->entitySide == EntitySide_Neutral)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+
+				case EntitySide_NoSide:
+
+					//if ((*activeStat)->entitySide == EntitySide_NoSide)
+						if (SDL_HasIntersection(&rectA, &rectB))
+							return (Entity*)(*activeStat);
+					break;
+				}
+				activeStat++;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 {
 	UnselectAllEntities();
 
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	bool isInScreen = false;
 
 	while (it != activeDynamicEntities.end()) {
 
@@ -3788,20 +3926,45 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 
 					(*it)->isSelected = true;
 					unitsSelected.push_back(*it);
+					isInScreen = true;
 				}
 			}
 			else {
-
 				if (unitsSelected.size() < MAX_UNITS_SELECTED) {
 
 					(*it)->isSelected = true;
 					unitsSelected.push_back(*it);
+					isInScreen = true;
 				}
 			}
 		}
 
 		it++;
 	}
+	if (!isInScreen) {
+		if (entityType == EntityType_FOOTMAN) {
+			if (App->scene->adviceMessage != AdviceMessage_SELECT_FOOTMANS) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_SELECT_FOOTMANS;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+		}
+		if (entityType == EntityType_ELVEN_ARCHER) {
+			if (App->scene->adviceMessage != AdviceMessage_SELECT_ARCHERS) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_SELECT_ARCHERS;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+		}
+		if (entityType == EntityType_GRYPHON_RIDER) {
+			if (App->scene->adviceMessage != AdviceMessage_SELECT_GRYPHS) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_SELECT_GRYPHS;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+		}
+	}
+	isInScreen = false;
 	App->scene->ShowSelectedUnits(unitsSelected);
 }
 

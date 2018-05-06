@@ -7,6 +7,7 @@
 #include "j1Map.h"
 #include "j1Player.h"
 #include "j1Input.h"
+#include "j1Scene.h"
 #include "DynamicEntity.h"
 #include "j1EntityFactory.h"
 #include <time.h>
@@ -28,10 +29,6 @@ bool j1EnemyWave::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
-	/// Load from xml
-	spawnProbability = 0.35f;
-	maxSpawn = 5;
-
 	return ret;
 }
 
@@ -39,13 +36,30 @@ bool j1EnemyWave::Start()
 {
 	bool ret = true;
 
+	// Reset waves general info
+	totalWaves = 0;
+	isActiveWaves = true;
+	totalPhasesOfCurrWave = 0;
+	phasesOfCurrWave = 0;
+	isStartWave = false;
+	totalSpawnOfCurrWave = 0;
+	secondsToNextWave = 0.0f;
+	secondsToNextPhase = 0.0f;
+
+	// -----
+
+	/// TODO Balancing (Waves)
+	spawnProbability = 0.25f;
+	maxSpawnPerPhase = 3;
+	maxSpawnPerWave = 10;
+
 	nextWaveTimer.Start();
 
 	// Calculate the seconds until the first wave arrives
 	/// NOTE: the first wave takes more time to arrive than the following waves
 	/// rand() % (max - min + 1) + min
 
-	/// TODO Balancing
+	/// TODO Balancing (Waves)
 	int maxMinutesToNextWave = 5;
 	int minMinutesToNextWave = 4;
 
@@ -56,8 +70,7 @@ bool j1EnemyWave::Start()
 
 	secondsToNextWave = MINUTES_TO_SECONDS(secondsToNextWave);
 
-	// TODO Sandra: delete this
-	secondsToNextWave = 0;
+	//secondsToNextWave = 0;
 
 	return ret;
 }
@@ -96,12 +109,17 @@ bool j1EnemyWave::Update(float ft)
 
 		if (!isStartWave) {
 
+			if (App->scene->adviceMessage != AdviceMessage_UNDER_ATTACK) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_UNDER_ATTACK;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+			
 			// Calculate the phases of the current wave
 			int maxPhasesOfCurrWave = 2;
 			int minPhasesOfCurrWave = 1;
 
-			/// TODO Balancing
-			/*
+			/// TODO Balancing (Waves)
 			if (totalWaves == 0) {
 			
 				maxPhasesOfCurrWave = 2;
@@ -117,7 +135,6 @@ bool j1EnemyWave::Update(float ft)
 				maxPhasesOfCurrWave = 4;
 				minPhasesOfCurrWave = 2;
 			}
-			*/
 
 			totalPhasesOfCurrWave = rand() % (maxPhasesOfCurrWave - minPhasesOfCurrWave + 1) + minPhasesOfCurrWave;
 
@@ -140,8 +157,7 @@ bool j1EnemyWave::Update(float ft)
 			int maxSecondsToNextPhase = 15;
 			int minSecondsToNextPhase = 5;
 
-			/// TODO Balancing
-			/*
+			/// TODO Balancing (Waves)
 			if (totalWaves == 0) {
 
 				maxSecondsToNextPhase = 30;
@@ -157,7 +173,6 @@ bool j1EnemyWave::Update(float ft)
 				maxSecondsToNextPhase = 20;
 				minSecondsToNextPhase = 15;
 			}
-			*/
 
 			secondsToNextPhase = rand() % (maxSecondsToNextPhase - minSecondsToNextPhase + 1) + minSecondsToNextPhase;
 
@@ -173,8 +188,7 @@ bool j1EnemyWave::Update(float ft)
 			int maxMinutesToNextWave = 1;
 			int minMinutesToNextWave = 1;
 
-			/// TODO Balancing
-			/*
+			/// TODO Balancing (Waves)
 			if (totalWaves == 1) {
 
 				maxMinutesToNextWave = 5;
@@ -190,7 +204,6 @@ bool j1EnemyWave::Update(float ft)
 				maxMinutesToNextWave = 4;
 				minMinutesToNextWave = 2;
 			}
-			*/
 
 			secondsToNextWave = rand() % (maxMinutesToNextWave - minMinutesToNextWave + 1) + minMinutesToNextWave;
 			int i = rand() % 10;
@@ -200,6 +213,8 @@ bool j1EnemyWave::Update(float ft)
 			secondsToNextWave = MINUTES_TO_SECONDS(secondsToNextWave);
 
 			phasesOfCurrWave = 0;
+			totalSpawnOfCurrWave = 0;
+			maxSpawnPerWave++;
 			isStartWave = false;
 		}
 	}
@@ -237,14 +252,16 @@ void j1EnemyWave::PerformWave()
 	int spawned = 0;
 	for (list<iPoint>::const_iterator iterator = currentList.begin(); iterator != currentList.end(); ++iterator)
 	{
-		if (spawned >= maxSpawn) {
+		if (spawned >= maxSpawnPerPhase || totalSpawnOfCurrWave >= maxSpawnPerWave) {
 			break;
 		}
 		ENTITY_TYPE type = EntityType_NONE;
 		if (iterator == currentList.begin() && App->player->gryphonAviary != nullptr)
 		{
 			if (SpawnEnemy(spawnProbability)) {
+
 				spawned++;
+				totalSpawnOfCurrWave++;
 
 				type = EntityType_DRAGON;
 				UnitInfo unitInfo;
@@ -256,9 +273,10 @@ void j1EnemyWave::PerformWave()
 				LOG("Spawned %i entities from %i, type %i", spawned, size, type);
 			}
 		}
-		else if (SpawnEnemy(spawnProbability))
-		{
+		else if (SpawnEnemy(spawnProbability)) {
+
 			spawned++;
+			totalSpawnOfCurrWave++;
 
 			type = ENTITY_TYPE(rand() % 2 + 381);
 			UnitInfo unitInfo;
@@ -270,21 +288,18 @@ void j1EnemyWave::PerformWave()
 			LOG("Spawned %i entities from %i, type %i", spawned, size, type);
 		}
 	}
-	maxSpawn++;
+	maxSpawnPerPhase++;
 	spawnProbability += 0.05f;
 }
 
-bool j1EnemyWave::Load(pugi::xml_node& save) {
+// ---------------------------------------------------------------------------------
 
+bool j1EnemyWave::Load(pugi::xml_node& save) 
+{
 	return true;
 }
 
-
-
-
-bool j1EnemyWave::Save(pugi::xml_node& save) const {
-
-	
-
+bool j1EnemyWave::Save(pugi::xml_node& save) const 
+{
 	return true;
 }

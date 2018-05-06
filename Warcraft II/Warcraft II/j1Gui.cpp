@@ -410,7 +410,7 @@ bool j1Gui::IsMouseOnUI()
 			{
 				SDL_Rect elementRect = (*iterator)->GetScreenRect();
 				if (elementRect.x != 0 && elementRect.y != 0 && elementRect.w != App->win->width && elementRect.h != App->win->height)
-					if (RectIntersect(&mouseRect, &elementRect))
+					if (SDL_HasIntersection(&mouseRect, &elementRect))
 					{
 						ret = true;
 						break;
