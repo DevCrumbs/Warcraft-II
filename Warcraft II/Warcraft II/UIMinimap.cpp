@@ -6,6 +6,7 @@
 #include "j1Map.h"
 #include "Entity.h" 
 #include "j1Printer.h"
+#include "j1Scene.h"
 
 #include "UIMinimap.h"
 
@@ -195,7 +196,7 @@ void UIMinimap::HandleInput(float dt)
 		moveCamera = false;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
+	if (App->scene->isMinimapChanged)
 	{
 		if (lowLevel)
 		{
@@ -214,7 +215,7 @@ void UIMinimap::HandleInput(float dt)
 			currentScaleFactor = lowLevelScaleFactor;
 			moveMinimap = KEY_DOWN;
 		}
-		
+		App->scene->isMinimapChanged = !App->scene->isMinimapChanged;
 	}
 }
 

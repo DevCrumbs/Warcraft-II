@@ -1025,21 +1025,39 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	pugi::xml_node prisionerEntities = config.child("dynamicEntities").child("prisoners");
 
 	// Alleria
+	/// Idle
 	pugi::xml_node alleriaAnimations = prisionerEntities.child("alleria").child("animations");
+
 	currentAnimation = alleriaAnimations.child("idle");
 	alleriaInfo.idle.speed = currentAnimation.attribute("speed").as_float();
 	alleriaInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		alleriaInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
+	/// Rescue
+	currentAnimation = alleriaAnimations.child("rescue");
+	alleriaInfo.rescue.speed = currentAnimation.attribute("speed").as_float();
+	alleriaInfo.rescue.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		alleriaInfo.rescue.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
 
-	//Turalyon
+	// Turalyon
+	/// Idle
 	pugi::xml_node turalyonAnimations = prisionerEntities.child("turalyon").child("animations");
+
 	currentAnimation = turalyonAnimations.child("idle");
 	turalyonInfo.idle.speed = currentAnimation.attribute("speed").as_float();
 	turalyonInfo.idle.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		turalyonInfo.idle.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	/// Rescue
+	currentAnimation = turalyonAnimations.child("rescue");
+	turalyonInfo.rescue.speed = currentAnimation.attribute("speed").as_float();
+	turalyonInfo.rescue.loop = currentAnimation.attribute("loop").as_bool();
+	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		turalyonInfo.rescue.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
 	// Critters
@@ -1227,6 +1245,8 @@ bool j1EntityFactory::Start()
 	bool ret = true;
 
 	LOG("Loading entities textures");
+
+	isEntityFactoryCleanUp = false;
 
 	/// TODO Joan (balancing)
 	// ENTITIES INFO
@@ -2014,7 +2034,61 @@ vector<SDL_Rect> j1EntityFactory::MakeTowerPreviewCollider(iPoint pos, uint radi
 
 					iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
 					SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-					ret.push_back(rect);
+
+					bool isRectInVector = false;
+
+					//Up left
+					for (uint i = 0; i < ret.size(); ++i) {
+						if (rect == ret[i]) {
+							isRectInVector = true;
+							break;
+						}
+					}
+					if (!isRectInVector)
+						ret.push_back(rect);
+					isRectInVector = false;
+
+					//Up right
+					if (App->pathfinding->IsWalkable({ neighbors[i].x + 1, neighbors[i].y }) && CalculateDistance({ neighbors[i].x + 1, neighbors[i].y }, App->map->WorldToMap(pos.x + 32, pos.y), distanceHeuristic) < radius) {
+						rect = { collPos.x + 32, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+						for (uint i = 0; i < ret.size(); ++i) {
+							if (rect == ret[i]) {
+								isRectInVector = true;
+								break;
+							}
+						}
+						if (!isRectInVector)
+							ret.push_back(rect);
+						isRectInVector = false;
+					}
+					//Down left
+					if (App->pathfinding->IsWalkable({ neighbors[i].x, neighbors[i].y + 1 }) && CalculateDistance({ neighbors[i].x + 1, neighbors[i].y }, App->map->WorldToMap(pos.x + 32, pos.y), distanceHeuristic) < radius) {
+						rect = { collPos.x, collPos.y + 32, App->map->data.tileWidth, App->map->data.tileHeight };
+						for (uint i = 0; i < ret.size(); ++i) {
+							if (rect == ret[i]) {
+								isRectInVector = true;
+								break;
+							}
+						}
+
+						if (!isRectInVector)
+							ret.push_back(rect);
+						isRectInVector = false;
+					}
+
+					//Down right
+					if (App->pathfinding->IsWalkable({ neighbors[i].x + 1, neighbors[i].y + 1 }) && CalculateDistance({ neighbors[i].x + 1, neighbors[i].y }, App->map->WorldToMap(pos.x + 32, pos.y), distanceHeuristic) < radius) {
+						rect = { collPos.x + 32, collPos.y + 32, App->map->data.tileWidth, App->map->data.tileHeight };
+						for (uint i = 0; i < ret.size(); ++i) {
+							if (rect == ret[i]) {
+								isRectInVector = true;
+								break;
+							}
+						}
+						if (!isRectInVector)
+							ret.push_back(rect);
+					}
+
 				}
 			}
 		}
@@ -2404,22 +2478,9 @@ bool j1EntityFactory::CleanUp()
 
 	LOG("Freeing all entities");
 
+	isEntityFactoryCleanUp = true;
+
 	// Remove active entities
-	/// Remove dynamic entities
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
-
-	while (dynEnt != activeDynamicEntities.end()) {
-
-		if ((*dynEnt) != nullptr) {
-			delete *dynEnt;
-			activeDynamicEntities.remove(*dynEnt++);
-			continue;
-		}
-
-		dynEnt++;
-	}
-	activeDynamicEntities.clear();
-
 	/// Remove static entities
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
 
@@ -2434,6 +2495,21 @@ bool j1EntityFactory::CleanUp()
 		statEnt++;
 	}
 	activeStaticEntities.clear();
+
+	/// Remove dynamic entities
+	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
+
+	while (dynEnt != activeDynamicEntities.end()) {
+
+		if ((*dynEnt) != nullptr) {
+			delete *dynEnt;
+			activeDynamicEntities.remove(*dynEnt++);
+			continue;
+		}
+
+		dynEnt++;
+	}
+	activeDynamicEntities.clear();
 
 	// Remove to spawn entities
 	list<Entity*>::const_iterator it = toSpawnEntities.begin();
@@ -3717,6 +3793,8 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
+	bool isInScreen = false;
+
 	while (it != activeDynamicEntities.end()) {
 
 		// The unit cannot be dead and must be valid
@@ -3734,20 +3812,45 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 
 					(*it)->isSelected = true;
 					unitsSelected.push_back(*it);
+					isInScreen = true;
 				}
 			}
 			else {
-
 				if (unitsSelected.size() < MAX_UNITS_SELECTED) {
 
 					(*it)->isSelected = true;
 					unitsSelected.push_back(*it);
+					isInScreen = true;
 				}
 			}
 		}
 
 		it++;
 	}
+	if (!isInScreen) {
+		if (entityType == EntityType_FOOTMAN) {
+			if (App->scene->adviceMessage != AdviceMessage_SELECT_FOOTMANS) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_SELECT_FOOTMANS;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+		}
+		if (entityType == EntityType_ELVEN_ARCHER) {
+			if (App->scene->adviceMessage != AdviceMessage_SELECT_ARCHERS) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_SELECT_ARCHERS;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+		}
+		if (entityType == EntityType_GRYPHON_RIDER) {
+			if (App->scene->adviceMessage != AdviceMessage_SELECT_GRYPHS) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_SELECT_GRYPHS;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+		}
+	}
+	isInScreen = false;
 	App->scene->ShowSelectedUnits(unitsSelected);
 }
 

@@ -365,9 +365,11 @@ bool j1Scene::Update(float dt)
 				//else
 					//App->entities->UnselectAllEntities();
 
+				/// **Debug purposes**
 				Entity* enemy = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
 				if (enemy != nullptr)
 					enemy->isSelected = true;
+				///_**Debug_purposes**
 
 				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
 				if (playerBuilding != nullptr)
@@ -639,6 +641,14 @@ bool j1Scene::Update(float dt)
 		HideTerenasDialog();
 	}
 
+	if (adviceMessageTimer.Read() >= 2500 && adviceMessage != AdviceMessage_NONE && adviceMessage != AdviceMessage_UNDER_ATTACK) {
+		HideAdviceMessage();
+	}
+
+	if (adviceMessageTimer.Read() >= 3500 && adviceMessage == AdviceMessage_UNDER_ATTACK) {
+		HideAdviceMessage();
+	}
+
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
 		App->map->UnLoad();
@@ -757,7 +767,7 @@ bool j1Scene::PostUpdate()
 	}
 	
 	if (((App->player->GetCurrentGold() < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
-		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)) {
+		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) || App->player->townHall == nullptr) {
 
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
@@ -1015,10 +1025,14 @@ void j1Scene::LoadInGameUI()
 	inGameFrameImage = App->gui->CreateUIImage({ 0,0 }, entitiesInfo, this);
 	inGameFrameImage->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 
+	//changing map button
+	App->player->CreateSimpleButton({ 241, 453, 30, 21 }, { 272, 453, 30, 21 }, { 303, 453, 30, 21 }, { 200,27 }, changeMinimapButt);
+
 	LoadResourcesLabels();
 	LoadBuildingMenu();
 	LoadUnitsMenuInfo();
 	LoadTerenasDialog();
+	LoadAdviceMessage();
 	//create this before entitiesInfo (Parent)
 	App->player->CreateEntitiesStatsUI();
 	App->player->CreateGroupSelectionButtons();
@@ -1083,6 +1097,15 @@ void j1Scene::LoadTerenasDialog()
 	labelInfo.interactive = false;
 	terenasAdvices.text = App->gui->CreateUILabel({ 355,47 }, labelInfo, this);
 	terenasAdvices.text->isActive = false;
+}
+
+void j1Scene::LoadAdviceMessage()
+{
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT14;
+	labelInfo.interactive = false;
+	adviceLabel = App->gui->CreateUILabel({ 300,235 }, labelInfo, this);
+	adviceLabel->isActive = false;
 }
 
 void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
@@ -1504,7 +1527,7 @@ void j1Scene::LoadResourcesLabels()
 	labelInfo.interactive = false;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = to_string(App->player->GetCurrentGold());
-	goldLabel = App->gui->CreateUILabel({ 224, 0 }, labelInfo, this, inGameFrameImage);
+	goldLabel = App->gui->CreateUILabel({ 250, 0 }, labelInfo, this, inGameFrameImage);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;	
 	labelInfo.text = to_string(App->player->currentFood);
@@ -1657,12 +1680,14 @@ void j1Scene::DestroyAllUI()
 	UnLoadResourcesLabels();
 	UnLoadTerenasDialog();
 
+	App->gui->RemoveElem((UIElement**)&adviceLabel);
 	App->gui->RemoveElem((UIElement**)&pauseMenuButt);
 	App->gui->RemoveElem((UIElement**)&pauseMenuLabel);
 	App->gui->RemoveElem((UIElement**)&entitiesStats);
 	App->gui->RemoveElem((UIElement**)&buildingLabel);
 	App->gui->RemoveElem((UIElement**)&buildingButton);
 	App->gui->RemoveElem((UIElement**)&inGameFrameImage);
+	App->gui->RemoveElem((UIElement**)&changeMinimapButt);
 
 	for (list<GroupSelectedElements>::iterator iterator = groupElementsList.begin(); iterator != groupElementsList.end(); ++iterator) {
 		App->gui->RemoveElem((UIElement**)&(*iterator).entityIcon);
@@ -1763,16 +1788,6 @@ void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 		//terenasAdvices.text->SetText(text, 320);
 		//terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
-	case TerenasDialog_FOOD:
-		text = "To produce units you need to have enough food to feed them.Build more farms.";
-		terenasAdvices.text->SetText(text, 320);
-		terenasAdvices.text->SetLocalPos({ 355,47 });
-		break;
-	case TerenasDialog_GOLD:
-		text = "To produce units you need to have enough gold. Get more from mines.";
-		terenasAdvices.text->SetText(text, 320);
-		terenasAdvices.text->SetLocalPos({ 355,47 });
-		break;
 	case TerenasDialog_NONE:
 		break;
 	default:
@@ -1787,6 +1802,102 @@ void j1Scene::HideTerenasDialog()
 	terenasDialogEvent = TerenasDialog_NONE;
 	terenasAdvices.text->isActive = false;
 	terenasAdvices.terenasImage->isActive = false;
+}
+
+void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
+{
+	string text;
+	switch (adviceMessage)
+	{
+	case AdviceMessage_FOOD:
+		text = "Not enough food. Build more farms.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 245,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_GOLD:
+		text = "Not enough gold.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 320,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_FOOTMANS:
+		text = "No footman on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 290,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_ARCHERS:
+		text = "No elven archer on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 285,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_GRYPHS:
+		text = "No gryphon rider on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_ROOM_CLEAR:
+		text = "ROOM CLEARED!";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 285,265 });
+		adviceLabel->SetColor(WarmYellow_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT30);
+		break;
+
+	case AdviceMessage_UNDER_ATTACK:
+		text = "YOUR BASE IS UNDER ATTACK";;
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 205,265 });
+		adviceLabel->SetColor(BloodyRed_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT30);
+		break;
+
+	case AdviceMessage_MINE:
+		text = "Select units to gather gold";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_GRYPH_MINE:
+		text = "Gryphon riders cannot gather gold.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 245,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_GRYPH_PRISONER:
+		text = "Gryphon riders cannot rescue prisoners.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 225,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+	}
+
+
+	adviceLabel->isActive = true;
+}
+
+void j1Scene::HideAdviceMessage()
+{
+	adviceMessage = AdviceMessage_NONE;
+	adviceLabel->isActive = false;
 }
 
 void j1Scene::UnLoadTerenasDialog()
@@ -1816,6 +1927,10 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				ChangeBuildingMenuState(&buildingMenuButtons);
 			}
 
+			if (UIelem == changeMinimapButt) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+				isMinimapChanged = !isMinimapChanged;
+			}
 
 			else if (UIelem == buildingMenuButtons.chickenFarm.icon) {
 				if (App->player->GetCurrentGold() >= chickenFarmCost) {

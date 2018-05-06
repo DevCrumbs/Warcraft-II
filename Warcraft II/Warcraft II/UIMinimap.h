@@ -68,7 +68,6 @@ public:
 
 	bool movingMap = false;
 
-
 private:
 
 	UI_EVENT UIevent = UI_EVENT_NONE;

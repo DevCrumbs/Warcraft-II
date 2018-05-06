@@ -37,9 +37,22 @@ enum TerenasDialogEvents {
 	TerenasDialog_RESCUE_TURALYON,
 	TerenasDialog_GOLD_MINE,
 	TerenasDialog_RUNESTONE,
-	TerenasDialog_FOOD,
-	TerenasDialog_GOLD,
 	TerenasDialog_NONE
+};
+
+enum AdviceMessages {
+
+	AdviceMessage_FOOD,
+	AdviceMessage_GOLD,
+	AdviceMessage_SELECT_FOOTMANS,
+	AdviceMessage_SELECT_ARCHERS,
+	AdviceMessage_SELECT_GRYPHS,
+	AdviceMessage_ROOM_CLEAR,
+	AdviceMessage_UNDER_ATTACK,
+	AdviceMessage_MINE,
+	AdviceMessage_GRYPH_MINE,
+	AdviceMessage_GRYPH_PRISONER,
+	AdviceMessage_NONE
 };
 
 enum PauseMenuActions {
@@ -152,6 +165,7 @@ public:
 		iPoint namePos, iPoint costPos, int cost, MenuBuildingButton* elem);
 
 	void LoadTerenasDialog();
+	void LoadAdviceMessage();
 
 	void ShowSelectedUnits(list<DynamicEntity*> units);
 	void HideUnselectedUnits();
@@ -181,6 +195,8 @@ public:
 
 	void ShowTerenasDialog(TerenasDialogEvents dialogEvent);
 	void HideTerenasDialog();
+	void ShowAdviceMessage(AdviceMessages adviceMessage);
+	void HideAdviceMessage();
 	void UnLoadTerenasDialog();
 
 	bool LoadKeys(pugi::xml_node&);
@@ -188,6 +204,8 @@ public:
 public:
 
 	bool isGoalFromMinimap = false;
+
+	bool isMinimapChanged = false;
 
 	// Walkability map
 	int w = 0, h = 0;
@@ -242,7 +260,10 @@ public:
 	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
 	TerenasAdvices terenasAdvices;
 
+	AdviceMessages adviceMessage = AdviceMessage_NONE;
+
 	j1Timer terenasDialogTimer;
+	j1Timer adviceMessageTimer;
 
 	iPoint basePos{ 0,0 };
 
@@ -283,6 +304,10 @@ private:
 	SliderStruct AudioMusicPause;
 	//Entities Buttons
 	UIButton* commandPatrolButton = nullptr, *commandStopButton = nullptr;
+	//Minimap Button
+	UIButton* changeMinimapButt = nullptr;
+	//Advice label
+	UILabel* adviceLabel = nullptr;
 	
 	bool buildingMenuOn = false;
 
