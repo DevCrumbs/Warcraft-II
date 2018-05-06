@@ -183,7 +183,7 @@ void j1FogOfWar::TilesNearPlayer()
 				iPoint endTile = App->map->WorldToMap((*colliderIterator)->colliderRect.x / App->win->GetScale() + (*colliderIterator)->colliderRect.w,
 					(*colliderIterator)->colliderRect.y/ App->win->GetScale() + (*colliderIterator)->colliderRect.h);
 
-				App->render->DrawQuad((*colliderIterator)->colliderRect, 255, 255, 255, 255);
+				//App->printer->PrintQuad((*colliderIterator)->colliderRect, { 255, 255, 255, 255 });
 
 				int i = startTile.x;
 				if (i < 0)

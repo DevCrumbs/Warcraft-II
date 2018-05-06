@@ -351,7 +351,7 @@ private:
 	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
 
 	//Quad Fade
-	int alphaCont = 0u;
+	float alphaCont = 0;
 };
 
 #endif //__j1SCENE1_H__
