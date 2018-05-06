@@ -582,8 +582,8 @@ void j1Player::UpdateSpawnUnitsStats(list<GroupSpawning>* spawningList)
 	int cont = 0;
 	for (list<GroupSpawning>::iterator iterator = spawningList->begin(); iterator != spawningList->end(); ++iterator)
 	{
-		(*iterator).entityIcon->SetLocalPos({ 48 * cont + 72, 5 });
-		(*iterator).entityLifeBar->SetLocalPos({ 48 * cont + 72, 40 });
+		(*iterator).entityIcon->SetLocalPos({ 48 * cont + 72, 17 });
+		(*iterator).entityLifeBar->SetLocalPos({ 48 * cont + 72, 47 });
 		cont++;
 		if ((*iterator).owner != nullptr)
 			if (*(*iterator).owner == nullptr)
@@ -1790,7 +1790,7 @@ void j1Player::HandleSpawningUnitsUIElem(ToSpawnUnit** toSpawnUnit, list<GroupSp
 				(*iterator).entityIcon->SetNewRect(icon);
 				break;
 			case EntityType_GRYPHON_RIDER:
-				icon = { 649,160,39,30 };
+				icon = { 702,290,39,30 };
 				(*iterator).entityIcon->SetNewRect(icon);
 				break;
 			default:
@@ -2068,7 +2068,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				ShowHoverInfoMenu("Produces Elven Archer", "Cost: 400 gold", &secondHoverInfo);
 			}
 			else if (UIelem == produceGryphonRiderButton) {
-				ShowHoverInfoMenu("Produces Gryphon Rider", "Cost: 900 gold", &thirdHoverInfo);
+				ShowHoverInfoMenu("Produces Gryphon Rider", "Cost: 750 gold", &thirdHoverInfo);
 			}
 
 			else if (UIelem == destroyBuildingButton) {
@@ -2134,15 +2134,18 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		case UI_EVENT_MOUSE_LEFT_CLICK:
 
 			if (UIelem == upgradeTownHallButton) {
+				
 				if (townHallUpgrade && currentGold >= 1500) {
 					keepUpgrade = true;
 					AddGold(-1500);
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Constructuion sound
+					HideHoverInfoMenu(&firstHoverInfo);
 				}
 				else if (currentGold >= 500) {
 					townHallUpgrade = true;
 					AddGold(-500);
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+					HideHoverInfoMenu(&firstHoverInfo);
 				}
 				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
@@ -2150,9 +2153,9 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			//For destroying a building
 			else if (UIelem == destroyBuildingButton) {
-				HideEntitySelectedInfo();
+				HideHoverInfoMenu(&thirdHoverInfo);
 				entitySelectedStats.entitySelected->isRemove = true;
-				entitySelectedStats.entitySelected = nullptr;
+				HideEntitySelectedInfo();
 			}
 
 			else if (UIelem == repairBuildingButton) {
@@ -2320,7 +2323,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						if (App->scene->adviceMessage == AdviceMessage_FOOD || App->scene->adviceMessage == AdviceMessage_GOLD) {
 							App->scene->HideAdviceMessage();
 						}
-						HandleSpawningUnitsUIElem(&toSpawnUnitBarracks.back(), &barracksSpawningListUI);
+						HandleSpawningUnitsUIElem(&toSpawnUnitGrypho.back(), &gryphoSpawningListUI);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_FOOD) {
 						App->scene->adviceMessageTimer.Start();

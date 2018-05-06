@@ -1273,7 +1273,7 @@ bool j1EntityFactory::Start()
 	footmanInfo.unitInfo.towerDamage = 6;
 
 	/// Speed
-	footmanInfo.unitInfo.maxSpeed = 80.0f;
+	footmanInfo.unitInfo.maxSpeed = 90.0f;
 	footmanInfo.unitInfo.currSpeed = footmanInfo.unitInfo.maxSpeed;
 
 	/// Life
@@ -1299,7 +1299,7 @@ bool j1EntityFactory::Start()
 	elvenArcherInfo.unitInfo.towerDamage = 11;
 
 	/// Speed
-	elvenArcherInfo.unitInfo.maxSpeed = 90.0f;
+	elvenArcherInfo.unitInfo.maxSpeed = 100.0f;
 	elvenArcherInfo.unitInfo.currSpeed = elvenArcherInfo.unitInfo.maxSpeed;
 
 	/// Life	
@@ -3644,8 +3644,11 @@ bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		(*dynEnt)->SetIsRemovedTargetInfo(target);
-		(*dynEnt)->RemoveAttackingUnit(target);
+		if ((*dynEnt)->dynamicEntityType != EntityType_ALLERIA && (*dynEnt)->dynamicEntityType != EntityType_TURALYON) {
+
+			(*dynEnt)->SetIsRemovedTargetInfo(target);
+			(*dynEnt)->RemoveAttackingUnit(target);
+		}
 
 		dynEnt++;
 	}
@@ -3669,8 +3672,14 @@ void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 
 	while (it != activeDynamicEntities.end()) {
 
+<<<<<<< HEAD
 		if (!(*it)->isDead) {
 			if ((*it)->GetSingleUnit() != nullptr)
+=======
+		if (!(*it)->isDead 
+			&& (*it)->dynamicEntityType != EntityType_ALLERIA && (*it)->dynamicEntityType != EntityType_TURALYON) {
+
+>>>>>>> Develompent
 			if ((*it)->GetSingleUnit()->waitUnit != nullptr) {
 
 				// The dead entity was the waitUnit of another entity
