@@ -107,6 +107,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	movement->active = false;
 	particles->active = false;
 	wave->active = false;
+	fow->active = false;
 
 	srand(time(NULL));
 }

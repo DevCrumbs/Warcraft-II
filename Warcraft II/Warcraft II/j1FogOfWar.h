@@ -12,7 +12,7 @@
 #define FOW_TILE (ORIGINAL_TILE * FOW_TILE_MULTIPLIER)		// FOW OF WAR TILES
 #define TILE_PARTITIONS 1									// PARTITIONS FOR ART OPTIMIZATION
 
-#define RADIUS 4											// FOW TRANSPARENT RADIUS FROM PLAYER
+#define RADIUS 6											// FOW TRANSPARENT RADIUS FROM PLAYER
 #define TRANSLUCID_ALPHA 125								// WHEN A FOW TILES HAVE BEEN DISCOVERED BUT IS NOT SEEN
 
 class Entity;
@@ -44,10 +44,6 @@ public:
 	int TotalDistanceToPlayer(Entity* entity, int tile);
 
 	void ResetTiles();
-
-	// Part 2 (beauty)
-	void SmallerTilesNearPlayer();
-	int TotalDistanceToPlayerSmallers(iPoint pos);
 
 public:
 	std::vector<FogOfWarTile*> fowTilesVector;

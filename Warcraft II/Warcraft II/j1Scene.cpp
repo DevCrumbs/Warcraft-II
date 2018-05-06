@@ -30,6 +30,7 @@
 #include "j1PathManager.h"
 #include "j1Printer.h"
 #include "j1EnemyWave.h"
+#include "j1FogOfWar.h"
 
 #include "UILabel.h"
 #include "UIButton.h"
@@ -102,6 +103,7 @@ bool j1Scene::Start()
 	App->pathmanager->active = true;
 	App->movement->active = true;
 	App->particles->active = true;
+	App->fow->active = true;
 	App->wave->active = true;
 
 	App->player->Start();
@@ -109,6 +111,7 @@ bool j1Scene::Start()
 	App->particles->Start();
 	App->entities->Start();
 	App->wave->Start();
+	App->fow->Start();
 
 	isStarted = false;
 
