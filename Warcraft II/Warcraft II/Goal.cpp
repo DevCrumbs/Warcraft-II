@@ -1503,6 +1503,11 @@ void Goal_PickNugget::Activate()
 	timerGathering.Start();
 	goldMine->currentSec = timerGathering.ReadSec();
 	timerAnimation.Start();
+
+	//Varibles of the process of gathering gold
+	goldGathered = 0;
+	goldToAdd = gold * ((float)timeForEachGoldUpdate / 1000) / secondsGathering;
+	auxGatherTimer.Start();
 }
 
 GoalStatus Goal_PickNugget::Process(float dt)
@@ -1525,6 +1530,13 @@ GoalStatus Goal_PickNugget::Process(float dt)
 
 	goldMine->currentSec = timerGathering.ReadSec();
 
+	//Adds progressively gold to the player
+	if (auxGatherTimer.Read() >= timeForEachGoldUpdate) {
+		App->player->AddGold(goldToAdd);
+		goldGathered += goldToAdd;
+		auxGatherTimer.Start();
+	}
+
 	return goalStatus;
 }
 
@@ -1534,8 +1546,9 @@ void Goal_PickNugget::Terminate()
 
 		goldMine->SetGoldMineState(GoldMineState_Gathered);
 
-		// Give gold to the player
-		App->player->AddGold(gold);
+		// Give remaining gold to the player
+		if(gold != goldGathered)
+			App->player->AddGold(gold - goldGathered);
 
 		owner->SetGoldMine(nullptr);
 		owner->SetUnitGatheringGold(false);
