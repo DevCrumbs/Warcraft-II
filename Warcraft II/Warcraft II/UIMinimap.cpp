@@ -338,14 +338,25 @@ bool UIMinimap::DrawRoomCleared(Room room)
 
 void UIMinimap::DrawFoW() const
 {
-	for (vector<FogOfWarTile*>::iterator tiles = App->fow->fowTilesVector.begin(); tiles != App->fow->fowTilesVector.end();)
+	int cont = 0;
+	int nextTile = 0;
+	int fowSize = App->fow->fowTilesVector.size();
+	//for (vector<FogOfWarTile*>::iterator tiles = App->fow->fowTilesVector.begin(); tiles != App->fow->fowTilesVector.end();)
+	//{
+	int tiles = 0;
+	while (tiles < fowSize)
 	{
-		SDL_Rect tileRect = MapToMinimap({ (*tiles)->pos.x * 32,(*tiles)->pos.y * 32, (*tiles)->size * (zoomFactor+1), (*tiles)->size * (zoomFactor+1) });
-		App->render->DrawQuad(tileRect, 0, 0, 0, (*tiles)->alpha, true, false);
+		SDL_Rect tileRect = MapToMinimap({ App->fow->fowTilesVector[tiles]->pos.x * 32, App->fow->fowTilesVector[tiles]->pos.y * 32,
+							App->fow->fowTilesVector[tiles]->size * (zoomFactor + 2), App->fow->fowTilesVector[tiles]->size * (zoomFactor + 2) });
 
-		for (int i = 0; i <= zoomFactor; ++i)
-			if (tiles != App->fow->fowTilesVector.end())
-				tiles++;
+		App->render->DrawQuad(tileRect, 0, 0, 0, App->fow->fowTilesVector[tiles]->alpha, true, false);
+
+		tiles += zoomFactor;
+
+		if (tiles % 119 == 0)
+		{
+			tiles += 119 * zoomFactor;
+		}
 	}
 
 
@@ -353,8 +364,6 @@ void UIMinimap::DrawFoW() const
 	//	-App->render->camera.y / App->win->GetScale());
 	//iPoint endTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
 	//	-App->render->camera.y / App->win->GetScale() + App->render->camera.h);
-
-
 }
 
 bool UIMinimap::LoadMap()
