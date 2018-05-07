@@ -102,6 +102,7 @@ bool j1Player::Update(float dt)
 		CheckIfPlaceBuilding();
 
 	//Check if the units need to spawn
+	isUnitSpawning = false;
 	if (!toSpawnUnitBarracks.empty())
 		CheckUnitSpawning(&toSpawnUnitBarracks);
 
@@ -526,6 +527,7 @@ void j1Player::SpawnUnitFromBuilding(StaticEntity* spawnBuilding, ENTITY_TYPE sp
 
 		App->entities->AddEntity(spawningEntity, { (float)spawnPos.x, (float)spawnPos.y }, (EntityInfo&)App->entities->GetUnitInfo(spawningEntity), unitInfo, this);
 	}
+	isUnitSpawning = true;
 }
 
 void j1Player::SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, UnitInfo unitInfo) 

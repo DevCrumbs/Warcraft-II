@@ -229,6 +229,8 @@ public:
 	queue<ToSpawnUnit*> toSpawnUnitBarracks;
 	queue<ToSpawnUnit*> toSpawnUnitGrypho;
 
+	bool isUnitSpawning = false;
+
 private:
 
 	int currentGold = 0; // amount of gold that the player has at the current moment
