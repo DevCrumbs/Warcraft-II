@@ -1584,18 +1584,20 @@ void j1Scene::UpdateGoldLabel(GoldChange state)
 
 	goldLabelColorTime.Start();
 }
+
 void j1Scene::UpdateFoodLabel()
 {
 	foodLabel->SetText(to_string(App->player->currentFood));
 }
+
 void j1Scene::UnLoadResourcesLabels()
 {
 	App->gui->RemoveElem((UIElement**)&goldLabel);
 	App->gui->RemoveElem((UIElement**)&foodLabel);
 }
 
-void j1Scene::CreatePauseMenu() {
-
+void j1Scene::CreatePauseMenu() 
+{
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
@@ -1625,6 +1627,11 @@ void j1Scene::CreatePauseMenu() {
 	labelInfo.text = "Return to Main Menu";
 	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
 
+	// Mouse texture
+	SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+	if (r.x != 243)
+		if (!App->player->isMouseOnMine)
+			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 }
 
 void j1Scene::DestroyPauseMenu() {

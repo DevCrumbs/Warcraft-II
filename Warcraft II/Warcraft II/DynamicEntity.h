@@ -269,6 +269,9 @@ protected:
 	UILifeBar* lifeBar = nullptr;
 	int lifeBarMarginX = 0;
 	int lifeBarMarginY = 0;
+
+	// Fow
+	iPoint lastSeenTile = { -1,-1 };
 };
 
 // ---------------------------------------------------------------------

@@ -37,7 +37,7 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	bool Update(float ft);
+	bool Update(float dt);
 
 	bool SpawnEnemy(float prob);
 	void AddTiles(list<iPoint> tiles);
@@ -69,8 +69,8 @@ private:
 	uint totalSpawnOfCurrWave = 0;
 
 	// Waves timeline
-	j1Timer nextWaveTimer;
-	j1Timer nextPhaseTimer;
+	float nextWaveTimer = 0.0f;
+	float nextPhaseTimer = 0.0f;
 
 	float secondsToNextWave = 0.0f;
 	float secondsToNextPhase = 0.0f;
