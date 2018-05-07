@@ -33,6 +33,7 @@ struct SliderStruct;
 enum TerenasDialogEvents {
 
 	TerenasDialog_START,
+	TerenasDialog_WAVES,
 	TerenasDialog_RESCUE_ALLERIA,
 	TerenasDialog_RESCUE_TURALYON,
 	TerenasDialog_GOLD_MINE,

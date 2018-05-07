@@ -5,6 +5,7 @@
 #include "p2Point.h"
 
 // Units
+#include "OrcShip.h"
 #include "Dragon.h"
 #include "Grunt.h"
 #include "TrollAxethrower.h"
@@ -203,6 +204,7 @@ private:
 	string gruntTexName;
 	string trollAxethrowerTexName;
 	string dragonTexName;
+	string orcShipTexName;
 	string crittersTexName;
 
 	SDL_Texture* footmanTex = nullptr;
@@ -216,6 +218,7 @@ private:
 	SDL_Texture* gruntTex = nullptr;
 	SDL_Texture* trollAxethrowerTex = nullptr;
 	SDL_Texture* dragonTex = nullptr;
+	SDL_Texture* orcShipTex = nullptr;
 	SDL_Texture* crittersTex = nullptr;
 
 	/// Static entities
@@ -239,6 +242,7 @@ private:
 	GruntInfo gruntInfo;
 	TrollAxethrowerInfo trollAxethrowerInfo;
 	DragonInfo dragonInfo;
+	OrcShipInfo orcShipInfo;
 	CritterSheepInfo critterSheepInfo;
 	CritterBoarInfo critterBoarInfo;
 

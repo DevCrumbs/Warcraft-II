@@ -376,7 +376,7 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-				dynEnt->SetLastSeenTile(dynEnt->GetSingleUnit()->currTile);
+				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
 			}
 
 			if (isSelected) {
@@ -481,7 +481,7 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-				dynEnt->SetLastSeenTile(dynEnt->GetSingleUnit()->currTile);
+				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
 			}
 
 			if (isSelected) {
