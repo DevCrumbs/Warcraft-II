@@ -814,6 +814,8 @@ bool j1Scene::CleanUp()
 	App->audio->PauseMusic();
 	App->tex->UnLoad(debugTex);
 
+	pauseMenuActions = PauseMenuActions_NOT_EXIST;
+
 	if (!App->gui->isGuiCleanUp)
 		DestroyAllUI();
 	//warcraftActive = false;
@@ -829,6 +831,7 @@ bool j1Scene::CleanUp()
 	App->movement->active = false;
 	App->particles->active = false;
 	App->wave->active = false;
+	App->fow->active = false;
 
 	App->map->UnLoad();
 	App->player->CleanUp();
@@ -839,6 +842,7 @@ bool j1Scene::CleanUp()
 	App->pathfinding->CleanUp();
 	App->collision->CleanUp();
 	App->wave->CleanUp();
+	App->fow->CleanUp();
 
 	RELEASE_ARRAY(data);
 
