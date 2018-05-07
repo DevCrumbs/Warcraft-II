@@ -52,6 +52,7 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 
 	pugi::xml_node book = artifacts.child("book");
 	bookAnim.speed = artifacts.attribute("speed").as_float();
+	bookAnim.loop = artifacts.attribute("loop").as_int();
 	for (book = book.child("frame"); book; book = book.next_sibling("frame")) {
 		bookAnim.PushBack({ book.attribute("x").as_int(), book.attribute("y").as_int(), book.attribute("w").as_int(), book.attribute("h").as_int() });
 		bookText = { book.attribute("x").as_int(), book.attribute("y").as_int(), book.attribute("w").as_int(), book.attribute("h").as_int() };
@@ -59,6 +60,7 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 	
 	pugi::xml_node eye = artifacts.child("eye");
 	eyeAnim.speed = artifacts.attribute("speed").as_float();
+	eyeAnim.loop = artifacts.attribute("loop").as_bool();
 	for (eye = eye.child("frame"); eye; eye = eye.next_sibling("frame")) {
 		eyeAnim.PushBack({ eye.attribute("x").as_int(), eye.attribute("y").as_int(), eye.attribute("w").as_int(), eye.attribute("h").as_int() });
 		eyeText = { eye.attribute("x").as_int(), eye.attribute("y").as_int(), eye.attribute("w").as_int(), eye.attribute("h").as_int() };
@@ -66,6 +68,7 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 
 	pugi::xml_node scepter = artifacts.child("scepter");
 	scepterAnim.speed = artifacts.attribute("speed").as_float();
+	scepterAnim.loop = artifacts.attribute("loop").as_bool();
 	for (scepter = scepter.child("frame"); scepter; scepter = scepter.next_sibling("frame")) {
 		scepterAnim.PushBack({ scepter.attribute("x").as_int(), scepter.attribute("y").as_int(), scepter.attribute("w").as_int(), scepter.attribute("h").as_int() });
 		scepterText = { scepter.attribute("x").as_int(), scepter.attribute("y").as_int(), scepter.attribute("w").as_int(), scepter.attribute("h").as_int() };
@@ -73,6 +76,7 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 
 	pugi::xml_node skull = artifacts.child("skull");
 	skullAnim.speed = artifacts.attribute("speed").as_float();
+	skullAnim.loop = artifacts.attribute("loop").as_bool();
 	for (skull = skull.child("frame"); skull; skull = skull.next_sibling("frame")) {
 		skullAnim.PushBack({ skull.attribute("x").as_int(), skull.attribute("y").as_int(), skull.attribute("w").as_int(), skull.attribute("h").as_int() });
 		skullText = { skull.attribute("x").as_int(), skull.attribute("y").as_int(), skull.attribute("w").as_int(), skull.attribute("h").as_int() };
@@ -439,10 +443,22 @@ void j1Gui::LoadAnimationsSpeed()
 
 void j1Gui::UpdateAnimations(float dt)
 {
-	scepterAnim.speed = scepterTextSpeed * dt;
-	bookAnim.speed = bookTextSpeed * dt;
-	skullAnim.speed = skullTextSpeed * dt;
-	eyeAnim.speed = eyeTextSpeed * dt;
+	if (dt > 0) {
 
-	parchmentAnim.speed = parchmentSpeed * dt;
+		scepterAnim.speed = scepterTextSpeed * dt;
+		bookAnim.speed = bookTextSpeed * dt;
+		skullAnim.speed = skullTextSpeed * dt;
+		eyeAnim.speed = eyeTextSpeed * dt;
+
+		parchmentAnim.speed = parchmentSpeed * dt;
+	}
+	else {
+	
+		scepterAnim.speed = scepterTextSpeed * App->auxiliarDt;
+		bookAnim.speed = bookTextSpeed * App->auxiliarDt;
+		skullAnim.speed = skullTextSpeed * App->auxiliarDt;
+		eyeAnim.speed = eyeTextSpeed * App->auxiliarDt;
+
+		parchmentAnim.speed = parchmentSpeed * App->auxiliarDt;
+	}
 }

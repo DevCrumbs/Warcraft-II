@@ -692,7 +692,12 @@ bool j1Scene::Update(float dt)
 
 		else if (parchmentImg->GetAnimation()->speed > 0) {
 			SDL_Rect rect = { -(int)App->render->camera.x, -(int)App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h };
-			alphaCont += 100*dt;
+			
+			if (dt > 0)
+				alphaCont += 100 * dt;
+			else
+				alphaCont += 100 * App->auxiliarDt;
+
 			App->printer->PrintQuad(rect, { 0,0,0, (Uint8)alphaCont }, true, true, Layers_QuadsPrinters);
 		}
 

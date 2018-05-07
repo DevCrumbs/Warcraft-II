@@ -13,7 +13,7 @@
 
   <window>
     <resolution width="800" height="600" scale="1"/>
-    <fullscreen value="true"/>
+    <fullscreen value="false"/>
     <borderless value="false"/>
     <resizable value="true"/>
     <fullscreen_window value="false"/>
@@ -89,7 +89,7 @@
       <frame x="800" y="674" w="200" h="250" />
     </parchment>
 
-    <artifacts speed = "5">
+    <artifacts speed = "5" loop="1">
        <scepter>
          <frame x="577" y="361" w="55" h="55" />
          <frame x="632" y="361" w="55" h="55" />
