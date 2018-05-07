@@ -410,9 +410,7 @@ void Goal_AttackTarget::Terminate()
 		LOG("REMOVE");
 
 		// Remove definitely the target from this owner
-		owner->RemoveTargetInfo(targetInfo);
-
-		
+		owner->RemoveTargetInfo(targetInfo);		
 	}
 
 	// -----
