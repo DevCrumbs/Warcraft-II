@@ -525,7 +525,6 @@ void j1Player::SpawnUnitFromBuilding(StaticEntity* spawnBuilding, ENTITY_TYPE sp
 		iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
 		App->entities->AddEntity(spawningEntity, { (float)spawnPos.x, (float)spawnPos.y }, (EntityInfo&)App->entities->GetUnitInfo(spawningEntity), unitInfo, this);
-		isUnitSpawning = false;
 	}
 }
 
@@ -546,7 +545,6 @@ void j1Player::SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, Uni
 		iPoint spawnPos = App->map->MapToWorld(toSpawnTile.x, toSpawnTile.y);
 
 		App->entities->AddEntity(spawningEntity, { (float)spawnPos.x, (float)spawnPos.y }, (EntityInfo&)App->entities->GetUnitInfo(spawningEntity), unitInfo, this);
-		isUnitSpawning = false;
 	}
 }
 
@@ -1805,7 +1803,6 @@ void j1Player::HandleSpawningUnitsUIElem(ToSpawnUnit** toSpawnUnit, list<GroupSp
 
 			iterator->owner = toSpawnUnit;
 
-			isUnitSpawning = true;
 			break;
 		}
 	}

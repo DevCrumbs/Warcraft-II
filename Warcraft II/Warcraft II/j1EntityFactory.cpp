@@ -3208,7 +3208,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		OrcShip* orcShip = new OrcShip(pos, orcShipInfo.unitInfo.size, orcShipInfo.unitInfo.currLife, orcShipInfo.unitInfo.maxLife, unitInfo, (const OrcShipInfo&)entityInfo, listener);
 		orcShip->entityType = EntityCategory_DYNAMIC_ENTITY;
 		orcShip->dynamicEntityType = EntityType_ORC_SHIP;
-		orcShip->entitySide = EntitySide_Enemy;
+		orcShip->entitySide = EntitySide_OrcShip;
 
 		toSpawnEntities.push_back((Entity*)orcShip);
 		return (DynamicEntity*)orcShip;
