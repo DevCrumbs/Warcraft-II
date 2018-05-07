@@ -6,8 +6,6 @@
 #include "Defs.h"
 #include "StaticEntity.h"
 
-
-
 struct ChickenFarmInfo
 {
 	SDL_Rect completeTexArea = { 0,0,0,0 };
