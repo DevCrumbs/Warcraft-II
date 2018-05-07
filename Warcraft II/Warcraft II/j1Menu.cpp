@@ -159,7 +159,8 @@ bool j1Menu::PostUpdate()
 
 	// Blit the background
 	//App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 70, 70, 70, 255);
-	App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, { 70,70,70,255 }, true);
+	SDL_Color brown = { 70,70,70,255 };
+	App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, brown, true, false, Layers_PreviewBuildingsQuad);
 
 	if (isFadetoScene) {
 		App->fade->FadeToBlack(this, App->scene);
