@@ -216,7 +216,7 @@ public:
 
 	EntitySelectedStats entitySelectedStats;
 
-	bool isUnitSpawning = false;
+	//bool isUnitSpawning = false;
 	bool isMouseOnMine = false;
 
 	HoverInfo firstHoverInfo;
@@ -224,6 +224,10 @@ public:
 	HoverInfo thirdHoverInfo;
 
 	UIMinimap* minimap = nullptr;
+
+	//Spawning units from barracks queues and variables
+	queue<ToSpawnUnit*> toSpawnUnitBarracks;
+	queue<ToSpawnUnit*> toSpawnUnitGrypho;
 
 private:
 
@@ -246,9 +250,7 @@ private:
 
 	list<UIElement*> UIMenuInfoList;
 
-	//Spawning units from barracks queues and variables
-	queue<ToSpawnUnit*> toSpawnUnitBarracks;
-	queue<ToSpawnUnit*> toSpawnUnitGrypho;
+
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;
 

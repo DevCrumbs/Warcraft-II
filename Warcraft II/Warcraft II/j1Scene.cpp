@@ -787,9 +787,18 @@ bool j1Scene::PostUpdate()
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
 	}
-	
-	if (((App->player->GetCurrentGold() < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
-		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) || App->player->townHall == nullptr) {
+
+	//LoseConditions
+	//Not enogh gold to create Archer (cheeper unit) and we have no more units in game and spawning
+	if ((App->player->GetCurrentGold() < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted && App->player->toSpawnUnitBarracks.empty() && App->player->toSpawnUnitGrypho.empty())
+	//Have not barracks and gryphos and have not enogh gold for build it and create the cheeper option (grypho) and we have no more units in game
+		|| (App->player->GetCurrentGold() < 1150 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted && App->player->gryphonAviary == nullptr && App->player->barracks == nullptr)
+	//Not enogh gold to create Gryphos and have not barracks and we have no more units in game and spawning
+		|| (App->player->GetCurrentGold() < 750 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty())
+	//Instant Lose with F2
+		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) 
+	//Orde destroy townhall
+		|| App->player->townHall == nullptr) {
 
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
