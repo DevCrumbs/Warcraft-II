@@ -358,6 +358,13 @@ bool j1Scene::Update(float dt)
 		}
 	}
 
+	if (App->gui->IsMouseOnUI()) {
+
+		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+		if (r.x != 243)
+			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+	}
+
 	// *****UNITS*****
 	/// Units cannot be clicked if a building is being placed or Pause Menu is active
 	if (GetAlphaBuilding() == EntityType_NONE && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
@@ -1630,12 +1637,11 @@ void j1Scene::CreatePauseMenu()
 	// Mouse texture
 	SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
 	if (r.x != 243)
-		if (!App->player->isMouseOnMine)
-			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
+		App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 }
 
-void j1Scene::DestroyPauseMenu() {
-
+void j1Scene::DestroyPauseMenu() 
+{
 	App->gui->RemoveElem((UIElement**)&settingsButt);
 	App->gui->RemoveElem((UIElement**)&ReturnMenuButt);
 	App->gui->RemoveElem((UIElement**)&continueButt);
@@ -1644,11 +1650,12 @@ void j1Scene::DestroyPauseMenu() {
 	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
 }
 
-void j1Scene::CreateSettingsMenu() {
+void j1Scene::CreateSettingsMenu() 
+{
 	UIButton_Info buttonInfo;
 	UILabel_Info labelInfo;
 	
-	//Fullscreen
+	// Fullscreen
 	if (!App->win->fullscreen) {
 		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 498, 370, 20, 20 };
 		buttonInfo.pressedTexArea = { 520, 370, 20, 20 };
@@ -1670,8 +1677,7 @@ void j1Scene::CreateSettingsMenu() {
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
 	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
 
-
-	//Sliders
+	// Sliders
 	x = parchmentImg->GetLocalPos().x + 30;
 	y = parchmentImg->GetLocalPos().y + 70;
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;

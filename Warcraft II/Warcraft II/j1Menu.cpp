@@ -49,7 +49,7 @@ bool j1Menu::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
-	//Music
+	// Music
 	pugi::xml_node audio = config.child("audioPaths");
 
 	mainMenuMusicName = audio.child("mainTheme").attribute("path").as_string();
@@ -185,8 +185,8 @@ bool j1Menu::CleanUp()
 	return ret;
 }
 
-void j1Menu::CreateMenu() {
-
+void j1Menu::CreateMenu() 
+{
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	playButt = App->gui->CreateUIButton({ 600, 350 }, buttonInfo, this, nullptr);
@@ -207,7 +207,6 @@ void j1Menu::CreateMenu() {
 
 	labelInfo.text = "Settings";
 	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, settingsButt);
-
 
 	artifacts.push_back(AddArtifact({ 50, 475 }, App->gui->bookText, App->gui->bookAnim));
 	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim));
