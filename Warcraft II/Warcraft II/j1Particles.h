@@ -34,6 +34,9 @@ enum ParticleType {
 
 	ParticleType_Cross,
 
+	ParticleType_PeasantCarry,
+	ParticleType_Peasant,
+
 	ParticleType_DragonFire,
 	ParticleType_DragonSubFire,
 	ParticleType_GryphonFire,
@@ -117,6 +120,9 @@ private:
 	PawsInfo boarPawsInfo;
 	PawsInfo sheepPawsInfo;
 
+	string peasantTexName;
+	SDL_Texture* peasantTex = nullptr;
+
 	// Animations speed
 	/// Boar Paws
 	float boarPawsUpSpeed = 0.0f, boarPawsDownSpeed = 0.0f, boarPawsLeftSpeed = 0.0f, boarPawsRightSpeed = 0.0f;
@@ -142,6 +148,13 @@ private:
 
 	/// Cross
 	float crossSpeed = 0.0f;
+
+	/// Peasants
+	float peasantCarrySpeed = 0.0f;
+	float peasantSmallBuildingSpeed = 0.0f;
+	float peasantMediumBuildingSpeed = 0.0f;
+	float peasantBigBuildingSpeed = 0.0f;
+
 
 	///
 	bool isAnimationSpeedCharged = false;
@@ -175,6 +188,13 @@ public:
 
 	//Ground X
 	Particle cross;
+
+	//Peasant construction particles
+	Particle carryPeasant;
+	Particle peasantSmallBuild;
+	Particle peasantMediumBuild;
+	Particle peasantBigBuild;
+
 };
 
 #endif //__j1PARTICLES_H__
