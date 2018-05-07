@@ -31,6 +31,9 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 
 	buildingState = BuildingState_Building;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+
+	//Construction peasants
+	peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 }
 
 void ScoutTower::Move(float dt)
@@ -66,8 +69,10 @@ void ScoutTower::Move(float dt)
 	UpdateAnimations(dt);
 
 	//Check is building is built already
-	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
+	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000)) {
 		isBuilt = true;
+		peasants->isRemove = true;
+	}
 
 	//Delete arrow if it is fired when an enemy is already dead 
 	if (attackingTarget == nullptr && arrowParticle != nullptr) {
