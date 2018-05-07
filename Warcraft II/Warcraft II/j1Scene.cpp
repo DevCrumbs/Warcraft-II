@@ -660,6 +660,13 @@ bool j1Scene::Update(float dt)
 
 	// Checks if resources have changed to update building menu and gold label
 	if (terenasDialogTimer.Read() >= 25000 && terenasDialogEvent == TerenasDialog_START) {
+		if (App->scene->terenasDialogEvent != TerenasDialog_WAVES) {
+			App->scene->terenasDialogTimer.Start();
+			App->scene->terenasDialogEvent = TerenasDialog_WAVES;
+			App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+		}
+	}
+	if (terenasDialogTimer.Read() >= 20000 && terenasDialogEvent == TerenasDialog_WAVES) {
 		HideTerenasDialog();
 	}
 	if (terenasDialogTimer.Read() >= 5000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
@@ -1815,6 +1822,11 @@ void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 	{
 	case TerenasDialog_START:
 		text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE!";
+		terenasAdvices.text->SetText(text, 340);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_WAVES:
+		text = "BY THE WAY, THE SEAS SURROUNDING YOUR BASE ARE FULL OF ENEMIES TOO. BE AWARE OF YOUR SURROUNDINGS AND PROTECT YOUR TOWN HALL AT ANY COST!";
 		terenasAdvices.text->SetText(text, 340);
 		terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
