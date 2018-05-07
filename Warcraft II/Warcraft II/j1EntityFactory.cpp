@@ -1312,6 +1312,7 @@ bool j1EntityFactory::Start()
 	isEntityFactoryCleanUp = false;
 
 	/// TODO Joan (balancing)
+
 	// ENTITIES INFO
 	/// ALLIANCE
 	/// Dynamic Entities

@@ -103,6 +103,10 @@ public:
 	bool IsMouseOnUI();
 	void ResetAlpha();
 
+	// Animations
+	void LoadAnimationsSpeed();
+	void UpdateAnimations(float dt);
+
 public:
 
 	std::list<UIElement*> addedElementUI;
@@ -111,9 +115,14 @@ public:
 	bool isDebug = false;
 	Animation parchmentAnim;
 	SDL_Rect parchmentArea{ 0,0,0,0 };
+	float parchmentSpeed = 0.0f;
 
 	//artifacts
 	Animation scepterAnim, bookAnim, skullAnim, eyeAnim;
+	float scepterTextSpeed = 0.0f;
+	float bookTextSpeed = 0.0f;
+	float skullTextSpeed = 0.0f;
+	float eyeTextSpeed = 0.0f;
 
 	SDL_Rect scepterText{ 0,0,0,0 };
 	SDL_Rect bookText{ 0,0,0,0 };

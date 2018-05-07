@@ -86,6 +86,8 @@ bool j1Gui::Start()
 {
 	bool ret = true;
 
+	LoadAnimationsSpeed();
+
 	// Load textures
 	atlas = App->tex->Load(atlasFileName.data());
 
@@ -116,6 +118,8 @@ bool j1Gui::Update(float dt)
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Azure);
 
 	bool ret = true;
+
+	UpdateAnimations(dt);
 
 	// Update UI elements
 	list<UIElement*>::const_iterator UI_elem_it = UIElementsList.begin();
@@ -420,4 +424,25 @@ bool j1Gui::IsMouseOnUI()
 	}
 
 	return ret;
+}
+
+// Animations
+void j1Gui::LoadAnimationsSpeed()
+{
+	scepterTextSpeed = scepterAnim.speed;
+	bookTextSpeed = bookAnim.speed;
+	skullTextSpeed = skullAnim.speed;
+	eyeTextSpeed = eyeAnim.speed;
+
+	parchmentSpeed = parchmentAnim.speed;
+}
+
+void j1Gui::UpdateAnimations(float dt)
+{
+	scepterAnim.speed = scepterTextSpeed * dt;
+	bookAnim.speed = bookTextSpeed * dt;
+	skullAnim.speed = skullTextSpeed * dt;
+	eyeAnim.speed = eyeTextSpeed * dt;
+
+	parchmentAnim.speed = parchmentSpeed * dt;
 }

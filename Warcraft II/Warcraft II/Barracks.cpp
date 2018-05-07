@@ -61,13 +61,11 @@ void Barracks::Move(float dt)
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 
-	
 	if (!isBuilt) 
 		UpdateAnimations(dt);
 
 	if (constructionTimer.Read() >= (constructionTime * 1000) && !isBuilt)
 		isBuilt = true;
-	
 
 	//It isnt used anymore
 	/*if (App->player->barracksUpgrade) {
