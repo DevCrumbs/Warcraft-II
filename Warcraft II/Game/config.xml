@@ -139,7 +139,10 @@
     <camera speed ="600.0" movement ="4" movMarginPcnt = "3"/>
 
     <audioPaths>
-      <mainTheme path= "mainTheme.ogg"/>
+      <levelTheme1 path= "levelTheme1.ogg"/>
+      <levelTheme2 path= "levelTheme2.ogg"/>
+      <levelTheme3 path= "levelTheme3.ogg"/>
+      <levelTheme4 path= "levelTheme4.ogg"/>
     </audioPaths>
     
     <maps>

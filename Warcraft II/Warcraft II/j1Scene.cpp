@@ -74,7 +74,10 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	//Music
 	pugi::xml_node audio = config.child("audioPaths");
 
-	mainThemeMusicName = audio.child("mainTheme").attribute("path").as_string();
+	levelTheme1 = audio.child("levelTheme1").attribute("path").as_string();
+	levelTheme2 = audio.child("levelTheme2").attribute("path").as_string();
+	levelTheme3 = audio.child("levelTheme3").attribute("path").as_string();
+	levelTheme4 = audio.child("levelTheme4").attribute("path").as_string();
 
 	//LoadKeys(config.child("buttons"));
 
@@ -156,7 +159,10 @@ bool j1Scene::Start()
 	alphaBuilding = EntityType_NONE;
 	pauseMenuActions = PauseMenuActions_NOT_EXIST;
 
-	App->audio->PlayMusic(mainThemeMusicName.data(), 2.0f);
+	////Play music
+	string musicToPlay;
+	musicToPlay = ChooseMusicToPlay();
+	App->audio->PlayMusic(musicToPlay.data(), 2.0f);
 
 	App->map->LoadLogic();
 
@@ -1122,6 +1128,22 @@ void j1Scene::LoadAdviceMessage()
 	labelInfo.interactive = false;
 	adviceLabel = App->gui->CreateUILabel({ 300,235 }, labelInfo, this);
 	adviceLabel->isActive = false;
+}
+
+string j1Scene::ChooseMusicToPlay()
+{
+	string ret = levelTheme1;
+	uint rng = rand() % 4 + 1;
+	if (rng == 1)
+		ret = levelTheme1;
+	else if(rng == 2)
+		ret = levelTheme2;
+	else if (rng == 3)
+		ret = levelTheme3;
+	else if (rng == 4)
+		ret = levelTheme4;
+
+	return ret;
 }
 
 void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)

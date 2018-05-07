@@ -2173,8 +2173,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						AddGold(-negative);
 						entitySelectedStats.entitySelected->SetCurrLife(entitySelectedStats.entitySelected->GetMaxLife());
 						ent->CheckBuildingState();
+						App->audio->PlayFx(App->audio->GetFX().button);
 					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
 				}
+				else
+					App->audio->PlayFx(App->audio->GetFX().errorButt);
 			}
 
 			/*if (hoverCheck == HoverCheck_Repair) {
