@@ -223,6 +223,8 @@ public:
 	HoverInfo secondHoverInfo;
 	HoverInfo thirdHoverInfo;
 
+	UIMinimap* minimap = nullptr;
+
 private:
 
 	int currentGold = 0; // amount of gold that the player has at the current moment
@@ -237,9 +239,6 @@ private:
 
 	//list<GroupSpawning> toSpawnUnitStats;
 	//list<ToSpawnUnit*> newUnitsToSpawn;
-
-
-	UIMinimap* minimap = nullptr;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
 		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr, *repairBuildingButton = nullptr;

@@ -63,16 +63,8 @@ void TownHall::Move(float dt)
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 
-	if (App->player->keepUpgrade) {
-		if (!startTimer) {
-			this->constructionTimer.Start();
-			App->player->HideEntitySelectedInfo();
-			startTimer = true;
-		}
-		townHallInfo.townHallType = TownHallType_Castle;
-		UpdateAnimations(dt);
-	}
-	else if (App->player->townHallUpgrade) {
+	if (App->player->townHallUpgrade) {
+		
 		if (startTimer) {
 			this->constructionTimer.Start();
 			//App->player->HideEntitySelectedInfo();
@@ -92,27 +84,16 @@ void TownHall::LoadAnimationsSpeed()
 void TownHall::UpdateAnimations(float dt)
 {
 	if (constructionTimer.Read() >= constructionTime * 1000) {
-		if (townHallInfo.townHallType == TownHallType_Keep) {
+
+		if (townHallInfo.townHallType == TownHallType_Keep && buildingState == BuildingState_Building) {
 			texArea = &townHallInfo.keepCompleteTexArea;
-			buildingState = BuildingState_Normal;
-			SetMaxLife(1400);
-			SetCurrLife(1400);
-		}
-		else if (townHallInfo.townHallType == TownHallType_Castle) {
-			texArea = &townHallInfo.castleCompleteTexArea;
 			buildingState = BuildingState_Normal;
 			SetMaxLife(1400);
 			SetCurrLife(1400);
 		}
 	}
 	else {
-		if (townHallInfo.townHallType == TownHallType_Castle) {
-			texArea = &townHallInfo.castleInProgressTexArea;
-			buildingState = BuildingState_Building;
-		}
-		else {
-			texArea = &townHallInfo.keepInProgressTexArea;
-			buildingState = BuildingState_Building;
-		}
+		texArea = &townHallInfo.keepInProgressTexArea;
+		buildingState = BuildingState_Building;
 	}
 }

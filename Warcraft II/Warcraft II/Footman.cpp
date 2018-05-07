@@ -374,6 +374,12 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
+			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+				dynEnt->SetLastSeenTile(dynEnt->GetSingleUnit()->currTile);
+			}
+				
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -472,6 +478,12 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
+
+			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+				dynEnt->SetLastSeenTile(dynEnt->GetSingleUnit()->currTile);
+			}
 
 			if (isSelected) {
 

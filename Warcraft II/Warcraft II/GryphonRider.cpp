@@ -373,6 +373,12 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
+			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+				dynEnt->SetLastSeenTile(dynEnt->GetSingleUnit()->currTile);
+			}
+
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -471,6 +477,12 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 		if ((c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
+
+			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+				dynEnt->SetLastSeenTile(dynEnt->GetSingleUnit()->currTile);
+			}
 
 			if (isSelected) {
 

@@ -15,7 +15,7 @@
 #include "j1Audio.h"
 #include "j1Player.h"
 #include "j1Printer.h"
-
+#include "UIMinimap.h"
 #include "UILifeBar.h"
 
 #include "j1Scene.h" // isFrameByFrame
@@ -167,6 +167,9 @@ void Grunt::Move(float dt)
 							App->player->AddGold(300);
 						else if (room->roomRect.w == 50 * 32)
 							App->player->AddGold(800);
+
+						if (App->player->minimap != nullptr)
+							App->player->minimap->DrawRoomCleared(*room);
 
 						room->isCleared = true;
 						App->player->roomsCleared++;

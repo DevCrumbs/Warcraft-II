@@ -302,9 +302,7 @@ bool j1Scene::PreUpdate()
 		break;
 	}
 
-
-	//Change to wite Gold Label Color before 2 sec
-
+	// Change to wite Gold Label Color before 2 sec
 	SDL_Color white = { 255,255,255,255 };
 	if (goldLabelColorTime.Read() > 1200 && hasGoldChanged == GoldChange_ChangeColor) {
 		goldLabel->SetColor(White_, true);
@@ -356,6 +354,13 @@ bool j1Scene::Update(float dt)
 			else
 				(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
 		}
+	}
+
+	if (App->gui->IsMouseOnUI()) {
+
+		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+		if (r.x != 243)
+			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 	}
 
 	// *****UNITS*****
@@ -649,25 +654,23 @@ bool j1Scene::Update(float dt)
 	// ---------------------------------------------------------------------------------
 
 	DebugKeys();
-	CheckCameraMovement(dt);
 
-	//Checks if resources have changed to update building menu and gold label
+	if (pauseMenuActions == PauseMenuActions_NOT_EXIST)
+		CheckCameraMovement(dt);
 
+	// Checks if resources have changed to update building menu and gold label
 	if (terenasDialogTimer.Read() >= 25000 && terenasDialogEvent == TerenasDialog_START) {
 		HideTerenasDialog();
 	}
 	if (terenasDialogTimer.Read() >= 5000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
 		HideTerenasDialog();
 	}
-
 	if (adviceMessageTimer.Read() >= 2500 && adviceMessage != AdviceMessage_NONE && adviceMessage != AdviceMessage_UNDER_ATTACK) {
 		HideAdviceMessage();
 	}
-
 	if (adviceMessageTimer.Read() >= 3500 && adviceMessage == AdviceMessage_UNDER_ATTACK) {
 		HideAdviceMessage();
 	}
-
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
 		App->map->UnLoad();
@@ -1588,18 +1591,20 @@ void j1Scene::UpdateGoldLabel(GoldChange state)
 
 	goldLabelColorTime.Start();
 }
+
 void j1Scene::UpdateFoodLabel()
 {
 	foodLabel->SetText(to_string(App->player->currentFood));
 }
+
 void j1Scene::UnLoadResourcesLabels()
 {
 	App->gui->RemoveElem((UIElement**)&goldLabel);
 	App->gui->RemoveElem((UIElement**)&foodLabel);
 }
 
-void j1Scene::CreatePauseMenu() {
-
+void j1Scene::CreatePauseMenu() 
+{
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
@@ -1629,10 +1634,14 @@ void j1Scene::CreatePauseMenu() {
 	labelInfo.text = "Return to Main Menu";
 	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
 
+	// Mouse texture
+	SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+	if (r.x != 243)
+		App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 }
 
-void j1Scene::DestroyPauseMenu() {
-
+void j1Scene::DestroyPauseMenu() 
+{
 	App->gui->RemoveElem((UIElement**)&settingsButt);
 	App->gui->RemoveElem((UIElement**)&ReturnMenuButt);
 	App->gui->RemoveElem((UIElement**)&continueButt);
@@ -1641,11 +1650,12 @@ void j1Scene::DestroyPauseMenu() {
 	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
 }
 
-void j1Scene::CreateSettingsMenu() {
+void j1Scene::CreateSettingsMenu() 
+{
 	UIButton_Info buttonInfo;
 	UILabel_Info labelInfo;
 	
-	//Fullscreen
+	// Fullscreen
 	if (!App->win->fullscreen) {
 		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 498, 370, 20, 20 };
 		buttonInfo.pressedTexArea = { 520, 370, 20, 20 };
@@ -1667,8 +1677,7 @@ void j1Scene::CreateSettingsMenu() {
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
 	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
 
-
-	//Sliders
+	// Sliders
 	x = parchmentImg->GetLocalPos().x + 30;
 	y = parchmentImg->GetLocalPos().y + 70;
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
