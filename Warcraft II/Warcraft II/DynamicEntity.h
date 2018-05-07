@@ -206,6 +206,10 @@ public:
 	// Minimap
 	iPoint GetLastTile();
 
+	// Fow
+	void SetLastSeenTile(iPoint lastSeenTile);
+	iPoint GetLastSeenTile() const;
+
 public:
 
 	ENTITY_TYPE dynamicEntityType = EntityType_NONE;

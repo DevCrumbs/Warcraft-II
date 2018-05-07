@@ -302,9 +302,7 @@ bool j1Scene::PreUpdate()
 		break;
 	}
 
-
-	//Change to wite Gold Label Color before 2 sec
-
+	// Change to wite Gold Label Color before 2 sec
 	SDL_Color white = { 255,255,255,255 };
 	if (goldLabelColorTime.Read() > 1200 && hasGoldChanged == GoldChange_ChangeColor) {
 		goldLabel->SetColor(White_, true);
@@ -656,25 +654,23 @@ bool j1Scene::Update(float dt)
 	// ---------------------------------------------------------------------------------
 
 	DebugKeys();
-	CheckCameraMovement(dt);
 
-	//Checks if resources have changed to update building menu and gold label
+	if (pauseMenuActions == PauseMenuActions_NOT_EXIST)
+		CheckCameraMovement(dt);
 
+	// Checks if resources have changed to update building menu and gold label
 	if (terenasDialogTimer.Read() >= 25000 && terenasDialogEvent == TerenasDialog_START) {
 		HideTerenasDialog();
 	}
 	if (terenasDialogTimer.Read() >= 5000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
 		HideTerenasDialog();
 	}
-
 	if (adviceMessageTimer.Read() >= 2500 && adviceMessage != AdviceMessage_NONE && adviceMessage != AdviceMessage_UNDER_ATTACK) {
 		HideAdviceMessage();
 	}
-
 	if (adviceMessageTimer.Read() >= 3500 && adviceMessage == AdviceMessage_UNDER_ATTACK) {
 		HideAdviceMessage();
 	}
-
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
 		App->map->UnLoad();

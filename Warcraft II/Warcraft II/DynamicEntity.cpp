@@ -984,3 +984,14 @@ iPoint DynamicEntity::GetLastTile()
 {
 	return lastColliderUpdateTile;
 }
+
+// Fow
+void DynamicEntity::SetLastSeenTile(iPoint lastSeenTile) 
+{
+	this->lastSeenTile = lastSeenTile;
+}
+
+iPoint DynamicEntity::GetLastSeenTile() const
+{
+	return lastSeenTile;
+}
