@@ -13,7 +13,7 @@
 
   <window>
     <resolution width="800" height="600" scale="1"/>
-    <fullscreen value="false"/>
+    <fullscreen value="true"/>
     <borderless value="false"/>
     <resizable value="true"/>
     <fullscreen_window value="false"/>
@@ -180,6 +180,7 @@
       <elvenArcherAnimations name = "data/assets/textures/units/humanUnits/archer.png"/>
       <gryphonRiderAnimations name = "data/assets/textures/units/humanUnits/gryphonRider.png"/>
       <dragonAnimations name = "data/assets/textures/units/orcishUnits/dragon.png"/>
+      <orcShipAnimations name = "data/assets/textures/units/orcishUnits/OrcShip.png"/>
 
       <critters name="data/assets/textures/units/neutralUnits/critters.png"/>
 
@@ -850,7 +851,36 @@
               <frame x="240" y="960" w="120" h="120"/>
             </deathDown>
           </animations>
-        </dragon>
+        </dragon>        
+          
+        <orcShip>
+          <animations>
+            <up speed="4" loop="1">
+              <frame x="0" y="0" w="64" h="64"/>
+            </up>
+            <upRight speed="4" loop="1">
+              <frame x="64" y="0" w="64" h="64"/>
+            </upRight>
+            <upLeft speed="4" loop="1">
+              <frame x="64" y="64" w="64" h="64"/>
+            </upLeft>
+            <down speed="4" loop="1">
+              <frame x="0" y="64" w="64" h="64"/>
+            </down>
+            <downRight speed="4" loop="1">
+              <frame x="192" y="0" w="64" h="64"/>
+            </downRight>
+            <downLeft speed="4" loop="1">
+              <frame x="192" y="64" w="64" h="64"/>
+            </downLeft>
+            <left speed="4" loop="1">
+              <frame x="128" y="64" w="64" h="64"/>
+            </left>
+            <right speed="4" loop="1">
+              <frame x="128" y="0" w="64" h="64"/>      
+            </right>
+          </animations>
+        </orcShip>
       </orcs>
 
       <critters>
