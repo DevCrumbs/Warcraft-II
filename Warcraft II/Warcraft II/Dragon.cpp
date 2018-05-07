@@ -397,6 +397,7 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
+					(*it)->isAttackSatisfied = false;
 
 					if (currTarget != nullptr) {
 
