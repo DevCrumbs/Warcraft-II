@@ -51,7 +51,7 @@ bool j1EnemyWave::Start()
 	/// TODO Balancing (Waves)
 	spawnProbability = 0.25f;
 	maxSpawnPerPhase = 3;
-	maxSpawnPerWave = 10;
+	maxSpawnPerWave = 8;
 
 	nextWaveTimer.Start();
 
