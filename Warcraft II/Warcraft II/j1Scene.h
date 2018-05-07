@@ -169,6 +169,8 @@ public:
 	void LoadTerenasDialog();
 	void LoadAdviceMessage();
 
+	string ChooseMusicToPlay();
+
 	void ShowSelectedUnits(list<DynamicEntity*> units);
 	void HideUnselectedUnits();
 	void PlayUnitSound(list<DynamicEntity*> units, bool isSelect);
@@ -322,7 +324,11 @@ private:
 
 	string orthogonalMap, isometricMap, warcraftMap;
 	string orthogonalTexName, isometricTexName, warcraftTexName;
-	string mainThemeMusicName;
+	string levelTheme1;
+	string levelTheme2;
+	string levelTheme3;
+	string levelTheme4;
+
 	bool orthogonalActive, isometricActive, warcraftActive;
 
 	SDL_Texture* debugTex =	nullptr;
