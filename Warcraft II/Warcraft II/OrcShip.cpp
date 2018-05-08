@@ -63,7 +63,7 @@ void OrcShip::Move(float dt)
 			animation = &orcShipInfo.left;
 		}
 		else if (movementTimer.Read() >= 10000) {
-			App->wave->PerformWave();
+			App->wave->PerformWave(ShipType_UP_LEFT);
 		}
 		else if (movementTimer.Read() >= 5000) {
 			animation = &orcShipInfo.down;
