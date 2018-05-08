@@ -16,7 +16,6 @@
 #include "j1Player.h"
 #include "j1Particles.h"
 #include "j1Printer.h"
-#include "j1FogOfWar.h"
 
 #include "UILifeBar.h"
 

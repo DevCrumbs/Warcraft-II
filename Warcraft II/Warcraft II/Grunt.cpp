@@ -17,7 +17,6 @@
 #include "j1Printer.h"
 #include "UIMinimap.h"
 #include "UILifeBar.h"
-#include "j1FogOfWar.h"
 
 #include "j1Scene.h" // isFrameByFrame
 #include "j1Input.h" // isFrameByFrame
@@ -258,6 +257,7 @@ void Grunt::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr)
 	{
+		// Not draw if not on fow sight
 		if (App->fow->IsOnSight(pos))
 		{
 			fPoint offset = { 0.0f,0.0f };
