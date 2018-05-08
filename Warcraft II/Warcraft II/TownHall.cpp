@@ -67,6 +67,7 @@ void TownHall::Move(float dt)
 		
 		if (startTimer) {
 			this->constructionTimer.Start();
+			isBuilt = false;
 			//App->player->HideEntitySelectedInfo();
 			startTimer = false;
 		}
@@ -90,6 +91,7 @@ void TownHall::UpdateAnimations(float dt)
 			buildingState = BuildingState_Normal;
 			SetMaxLife(1400);
 			SetCurrLife(1400);
+			isBuilt = true;
 		}
 	}
 	else {

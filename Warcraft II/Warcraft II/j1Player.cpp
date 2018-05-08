@@ -1010,6 +1010,10 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Barracks", { 546,160,50,41 }, ent);
 			}
+			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+				ShowEntitySelectedInfo("Building...", "Keep", { 597,202,50,41 }, ent);
+			}
 			break;
 
 		default:
@@ -2151,7 +2155,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 					HideHoverInfoMenu(&firstHoverInfo);
 					upgradeTownHallButton->isActive = false;
-					ShowEntitySelectedInfo(entitySelectedStats.entitySelected->GetStringLife(), "Keep", { 597,202,50,41 }, entitySelectedStats.entitySelected);
+					ShowEntitySelectedInfo("Building...", "Keep", { 597,202,50,41 }, entitySelectedStats.entitySelected);
 				}
 				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
