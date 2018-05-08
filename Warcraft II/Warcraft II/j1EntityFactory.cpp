@@ -2451,7 +2451,7 @@ bool j1EntityFactory::PostUpdate()
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		if (!(*dynEnt)->GetBlitState() || !App->render->IsInScreen({ (int)(*dynEnt)->GetPos().x, (int)(*dynEnt)->GetPos().y, (*dynEnt)->GetSize().x, (*dynEnt)->GetSize().y })) {
+		if (!(*dynEnt)->GetBlitState()) {
 
 			dynEnt++;
 			continue;
@@ -2513,12 +2513,6 @@ bool j1EntityFactory::PostUpdate()
 	statEnt = activeStaticEntities.begin();
 
 	while (statEnt != activeStaticEntities.end()) {
-
-		if (!App->render->IsInScreen({ (int)(*statEnt)->GetPos().x, (int)(*statEnt)->GetPos().y, (*statEnt)->GetSize().x, (*statEnt)->GetSize().y })) {
-
-			statEnt++;
-			continue;
-		}
 
 		switch ((*statEnt)->staticEntityCategory) {
 
