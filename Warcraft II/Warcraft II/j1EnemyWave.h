@@ -13,6 +13,7 @@
 using namespace std;
 
 struct MapLayer;
+class OrcShip;
 
 struct EnemyInWave
 {
@@ -74,6 +75,8 @@ private:
 
 	float secondsToNextWave = 0.0f;
 	float secondsToNextPhase = 0.0f;
+
+	OrcShip* ship = nullptr;
 };
 
 #endif //__j1EnemySurge_H__

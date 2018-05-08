@@ -22,6 +22,8 @@ struct OrcShipInfo
 
 	Animation up, down, left, right;
 	Animation upLeft, upRight, downLeft, downRight;
+
+	ShipType orcShipType = ShipType_NONE;
 };
 
 class OrcShip :public DynamicEntity
@@ -34,18 +36,11 @@ public:
 	void Draw(SDL_Texture* sprites);
 	void DebugDrawSelected();
 
-	// Animations
-	void LoadAnimationsSpeed();
-	void UpdateAnimationsSpeed(float dt);
-	bool ChangeAnimation();
-
 private:
 
 	OrcShipInfo orcShipInfo;
-	ShipType orcShipType = ShipType_NONE;
-	// Animations speed
-	float upSpeed = 0.0f, downSpeed = 0.0f, leftSpeed = 0.0f, rightSpeed = 0.0f;
-	float upLeftSpeed = 0.0f, upRightSpeed = 0.0f, downLeftSpeed = 0.0f, downRightSpeed = 0.0f;
+
+	int speed = 0;
 
 	iPoint spawnTile = { -1,-1 };
 

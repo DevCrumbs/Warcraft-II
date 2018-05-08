@@ -10,6 +10,7 @@
 #include "j1Scene.h"
 #include "DynamicEntity.h"
 #include "j1EntityFactory.h"
+#include "OrcShip.h"
 #include <time.h>
 #include <random>
 
@@ -172,7 +173,11 @@ bool j1EnemyWave::Update(float dt)
 		if (nextPhaseTimer >= secondsToNextPhase && phasesOfCurrWave < totalPhasesOfCurrWave) {
 
 			// 1. Perform the small wave
-			PerformWave();
+			UnitInfo unitInfo;
+			OrcShipInfo shipInfo = (OrcShipInfo&)App->entities->GetUnitInfo(EntityType_ORC_SHIP);
+			int shipRand = rand() % 4;
+			shipInfo.orcShipType = (ShipType)shipRand;
+			App->entities->AddEntity(EntityType_ORC_SHIP, { 0,0 }, (EntityInfo&)shipInfo, unitInfo, this);
 
 			// 2. Update variables for the next phase
 			nextPhaseTimer = 0;

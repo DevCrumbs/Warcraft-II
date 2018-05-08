@@ -1498,16 +1498,21 @@ bool j1EntityFactory::Start()
 	dragonInfo.unitInfo.offsetSize = { -16,-16 };
 	//_Dragon
 
+	// Orc ship
+	/// Speed
+	orcShipInfo.unitInfo.maxSpeed = 50.0f;
+	orcShipInfo.unitInfo.currSpeed = orcShipInfo.unitInfo.maxSpeed;
+
 	/// Static Entities
 	// Towers
-	watchTowerInfo.life = 100;
-	watchTowerInfo.damage = 7;
+	watchTowerInfo.life = 80;
+	watchTowerInfo.damage = 6;
 
-	enemyGuardTowerInfo.life = 125;
-	enemyGuardTowerInfo.damage = 13;
+	enemyGuardTowerInfo.life = 100;
+	enemyGuardTowerInfo.damage = 9;
 
-	enemyCannonTowerInfo.life = 150;
-	enemyCannonTowerInfo.damage = 17;
+	enemyCannonTowerInfo.life = 120;
+	enemyCannonTowerInfo.damage = 15;
 	//_Towers
 
 	// CRITTERS

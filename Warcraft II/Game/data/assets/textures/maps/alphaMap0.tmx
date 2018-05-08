@@ -54189,7 +54189,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="385"/>
    <tile/>
    <tile/>
    <tile/>
@@ -54259,7 +54259,7 @@
    <tile/>
   </data>
  </layer>
- <layer name="group 1" width="120" height="150">
+ <layer name="group 1" width="120" height="150" opacity="0.5">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -67739,7 +67739,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="385"/>
    <tile/>
    <tile/>
    <tile/>
@@ -72266,7 +72266,7 @@
    <tile/>
   </data>
  </layer>
- <layer name="group 2" width="120" height="150">
+ <layer name="group 2" width="120" height="150" opacity="0.5">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -88915,7 +88915,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="385"/>
    <tile/>
    <tile/>
    <tile/>
@@ -104402,7 +104402,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="385"/>
    <tile/>
    <tile/>
    <tile/>
