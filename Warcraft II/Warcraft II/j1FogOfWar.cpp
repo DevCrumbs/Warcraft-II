@@ -115,13 +115,13 @@ bool j1FogOfWar::IsOnSight(iPoint pos)
 {
 	bool ret = false;
 	iPoint tile = App->map->WorldToMap(pos.x / App->win->GetScale(), pos.y / App->win->GetScale());
-	int fowTile = (tile.x * 120) + tile.y;
+	int fowTile = (tile.y * 119) + tile.x;
 
-	ret = fowTilesVector[fowTile]->alpha == 0;
+	ret = (fowTilesVector[fowTile]->alpha == 0);
 
 	if (!ret)
 	{
-		LOG("False, pos %i,%i", pos.x, pos.y);
+		LOG("\nFalse, pos %i,%i\n Apha is %i\n fowTile is %i", pos.x, pos.y, fowTilesVector[fowTile]->alpha, fowTile);
 	}
 
 	return ret;
