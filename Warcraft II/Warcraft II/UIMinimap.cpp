@@ -100,9 +100,9 @@ void UIMinimap::Draw() const
 	///-----------------	 Draw all entities in the minimap
 	for (list<DynamicEntity*>::iterator iterator = (*activeDynamicEntities).begin(); iterator != (*activeDynamicEntities).end(); ++iterator)
 	{
-		iPoint pos = (*iterator)->GetLastTile();
-		SDL_Rect rect{ pos.x * 32 * currentScaleFactor + offsetX + cameraOffset.x,
-						pos.y *32 * currentScaleFactor + offsetY + cameraOffset.y,
+		fPoint pos = (*iterator)->GetPos();
+		SDL_Rect rect{ pos.x * currentScaleFactor + offsetX + cameraOffset.x,
+						pos.y * currentScaleFactor + offsetY + cameraOffset.y,
 						entityWidth * currentScaleFactor * zoomFactor, entityHeight * currentScaleFactor * zoomFactor };
 
 		SDL_Color color{ 0,0,0,0 };
@@ -121,6 +121,8 @@ void UIMinimap::Draw() const
 			break;
 		case EntitySide_EnemyShip:
 			color = { 75,0,130,255 };//
+			rect.w *= 2;
+			rect.h *= 2;
 			break;
 		case EntitySide_Neutral:
 			break;
