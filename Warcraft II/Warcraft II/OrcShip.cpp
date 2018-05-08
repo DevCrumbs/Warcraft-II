@@ -78,12 +78,16 @@ void OrcShip::Move(float dt)
 
 void OrcShip::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr) {
+	if (animation != nullptr)
+	{
+		// Not draw if not on fow sight
+		if (App->fow->IsOnSight(pos))
+		{
+			fPoint offset = { 0.0f,0.0f };
+			offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.5f };
 
-		fPoint offset = { 0.0f,0.0f };
-		offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.5f };
-
-		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		}
 	}
 
 	//if (isSelected)

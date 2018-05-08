@@ -4,6 +4,7 @@
 #include "p2Point.h"
 #include "Animation.h"
 #include "j1Timer.h"
+#include "j1FogOfWar.h"
 
 #include "Entity.h"
 

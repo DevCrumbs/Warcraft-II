@@ -20,6 +20,12 @@ struct EnemyInWave
 	iPoint pos{ 0,0 };
 };
 
+struct SpawnTiles
+{
+	iPoint ship{ 0,0 };
+	list<iPoint> entitySpawn;
+};
+
 class j1EnemyWave : public j1Module
 {
 public:
@@ -39,8 +45,10 @@ public:
 
 	bool Update(float dt);
 
+	void AddTiles(list<iPoint> tiles, iPoint ship);
+
 	bool SpawnEnemy(float prob);
-	void AddTiles(list<iPoint> tiles);
+
 	void PerformWave();
 
 	// Save
@@ -51,7 +59,7 @@ public:
 
 private:
 
-	vector<list<iPoint>> spawnTiles;
+	vector<SpawnTiles> spawnTiles;
 	
 	float spawnProbability = 0.0f;
 	uint maxSpawnPerPhase = 0;
