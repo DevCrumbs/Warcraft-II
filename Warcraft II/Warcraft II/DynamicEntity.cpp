@@ -16,6 +16,7 @@
 #include "j1Player.h"
 #include "j1Particles.h"
 #include "j1Printer.h"
+#include "j1FogOfWar.h"
 
 #include "UILifeBar.h"
 
@@ -126,7 +127,8 @@ void DynamicEntity::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr) {
 		//App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
-		App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		if (App->fow->IsOnSight(pos))
+			App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 	}
 	if (isSelected)
 		DebugDrawSelected();

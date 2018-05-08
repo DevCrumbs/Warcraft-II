@@ -23,8 +23,8 @@ struct FogOfWarTile
 {
 	iPoint pos;
 	int size = 32;
-	int alpha = 255;
-	int normalAlpha = 255;
+	int alpha = 240;
+	int normalAlpha = 240;
 };
 
 class j1FogOfWar : public j1Module
@@ -41,6 +41,7 @@ public:
 
 	void LoadFoWMap(int mapWidth, int mapHeight);
 	bool IsOnSight(iPoint pos);
+	bool IsOnSight(fPoint pos);
 	void UnLoadFowMap();
 	void TilesNearPlayer();
 	int TotalDistanceToPlayer(Entity* entity, int tile);

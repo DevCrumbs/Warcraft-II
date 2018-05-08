@@ -31,7 +31,7 @@ bool j1FogOfWar::Start()
 	// UNCOMMENT THIS IF THE FOW OF WAR WORKS !! THIS WILL ACTIVE FOW AT GAME START
 	uint w, h;
 
-	LoadFoWMap(120, 150);
+	LoadFoWMap(119, 149);
 
 	return true;
 }
@@ -74,16 +74,16 @@ void j1FogOfWar::print()
 	if (i < 0)
 		i = 0;
 
-	for (; i < 120 && i < endTile.x + 1; ++i)
+	for (; i < 119 && i < endTile.x + 1; ++i)
 	{
 		int j = startTile.y;
 		if (j < 0)
 			j = 0;
 
-		for (; j < 150 && j < endTile.y + 1; ++j)
+		for (; j < 149 && j < endTile.y + 1; ++j)
 		{
 
-			int pos = (120 * j) + i;
+			int pos = (119 * j) + i;
 
 			iPoint world = App->map->MapToWorld(i, j);
 			//	LOG("Pos is %i", pos);
@@ -113,10 +113,23 @@ void j1FogOfWar::LoadFoWMap(int mapWidth, int mapHeight)
 
 bool j1FogOfWar::IsOnSight(iPoint pos)
 {
-	iPoint tile = App->map->WorldToMap(pos.x / App->win->GetScale(),pos.y / App->win->GetScale());
+	bool ret = false;
+	iPoint tile = App->map->WorldToMap(pos.x / App->win->GetScale(), pos.y / App->win->GetScale());
 	int fowTile = (tile.x * 120) + tile.y;
 
-	return (fowTilesVector[fowTile]->alpha == 0);
+	ret = fowTilesVector[fowTile]->alpha == 0;
+
+	if (!ret)
+	{
+		LOG("False, pos %i,%i", pos.x, pos.y);
+	}
+
+	return ret;
+}
+
+bool j1FogOfWar::IsOnSight(fPoint pos)
+{
+	return IsOnSight(iPoint{ int(pos.x),int(pos.y) });
 }
 
 void j1FogOfWar::UnLoadFowMap()
