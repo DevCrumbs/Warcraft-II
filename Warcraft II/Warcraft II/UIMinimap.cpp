@@ -100,7 +100,9 @@ void UIMinimap::Draw() const
 	///-----------------	 Draw all entities in the minimap
 	for (list<DynamicEntity*>::iterator iterator = (*activeDynamicEntities).begin(); iterator != (*activeDynamicEntities).end(); ++iterator)
 	{
-		iPoint pos = (*iterator)->GetLastTile();
+		iPoint pos = (*iterator)->GetLastSeenTile();
+		if (pos.x < 0 || pos.y < 0)
+			continue;
 		SDL_Rect rect{ pos.x * 32 * currentScaleFactor + offsetX + cameraOffset.x,
 						pos.y *32 * currentScaleFactor + offsetY + cameraOffset.y,
 						entityWidth * currentScaleFactor * zoomFactor, entityHeight * currentScaleFactor * zoomFactor };
