@@ -51,6 +51,7 @@ bool j1Player::Start()
 	buildDestroy = 0u;
 	roomsCleared = 0;
 	isWin = false;
+	townHallUpgrade = false;
 
 	totalEnemiesKilled = 0;
 	totalUnitsDead = 0;
