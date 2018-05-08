@@ -30,6 +30,7 @@ enum EntitySide
 	EntitySide_Player,
 	EntitySide_Enemy,
 	EntitySide_EnemyBuildings,
+	EntitySide_EnemyShip,
 	EntitySide_Neutral,
 	EntitySide_MaxSides
 };

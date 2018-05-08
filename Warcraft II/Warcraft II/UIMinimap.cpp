@@ -119,6 +119,9 @@ void UIMinimap::Draw() const
 		case EntitySide_EnemyBuildings:
 			color = { 255,0,0,255 };//
 			break;
+		case EntitySide_EnemyShip:
+			color = { 75,0,130,255 };//
+			break;
 		case EntitySide_Neutral:
 			break;
 		default:
