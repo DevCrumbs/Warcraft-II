@@ -61,14 +61,6 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
 
-	// Collisions
-	CreateEntityCollider(EntitySide_Player);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
-	entityCollider->isTrigger = true;
-	sightRadiusCollider->isTrigger = true;
-	attackRadiusCollider->isTrigger = true;
-
 	// LifeBar creation
 	UILifeBar_Info lifeBarInfo;
 	lifeBarInfo.background = { 241,336,45,8 };
@@ -91,6 +83,19 @@ void Footman::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
+
+	if (!isSpawned) {
+	
+		// Collisions
+		CreateEntityCollider(EntitySide_Player);
+		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+		attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+		entityCollider->isTrigger = true;
+		sightRadiusCollider->isTrigger = true;
+		attackRadiusCollider->isTrigger = true;
+		
+		isSpawned = true;
+	}
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -157,7 +162,7 @@ void Footman::Move(float dt)
 			/// The unit could be attacking before this command
 			if (currTarget != nullptr) {
 
-				if (!currTarget->isRemoved)
+				if (!currTarget->isRemoved && currTarget->target != nullptr)
 
 					currTarget->target->RemoveAttackingUnit(this);
 
@@ -374,6 +379,15 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
+			if (c2->entity == nullptr)
+				break;
+
+			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
+			}
+				
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -388,8 +402,25 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
+					if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-					(*it)->isSightSatisfied = true;
+						DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+						if (dynEnt->dynamicEntityType == EntityType_GRUNT) {
+							LOG("Grunt is sight");
+						}
+						else if (dynEnt->dynamicEntityType == EntityType_DRAGON) {
+							LOG("Dragon is sight");
+						}
+						else if (dynEnt->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
+							LOG("Troll is sight");
+						}
+					}
+					else if (c2->entity->entityType == EntityCategory_STATIC_ENTITY) {
+						LOG("Building is sight");
+					}
+
+					if (!(*it)->isRemoved)
+						(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
 				}
@@ -398,11 +429,46 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
-				TargetInfo* targetInfo = new TargetInfo();
-				targetInfo->target = c2->entity;
-				targetInfo->isSightSatisfied = true;
+				/// Do it only if the target is valid
+				if (c2->entity->GetIsValid() && !c2->entity->isRemove) {
 
-				targets.push_back(targetInfo);
+					bool isAdded = false;
+
+					if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+						DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+
+						if (!dynEnt->isDead)
+							isAdded = true;
+					}
+					else
+						isAdded = true;
+
+					if (isAdded) {
+						TargetInfo* targetInfo = new TargetInfo();
+						targetInfo->target = c2->entity;
+						targetInfo->isSightSatisfied = true;
+
+						targets.push_back(targetInfo);
+					}
+				}
+
+				if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+					DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+					if (dynEnt->dynamicEntityType == EntityType_GRUNT) {
+						LOG("Grunt is new");
+					}
+					else if (dynEnt->dynamicEntityType == EntityType_DRAGON) {
+						LOG("Dragon is new");
+					}
+					else if (dynEnt->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
+						LOG("Troll is new");
+					}
+				}
+				else if (c2->entity->entityType == EntityCategory_STATIC_ENTITY) {
+					LOG("Building is new");
+				}
 			}
 
 			// 2. MAKE UNIT FACE TOWARDS THE BEST TARGET
@@ -412,6 +478,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
+					isFacingTowardsTarget = true;
+				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
 				// b) If the unit is attacking a static target
 				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
@@ -444,6 +512,9 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
+			if (c2->entity == nullptr)
+				break;
+
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -457,6 +528,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 				if ((*it)->target == c2->entity) {
 
+					(*it)->isSightSatisfied = true;
 					(*it)->isAttackSatisfied = true;
 					break;
 				}
@@ -473,6 +545,15 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
+			if (c2->entity == nullptr)
+				break;
+
+			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
+			}
+
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -487,24 +568,70 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
+					(*it)->isAttackSatisfied = false;
 
 					if (currTarget != nullptr) {
 
 						if (c2->entity == currTarget->target) {
+							if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
+								DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+								if (dynEnt->dynamicEntityType == EntityType_GRUNT) {
+									LOG("Grunt removed");
+								}
+								else if (dynEnt->dynamicEntityType == EntityType_DRAGON) {
+									LOG("Dragon removed");
+								}
+								else if (dynEnt->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
+									LOG("Troll removed");
+								}
+							}
+							else if (c2->entity->entityType == EntityCategory_STATIC_ENTITY) {
+								LOG("Building removed");
+							}
 							(*it)->target->RemoveAttackingUnit(this);
 							SetIsRemovedTargetInfo((*it)->target);
 							break;
 						}
 						else {
+							if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
+								DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+								if (dynEnt->dynamicEntityType == EntityType_GRUNT) {
+									LOG("Grunt is remove");
+								}
+								else if (dynEnt->dynamicEntityType == EntityType_DRAGON) {
+									LOG("Dragon is remove");
+								}
+								else if (dynEnt->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
+									LOG("Troll is remove");
+								}
+							}
+							else if (c2->entity->entityType == EntityCategory_STATIC_ENTITY) {
+								LOG("Building is remove");
+							}
 							(*it)->target->RemoveAttackingUnit(this);
 							RemoveTargetInfo(*it);
 							break;
 						}
 					}
 					else {
+						if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
+							DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+							if (dynEnt->dynamicEntityType == EntityType_GRUNT) {
+								LOG("Grunt is remove");
+							}
+							else if (dynEnt->dynamicEntityType == EntityType_DRAGON) {
+								LOG("Dragon is remove");
+							}
+							else if (dynEnt->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
+								LOG("Troll is remove");
+							}
+						}
+						else if (c2->entity->entityType == EntityCategory_STATIC_ENTITY) {
+							LOG("Building is remove");
+						}
 						(*it)->target->RemoveAttackingUnit(this);
 						RemoveTargetInfo(*it);
 						break;
@@ -518,6 +645,9 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
+
+			if (c2->entity == nullptr)
+				break;
 
 			if (isSelected) {
 
@@ -607,7 +737,7 @@ void Footman::UnitStateMachine(float dt)
 					// Anticipate the removing of this unit from the attacking units of the target
 					if (currTarget != nullptr) {
 
-						if (!currTarget->isRemoved)
+						if (!currTarget->isRemoved && currTarget->target != nullptr)
 
 							currTarget->target->RemoveAttackingUnit(this);
 					}
@@ -763,7 +893,7 @@ bool Footman::ChangeAnimation()
 		// Set the direction of the unit as the orientation towards the attacking target
 		if (currTarget != nullptr) {
 
-			if (!currTarget->isRemoved) {
+			if (!currTarget->isRemoved && currTarget->target != nullptr) {
 
 				fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
 

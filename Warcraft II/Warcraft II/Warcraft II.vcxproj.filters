@@ -345,6 +345,9 @@
     <ClInclude Include="j1FogOfWar.h">
       <Filter>Modules\FoW</Filter>
     </ClInclude>
+    <ClInclude Include="OrcShip.h">
+      <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -595,6 +598,9 @@
     </ClCompile>
     <ClCompile Include="j1FogOfWar.cpp">
       <Filter>Modules\FoW</Filter>
+    </ClCompile>
+    <ClCompile Include="OrcShip.cpp">
+      <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -89,7 +89,7 @@
       <frame x="800" y="674" w="200" h="250" />
     </parchment>
 
-    <artifacts speed = "5">
+    <artifacts speed = "5" loop="1">
        <scepter>
          <frame x="577" y="361" w="55" h="55" />
          <frame x="632" y="361" w="55" h="55" />
@@ -139,7 +139,10 @@
     <camera speed ="600.0" movement ="4" movMarginPcnt = "3"/>
 
     <audioPaths>
-      <mainTheme path= "mainTheme.ogg"/>
+      <levelTheme1 path= "levelTheme1.ogg"/>
+      <levelTheme2 path= "levelTheme2.ogg"/>
+      <levelTheme3 path= "levelTheme3.ogg"/>
+      <levelTheme4 path= "levelTheme4.ogg"/>
     </audioPaths>
     
     <maps>
@@ -168,8 +171,6 @@
       <humanBuildings name="data/assets/textures/buildings/HumanBuildings.png"/>
       <neutralBuildings name ="data/assets/textures/buildings/NeutralBuildings.png"/>
       <orcishBuildings name ="data/assets/textures/buildings/OrcishBuildings.png"/>
-      <humanBuildingsAnimation name="data/assets/textures/buildings/HumanBuildingsAnimation.png"/>
-      <orcishBuildingsAnimation name ="data/assets/textures/buildings/OrcishBuildingAnimations.png"/>
       
       <footmanAnimations name = "data/assets/textures/units/humanUnits/FinalFootman.png"/>
       <gruntAnimations name = "data/assets/textures/units/orcishUnits/FinalGrunt.png"/>
@@ -177,6 +178,7 @@
       <elvenArcherAnimations name = "data/assets/textures/units/humanUnits/archer.png"/>
       <gryphonRiderAnimations name = "data/assets/textures/units/humanUnits/gryphonRider.png"/>
       <dragonAnimations name = "data/assets/textures/units/orcishUnits/dragon.png"/>
+      <orcShipAnimations name = "data/assets/textures/units/orcishUnits/OrcShip.png"/>
 
       <critters name="data/assets/textures/units/neutralUnits/critters.png"/>
 
@@ -847,7 +849,36 @@
               <frame x="240" y="960" w="120" h="120"/>
             </deathDown>
           </animations>
-        </dragon>
+        </dragon>        
+          
+        <orcShip>
+          <animations>
+            <up speed="4" loop="1">
+              <frame x="0" y="0" w="64" h="64"/>
+            </up>
+            <upRight speed="4" loop="1">
+              <frame x="64" y="0" w="64" h="64"/>
+            </upRight>
+            <upLeft speed="4" loop="1">
+              <frame x="64" y="64" w="64" h="64"/>
+            </upLeft>
+            <down speed="4" loop="1">
+              <frame x="0" y="64" w="64" h="64"/>
+            </down>
+            <downRight speed="4" loop="1">
+              <frame x="192" y="0" w="64" h="64"/>
+            </downRight>
+            <downLeft speed="4" loop="1">
+              <frame x="192" y="64" w="64" h="64"/>
+            </downLeft>
+            <left speed="4" loop="1">
+              <frame x="128" y="64" w="64" h="64"/>
+            </left>
+            <right speed="4" loop="1">
+              <frame x="128" y="0" w="64" h="64"/>      
+            </right>
+          </animations>
+        </orcShip>
       </orcs>
 
       <critters>
@@ -1014,42 +1045,6 @@
     </dynamicEntities>
 
     <staticEntities>
-      <humanBuildingsAnimation>
-        <peasantAnimations>
-          <carry speed="4" loop="0">
-              <frame x="0" y="0" w="100" h="100"/>
-              <frame x="100" y="0" w="100" h="100"/>
-              <frame x="200" y="0" w="100" h="100"/>
-              <frame x="300" y="0" w="100" h="100"/>
-              <frame x="400" y="0" w="100" h="100"/>
-            </carry>
-          
-            <smallBuilding speed="4" loop="1">
-              <frame x="500" y="0" w="100" h="100"/>
-              <frame x="600" y="0" w="100" h="100"/>
-              <frame x="700" y="0" w="100" h="100"/>
-              <frame x="800" y="0" w="100" h="100"/>
-              <frame x="900" y="0" w="100" h="100"/>
-            </smallBuilding>
-
-            <mediumBuilding speed="4" loop="1">
-              <frame x="0" y="100" w="150" h="150"/>
-              <frame x="150" y="100" w="150" h="150"/>
-              <frame x="300" y="100" w="150" h="150"/>
-              <frame x="450" y="100" w="150" h="150"/>
-              <frame x="600" y="100" w="150" h="150"/>           
-            </mediumBuilding>
-
-            <bigBuilding speed="4" loop="1">
-              <frame x="0" y="250" w="200" h="200"/>
-              <frame x="200" y="250" w="200" h="200"/>
-              <frame x="400" y="250" w="200" h="200"/>
-              <frame x="600" y="250" w="200" h="200"/>
-              <frame x="800" y="250" w="200" h="200"/>           
-            </bigBuilding>
-
-        </peasantAnimations>
-      </humanBuildingsAnimation>
       <humanBuildings>
 
         <townHall>
@@ -1198,42 +1193,6 @@
 
       </neutralBuildings>
 
-      <orcishBuildingsAnimation>
-        <peonAnimations>
-            <carry speed="4" loop="0">
-              <frame x="0" y="0" w="100" h="100"/>
-              <frame x="100" y="0" w="100" h="100"/>
-              <frame x="200" y="0" w="100" h="100"/>
-              <frame x="300" y="0" w="100" h="100"/>
-              <frame x="400" y="0" w="100" h="100"/>
-            </carry>
-          
-            <smallBuilding speed="4" loop="1">
-              <frame x="500" y="0" w="100" h="100"/>
-              <frame x="600" y="0" w="100" h="100"/>
-              <frame x="700" y="0" w="100" h="100"/>
-              <frame x="800" y="0" w="100" h="100"/>
-              <frame x="900" y="0" w="100" h="100"/>
-            </smallBuilding>
-
-            <mediumBuilding speed="4" loop="1">
-              <frame x="0" y="100" w="150" h="150"/>
-              <frame x="150" y="100" w="150" h="150"/>
-              <frame x="300" y="100" w="150" h="150"/>
-              <frame x="450" y="100" w="150" h="150"/>
-              <frame x="600" y="100" w="150" h="150"/>           
-            </mediumBuilding>
-
-            <bigBuilding speed="4" loop="1">
-              <frame x="0" y="250" w="200" h="200"/>
-              <frame x="200" y="250" w="200" h="200"/>
-              <frame x="400" y="250" w="200" h="200"/>
-              <frame x="600" y="250" w="200" h="200"/>
-              <frame x="800" y="250" w="200" h="200"/>           
-            </bigBuilding>
-
-        </peonAnimations>
-      </orcishBuildingsAnimation>
       <orcishBuildings>
 
         <greatHall>
@@ -1318,6 +1277,8 @@
     <spritesheets>
       <atlas name = "data/assets/textures/particles/atlas.png"/>
       <paws name="data/assets/textures/particles/paws.png"/>
+      <humanBuildingsAnimation name="data/assets/textures/particles/HumanBuildingsAnimation.png"/>
+      <orcishBuildingsAnimation name ="data/assets/textures/particles/OrcishBuildingAnimations.png"/>
     </spritesheets>
 
    <playerHealth speed ="8" loop="0">
@@ -1436,6 +1397,76 @@
          <frame x="221" y="92" w="50" h="50" />
        </hard>      
     </fire>
+
+    <peasantAnimations>
+      <carry speed="7" loop="0">
+        <frame x="0" y="0" w="100" h="100"/>
+        <frame x="100" y="0" w="100" h="100"/>
+        <frame x="200" y="0" w="100" h="100"/>
+        <frame x="300" y="0" w="100" h="100"/>
+        <frame x="400" y="0" w="100" h="100"/>
+      </carry>
+
+      <smallBuilding speed="7" loop="1">
+        <frame x="500" y="0" w="100" h="100"/>
+        <frame x="600" y="0" w="100" h="100"/>
+        <frame x="700" y="0" w="100" h="100"/>
+        <frame x="800" y="0" w="100" h="100"/>
+        <frame x="900" y="0" w="100" h="100"/>
+      </smallBuilding>
+
+      <mediumBuilding speed="7" loop="1">
+        <frame x="0" y="100" w="150" h="150"/>
+        <frame x="150" y="100" w="150" h="150"/>
+        <frame x="300" y="100" w="150" h="150"/>
+        <frame x="450" y="100" w="150" h="150"/>
+        <frame x="600" y="100" w="150" h="150"/>
+      </mediumBuilding>
+
+      <bigBuilding speed="7" loop="1">
+        <frame x="0" y="250" w="200" h="200"/>
+        <frame x="200" y="250" w="200" h="200"/>
+        <frame x="400" y="250" w="200" h="200"/>
+        <frame x="600" y="250" w="200" h="200"/>
+        <frame x="800" y="250" w="200" h="200"/>
+      </bigBuilding>
+
+    </peasantAnimations>
+
+    <peonAnimations>
+      <carry speed="4" loop="0">
+        <frame x="0" y="0" w="100" h="100"/>
+        <frame x="100" y="0" w="100" h="100"/>
+        <frame x="200" y="0" w="100" h="100"/>
+        <frame x="300" y="0" w="100" h="100"/>
+        <frame x="400" y="0" w="100" h="100"/>
+      </carry>
+    
+      <smallBuilding speed="4" loop="1">
+        <frame x="500" y="0" w="100" h="100"/>
+        <frame x="600" y="0" w="100" h="100"/>
+        <frame x="700" y="0" w="100" h="100"/>
+        <frame x="800" y="0" w="100" h="100"/>
+        <frame x="900" y="0" w="100" h="100"/>
+      </smallBuilding>
+    
+      <mediumBuilding speed="4" loop="1">
+        <frame x="0" y="100" w="150" h="150"/>
+        <frame x="150" y="100" w="150" h="150"/>
+        <frame x="300" y="100" w="150" h="150"/>
+        <frame x="450" y="100" w="150" h="150"/>
+        <frame x="600" y="100" w="150" h="150"/>
+      </mediumBuilding>
+    
+      <bigBuilding speed="4" loop="1">
+        <frame x="0" y="250" w="200" h="200"/>
+        <frame x="200" y="250" w="200" h="200"/>
+        <frame x="400" y="250" w="200" h="200"/>
+        <frame x="600" y="250" w="200" h="200"/>
+        <frame x="800" y="250" w="200" h="200"/>
+      </bigBuilding>
+    
+    </peonAnimations>
 
     <animations>
 

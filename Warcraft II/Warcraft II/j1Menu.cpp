@@ -49,7 +49,7 @@ bool j1Menu::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
-	//Music
+	// Music
 	pugi::xml_node audio = config.child("audioPaths");
 
 	mainMenuMusicName = audio.child("mainTheme").attribute("path").as_string();
@@ -159,7 +159,8 @@ bool j1Menu::PostUpdate()
 
 	// Blit the background
 	//App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 70, 70, 70, 255);
-	App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, { 70,70,70,255 }, true);
+	SDL_Color brown = { 70,70,70,255 };
+	App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, brown, true, false, Layers_PreviewBuildingsQuad);
 
 	if (isFadetoScene) {
 		App->fade->FadeToBlack(this, App->scene);
@@ -184,8 +185,8 @@ bool j1Menu::CleanUp()
 	return ret;
 }
 
-void j1Menu::CreateMenu() {
-
+void j1Menu::CreateMenu() 
+{
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	playButt = App->gui->CreateUIButton({ 600, 350 }, buttonInfo, this, nullptr);
@@ -206,7 +207,6 @@ void j1Menu::CreateMenu() {
 
 	labelInfo.text = "Settings";
 	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, settingsButt);
-
 
 	artifacts.push_back(AddArtifact({ 50, 475 }, App->gui->bookText, App->gui->bookAnim));
 	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim));

@@ -38,6 +38,7 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	pugi::xml_node spritesheets = config.child("spritesheets");
 	pawsTexName = spritesheets.child("paws").attribute("name").as_string();
 	atlasTexName = spritesheets.child("atlas").attribute("name").as_string();
+	peasantTexName = spritesheets.child("humanBuildingsAnimation").attribute("name").as_string();
 
 	// Load animations
 
@@ -121,6 +122,45 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 		enemyHealth.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 	enemyHealth.size = { enemyHealthAnimation.child("frame").attribute("w").as_int(), enemyHealthAnimation.child("frame").attribute("h").as_int() };
+
+	//Peasant animations
+	pugi::xml_node peasants = config.child("peasantAnimations");
+
+	//Carry animation
+	pugi::xml_node carry = peasants.child("carry");
+	carryPeasant.animation.speed = carry.attribute("speed").as_float();
+	carryPeasant.animation.loop = carry.attribute("loop").as_bool();
+	for (currentAnimation = carry.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		carryPeasant.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	carryPeasant.size = { carry.child("frame").attribute("w").as_int(), carry.child("frame").attribute("h").as_int() };
+
+	//Small building animation
+	pugi::xml_node smallBuild = peasants.child("smallBuilding");
+	peasantSmallBuild.animation.speed = smallBuild.attribute("speed").as_float();
+	peasantSmallBuild.animation.loop = smallBuild.attribute("loop").as_bool();
+	for (currentAnimation = smallBuild.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		peasantSmallBuild.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	peasantSmallBuild.size = { smallBuild.child("frame").attribute("w").as_int(), smallBuild.child("frame").attribute("h").as_int() };
+
+	//Medium building animation
+	pugi::xml_node mediumBuild = peasants.child("mediumBuilding");
+	peasantMediumBuild.animation.speed = mediumBuild.attribute("speed").as_float();
+	peasantMediumBuild.animation.loop = mediumBuild.attribute("loop").as_bool();
+	for (currentAnimation = mediumBuild.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		peasantMediumBuild.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	peasantMediumBuild.size = { mediumBuild.child("frame").attribute("w").as_int(), mediumBuild.child("frame").attribute("h").as_int() };
+
+	//Big building animation
+	pugi::xml_node bigBuild = peasants.child("bigBuilding");
+	peasantBigBuild.animation.speed = bigBuild.attribute("speed").as_float();
+	peasantBigBuild.animation.loop = bigBuild.attribute("loop").as_bool();
+	for (currentAnimation = bigBuild.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		peasantBigBuild.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	peasantBigBuild.size = { bigBuild.child("frame").attribute("w").as_int(), bigBuild.child("frame").attribute("h").as_int() };
 
 	// Sheep Paws
 	pugi::xml_node sheepPawsAnimation = config.child("animations").child("sheepPaws");
@@ -290,6 +330,11 @@ bool j1Particles::Start()
 
 	cross.particleType = ParticleType_Cross;
 
+	carryPeasant.particleType = ParticleType_PeasantCarry;
+	peasantSmallBuild.particleType = ParticleType_Peasant;
+	peasantMediumBuild.particleType = ParticleType_Peasant;
+	peasantBigBuild.particleType = ParticleType_Peasant;
+
 	/// Life
 	boarPaws.life = 800;
 	sheepPaws.life = 800;
@@ -324,6 +369,7 @@ bool j1Particles::Start()
 
 	atlasTex = App->tex->Load(atlasTexName.data());
 	pawsTex = App->tex->Load(pawsTexName.data());
+	peasantTex = App->tex->Load(peasantTexName.data());
 
 	return ret;
 }
@@ -345,6 +391,7 @@ bool j1Particles::CleanUp()
 	// UnLoad textures
 	App->tex->UnLoad(pawsTex);
 	App->tex->UnLoad(atlasTex);
+	App->tex->UnLoad(peasantTex);
 
 	return true;
 }
@@ -417,10 +464,16 @@ bool j1Particles::PostUpdate()
 			continue;
 		}
 
+		//For printing paws
 		if ((*it)->particleType == ParticleType_Paws)
 			App->printer->PrintSprite({ (int)(*it)->pos.x, (int)(*it)->pos.y }, pawsTex, (*it)->animation.GetCurrentFrame(), Layers_Paws, (*it)->angle);
+		//For printing health particles
 		else if ((*it)->particleType == ParticleType_Health)
 			App->printer->PrintSprite({ (int)(*it)->pos.x - 3, (int)(*it)->pos.y - 15 }, atlasTex, (*it)->animation.GetCurrentFrame(), Layers_BasicParticles, (*it)->angle);
+		//For printing peasants
+		else if(((*it)->particleType == ParticleType_Peasant || (*it)->particleType == ParticleType_PeasantCarry))
+			App->printer->PrintSprite({ (int)(*it)->pos.x, (int)(*it)->pos.y }, peasantTex, (*it)->animation.GetCurrentFrame(), Layers_BasicParticles, (*it)->angle);
+		//For printing everything else
 		else
 			App->printer->PrintSprite({ (int)(*it)->pos.x, (int)(*it)->pos.y }, atlasTex, (*it)->animation.GetCurrentFrame(), Layers_BasicParticles, (*it)->angle);
 
@@ -537,6 +590,12 @@ void j1Particles::LoadAnimationsSpeed()
 	/// Cross Speed
 	crossSpeed = cross.animation.speed;
 
+	/// Peasants speed
+	peasantCarrySpeed = carryPeasant.animation.speed;
+	peasantSmallBuildingSpeed = peasantSmallBuild.animation.speed;
+	peasantMediumBuildingSpeed = peasantMediumBuild.animation.speed;
+	peasantBigBuildingSpeed = peasantBigBuild.animation.speed;
+
 	isAnimationSpeedCharged = true;
 }
 
@@ -583,6 +642,12 @@ void j1Particles::UpdateAnimations(float dt)
 
 	/// Cross
 	cross.animation.speed = crossSpeed * dt;
+
+	///Peasants
+	carryPeasant.animation.speed = peasantCarrySpeed * dt;
+	peasantSmallBuild.animation.speed = peasantSmallBuildingSpeed * dt;
+	peasantMediumBuild.animation.speed = peasantMediumBuildingSpeed * dt;
+	peasantBigBuild.animation.speed = peasantBigBuildingSpeed * dt;
 }
 
 PawsInfo& j1Particles::GetPawsInfo(bool isSheep, bool isBoar)
@@ -771,6 +836,7 @@ bool Particle::Update(float dt)
 
 	case ParticleType_Health:
 	case ParticleType_Cross:
+	case ParticleType_PeasantCarry:
 	{
 		if (animation.Finished())
 			return false;
@@ -780,6 +846,7 @@ bool Particle::Update(float dt)
 	break;
 
 	case ParticleType_Fire:
+	case ParticleType_Peasant:
 		break;
 
 	case ParticleType_DragonFire:

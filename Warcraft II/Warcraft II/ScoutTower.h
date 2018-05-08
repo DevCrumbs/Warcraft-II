@@ -58,6 +58,8 @@ private:
 	//Arrow
 	Particle* arrowParticle = nullptr;
 
+	Particle* peasants = nullptr;
+
 	bool isColliderCreated = false;
 };
 

@@ -216,12 +216,20 @@ public:
 
 	EntitySelectedStats entitySelectedStats;
 
-	bool isUnitSpawning = false;
+	//bool isUnitSpawning = false;
 	bool isMouseOnMine = false;
 
 	HoverInfo firstHoverInfo;
 	HoverInfo secondHoverInfo;
 	HoverInfo thirdHoverInfo;
+
+	UIMinimap* minimap = nullptr;
+
+	//Spawning units from barracks queues and variables
+	queue<ToSpawnUnit*> toSpawnUnitBarracks;
+	queue<ToSpawnUnit*> toSpawnUnitGrypho;
+
+	bool isUnitSpawning = false;
 
 private:
 
@@ -238,18 +246,13 @@ private:
 	//list<GroupSpawning> toSpawnUnitStats;
 	//list<ToSpawnUnit*> newUnitsToSpawn;
 
-
-	UIMinimap* minimap = nullptr;
-
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
 		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr, *repairBuildingButton = nullptr;
 	
 
 	list<UIElement*> UIMenuInfoList;
 
-	//Spawning units from barracks queues and variables
-	queue<ToSpawnUnit*> toSpawnUnitBarracks;
-	queue<ToSpawnUnit*> toSpawnUnitGrypho;
+
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;
 

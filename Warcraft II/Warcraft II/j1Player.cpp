@@ -102,6 +102,7 @@ bool j1Player::Update(float dt)
 		CheckIfPlaceBuilding();
 
 	//Check if the units need to spawn
+	isUnitSpawning = false;
 	if (!toSpawnUnitBarracks.empty())
 		CheckUnitSpawning(&toSpawnUnitBarracks);
 
@@ -525,8 +526,8 @@ void j1Player::SpawnUnitFromBuilding(StaticEntity* spawnBuilding, ENTITY_TYPE sp
 		iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
 		App->entities->AddEntity(spawningEntity, { (float)spawnPos.x, (float)spawnPos.y }, (EntityInfo&)App->entities->GetUnitInfo(spawningEntity), unitInfo, this);
-		isUnitSpawning = false;
 	}
+	isUnitSpawning = true;
 }
 
 void j1Player::SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, UnitInfo unitInfo) 
@@ -546,7 +547,6 @@ void j1Player::SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, Uni
 		iPoint spawnPos = App->map->MapToWorld(toSpawnTile.x, toSpawnTile.y);
 
 		App->entities->AddEntity(spawningEntity, { (float)spawnPos.x, (float)spawnPos.y }, (EntityInfo&)App->entities->GetUnitInfo(spawningEntity), unitInfo, this);
-		isUnitSpawning = false;
 	}
 }
 
@@ -1805,7 +1805,6 @@ void j1Player::HandleSpawningUnitsUIElem(ToSpawnUnit** toSpawnUnit, list<GroupSp
 
 			iterator->owner = toSpawnUnit;
 
-			isUnitSpawning = true;
 			break;
 		}
 	}
@@ -2173,8 +2172,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						AddGold(-negative);
 						entitySelectedStats.entitySelected->SetCurrLife(entitySelectedStats.entitySelected->GetMaxLife());
 						ent->CheckBuildingState();
+						App->audio->PlayFx(App->audio->GetFX().button);
 					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
 				}
+				else
+					App->audio->PlayFx(App->audio->GetFX().errorButt);
 			}
 
 			/*if (hoverCheck == HoverCheck_Repair) {

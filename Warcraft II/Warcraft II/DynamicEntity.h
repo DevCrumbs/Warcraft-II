@@ -206,6 +206,10 @@ public:
 	// Minimap
 	iPoint GetLastTile();
 
+	// Fow
+	void SetLastSeenTile(iPoint lastSeenTile);
+	iPoint GetLastSeenTile() const;
+
 public:
 
 	ENTITY_TYPE dynamicEntityType = EntityType_NONE;
@@ -269,6 +273,9 @@ protected:
 	UILifeBar* lifeBar = nullptr;
 	int lifeBarMarginX = 0;
 	int lifeBarMarginY = 0;
+
+	// Fow
+	iPoint lastSeenTile = { -1,-1 };
 };
 
 // ---------------------------------------------------------------------

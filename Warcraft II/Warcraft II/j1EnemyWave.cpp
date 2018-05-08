@@ -22,7 +22,8 @@ j1EnemyWave::j1EnemyWave() : j1Module()
 
 // Destructor
 j1EnemyWave::~j1EnemyWave()
-{}
+{
+}
 
 // Called before render is available
 bool j1EnemyWave::Awake(pugi::xml_node& config)
@@ -43,6 +44,8 @@ bool j1EnemyWave::Start()
 	phasesOfCurrWave = 0;
 	isStartWave = false;
 	totalSpawnOfCurrWave = 0;
+	nextWaveTimer = 0.0f;
+	nextPhaseTimer = 0.0f;
 	secondsToNextWave = 0.0f;
 	secondsToNextPhase = 0.0f;
 
@@ -51,9 +54,7 @@ bool j1EnemyWave::Start()
 	/// TODO Balancing (Waves)
 	spawnProbability = 0.25f;
 	maxSpawnPerPhase = 3;
-	maxSpawnPerWave = 10;
-
-	nextWaveTimer.Start();
+	maxSpawnPerWave = 8;
 
 	// Calculate the seconds until the first wave arrives
 	/// NOTE: the first wave takes more time to arrive than the following waves
@@ -70,7 +71,7 @@ bool j1EnemyWave::Start()
 
 	secondsToNextWave = MINUTES_TO_SECONDS(secondsToNextWave);
 
-	//secondsToNextWave = 0;
+	secondsToNextWave = 0;
 
 	return ret;
 }
@@ -78,13 +79,25 @@ bool j1EnemyWave::Start()
 // Called before quitting
 bool j1EnemyWave::CleanUp()
 {
+	// Clear the spawn tiles vector (and lists inside it)
+	vector<list<iPoint>>::const_iterator it = spawnTiles.begin();
+
+	while (it != spawnTiles.end()) {
+	
+		list<iPoint> it2 = *it;
+		it2.clear();
+	
+		it++;
+	}
+	spawnTiles.clear();
+
 	if (!active)
 		return true;
 
 	return true;
 }
 
-bool j1EnemyWave::Update(float ft)
+bool j1EnemyWave::Update(float dt)
 {
 	bool ret = true;
 
@@ -104,8 +117,10 @@ bool j1EnemyWave::Update(float ft)
 
 	// ---------------------------------------------------------------------------------
 
+	nextWaveTimer += dt;
+
 	/// WAVE!
-	if (nextWaveTimer.ReadSec() >= secondsToNextWave) {
+	if (nextWaveTimer >= secondsToNextWave) {
 
 		if (!isStartWave) {
 
@@ -150,15 +165,17 @@ bool j1EnemyWave::Update(float ft)
 			LOG("Wave %i", totalWaves);
 		}
 
+		nextPhaseTimer += dt;
+
 		/// PHASE!
 		// Start a new phase of the current wave
-		if (nextPhaseTimer.ReadSec() >= secondsToNextPhase && phasesOfCurrWave < totalPhasesOfCurrWave) {
+		if (nextPhaseTimer >= secondsToNextPhase && phasesOfCurrWave < totalPhasesOfCurrWave) {
 
 			// 1. Perform the small wave
 			PerformWave();
 
 			// 2. Update variables for the next phase
-			nextPhaseTimer.Start();
+			nextPhaseTimer = 0;
 
 			// Calculate the seconds until the next phase of the wave arrives
 			int maxSecondsToNextPhase = 15;
@@ -189,7 +206,7 @@ bool j1EnemyWave::Update(float ft)
 		// No more phases of the current wave
 		else if (phasesOfCurrWave >= totalPhasesOfCurrWave) {
 
-			nextWaveTimer.Start();
+			nextWaveTimer = 0;
 
 			// Calculate the seconds until the next wave arrives
 			int maxMinutesToNextWave = 1;
@@ -257,6 +274,7 @@ void j1EnemyWave::PerformWave()
 
 	int size = currentList.size();
 	int spawned = 0;
+
 	for (list<iPoint>::const_iterator iterator = currentList.begin(); iterator != currentList.end(); ++iterator)
 	{
 		if (spawned >= maxSpawnPerPhase || totalSpawnOfCurrWave >= maxSpawnPerWave) {
@@ -294,8 +312,28 @@ void j1EnemyWave::PerformWave()
 			App->player->SpawnUnitAtTile(tile, type, unitInfo);
 			LOG("Spawned %i entities from %i, type %i", spawned, size, type);
 		}
+
+		// Always spawn an enemy
+		if (*iterator == currentList.back() && spawned == 0) {
+		
+			spawned++;
+			totalSpawnOfCurrWave++;
+
+			type = ENTITY_TYPE(rand() % 2 + 381);
+			UnitInfo unitInfo;
+			fPoint pos{ (float)(*iterator).x, (float)(*iterator).y };
+			iPoint tile = App->map->WorldToMap((int)pos.x, (int)pos.y);
+
+			// Spawn the unit (the following searches for a new spawn tile if the tile is not valid)
+			App->player->SpawnUnitAtTile(tile, type, unitInfo);
+			LOG("Spawned %i entities from %i, type %i", spawned, size, type);
+		}
 	}
-	maxSpawnPerPhase++;
+
+	int random = rand() % 2;
+	if (random == 0)
+		maxSpawnPerPhase++;
+
 	spawnProbability += 0.05f;
 }
 

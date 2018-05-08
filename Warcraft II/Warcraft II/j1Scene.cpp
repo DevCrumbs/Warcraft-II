@@ -74,7 +74,10 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	//Music
 	pugi::xml_node audio = config.child("audioPaths");
 
-	mainThemeMusicName = audio.child("mainTheme").attribute("path").as_string();
+	levelTheme1 = audio.child("levelTheme1").attribute("path").as_string();
+	levelTheme2 = audio.child("levelTheme2").attribute("path").as_string();
+	levelTheme3 = audio.child("levelTheme3").attribute("path").as_string();
+	levelTheme4 = audio.child("levelTheme4").attribute("path").as_string();
 
 	//LoadKeys(config.child("buttons"));
 
@@ -156,7 +159,10 @@ bool j1Scene::Start()
 	alphaBuilding = EntityType_NONE;
 	pauseMenuActions = PauseMenuActions_NOT_EXIST;
 
-	App->audio->PlayMusic(mainThemeMusicName.data(), 2.0f);
+	////Play music
+	string musicToPlay;
+	musicToPlay = ChooseMusicToPlay();
+	App->audio->PlayMusic(musicToPlay.data(), 2.0f);
 
 	App->map->LoadLogic();
 
@@ -296,9 +302,7 @@ bool j1Scene::PreUpdate()
 		break;
 	}
 
-
-	//Change to wite Gold Label Color before 2 sec
-
+	// Change to wite Gold Label Color before 2 sec
 	SDL_Color white = { 255,255,255,255 };
 	if (goldLabelColorTime.Read() > 1200 && hasGoldChanged == GoldChange_ChangeColor) {
 		goldLabel->SetColor(White_, true);
@@ -350,6 +354,13 @@ bool j1Scene::Update(float dt)
 			else
 				(*iterator).entityLifeBar->SetLife((*iterator).owner->GetCurrLife());
 		}
+	}
+
+	if (App->gui->IsMouseOnUI()) {
+
+		SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+		if (r.x != 243)
+			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 	}
 
 	// *****UNITS*****
@@ -643,25 +654,30 @@ bool j1Scene::Update(float dt)
 	// ---------------------------------------------------------------------------------
 
 	DebugKeys();
-	CheckCameraMovement(dt);
 
-	//Checks if resources have changed to update building menu and gold label
+	if (pauseMenuActions == PauseMenuActions_NOT_EXIST)
+		CheckCameraMovement(dt);
 
+	// Checks if resources have changed to update building menu and gold label
 	if (terenasDialogTimer.Read() >= 25000 && terenasDialogEvent == TerenasDialog_START) {
+		if (App->scene->terenasDialogEvent != TerenasDialog_WAVES) {
+			App->scene->terenasDialogTimer.Start();
+			App->scene->terenasDialogEvent = TerenasDialog_WAVES;
+			App->scene->ShowTerenasDialog(App->scene->terenasDialogEvent);
+		}
+	}
+	if (terenasDialogTimer.Read() >= 20000 && terenasDialogEvent == TerenasDialog_WAVES) {
 		HideTerenasDialog();
 	}
 	if (terenasDialogTimer.Read() >= 5000 && terenasDialogEvent != TerenasDialog_NONE && terenasDialogEvent != TerenasDialog_START) {
 		HideTerenasDialog();
 	}
-
 	if (adviceMessageTimer.Read() >= 2500 && adviceMessage != AdviceMessage_NONE && adviceMessage != AdviceMessage_UNDER_ATTACK) {
 		HideAdviceMessage();
 	}
-
 	if (adviceMessageTimer.Read() >= 3500 && adviceMessage == AdviceMessage_UNDER_ATTACK) {
 		HideAdviceMessage();
 	}
-
 	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
 	{
 		App->map->UnLoad();
@@ -676,7 +692,12 @@ bool j1Scene::Update(float dt)
 
 		else if (parchmentImg->GetAnimation()->speed > 0) {
 			SDL_Rect rect = { -(int)App->render->camera.x, -(int)App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h };
-			alphaCont += 100*dt;
+			
+			if (dt > 0)
+				alphaCont += 100 * dt;
+			else
+				alphaCont += 100 * App->auxiliarDt;
+
 			App->printer->PrintQuad(rect, { 0,0,0, (Uint8)alphaCont }, true, true, Layers_QuadsPrinters);
 		}
 
@@ -778,9 +799,21 @@ bool j1Scene::PostUpdate()
 		App->fade->FadeToBlack(this, App->finish);
 		App->finish->active = true;
 	}
-	
-	if (((App->player->GetCurrentGold() < 400 && App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && !App->player->isUnitSpawning) 
-		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) || App->player->townHall == nullptr) {
+
+
+	//LoseConditions
+		//We have no more units in game
+	if ((App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && 
+	//Not enogh gold to create Archer (cheeper unit) and we have no units spawning
+			((App->player->GetCurrentGold() < App->player->elvenArcherCost && App->player->toSpawnUnitBarracks.empty() && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning)
+	//Have not barracks and gryphos and have not enogh gold for build it and create the cheeper option (grypho)
+			|| (App->player->GetCurrentGold() < (App->player->gryphonRiderCost + gryphonAviaryCost) && App->player->gryphonAviary == nullptr && App->player->barracks == nullptr)
+	//Not enogh gold to create Gryphos and have not barracks and we and have no units spawning
+			|| (App->player->GetCurrentGold() < App->player->gryphonRiderCost  && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning))
+	//Instant Lose with F2
+		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) 
+	//Orde destroy townhall
+		|| App->player->townHall == nullptr) {
 
 		App->player->isWin = false;
 		App->fade->FadeToBlack(this, App->finish);
@@ -808,6 +841,8 @@ bool j1Scene::CleanUp()
 	App->audio->PauseMusic();
 	App->tex->UnLoad(debugTex);
 
+	pauseMenuActions = PauseMenuActions_NOT_EXIST;
+
 	if (!App->gui->isGuiCleanUp)
 		DestroyAllUI();
 	//warcraftActive = false;
@@ -823,6 +858,7 @@ bool j1Scene::CleanUp()
 	App->movement->active = false;
 	App->particles->active = false;
 	App->wave->active = false;
+	App->fow->active = false;
 
 	App->map->UnLoad();
 	App->player->CleanUp();
@@ -833,6 +869,7 @@ bool j1Scene::CleanUp()
 	App->pathfinding->CleanUp();
 	App->collision->CleanUp();
 	App->wave->CleanUp();
+	App->fow->CleanUp();
 
 	RELEASE_ARRAY(data);
 
@@ -1122,6 +1159,22 @@ void j1Scene::LoadAdviceMessage()
 	labelInfo.interactive = false;
 	adviceLabel = App->gui->CreateUILabel({ 300,235 }, labelInfo, this);
 	adviceLabel->isActive = false;
+}
+
+string j1Scene::ChooseMusicToPlay()
+{
+	string ret = levelTheme1;
+	uint rng = rand() % 4 + 1;
+	if (rng == 1)
+		ret = levelTheme1;
+	else if(rng == 2)
+		ret = levelTheme2;
+	else if (rng == 3)
+		ret = levelTheme3;
+	else if (rng == 4)
+		ret = levelTheme4;
+
+	return ret;
 }
 
 void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
@@ -1562,18 +1615,20 @@ void j1Scene::UpdateGoldLabel(GoldChange state)
 
 	goldLabelColorTime.Start();
 }
+
 void j1Scene::UpdateFoodLabel()
 {
 	foodLabel->SetText(to_string(App->player->currentFood));
 }
+
 void j1Scene::UnLoadResourcesLabels()
 {
 	App->gui->RemoveElem((UIElement**)&goldLabel);
 	App->gui->RemoveElem((UIElement**)&foodLabel);
 }
 
-void j1Scene::CreatePauseMenu() {
-
+void j1Scene::CreatePauseMenu() 
+{
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
 	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
@@ -1603,10 +1658,14 @@ void j1Scene::CreatePauseMenu() {
 	labelInfo.text = "Return to Main Menu";
 	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
 
+	// Mouse texture
+	SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
+	if (r.x != 243)
+		App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 }
 
-void j1Scene::DestroyPauseMenu() {
-
+void j1Scene::DestroyPauseMenu() 
+{
 	App->gui->RemoveElem((UIElement**)&settingsButt);
 	App->gui->RemoveElem((UIElement**)&ReturnMenuButt);
 	App->gui->RemoveElem((UIElement**)&continueButt);
@@ -1615,11 +1674,12 @@ void j1Scene::DestroyPauseMenu() {
 	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
 }
 
-void j1Scene::CreateSettingsMenu() {
+void j1Scene::CreateSettingsMenu() 
+{
 	UIButton_Info buttonInfo;
 	UILabel_Info labelInfo;
 	
-	//Fullscreen
+	// Fullscreen
 	if (!App->win->fullscreen) {
 		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 498, 370, 20, 20 };
 		buttonInfo.pressedTexArea = { 520, 370, 20, 20 };
@@ -1641,8 +1701,7 @@ void j1Scene::CreateSettingsMenu() {
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
 	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
 
-
-	//Sliders
+	// Sliders
 	x = parchmentImg->GetLocalPos().x + 30;
 	y = parchmentImg->GetLocalPos().y + 70;
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
@@ -1780,6 +1839,11 @@ void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 	{
 	case TerenasDialog_START:
 		text = "Welcome adventurers of Azeroth's armies! You have been sent to Draenor to rescue the members from the legendary Alliance expedition and defeat Ner'zhul to reclaim the artifacts from Azeroth and avoid caos. FOR THE ALLIANCE!";
+		terenasAdvices.text->SetText(text, 340);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
+		break;
+	case TerenasDialog_WAVES:
+		text = "BY THE WAY, THE SEAS SURROUNDING YOUR BASE ARE FULL OF ENEMIES TOO. BE AWARE OF YOUR SURROUNDINGS AND PROTECT YOUR TOWN HALL AT ANY COST!";
 		terenasAdvices.text->SetText(text, 340);
 		terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;

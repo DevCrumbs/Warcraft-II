@@ -50,6 +50,9 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 
 DynamicEntity::~DynamicEntity()
 {
+	/// Remove the target from all other units lists
+	App->entities->InvalidateTargetInfo(this);
+
 	// Remove Goals
 	if (brain != nullptr) {
 
@@ -718,9 +721,6 @@ void DynamicEntity::InvalidateCurrTarget()
 
 bool DynamicEntity::SetIsRemovedTargetInfo(Entity* target)
 {
-	if (target == nullptr)
-		return false;
-
 	// Set isRemoved to true
 	list<TargetInfo*>::const_iterator it = targets.begin();
 
@@ -754,7 +754,7 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 		if ((*it)->target == targetInfo->target) {
 
 			delete *it;
-			targets.remove(*it);
+			targets.erase(it);
 			return true;
 		}
 		it++;
@@ -784,7 +784,7 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENT
 
 	while (it != targets.end()) {
 
-		if (!(*it)->isRemoved && (*it)->target->GetIsValid()) {
+		if (!(*it)->isRemoved && (*it)->target->GetIsValid() && (*it)->target != nullptr) {
 
 			if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_DYNAMIC_ENTITY) {
 
@@ -983,4 +983,15 @@ bool DynamicEntity::GetBlitState() const
 iPoint DynamicEntity::GetLastTile()
 {
 	return lastColliderUpdateTile;
+}
+
+// Fow
+void DynamicEntity::SetLastSeenTile(iPoint lastSeenTile) 
+{
+	this->lastSeenTile = lastSeenTile;
+}
+
+iPoint DynamicEntity::GetLastSeenTile() const
+{
+	return lastSeenTile;
 }

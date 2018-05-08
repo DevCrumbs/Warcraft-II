@@ -39,7 +39,7 @@ public:
 	SDL_Surface* screenSurface = nullptr;
 	SDL_Surface* iconSurface = nullptr;
 
-	bool fullscreen;
+	bool fullscreen = false;
 
 	// Screen parameters
 	uint		width = 0;
