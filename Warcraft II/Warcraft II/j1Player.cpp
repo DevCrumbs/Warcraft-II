@@ -255,6 +255,7 @@ bool j1Player::Update(float dt)
 				if (ent->GetIsFinishedBuilt()) {
 					entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
 					entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
+					entitySelectedStats.lifeBar->SetMaxLife(entitySelectedStats.entitySelected->GetMaxLife());
 				}
 			}
 			else {
