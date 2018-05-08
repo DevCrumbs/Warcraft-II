@@ -18,7 +18,12 @@ j1FogOfWar::j1FogOfWar() : j1Module()
 
 j1FogOfWar::~j1FogOfWar()
 {
-
+	for (std::vector<FogOfWarTile*>::iterator iterator = fowTilesVector.begin(); iterator != fowTilesVector.end(); ++iterator)
+	{
+		delete *iterator;
+		*iterator = nullptr;
+	}
+	fowTilesVector.clear();
 }
 
 bool j1FogOfWar::Start()
