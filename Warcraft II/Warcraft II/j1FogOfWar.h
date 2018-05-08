@@ -40,6 +40,7 @@ public:
 	void print();
 
 	void LoadFoWMap(int mapWidth, int mapHeight);
+	bool IsOnSight(iPoint pos);
 	void UnLoadFowMap();
 	void TilesNearPlayer();
 	int TotalDistanceToPlayer(Entity* entity, int tile);
