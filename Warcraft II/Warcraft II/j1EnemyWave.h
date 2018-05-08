@@ -58,6 +58,12 @@ public:
 	// Load
 	bool Load(pugi::xml_node&);
 
+public:
+
+	// Current wave
+	uint totalPhasesOfCurrWave = 0;
+	uint phasesOfCurrWave = 0;
+
 private:
 
 	vector<SpawnTiles> spawnTiles;
@@ -68,10 +74,6 @@ private:
 	uint totalWaves = 0;
 
 	bool isActiveWaves = true;
-
-	// Current wave
-	uint totalPhasesOfCurrWave = 0;
-	uint phasesOfCurrWave = 0;
 
 	bool isStartWave = false;
 

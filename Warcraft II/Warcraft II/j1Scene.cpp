@@ -1923,6 +1923,14 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 		adviceLabel->SetFontName(FONT_NAME_WARCRAFT30);
 		break;
 
+	case AdviceMessage_BASE_DEFENDED:
+		text = "BASE DEFENDED!";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 285,265 });
+		adviceLabel->SetColor(WarmYellow_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT30);
+		break;
+
 	case AdviceMessage_UNDER_ATTACK:
 		text = "YOUR BASE IS UNDER ATTACK";;
 		adviceLabel->SetText(text, 340);

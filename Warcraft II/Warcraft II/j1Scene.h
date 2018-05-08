@@ -49,6 +49,7 @@ enum AdviceMessages {
 	AdviceMessage_SELECT_ARCHERS,
 	AdviceMessage_SELECT_GRYPHS,
 	AdviceMessage_ROOM_CLEAR,
+	AdviceMessage_BASE_DEFENDED,
 	AdviceMessage_UNDER_ATTACK,
 	AdviceMessage_MINE,
 	AdviceMessage_GRYPH_MINE,
