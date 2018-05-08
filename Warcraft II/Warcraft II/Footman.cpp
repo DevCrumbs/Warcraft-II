@@ -374,9 +374,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			if (c2->entity == nullptr)
-				break;
-
 			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
@@ -397,6 +394,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
+<<<<<<< HEAD
 					if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 						DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
@@ -413,6 +411,9 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 					else if (c2->entity->entityType == EntityCategory_STATIC_ENTITY) {
 						LOG("Building is sight");
 					}
+=======
+
+>>>>>>> parent of 23bc02f... Merge branch 'Goal-Driven-Agent-Behavior' into Develompent
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
@@ -427,6 +428,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				targetInfo->isSightSatisfied = true;
 
 				targets.push_back(targetInfo);
+<<<<<<< HEAD
 
 				if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
@@ -444,6 +446,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				else if (c2->entity->entityType == EntityCategory_STATIC_ENTITY) {
 					LOG("Building is new");
 				}
+=======
+>>>>>>> parent of 23bc02f... Merge branch 'Goal-Driven-Agent-Behavior' into Develompent
 			}
 
 			// 2. MAKE UNIT FACE TOWARDS THE BEST TARGET
@@ -485,9 +489,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			if (c2->entity == nullptr)
-				break;
-
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -517,9 +518,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
-			if (c2->entity == nullptr)
-				break;
-
 			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
@@ -540,70 +538,24 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					(*it)->isAttackSatisfied = false;
 
 					if (currTarget != nullptr) {
 
 						if (c2->entity == currTarget->target) {
-							if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-								DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-								if (dynEnt->dynamicEntityType == EntityType_GRUNT) {
-									LOG("Grunt removed");
-								}
-								else if (dynEnt->dynamicEntityType == EntityType_DRAGON) {
-									LOG("Dragon removed");
-								}
-								else if (dynEnt->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
-									LOG("Troll removed");
-								}
-							}
-							else if (c2->entity->entityType == EntityCategory_STATIC_ENTITY) {
-								LOG("Building removed");
-							}
 							(*it)->target->RemoveAttackingUnit(this);
 							SetIsRemovedTargetInfo((*it)->target);
 							break;
 						}
 						else {
-							if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-								DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-								if (dynEnt->dynamicEntityType == EntityType_GRUNT) {
-									LOG("Grunt is remove");
-								}
-								else if (dynEnt->dynamicEntityType == EntityType_DRAGON) {
-									LOG("Dragon is remove");
-								}
-								else if (dynEnt->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
-									LOG("Troll is remove");
-								}
-							}
-							else if (c2->entity->entityType == EntityCategory_STATIC_ENTITY) {
-								LOG("Building is remove");
-							}
 							(*it)->target->RemoveAttackingUnit(this);
 							RemoveTargetInfo(*it);
 							break;
 						}
 					}
 					else {
-						if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-							DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-							if (dynEnt->dynamicEntityType == EntityType_GRUNT) {
-								LOG("Grunt is remove");
-							}
-							else if (dynEnt->dynamicEntityType == EntityType_DRAGON) {
-								LOG("Dragon is remove");
-							}
-							else if (dynEnt->dynamicEntityType == EntityType_TROLL_AXETHROWER) {
-								LOG("Troll is remove");
-							}
-						}
-						else if (c2->entity->entityType == EntityCategory_STATIC_ENTITY) {
-							LOG("Building is remove");
-						}
 						(*it)->target->RemoveAttackingUnit(this);
 						RemoveTargetInfo(*it);
 						break;
@@ -617,9 +569,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 		else if ((c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
-
-			if (c2->entity == nullptr)
-				break;
 
 			if (isSelected) {
 
