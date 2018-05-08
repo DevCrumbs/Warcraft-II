@@ -409,10 +409,6 @@ void Goal_AttackTarget::Terminate()
 
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
-<<<<<<< HEAD
-
-		
-=======
 	}
 	else {
 
@@ -425,7 +421,6 @@ void Goal_AttackTarget::Terminate()
 
 				targetInfo->isAttackSatisfied = false;
 		}
->>>>>>> parent of 23bc02f... Merge branch 'Goal-Driven-Agent-Behavior' into Develompent
 	}
 
 	// -----
