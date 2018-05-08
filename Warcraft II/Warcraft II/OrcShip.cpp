@@ -47,6 +47,11 @@ OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
 	isSpawnedWave = false;
+
+	speed = orcShipInfo.unitInfo.currSpeed - 25;
+
+	movementTimer.Start();
+
 }
 
 void OrcShip::Move(float dt)
@@ -56,36 +61,114 @@ void OrcShip::Move(float dt)
 	switch(orcShipInfo.orcShipType)
 	{
 	case ShipType_UP_LEFT:
-		if (movementTimer.Read() < 5000) {
-		pos.x += orcShipInfo.unitInfo.maxSpeed * dt;
-		pos.y += orcShipInfo.unitInfo.maxSpeed * dt;
+		if (movementTimer.Read() < 4000) {
+		pos.x += speed * dt;
+		pos.y += speed * dt;
 		animation = &orcShipInfo.downRight;
 		}
+		else if (movementTimer.Read() >= 30000)
+			isRemove = true;
 		else if (movementTimer.Read() >= 15000) {
-			pos.x -= orcShipInfo.unitInfo.maxSpeed * dt;
+			pos.x -= speed * dt;
 			animation = &orcShipInfo.left;
 		}
-		else if (movementTimer.Read() >= 10000) {
+		else if (movementTimer.Read() >= 12000) {
 			if (!isSpawnedWave) {
 				App->wave->PerformWave(ShipType_UP_LEFT);
 				isSpawnedWave = true;
 			}
 		}
-		else if (movementTimer.Read() >= 5000) {
+		else if (movementTimer.Read() >= 7000) {
+			animation = &orcShipInfo.down;
+		}
+		else if (movementTimer.Read() >= 4000) {
+			pos.y += speed * dt;
 			animation = &orcShipInfo.down;
 		}
 		break;
 
 	case ShipType_BOTTOM:
-
+		if (movementTimer.Read() < 4000) {
+			pos.x += speed * dt;
+			pos.y -= speed * dt;
+			animation = &orcShipInfo.upRight;
+		}
+		else if (movementTimer.Read() >= 30000)
+			isRemove = true;
+		else if (movementTimer.Read() >= 15000) {
+			pos.y += speed * dt;
+			animation = &orcShipInfo.down;
+		}
+		else if (movementTimer.Read() >= 12000) {
+			if (!isSpawnedWave) {
+				App->wave->PerformWave(ShipType_BOTTOM);
+				isSpawnedWave = true;
+			}
+			animation = &orcShipInfo.right;
+		}
+		else if (movementTimer.Read() >= 6000) {
+			animation = &orcShipInfo.right;
+		}
+		else if (movementTimer.Read() >= 4000) {
+			pos.x += speed * dt;
+			animation = &orcShipInfo.right;
+		}
 		break;
 
 	case ShipType_BOTTOM_RIGHT:
-		
+		if (movementTimer.Read() < 8000) {
+			pos.x -= speed * dt;
+			pos.y -= speed * dt;
+			animation = &orcShipInfo.upLeft;
+		}
+		else if (movementTimer.Read() >= 30000)
+			isRemove = true;
+		else if (movementTimer.Read() >= 15000) {
+			pos.x += speed * dt;
+			animation = &orcShipInfo.right;
+		}
+		else if (movementTimer.Read() >= 12000) {
+			if (!isSpawnedWave) {
+				App->wave->PerformWave(ShipType_BOTTOM_RIGHT);
+				isSpawnedWave = true;
+			}
+			animation = &orcShipInfo.up;
+		}
+		else if (movementTimer.Read() >= 10000) {
+			animation = &orcShipInfo.up;
+		}
+		else if (movementTimer.Read() >= 8000) {
+			pos.y -= speed * dt;
+			animation = &orcShipInfo.up;
+		}
 		break;
 
 	case ShipType_UP_RIGHT:
-		
+		if (movementTimer.Read() < 8000) {
+			pos.x -= speed * dt;
+			animation = &orcShipInfo.left;
+		}
+		else if (movementTimer.Read() >= 30000)
+			isRemove = true;
+		else if (movementTimer.Read() >= 15000) {
+			pos.x += speed * dt;
+			animation = &orcShipInfo.right;
+		}
+		else if (movementTimer.Read() >= 12000) {
+			if (!isSpawnedWave) {
+				App->wave->PerformWave(ShipType_UP_RIGHT);
+				isSpawnedWave = true;
+			}
+			animation = &orcShipInfo.down;
+		}
+		else if (movementTimer.Read() >= 9500) {
+			animation = &orcShipInfo.down;
+		}
+		else if (movementTimer.Read() >= 8000) {
+			pos.y += speed * dt;
+			animation = &orcShipInfo.down;
+		}
+
 		break;	
 	}
 
