@@ -1056,7 +1056,7 @@ bool j1Map::LoadRoomRect(MapLayer* layer)
 				switch (roomType)
 				{
 				case roomType_BASE:
-					playerBase.roomRect = { pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize };
+					playerBase.roomRect = { pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultBaseSize * defaultTileSize };
 					roomRectList.push_back(playerBase);
 					App->scene->basePos = { playerBase.roomRect.x + margin * defaultTileSize, playerBase.roomRect.y + margin * defaultTileSize };
 
