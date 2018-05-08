@@ -2158,7 +2158,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			//For destroying a building
 			else if (UIelem == destroyBuildingButton) {
 				App->audio->PlayFx(App->audio->GetFX().destroyBuild);
-				HideHoverInfoMenu(&thirdHoverInfo);
+				HideHoverInfoMenu(&firstHoverInfo);
 				entitySelectedStats.entitySelected->isRemove = true;
 				HideEntitySelectedInfo();
 			}
