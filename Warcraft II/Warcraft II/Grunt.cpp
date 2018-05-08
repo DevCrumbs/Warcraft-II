@@ -250,21 +250,24 @@ void Grunt::Move(float dt)
 
 void Grunt::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr) {
+	if (animation != nullptr)
+	{
+		// Not draw if not on fow sight
+		if (App->fow->IsOnSight(pos))
+		{
+			fPoint offset = { 0.0f,0.0f };
+			if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp) {
 
-		fPoint offset = { 0.0f,0.0f };
-		if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp) {
+				offset = { animation->GetCurrentFrame().w / 2.5f, animation->GetCurrentFrame().h / 5.5f };
+				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+			}
+			else {
 
-			offset = { animation->GetCurrentFrame().w / 2.5f, animation->GetCurrentFrame().h / 5.5f };
-			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
-		}
-		else {
-
-			offset = { animation->GetCurrentFrame().w / 3.2f, animation->GetCurrentFrame().h / 3.1f };
-			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+				offset = { animation->GetCurrentFrame().w / 3.2f, animation->GetCurrentFrame().h / 3.1f };
+				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+			}
 		}
 	}
-
 	//if (isSelected)
 		//DebugDrawSelected();
 }

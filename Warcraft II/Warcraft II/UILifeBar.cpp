@@ -3,6 +3,7 @@
 #include "j1Input.h"
 #include "p2Log.h"
 #include "j1Window.h"
+#include "j1FogOfWar.h"
 
 UILifeBar::UILifeBar(iPoint local_pos, UIElement* parent, UILifeBar_Info& info, j1Module* listener, bool isInWorld) : UIElement(local_pos, parent, listener, isInWorld), lifeBar(info)
 {
@@ -31,27 +32,32 @@ void UILifeBar::Update(float dt)
 
 void UILifeBar::Draw() const
 {
-	iPoint blit_pos;
-	int scale = App->win->GetScale();
-	blit_pos.x = (GetLocalPos().x - App->render->camera.x) / scale;
-	blit_pos.y = (GetLocalPos().y - App->render->camera.y) / scale;
+	// Not draw if not on fow sight
+	iPoint pos{ GetLocalPos().x + lifeBar.lifeBarPosition.x, GetLocalPos().y + lifeBar.lifeBarPosition.y };
+	if (App->fow->IsOnSight(pos))
+	{
+		iPoint blit_pos;
+		int scale = App->win->GetScale();
+		blit_pos.x = (GetLocalPos().x - App->render->camera.x) / scale;
+		blit_pos.y = (GetLocalPos().y - App->render->camera.y) / scale;
 
-	if (GetParent() != nullptr) {
-		SDL_Rect daddy = GetParent()->GetScreenRect();
-		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
-	}
+		if (GetParent() != nullptr) {
+			SDL_Rect daddy = GetParent()->GetScreenRect();
+			App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
+		}
 
-	if (isInWorld) {
-		
-		App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x + lifeBar.lifeBarPosition.x, GetLocalPos().y + lifeBar.lifeBarPosition.y, &bar);
-		App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &background);
+		if (isInWorld) {
+
+			App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x + lifeBar.lifeBarPosition.x, GetLocalPos().y + lifeBar.lifeBarPosition.y, &bar);
+			App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &background);
+		}
+		else if (!isInWorld) {
+			App->render->Blit(App->gui->GetAtlas(), blit_pos.x + lifeBar.lifeBarPosition.x, blit_pos.y + lifeBar.lifeBarPosition.y, &bar);
+			App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &background);
+		}
+		//else
+		//	App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &texArea);
 	}
-	else if (!isInWorld) {
-		App->render->Blit(App->gui->GetAtlas(), blit_pos.x + lifeBar.lifeBarPosition.x, blit_pos.y + lifeBar.lifeBarPosition.y, &bar);
-		App->render->Blit(App->gui->GetAtlas(), blit_pos.x, blit_pos.y, &background);
-	}
-	//else
-	//	App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &texArea);
 	if (GetParent() != nullptr)
 		App->render->ResetViewPort();
 }

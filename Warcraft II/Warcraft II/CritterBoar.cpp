@@ -132,7 +132,9 @@ void CritterBoar::Move(float dt)
 void CritterBoar::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr)
-		App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+		// Not draw if not on fow sight
+		if (App->fow->IsOnSight(pos))
+			App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 
 	if (isSelected)
 		DebugDrawSelected();

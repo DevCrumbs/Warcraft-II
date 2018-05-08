@@ -81,12 +81,12 @@ bool j1EnemyWave::Start()
 bool j1EnemyWave::CleanUp()
 {
 	// Clear the spawn tiles vector (and lists inside it)
-	vector<list<iPoint>>::const_iterator it = spawnTiles.begin();
+	vector<SpawnTiles>::const_iterator it = spawnTiles.begin();
 
 	while (it != spawnTiles.end()) {
 	
-		list<iPoint> it2 = *it;
-		it2.clear();
+		SpawnTiles it2 = *it;
+		it2.entitySpawn.clear();
 	
 		it++;
 	}
@@ -104,7 +104,6 @@ bool j1EnemyWave::Update(float dt)
 
 	// F3: spawns a random phase of a wave
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
-
 		PerformWave();
 
 	// F4: activates or stops the spawn of waves
@@ -251,9 +250,9 @@ bool j1EnemyWave::Update(float dt)
 	return ret;
 }
 
-void j1EnemyWave::AddTiles(list<iPoint> tiles)
+void j1EnemyWave::AddTiles(list<iPoint> tiles, iPoint ship)
 {
-	spawnTiles.push_back(tiles);
+	spawnTiles.push_back({ ship,tiles });
 }
 
 bool j1EnemyWave::SpawnEnemy(float prob)  // probability between 0.0 and 1.0
