@@ -145,15 +145,6 @@ struct TargetInfo
 	// -----
 
 	bool IsTargetPresent() const;
-
-	~TargetInfo() {
-
-		isSightSatisfied = false;
-		isAttackSatisfied = false;
-
-		isRemoved = true;
-		target = nullptr;
-	}
 };
 
 class Entity

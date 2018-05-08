@@ -60,6 +60,14 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
 
+	// Collisions
+	CreateEntityCollider(EntitySide_Enemy);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+	entityCollider->isTrigger = true;
+	sightRadiusCollider->isTrigger = true;
+	attackRadiusCollider->isTrigger = true;
+
 	// LifeBar creation
 	UILifeBar_Info lifeBarInfo;
 	lifeBarInfo.background = { 241,336,45,8 };
@@ -91,19 +99,6 @@ void Grunt::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
-
-	if (!isSpawned) {
-
-		// Collisions
-		CreateEntityCollider(EntitySide_Enemy);
-		sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-		attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
-		entityCollider->isTrigger = true;
-		sightRadiusCollider->isTrigger = true;
-		attackRadiusCollider->isTrigger = true;
-
-		isSpawned = true;	
-	}
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -307,8 +302,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				if ((*it)->target == c2->entity) {
 
-					if (!(*it)->isRemoved)
-						(*it)->isSightSatisfied = true;
+					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
 				}
@@ -318,27 +312,13 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (!isTargetFound) {
 
 				/// Do it only if the target is valid
-				if (c2->entity->GetIsValid() && !c2->entity->isRemove) {
+				if (c2->entity->GetIsValid()) {
 
-					bool isAdded = false;
+					TargetInfo* targetInfo = new TargetInfo();
+					targetInfo->target = c2->entity;
+					targetInfo->isSightSatisfied = true;
 
-					if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
-
-						DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-
-						if (!dynEnt->isDead)
-							isAdded = true;
-					}
-					else
-						isAdded = true;
-
-					if (isAdded) {
-						TargetInfo* targetInfo = new TargetInfo();
-						targetInfo->target = c2->entity;
-						targetInfo->isSightSatisfied = true;
-
-						targets.push_back(targetInfo);
-					}
+					targets.push_back(targetInfo);
 				}
 			}
 
@@ -349,8 +329,6 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
-					isFacingTowardsTarget = true;
-				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
 				// b) If the unit is attacking a static target
 				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
@@ -396,7 +374,6 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				if ((*it)->target == c2->entity) {
 
-					(*it)->isSightSatisfied = true;
 					(*it)->isAttackSatisfied = true;
 					break;
 				}
@@ -537,7 +514,7 @@ void Grunt::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
-							if (!currTarget->isRemoved && currTarget->target != nullptr)
+							if (!currTarget->isRemoved)
 
 								currTarget->target->RemoveAttackingUnit(this);
 						}
@@ -654,7 +631,7 @@ void Grunt::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
-							if (!currTarget->isRemoved && currTarget->target != nullptr) {
+							if (!currTarget->isRemoved) {
 
 								if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
 									break;
@@ -689,7 +666,7 @@ void Grunt::UnitStateMachine(float dt)
 								// Anticipate the removing of this unit from the attacking units of the target
 								if (currTarget != nullptr) {
 
-									if (!currTarget->isRemoved && currTarget->target != nullptr) {
+									if (!currTarget->isRemoved) {
 
 										currTarget->target->RemoveAttackingUnit(this);
 									}
@@ -815,7 +792,7 @@ bool Grunt::ChangeAnimation()
 		// Set the direction of the unit as the orientation towards the target
 		if (currTarget != nullptr) {
 
-			if (!currTarget->isRemoved && currTarget->target != nullptr) {
+			if (!currTarget->isRemoved) {
 
 				fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
 
