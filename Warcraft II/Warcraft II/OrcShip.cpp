@@ -49,7 +49,8 @@ OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 void OrcShip::Move(float dt)
 {
-	// Save mouse position (world and map coords)
+	animation = &orcShipInfo.down;
+
 	switch(orcShipInfo.orcShipType)
 	{
 	case ShipType_UP_LEFT:
@@ -92,7 +93,7 @@ void OrcShip::Draw(SDL_Texture* sprites)
 	if (animation != nullptr)
 	{
 		// Not draw if not on fow sight
-		if (App->fow->IsOnSight(pos))
+		//if (App->fow->IsOnSight(pos))
 		{
 			fPoint offset = { 0.0f,0.0f };
 			offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.5f };

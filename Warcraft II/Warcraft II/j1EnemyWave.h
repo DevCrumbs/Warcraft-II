@@ -50,7 +50,7 @@ public:
 
 	bool SpawnEnemy(float prob);
 
-	void PerformWave(int layer);
+	void PerformWave(int layer = 0);
 
 	// Save
 	bool Save(pugi::xml_node&) const;
