@@ -116,7 +116,7 @@ void OrcShip::Move(float dt)
 		break;
 
 	case ShipType_BOTTOM_RIGHT:
-		if (movementTimer.Read() < 8000) {
+		if (movementTimer.Read() < 6000) {
 			pos.x -= speed * dt;
 			pos.y -= speed * dt;
 			animation = &orcShipInfo.upLeft;
@@ -134,10 +134,10 @@ void OrcShip::Move(float dt)
 			}
 			animation = &orcShipInfo.up;
 		}
-		else if (movementTimer.Read() >= 10000) {
+		else if (movementTimer.Read() >= 9000) {
 			animation = &orcShipInfo.up;
 		}
-		else if (movementTimer.Read() >= 8000) {
+		else if (movementTimer.Read() >= 6000) {
 			pos.y -= speed * dt;
 			animation = &orcShipInfo.up;
 		}
