@@ -280,6 +280,9 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
+			if (c2->entity == nullptr)
+				return;
+
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -354,6 +357,9 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
+			if (c2->entity == nullptr)
+				return;
+
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -382,6 +388,9 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 		if ((c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerUnit)
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
+
+			if (c2->entity == nullptr)
+				return;
 
 			if (isSelected) {
 
@@ -428,6 +437,9 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 		else if ((c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit)
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
+
+			if (c2->entity == nullptr)
+				return;
 
 			if (isSelected) {
 
