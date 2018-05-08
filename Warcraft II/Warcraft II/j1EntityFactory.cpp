@@ -1437,7 +1437,7 @@ bool j1EntityFactory::Start()
 	gruntInfo.unitInfo.currLife = gruntInfo.unitInfo.maxLife;
 
 	///
-	gruntInfo.droppedGold = 10;
+	gruntInfo.droppedGold = 30;
 	gruntInfo.unitInfo.size = { 32,32 };
 	gruntInfo.unitInfo.offsetSize = { 0,0 };
 	//_Grunt
@@ -1465,7 +1465,7 @@ bool j1EntityFactory::Start()
 
 	///
 	trollAxethrowerInfo.axeSpeed = 160.0f;
-	trollAxethrowerInfo.droppedGold = 10;
+	trollAxethrowerInfo.droppedGold = 40;
 	trollAxethrowerInfo.unitInfo.size = { 32,32 };
 	trollAxethrowerInfo.unitInfo.offsetSize = { 0,0 };
 	//_Troll_Axethrower
@@ -1493,7 +1493,7 @@ bool j1EntityFactory::Start()
 
 	///
 	dragonInfo.fireSpeed = 200.0f;
-	dragonInfo.droppedGold = 10;
+	dragonInfo.droppedGold = 75;
 	dragonInfo.unitInfo.size = { 64,64 };
 	dragonInfo.unitInfo.offsetSize = { -16,-16 };
 	//_Dragon
