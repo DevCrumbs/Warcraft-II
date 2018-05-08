@@ -51,14 +51,28 @@ OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 void OrcShip::Move(float dt)
 {
 	// Save mouse position (world and map coords)
-	int x, y;
-	App->input->GetMousePosition(x, y);
-	iPoint mousePos = App->render->ScreenToWorld(x, y);
-	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
-	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+	switch(orcShipType)
+	{
+
+	case ShipType_UP_LEFT:
+	
+		break;
+
+	case ShipType_BOTTOM:
+
+		break;
+
+	case ShipType_BOTTOM_RIGHT:
+		
+		break;
+
+	case ShipType_UP_RIGHT:
+		
+		break;	
+	}
 
 	// ---------------------------------------------------------------------
-
+	UpdateAnimationsSpeed(dt);
 	ChangeAnimation();
 }
 
