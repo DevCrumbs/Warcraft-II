@@ -93,7 +93,6 @@ bool j1Menu::PreUpdate()
 	switch (menuActions)
 	{
 	case MenuActions_SLIDERFX:
-		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		UpdateSlider(audioFX);
 		break;
 	case MenuActions_SLIDERMUSIC:
@@ -382,8 +381,10 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if(UIelem == returnButt)
 			menuActions = MenuActions_RETURN;
 
-		else if (UIelem == audioFX.slider) 
+		else if (UIelem == audioFX.slider) {
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_SLIDERFX;
+		}
 		
 		else if (UIelem == audioMusic.slider) 
 			menuActions = MenuActions_SLIDERMUSIC;
@@ -406,8 +407,10 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;
 	case UI_EVENT_MOUSE_LEFT_UP:
-		if (UIelem == audioFX.slider || UIelem == audioMusic.slider)
+		if (UIelem == audioFX.slider || UIelem == audioMusic.slider) {
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_NONE;
+		}
 		break;
 	case UI_EVENT_MAX_EVENTS:
 
