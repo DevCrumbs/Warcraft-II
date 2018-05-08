@@ -45,6 +45,8 @@ OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	// IA
 	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
 	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
+	isSpawnedWave = false;
 }
 
 void OrcShip::Move(float dt)
@@ -64,7 +66,10 @@ void OrcShip::Move(float dt)
 			animation = &orcShipInfo.left;
 		}
 		else if (movementTimer.Read() >= 10000) {
-			App->wave->PerformWave(ShipType_UP_LEFT);
+			if (!isSpawnedWave) {
+				App->wave->PerformWave(ShipType_UP_LEFT);
+				isSpawnedWave = true;
+			}
 		}
 		else if (movementTimer.Read() >= 5000) {
 			animation = &orcShipInfo.down;

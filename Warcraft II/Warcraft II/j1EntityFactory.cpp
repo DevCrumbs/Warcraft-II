@@ -53,6 +53,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	trollAxethrowerTexName = spritesheets.child("trollAxethrowerAnimations").attribute("name").as_string();
 	gryphonRiderTexName = spritesheets.child("gryphonRiderAnimations").attribute("name").as_string();
 	dragonTexName = spritesheets.child("dragonAnimations").attribute("name").as_string();
+	orcShipTexName = spritesheets.child("orcShipAnimations").attribute("name").as_string();
 
 	//Debug Textures Properties
 	previewTilesopacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
@@ -1027,49 +1028,49 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	// Orc ship animations
 	pugi::xml_node orcShipAnimations = orcEntities.child("orcShip").child("animations");
 
-	// Up animation Dragon
+	// Up animation Orc ship
 	currentAnimation = orcShipAnimations.child("up");
 	orcShipInfo.up.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Down animation Dragon
+	// Down animation Orc ship
 	currentAnimation = orcShipAnimations.child("down");
 	orcShipInfo.down.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.down.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Left animation Dragon
+	// Left animation Orc ship
 	currentAnimation = orcShipAnimations.child("left");
 	orcShipInfo.left.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.left.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Right animation Dragon
+	// Right animation Orc ship
 	currentAnimation = orcShipAnimations.child("right");
 	orcShipInfo.right.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.right.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Up Left animation Dragon
+	// Up Left animation Orc ship
 	currentAnimation = orcShipAnimations.child("upLeft");
 	orcShipInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Up Right animation Dragon
+	// Up Right animation Orc ship
 	currentAnimation = orcShipAnimations.child("upRight");
 	orcShipInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Down Left animation Dragon
+	// Down Left animation Orc ship
 	currentAnimation = orcShipAnimations.child("downLeft");
 	orcShipInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
