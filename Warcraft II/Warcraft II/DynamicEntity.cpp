@@ -126,7 +126,7 @@ void DynamicEntity::Draw(SDL_Texture* sprites)
 {
 	if (animation != nullptr) {
 		//App->render->Blit(sprites, pos.x, pos.y, &(animation->GetCurrentFrame()));
-		App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+			App->printer->PrintSprite({ (int)pos.x, (int)pos.y }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 	}
 	if (isSelected)
 		DebugDrawSelected();

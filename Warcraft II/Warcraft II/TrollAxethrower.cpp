@@ -250,22 +250,25 @@ void TrollAxethrower::Move(float dt)
 
 void TrollAxethrower::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr) {
+	if (animation != nullptr)
+	{
+		// Not draw if not on fow sight
+		if (App->fow->IsOnSight(pos))
+		{
+			fPoint offset = { 0.0f,0.0f };
 
-		fPoint offset = { 0.0f,0.0f };
+			if (animation == &trollAxethrowerInfo.deathDown || animation == &trollAxethrowerInfo.deathUp) {
 
-		if (animation == &trollAxethrowerInfo.deathDown || animation == &trollAxethrowerInfo.deathUp) {
+				offset = { animation->GetCurrentFrame().w / 6.0f, animation->GetCurrentFrame().h / 3.8f };
+				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+			}
+			else {
 
-			offset = { animation->GetCurrentFrame().w / 6.0f, animation->GetCurrentFrame().h / 3.8f };
-			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
-		}
-		else {
-
-			offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 4.0f };
-			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+				offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 4.0f };
+				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+			}
 		}
 	}
-
 	//if (isSelected)
 		//DebugDrawSelected();
 }

@@ -18,7 +18,12 @@ j1FogOfWar::j1FogOfWar() : j1Module()
 
 j1FogOfWar::~j1FogOfWar()
 {
-
+	for (std::vector<FogOfWarTile*>::iterator iterator = fowTilesVector.begin(); iterator != fowTilesVector.end(); ++iterator)
+	{
+		delete *iterator;
+		*iterator = nullptr;
+	}
+	fowTilesVector.clear();
 }
 
 bool j1FogOfWar::Start()
@@ -104,6 +109,24 @@ void j1FogOfWar::LoadFoWMap(int mapWidth, int mapHeight)
 			fowTilesVector.push_back(aux);
 		}
 
+}
+
+bool j1FogOfWar::IsOnSight(iPoint pos)
+{
+	bool ret = false;
+
+	iPoint tile = App->map->WorldToMap(pos.x / App->win->GetScale(), pos.y / App->win->GetScale());
+	int fowTile = (tile.y * 119) + tile.x;
+
+	if (fowTile < fowTilesVector.size())
+		ret = (fowTilesVector[fowTile]->alpha == 0);
+
+	return ret;
+}
+
+bool j1FogOfWar::IsOnSight(fPoint pos)
+{
+	return IsOnSight(iPoint{ int(pos.x),int(pos.y) });
 }
 
 void j1FogOfWar::UnLoadFowMap()
