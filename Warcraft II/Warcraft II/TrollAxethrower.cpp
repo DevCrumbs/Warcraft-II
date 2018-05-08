@@ -310,7 +310,6 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 				/// Do it only if the target is valid
 				if (c2->entity->GetIsValid()) {
 
-
 					TargetInfo* targetInfo = new TargetInfo();
 					targetInfo->target = c2->entity;
 					targetInfo->isSightSatisfied = true;
