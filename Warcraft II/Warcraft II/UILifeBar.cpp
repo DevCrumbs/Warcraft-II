@@ -34,7 +34,7 @@ void UILifeBar::Draw() const
 {
 	// Not draw if not on fow sight
 	iPoint pos{ GetLocalPos().x + lifeBar.lifeBarPosition.x, GetLocalPos().y + lifeBar.lifeBarPosition.y };
-	if (App->fow->IsOnSight(pos))
+	if (App->fow->IsOnSight(pos) || !isInWorld)
 	{
 		iPoint blit_pos;
 		int scale = App->win->GetScale();
