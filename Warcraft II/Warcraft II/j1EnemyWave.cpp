@@ -274,7 +274,7 @@ void j1EnemyWave::PerformWave()
 {
 	int layer = rand() % spawnTiles.size();
 
-	list<iPoint> currentList = spawnTiles[layer];
+	list<iPoint> currentList = spawnTiles[layer].entitySpawn;
 
 	int size = currentList.size();
 	int spawned = 0;
