@@ -596,21 +596,10 @@ void Grunt::UnitStateMachine(float dt)
 					/// PHASE 3 NOTE: units on base don't do this, because they are more agressive
 					iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
-					if (!isAttackingUnit && !isHunting) {
+					if (!App->map->IsOnBase(spawnPos) && !isAttackingUnit && !isHunting) {
 
-						if (unitsAttacking.size() > 0) {
-							//brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
-							TargetInfo* targetInfo = new TargetInfo();
-							targetInfo->target = unitsAttacking.front();
-							targetInfo->isSightSatisfied = true;
-
-							targets.push_back(targetInfo);
-
-							currTarget = targetInfo;
-							brain->AddGoal_AttackTarget(currTarget, false);
-
-							isHunting = true;
-						}
+						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+						isHunting = true;
 					}
 				}
 			}

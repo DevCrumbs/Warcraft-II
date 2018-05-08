@@ -23,7 +23,7 @@
 
 // Ignores the walkability of the map
 
-OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const OrcShipInfo& orcShipInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener, false), orcShipInfo(orcShipInfo)
+OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const OrcShipInfo& orcShipInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), orcShipInfo(orcShipInfo)
 {
 	// XML loading
 	/// Animations
@@ -42,6 +42,10 @@ OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	offsetSize = this->unitInfo.offsetSize;
 
 	LoadAnimationsSpeed();
+
+	// IA
+	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
+	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 }
 
 void OrcShip::Move(float dt)
@@ -55,7 +59,6 @@ void OrcShip::Move(float dt)
 
 	// ---------------------------------------------------------------------
 
-	UpdateAnimationsSpeed(dt);
 	ChangeAnimation();
 }
 

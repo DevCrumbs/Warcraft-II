@@ -31,6 +31,7 @@ public:
 	void UpdateAnimationsSpeed(float dt);
 	bool ChangeAnimation();
 
+
 private:
 
 	OrcShipInfo orcShipInfo;
@@ -38,6 +39,8 @@ private:
 	// Animations speed
 	float upSpeed = 0.0f, downSpeed = 0.0f, leftSpeed = 0.0f, rightSpeed = 0.0f;
 	float upLeftSpeed = 0.0f, upRightSpeed = 0.0f, downLeftSpeed = 0.0f, downRightSpeed = 0.0f;
+
+	iPoint spawnTile = { -1,-1 };
 };
 
 #endif //__Dragon_H__

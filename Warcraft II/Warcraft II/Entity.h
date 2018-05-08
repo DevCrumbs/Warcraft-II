@@ -31,7 +31,6 @@ enum EntitySide
 	EntitySide_Enemy,
 	EntitySide_EnemyBuildings,
 	EntitySide_Neutral,
-	EntitySide_OrcShip,
 	EntitySide_MaxSides
 };
 
