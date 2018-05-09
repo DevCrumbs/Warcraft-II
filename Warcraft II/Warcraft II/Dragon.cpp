@@ -540,12 +540,14 @@ void Dragon::UnitStateMachine(float dt)
 					if (currTarget != newTarget) {
 
 						// Anticipate the removing of this unit from the attacking units of the target
+						/*
 						if (currTarget != nullptr) {
 
 							if (!currTarget->isRemoved)
 
 								currTarget->target->RemoveAttackingUnit(this);
 						}
+						*/
 
 						isHitting = false;
 						isHunting = false;
@@ -648,6 +650,7 @@ void Dragon::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
+							/*
 							if (!currTarget->isRemoved) {
 
 								if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
@@ -655,6 +658,7 @@ void Dragon::UnitStateMachine(float dt)
 
 								currTarget->target->RemoveAttackingUnit(this);
 							}
+							*/
 						}
 
 						isHitting = false;
@@ -683,10 +687,12 @@ void Dragon::UnitStateMachine(float dt)
 								// Anticipate the removing of this unit from the attacking units of the target
 								if (currTarget != nullptr) {
 
+									/*
 									if (!currTarget->isRemoved) {
 
 										currTarget->target->RemoveAttackingUnit(this);
 									}
+									*/
 								}
 
 								isHitting = false;

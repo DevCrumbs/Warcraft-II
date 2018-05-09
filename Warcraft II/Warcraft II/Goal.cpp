@@ -916,7 +916,7 @@ void Goal_HitTarget::Activate()
 	else if (!targetInfo->target->GetIsValid()) {
 
 		targetInfo->isRemoved = true;
-		targetInfo->target->RemoveAttackingUnit(owner);
+		//targetInfo->target->RemoveAttackingUnit(owner);
 		goalStatus = GoalStatus_Completed;
 		return;
 	}
@@ -1004,7 +1004,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 	else if (!targetInfo->target->GetIsValid()) {
 	
 		targetInfo->isRemoved = true;
-		targetInfo->target->RemoveAttackingUnit(owner);
+		//targetInfo->target->RemoveAttackingUnit(owner);
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
