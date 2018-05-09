@@ -701,11 +701,11 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 	if (targetInfo != nullptr) {
 
 		// Only push it if it does not have to be removed
-		if (!targetInfo->isRemoved) {
+		//if (!targetInfo->isRemoved) {
 
 			currTarget = targetInfo;
 			ret = true;
-		}
+		//}
 	}
 
 	return ret;
