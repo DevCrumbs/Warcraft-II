@@ -641,8 +641,19 @@ void Grunt::UnitStateMachine(float dt)
 
 					if (!App->map->IsOnBase(spawnPos) && !isAttackingUnit && !isHunting) {
 
-						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
-						isHunting = true;
+						if (unitsAttacking.size() > 0) {
+							//brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+							TargetInfo* targetInfo = new TargetInfo();
+							targetInfo->target = unitsAttacking.front();
+							targetInfo->isSightSatisfied = true;
+
+							targets.push_back(targetInfo);
+
+							currTarget = targetInfo;
+							brain->AddGoal_AttackTarget(currTarget, false);
+
+							isHunting = true;
+						}
 					}
 				}
 			}
