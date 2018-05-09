@@ -212,12 +212,13 @@ void j1FogOfWar::TilesNearPlayer()
 	
 			for (vector<Collider*>::iterator colliderIterator = entityCollider->colliders.begin(); colliderIterator != entityCollider->colliders.end(); ++colliderIterator)
 			{
-				int contador = 0;
+				int cont = 0;
+				int tile = 64;
 
-				iPoint startTile = App->map->WorldToMap((*colliderIterator)->colliderRect.x - 32 / App->win->GetScale(),
-					(*colliderIterator)->colliderRect.y -32/ App->win->GetScale());
-				iPoint endTile = App->map->WorldToMap((*colliderIterator)->colliderRect.x / App->win->GetScale() + (*colliderIterator)->colliderRect.w,
-					(*colliderIterator)->colliderRect.y/ App->win->GetScale() + (*colliderIterator)->colliderRect.h);
+				iPoint startTile = App->map->WorldToMap((*colliderIterator)->colliderRect.x - tile / App->win->GetScale(),
+					(*colliderIterator)->colliderRect.y - tile / App->win->GetScale());
+				iPoint endTile = App->map->WorldToMap((*colliderIterator)->colliderRect.x  + tile / App->win->GetScale() + (*colliderIterator)->colliderRect.w,
+					(*colliderIterator)->colliderRect.y + tile / App->win->GetScale() + (*colliderIterator)->colliderRect.h);
 
 				//App->printer->PrintQuad((*colliderIterator)->colliderRect, { 255, 255, 255, 255 });
 
@@ -252,12 +253,12 @@ void j1FogOfWar::TilesNearPlayer()
 							for (int x = 0; x < TILE_PARTITIONS; x++)
 								for (int j = 0; j < TILE_PARTITIONS; j++)
 								{
-									if (contador < fowSmallerTilesVector.size())
+									if (cont < fowSmallerTilesVector.size())
 									{
 										// TODO 5 (set the smaller tiles position & normalAlpha, example: "fowSmallerTilesVector[contador]->pos.x = ...;" )
-										fowSmallerTilesVector[contador]->pos.x = fowTilesVector[pos]->pos.x * FOW_TILE + (x * FOW_TILE / TILE_PARTITIONS);
-										fowSmallerTilesVector[contador]->pos.y = fowTilesVector[pos]->pos.y * FOW_TILE + (j * FOW_TILE / TILE_PARTITIONS);
-										fowSmallerTilesVector[contador]->normalAlpha = fowTilesVector[pos]->normalAlpha;
+										fowSmallerTilesVector[cont]->pos.x = fowTilesVector[pos]->pos.x * FOW_TILE + (x * FOW_TILE / TILE_PARTITIONS);
+										fowSmallerTilesVector[cont]->pos.y = fowTilesVector[pos]->pos.y * FOW_TILE + (j * FOW_TILE / TILE_PARTITIONS);
+										fowSmallerTilesVector[cont]->normalAlpha = fowTilesVector[pos]->normalAlpha;
 									}
 									else
 									{
@@ -267,7 +268,7 @@ void j1FogOfWar::TilesNearPlayer()
 										aux->normalAlpha = fowTilesVector[pos]->normalAlpha;
 										fowSmallerTilesVector.push_back(aux);
 									}
-									contador++;
+									cont++;
 
 								}
 							fowTilesVector[pos]->alpha = 0;
