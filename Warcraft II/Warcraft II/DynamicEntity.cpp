@@ -732,6 +732,13 @@ bool DynamicEntity::SetIsRemovedTargetInfo(Entity* target)
 		if ((*it)->target == target) {
 
 			(*it)->isRemoved = true;
+
+			if (currTarget != nullptr) {
+
+				if ((*it)->target == currTarget->target)
+					InvalidateCurrTarget();
+			}
+
 			return true;
 		}
 		it++;

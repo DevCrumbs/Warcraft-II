@@ -417,7 +417,7 @@ void Goal_AttackTarget::Terminate()
 
 			if (targetInfo->target == owner->GetCurrTarget())
 
-				owner->SetCurrTarget(nullptr);
+				owner->InvalidateCurrTarget();
 
 			targetInfo->target->RemoveAttackingUnit(owner);
 

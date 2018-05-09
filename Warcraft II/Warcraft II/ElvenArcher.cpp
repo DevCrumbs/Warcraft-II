@@ -163,13 +163,11 @@ void ElvenArcher::Move(float dt)
 			/// The unit could be attacking before this command
 			if (currTarget != nullptr) {
 
-				/*
 				if (!currTarget->isRemoved)
 
 					currTarget->target->RemoveAttackingUnit(this);
 
 				currTarget = nullptr;
-				*/
 			}
 
 			isHitting = false;
