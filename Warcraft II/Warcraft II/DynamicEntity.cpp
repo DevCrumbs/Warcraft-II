@@ -670,8 +670,10 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 
 	if (currTarget != nullptr) {
 
-		if (target == currTarget->target)
+		if (target == currTarget->target) {
+			currTarget->isRemovedFromSight = false;
 			return true;
+		}
 	}
 
 	list<TargetInfo*>::const_iterator it = targets.begin();
@@ -684,6 +686,7 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 		if ((*it)->target == target) {
 
 			targetInfo = *it;
+			targetInfo->isRemovedFromSight = false;
 			break;
 		}
 		it++;
@@ -729,6 +732,34 @@ bool DynamicEntity::SetIsRemovedTargetInfo(Entity* target)
 		if ((*it)->target == target) {
 
 			(*it)->isRemoved = true;
+
+			if (currTarget != nullptr) {
+
+				if ((*it)->target == currTarget->target)
+					InvalidateCurrTarget();
+			}
+
+			return true;
+		}
+		it++;
+	}
+
+	return false;
+}
+
+bool DynamicEntity::SetIsRemovedFromSightTargetInfo(Entity* target) 
+{
+	if (target == nullptr)
+		return false;
+
+	// Set isRemoved to true
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+
+		if ((*it)->target == target) {
+
+			(*it)->isRemovedFromSight = true;
 			return true;
 		}
 		it++;

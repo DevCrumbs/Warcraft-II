@@ -184,6 +184,9 @@ bool Entity::AddAttackingUnit(Entity* entity)
 {
 	bool ret = false;
 
+	if (entity == nullptr)
+		return ret;
+
 	if (find(unitsAttacking.begin(), unitsAttacking.end(), entity) == unitsAttacking.end()) {
 		unitsAttacking.push_back(entity);
 		ret = true;
@@ -195,8 +198,6 @@ bool Entity::AddAttackingUnit(Entity* entity)
 bool Entity::RemoveAttackingUnit(Entity* entity)
 {
 	bool ret = false;
-
-	LOG("Removed attacking unit info");
 
 	if (find(unitsAttacking.begin(), unitsAttacking.end(), entity) != unitsAttacking.end()) {
 		unitsAttacking.remove(entity);

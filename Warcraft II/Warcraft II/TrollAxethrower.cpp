@@ -62,14 +62,6 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
 
-	// Collisions
-	CreateEntityCollider(EntitySide_Enemy);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
-	entityCollider->isTrigger = true;
-	sightRadiusCollider->isTrigger = true;
-	attackRadiusCollider->isTrigger = true;
-
 	// LifeBar creation
 	UILifeBar_Info lifeBarInfo;
 	lifeBarInfo.background = { 241,336,45,8 };
@@ -101,6 +93,24 @@ void TrollAxethrower::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
+
+	if (!isSpawned) {
+
+		// Collisions
+		CreateEntityCollider(EntitySide_Enemy);
+		sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+		attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+		entityCollider->isTrigger = true;
+		sightRadiusCollider->isTrigger = true;
+		attackRadiusCollider->isTrigger = true;
+	
+		isSpawned = true;
+	}
+
+	if (isSelected) 
+	{
+		int x = 1;
+	}
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -339,6 +349,7 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 				if ((*it)->target == c2->entity) {
 
+					(*it)->isRemovedFromSight = false;
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
@@ -367,8 +378,7 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
 					isFacingTowardsTarget = true;
-				// b) If the unit is attacking a static target
-				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
+				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
@@ -414,6 +424,7 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 				if ((*it)->target == c2->entity) {
 
+					(*it)->isRemovedFromSight = false;
 					(*it)->isAttackSatisfied = true;
 					break;
 				}
@@ -447,28 +458,10 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-
-					if (currTarget != nullptr) {
-
-						if (c2->entity == currTarget->target) {
-
-							(*it)->target->RemoveAttackingUnit(this);
-							SetIsRemovedTargetInfo((*it)->target);
-							break;
-						}
-						else {
-
-							(*it)->target->RemoveAttackingUnit(this);
-							RemoveTargetInfo(*it);
-							break;
-						}
-					}
-					else {
-
-						(*it)->target->RemoveAttackingUnit(this);
-						RemoveTargetInfo(*it);
-						break;
-					}
+					(*it)->isAttackSatisfied = false;
+					//(*it)->target->RemoveAttackingUnit(this);
+					SetIsRemovedFromSightTargetInfo((*it)->target);
+					break;
 				}
 				it++;
 			}
@@ -521,8 +514,9 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					currTarget = newTarget;
-					brain->AddGoal_AttackTarget(currTarget);
+					if (SetCurrTarget(newTarget->target))
+						//currTarget = newTarget;
+						brain->AddGoal_AttackTarget(currTarget);
 
 					isHunting = false;
 				}
@@ -559,16 +553,19 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
+							/*
 							if (!currTarget->isRemoved)
 
 								currTarget->target->RemoveAttackingUnit(this);
+								*/
 						}
 
 						isHitting = false;
 						isHunting = false;
 
-						currTarget = newTarget;
-						brain->AddGoal_AttackTarget(currTarget);
+						if (SetCurrTarget(newTarget->target))
+							//currTarget = newTarget;
+							brain->AddGoal_AttackTarget(currTarget);
 
 						isSearchingForCritters = true;
 					}
@@ -610,8 +607,9 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						// Is the best target an attacking unit?
 						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
-							currTarget = newTarget;
-							brain->AddGoal_AttackTarget(currTarget, false);
+							if (SetCurrTarget(newTarget->target))
+								//currTarget = newTarget;
+								brain->AddGoal_AttackTarget(currTarget, false);
 
 							isAttackingUnit = true;
 							isHunting = false;
@@ -627,8 +625,8 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
 
-								currTarget = *it;
-								brain->AddGoal_AttackTarget(currTarget, false);
+								if (SetCurrTarget((*it)->target))
+									brain->AddGoal_AttackTarget(currTarget, false);
 
 								isAttackingUnit = true;
 								isHunting = false;
@@ -644,8 +642,19 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 					if (!App->map->IsOnBase(spawnPos) && !isAttackingUnit && !isHunting) {
 
-						brain->AddGoal_Wander(5, singleUnit->currTile, true, 0, 1, 0, 1, 3);
-						isHunting = true;
+						if (unitsAttacking.size() > 0) {
+							//brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+							TargetInfo* targetInfo = new TargetInfo();
+							targetInfo->target = unitsAttacking.front();
+							targetInfo->isSightSatisfied = true;
+
+							targets.push_back(targetInfo);
+
+							currTarget = targetInfo;
+							brain->AddGoal_AttackTarget(currTarget, false);
+
+							isHunting = true;
+						}
 					}
 				}
 			}
@@ -667,18 +676,21 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 							if (!currTarget->isRemoved) {
 
+								/*
 								if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
 									break;
 
 								currTarget->target->RemoveAttackingUnit(this);
+								*/
 							}
 						}
 
 						isHitting = false;
 						isHunting = false;
 
-						currTarget = newTarget;
-						brain->AddGoal_AttackTarget(currTarget);
+						if (SetCurrTarget(newTarget->target))
+							//currTarget = newTarget;
+							brain->AddGoal_AttackTarget(currTarget);
 					}
 				}
 
@@ -700,17 +712,20 @@ void TrollAxethrower::UnitStateMachine(float dt)
 								// Anticipate the removing of this unit from the attacking units of the target
 								if (currTarget != nullptr) {
 
+									/*
 									if (!currTarget->isRemoved) {
 
 										currTarget->target->RemoveAttackingUnit(this);
 									}
+									*/
 								}
 
 								isHitting = false;
 								isHunting = false;
 
-								currTarget = newTarget;
-								brain->AddGoal_AttackTarget(currTarget);
+								if (SetCurrTarget(newTarget->target))
+									//currTarget = newTarget;
+									brain->AddGoal_AttackTarget(currTarget);
 							}
 						}
 					}
@@ -824,6 +839,7 @@ bool TrollAxethrower::ChangeAnimation()
 	else if (isHitting) {
 
 		// Set the direction of the unit as the orientation towards the target
+		/*
 		if (currTarget != nullptr) {
 
 			if (!currTarget->isRemoved) {
@@ -840,6 +856,7 @@ bool TrollAxethrower::ChangeAnimation()
 				SetUnitDirectionByValue(orientation);
 			}
 		}
+		*/
 
 		switch (GetUnitDirection()) {
 

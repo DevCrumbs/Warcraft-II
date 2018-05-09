@@ -62,14 +62,6 @@ ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
 
-	// Collisions
-	CreateEntityCollider(EntitySide_Player);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
-	entityCollider->isTrigger = true;
-	sightRadiusCollider->isTrigger = true;
-	attackRadiusCollider->isTrigger = true;
-
 	// LifeBar creation
 	UILifeBar_Info lifeBarInfo;
 	lifeBarInfo.background = { 241,336,45,8 };
@@ -92,6 +84,19 @@ void ElvenArcher::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
+
+	if (!isSpawned) {
+	
+		// Collisions
+		CreateEntityCollider(EntitySide_Player);
+		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+		attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+		entityCollider->isTrigger = true;
+		sightRadiusCollider->isTrigger = true;
+		attackRadiusCollider->isTrigger = true;
+
+		isSpawned = true;
+	}
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -311,6 +316,24 @@ void ElvenArcher::Move(float dt)
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
 
+	// Update FoW enemies
+	/*
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+
+		if ((*it)->target != nullptr && !(*it)->isRemovedFromSight && !(*it)->isRemoved) {
+
+			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)(*it);
+				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
+			}
+		}
+		it++;
+	}
+	*/
+
 	// Update animations
 	if (!isStill || isHitting)
 		UpdateAnimationsSpeed(dt);
@@ -326,7 +349,6 @@ void ElvenArcher::Move(float dt)
 
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
-
 
 	// Update Unit LifeBar
 	if (lifeBar != nullptr) {
@@ -387,8 +409,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// 1. UPDATE TARGETS LIST
@@ -400,6 +422,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 				if ((*it)->target == c2->entity) {
 
+					(*it)->isRemovedFromSight = false;
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
@@ -424,8 +447,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
 					isFacingTowardsTarget = true;
-				// b) If the unit is attacking a static target
-				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
+				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
@@ -460,8 +482,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to true
@@ -471,6 +493,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 				if ((*it)->target == c2->entity) {
 
+					(*it)->isRemovedFromSight = false;
 					(*it)->isAttackSatisfied = true;
 					break;
 				}
@@ -498,8 +521,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isSightSatisfied to false
@@ -510,28 +533,10 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-
-					if (currTarget != nullptr) {
-
-						if (c2->entity == currTarget->target) {
-
-							(*it)->target->RemoveAttackingUnit(this);
-							SetIsRemovedTargetInfo((*it)->target);
-							break;
-						}
-						else {
-
-							(*it)->target->RemoveAttackingUnit(this);
-							RemoveTargetInfo(*it);
-							break;
-						}
-					}
-					else {
-
-						(*it)->target->RemoveAttackingUnit(this);
-						RemoveTargetInfo(*it);
-						break;
-					}
+					(*it)->isAttackSatisfied = false;
+					//(*it)->target->RemoveAttackingUnit(this);
+					SetIsRemovedFromSightTargetInfo((*it)->target);
+					break;
 				}
 				it++;
 			}
@@ -547,8 +552,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to false
@@ -593,8 +598,9 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 						if (newTarget != nullptr) {
 
-							currTarget = newTarget;
-							brain->AddGoal_AttackTarget(currTarget, false);
+							if (SetCurrTarget(newTarget->target))
+								//currTarget = newTarget;
+								brain->AddGoal_AttackTarget(currTarget, false);
 						}
 					}
 				}
@@ -633,15 +639,18 @@ void ElvenArcher::UnitStateMachine(float dt)
 					// Anticipate the removing of this unit from the attacking units of the target
 					if (currTarget != nullptr) {
 
+						/*
 						if (!currTarget->isRemoved)
 
 							currTarget->target->RemoveAttackingUnit(this);
+							*/
 					}
 
 					isHitting = false;
 
-					currTarget = newTarget;
-					brain->AddGoal_AttackTarget(currTarget);
+					if (SetCurrTarget(newTarget->target))
+						//currTarget = newTarget;
+						brain->AddGoal_AttackTarget(currTarget);
 				}
 			}
 		}
@@ -664,8 +673,9 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					currTarget = newTarget;
-					brain->AddGoal_AttackTarget(currTarget);
+					if (SetCurrTarget(newTarget->target))
+						//currTarget = newTarget;
+						brain->AddGoal_AttackTarget(currTarget);
 				}
 			}
 		}
@@ -787,6 +797,7 @@ bool ElvenArcher::ChangeAnimation()
 	else if (isHitting) {
 
 		// Set the direction of the unit as the orientation towards the attacking target
+		/*
 		if (currTarget != nullptr) {
 
 			if (!currTarget->isRemoved) {
@@ -803,6 +814,7 @@ bool ElvenArcher::ChangeAnimation()
 				SetUnitDirectionByValue(orientation);
 			}
 		}
+		*/
 
 		switch (GetUnitDirection()) {
 
