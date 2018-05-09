@@ -598,9 +598,9 @@ void Footman::UnitStateMachine(float dt)
 
 						if (newTarget != nullptr) {
 
-							SetCurrTarget(newTarget->target);
-							//currTarget = newTarget;
-							brain->AddGoal_AttackTarget(currTarget, false);
+							if (SetCurrTarget(newTarget->target))
+								//currTarget = newTarget;
+								brain->AddGoal_AttackTarget(currTarget, false);
 						}
 					}
 				}
@@ -648,9 +648,9 @@ void Footman::UnitStateMachine(float dt)
 
 					isHitting = false;
 
-					SetCurrTarget(newTarget->target);
-					//currTarget = newTarget;
-					brain->AddGoal_AttackTarget(currTarget);
+					if (SetCurrTarget(newTarget->target))
+						//currTarget = newTarget;
+						brain->AddGoal_AttackTarget(currTarget);
 				}
 			}
 		}
@@ -673,9 +673,9 @@ void Footman::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					SetCurrTarget(newTarget->target);
-					//currTarget = newTarget;
-					brain->AddGoal_AttackTarget(currTarget);
+					if (SetCurrTarget(newTarget->target))
+						//currTarget = newTarget;
+						brain->AddGoal_AttackTarget(currTarget);
 				}
 			}
 		}

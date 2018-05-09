@@ -597,9 +597,9 @@ void GryphonRider::UnitStateMachine(float dt)
 
 						if (newTarget != nullptr) {
 
-							SetCurrTarget(newTarget->target);
-							//currTarget = newTarget;
-							brain->AddGoal_AttackTarget(currTarget, false);
+							if (SetCurrTarget(newTarget->target))
+								//currTarget = newTarget;
+								brain->AddGoal_AttackTarget(currTarget, false);
 						}
 					}
 				}
@@ -647,9 +647,9 @@ void GryphonRider::UnitStateMachine(float dt)
 
 					isHitting = false;
 
-					SetCurrTarget(newTarget->target);
-					//currTarget = newTarget;
-					brain->AddGoal_AttackTarget(currTarget);
+					if (SetCurrTarget(newTarget->target))
+						//currTarget = newTarget;
+						brain->AddGoal_AttackTarget(currTarget);
 				}
 			}
 		}
@@ -672,9 +672,9 @@ void GryphonRider::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					SetCurrTarget(newTarget->target);
-					//currTarget = newTarget;
-					brain->AddGoal_AttackTarget(currTarget);
+					if (SetCurrTarget(newTarget->target))
+						//currTarget = newTarget;
+						brain->AddGoal_AttackTarget(currTarget);
 				}
 			}
 		}
