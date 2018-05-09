@@ -284,9 +284,21 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 
 				offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 4.0f };
 				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+
+				if (lifeBar != nullptr)
+				{
+					lifeBar->isBlit = true;
+				}
 			}
 		}
+		else
+		{
+			if (lifeBar != nullptr)
+				lifeBar->isBlit = false;
+		}
+
 	}
+
 	//if (isSelected)
 		//DebugDrawSelected();
 }
