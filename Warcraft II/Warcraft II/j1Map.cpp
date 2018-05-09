@@ -233,6 +233,10 @@ bool j1Map::CleanUp()
 	}
 	data.layers.clear();
 
+	// Clear rooms 
+	roomRectList.clear();
+
+
 	if (collisionLayer != nullptr)
 		delete collisionLayer;
 	collisionLayer = nullptr;
@@ -298,6 +302,9 @@ bool j1Map::UnLoad()
 		item1++;
 	}
 	data.layers.clear();
+
+	// Clear rooms 
+	roomRectList.clear();
 
 	delete collisionLayer;
 	delete aboveLayer;

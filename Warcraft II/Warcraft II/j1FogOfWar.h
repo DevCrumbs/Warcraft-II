@@ -23,8 +23,8 @@ struct FogOfWarTile
 {
 	iPoint pos;
 	int size = 32;
-	int alpha = 240;
-	int normalAlpha = 240;
+	int alpha = 225;
+	int normalAlpha = 225;
 };
 
 class j1FogOfWar : public j1Module
