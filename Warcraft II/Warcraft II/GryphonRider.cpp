@@ -634,7 +634,7 @@ void GryphonRider::UnitStateMachine(float dt)
 			if (newTarget != nullptr) {
 
 				// A new target has found! Update the currTarget
-				if (currTarget != newTarget) {
+				if (currTarget != newTarget || brain->GetSubgoalsList().size() <= 1) {
 
 					// Anticipate the removing of this unit from the attacking units of the target
 					if (currTarget != nullptr) {

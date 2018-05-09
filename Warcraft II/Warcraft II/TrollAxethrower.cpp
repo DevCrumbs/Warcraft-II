@@ -514,11 +514,12 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					if (SetCurrTarget(newTarget->target))
+					if (SetCurrTarget(newTarget->target)) {
 						//currTarget = newTarget;
 						brain->AddGoal_AttackTarget(currTarget);
 
-					isHunting = false;
+						isHunting = false;
+					}
 				}
 				else
 					unitState = UnitState_Idle;
@@ -548,7 +549,7 @@ void TrollAxethrower::UnitStateMachine(float dt)
 				if (newTarget != nullptr) {
 
 					// A new target has found! Update the currTarget
-					if (currTarget != newTarget) {
+					if (currTarget != newTarget || brain->GetSubgoalsList().size() <= 1) {
 
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
@@ -560,14 +561,14 @@ void TrollAxethrower::UnitStateMachine(float dt)
 								*/
 						}
 
-						isHitting = false;
-						isHunting = false;
-
-						if (SetCurrTarget(newTarget->target))
+						if (SetCurrTarget(newTarget->target)) {
 							//currTarget = newTarget;
 							brain->AddGoal_AttackTarget(currTarget);
 
-						isSearchingForCritters = true;
+							isSearchingForCritters = true;
+							isHitting = false;
+							isHunting = false;
+						}
 					}
 				}
 
@@ -607,12 +608,13 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						// Is the best target an attacking unit?
 						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
-							if (SetCurrTarget(newTarget->target))
+							if (SetCurrTarget(newTarget->target)) {
 								//currTarget = newTarget;
 								brain->AddGoal_AttackTarget(currTarget, false);
 
-							isAttackingUnit = true;
-							isHunting = false;
+								isAttackingUnit = true;
+								isHunting = false;
+							}
 						}
 					}
 
@@ -625,11 +627,12 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
 
-								if (SetCurrTarget((*it)->target))
+								if (SetCurrTarget((*it)->target)) {
 									brain->AddGoal_AttackTarget(currTarget, false);
 
-								isAttackingUnit = true;
-								isHunting = false;
+									isAttackingUnit = true;
+									isHunting = false;
+								}
 							}
 
 							it++;
@@ -650,10 +653,11 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 							targets.push_back(targetInfo);
 
-							currTarget = targetInfo;
-							brain->AddGoal_AttackTarget(currTarget, false);
+							if (SetCurrTarget(targetInfo->target)) {
+								brain->AddGoal_AttackTarget(currTarget, false);
 
-							isHunting = true;
+								isHunting = true;
+							}
 						}
 					}
 				}
@@ -669,7 +673,7 @@ void TrollAxethrower::UnitStateMachine(float dt)
 				if (newTarget != nullptr) {
 
 					// A new target has found! Update the currTarget
-					if (currTarget != newTarget) {
+					if (currTarget != newTarget || brain->GetSubgoalsList().size() <= 1) {
 
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
@@ -707,7 +711,7 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						if (newTarget != nullptr) {
 
 							// A new target has found! Update the currTarget
-							if (currTarget != newTarget) {
+							if (currTarget != newTarget || brain->GetSubgoalsList().size() <= 1) {
 
 								// Anticipate the removing of this unit from the attacking units of the target
 								if (currTarget != nullptr) {

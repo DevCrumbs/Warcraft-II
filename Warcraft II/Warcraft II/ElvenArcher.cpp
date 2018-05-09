@@ -403,6 +403,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			if (c2->entity == nullptr)
 				return;
 
+			LOG("SIGHT SATISFIED elven");
 			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
@@ -479,6 +480,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
+			LOG("ATTACK SATISFIED elven");
 			if (c2->entity == nullptr)
 				return;
 
@@ -512,6 +514,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerSightRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
+			LOG("NO SIGHT elven");
 			if (c2->entity == nullptr)
 				return;
 
@@ -549,6 +552,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_PlayerAttackRadius && c2->colliderType == ColliderType_EnemyBuilding)) {
 
+			LOG("NO ATTACK elven");
 			if (c2->entity == nullptr)
 				return;
 
@@ -636,7 +640,7 @@ void ElvenArcher::UnitStateMachine(float dt)
 			if (newTarget != nullptr) {
 
 				// A new target has found! Update the currTarget
-				if (currTarget != newTarget) {
+				if (currTarget != newTarget || brain->GetSubgoalsList().size() <= 1) {
 
 					// Anticipate the removing of this unit from the attacking units of the target
 					if (currTarget != nullptr) {
