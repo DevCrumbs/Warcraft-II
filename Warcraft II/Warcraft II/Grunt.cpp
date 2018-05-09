@@ -380,9 +380,6 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 					isFacingTowardsTarget = true;
 				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
-				// b) If the unit is attacking a static target
-				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
-					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
 
@@ -836,6 +833,7 @@ bool Grunt::ChangeAnimation()
 	else if (isHitting) {
 
 		// Set the direction of the unit as the orientation towards the target
+		/*
 		if (currTarget != nullptr) {
 
 			if (!currTarget->isRemoved) {
@@ -852,6 +850,7 @@ bool Grunt::ChangeAnimation()
 				SetUnitDirectionByValue(orientation);
 			}
 		}
+		*/
 
 		switch (GetUnitDirection()) {
 

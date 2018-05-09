@@ -409,8 +409,8 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Gryphon Rider Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Gryphon Rider Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// 1. UPDATE TARGETS LIST
@@ -449,9 +449,6 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 					isFacingTowardsTarget = true;
 				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
-				// b) If the unit is attacking a static target
-				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
-					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
 
@@ -485,8 +482,8 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Gryphon Rider Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Gryphon Rider Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to true
@@ -523,8 +520,8 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Gryphon Rider Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Gryphon Rider Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isSightSatisfied to false
@@ -554,8 +551,8 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Gryphon Rider Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Gryphon Rider Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to false
@@ -796,6 +793,7 @@ bool GryphonRider::ChangeAnimation()
 	else if (isHitting) {
 
 		// Set the direction of the unit as the orientation towards the attacking target
+		/*
 		if (currTarget != nullptr) {
 
 			if (!currTarget->isRemoved) {
@@ -812,6 +810,7 @@ bool GryphonRider::ChangeAnimation()
 				SetUnitDirectionByValue(orientation);
 			}
 		}
+		*/
 
 		switch (GetUnitDirection()) {
 

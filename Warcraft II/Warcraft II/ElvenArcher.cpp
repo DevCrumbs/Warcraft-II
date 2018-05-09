@@ -411,8 +411,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// 1. UPDATE TARGETS LIST
@@ -451,9 +451,6 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 					isFacingTowardsTarget = true;
 				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
-				// b) If the unit is attacking a static target
-				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
-					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
 
@@ -487,8 +484,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to true
@@ -525,8 +522,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isSightSatisfied to false
@@ -556,8 +553,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to false
@@ -798,6 +795,7 @@ bool ElvenArcher::ChangeAnimation()
 	else if (isHitting) {
 
 		// Set the direction of the unit as the orientation towards the attacking target
+		/*
 		if (currTarget != nullptr) {
 
 			if (!currTarget->isRemoved) {
@@ -814,6 +812,7 @@ bool ElvenArcher::ChangeAnimation()
 				SetUnitDirectionByValue(orientation);
 			}
 		}
+		*/
 
 		switch (GetUnitDirection()) {
 

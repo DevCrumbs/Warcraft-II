@@ -410,8 +410,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Footman Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Footman Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// 1. UPDATE TARGETS LIST
@@ -450,9 +450,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 					isFacingTowardsTarget = true;
 				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
-				// b) If the unit is attacking a static target
-				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
-					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
 
@@ -486,8 +483,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Footman Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Footman Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to true
@@ -524,8 +521,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Footman Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Footman Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isSightSatisfied to false
@@ -555,8 +552,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Footman Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Footman Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to false
@@ -797,6 +794,7 @@ bool Footman::ChangeAnimation()
 	else if (isHitting) {
 
 		// Set the direction of the unit as the orientation towards the attacking target
+		/*
 		if (currTarget != nullptr) {
 
 			if (!currTarget->isRemoved) {
@@ -813,6 +811,7 @@ bool Footman::ChangeAnimation()
 				SetUnitDirectionByValue(orientation);
 			}
 		}
+		*/
 
 		switch (GetUnitDirection()) {
 
