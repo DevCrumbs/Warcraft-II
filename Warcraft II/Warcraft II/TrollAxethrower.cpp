@@ -419,6 +419,7 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 
 				if ((*it)->target == c2->entity) {
 
+					(*it)->isRemovedFromSight = false;
 					(*it)->isAttackSatisfied = true;
 					break;
 				}
@@ -452,7 +453,7 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-
+					(*it)->isAttackSatisfied = false;
 					//(*it)->target->RemoveAttackingUnit(this);
 					SetIsRemovedFromSightTargetInfo((*it)->target);
 					break;
