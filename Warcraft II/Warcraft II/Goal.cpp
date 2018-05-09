@@ -409,10 +409,15 @@ void Goal_AttackTarget::Terminate()
 
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
+
 	}
 	else {
 
 		if (!App->entities->isEntityFactoryCleanUp) {
+
+			if (targetInfo->target == owner->GetCurrTarget())
+
+				owner->SetCurrTarget(nullptr);
 
 			targetInfo->target->RemoveAttackingUnit(owner);
 
