@@ -244,6 +244,34 @@ bool j1EnemyWave::Update(float dt)
 			totalSpawnOfCurrWave = 0;
 			maxSpawnPerWave++;
 			isStartWave = false;
+
+			// -----
+
+			// 2. Update variables for the next phase
+			nextPhaseTimer = 0;
+
+			// Calculate the seconds until the next phase of the wave arrives
+			int maxSecondsToNextPhase = 15;
+			int minSecondsToNextPhase = 5;
+
+			/// TODO Balancing (Waves)
+			if (totalWaves == 0) {
+
+				maxSecondsToNextPhase = 30;
+				minSecondsToNextPhase = 20;
+			}
+			else if (totalWaves <= 2) {
+
+				maxSecondsToNextPhase = 25;
+				minSecondsToNextPhase = 15;
+			}
+			else {
+
+				maxSecondsToNextPhase = 20;
+				minSecondsToNextPhase = 15;
+			}
+
+			secondsToNextPhase = rand() % (maxSecondsToNextPhase - minSecondsToNextPhase + 1) + minSecondsToNextPhase;
 		}
 	}
 
