@@ -13,11 +13,18 @@
 using namespace std;
 
 struct MapLayer;
+class OrcShip;
 
 struct EnemyInWave
 {
 	ENTITY_TYPE type = EntityType_NONE;
 	iPoint pos{ 0,0 };
+};
+
+struct SpawnTiles
+{
+	iPoint ship{ 0,0 };
+	list<iPoint> entitySpawn;
 };
 
 class j1EnemyWave : public j1Module
@@ -39,9 +46,11 @@ public:
 
 	bool Update(float dt);
 
+	void AddTiles(list<iPoint> tiles, iPoint ship);
+
 	bool SpawnEnemy(float prob);
-	void AddTiles(list<iPoint> tiles);
-	void PerformWave();
+
+	void PerformWave(int layer = 0);
 
 	// Save
 	bool Save(pugi::xml_node&) const;
@@ -49,9 +58,15 @@ public:
 	// Load
 	bool Load(pugi::xml_node&);
 
+public:
+
+	// Current wave
+	uint totalPhasesOfCurrWave = 0;
+	uint phasesOfCurrWave = 0;
+
 private:
 
-	vector<list<iPoint>> spawnTiles;
+	vector<SpawnTiles> spawnTiles;
 	
 	float spawnProbability = 0.0f;
 	uint maxSpawnPerPhase = 0;
@@ -59,10 +74,6 @@ private:
 	uint totalWaves = 0;
 
 	bool isActiveWaves = true;
-
-	// Current wave
-	uint totalPhasesOfCurrWave = 0;
-	uint phasesOfCurrWave = 0;
 
 	bool isStartWave = false;
 
@@ -74,6 +85,8 @@ private:
 
 	float secondsToNextWave = 0.0f;
 	float secondsToNextPhase = 0.0f;
+
+	OrcShip* ship = nullptr;
 };
 
 #endif //__j1EnemySurge_H__

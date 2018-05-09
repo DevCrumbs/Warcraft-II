@@ -51,6 +51,7 @@ bool j1Player::Start()
 	buildDestroy = 0u;
 	roomsCleared = 0;
 	isWin = false;
+	townHallUpgrade = false;
 
 	totalEnemiesKilled = 0;
 	totalUnitsDead = 0;
@@ -254,6 +255,7 @@ bool j1Player::Update(float dt)
 				if (ent->GetIsFinishedBuilt()) {
 					entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
 					entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
+					entitySelectedStats.lifeBar->SetMaxLife(entitySelectedStats.entitySelected->GetMaxLife());
 				}
 			}
 			else {
@@ -1007,6 +1009,10 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_BARRACKS) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Barracks", { 546,160,50,41 }, ent);
+			}
+			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL) {
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+				ShowEntitySelectedInfo("Building...", "Keep", { 597,202,50,41 }, ent);
 			}
 			break;
 
@@ -2149,7 +2155,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 					HideHoverInfoMenu(&firstHoverInfo);
 					upgradeTownHallButton->isActive = false;
-					ShowEntitySelectedInfo(entitySelectedStats.entitySelected->GetStringLife(), "Keep", { 597,202,50,41 }, entitySelectedStats.entitySelected);
+					ShowEntitySelectedInfo("Building...", "Keep", { 597,202,50,41 }, entitySelectedStats.entitySelected);
 				}
 				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
@@ -2158,7 +2164,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			//For destroying a building
 			else if (UIelem == destroyBuildingButton) {
 				App->audio->PlayFx(App->audio->GetFX().destroyBuild);
-				HideHoverInfoMenu(&thirdHoverInfo);
+				HideHoverInfoMenu(&firstHoverInfo);
 				entitySelectedStats.entitySelected->isRemove = true;
 				HideEntitySelectedInfo();
 			}

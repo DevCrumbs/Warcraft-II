@@ -15,6 +15,7 @@
 #include "j1Audio.h"
 #include "j1Player.h"
 #include "j1Printer.h"
+#include "j1EnemyWave.h"
 #include "UIMinimap.h"
 #include "UILifeBar.h"
 
@@ -63,6 +64,14 @@ Dragon::Dragon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitIn
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
 
+	// Collisions
+	CreateEntityCollider(EntitySide_Enemy);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+	entityCollider->isTrigger = true;
+	sightRadiusCollider->isTrigger = true;
+	attackRadiusCollider->isTrigger = true;
+
 	// LifeBar creation
 	UILifeBar_Info lifeBarInfo;
 	lifeBarInfo.background = { 241,336,45,8 };
@@ -94,19 +103,6 @@ void Dragon::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
-
-	if (!isSpawned) {
-
-		// Collisions
-		CreateEntityCollider(EntitySide_Enemy);
-		sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-		attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
-		entityCollider->isTrigger = true;
-		sightRadiusCollider->isTrigger = true;
-		attackRadiusCollider->isTrigger = true;
-
-		isSpawned = true;
-	}
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -168,7 +164,8 @@ void Dragon::Move(float dt)
 				if (App->map->GetEntitiesOnRoomByCategory(*room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
 
 					// ROOM CLEARED!
-					if (room->roomRect.w != 40 * 32) {
+					iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+					if (!App->map->IsOnBase(spawnPos)) {
 
 						// Give gold to the player
 						if (room->roomRect.w == 30 * 32)
@@ -186,6 +183,27 @@ void Dragon::Move(float dt)
 
 							App->scene->adviceMessageTimer.Start();
 							App->scene->adviceMessage = AdviceMessage_ROOM_CLEAR;
+							App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+						}
+
+						App->scene->alpha = 200;
+						App->scene->isRoomCleared = true;
+						App->scene->roomCleared = room->roomRect;
+
+						/// TODO Valdivia: sonido sala limpiada
+						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
+					}
+
+					// WAVE DEFEATED
+					else if (App->map->IsOnBase(spawnPos) && App->wave->phasesOfCurrWave == App->wave->totalPhasesOfCurrWave - 1) {
+
+						// Give gold to the player
+						App->player->AddGold(500);
+
+						if (App->scene->adviceMessage != AdviceMessage_BASE_DEFENDED) {
+
+							App->scene->adviceMessageTimer.Start();
+							App->scene->adviceMessage = AdviceMessage_BASE_DEFENDED;
 							App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 						}
 
@@ -264,6 +282,16 @@ void Dragon::Draw(SDL_Texture* sprites)
 				offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.5f };
 
 			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_DragonGryphon);
+
+			if (lifeBar != nullptr)
+			{
+				lifeBar->isBlit = true;
+			}
+		}
+		else
+		{
+			if (lifeBar != nullptr)
+				lifeBar->isBlit = false;
 		}
 	}
 	//if (isSelected)
@@ -288,6 +316,9 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
+			if (c2->entity == nullptr)
+				return;
+
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -303,8 +334,7 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 
 				if ((*it)->target == c2->entity) {
 
-					if (!(*it)->isRemoved)
-						(*it)->isSightSatisfied = true;
+					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
 				}
@@ -314,27 +344,13 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 			if (!isTargetFound) {
 
 				/// Do it only if the target is valid
-				if (c2->entity->GetIsValid() && !c2->entity->isRemove) {
+				if (c2->entity->GetIsValid()) {
 
-					bool isAdded = false;
+					TargetInfo* targetInfo = new TargetInfo();
+					targetInfo->target = c2->entity;
+					targetInfo->isSightSatisfied = true;
 
-					if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
-
-						DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-
-						if (!dynEnt->isDead)
-							isAdded = true;
-					}
-					else
-						isAdded = true;
-
-					if (isAdded) {
-						TargetInfo* targetInfo = new TargetInfo();
-						targetInfo->target = c2->entity;
-						targetInfo->isSightSatisfied = true;
-
-						targets.push_back(targetInfo);
-					}
+					targets.push_back(targetInfo);
 				}
 			}
 
@@ -345,8 +361,6 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
-					isFacingTowardsTarget = true;
-				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
 				// b) If the unit is attacking a static target
 				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
@@ -379,6 +393,9 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
+			if (c2->entity == nullptr)
+				return;
+
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -392,7 +409,6 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 
 				if ((*it)->target == c2->entity) {
 
-					(*it)->isSightSatisfied = true;
 					(*it)->isAttackSatisfied = true;
 					break;
 				}
@@ -409,6 +425,9 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemySightRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
 
+			if (c2->entity == nullptr)
+				return;
+
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
@@ -423,7 +442,6 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					(*it)->isAttackSatisfied = false;
 
 					if (currTarget != nullptr) {
 
@@ -455,6 +473,9 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 		else if ((c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerUnit)
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_NeutralUnit)
 			|| (c1->colliderType == ColliderType_EnemyAttackRadius && c2->colliderType == ColliderType_PlayerBuilding)) {
+
+			if (c2->entity == nullptr)
+				return;
 
 			if (isSelected) {
 
@@ -533,7 +554,7 @@ void Dragon::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
-							if (!currTarget->isRemoved && currTarget->target != nullptr)
+							if (!currTarget->isRemoved)
 
 								currTarget->target->RemoveAttackingUnit(this);
 						}
@@ -616,21 +637,10 @@ void Dragon::UnitStateMachine(float dt)
 					/// PHASE 3 NOTE: units on base don't do this, because they are more agressive
 					iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
-					if (!isAttackingUnit && !isHunting) {
+					if (!App->map->IsOnBase(spawnPos) && !isAttackingUnit && !isHunting) {
 
-						if (unitsAttacking.size() > 0) {
-							//brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
-							TargetInfo* targetInfo = new TargetInfo();
-							targetInfo->target = unitsAttacking.front();
-							targetInfo->isSightSatisfied = true;
-
-							targets.push_back(targetInfo);
-
-							currTarget = targetInfo;
-							brain->AddGoal_AttackTarget(currTarget, false);
-
-							isHunting = true;
-						}
+						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+						isHunting = true;
 					}
 				}
 			}
@@ -650,7 +660,7 @@ void Dragon::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
-							if (!currTarget->isRemoved && currTarget->target != nullptr) {
+							if (!currTarget->isRemoved) {
 
 								if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
 									break;
@@ -685,7 +695,7 @@ void Dragon::UnitStateMachine(float dt)
 								// Anticipate the removing of this unit from the attacking units of the target
 								if (currTarget != nullptr) {
 
-									if (!currTarget->isRemoved && currTarget->target != nullptr) {
+									if (!currTarget->isRemoved) {
 
 										currTarget->target->RemoveAttackingUnit(this);
 									}
@@ -811,7 +821,7 @@ bool Dragon::ChangeAnimation()
 		// Set the direction of the unit as the orientation towards the target
 		if (currTarget != nullptr) {
 
-			if (!currTarget->isRemoved && currTarget->target != nullptr) {
+			if (!currTarget->isRemoved) {
 
 				fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
 

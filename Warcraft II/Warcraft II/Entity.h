@@ -30,8 +30,8 @@ enum EntitySide
 	EntitySide_Player,
 	EntitySide_Enemy,
 	EntitySide_EnemyBuildings,
+	EntitySide_EnemyShip,
 	EntitySide_Neutral,
-	EntitySide_OrcShip,
 	EntitySide_MaxSides
 };
 
@@ -145,15 +145,6 @@ struct TargetInfo
 	// -----
 
 	bool IsTargetPresent() const;
-
-	~TargetInfo() {
-
-		isSightSatisfied = false;
-		isAttackSatisfied = false;
-
-		isRemoved = true;
-		target = nullptr;
-	}
 };
 
 class Entity

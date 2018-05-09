@@ -137,6 +137,9 @@ bool j1Scene::Start()
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
+	// Load FoW map
+	App->fow->LoadFoW();
+
 	// Create walkability map
 	if (ret)
 		App->map->CreateWalkabilityMap(w, h, &data);
@@ -1410,9 +1413,7 @@ void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem)
 	ChangeBuildingButtState(&elem->chickenFarm);
 	ChangeBuildingButtState(&elem->gryphonAviary);
 	ChangeBuildingButtState(&elem->guardTower);
-	ChangeBuildingButtState(&elem->mageTower);
 	ChangeBuildingButtState(&elem->scoutTower);
-	ChangeBuildingButtState(&elem->stables);
 	ChangeBuildingButtState(&elem->barracks);
 	if (buildingMenu->isActive)
 	{
@@ -1425,11 +1426,9 @@ void j1Scene::UpdateIconsMenu()
 	ChangeMenuIconsText(buildingMenuButtons.chickenFarm.icon, chickenFarmCost, { 241,34,50,41 }, { 292,34,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.cannonTower.icon, cannonTowerCost, { 394,118,50,41 }, { 445,118,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.guardTower.icon, guardTowerCost, { 394,76,50,41 }, { 445,76,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.mageTower.icon, mageTowerCost, { 496,202,50,41 }, { 496,202,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.stables.icon, stablesCost, { 343,160,50,41 }, { 343,160,50,41 });
 	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 });
 	//Only one construction for each one
-	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracksCost, { 394,34,50,41 }, { 445,34,50,41 }, true, App->player->barracks);
+	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracksCost, { 547,160,50,41 }, { 802,286,50,41 }, true, App->player->barracks);
 	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 }, true, App->player->gryphonAviary);
 }
 void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle, StaticEntity* stcEntity)
@@ -1459,8 +1458,6 @@ void j1Scene::UpdateLabelsMenu()
 	ChangeMenuLabelInfo(buildingMenuButtons.cannonTower.cost, cannonTowerCost);
 	ChangeMenuLabelInfo(buildingMenuButtons.chickenFarm.cost, chickenFarmCost);
 	ChangeMenuLabelInfo(buildingMenuButtons.guardTower.cost, guardTowerCost);
-	ChangeMenuLabelInfo(buildingMenuButtons.mageTower.cost, mageTowerCost);
-	ChangeMenuLabelInfo(buildingMenuButtons.stables.cost, stablesCost);
 	ChangeMenuLabelInfo(buildingMenuButtons.scoutTower.cost, scoutTowerCost);
 	//Only one construction for each one
 	ChangeMenuLabelInfo(buildingMenuButtons.barracks.cost, barracksCost, true, App->player->barracks);
@@ -1518,26 +1515,20 @@ void j1Scene::LoadBuildingMenu()
 		CreateBuildingElements({ 343,34,50,41 }, { 585, 55 }, "Chicken Farm",
 			"Cost: 250 gold", { 645, 65 }, { 645, 82 }, chickenFarmCost, &buildingMenuButtons.chickenFarm);
 
-		CreateBuildingElements( { 343,160,50,41 }, { 585, 100 }, "Stables",
-			"Cost: 900 gold", { 645, 110 }, { 645, 127 }, stablesCost, &buildingMenuButtons.stables);
-	
-		CreateBuildingElements( { 496,160,50,41 }, { 585, 145 }, "Gryphon Aviary",
-			"Requires Keep", { 645, 155 }, { 645, 172 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
+		CreateBuildingElements( { 496,160,50,41 }, { 585, 100 }, "Gryphon Aviary",
+			"Requires Keep", { 645, 110 }, { 645, 127 }, gryphonAviaryCost, &buildingMenuButtons.gryphonAviary);
 		
-		CreateBuildingElements( { 496,202,50,41 }, { 585, 190 }, "Mage Tower",
-			"Cost: 1000 gold", { 645, 200 }, { 645, 217 }, mageTowerCost, &buildingMenuButtons.mageTower);
+		CreateBuildingElements( { 496,34,50,41 }, { 585, 145 }, "Scout Tower",
+			"Cost: 400 gold", { 645, 155 }, { 645, 172 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
 		
-		CreateBuildingElements( { 496,34,50,41 }, { 585, 235 }, "Scout Tower",
-			"Cost: 400 gold", { 645, 245 }, { 645, 262 }, scoutTowerCost, &buildingMenuButtons.scoutTower);
+		CreateBuildingElements({ 496,76,50,41 }, { 585, 190 }, "Guard Tower",
+			"Cost: 600 gold", { 645, 200 }, { 645, 217 }, guardTowerCost, &buildingMenuButtons.guardTower);
 		
-		CreateBuildingElements({ 496,76,50,41 }, { 585, 280 }, "Guard Tower",
-			"Cost: 600 gold", { 645, 290 }, { 645, 307 }, guardTowerCost, &buildingMenuButtons.guardTower);
-		
-		CreateBuildingElements({ 496,118,50,41 }, { 585, 325 }, "Cannon Tower",
-			"Cost: 600 gold", { 645, 335 }, { 645, 352 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
+		CreateBuildingElements({ 496,118,50,41 }, { 585, 235 }, "Cannon Tower",
+			"Cost: 600 gold", { 645, 245 }, { 645, 262 }, cannonTowerCost, &buildingMenuButtons.cannonTower);
 
-		CreateBuildingElements({ 547,160,50,41 }, { 585, 370 }, "Barracks",
-			"Cost: 1000 gold", { 645, 380 }, { 645, 397 }, barracksCost, &buildingMenuButtons.barracks);
+		CreateBuildingElements({ 547,160,50,41 }, { 585, 280 }, "Barracks",
+			"Cost: 1000 gold", { 645, 290 }, { 645, 307 }, barracksCost, &buildingMenuButtons.barracks);
 	}
 }
 
@@ -1578,9 +1569,7 @@ void j1Scene::DeleteBuildingElements(MenuBuildingButton* elem)
 void j1Scene::UnLoadBuildingMenu()
 {	
 	DeleteBuildingElements(&buildingMenuButtons.chickenFarm);
-	DeleteBuildingElements(&buildingMenuButtons.stables);
 	DeleteBuildingElements(&buildingMenuButtons.gryphonAviary);
-	DeleteBuildingElements(&buildingMenuButtons.mageTower);
 	DeleteBuildingElements(&buildingMenuButtons.scoutTower);
 	DeleteBuildingElements(&buildingMenuButtons.guardTower);
 	DeleteBuildingElements(&buildingMenuButtons.cannonTower);
@@ -1937,6 +1926,14 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 		adviceLabel->SetFontName(FONT_NAME_WARCRAFT30);
 		break;
 
+	case AdviceMessage_BASE_DEFENDED:
+		text = "BASE DEFENDED!";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 285,265 });
+		adviceLabel->SetColor(WarmYellow_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT30);
+		break;
+
 	case AdviceMessage_UNDER_ATTACK:
 		text = "YOUR BASE IS UNDER ATTACK";;
 		adviceLabel->SetText(text, 340);
@@ -2040,18 +2037,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 			}
 
-			else if (UIelem == buildingMenuButtons.stables.icon) {
-				if (App->player->GetCurrentGold() >= stablesCost) {
-					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-					ChangeBuildingMenuState(&buildingMenuButtons);
-					//alphaBuilding = EntityType_STABLES;
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-				}
-				else if (App->player->GetCurrentGold() < stablesCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-			}
-
-
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade && App->player->townHall->buildingState == BuildingState_Normal) {
 				if (App->player->GetCurrentGold() >= gryphonAviaryCost) {
 
@@ -2065,16 +2050,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon)
 				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 
-			else if (UIelem == buildingMenuButtons.mageTower.icon) {
-				if (App->player->GetCurrentGold() >= mageTowerCost) {
-					//App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-					ChangeBuildingMenuState(&buildingMenuButtons);
-					//alphaBuilding = EntityType_MAGE_TOWER;
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-				}
-				else if (App->player->GetCurrentGold() < mageTowerCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-			}
 
 			else if (UIelem == buildingMenuButtons.scoutTower.icon) {
 				if (App->player->GetCurrentGold() >= scoutTowerCost) {

@@ -902,6 +902,7 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 {
 	list<Entity*>entitiesGroup;
 	list<iPoint> spawnTiles;
+	iPoint spawnShipTiles{ -1,-1 };
 
 	if (layer != nullptr)
 	{		
@@ -989,7 +990,7 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 					break;
 				}
 	
-				/// Enemy waves spawns
+				/// Enemy waves entity spawns
 				if (layer->data[i] == 384)///
 				{
 				
@@ -999,6 +1000,19 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 					iPoint pos = MapToWorld(x, y);
 					if (IsOnBase(pos))
 						spawnTiles.push_back(pos);
+
+				}
+
+				/// Enemy waves ship spawns
+				if (layer->data[i] == 385)///
+				{
+
+					int x = i % layer->width;
+					int y = i / layer->width;
+
+					iPoint pos = MapToWorld(x, y);
+					if (IsOnBase(pos))
+						spawnShipTiles = pos;
 
 				}
 
@@ -1013,9 +1027,9 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 			}
 		}
 
-		if (!spawnTiles.empty())
+		if (!spawnTiles.empty() && (spawnShipTiles.x != -1 && spawnShipTiles.y != -1))
 		{
-			App->wave->AddTiles(spawnTiles);
+			App->wave->AddTiles(spawnTiles, spawnShipTiles);
 		}
 	}
 	return entitiesGroup;
@@ -1042,7 +1056,7 @@ bool j1Map::LoadRoomRect(MapLayer* layer)
 				switch (roomType)
 				{
 				case roomType_BASE:
-					playerBase.roomRect = { pos.x, pos.y, defaultBaseSize * defaultTileSize, defaultBaseSize * defaultTileSize };
+					playerBase.roomRect = { pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultBaseSize * defaultTileSize };
 					roomRectList.push_back(playerBase);
 					App->scene->basePos = { playerBase.roomRect.x + margin * defaultTileSize, playerBase.roomRect.y + margin * defaultTileSize };
 

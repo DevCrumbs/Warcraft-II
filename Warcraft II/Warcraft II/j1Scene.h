@@ -49,6 +49,7 @@ enum AdviceMessages {
 	AdviceMessage_SELECT_ARCHERS,
 	AdviceMessage_SELECT_GRYPHS,
 	AdviceMessage_ROOM_CLEAR,
+	AdviceMessage_BASE_DEFENDED,
 	AdviceMessage_UNDER_ATTACK,
 	AdviceMessage_MINE,
 	AdviceMessage_GRYPH_MINE,
@@ -92,9 +93,7 @@ struct MenuBuildingButton {
 struct BuildingMenu {
 
 	MenuBuildingButton chickenFarm;
-	MenuBuildingButton stables;
 	MenuBuildingButton gryphonAviary;
-	MenuBuildingButton mageTower;
 	MenuBuildingButton scoutTower;
 	MenuBuildingButton guardTower;
 	MenuBuildingButton cannonTower;
@@ -228,9 +227,7 @@ public:
 	int castleCost = 1500;
 	int barracksCost = 1000;
 	int chickenFarmCost = 250;
-	int stablesCost = 900;
 	int gryphonAviaryCost = 400;
-	int mageTowerCost = 1000;
 	int churchCost = 900;
 	int blacksmithCost = 800;
 	int elvenLumberCost = 600;

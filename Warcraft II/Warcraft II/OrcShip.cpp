@@ -15,6 +15,7 @@
 #include "j1Audio.h"
 #include "j1Player.h"
 #include "j1Printer.h"
+#include "j1EnemyWave.h"
 
 #include "j1Scene.h" // isFrameByFrame
 #include "j1Input.h" // isFrameByFrame
@@ -23,7 +24,7 @@
 
 // Ignores the walkability of the map
 
-OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const OrcShipInfo& orcShipInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener, false), orcShipInfo(orcShipInfo)
+OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const OrcShipInfo& orcShipInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), orcShipInfo(orcShipInfo)
 {
 	// XML loading
 	/// Animations
@@ -41,22 +42,138 @@ OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	this->size = this->unitInfo.size;
 	offsetSize = this->unitInfo.offsetSize;
 
-	LoadAnimationsSpeed();
+	// IA
+	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
+	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+
+	isSpawnedWave = false;
+
+	speed = orcShipInfo.unitInfo.currSpeed - 25;
+
+	movementTimer.Start();
+
 }
 
 void OrcShip::Move(float dt)
 {
-	// Save mouse position (world and map coords)
-	int x, y;
-	App->input->GetMousePosition(x, y);
-	iPoint mousePos = App->render->ScreenToWorld(x, y);
-	iPoint mouseTile = App->map->WorldToMap(mousePos.x, mousePos.y);
-	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+	animation = &orcShipInfo.down;
 
-	// ---------------------------------------------------------------------
+	switch(orcShipInfo.orcShipType)
+	{
+	case ShipType_UP_LEFT:
+		if (movementTimer.Read() < 4000) {
+		pos.x += speed * dt;
+		pos.y += speed * dt;
+		animation = &orcShipInfo.downRight;
+		}
+		else if (movementTimer.Read() >= 30000)
+			isRemove = true;
+		else if (movementTimer.Read() >= 15000) {
+			pos.x -= speed * dt;
+			animation = &orcShipInfo.left;
+		}
+		else if (movementTimer.Read() >= 12000) {
+			if (!isSpawnedWave) {
+				App->wave->PerformWave(ShipType_UP_LEFT);
+				isSpawnedWave = true;
+			}
+		}
+		else if (movementTimer.Read() >= 7000) {
+			animation = &orcShipInfo.down;
+		}
+		else if (movementTimer.Read() >= 4000) {
+			pos.y += speed * dt;
+			animation = &orcShipInfo.down;
+		}
+		break;
 
-	UpdateAnimationsSpeed(dt);
-	ChangeAnimation();
+	case ShipType_BOTTOM:
+		if (movementTimer.Read() < 4000) {
+			pos.x += speed * dt;
+			pos.y -= speed * dt;
+			animation = &orcShipInfo.upRight;
+		}
+		else if (movementTimer.Read() >= 30000)
+			isRemove = true;
+		else if (movementTimer.Read() >= 15000) {
+			pos.y += speed * dt;
+			animation = &orcShipInfo.down;
+		}
+		else if (movementTimer.Read() >= 12000) {
+			if (!isSpawnedWave) {
+				App->wave->PerformWave(ShipType_BOTTOM);
+				isSpawnedWave = true;
+			}
+			animation = &orcShipInfo.right;
+		}
+		else if (movementTimer.Read() >= 6000) {
+			animation = &orcShipInfo.right;
+		}
+		else if (movementTimer.Read() >= 4000) {
+			pos.x += speed * dt;
+			animation = &orcShipInfo.right;
+		}
+		break;
+
+	case ShipType_BOTTOM_RIGHT:
+		if (movementTimer.Read() < 6000) {
+			pos.x -= speed * dt;
+			pos.y -= speed * dt;
+			animation = &orcShipInfo.upLeft;
+		}
+		else if (movementTimer.Read() >= 30000)
+			isRemove = true;
+		else if (movementTimer.Read() >= 15000) {
+			pos.x += speed * dt;
+			animation = &orcShipInfo.right;
+		}
+		else if (movementTimer.Read() >= 12000) {
+			if (!isSpawnedWave) {
+				App->wave->PerformWave(ShipType_BOTTOM_RIGHT);
+				isSpawnedWave = true;
+			}
+			animation = &orcShipInfo.up;
+		}
+		else if (movementTimer.Read() >= 9000) {
+			animation = &orcShipInfo.up;
+		}
+		else if (movementTimer.Read() >= 6000) {
+			pos.y -= speed * dt;
+			animation = &orcShipInfo.up;
+		}
+		break;
+
+	case ShipType_UP_RIGHT:
+		if (movementTimer.Read() < 8000) {
+			pos.x -= speed * dt;
+			animation = &orcShipInfo.left;
+		}
+		else if (movementTimer.Read() >= 30000)
+			isRemove = true;
+		else if (movementTimer.Read() >= 15000) {
+			pos.x += speed * dt;
+			animation = &orcShipInfo.right;
+		}
+		else if (movementTimer.Read() >= 12000) {
+			if (!isSpawnedWave) {
+				App->wave->PerformWave(ShipType_UP_RIGHT);
+				isSpawnedWave = true;
+			}
+			animation = &orcShipInfo.down;
+		}
+		else if (movementTimer.Read() >= 9500) {
+			animation = &orcShipInfo.down;
+		}
+		else if (movementTimer.Read() >= 8000) {
+			pos.y += speed * dt;
+			animation = &orcShipInfo.down;
+		}
+
+		break;	
+	}
+
+	// --------------------------------------------------------------------
+	
 }
 
 void OrcShip::Draw(SDL_Texture* sprites)
@@ -64,7 +181,7 @@ void OrcShip::Draw(SDL_Texture* sprites)
 	if (animation != nullptr)
 	{
 		// Not draw if not on fow sight
-		if (App->fow->IsOnSight(pos))
+		//if (App->fow->IsOnSight(pos))
 		{
 			fPoint offset = { 0.0f,0.0f };
 			offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.5f };
@@ -85,166 +202,3 @@ void OrcShip::DebugDrawSelected()
 
 // -------------------------------------------------------------
 
-// Animations
-void OrcShip::LoadAnimationsSpeed()
-{
-	upSpeed = orcShipInfo.up.speed;
-	downSpeed = orcShipInfo.down.speed;
-	leftSpeed = orcShipInfo.left.speed;
-	rightSpeed = orcShipInfo.right.speed;
-	upLeftSpeed = orcShipInfo.upLeft.speed;
-	upRightSpeed = orcShipInfo.upRight.speed;
-	downLeftSpeed = orcShipInfo.downLeft.speed;
-	downRightSpeed = orcShipInfo.downRight.speed;
-}
-
-void OrcShip::UpdateAnimationsSpeed(float dt)
-{
-	orcShipInfo.up.speed = upSpeed * dt;
-	orcShipInfo.down.speed = downSpeed * dt;
-	orcShipInfo.left.speed = leftSpeed * dt;
-	orcShipInfo.right.speed = rightSpeed * dt;
-	orcShipInfo.upLeft.speed = upLeftSpeed * dt;
-	orcShipInfo.upRight.speed = upRightSpeed * dt;
-	orcShipInfo.downLeft.speed = downLeftSpeed * dt;
-	orcShipInfo.downRight.speed = downRightSpeed * dt;
-}
-
-bool OrcShip::ChangeAnimation()
-{
-	bool ret = false;
-
-	// The unit is either moving or still
-	switch (GetUnitDirection()) {
-
-	case UnitDirection_Up:
-
-		if (isStill) {
-
-			orcShipInfo.up.loop = false;
-			orcShipInfo.up.Reset();
-			orcShipInfo.up.speed = 0.0f;
-		}
-		else
-			orcShipInfo.up.loop = true;
-
-		animation = &orcShipInfo.up;
-
-		ret = true;
-		break;
-
-	case UnitDirection_NoDirection:
-	case UnitDirection_Down:
-
-		if (isStill) {
-
-			orcShipInfo.down.loop = false;
-			orcShipInfo.down.Reset();
-			orcShipInfo.down.speed = 0.0f;
-		}
-		else
-			orcShipInfo.down.loop = true;
-
-		animation = &orcShipInfo.down;
-
-		ret = true;
-		break;
-
-	case UnitDirection_Left:
-
-		if (isStill) {
-
-			orcShipInfo.left.loop = false;
-			orcShipInfo.left.Reset();
-			orcShipInfo.left.speed = 0.0f;
-		}
-		else
-			orcShipInfo.left.loop = true;
-
-		animation = &orcShipInfo.left;
-
-		ret = true;
-		break;
-
-	case UnitDirection_Right:
-
-		if (isStill) {
-
-			orcShipInfo.right.loop = false;
-			orcShipInfo.right.Reset();
-			orcShipInfo.right.speed = 0.0f;
-		}
-		else
-			orcShipInfo.right.loop = true;
-
-		animation = &orcShipInfo.right;
-
-		ret = true;
-		break;
-
-	case UnitDirection_UpLeft:
-
-		if (isStill) {
-
-			orcShipInfo.upLeft.loop = false;
-			orcShipInfo.upLeft.Reset();
-			orcShipInfo.upLeft.speed = 0.0f;
-		}
-		else
-			orcShipInfo.upLeft.loop = true;
-
-		animation = &orcShipInfo.upLeft;
-
-		ret = true;
-		break;
-
-	case UnitDirection_UpRight:
-
-		if (isStill) {
-
-			orcShipInfo.upRight.loop = false;
-			orcShipInfo.upRight.Reset();
-			orcShipInfo.upRight.speed = 0.0f;
-		}
-		else
-			orcShipInfo.upRight.loop = true;
-
-		animation = &orcShipInfo.upRight;
-
-		ret = true;
-		break;
-
-	case UnitDirection_DownLeft:
-
-		if (isStill) {
-
-			orcShipInfo.downLeft.loop = false;
-			orcShipInfo.downLeft.Reset();
-			orcShipInfo.downLeft.speed = 0.0f;
-		}
-		else
-			orcShipInfo.downLeft.loop = true;
-
-		animation = &orcShipInfo.downLeft;
-
-		ret = true;
-		break;
-
-	case UnitDirection_DownRight:
-
-		if (isStill) {
-
-			orcShipInfo.downRight.loop = false;
-			orcShipInfo.downRight.Reset();
-			orcShipInfo.downRight.speed = 0.0f;
-		}
-		else
-			orcShipInfo.downRight.loop = true;
-
-		animation = &orcShipInfo.downRight;
-
-		ret = true;
-		break;
-	}
-	return ret;
-}

@@ -53,6 +53,7 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	trollAxethrowerTexName = spritesheets.child("trollAxethrowerAnimations").attribute("name").as_string();
 	gryphonRiderTexName = spritesheets.child("gryphonRiderAnimations").attribute("name").as_string();
 	dragonTexName = spritesheets.child("dragonAnimations").attribute("name").as_string();
+	orcShipTexName = spritesheets.child("orcShipAnimations").attribute("name").as_string();
 
 	//Debug Textures Properties
 	previewTilesopacity = config.child("previewTexturesProperties").attribute("tileBuildingPlaceOpacity").as_uint();
@@ -1027,49 +1028,49 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	// Orc ship animations
 	pugi::xml_node orcShipAnimations = orcEntities.child("orcShip").child("animations");
 
-	// Up animation Dragon
+	// Up animation Orc ship
 	currentAnimation = orcShipAnimations.child("up");
 	orcShipInfo.up.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.up.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.up.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Down animation Dragon
+	// Down animation Orc ship
 	currentAnimation = orcShipAnimations.child("down");
 	orcShipInfo.down.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.down.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.down.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Left animation Dragon
+	// Left animation Orc ship
 	currentAnimation = orcShipAnimations.child("left");
 	orcShipInfo.left.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.left.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.left.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Right animation Dragon
+	// Right animation Orc ship
 	currentAnimation = orcShipAnimations.child("right");
 	orcShipInfo.right.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.right.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.right.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Up Left animation Dragon
+	// Up Left animation Orc ship
 	currentAnimation = orcShipAnimations.child("upLeft");
 	orcShipInfo.upLeft.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.upLeft.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.upLeft.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Up Right animation Dragon
+	// Up Right animation Orc ship
 	currentAnimation = orcShipAnimations.child("upRight");
 	orcShipInfo.upRight.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.upRight.loop = currentAnimation.attribute("loop").as_bool();
 	for (currentAnimation = currentAnimation.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
 		orcShipInfo.upRight.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
-	// Down Left animation Dragon
+	// Down Left animation Orc ship
 	currentAnimation = orcShipAnimations.child("downLeft");
 	orcShipInfo.downLeft.speed = currentAnimation.attribute("speed").as_float();
 	orcShipInfo.downLeft.loop = currentAnimation.attribute("loop").as_bool();
@@ -1437,7 +1438,7 @@ bool j1EntityFactory::Start()
 	gruntInfo.unitInfo.currLife = gruntInfo.unitInfo.maxLife;
 
 	///
-	gruntInfo.droppedGold = 10;
+	gruntInfo.droppedGold = 30;
 	gruntInfo.unitInfo.size = { 32,32 };
 	gruntInfo.unitInfo.offsetSize = { 0,0 };
 	//_Grunt
@@ -1465,7 +1466,7 @@ bool j1EntityFactory::Start()
 
 	///
 	trollAxethrowerInfo.axeSpeed = 160.0f;
-	trollAxethrowerInfo.droppedGold = 10;
+	trollAxethrowerInfo.droppedGold = 40;
 	trollAxethrowerInfo.unitInfo.size = { 32,32 };
 	trollAxethrowerInfo.unitInfo.offsetSize = { 0,0 };
 	//_Troll_Axethrower
@@ -1493,21 +1494,26 @@ bool j1EntityFactory::Start()
 
 	///
 	dragonInfo.fireSpeed = 200.0f;
-	dragonInfo.droppedGold = 10;
+	dragonInfo.droppedGold = 75;
 	dragonInfo.unitInfo.size = { 64,64 };
 	dragonInfo.unitInfo.offsetSize = { -16,-16 };
 	//_Dragon
 
+	// Orc ship
+	/// Speed
+	orcShipInfo.unitInfo.maxSpeed = 50.0f;
+	orcShipInfo.unitInfo.currSpeed = orcShipInfo.unitInfo.maxSpeed;
+
 	/// Static Entities
 	// Towers
-	watchTowerInfo.life = 100;
-	watchTowerInfo.damage = 7;
+	watchTowerInfo.life = 80;
+	watchTowerInfo.damage = 6;
 
-	enemyGuardTowerInfo.life = 125;
-	enemyGuardTowerInfo.damage = 13;
+	enemyGuardTowerInfo.life = 100;
+	enemyGuardTowerInfo.damage = 9;
 
-	enemyCannonTowerInfo.life = 150;
-	enemyCannonTowerInfo.damage = 17;
+	enemyCannonTowerInfo.life = 120;
+	enemyCannonTowerInfo.damage = 15;
 	//_Towers
 
 	// CRITTERS
@@ -2451,7 +2457,7 @@ bool j1EntityFactory::PostUpdate()
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		if (!(*dynEnt)->GetBlitState() || !App->render->IsInScreen({ (int)(*dynEnt)->GetPos().x, (int)(*dynEnt)->GetPos().y, (*dynEnt)->GetSize().x, (*dynEnt)->GetSize().y })) {
+		if (!(*dynEnt)->GetBlitState()) {
 
 			dynEnt++;
 			continue;
@@ -2513,12 +2519,6 @@ bool j1EntityFactory::PostUpdate()
 	statEnt = activeStaticEntities.begin();
 
 	while (statEnt != activeStaticEntities.end()) {
-
-		if (!App->render->IsInScreen({ (int)(*statEnt)->GetPos().x, (int)(*statEnt)->GetPos().y, (*statEnt)->GetSize().x, (*statEnt)->GetSize().y })) {
-
-			statEnt++;
-			continue;
-		}
 
 		switch ((*statEnt)->staticEntityCategory) {
 
@@ -3208,7 +3208,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		OrcShip* orcShip = new OrcShip(pos, orcShipInfo.unitInfo.size, orcShipInfo.unitInfo.currLife, orcShipInfo.unitInfo.maxLife, unitInfo, (const OrcShipInfo&)entityInfo, listener);
 		orcShip->entityType = EntityCategory_DYNAMIC_ENTITY;
 		orcShip->dynamicEntityType = EntityType_ORC_SHIP;
-		orcShip->entitySide = EntitySide_OrcShip;
+		orcShip->entitySide = EntitySide_EnemyShip;
 
 		toSpawnEntities.push_back((Entity*)orcShip);
 		return (DynamicEntity*)orcShip;

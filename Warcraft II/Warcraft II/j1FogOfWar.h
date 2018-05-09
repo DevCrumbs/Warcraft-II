@@ -34,6 +34,7 @@ public:
 	~j1FogOfWar();
 
 	bool Start();
+	bool LoadFoW();
 	bool Update(float dt);
 	bool PostUpdate();
 	bool CleanUp();
@@ -53,6 +54,9 @@ public:
 public:
 	std::vector<FogOfWarTile*> fowTilesVector;
 	std::vector<FogOfWarTile*> fowSmallerTilesVector;
+
+	int width = 0;
+	int height = 0;
 
 	bool isActive = true;
 };

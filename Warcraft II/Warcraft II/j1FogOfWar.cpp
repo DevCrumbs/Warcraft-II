@@ -28,14 +28,24 @@ j1FogOfWar::~j1FogOfWar()
 
 bool j1FogOfWar::Start()
 {
-	// UNCOMMENT THIS IF THE FOW OF WAR WORKS !! THIS WILL ACTIVE FOW AT GAME START
-	uint w, h;
 
-	LoadFoWMap(119, 149);
+	UnLoadFowMap();
 
 	return true;
 }
 
+bool j1FogOfWar::LoadFoW()
+{
+	bool ret = false;
+
+
+	width = App->map->data.width -1;
+	height = App->map->data.height -1;
+
+	LoadFoWMap(width, height);
+
+	return ret;
+}
 bool j1FogOfWar::Update(float dt)
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Magenta);
@@ -74,16 +84,16 @@ void j1FogOfWar::print()
 	if (i < 0)
 		i = 0;
 
-	for (; i < 119 && i < endTile.x + 1; ++i)
+	for (; i < width && i < endTile.x + 1; ++i)
 	{
 		int j = startTile.y;
 		if (j < 0)
 			j = 0;
 
-		for (; j < 149 && j < endTile.y + 1; ++j)
+		for (; j < height && j < endTile.y + 1; ++j)
 		{
 
-			int pos = (119 * j) + i;
+			int pos = (width * j) + i;
 
 			iPoint world = App->map->MapToWorld(i, j);
 			//	LOG("Pos is %i", pos);
@@ -116,7 +126,7 @@ bool j1FogOfWar::IsOnSight(iPoint pos)
 	bool ret = false;
 
 	iPoint tile = App->map->WorldToMap(pos.x / App->win->GetScale(), pos.y / App->win->GetScale());
-	int fowTile = (tile.y * 119) + tile.x;
+	int fowTile = (tile.y * width) + tile.x;
 
 	if (fowTile < fowTilesVector.size())
 		ret = (fowTilesVector[fowTile]->alpha == 0);
@@ -171,7 +181,7 @@ void j1FogOfWar::CleanSafeZone(SDL_Rect zone)
 	if (i < 0)
 		i = 0;
 
-	for (; i < 119 && i < endTile.x + 1; ++i)
+	for (; i < width && i < endTile.x + 1; ++i)
 	{
 		int j = startTile.y;
 		if (j < 0)
@@ -179,7 +189,7 @@ void j1FogOfWar::CleanSafeZone(SDL_Rect zone)
 
 		for (; j < 149 && j < endTile.y + 1; ++j)
 		{
-			int pos = (119 * j) + i;
+			int pos = (width * j) + i;
 
 			fowTilesVector[pos]->alpha = 0;
 		}//for
@@ -212,16 +222,16 @@ void j1FogOfWar::TilesNearPlayer()
 				if (i < 0)
 					i = 0;
 
-				for (; i < 119 && i < endTile.x + 1; ++i)
+				for (; i < width && i < endTile.x + 1; ++i)
 				{
 					int j = startTile.y;
 					if (j < 0)
 						j = 0;
 
-					for (; j < 149 && j < endTile.y + 1; ++j)
+					for (; j < height && j < endTile.y + 1; ++j)
 					{
 
-						int pos = (119 * j) + i;
+						int pos = (width * j) + i;
 
 						if (fowTilesVector[pos]->alpha == 0)
 							continue;

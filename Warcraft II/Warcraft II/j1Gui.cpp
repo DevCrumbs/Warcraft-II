@@ -450,7 +450,7 @@ void j1Gui::UpdateAnimations(float dt)
 		skullAnim.speed = skullTextSpeed * dt;
 		eyeAnim.speed = eyeTextSpeed * dt;
 
-		parchmentAnim.speed = parchmentSpeed * dt;
+		//parchmentAnim.speed = parchmentSpeed * dt;
 	}
 	else {
 	
@@ -459,6 +459,6 @@ void j1Gui::UpdateAnimations(float dt)
 		skullAnim.speed = skullTextSpeed * App->auxiliarDt;
 		eyeAnim.speed = eyeTextSpeed * App->auxiliarDt;
 
-		parchmentAnim.speed = parchmentSpeed * App->auxiliarDt;
+		//parchmentAnim.speed = parchmentSpeed * App->auxiliarDt;
 	}
 }

@@ -407,10 +407,20 @@ void Goal_AttackTarget::Terminate()
 	/// The target has been removed by this/another unit
 	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
-		LOG("REMOVE");
-
 		// Remove definitely the target from this owner
-		owner->RemoveTargetInfo(targetInfo);		
+		owner->RemoveTargetInfo(targetInfo);
+	}
+	else {
+
+		if (!App->entities->isEntityFactoryCleanUp) {
+
+			targetInfo->target->RemoveAttackingUnit(owner);
+
+			// If the target is a building, set isAttackSatisfied to false (just in case)
+			if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied)
+
+				targetInfo->isAttackSatisfied = false;
+		}
 	}
 
 	// -----
