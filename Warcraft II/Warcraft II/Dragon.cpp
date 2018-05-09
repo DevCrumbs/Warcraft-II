@@ -290,7 +290,8 @@ void Dragon::Draw(SDL_Texture* sprites)
 		}
 		else
 		{
-			lifeBar->isBlit = false;
+			if (lifeBar != nullptr)
+				lifeBar->isBlit = false;
 		}
 	}
 	//if (isSelected)
