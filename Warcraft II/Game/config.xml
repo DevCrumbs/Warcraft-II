@@ -17,7 +17,7 @@
     <borderless value="false"/>
     <resizable value="true"/>
     <fullscreen_window value="false"/>
-    <icon name="Assets/Sprites/Textures/Icon.bmp"/>
+    <icon name="data/assets/textures/UI/logo.bmp"/>
   </window>
 
   <map>

@@ -39,8 +39,8 @@ bool j1FogOfWar::LoadFoW()
 	bool ret = false;
 
 
-	width = App->map->data.width -1;
-	height = App->map->data.height -1;
+	width = App->map->data.width ;
+	height = App->map->data.height ;
 
 	LoadFoWMap(width, height);
 
