@@ -871,11 +871,11 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Town Hall", { 597,160,50,41 }, ent);
 			}
-			else if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
+			else if (staticEntity->staticEntityType == EntityType_GOLD_MINE && App->fow->IsOnSight(GetMousePos())) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowMineOrRuneStoneSelectedInfo(EntityType_GOLD_MINE,  { 848, 112, 50, 41 }, "Gold Mine", ent);
 			}
-			else if (staticEntity->staticEntityType == EntityType_RUNESTONE) {
+			else if (staticEntity->staticEntityType == EntityType_RUNESTONE && App->fow->IsOnSight(GetMousePos())) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowMineOrRuneStoneSelectedInfo(EntityType_RUNESTONE, { 848, 67, 50, 41 }, "RuneStone", ent);
 			}
@@ -887,7 +887,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			if (staticEntity->staticEntityCategory == StaticEntityCategory_HumanBuilding ||
 				staticEntity->staticEntityCategory == StaticEntityCategory_NeutralBuilding)
 
-				if (!App->gui->IsMouseOnUI())
+				if (!App->gui->IsMouseOnUI() && App->fow->IsOnSight(GetMousePos()))
 					App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
 			
 			if (staticEntity->staticEntityType == EntityType_GOLD_MINE) {
@@ -917,7 +917,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 						if (goldMine->GetGoldMineState() == GoldMineState_Untouched) {
 
-							if (!App->gui->IsMouseOnUI()) {
+							if (!App->gui->IsMouseOnUI() && App->fow->IsOnSight(GetMousePos())) {
 								App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 }); //Mouse Hammer
 								App->player->isMouseOnMine = true;
 							}
@@ -925,7 +925,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 						else if (goldMine->GetGoldMineState() == GoldMineState_Gathering ||
 							goldMine->GetGoldMineState() == GoldMineState_Gathered) {
 
-							if (!App->gui->IsMouseOnUI()) {
+							if (!App->gui->IsMouseOnUI() && App->fow->IsOnSight(GetMousePos())) {
 								App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); //Mouse Lens
 								App->player->isMouseOnMine = true;
 							}
@@ -943,7 +943,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 					if (runestone->GetRunestoneState() == RunestoneState_Untouched) {
 
-						if (!App->gui->IsMouseOnUI()) {
+						if (!App->gui->IsMouseOnUI() && App->fow->IsOnSight(GetMousePos())) {
 							App->menu->mouseText->SetTexArea({ 310, 525, 28, 33 }, { 338, 525, 28, 33 }); //Mouse Hammer
 							App->player->isMouseOnMine = true;
 						}
@@ -951,7 +951,7 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					if (runestone->GetRunestoneState() == RunestoneState_Gathering || 
 						runestone->GetRunestoneState() == RunestoneState_Gathered) {
 
-						if (!App->gui->IsMouseOnUI()) {
+						if (!App->gui->IsMouseOnUI() && App->fow->IsOnSight(GetMousePos())) {
 							App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 }); //Mouse Lens
 							App->player->isMouseOnMine = true;
 						}
@@ -1138,19 +1138,20 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 		break;
 
 	case EntitiesEvent_LEFT_CLICK:
-
-		if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON) 
-			MakePrisionerMenu(dynamicEntity);
+		if (App->fow->IsOnSight(GetMousePos())) {
+			if (dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON)
+				MakePrisionerMenu(dynamicEntity);
+		}
 		
 		break;
 	case EntitiesEvent_HOVER:
 
 		if (dynamicEntity->entitySide == EntitySide_Player ||
-			dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON)
+			dynamicEntity->dynamicEntityType == EntityType_ALLERIA || dynamicEntity->dynamicEntityType == EntityType_TURALYON) {
 
-			if (!App->gui->IsMouseOnUI())
+			if (!App->gui->IsMouseOnUI() && App->fow->IsOnSight(GetMousePos()))
 				App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
-
+		}
 		break;
 	case EntitiesEvent_LEAVE:
 		if (dynamicEntity->entitySide == EntitySide_Player ||

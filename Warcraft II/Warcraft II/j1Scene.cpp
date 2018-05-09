@@ -554,13 +554,17 @@ bool j1Scene::Update(float dt)
 				Entity* playerBuilding = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_STATIC_ENTITY, EntitySide_Player);
 				Entity* prisoner = App->entities->IsEntityUnderMouse(mousePos, EntityCategory_DYNAMIC_ENTITY, EntitySide_NoSide);
 
-				// Set the cursor texture
-				if (target != nullptr || critter != nullptr || building != nullptr) {
+				// Set the cursor texture (SWORD)
+				if (target != nullptr  && App->fow->IsOnSight(App->player->GetMousePos())
+					|| critter != nullptr && App->fow->IsOnSight(App->player->GetMousePos())
+					|| building != nullptr && App->fow->IsOnSight(App->player->GetMousePos())) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
 					if (r.x != 374 && !App->gui->IsMouseOnUI())
 						App->menu->mouseText->SetTexArea({ 374, 527, 28, 33 }, { 402, 527, 28, 33 });
 				}
-				else if (playerUnit != nullptr || playerBuilding != nullptr || prisoner != nullptr) {
+				//Lens cursor
+				else if (playerUnit != nullptr || playerBuilding != nullptr 
+					|| prisoner != nullptr && App->fow->IsOnSight(App->player->GetMousePos())) {
 					SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
 					if (r.x != 503 && !App->gui->IsMouseOnUI())
 						App->menu->mouseText->SetTexArea({ 503, 524, 30, 32 }, { 503, 524, 30, 32 });
