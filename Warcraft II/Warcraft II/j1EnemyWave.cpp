@@ -40,7 +40,7 @@ bool j1EnemyWave::Start()
 
 	// Reset waves general info
 	totalWaves = 0;
-	isActiveWaves = false;
+	isActiveWaves = true;
 	totalPhasesOfCurrWave = 0;
 	phasesOfCurrWave = 0;
 	isStartWave = false;
@@ -123,19 +123,6 @@ bool j1EnemyWave::Update(float dt)
 	if (nextWaveTimer >= secondsToNextWave) {
 
 		if (!isStartWave) {
-
-			/// TODO Valdivia: sonido oleadas
-			uint rng = rand() % 1 + 1;
-			if(rng == 1)
-				App->audio->PlayFx(App->audio->GetFX().baseUnderAttack1, 0);
-			else if (rng == 2)
-				App->audio->PlayFx(App->audio->GetFX().baseUnderAttack2, 0);
-
-			if (App->scene->adviceMessage != AdviceMessage_UNDER_ATTACK) {
-				App->scene->adviceMessageTimer.Start();
-				App->scene->adviceMessage = AdviceMessage_UNDER_ATTACK;
-				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
-			}
 			
 			// Calculate the phases of the current wave
 			int maxPhasesOfCurrWave = 2;
@@ -171,6 +158,18 @@ bool j1EnemyWave::Update(float dt)
 		// Start a new phase of the current wave
 		if (nextPhaseTimer >= secondsToNextPhase && phasesOfCurrWave < totalPhasesOfCurrWave) {
 
+			/// TODO Valdivia: sonido oleadas
+			uint rng = rand() % 1 + 1;
+			if (rng == 1)
+				App->audio->PlayFx(App->audio->GetFX().baseUnderAttack1, 0);
+			else if (rng == 2)
+				App->audio->PlayFx(App->audio->GetFX().baseUnderAttack2, 0);
+
+			if (App->scene->adviceMessage != AdviceMessage_UNDER_ATTACK) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_UNDER_ATTACK;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
 			// 1. Perform the small wave
 			UnitInfo unitInfo;
 			OrcShipInfo shipInfo = (OrcShipInfo&)App->entities->GetUnitInfo(EntityType_ORC_SHIP);
