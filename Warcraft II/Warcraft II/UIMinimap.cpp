@@ -354,15 +354,18 @@ void UIMinimap::DrawFoW() const
 	while (tiles < fowSize)
 	{
 		SDL_Rect tileRect = MapToMinimap({ App->fow->fowTilesVector[tiles]->pos.x * 32, App->fow->fowTilesVector[tiles]->pos.y * 32,
-							App->fow->fowTilesVector[tiles]->size * (zoomFactor+1), App->fow->fowTilesVector[tiles]->size * (zoomFactor+1) });
+							(App->fow->fowTilesVector[tiles]->size * zoomFactor), (App->fow->fowTilesVector[tiles]->size * zoomFactor) });
+
+		tileRect.w += 2;
+		tileRect.h += 2;
 
 		App->render->DrawQuad(tileRect, 0, 0, 0, App->fow->fowTilesVector[tiles]->alpha /2, true, false);
 
 		tiles += zoomFactor;
 
-		if (tiles % 119 == 0)
+		if (tiles % App->fow->width == 0)
 		{
-			tiles += 119 * zoomFactor;
+			tiles += App->fow->width * (zoomFactor - 1);
 		}
 	}
 
