@@ -30,7 +30,10 @@ bool j1Window::Awake(pugi::xml_node& config)
 	icon = config.child("icon").attribute("name").as_string();
 	iconSurface = SDL_LoadBMP(icon.data());
 
-
+	if (iconSurface == nullptr)
+	{
+		LOG("Error! SDL_Error: %s\n", SDL_GetError());
+	}
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		LOG("SDL_VIDEO could not initialize! SDL_Error: %s\n", SDL_GetError());
