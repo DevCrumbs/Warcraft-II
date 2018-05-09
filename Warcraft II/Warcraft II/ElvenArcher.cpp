@@ -318,6 +318,24 @@ void ElvenArcher::Move(float dt)
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
 
+	// Update FoW enemies
+	/*
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+
+		if ((*it)->target != nullptr) {
+
+			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)(*it);
+				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
+			}
+		}
+		it++;
+	}
+	*/
+
 	// Update animations
 	if (!isStill || isHitting)
 		UpdateAnimationsSpeed(dt);
@@ -333,7 +351,6 @@ void ElvenArcher::Move(float dt)
 
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
-
 
 	// Update Unit LifeBar
 	if (lifeBar != nullptr) {
@@ -431,6 +448,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
+					isFacingTowardsTarget = true;
+				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
 				// b) If the unit is attacking a static target
 				else if (currTarget->target->entityType == EntityCategory_STATIC_ENTITY)
