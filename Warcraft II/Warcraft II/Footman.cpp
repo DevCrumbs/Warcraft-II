@@ -310,12 +310,6 @@ void Footman::Move(float dt)
 		}
 	}
 
-	if (isSelected) 
-	{
-		int b = 3;
-		int x = 1;
-	}
-
 	if (!isDead)
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);

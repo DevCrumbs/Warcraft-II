@@ -311,11 +311,6 @@ void ElvenArcher::Move(float dt)
 		}
 	}
 
-	if (isSelected) 
-	{	
-		int x = 1;
-	}
-
 	if (!isDead)
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);
