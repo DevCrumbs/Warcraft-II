@@ -599,7 +599,8 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 						if (newTarget != nullptr) {
 
-							currTarget = newTarget;
+							SetCurrTarget(newTarget->target);
+							//currTarget = newTarget;
 							brain->AddGoal_AttackTarget(currTarget, false);
 						}
 					}
@@ -648,7 +649,8 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 					isHitting = false;
 
-					currTarget = newTarget;
+					SetCurrTarget(newTarget->target);
+					//currTarget = newTarget;
 					brain->AddGoal_AttackTarget(currTarget);
 				}
 			}
@@ -672,7 +674,8 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					currTarget = newTarget;
+					SetCurrTarget(newTarget->target);
+					//currTarget = newTarget;
 					brain->AddGoal_AttackTarget(currTarget);
 				}
 			}

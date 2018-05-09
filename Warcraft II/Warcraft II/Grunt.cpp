@@ -513,7 +513,8 @@ void Grunt::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					currTarget = newTarget;
+					SetCurrTarget(newTarget->target);
+					//currTarget = newTarget;
 					brain->AddGoal_AttackTarget(currTarget);
 
 					isHunting = false;
@@ -561,7 +562,8 @@ void Grunt::UnitStateMachine(float dt)
 						isHitting = false;
 						isHunting = false;
 
-						currTarget = newTarget;
+						SetCurrTarget(newTarget->target);
+						//currTarget = newTarget;
 						brain->AddGoal_AttackTarget(currTarget);
 
 						isSearchingForCritters = true;
@@ -604,7 +606,8 @@ void Grunt::UnitStateMachine(float dt)
 						// Is the best target an attacking unit?
 						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
-							currTarget = newTarget;
+							SetCurrTarget(newTarget->target);
+							//currTarget = newTarget;
 							brain->AddGoal_AttackTarget(currTarget, false);
 
 							isAttackingUnit = true;
@@ -621,7 +624,8 @@ void Grunt::UnitStateMachine(float dt)
 
 							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
 
-								currTarget = *it;
+								SetCurrTarget((*it)->target);
+								//currTarget = *it;
 								brain->AddGoal_AttackTarget(currTarget, false);
 
 								isAttackingUnit = true;
@@ -646,7 +650,8 @@ void Grunt::UnitStateMachine(float dt)
 
 							targets.push_back(targetInfo);
 
-							currTarget = targetInfo;
+							SetCurrTarget(newTarget->target);
+							//currTarget = targetInfo;
 							brain->AddGoal_AttackTarget(currTarget, false);
 
 							isHunting = true;
@@ -684,7 +689,8 @@ void Grunt::UnitStateMachine(float dt)
 						isHitting = false;
 						isHunting = false;
 
-						currTarget = newTarget;
+						SetCurrTarget(newTarget->target);
+						//currTarget = newTarget;
 						brain->AddGoal_AttackTarget(currTarget);
 					}
 				}
@@ -718,7 +724,8 @@ void Grunt::UnitStateMachine(float dt)
 								isHitting = false;
 								isHunting = false;
 
-								currTarget = newTarget;
+								SetCurrTarget(newTarget->target);
+								//currTarget = newTarget;
 								brain->AddGoal_AttackTarget(currTarget);
 							}
 						}

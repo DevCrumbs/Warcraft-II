@@ -508,7 +508,8 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					currTarget = newTarget;
+					SetCurrTarget(newTarget->target);
+					//currTarget = newTarget;
 					brain->AddGoal_AttackTarget(currTarget);
 
 					isHunting = false;
@@ -556,7 +557,8 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						isHitting = false;
 						isHunting = false;
 
-						currTarget = newTarget;
+						SetCurrTarget(newTarget->target);
+						//currTarget = newTarget;
 						brain->AddGoal_AttackTarget(currTarget);
 
 						isSearchingForCritters = true;
@@ -599,7 +601,8 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						// Is the best target an attacking unit?
 						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
-							currTarget = newTarget;
+							SetCurrTarget(newTarget->target);
+							//currTarget = newTarget;
 							brain->AddGoal_AttackTarget(currTarget, false);
 
 							isAttackingUnit = true;
@@ -679,7 +682,8 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						isHitting = false;
 						isHunting = false;
 
-						currTarget = newTarget;
+						SetCurrTarget(newTarget->target);
+						//currTarget = newTarget;
 						brain->AddGoal_AttackTarget(currTarget);
 					}
 				}
@@ -713,7 +717,8 @@ void TrollAxethrower::UnitStateMachine(float dt)
 								isHitting = false;
 								isHunting = false;
 
-								currTarget = newTarget;
+								SetCurrTarget(newTarget->target);
+								//currTarget = newTarget;
 								brain->AddGoal_AttackTarget(currTarget);
 							}
 						}
