@@ -455,24 +455,12 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 					if (currTarget != nullptr) {
 
-						if (c2->entity == currTarget->target) {
+						if (currTarget != nullptr) {
 
 							(*it)->target->RemoveAttackingUnit(this);
 							SetIsRemovedTargetInfo((*it)->target);
 							break;
 						}
-						else {
-
-							(*it)->target->RemoveAttackingUnit(this);
-							RemoveTargetInfo(*it);
-							break;
-						}
-					}
-					else {
-
-						(*it)->target->RemoveAttackingUnit(this);
-						RemoveTargetInfo(*it);
-						break;
 					}
 				}
 				it++;
