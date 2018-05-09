@@ -123,13 +123,16 @@ void j1FogOfWar::LoadFoWMap(int mapWidth, int mapHeight)
 
 bool j1FogOfWar::IsOnSight(iPoint pos)
 {
-	bool ret = false;
+	bool ret = true;
 
-	iPoint tile = App->map->WorldToMap(pos.x / App->win->GetScale(), pos.y / App->win->GetScale());
-	int fowTile = (tile.y * width) + tile.x;
+	if (isActive) 
+	{
+		iPoint tile = App->map->WorldToMap(pos.x / App->win->GetScale(), pos.y / App->win->GetScale());
+		int fowTile = (tile.y * width) + tile.x;
 
-	if (fowTile < fowTilesVector.size())
-		ret = (fowTilesVector[fowTile]->alpha == 0);
+		if (fowTile < fowTilesVector.size())
+			ret = (fowTilesVector[fowTile]->alpha == 0);
+	}
 
 	return ret;
 }
