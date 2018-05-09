@@ -61,14 +61,6 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
 
-	// Collisions
-	CreateEntityCollider(EntitySide_Enemy);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
-	entityCollider->isTrigger = true;
-	sightRadiusCollider->isTrigger = true;
-	attackRadiusCollider->isTrigger = true;
-
 	// LifeBar creation
 	UILifeBar_Info lifeBarInfo;
 	lifeBarInfo.background = { 241,336,45,8 };
@@ -100,6 +92,19 @@ void Grunt::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
+
+	if (!isSpawned) {
+	
+		// Collisions
+		CreateEntityCollider(EntitySide_Enemy);
+		sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+		attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+		entityCollider->isTrigger = true;
+		sightRadiusCollider->isTrigger = true;
+		attackRadiusCollider->isTrigger = true;
+
+		isSpawned = true;
+	}
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -344,6 +349,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				if ((*it)->target == c2->entity) {
 
+					(*it)->isRemovedFromSight = false;
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
@@ -453,15 +459,9 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 					(*it)->isSightSatisfied = false;
 
-					if (currTarget != nullptr) {
-
-						if (currTarget != nullptr) {
-
-							(*it)->target->RemoveAttackingUnit(this);
-							SetIsRemovedTargetInfo((*it)->target);
-							break;
-						}
-					}
+					//(*it)->target->RemoveAttackingUnit(this);
+					SetIsRemovedFromSightTargetInfo((*it)->target);
+					break;
 				}
 				it++;
 			}

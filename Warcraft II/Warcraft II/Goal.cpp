@@ -233,7 +233,7 @@ void Goal_AttackTarget::Activate()
 		return;
 	}
 	/// The target has been removed by another unit
-	else if (targetInfo->isRemoved || targetInfo->target == nullptr) {
+	else if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
 
 		goalStatus = GoalStatus_Completed;
 		return;
@@ -341,7 +341,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 		return goalStatus;
 	}
 	/// The target has been removed by another unit
-	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
+	if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
 
 		if (owner->GetSingleUnit()->IsFittingTile()) {
 
@@ -902,7 +902,7 @@ void Goal_HitTarget::Activate()
 		return;
 	}
 	/// The target has been removed by another unit
-	else if (targetInfo->isRemoved || targetInfo->target == nullptr) {
+	else if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
 
 		goalStatus = GoalStatus_Completed;
 		return;
@@ -948,7 +948,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		return goalStatus;
 	}
 	/// The target has been removed by another unit
-	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
+	if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
 
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;

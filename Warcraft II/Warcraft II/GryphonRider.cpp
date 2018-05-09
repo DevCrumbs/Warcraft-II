@@ -65,14 +65,6 @@ GryphonRider::GryphonRider(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	// Initialize the goals
 	brain->RemoveAllSubgoals();
 
-	// Collisions
-	CreateEntityCollider(EntitySide_Player);
-	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
-	entityCollider->isTrigger = true;
-	sightRadiusCollider->isTrigger = true;
-	attackRadiusCollider->isTrigger = true;
-
 	// LifeBar creation
 	UILifeBar_Info lifeBarInfo;
 	lifeBarInfo.background = { 241,336,45,8 };
@@ -95,6 +87,19 @@ void GryphonRider::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
+
+	if (!isSpawned) {
+	
+		// Collisions
+		CreateEntityCollider(EntitySide_Player);
+		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+		attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+		entityCollider->isTrigger = true;
+		sightRadiusCollider->isTrigger = true;
+		attackRadiusCollider->isTrigger = true;
+	
+		isSpawned = true;
+	}
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -397,6 +402,7 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 				if ((*it)->target == c2->entity) {
 
+					(*it)->isRemovedFromSight = false;
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
@@ -508,15 +514,9 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 					(*it)->isSightSatisfied = false;
 
-					if (currTarget != nullptr) {
-
-						if (currTarget != nullptr) {
-
-							(*it)->target->RemoveAttackingUnit(this);
-							SetIsRemovedTargetInfo((*it)->target);
-							break;
-						}
-					}
+					//(*it)->target->RemoveAttackingUnit(this);
+					SetIsRemovedFromSightTargetInfo((*it)->target);
+					break;
 				}
 				it++;
 			}

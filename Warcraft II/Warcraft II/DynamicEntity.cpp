@@ -701,11 +701,11 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 	if (targetInfo != nullptr) {
 
 		// Only push it if it does not have to be removed
-		//if (!targetInfo->isRemoved) {
+		if (!targetInfo->isRemoved) {
 
 			currTarget = targetInfo;
 			ret = true;
-		//}
+		}
 	}
 
 	return ret;
@@ -729,6 +729,27 @@ bool DynamicEntity::SetIsRemovedTargetInfo(Entity* target)
 		if ((*it)->target == target) {
 
 			(*it)->isRemoved = true;
+			return true;
+		}
+		it++;
+	}
+
+	return false;
+}
+
+bool DynamicEntity::SetIsRemovedFromSightTargetInfo(Entity* target) 
+{
+	if (target == nullptr)
+		return false;
+
+	// Set isRemoved to true
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+
+		if ((*it)->target == target) {
+
+			(*it)->isRemovedFromSight = true;
 			return true;
 		}
 		it++;

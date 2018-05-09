@@ -139,6 +139,7 @@ struct TargetInfo
 	bool isAttackSatisfied = false; // if true, attack distance is satisfied
 
 	bool isRemoved = false; // if true, it means that the entity has been killed
+	bool isRemovedFromSight = false;
 
 	Entity* target = nullptr;
 
