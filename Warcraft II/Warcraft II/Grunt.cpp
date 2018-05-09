@@ -279,18 +279,31 @@ void Grunt::Draw(SDL_Texture* sprites)
 		if (App->fow->IsOnSight(pos))
 		{
 			fPoint offset = { 0.0f,0.0f };
-			if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp) {
+			if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp)
+			{
 
 				offset = { animation->GetCurrentFrame().w / 2.5f, animation->GetCurrentFrame().h / 5.5f };
 				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
 			}
-			else {
+			else
+			{
 
 				offset = { animation->GetCurrentFrame().w / 3.2f, animation->GetCurrentFrame().h / 3.1f };
 				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 			}
+
+			if (lifeBar != nullptr)
+			{
+				lifeBar->isBlit = true;
+			}
+		}
+		else
+		{
+			if (lifeBar != nullptr)
+				lifeBar->isBlit = false;
 		}
 	}
+
 	//if (isSelected)
 		//DebugDrawSelected();
 }
