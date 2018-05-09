@@ -311,6 +311,11 @@ void ElvenArcher::Move(float dt)
 		}
 	}
 
+	if (isSelected) 
+	{	
+		int x = 1;
+	}
+
 	if (!isDead)
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);
@@ -324,7 +329,7 @@ void ElvenArcher::Move(float dt)
 
 	while (it != targets.end()) {
 
-		if ((*it)->target != nullptr) {
+		if ((*it)->target != nullptr && !(*it)->isRemovedFromSight && !(*it)->isRemoved) {
 
 			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
 

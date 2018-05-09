@@ -310,6 +310,12 @@ void Footman::Move(float dt)
 		}
 	}
 
+	if (isSelected) 
+	{
+		int b = 3;
+		int x = 1;
+	}
+
 	if (!isDead)
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);
@@ -322,11 +328,11 @@ void Footman::Move(float dt)
 	list<TargetInfo*>::const_iterator it = targets.begin();
 
 	while (it != targets.end()) {
-	
-		if ((*it)->target != nullptr) {
-		
+
+		if ((*it)->target != nullptr && !(*it)->isRemovedFromSight && !(*it)->isRemoved) {
+
 			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
-			
+
 				DynamicEntity* dynEnt = (DynamicEntity*)(*it);
 				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
 			}

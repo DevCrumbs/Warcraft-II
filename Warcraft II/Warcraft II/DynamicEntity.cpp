@@ -670,8 +670,10 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 
 	if (currTarget != nullptr) {
 
-		if (target == currTarget->target)
+		if (target == currTarget->target) {
+			currTarget->isRemovedFromSight = false;
 			return true;
+		}
 	}
 
 	list<TargetInfo*>::const_iterator it = targets.begin();
@@ -684,6 +686,7 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 		if ((*it)->target == target) {
 
 			targetInfo = *it;
+			targetInfo->isRemovedFromSight = false;
 			break;
 		}
 		it++;
