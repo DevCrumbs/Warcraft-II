@@ -1224,10 +1224,11 @@ void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
 		}
 		iterator++;
 	}
-	commandPatrolButton->isActive = true;
-	commandStopButton->isActive = true;
+	if (units.size() > 0) {
+		commandPatrolButton->isActive = true;
+		commandStopButton->isActive = true;
+	}
 }
-
 
 void j1Scene::HideUnselectedUnits()
 {

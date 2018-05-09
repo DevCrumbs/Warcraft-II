@@ -4059,7 +4059,6 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 			}
 		}
 	}
-	isInScreen = false;
 	App->scene->ShowSelectedUnits(unitsSelected);
 }
 
