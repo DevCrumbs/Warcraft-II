@@ -15,6 +15,7 @@
 #include "j1Audio.h"
 #include "j1Player.h"
 #include "j1Printer.h"
+#include "j1EnemyWave.h"
 #include "UIMinimap.h"
 #include "UILifeBar.h"
 
@@ -160,7 +161,8 @@ void Grunt::Move(float dt)
 				if (App->map->GetEntitiesOnRoomByCategory(*room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
 
 					// ROOM CLEARED!
-					if (room->roomRect.w != 40 * 32) {
+					iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+					if (!App->map->IsOnBase(spawnPos)) {
 
 						// Give gold to the player
 						if (room->roomRect.w == 30 * 32)
@@ -187,6 +189,27 @@ void Grunt::Move(float dt)
 
 						/// TODO Valdivia: sonido sala limpiada
 						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
+					}
+
+					// WAVE DEFEATED
+					else if (App->map->IsOnBase(spawnPos) && App->wave->phasesOfCurrWave == App->wave->totalPhasesOfCurrWave - 1) {
+					
+						// Give gold to the player
+						App->player->AddGold(500);
+
+						if (App->scene->adviceMessage != AdviceMessage_BASE_DEFENDED) {
+
+							App->scene->adviceMessageTimer.Start();
+							App->scene->adviceMessage = AdviceMessage_BASE_DEFENDED;
+							App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+						}
+
+						App->scene->alpha = 200;
+						App->scene->isRoomCleared = true;
+						App->scene->roomCleared = room->roomRect;
+
+						/// TODO Valdivia: sonido sala limpiada
+						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);				
 					}
 				}
 			}
