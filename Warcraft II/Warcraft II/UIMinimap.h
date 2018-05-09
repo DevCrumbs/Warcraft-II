@@ -44,6 +44,9 @@ public:
 
 	void Draw() const;
 
+	SDL_Rect LoadEntityRect(iPoint pos) const;
+	SDL_Rect LoadEntityRect(fPoint pos) const;
+
 	void HandleInput(float dt);
 
 	iPoint GetEntitiesGoal() const;

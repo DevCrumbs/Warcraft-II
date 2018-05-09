@@ -101,25 +101,19 @@ void UIMinimap::Draw() const
 	for (list<DynamicEntity*>::iterator iterator = (*activeDynamicEntities).begin(); iterator != (*activeDynamicEntities).end(); ++iterator)
 	{
 		SDL_Rect rect{ 0,0,0,0 };
-		if (App->fow->isActive)
+		if (App->fow->isActive && (*iterator)->entitySide != EntitySide_Player)
 		{
-			iPoint pos = (*iterator)->GetLastSeenTile();
-			if (pos.x < 0 || pos.y < 0)
-				continue;
-			rect.x = pos.x * 32 * currentScaleFactor + offsetX + cameraOffset.x;
-			rect.y = pos.y * 32 * currentScaleFactor + offsetY + cameraOffset.y;
-			rect.w = entityWidth * currentScaleFactor * zoomFactor;
-			rect.h = entityHeight * currentScaleFactor * zoomFactor;
+				iPoint pos = (*iterator)->GetLastSeenTile();
+				if (pos.x < 0 || pos.y < 0)
+					continue;
+				rect = LoadEntityRect(pos);
 		}
 		else
 		{
 			fPoint pos = (*iterator)->GetPos();
 			if (pos.x < 0 || pos.y < 0)
 				continue;
-			rect.x = pos.x * currentScaleFactor + offsetX + cameraOffset.x;
-			rect.y = pos.y * currentScaleFactor + offsetY + cameraOffset.y;
-			rect.w = entityWidth * currentScaleFactor * zoomFactor;
-			rect.h = entityHeight * currentScaleFactor * zoomFactor;
+			rect = LoadEntityRect(pos);
 		}
 
 		SDL_Color color{ 0,0,0,0 };
@@ -128,7 +122,9 @@ void UIMinimap::Draw() const
 		case EntitySide_NoSide:
 			break;
 		case EntitySide_Player:
+		{
 			color = { 0,125,255,255 };
+		}
 			break;
 		case EntitySide_Enemy:
 			color = { 255,0,0,255 };
@@ -211,7 +207,32 @@ void UIMinimap::Draw() const
 	App->render->ResetViewPort();
 }
 
-void UIMinimap::HandleInput(float dt) 
+SDL_Rect UIMinimap::LoadEntityRect(iPoint pos) const
+{
+	SDL_Rect rect{ 0,0,0,0 };
+
+	rect.x = pos.x * currentScaleFactor + offsetX + cameraOffset.x;
+	rect.y = pos.y * currentScaleFactor + offsetY + cameraOffset.y;
+	rect.w = entityWidth * currentScaleFactor * zoomFactor;
+	rect.h = entityHeight * currentScaleFactor * zoomFactor;
+
+	return rect;
+}
+
+SDL_Rect UIMinimap::LoadEntityRect(fPoint pos) const
+{
+	SDL_Rect rect{ 0,0,0,0 };
+
+	rect.x = pos.x * currentScaleFactor + offsetX + cameraOffset.x;
+	rect.y = pos.y * currentScaleFactor + offsetY + cameraOffset.y;
+	rect.w = entityWidth * currentScaleFactor * zoomFactor;
+	rect.h = entityHeight * currentScaleFactor * zoomFactor;
+
+	return rect;
+}
+
+
+void UIMinimap::HandleInput(float dt)
 {
 	if (MouseHover())
 	{
@@ -366,15 +387,20 @@ void UIMinimap::DrawFoW() const
 	//for (vector<FogOfWarTile*>::iterator tiles = App->fow->fowTilesVector.begin(); tiles != App->fow->fowTilesVector.end();)
 	//{
 	int tiles = 0;
+
+	float pos = 0;
+
 	while (tiles < fowSize)
 	{
+		pos = App->fow->fowTilesVector[tiles]->pos.x;
+
 		SDL_Rect tileRect = MapToMinimap({ App->fow->fowTilesVector[tiles]->pos.x * 32, App->fow->fowTilesVector[tiles]->pos.y * 32,
 							(App->fow->fowTilesVector[tiles]->size * zoomFactor), (App->fow->fowTilesVector[tiles]->size * zoomFactor) });
 
 		tileRect.w += 2;
 		tileRect.h += 2;
 
-		App->render->DrawQuad(tileRect, 0, 0, 0, App->fow->fowTilesVector[tiles]->alpha /2, true, false);
+		App->render->DrawQuad(tileRect, 0, 0, 0, App->fow->fowTilesVector[tiles]->alpha, true, false);
 
 		tiles += zoomFactor;
 
