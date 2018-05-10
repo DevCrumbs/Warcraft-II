@@ -132,15 +132,31 @@ float j1Window::GetScale() const
 	return scale;
 }
 
-void j1Window::SetFullscreen() {
-	if (fullscreen) {
+void j1Window::SetFullscreen()
+{
+	if (fullscreen)
+	{
 		fullscreen = false;
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_SHOWN);
-//		SDL_RenderSetViewport(App->render->renderer, &App->render->viewport);
+
+		SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
+
+		SDL_SetWindowPosition(App->win->window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+		/*SDL_DisplayMode display;
+		SDL_GetCurrentDisplayMode(0, &display);
+		int width = display.w;
+		int height = display.h;
+
+		SDL_RenderSetLogicalSize(App->render->renderer, width, height);*/
+
+		//	SDL_RestoreWindow(App->win->window);
+
 	}
-	else {
+	else
+	{
 		fullscreen = true;
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
-		//SDL_RenderSetViewport(App->render->renderer, &App->render->viewport);
+		SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN);
+
+		SDL_SetWindowPosition(App->win->window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 	}
 }

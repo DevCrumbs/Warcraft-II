@@ -2139,33 +2139,9 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		else if (UIelem == fullScreenButt)
 		{
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-			if (App->win->fullscreen)
-			{
-				App->win->fullscreen = false;
+			App->win->SetFullscreen();
 
-				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
-
-				SDL_SetWindowPosition(App->win->window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-
-				/*SDL_DisplayMode display;
-				SDL_GetCurrentDisplayMode(0, &display);
-				int width = display.w;
-				int height = display.h;
-				
-				SDL_RenderSetLogicalSize(App->render->renderer, width, height);*/
-
-			//	SDL_RestoreWindow(App->win->window);
-
-				break;
-			}
-			else 
-			{
-				App->win->fullscreen = true;
-				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN);
-
-				SDL_SetWindowPosition(App->win->window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-				break;
-			}
+			break;
 		}
 
 		else if (UIelem == commandPatrolButton && commandPatrolButton->isActive) {

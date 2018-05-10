@@ -392,16 +392,7 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if (UIelem == fullScreenButt)
 		{
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-			if (App->win->fullscreen) {
-				App->win->fullscreen = false;
-				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
-				break;
-			}
-			else {
-				App->win->fullscreen = true;
-				SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-				break;
-			}
+			App->win->SetFullscreen();
 		}
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
