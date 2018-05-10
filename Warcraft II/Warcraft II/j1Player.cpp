@@ -75,24 +75,6 @@ bool j1Player::PreUpdate()
 	}
 
 
-	//Life Bar on building 
-	if (entitySelectedStats.entitySelected != nullptr) {
-		if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
-			StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
-
-			if (building->staticEntityType != EntityType_GOLD_MINE && building->staticEntityType != EntityType_RUNESTONE) {
-				if (!building->GetIsFinishedBuilt()) {
-					entitySelectedStats.lifeBar->SetLife(building->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-				}
-				else if (building->GetConstructionTimer() == building->GetConstructionTime()) {
-					entitySelectedStats.lifeBar->SetLife(building->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
-					entitySelectedStats.HP->SetText(building->GetStringLife());
-					entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
-					ShowEntitySelectedButt(building->staticEntityType);
-				}
-			}
-		}
-	}
 	return true;
 }
 
@@ -209,8 +191,8 @@ bool j1Player::Update(float dt)
 			}
 	*/
 
-	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
-		if (!chickenFarm.empty()) 
+	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) {
+		if (!chickenFarm.empty())
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)chickenFarm.back();
 				ent->ApplyDamage(20);
@@ -224,7 +206,7 @@ bool j1Player::Update(float dt)
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
 			}
-	
+	}
 	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN) {
 		App->audio->PlayFx(App->audio->GetFX().goldMine, 0); // Gold mine sound
 		AddGold(500);
@@ -233,38 +215,45 @@ bool j1Player::Update(float dt)
 		currentFood += 3;
 		App->scene->hasFoodChanged = true;
 	}
-
-
 	//Handle the gold mine label
 	//idk if put this here or in PreUpdate
-	if (entitySelectedStats.entitySelected != nullptr) {
-		StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
-		if (building->staticEntityType == EntityType_GOLD_MINE) {
-			HandleGoldMineUIStates();
-		}
-	}
 
 	//Update Selectet unit HP
 	if (entitySelectedStats.entitySelected != nullptr)
 	{
-		if (entitySelectedStats.entitySelected->entitySide != EntitySide_NoSide 
-			&& entitySelectedStats.entitySelected->entitySide != EntitySide_Neutral)
+		StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
+		if (entitySelectedStats.entitySelected->entitySide == EntitySide_Player)
 		{
 			if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
-				StaticEntity* ent = (StaticEntity*)entitySelectedStats.entitySelected;
-				if (ent->GetIsFinishedBuilt()) {
+				//1st time that building finished to build
+				if (building->GetConstructionTimer() == building->GetConstructionTime()) {
+					entitySelectedStats.lifeBar->SetMaxLife(building->GetMaxLife());
+					entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
+					ShowEntitySelectedButt(building->staticEntityType);
+				}
+				//Update HP when building is finished
+				if (building->GetIsFinishedBuilt()) {
 					entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
 					entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
-					entitySelectedStats.lifeBar->SetMaxLife(entitySelectedStats.entitySelected->GetMaxLife());
+				}
+				//Update timer
+				else {
+					entitySelectedStats.lifeBar->SetLife(building->GetConstructionTimer() * entitySelectedStats.entitySelected->GetMaxLife() / 10);
 				}
 			}
 			else {
+				//Update HP Dynamic units
 				entitySelectedStats.HP->SetText(entitySelectedStats.entitySelected->GetStringLife());
 				entitySelectedStats.lifeBar->SetLife(entitySelectedStats.entitySelected->GetCurrLife());
 
 			}
-			if (entitySelectedStats.entitySelected->GetCurrLife() <= 0) 
+			//Erase info when entity dies
+			if (entitySelectedStats.entitySelected->GetCurrLife() <= 0)
 				HideEntitySelectedInfo();
+		}
+
+		else if (building->staticEntityType == EntityType_GOLD_MINE) {
+			HandleGoldMineUIStates();
 		}
 	}
 	CheckBuildingsState();
