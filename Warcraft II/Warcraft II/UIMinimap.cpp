@@ -106,6 +106,8 @@ void UIMinimap::Draw() const
 				iPoint pos = (*iterator)->GetLastSeenTile();
 				if (pos.x < 0 || pos.y < 0)
 					continue;
+				pos.x *= 32;
+				pos.y *= 32;
 				rect = LoadEntityRect(pos);
 		}
 		else
