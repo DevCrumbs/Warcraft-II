@@ -47,6 +47,8 @@ private:
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	bool startTimer = true;
+
+	Particle* peasants = nullptr;
 };
 
 #endif //__TownHall_H__

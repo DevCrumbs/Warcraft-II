@@ -54,6 +54,8 @@ private:
 	//Cannon bullet
 	Particle* cannonParticle = nullptr;
 
+	Particle* peasants = nullptr;
+
 	bool isColliderCreated = false;
 };
 

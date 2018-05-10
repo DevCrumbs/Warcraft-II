@@ -41,6 +41,8 @@ private:
 	ENTITY_TYPE type = EntityType_CHICKEN_FARM;
 
 	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
+
+	Particle* peasants = nullptr;
 };
 
 #endif //__ChickenFarm_H__

@@ -9,6 +9,7 @@
 #include "j1Map.h"
 #include "j1Movement.h"
 #include "j1Collision.h"
+#include "j1Particles.h"
 
 TownHall::TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const TownHallInfo& townHallInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), townHallInfo(townHallInfo)
 {
@@ -70,6 +71,9 @@ void TownHall::Move(float dt)
 			isBuilt = false;
 			//App->player->HideEntitySelectedInfo();
 			startTimer = false;
+
+			//Construction peasants
+			peasants = App->particles->AddParticle(App->particles->peasantBigBuild, { (int)pos.x - 40,(int)pos.y - 40 });
 		}
 		townHallInfo.townHallType = TownHallType_Keep;
 		UpdateAnimations(dt);
@@ -92,6 +96,7 @@ void TownHall::UpdateAnimations(float dt)
 			SetMaxLife(1400);
 			SetCurrLife(1400);
 			isBuilt = true;
+			peasants->isRemove = true;
 		}
 	}
 	else {

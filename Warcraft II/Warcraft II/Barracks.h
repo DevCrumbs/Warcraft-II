@@ -45,6 +45,8 @@ private:
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	bool startTimer = true;
+
+	Particle* peasants = nullptr;
 };
 
 #endif //__Barracks_H__
