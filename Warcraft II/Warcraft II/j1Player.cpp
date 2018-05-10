@@ -2169,6 +2169,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						entitySelectedStats.entitySelected->SetCurrLife(entitySelectedStats.entitySelected->GetMaxLife());
 						ent->CheckBuildingState();
 						App->audio->PlayFx(App->audio->GetFX().button);
+						App->audio->PlayFx(App->audio->GetFX().repairBuild);
 					}
 					else
 						App->audio->PlayFx(App->audio->GetFX().errorButt);
