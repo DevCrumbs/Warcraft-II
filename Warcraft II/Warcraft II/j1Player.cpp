@@ -947,22 +947,9 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 					}
 				}
 			}
-/*			if ((staticEntity->staticEntityType == EntityType_TOWN_HALL || staticEntity->staticEntityType == EntityType_BARRACKS) && ent->GetCurrLife() == ent->GetMaxLife())
-				hoverCheck = HoverCheck_Upgrate;
-			else if (ent->GetCurrLife() < ent->GetMaxLife())
-				hoverCheck = HoverCheck_Repair;
-			else
-				hoverCheck = HoverCheck_None;
-*/
-			/*hoverButtonStruct.isCreated = true;
-			hoverButtonStruct.prevEntity = hoverButtonStruct.currentEntity;
-			hoverButtonStruct.nextEntity = staticEntity;
-			*/
-			//DestroyHoverButton(ent);
 
 			break;
 		case EntitiesEvent_LEAVE:
-			//DestroyHoverButton(ent);
 			App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 			App->player->isMouseOnMine = false;
 			break;
@@ -1699,39 +1686,6 @@ UILifeBar* j1Player::CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTe
 	return ret;
 }
 
-/*void j1Player::CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity) 
-{
-	UIButton_Info InfoButton;
-	if (hoverCheck == HoverCheck_Repair) {
-		InfoButton.normalTexArea  = { 579,34,49,41 };
-		InfoButton.hoverTexArea   = { 629,34,49,41 };
-		InfoButton.pressedTexArea = { 679,34,49,41 };
-	}
-	else if (hoverCheck == HoverCheck_Upgrate) {
-		InfoButton.normalTexArea  = { 579,118,49,41 };
-		InfoButton.hoverTexArea   = { 629,118,49,41 };
-		InfoButton.pressedTexArea = { 679,118,49,41 };
-	}
-	InfoButton.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	InfoButton.verticalOrientation = VERTICAL_POS_CENTER;
-
-
-
-	if (hoverCheck != HoverCheck_None) {
-		hoverButtonStruct.hoverButton = App->gui->CreateUIButton({ pos.x + pos.w / 2, pos.y + pos.h / 2 }, InfoButton, this, nullptr, true);
-		hoverButtonStruct.currentEntity = staticEntity;
-		hoverButtonStruct.hoverButton->SetPriorityDraw(PriorityDraw_BUTTONSINGAME);
-	}
-}
-*/
-/*void j1Player::DestroyHoverButton(Entity* ent) {
-	if (hoverButtonStruct.currentEntity == ent || hoverButtonStruct.prevEntity == ent) {
-		App->gui->DestroyElement((UIElement**)&hoverButtonStruct.hoverButton);
-		hoverButtonStruct.currentEntity = nullptr;
-	}
-}
-*/
-
 void j1Player::CreateBarracksButtons()
 {
 	CreateSimpleButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 217, 2 }, produceFootmanButton);
@@ -1849,75 +1803,6 @@ void j1Player::CreateMageTowerButtons()
 	CreateSimpleButton({ 342,244,50,41 }, { 597, 244, 50, 41 }, { 852,244,50,41 }, { 217, 2 }, produceMageButton);
 }
 
-/*void j1Player::DestroyBuilding()
-{
-	StaticEntity* toDestroyEnt = (StaticEntity*)entitySelectedStats.entitySelected;
-
-	//Remove entity from the j1Player entitylist
-	switch (toDestroyEnt->staticEntityType) {
-	case EntityType_CHICKEN_FARM:
-	{
-		list<StaticEntity*>::const_iterator farm = chickenFarm.begin();
-		while (farm != chickenFarm.end()) {
-			if ((*farm) == toDestroyEnt) {
-				chickenFarm.remove(*farm++);
-			}
-			else
-				farm++;
-		}
-		toDestroyEnt->isRemove = true; //Remove entity
-	}
-	break;
-	case EntityType_SCOUT_TOWER:
-	{
-		list<StaticEntity*>::const_iterator tower = scoutTower.begin();
-		while (tower != scoutTower.end()) {
-			if ((*tower) == toDestroyEnt) {
-				scoutTower.remove(*tower++);
-			}
-			else
-				tower++;
-		}
-		toDestroyEnt->isRemove = true; //Remove entity
-	}
-	break;
-	case EntityType_PLAYER_GUARD_TOWER:
-	{
-		list<StaticEntity*>::const_iterator tower = guardTower.begin();
-		while (tower != guardTower.end()) {
-			if ((*tower) == toDestroyEnt) {
-				scoutTower.remove(*tower++);
-			}
-			else
-				tower++;
-		}
-		toDestroyEnt->isRemove = true; //Remove entity
-	}
-	break;
-	case EntityType_PLAYER_CANNON_TOWER:
-	{
-		list<StaticEntity*>::const_iterator tower = cannonTower.begin();
-		while (tower != cannonTower.end()) {
-			if ((*tower) == toDestroyEnt) {
-				scoutTower.remove(*tower++);
-			}
-			else
-				tower++;
-		}
-		toDestroyEnt->isRemove = true; //Remove entity
-	}
-	break;
-	case EntityType_GRYPHON_AVIARY:
-		gryphonAviary = nullptr;
-		toDestroyEnt->isRemove = true; //Remove entity
-		break;
-	default:
-		break;
-	}
-
-	App->audio->PlayFx(App->audio->GetFX().destroyBuild);
-}
-*/
 //This button have ACTIVE false, you wont see it
 void j1Player::CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button) {
 
@@ -2178,56 +2063,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->audio->PlayFx(App->audio->GetFX().errorButt);
 			}
 
-			/*if (hoverCheck == HoverCheck_Repair) {
-				if (currentGold < 500) {
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-				}
-				else {
-					App->audio->PlayFx(App->audio->GetFX().repairBuild, 0); //Repair building sound
-					hoverButtonStruct.currentEntity->SetCurrLife(hoverButtonStruct.currentEntity->GetMaxLife());
-					hoverButtonStruct.currentEntity->CheckBuildingState();
-					entitySelectedStats.HP->SetText(hoverButtonStruct.currentEntity->GetStringLife());
-					entitySelectedStats.lifeBar->SetLife(hoverButtonStruct.currentEntity->GetMaxLife());
-					currentGold -= 500;
-					App->scene->hasGoldChanged = true;
-				}
-			}
-			else if (hoverCheck == HoverCheck_Upgrate)
-			{
-				if (hoverButtonStruct.currentEntity == barracks) {
-					if (currentGold >= 1000) {
-						barracksUpgrade = true;
-						currentGold -= 1000;
-						App->scene->hasGoldChanged = true;
-						DestroyHoverButton(barracks);
-						App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
-					}
-					else
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-				}
-				if (hoverButtonStruct.currentEntity == townHall && townHallUpgrade) {
-					if (currentGold >= 500) {
-						keepUpgrade = true;
-						currentGold -= 500;
-						App->scene->hasGoldChanged = true;
-						DestroyHoverButton(townHall);
-						App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
-					}
-					else
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-				}
-				if (hoverButtonStruct.currentEntity == townHall) {
-					if (currentGold >= 1500) {
-						townHallUpgrade = true;
-						currentGold -= 1500;
-						App->scene->hasGoldChanged = true;
-						DestroyHoverButton(townHall);
-					}
-					else
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
-				}
-			}
-			*/
 			else if (UIelem == produceFootmanButton) {
 				if (currentGold >= footmanCost && GetGroupSpawningSize(barracksSpawningListUI) <= maxSpawnQueueSize) {
 

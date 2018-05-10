@@ -25,17 +25,6 @@ enum TerenasDialogEvents;
 enum StaticEntitySize;
 struct UnitInfo;
 
-struct HoverButton
-{
-	UIButton* hoverButton = nullptr;
-	StaticEntity* currentEntity = nullptr;
-	StaticEntity* nextEntity = nullptr;
-	StaticEntity* prevEntity = nullptr;
-
-	bool isCreated = false;
-
-};
-
 struct HoverInfo
 {
 	UILabel* cost = nullptr;
@@ -147,8 +136,6 @@ public:
 	UIImage * CreateGroupIcon(iPoint iconPos, SDL_Rect texArea, bool isActive = true);
 	UILifeBar* CreateGroupLifeBar(iPoint lifeBarPos, SDL_Rect backgroundTexArea, SDL_Rect barTexArea, bool isActive = true);
 	
-	//void CreateHoverButton(HoverCheck hoverCheck, SDL_Rect pos, StaticEntity* staticEntity);
-	//void DestroyHoverButton(Entity* ent);
 	void CreateSimpleButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateSimpleSelectionButton(SDL_Rect normal, SDL_Rect hover, SDL_Rect pressed, iPoint pos, UIButton* &button);
 	void CreateBarracksButtons();
