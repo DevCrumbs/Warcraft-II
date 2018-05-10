@@ -9,6 +9,7 @@
 #include "j1Map.h"
 #include "j1Movement.h"
 #include "j1Collision.h"
+#include "j1Particles.h"
 
 Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), barracksInfo(barracksInfo)
 {
@@ -49,11 +50,16 @@ Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const Ba
 		this->constructionTimer.Start();
 		buildingState = BuildingState_Building;
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+
+		//Construction peasants
+		peasants = App->particles->AddParticle(App->particles->peasantMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
+
 	}
 	
 	// Collision
 	CreateEntityCollider(EntitySide_Player, true);
 	entityCollider->isTrigger = true;
+
 }
 
 void Barracks::Move(float dt)
@@ -97,6 +103,7 @@ void Barracks::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= constructionTime * 1000) {
 		texArea = &barracksInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
+		peasants->isRemove = true;
 	}
 
 	//It isnt used anymore

@@ -9,6 +9,7 @@
 #include "j1Map.h"
 #include "j1Movement.h"
 #include "j1Collision.h"
+#include "j1Particles.h"
 
 GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), gryphonAviaryInfo(gryphonAviaryInfo)
 {
@@ -45,6 +46,9 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife
 	// Collision
 	CreateEntityCollider(EntitySide_Player, true);
 	entityCollider->isTrigger = true;
+
+	//Construction peasants
+	peasants = App->particles->AddParticle(App->particles->peasantMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
 }
 
 void GryphonAviary::Move(float dt)
@@ -53,8 +57,10 @@ void GryphonAviary::Move(float dt)
 		HandleInput(EntityEvent);
 	UpdateAnimations(dt);
 
-	if (constructionTimer.Read() >= (constructionTime * 1000))
+	if (constructionTimer.Read() >= (constructionTime * 1000)) {
 		isBuilt = true;
+		peasants->isRemove = true;
+	}
 }
 
 // Animations

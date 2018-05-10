@@ -10,6 +10,7 @@
 #include "j1Pathfinding.h"
 #include "j1Collision.h"
 #include "j1Movement.h"
+#include "j1Particles.h"
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
@@ -40,6 +41,9 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		this->constructionTimer.Start();
 		buildingState = BuildingState_Building;
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+
+		//Construction peasants
+		peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 	}
 
 	// Collision
@@ -67,6 +71,7 @@ void ChickenFarm::Move(float dt)
 		isBuilt = true;
 		App->player->currentFood += 3;
 		App->scene->hasFoodChanged = true;
+		peasants->isRemove = true;
 	}
 }
 

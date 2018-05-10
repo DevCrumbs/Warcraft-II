@@ -32,6 +32,8 @@ private:
 
 	GryphonAviaryInfo gryphonAviaryInfo;
 	EntitiesEvent EntityEvent = EntitiesEvent_CREATED;
+
+	Particle* peasants = nullptr;
 };
 
 #endif //__GryphonAviary_H__
