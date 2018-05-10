@@ -101,7 +101,7 @@ void UIMinimap::Draw() const
 	for (list<DynamicEntity*>::iterator iterator = (*activeDynamicEntities).begin(); iterator != (*activeDynamicEntities).end(); ++iterator)
 	{
 		SDL_Rect rect{ 0,0,0,0 };
-		if (App->fow->isActive && (*iterator)->entitySide != EntitySide_Player)
+		if (App->fow->isActive && (*iterator)->entitySide != EntitySide_Player && (*iterator)->entitySide != EntitySide_EnemyShip)
 		{
 				iPoint pos = (*iterator)->GetLastSeenTile();
 				if (pos.x < 0 || pos.y < 0)
