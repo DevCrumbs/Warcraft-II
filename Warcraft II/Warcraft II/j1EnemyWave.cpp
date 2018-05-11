@@ -40,7 +40,7 @@ bool j1EnemyWave::Start()
 
 	// Reset waves general info
 	totalWaves = 0;
-	isActiveWaves = true;
+	isActiveWaves = false;
 	totalPhasesOfCurrWave = 0;
 	phasesOfCurrWave = 0;
 	isStartWave = false;

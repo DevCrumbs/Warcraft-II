@@ -405,7 +405,11 @@ void Goal_AttackTarget::Terminate()
 		return;
 
 	/// The target has been removed by this/another unit
-	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
+	if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
+
+		if (targetInfo->isRemovedFromSight)
+
+			targetInfo->target->RemoveAttackingUnit(owner);
 
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
@@ -961,9 +965,6 @@ GoalStatus Goal_HitTarget::Process(float dt)
 	/// The target has died
 	else if (!targetInfo->IsTargetPresent()) {
 
-		/// Remove the target from all other units lists
-		App->entities->InvalidateTargetInfo(targetInfo->target);
-
 		// If the target is a Sheep or a Boar, apply health to the unit that killed it (this unit)
 		if (targetInfo->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
@@ -1002,6 +1003,9 @@ GoalStatus Goal_HitTarget::Process(float dt)
 					App->particles->AddParticle(App->particles->enemyHealth, pos);
 			}
 		}
+
+		/// Remove the target from all other units lists
+		App->entities->InvalidateTargetInfo(targetInfo->target);
 
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;

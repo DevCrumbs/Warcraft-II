@@ -81,7 +81,7 @@ DynamicEntity::~DynamicEntity()
 	isSpawned = true;
 
 	// Remove Attack
-	App->entities->InvalidateTargetInfo(this);
+	//App->entities->InvalidateTargetInfo(this);
 	currTarget = nullptr;
 
 	// Remove Colliders
