@@ -759,6 +759,9 @@ bool DynamicEntity::SetIsRemovedFromSightTargetInfo(Entity* target)
 
 		if ((*it)->target == target) {
 
+			if ((*it)->target != nullptr)
+				(*it)->target->RemoveAttackingUnit(this);
+
 			(*it)->isRemovedFromSight = true;
 			return true;
 		}

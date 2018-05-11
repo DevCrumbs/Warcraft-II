@@ -407,10 +407,6 @@ void Goal_AttackTarget::Terminate()
 	/// The target has been removed by this/another unit
 	if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
 
-		if (targetInfo->isRemovedFromSight)
-
-			targetInfo->target->RemoveAttackingUnit(owner);
-
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
 
