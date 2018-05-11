@@ -219,10 +219,10 @@ void j1Menu::CreateMenu()
 	imageInfo.texArea = { 0,954,776,600 };
 	mainMenuImg = App->gui->CreateUIImage({ 0,0 }, imageInfo, this, nullptr);
 	menuImgAnim.speed = 5;
-	menuImgAnim.PushBack({ 0,954,776,600 });
-	menuImgAnim.PushBack({ 829,951,776,600 });
-	menuImgAnim.PushBack({ 0,1564,776,600 });
-	menuImgAnim.PushBack({ 876,1563,776,600 });
+	menuImgAnim.PushBack({ 0,954,800,600 });
+	menuImgAnim.PushBack({ 829,951,800,600 });
+	menuImgAnim.PushBack({ 0,1564,800,600 });
+	menuImgAnim.PushBack({ 876,1563,800,600 });
 	mainMenuImg->StartAnimation(menuImgAnim);
 	mainMenuImg->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 }
