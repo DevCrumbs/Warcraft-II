@@ -111,7 +111,6 @@ void Grunt::Move(float dt)
 		int x = 1;
 	}
 
-
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
 	if (singleUnit != nullptr) {

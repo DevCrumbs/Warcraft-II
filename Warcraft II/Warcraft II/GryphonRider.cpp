@@ -165,7 +165,7 @@ void GryphonRider::Move(float dt)
 			/// The unit could be attacking before this command
 			if (currTarget != nullptr) {
 
-				if (!currTarget->isRemoved)
+				if (!currTarget->isRemoved && currTarget->target != nullptr)
 
 					currTarget->target->RemoveAttackingUnit(this);
 
