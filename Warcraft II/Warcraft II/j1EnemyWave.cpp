@@ -72,7 +72,7 @@ bool j1EnemyWave::Start()
 
 	secondsToNextWave = MINUTES_TO_SECONDS(secondsToNextWave);
 
-	secondsToNextWave = 0;
+	//secondsToNextWave = 0;
 
 	return ret;
 }
