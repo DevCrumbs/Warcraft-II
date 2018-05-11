@@ -1583,7 +1583,7 @@
       <atlas name = "data/assets/textures/backgrounds/finishGame.png"/>
     </spritesheets>
     
-    <winScreen speed="4" loop="1">
+    <winScreen speed="6" loop="1">
       <frame x="0" y="2200" w="800" h="600"/>
       <frame x="800" y="2200" w="800" h="600"/>
       <frame x="1600" y="2200" w="800" h="600"/>
@@ -1594,7 +1594,7 @@
     </winScreen>
 
 
-    <loseScreen speed="4" loop="1">
+    <loseScreen speed="6" loop="1">
       <frame x="0" y="4000" w="800" h="600"/>
       <frame x="800" y="4000" w="800" h="600"/>
       <frame x="1600" y="4000" w="800" h="600"/>
