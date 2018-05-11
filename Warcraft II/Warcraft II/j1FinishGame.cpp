@@ -32,6 +32,23 @@ bool j1FinishGame::Awake(pugi::xml_node& config) {
 	//Music paths
 	victoryMusicPath = config.child("audioPaths").child("victoryScreen").attribute("path").as_string();
 	defeatMusicPath = config.child("audioPaths").child("defeatScreen").attribute("path").as_string();
+	
+	//Win background
+	pugi::xml_node winScreen = config.child("winScreen");
+	winBgAnimation.speed = winScreen.attribute("speed").as_float();
+	winBgAnimation.loop = winScreen.attribute("loop").as_bool();
+	for (winScreen = winScreen.child("frame"); winScreen; winScreen = winScreen.next_sibling("frame")) {
+		winBgAnimation.PushBack({ winScreen.attribute("x").as_int(), winScreen.attribute("y").as_int(), winScreen.attribute("w").as_int(), winScreen.attribute("h").as_int() });
+	}
+
+	//Lose background
+	pugi::xml_node loseScreen = config.child("loseScreen");
+	loseBgAnimation.speed = loseScreen.attribute("speed").as_float();
+	loseBgAnimation.loop = loseScreen.attribute("loop").as_bool();
+	for (loseScreen = loseScreen.child("frame"); loseScreen; loseScreen = loseScreen.next_sibling("frame")) {
+		loseBgAnimation.PushBack({ loseScreen.attribute("x").as_int(), loseScreen.attribute("y").as_int(), loseScreen.attribute("w").as_int(), loseScreen.attribute("h").as_int() });
+	}
+
 
 	return true;
 }
@@ -44,11 +61,12 @@ bool j1FinishGame::Start()
 	// Get screen size
 	App->render->camera.x = App->render->camera.y = 0;
 	uint width = 0, height = 0, scale = 0;
-
+	
 	App->win->GetWindowSize(width, height);
 	scale = App->win->GetScale();
 
 	screen = { 0, 0, static_cast<int>(width * scale), static_cast<int>(height * scale) };
+
 	LoadSceneOne(App->player->isWin);
 
 	bg = App->tex->Load(bgTexName.data());
@@ -73,6 +91,9 @@ bool j1FinishGame::CleanUp()
 	if (!App->gui->isGuiCleanUp)
 		DeleteScene();
 
+	//Delete background
+	App->gui->RemoveElem((UIElement**)&background);
+	
 	active = false;
 
 	return ret;
@@ -164,8 +185,24 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 
 	labelInfo.text = "Continue";
 	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, continueButt));
+	
+	//Backgrounds
+	if (App->player->isWin) {
+		UIImage_Info imageInfo;
+		imageInfo.texArea = { 0, 2200, 800, 600 };
+		background = App->gui->CreateUIImage({ 0,0 }, imageInfo, this, nullptr);
+		background->StartAnimation(winBgAnimation);
+		background->SetPriorityDraw(PriorityDraw_FRAMEWORK);
+	}
 
-
+	else if (!App->player->isWin)
+	{ 
+		UIImage_Info imageInfo;
+		imageInfo.texArea = { 0, 4000, 800, 600 };
+		background = App->gui->CreateUIImage({ 0,0 }, imageInfo, this, nullptr);
+		background->StartAnimation(loseBgAnimation);
+		background->SetPriorityDraw(PriorityDraw_FRAMEWORK);
+	}
 }
 
 void j1FinishGame::ArtifactWon(uint time)

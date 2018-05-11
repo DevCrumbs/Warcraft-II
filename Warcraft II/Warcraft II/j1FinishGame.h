@@ -40,6 +40,12 @@ private:
 	vector<UILabel*> labelVector;
 	vector<UIImage*> imageVector;
 	UIButton* continueButt = nullptr, *returnButt = nullptr;
+	
+	//Background
+	UIImage* background = nullptr;
+	Animation winBgAnimation;
+	Animation loseBgAnimation;
+
 
 	SDL_Rect screen;
 
