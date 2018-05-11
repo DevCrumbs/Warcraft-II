@@ -411,13 +411,8 @@ void Goal_AttackTarget::Terminate()
 		return;
 
 	/// The target has been removed by this/another unit
-	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
+	if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
 
-		// Remove definitely the target from this owner
-		owner->RemoveTargetInfo(targetInfo);
-	}
-	else if (targetInfo->target->GetCurrLife() <= 0 || targetInfo->target->isRemove) {
-	
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
 	}
