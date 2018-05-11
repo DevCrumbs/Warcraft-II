@@ -52,8 +52,6 @@ void j1Map::Draw()
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::PapayaWhip);
 
-	GetEntitiesOnRoomByType(playerBase, EntityType_FOOTMAN);
-
 	for (list<MapLayer*>::const_iterator layer = data.layers.begin(); layer != data.layers.end(); ++layer)
 	{
 		if (!(*layer)->properties.GetProperty("Draw", false))
