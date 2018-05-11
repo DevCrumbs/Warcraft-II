@@ -236,7 +236,7 @@ void GryphonRider::Move(float dt)
 				if (singleUnit->IsFittingTile()) {
 
 					brain->RemoveAllSubgoals();
-					brain->AddGoal_AttackTarget(currTarget);
+					brain->AddGoal_AttackTarget(newTarget);
 
 					unitState = UnitState_AttackTarget;
 					unitCommand = UnitCommand_NoCommand;

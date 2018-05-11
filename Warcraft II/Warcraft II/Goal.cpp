@@ -425,9 +425,9 @@ void Goal_AttackTarget::Terminate()
 
 		if (!App->entities->isEntityFactoryCleanUp) {
 
-			//if (targetInfo->target == owner->GetCurrTarget())
+			if (targetInfo->target == owner->GetCurrTarget())
 
-				//owner->InvalidateCurrTarget();
+				owner->InvalidateCurrTarget();
 
 			targetInfo->target->RemoveAttackingUnit(owner);
 

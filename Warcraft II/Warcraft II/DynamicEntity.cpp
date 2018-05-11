@@ -672,6 +672,7 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 
 		if (target == currTarget->target) {
 			currTarget->isRemovedFromSight = false;
+			newTarget = currTarget;
 			return true;
 		}
 	}
@@ -707,6 +708,7 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 		if (!targetInfo->isRemoved) {
 
 			currTarget = targetInfo;
+			newTarget = currTarget;
 			ret = true;
 		}
 	}

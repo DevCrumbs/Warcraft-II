@@ -234,7 +234,7 @@ void ElvenArcher::Move(float dt)
 				if (singleUnit->IsFittingTile()) {
 
 					brain->RemoveAllSubgoals();
-					brain->AddGoal_AttackTarget(currTarget);
+					brain->AddGoal_AttackTarget(newTarget);
 
 					unitState = UnitState_AttackTarget;
 					unitCommand = UnitCommand_NoCommand;
@@ -404,7 +404,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 				LOG("Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
@@ -477,7 +477,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 				LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
@@ -516,7 +516,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 				LOG("NO MORE Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
@@ -547,7 +547,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 				LOG("NO MORE Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
