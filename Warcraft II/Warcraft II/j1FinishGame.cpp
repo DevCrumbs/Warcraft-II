@@ -187,7 +187,7 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, continueButt));
 	
 	//Backgrounds
-	if (isWin) {
+	if (App->player->isWin) {
 		UIImage_Info imageInfo;
 		imageInfo.texArea = { 0, 2200, 800, 600 };
 		background = App->gui->CreateUIImage({ 0,0 }, imageInfo, this, nullptr);
@@ -195,7 +195,7 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 		background->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 	}
 
-	else if (!isWin)
+	else if (!App->player->isWin)
 	{ 
 		UIImage_Info imageInfo;
 		imageInfo.texArea = { 0, 4000, 800, 600 };
