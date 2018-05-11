@@ -188,9 +188,9 @@ void j1Menu::CreateMenu()
 {
 	UIButton_Info buttonInfo;
 	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
-	playButt = App->gui->CreateUIButton({ 600, 350 }, buttonInfo, this, nullptr);
-	settingsButt = App->gui->CreateUIButton({ 600, 425 }, buttonInfo, this, nullptr);
-	exitButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
+	playButt = App->gui->CreateUIButton({ 590, 307 }, buttonInfo, this, nullptr);
+	settingsButt = App->gui->CreateUIButton({ 590, 382 }, buttonInfo, this, nullptr);
+	exitButt = App->gui->CreateUIButton({ 590, 457 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
