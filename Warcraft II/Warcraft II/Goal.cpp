@@ -233,7 +233,7 @@ void Goal_AttackTarget::Activate()
 		return;
 	}
 	/// The target has been removed by another unit
-	else if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
+	else if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		goalStatus = GoalStatus_Completed;
 		return;
@@ -326,6 +326,12 @@ void Goal_AttackTarget::Activate()
 
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
 
+	if (targetInfo->isRemovedFromSight) {
+
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+
 	if (owner->GetCurrTarget() == nullptr)
 
 		owner->SetCurrTarget(targetInfo->target);
@@ -341,7 +347,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 		return goalStatus;
 	}
 	/// The target has been removed by another unit
-	if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
+	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		if (owner->GetSingleUnit()->IsFittingTile()) {
 
@@ -405,7 +411,7 @@ void Goal_AttackTarget::Terminate()
 		return;
 
 	/// The target has been removed by this/another unit
-	if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
+	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
@@ -911,7 +917,7 @@ void Goal_HitTarget::Activate()
 		return;
 	}
 	/// The target has been removed by another unit
-	else if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
+	else if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		goalStatus = GoalStatus_Completed;
 		return;
@@ -942,6 +948,12 @@ void Goal_HitTarget::Activate()
 
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
 
+	if (targetInfo->isRemovedFromSight) {
+
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+
 	if (owner->GetCurrTarget() == nullptr)
 
 		owner->SetCurrTarget(targetInfo->target);
@@ -957,7 +969,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		return goalStatus;
 	}
 	/// The target has been removed by another unit
-	if (targetInfo->isRemoved || targetInfo->isRemovedFromSight || targetInfo->target == nullptr) {
+	if (targetInfo->isRemoved || targetInfo->target == nullptr) {
 
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;
@@ -1232,6 +1244,12 @@ GoalStatus Goal_HitTarget::Process(float dt)
 	}
 
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
+
+	if (targetInfo->isRemovedFromSight) {
+
+		goalStatus = GoalStatus_Failed;
+		return goalStatus;
+	}
 
 	if (owner->GetCurrTarget() == nullptr)
 

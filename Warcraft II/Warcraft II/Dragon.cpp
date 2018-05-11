@@ -829,10 +829,10 @@ bool Dragon::ChangeAnimation()
 	else if (isHitting) {
 
 		// Set the direction of the unit as the orientation towards the target
-		/*
 		if (currTarget != nullptr) {
 
-			if (!currTarget->isRemoved) {
+			if (!currTarget->isRemoved && !currTarget->isRemovedFromSight 
+				&& currTarget->target != nullptr && currTarget->IsTargetPresent()) {
 
 				fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
 
@@ -846,7 +846,6 @@ bool Dragon::ChangeAnimation()
 				SetUnitDirectionByValue(orientation);
 			}
 		}
-		*/
 
 		switch (GetUnitDirection()) {
 
