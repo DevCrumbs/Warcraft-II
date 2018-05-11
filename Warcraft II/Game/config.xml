@@ -13,9 +13,9 @@
 
   <window>
     <resolution width="800" height="600" scale="1"/>
-    <fullscreen value="false"/>
+    <fullscreen value="true"/>
     <borderless value="false"/>
-    <resizable value="true"/>
+    <resizable value="false"/>
     <fullscreen_window value="false"/>
     <icon name="data/assets/textures/UI/logo.bmp"/>
   </window>

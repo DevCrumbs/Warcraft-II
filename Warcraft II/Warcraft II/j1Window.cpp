@@ -55,7 +55,8 @@ bool j1Window::Awake(pugi::xml_node& config)
 
 		if (fullscreen)
 		{
-			flags |= SDL_WINDOW_FULLSCREEN;
+	//		flags |= SDL_WINDOW_FULLSCREEN;
+			isScreenUpdate = true;
 		}
 
 		if (borderless)
@@ -96,6 +97,16 @@ bool j1Window::Awake(pugi::xml_node& config)
 	}
 
 	return ret;
+}
+
+bool j1Window::Update(float dt)
+{
+	if (isScreenUpdate)
+	{
+		fullscreen = !fullscreen;
+		SetFullscreen();
+	}
+	return true;
 }
 
 // Called before quitting

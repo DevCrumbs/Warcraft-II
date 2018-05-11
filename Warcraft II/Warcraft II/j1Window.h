@@ -18,6 +18,8 @@ public:
 	// Called before render is available
 	bool Awake(pugi::xml_node&);
 
+	bool Update(float dt);
+
 	// Called before quitting
 	bool CleanUp();
 
@@ -40,6 +42,8 @@ public:
 	SDL_Surface* iconSurface = nullptr;
 
 	bool fullscreen = false;
+
+	bool isScreenUpdate = false;
 
 	// Screen parameters
 	uint		width = 0;
