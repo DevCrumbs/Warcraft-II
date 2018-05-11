@@ -409,7 +409,11 @@ void Goal_AttackTarget::Terminate()
 
 		// Remove definitely the target from this owner
 		owner->RemoveTargetInfo(targetInfo);
-
+	}
+	else if (targetInfo->target->GetCurrLife() <= 0 || targetInfo->target->isRemove) {
+	
+		// Remove definitely the target from this owner
+		owner->RemoveTargetInfo(targetInfo);
 	}
 	else {
 
