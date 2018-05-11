@@ -72,6 +72,14 @@ ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, co
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
+
+	// Collisions
+	CreateEntityCollider(EntitySide_Player);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+	entityCollider->isTrigger = true;
+	sightRadiusCollider->isTrigger = true;
+	attackRadiusCollider->isTrigger = true;
 }
 
 void ElvenArcher::Move(float dt)
@@ -84,19 +92,6 @@ void ElvenArcher::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
-
-	if (!isSpawned) {
-	
-		// Collisions
-		CreateEntityCollider(EntitySide_Player);
-		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-		attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
-		entityCollider->isTrigger = true;
-		sightRadiusCollider->isTrigger = true;
-		attackRadiusCollider->isTrigger = true;
-
-		isSpawned = true;
-	}
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -163,7 +158,7 @@ void ElvenArcher::Move(float dt)
 			/// The unit could be attacking before this command
 			if (currTarget != nullptr) {
 
-				if (!currTarget->isRemoved)
+				if (!currTarget->isRemoved && currTarget->target != nullptr)
 
 					currTarget->target->RemoveAttackingUnit(this);
 
@@ -409,8 +404,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// 1. UPDATE TARGETS LIST
@@ -482,8 +477,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to true
@@ -521,8 +516,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("NO MORE Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isSightSatisfied to false
@@ -533,7 +528,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					(*it)->isAttackSatisfied = false;
+					//(*it)->isAttackSatisfied = false;
 					//(*it)->target->RemoveAttackingUnit(this);
 					SetIsRemovedFromSightTargetInfo((*it)->target);
 					break;
@@ -552,8 +547,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("NO MORE Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to false

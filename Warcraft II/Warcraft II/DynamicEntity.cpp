@@ -81,7 +81,7 @@ DynamicEntity::~DynamicEntity()
 	isSpawned = true;
 
 	// Remove Attack
-	App->entities->InvalidateTargetInfo(this);
+	//App->entities->InvalidateTargetInfo(this);
 	currTarget = nullptr;
 
 	// Remove Colliders
@@ -759,6 +759,9 @@ bool DynamicEntity::SetIsRemovedFromSightTargetInfo(Entity* target)
 
 		if ((*it)->target == target) {
 
+			if ((*it)->target != nullptr)
+				(*it)->target->RemoveAttackingUnit(this);
+
 			(*it)->isRemovedFromSight = true;
 			return true;
 		}
@@ -815,7 +818,7 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENT
 
 	while (it != targets.end()) {
 
-		if (!(*it)->isRemoved && (*it)->target->GetIsValid()) {
+		if (!(*it)->isRemoved && !(*it)->isRemovedFromSight && (*it)->target->GetIsValid()) {
 
 			if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_DYNAMIC_ENTITY) {
 
@@ -994,7 +997,7 @@ bool TargetInfo::IsTargetPresent() const
 		return false;
 
 	// The target is dead
-	if (target->GetCurrLife() <= 0)
+	if (target->GetCurrLife() <= 0 || target->isRemove)
 		return false;
 
 	return true;
