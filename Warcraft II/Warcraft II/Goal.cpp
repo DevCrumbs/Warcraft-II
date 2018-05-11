@@ -362,7 +362,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 				while (it != buildingTiles.end()) {
 
-					if (owner->GetSingleUnit()->currTile.DistanceManhattan(*it) <= 1)
+					if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1)
 
 						targetInfo->isAttackSatisfied = true;
 
@@ -419,9 +419,9 @@ void Goal_AttackTarget::Terminate()
 
 		if (!App->entities->isEntityFactoryCleanUp) {
 
-			if (targetInfo->target == owner->GetCurrTarget())
+			//if (targetInfo->target == owner->GetCurrTarget())
 
-				owner->InvalidateCurrTarget();
+				//owner->InvalidateCurrTarget();
 
 			targetInfo->target->RemoveAttackingUnit(owner);
 
