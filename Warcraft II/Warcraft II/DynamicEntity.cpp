@@ -997,7 +997,7 @@ bool TargetInfo::IsTargetPresent() const
 		return false;
 
 	// The target is dead
-	if (target->GetCurrLife() <= 0)
+	if (target->GetCurrLife() <= 0 || target->isRemove)
 		return false;
 
 	return true;

@@ -76,6 +76,14 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
 	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
+	// Collisions
+	CreateEntityCollider(EntitySide_Enemy);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+	entityCollider->isTrigger = true;
+	sightRadiusCollider->isTrigger = true;
+	attackRadiusCollider->isTrigger = true;
+
 	// Different behaviors for units on the base and units around the map
 	if (!App->map->IsOnBase(spawnPos))
 
@@ -92,19 +100,6 @@ void Grunt::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
-
-	if (!isSpawned) {
-	
-		// Collisions
-		CreateEntityCollider(EntitySide_Enemy);
-		sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-		attackRadiusCollider = CreateRhombusCollider(ColliderType_EnemyAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
-		entityCollider->isTrigger = true;
-		sightRadiusCollider->isTrigger = true;
-		attackRadiusCollider->isTrigger = true;
-
-		isSpawned = true;
-	}
 
 	if (isSelected)
 	{
@@ -463,7 +458,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					(*it)->isAttackSatisfied = false;
+					//(*it)->isAttackSatisfied = false;
 					//(*it)->target->RemoveAttackingUnit(this);
 					SetIsRemovedFromSightTargetInfo((*it)->target);
 					break;

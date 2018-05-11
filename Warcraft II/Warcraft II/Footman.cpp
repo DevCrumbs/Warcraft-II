@@ -71,6 +71,14 @@ Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 
 	lifeBar = App->gui->CreateUILifeBar({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY }, lifeBarInfo, (j1Module*)this, nullptr, true);
 	lifeBar->SetPriorityDraw(PriorityDraw_LIFEBAR_INGAME);
+
+	// Collisions
+	CreateEntityCollider(EntitySide_Player);
+	sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
+	attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
+	entityCollider->isTrigger = true;
+	sightRadiusCollider->isTrigger = true;
+	attackRadiusCollider->isTrigger = true;
 }
 
 void Footman::Move(float dt)
@@ -83,19 +91,6 @@ void Footman::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
-
-	if (!isSpawned) {
-	
-		// Collisions
-		CreateEntityCollider(EntitySide_Player);
-		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, this->unitInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
-		attackRadiusCollider = CreateRhombusCollider(ColliderType_PlayerAttackRadius, this->unitInfo.attackRadius, DistanceHeuristic_DistanceTo);
-		entityCollider->isTrigger = true;
-		sightRadiusCollider->isTrigger = true;
-		attackRadiusCollider->isTrigger = true;
-
-		isSpawned = true;
-	}
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -532,7 +527,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					(*it)->isAttackSatisfied = false;
+					//(*it)->isAttackSatisfied = false;
 					//(*it)->target->RemoveAttackingUnit(this);
 					SetIsRemovedFromSightTargetInfo((*it)->target);
 					break;
