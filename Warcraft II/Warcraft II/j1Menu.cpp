@@ -275,6 +275,11 @@ void j1Menu::CreateSettings() {
 	artifacts.push_back(AddArtifact({ 275, 50 }, App->gui->skullText, App->gui->skullAnim));
 	artifacts.push_back(AddArtifact({ 450, 50 }, App->gui->eyeText, App->gui->eyeAnim));
 	artifacts.push_back(AddArtifact({ 625,125 }, App->gui->scepterText, App->gui->scepterAnim));
+
+	UIImage_Info imageInfo;
+	imageInfo.texArea = { 1722, 950, 800, 600 };
+	settingsBackground = App->gui->CreateUIImage({ 0, 0 }, imageInfo, this, nullptr);
+	settingsBackground->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 }
 
 void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
@@ -441,6 +446,7 @@ void j1Menu::DeleteSettings() {
 	App->gui->RemoveElem((UIElement**)&audioMusic.name);
 	App->gui->RemoveElem((UIElement**)&audioMusic.value);
 	App->gui->RemoveElem((UIElement**)&audioMusic.slider);
+	App->gui->RemoveElem((UIElement**)&settingsBackground);
 
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{

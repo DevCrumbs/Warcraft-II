@@ -85,6 +85,7 @@ private:
 
 	//Main Menu
 	UIImage* mainMenuImg = nullptr;
+	UIImage* settingsBackground = nullptr;
 	UIImage* logoImg = nullptr;
 	UIButton* playButt = nullptr;
 	UILabel*  playLabel = nullptr;
