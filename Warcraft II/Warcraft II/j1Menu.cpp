@@ -182,9 +182,10 @@ bool j1Menu::CleanUp()
 {
 	bool ret = true;
 
-	if (!App->gui->isGuiCleanUp)
+	if (!App->gui->isGuiCleanUp) {
 		DeteleMenu();
-	App->gui->RemoveElem((UIElement**)&settingsBackground);
+		App->gui->RemoveElem((UIElement**)&settingsBackground);
+	}
 
 	active = false;
 
