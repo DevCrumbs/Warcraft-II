@@ -22,7 +22,8 @@ enum MenuActions
 	MenuActions_SETTINGS,
 	MenuActions_RETURN,
 	MenuActions_SLIDERFX,
-	MenuActions_SLIDERMUSIC
+	MenuActions_SLIDERMUSIC,
+	MenuActions_NEWGAME,
 };
 struct SliderStruct
 {
@@ -65,8 +66,11 @@ public:
 	void DeleteSettings();
 	void CreateLoading();
 	void DeteleMenu();
+	void CreateNewGame();
+	void DestroyNewGame();
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
+
 
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
 	void UpdateSlider(SliderStruct &sliderStruct);
@@ -93,6 +97,7 @@ private:
 	UILabel*  exitLabel = nullptr;
 	UIButton* settingsButt = nullptr;
 	UILabel*  settingsLabel = nullptr;
+
 	vector<UIImage*> artifacts;
 	Animation menuImgAnim;
 
@@ -102,9 +107,13 @@ private:
 	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 
-	Particle* parchment = nullptr;
+	//Start New Game
+
+	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;
+	UILabel* easyOneLabel = nullptr, *easyTwoLabel = nullptr, *mediumOneLabel = nullptr, *mediumTwoLabel = nullptr, *hardLabel = nullptr;
 
 	MenuActions menuActions;
+
 
 	//Audio path
 	string mainMenuMusicName;

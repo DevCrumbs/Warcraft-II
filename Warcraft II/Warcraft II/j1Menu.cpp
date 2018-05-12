@@ -107,18 +107,6 @@ bool j1Menu::PreUpdate()
 // Called each loop iteration
 bool j1Menu::Update(float dt)
 {
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
-		if (parchment != nullptr) {
-			parchment->isRemove = true;
-			parchment = nullptr;
-		}
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
-		App->audio->PlayFx(App->audio->GetFX().prisionerRescue, 0);
-	}
-	*/
 
 	switch (menuActions)
 	{
@@ -142,12 +130,19 @@ bool j1Menu::Update(float dt)
 	case MenuActions_RETURN:
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		DeleteSettings();
+		DestroyNewGame();
 		CreateMenu();
+		menuActions = MenuActions_NONE;
+		break;
+	case MenuActions_NEWGAME:
+		DeteleMenu();
+		CreateNewGame();
 		menuActions = MenuActions_NONE;
 		break;
 	default:
 		break;
 	}
+
 	return true;
 }
 
@@ -167,6 +162,7 @@ bool j1Menu::PostUpdate()
 	}
 	if (isExit)
 		ret = false;
+	App->render->DrawQuad({ App->input->GetMousePosition().x,App->input->GetMousePosition().y,175,134 }, 255, 255, 255, 255, true, false);
 
 	return ret;
 }
@@ -282,6 +278,52 @@ void j1Menu::CreateSettings() {
 	settingsBackground->SetPriorityDraw(PriorityDraw_FRAMEWORK);
 }
 
+void j1Menu::CreateNewGame()
+{
+	UIButton_Info buttonInfo;
+	buttonInfo.normalTexArea = { 20000, 0, 129, 33 };
+	returnButt = App->gui->CreateUIButton({ 600, 50 }, buttonInfo, this, nullptr);
+
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	labelInfo.normalColor = Black_;
+	labelInfo.hoverColor = ColorGreen;
+
+	labelInfo.text = "Return";
+	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
+
+	easyOneButt = App->gui->CreateUIButton({ 100, 200 }, buttonInfo, this, nullptr);
+	easyTwoButt = App->gui->CreateUIButton({ 100, 500 }, buttonInfo, this, nullptr);
+	mediumOneButt = App->gui->CreateUIButton({ 350, 200 }, buttonInfo, this, nullptr);
+	mediumTwoButt = App->gui->CreateUIButton({ 350, 500 }, buttonInfo, this, nullptr);
+	hardButt = App->gui->CreateUIButton({ 575, 400 }, buttonInfo, this, nullptr);
+
+	labelInfo.text = "Easy One";
+	easyOneLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, easyOneButt);
+	labelInfo.text = "Easy Two";
+	easyTwoLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, easyTwoButt);
+	labelInfo.text = "Medium One";
+	mediumOneLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, mediumOneButt);
+	labelInfo.text = "Hardddd";
+	hardLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, hardButt);
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	labelInfo.text = "Medium Two";
+	mediumTwoLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, mediumTwoButt);
+
+
+
+
+
+	UIImage_Info imageInfo;
+	imageInfo.texArea = { 1722, 950, 800, 600 };
+	settingsBackground = App->gui->CreateUIImage({ 0, 0 }, imageInfo, this, nullptr);
+	settingsBackground->SetPriorityDraw(PriorityDraw_FRAMEWORK);
+
+}
+
+
 void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
 
 	UILabel_Info labelInfo;
@@ -356,6 +398,17 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if (UIelem == returnButt)
 			returnLabel->SetColor(ColorGreen, true);
 
+		else if (UIelem == easyOneButt)
+			easyOneLabel->SetColor(ColorGreen, true);
+		else if (UIelem == easyTwoButt)
+			easyTwoLabel->SetColor(ColorGreen, true);
+		else if (UIelem == mediumOneButt)
+			mediumOneLabel->SetColor(ColorGreen, true);
+		else if (UIelem == mediumTwoButt)
+			mediumTwoLabel->SetColor(ColorGreen, true);
+		else if (UIelem == hardButt)
+			hardLabel->SetColor(ColorGreen, true);
+
 		break;
 	case UI_EVENT_MOUSE_LEAVE:
 		if (UIelem == playButt)
@@ -369,13 +422,24 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if (UIelem == returnButt)
 			returnLabel->SetColor(Black_, true);
 
+		else if (UIelem == easyOneButt)
+			easyOneLabel->SetColor(Black_, true);
+		else if (UIelem == easyTwoButt)
+			easyTwoLabel->SetColor(Black_, true);
+		else if (UIelem == mediumOneButt)
+			mediumOneLabel->SetColor(Black_, true);
+		else if (UIelem == mediumTwoButt)
+			mediumTwoLabel->SetColor(Black_, true);
+		else if (UIelem == hardButt)
+			hardLabel->SetColor(Black_, true);
+
 		break;
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
 		if (UIelem == playButt) 
-			menuActions = MenuActions_PLAY;
+			menuActions = MenuActions_NEWGAME;
 		
 		else if (UIelem == exitButt) 
 			menuActions = MenuActions_EXIT;
@@ -453,4 +517,18 @@ void j1Menu::DeleteSettings() {
 		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
 
+}
+
+void j1Menu::DestroyNewGame()
+{
+	App->gui->RemoveElem((UIElement**)&easyTwoLabel);
+	App->gui->RemoveElem((UIElement**)&easyOneLabel);
+	App->gui->RemoveElem((UIElement**)&hardLabel);
+	App->gui->RemoveElem((UIElement**)&mediumOneLabel);
+	App->gui->RemoveElem((UIElement**)&mediumTwoLabel);
+	App->gui->RemoveElem((UIElement**)&easyOneButt);
+	App->gui->RemoveElem((UIElement**)&easyTwoButt);
+	App->gui->RemoveElem((UIElement**)&mediumTwoButt);
+	App->gui->RemoveElem((UIElement**)&mediumOneButt);
+	App->gui->RemoveElem((UIElement**)&hardButt);
 }
