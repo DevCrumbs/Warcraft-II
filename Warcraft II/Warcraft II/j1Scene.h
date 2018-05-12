@@ -279,6 +279,8 @@ public:
 	list<DynamicEntity*> units;
 	list<GroupSelectedElements> groupElementsList;
 
+	int mapDifficulty = 0;
+
 private:
 
 	j1Timer goldLabelColorTime;

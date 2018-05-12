@@ -463,6 +463,28 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			App->win->SetFullscreen();
 		}
+
+		else if (UIelem == easyOneButt)
+		{
+			menuActions = MenuActions_PLAY;
+		}
+		else if (UIelem == easyTwoButt)
+		{
+			menuActions = MenuActions_PLAY;
+		}
+		else if (UIelem == mediumOneButt)
+		{
+			menuActions = MenuActions_PLAY;
+		}
+		else if (UIelem == mediumTwoButt)
+		{
+			menuActions = MenuActions_PLAY;
+		}
+		else if (UIelem == hardButt)
+		{
+			menuActions = MenuActions_PLAY;
+		}
+
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;

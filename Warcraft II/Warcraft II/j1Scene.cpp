@@ -131,8 +131,11 @@ bool j1Scene::Start()
 		ret = App->map->Load(isometricMap.data());
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
-	else if (warcraftActive) {
-		ret = LoadNewMap(0);
+	else if (warcraftActive)
+	{
+		// Change when more maps are available
+		mapDifficulty = 0;
+		ret = LoadNewMap(mapDifficulty);
 	//	ret = App->map->Load("verticalSliceMap.tmx");
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
