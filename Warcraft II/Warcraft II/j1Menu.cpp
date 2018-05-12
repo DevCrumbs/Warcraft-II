@@ -113,8 +113,13 @@ bool j1Menu::Update(float dt)
 	case MenuActions_NONE:
 		break;
 	case MenuActions_PLAY_EASYONE:
+	case MenuActions_PLAY_EASYTWO:
+	case MenuActions_PLAY_MEDIUMONE:
+	case MenuActions_PLAY_MEDIUMTWO:
+	case MenuActions_PLAY_HARD:
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		isFadetoScene = true;
+		App->scene->mapDifficulty = menuActions;
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_SETTINGS:
@@ -142,7 +147,6 @@ bool j1Menu::Update(float dt)
 	default:
 		break;
 	}
-
 	return true;
 }
 
@@ -153,8 +157,8 @@ bool j1Menu::PostUpdate()
 
 	// Blit the background
 	//App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 70, 70, 70, 255);
-	SDL_Color brown = { 70,70,70,255 };
-	App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, brown, true, false, Layers_PreviewBuildingsQuad);
+	//SDL_Color brown = { 70,70,70,255 };  150-113   1920 - 1080   175 - 
+	//App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, brown, true, false, Layers_PreviewBuildingsQuad);
 
 	if (isFadetoScene) {
 		App->fade->FadeToBlack(this, App->scene);
@@ -162,7 +166,6 @@ bool j1Menu::PostUpdate()
 	}
 	if (isExit)
 		ret = false;
-	App->render->DrawQuad({ App->input->GetMousePosition().x,App->input->GetMousePosition().y,175,134 }, 255, 255, 255, 255, true, false);
 
 	return ret;
 }
@@ -311,11 +314,24 @@ void j1Menu::CreateNewGame()
 	labelInfo.text = "Medium Two";
 	mediumTwoLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, mediumTwoButt);
 
-
-
-
-
 	UIImage_Info imageInfo;
+
+	imageInfo.texArea = { 0, 50, 175, 131 };
+	artifacts.push_back(App->gui->CreateUIImage({ 75,50 }, imageInfo));
+
+	imageInfo.texArea = { 0, 50, 175, 131 };
+	artifacts.push_back(App->gui->CreateUIImage({ 75,300 }, imageInfo));
+
+	imageInfo.texArea = { 0, 50, 175, 131 };
+	artifacts.push_back(App->gui->CreateUIImage({ 350,50 }, imageInfo));
+
+	imageInfo.texArea = { 0, 50, 175, 131 };
+	artifacts.push_back(App->gui->CreateUIImage({ 350,300 }, imageInfo));
+
+	imageInfo.texArea = { 0, 50, 175, 131 };
+	artifacts.push_back(App->gui->CreateUIImage({ 550,350 }, imageInfo));
+
+
 	imageInfo.texArea = { 1722, 950, 800, 600 };
 	settingsBackground = App->gui->CreateUIImage({ 0, 0 }, imageInfo, this, nullptr);
 	settingsBackground->SetPriorityDraw(PriorityDraw_FRAMEWORK);
@@ -465,23 +481,23 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		else if (UIelem == easyOneButt)
 		{
-			menuActions = MenuActions_PLAY;
+			menuActions = MenuActions_PLAY_EASYONE;
 		}
 		else if (UIelem == easyTwoButt)
 		{
-			menuActions = MenuActions_PLAY;
+			menuActions = MenuActions_PLAY_EASYTWO;
 		}
 		else if (UIelem == mediumOneButt)
 		{
-			menuActions = MenuActions_PLAY;
+			menuActions = MenuActions_PLAY_MEDIUMONE;
 		}
 		else if (UIelem == mediumTwoButt)
 		{
-			menuActions = MenuActions_PLAY;
+			menuActions = MenuActions_PLAY_MEDIUMTWO;
 		}
 		else if (UIelem == hardButt)
 		{
-			menuActions = MenuActions_PLAY;
+			menuActions = MenuActions_PLAY_HARD;
 		}
 
 		break;
@@ -552,4 +568,9 @@ void j1Menu::DestroyNewGame()
 	App->gui->RemoveElem((UIElement**)&mediumTwoButt);
 	App->gui->RemoveElem((UIElement**)&mediumOneButt);
 	App->gui->RemoveElem((UIElement**)&hardButt);
+
+	for (; !artifacts.empty(); artifacts.pop_back())
+	{
+		App->gui->RemoveElem((UIElement**)&artifacts.back());
+	}
 }

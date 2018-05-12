@@ -116,7 +116,7 @@ private:
 	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;
 	UILabel* easyOneLabel = nullptr, *easyTwoLabel = nullptr, *mediumOneLabel = nullptr, *mediumTwoLabel = nullptr, *hardLabel = nullptr;
 
-	MenuActions menuActions;
+	MenuActions menuActions = MenuActions_NONE;
 
 
 	//Audio path
