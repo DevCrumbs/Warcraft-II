@@ -337,11 +337,6 @@ void j1Menu::CreateNewGame()
 	imageInfo.texArea = { 0, 50, 175, 131 };
 	artifacts.push_back(App->gui->CreateUIImage({ 550,350 }, imageInfo));
 
-
-	imageInfo.texArea = { 1722, 950, 800, 600 };
-	settingsBackground = App->gui->CreateUIImage({ 0, 0 }, imageInfo, this, nullptr);
-	settingsBackground->SetPriorityDraw(PriorityDraw_FRAMEWORK);
-
 }
 
 
@@ -563,7 +558,6 @@ void j1Menu::DeleteSettings() {
 
 void j1Menu::DestroyNewGame()
 {
-	App->gui->RemoveElem((UIElement**)&mainMenuImg);
 	App->gui->RemoveElem((UIElement**)&easyTwoLabel);
 	App->gui->RemoveElem((UIElement**)&easyOneLabel);
 	App->gui->RemoveElem((UIElement**)&hardLabel);
