@@ -27552,7 +27552,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 0" width="105" height="130" opacity="0.55">
+ <layer name="group 0" width="105" height="130">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -41209,7 +41209,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 1" width="105" height="130" opacity="0.5">
+ <layer name="group 1" width="105" height="130">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -54866,7 +54866,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 2" width="105" height="130" opacity="0.5">
+ <layer name="group 2" width="105" height="130">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -68523,7 +68523,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 3" width="105" height="130" opacity="0.52">
+ <layer name="group 3" width="105" height="130">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -82180,7 +82180,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 4" width="105" height="130" opacity="0.5">
+ <layer name="group 4" width="105" height="130" opacity="0.95">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -95837,7 +95837,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 5" width="105" height="130" opacity="0.5">
+ <layer name="group 5" width="105" height="130">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -100196,7 +100196,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="382"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -109494,7 +109494,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="logic" width="105" height="130" opacity="0.5">
+ <layer name="logic" width="105" height="130">
   <properties>
    <property name="logic" type="bool" value="true"/>
   </properties>
@@ -110783,8 +110783,8 @@
    <tile gid="0"/>
    <tile gid="397"/>
    <tile gid="0"/>
-   <tile gid="408"/>
    <tile gid="0"/>
+   <tile gid="408"/>
    <tile gid="0"/>
    <tile gid="395"/>
    <tile gid="0"/>
@@ -113537,7 +113537,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="387"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>

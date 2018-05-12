@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.1" orientation="orthogonal" renderorder="right-down" width="120" height="150" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="120" height="150" tilewidth="32" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" name="Wasteland" tilewidth="32" tileheight="32" spacing="1" tilecount="380" columns="19">
   <image source="summerTiles.png" width="626" height="659"/>
   <terraintypes>
@@ -36252,7 +36252,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 0" width="120" height="150" opacity="0.55">
+ <layer name="group 0" width="120" height="150" opacity="0.97">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -54259,7 +54259,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 1" width="120" height="150" opacity="0.5">
+ <layer name="group 1" width="120" height="150">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -72266,7 +72266,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 2" width="120" height="150" opacity="0.5">
+ <layer name="group 2" width="120" height="150">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -90273,7 +90273,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 3" width="120" height="150" opacity="0.52">
+ <layer name="group 3" width="120" height="150">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -108280,7 +108280,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 4" width="120" height="150" opacity="0.5">
+ <layer name="group 4" width="120" height="150">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -126287,7 +126287,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 5" width="120" height="150" opacity="0.5">
+ <layer name="group 5" width="120" height="150" opacity="0.55">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>

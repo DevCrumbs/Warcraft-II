@@ -1119,9 +1119,9 @@
    <tile gid="332"/>
    <tile gid="337"/>
    <tile gid="335"/>
-   <tile gid="279"/>
-   <tile gid="269"/>
-   <tile gid="265"/>
+   <tile gid="331"/>
+   <tile gid="331"/>
+   <tile gid="274"/>
    <tile gid="130"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -1224,9 +1224,9 @@
    <tile gid="332"/>
    <tile gid="280"/>
    <tile gid="271"/>
+   <tile gid="270"/>
+   <tile gid="269"/>
    <tile gid="265"/>
-   <tile gid="359"/>
-   <tile gid="3221225822"/>
    <tile gid="104"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -27552,7 +27552,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 0" width="105" height="130" opacity="0.6">
+ <layer name="group 0" width="105" height="130">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -41209,7 +41209,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 1" width="105" height="130" opacity="0.5">
+ <layer name="group 1" width="105" height="130">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -54866,7 +54866,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 2" width="105" height="130" opacity="0.5">
+ <layer name="group 2" width="105" height="130">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -68523,7 +68523,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 3" width="105" height="130" opacity="0.52">
+ <layer name="group 3" width="105" height="130">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -82180,7 +82180,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 4" width="105" height="130" opacity="0.5">
+ <layer name="group 4" width="105" height="130">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -95837,7 +95837,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="group 5" width="105" height="130" opacity="0.5">
+ <layer name="group 5" width="105" height="130" opacity="0.97">
   <properties>
    <property name="entitiesGroup" type="bool" value="true"/>
   </properties>
@@ -100196,7 +100196,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="382"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -109494,7 +109494,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="logic" width="105" height="130" opacity="0.5">
+ <layer name="logic" width="105" height="130">
   <properties>
    <property name="logic" type="bool" value="true"/>
   </properties>
