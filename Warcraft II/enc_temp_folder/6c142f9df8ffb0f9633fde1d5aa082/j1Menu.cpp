@@ -112,7 +112,11 @@ bool j1Menu::Update(float dt)
 	{
 	case MenuActions_NONE:
 		break;
-	case MenuActions_PLAY_EASYONE:
+	case MenuActions_EXIT:
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		isExit = true;
+		break;
+	case MenuActions_PLAY:
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		isFadetoScene = true;
 		menuActions = MenuActions_NONE;
@@ -134,10 +138,6 @@ bool j1Menu::Update(float dt)
 		DeteleMenu();
 		CreateNewGame();
 		menuActions = MenuActions_NONE;
-		break;
-	case MenuActions_EXIT:
-		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-		isExit = true;
 		break;
 	default:
 		break;

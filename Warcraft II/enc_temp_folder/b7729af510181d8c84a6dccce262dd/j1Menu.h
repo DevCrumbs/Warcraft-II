@@ -16,18 +16,14 @@ struct Particle;
 
 enum MenuActions
 {
-	MenuActions_NONE = -1,
-	MenuActions_PLAY_EASYONE,
-	MenuActions_PLAY_EASYTWO,
-	MenuActions_PLAY_MEDIUMONE,
-	MenuActions_PLAY_MEDIUMTWO,
-	MenuActions_PLAY_HARD,
+	MenuActions_NONE,
+	MenuActions_EXIT,
+	MenuActions_PLAY,
 	MenuActions_SETTINGS,
 	MenuActions_RETURN,
 	MenuActions_SLIDERFX,
 	MenuActions_SLIDERMUSIC,
 	MenuActions_NEWGAME,
-	MenuActions_EXIT,
 };
 struct SliderStruct
 {
