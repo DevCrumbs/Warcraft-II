@@ -2441,6 +2441,9 @@ bool j1EntityFactory::PostUpdate()
 
 		if ((*statEnt)->isRemove) {
 
+			if ((*statEnt)->staticEntityCategory == StaticEntityCategory_OrcishBuilding) //Increase building destroyed counter
+				App->player->buildDestroy++;
+
 			delete *statEnt;
 			activeStaticEntities.remove(*statEnt);
 
