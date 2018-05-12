@@ -190,7 +190,7 @@ void j1FogOfWar::CleanSafeZone(SDL_Rect zone)
 		if (j < 0)
 			j = 0;
 
-		for (; j < 149 && j < endTile.y + 1; ++j)
+		for (; j < height && j < endTile.y + 1; ++j)
 		{
 			int pos = (width * j) + i;
 
