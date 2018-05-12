@@ -66,6 +66,12 @@ bool j1Menu::Start()
 
 	App->render->camera.x = App->render->camera.y = 0;
 
+	//Background
+	UIImage_Info imageInfo;
+	imageInfo.texArea = { 1722, 950, 800, 600 };
+	settingsBackground = App->gui->CreateUIImage({ 0, 0 }, imageInfo, this, nullptr);
+	settingsBackground->SetPriorityDraw(PriorityDraw_FRAMEWORK);
+
 	CreateMenu();
 
 	if (!isMouseTextCreated) {
@@ -117,6 +123,7 @@ bool j1Menu::Update(float dt)
 	case MenuActions_PLAY_MEDIUMONE:
 	case MenuActions_PLAY_MEDIUMTWO:
 	case MenuActions_PLAY_HARD:
+		DestroyNewGame();
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		isFadetoScene = true;
 		App->scene->mapDifficulty = menuActions;
@@ -175,8 +182,10 @@ bool j1Menu::CleanUp()
 {
 	bool ret = true;
 
-	if (!App->gui->isGuiCleanUp)
+	if (!App->gui->isGuiCleanUp) {
 		DeteleMenu();
+		App->gui->RemoveElem((UIElement**)&settingsBackground);
+	}
 
 	active = false;
 
@@ -275,10 +284,7 @@ void j1Menu::CreateSettings() {
 	artifacts.push_back(AddArtifact({ 450, 50 }, App->gui->eyeText, App->gui->eyeAnim));
 	artifacts.push_back(AddArtifact({ 625,125 }, App->gui->scepterText, App->gui->scepterAnim));
 
-	UIImage_Info imageInfo;
-	imageInfo.texArea = { 1722, 950, 800, 600 };
-	settingsBackground = App->gui->CreateUIImage({ 0, 0 }, imageInfo, this, nullptr);
-	settingsBackground->SetPriorityDraw(PriorityDraw_FRAMEWORK);
+
 }
 
 void j1Menu::CreateNewGame()
@@ -547,7 +553,6 @@ void j1Menu::DeleteSettings() {
 	App->gui->RemoveElem((UIElement**)&audioMusic.name);
 	App->gui->RemoveElem((UIElement**)&audioMusic.value);
 	App->gui->RemoveElem((UIElement**)&audioMusic.slider);
-	App->gui->RemoveElem((UIElement**)&settingsBackground);
 
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{
@@ -558,6 +563,7 @@ void j1Menu::DeleteSettings() {
 
 void j1Menu::DestroyNewGame()
 {
+	App->gui->RemoveElem((UIElement**)&mainMenuImg);
 	App->gui->RemoveElem((UIElement**)&easyTwoLabel);
 	App->gui->RemoveElem((UIElement**)&easyOneLabel);
 	App->gui->RemoveElem((UIElement**)&hardLabel);
