@@ -1240,11 +1240,11 @@ void j1Player::CreateGroupSelectionButtons()
 
 void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) 
 {
-	//Hide Last Entity info
-	HideEntitySelectedInfo();
-
 	if (currentEntity->entityType == EntityCategory_STATIC_ENTITY) 
 		App->entities->UnselectAllEntities();
+
+	//Hide Last Entity info
+	HideEntitySelectedInfo();
 
 	//Set Entity Name
 	entitySelectedStats.entityName->SetText(entityName_text);
@@ -1315,6 +1315,7 @@ void j1Player::ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect ico
 {
 	if (currentEntity->entityType == EntityCategory_STATIC_ENTITY)
 		App->entities->UnselectAllEntities();
+
 	//Hide Last Entity info
 	HideEntitySelectedInfo();
 
@@ -1476,6 +1477,7 @@ void j1Player::MakePrisionerMenu(Entity * entity)
 		return;
 
 	App->entities->UnselectAllEntities();
+
 	HideEntitySelectedInfo();
 
 	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_ALLERIA)
@@ -1542,12 +1544,6 @@ void j1Player::HideEntitySelectedInfo()
 
 	else if (entitySelectedStats.entitySelected == townHall)
 		upgradeTownHallButton->isActive = false;
-
-
-	//Hide Dynamic stats
-	else if (App->scene->groupElementsList.front().owner != nullptr || (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY))
-		App->scene->HideUnselectedUnits();
-
 
 
 	else if (entitySelectedStats.entitySelected == gryphonAviary) {

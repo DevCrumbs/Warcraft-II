@@ -185,7 +185,7 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
+	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
 	continueButt = App->gui->CreateUIButton({ 625, 525 }, buttonInfo, this, nullptr);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
@@ -230,19 +230,19 @@ void j1FinishGame::ArtifactWon(uint time)
 	labelInfo.text = "Artifact Obtained: ";
 
 	if (time >= 1200) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->bookText, App->gui->bookAnim));
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->bookText, App->gui->bookAnim, 5));
 		labelInfo.text += "Book of Medivh";
 	}
 	else if (time >= 900) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->skullText, App->gui->skullAnim));
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->skullText, App->gui->skullAnim, 5));
 		labelInfo.text += "Skull of Gul'dan";
 	}
 	else if (time >= 600) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->eyeText, App->gui->eyeAnim));
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->eyeText, App->gui->eyeAnim, 5));
 		labelInfo.text += "Eye of Dalaran";
 	}
 	else if (time >= 0) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->scepterText, App->gui->scepterAnim));
+		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 		labelInfo.text += "Scepter of Sagreras";
 	}
 	labelVector.push_back(App->gui->CreateUILabel({ 575, 400 }, labelInfo));
@@ -279,7 +279,7 @@ void j1FinishGame::LoadSceneTwo() {
 	labelVector.push_back(App->gui->CreateUILabel({ screen.w / 2, 50 }, labelInfo));
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 2000, 0, 250, 33 };
+	buttonInfo.normalTexArea = { 1400, 45, 250, 33 };
 	returnButt = App->gui->CreateUIButton({ 550, 525 }, buttonInfo, this, nullptr);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
@@ -295,10 +295,10 @@ void j1FinishGame::LoadSceneTwo() {
 	labelInfo.text = s;
 	labelVector.push_back(App->gui->CreateUILabel({ 750, 400 }, labelInfo));
 
-	imageVector.push_back(App->menu->AddArtifact({ 125,200 }, App->gui->bookText, App->gui->bookAnim));
-	imageVector.push_back(App->menu->AddArtifact({ 275,300 }, App->gui->skullText, App->gui->skullAnim));
-	imageVector.push_back(App->menu->AddArtifact({ 450,300 }, App->gui->eyeText, App->gui->eyeAnim));
-	imageVector.push_back(App->menu->AddArtifact({ 600,200 }, App->gui->scepterText, App->gui->scepterAnim));
+	imageVector.push_back(App->menu->AddArtifact({ 125,200 }, App->gui->bookText, App->gui->bookAnim, 5));
+	imageVector.push_back(App->menu->AddArtifact({ 275,300 }, App->gui->skullText, App->gui->skullAnim, 5));
+	imageVector.push_back(App->menu->AddArtifact({ 450,300 }, App->gui->eyeText, App->gui->eyeAnim, 5));
+	imageVector.push_back(App->menu->AddArtifact({ 600,200 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 
 }
 

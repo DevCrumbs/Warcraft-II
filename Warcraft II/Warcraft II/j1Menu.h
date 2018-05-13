@@ -3,6 +3,7 @@
 
 #include "j1Module.h"
 #include "p2List.h"
+#include "UIElement.h"
 
 #include <vector>
 
@@ -16,13 +17,18 @@ struct Particle;
 
 enum MenuActions
 {
-	MenuActions_NONE,
-	MenuActions_EXIT,
-	MenuActions_PLAY,
+	MenuActions_NONE = -1,
+	MenuActions_PLAY_EASYONE,
+	MenuActions_PLAY_EASYTWO,
+	MenuActions_PLAY_MEDIUMONE,
+	MenuActions_PLAY_MEDIUMTWO,
+	MenuActions_PLAY_HARD,
 	MenuActions_SETTINGS,
 	MenuActions_RETURN,
 	MenuActions_SLIDERFX,
-	MenuActions_SLIDERMUSIC
+	MenuActions_SLIDERMUSIC,
+	MenuActions_NEWGAME,
+	MenuActions_EXIT,
 };
 struct SliderStruct
 {
@@ -65,13 +71,17 @@ public:
 	void DeleteSettings();
 	void CreateLoading();
 	void DeteleMenu();
+	void CreateNewGame();
+	void DestroyNewGame();
 
-	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
-
+	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt, 
+		UIE_HORIZONTAL_POS hPos = HORIZONTAL_POS_LEFT, UIE_VERTICAL_POS vPos = VERTICAL_POS_TOP);
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
+	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed);
+
 	void UpdateSlider(SliderStruct &sliderStruct);
 
-	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim);
+	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 public:
 
@@ -93,6 +103,7 @@ private:
 	UILabel*  exitLabel = nullptr;
 	UIButton* settingsButt = nullptr;
 	UILabel*  settingsLabel = nullptr;
+
 	vector<UIImage*> artifacts;
 	Animation menuImgAnim;
 
@@ -102,9 +113,13 @@ private:
 	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 
-	Particle* parchment = nullptr;
+	//Start New Game
 
-	MenuActions menuActions;
+	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;
+	UILabel* easy = nullptr, *medium = nullptr, *hard = nullptr, *chooseLevel = nullptr;
+
+	MenuActions menuActions = MenuActions_NONE;
+
 
 	//Audio path
 	string mainMenuMusicName;

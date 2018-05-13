@@ -69,7 +69,6 @@ void TownHall::Move(float dt)
 		if (startTimer) {
 			this->constructionTimer.Start();
 			isBuilt = false;
-			//App->player->HideEntitySelectedInfo();
 			startTimer = false;
 
 			//Construction peasants

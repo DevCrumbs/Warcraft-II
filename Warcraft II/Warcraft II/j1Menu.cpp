@@ -113,30 +113,20 @@ bool j1Menu::PreUpdate()
 // Called each loop iteration
 bool j1Menu::Update(float dt)
 {
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN) {
-		if (parchment != nullptr) {
-			parchment->isRemove = true;
-			parchment = nullptr;
-		}
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
-		App->audio->PlayFx(App->audio->GetFX().prisionerRescue, 0);
-	}
-	*/
 
 	switch (menuActions)
 	{
 	case MenuActions_NONE:
 		break;
-	case MenuActions_EXIT:
-		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-		isExit = true;
-		break;
-	case MenuActions_PLAY:
+	case MenuActions_PLAY_EASYONE:
+	case MenuActions_PLAY_EASYTWO:
+	case MenuActions_PLAY_MEDIUMONE:
+	case MenuActions_PLAY_MEDIUMTWO:
+	case MenuActions_PLAY_HARD:
+		DestroyNewGame();
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		isFadetoScene = true;
+		App->scene->mapDifficulty = menuActions;
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_SETTINGS:
@@ -148,8 +138,18 @@ bool j1Menu::Update(float dt)
 	case MenuActions_RETURN:
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		DeleteSettings();
+		DestroyNewGame();
 		CreateMenu();
 		menuActions = MenuActions_NONE;
+		break;
+	case MenuActions_NEWGAME:
+		DeteleMenu();
+		CreateNewGame();
+		menuActions = MenuActions_NONE;
+		break;
+	case MenuActions_EXIT:
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		isExit = true;
 		break;
 	default:
 		break;
@@ -164,8 +164,8 @@ bool j1Menu::PostUpdate()
 
 	// Blit the background
 	//App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 70, 70, 70, 255);
-	SDL_Color brown = { 70,70,70,255 };
-	App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, brown, true, false, Layers_PreviewBuildingsQuad);
+	//SDL_Color brown = { 70,70,70,255 };  150-113   1920 - 1080   175 - 
+	//App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, brown, true, false, Layers_PreviewBuildingsQuad);
 
 	if (isFadetoScene) {
 		App->fade->FadeToBlack(this, App->scene);
@@ -195,7 +195,7 @@ bool j1Menu::CleanUp()
 void j1Menu::CreateMenu() 
 {
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
+	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
 	playButt = App->gui->CreateUIButton({ 590, 307 }, buttonInfo, this, nullptr);
 	settingsButt = App->gui->CreateUIButton({ 590, 382 }, buttonInfo, this, nullptr);
 	exitButt = App->gui->CreateUIButton({ 590, 457 }, buttonInfo, this, nullptr);
@@ -215,10 +215,10 @@ void j1Menu::CreateMenu()
 	labelInfo.text = "Settings";
 	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, settingsButt);
 
-	artifacts.push_back(AddArtifact({ 50, 475 }, App->gui->bookText, App->gui->bookAnim));
-	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim));
-	artifacts.push_back(AddArtifact({ 300,525 }, App->gui->eyeText, App->gui->eyeAnim));
-	artifacts.push_back(AddArtifact({ 425,475 }, App->gui->scepterText, App->gui->scepterAnim));
+	artifacts.push_back(AddArtifact({ 50, 475 }, App->gui->bookText, App->gui->bookAnim, 5));
+	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim, 5));
+	artifacts.push_back(AddArtifact({ 300,525 }, App->gui->eyeText, App->gui->eyeAnim, 5));
+	artifacts.push_back(AddArtifact({ 425,475 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = { 1039,740,345,141 };
@@ -238,8 +238,8 @@ void j1Menu::CreateMenu()
 void j1Menu::CreateSettings() {
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
-	returnButt = App->gui->CreateUIButton({ 600, 500 }, buttonInfo, this, nullptr);
+	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
+	returnButt = App->gui->CreateUIButton({ 575, 550 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
@@ -279,14 +279,69 @@ void j1Menu::CreateSettings() {
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
 	fullScreenLabel = App->gui->CreateUILabel({ 250, 450 }, labelInfo, this);
 
-	artifacts.push_back(AddArtifact({ 100,125 }, App->gui->bookText, App->gui->bookAnim));
-	artifacts.push_back(AddArtifact({ 275, 50 }, App->gui->skullText, App->gui->skullAnim));
-	artifacts.push_back(AddArtifact({ 450, 50 }, App->gui->eyeText, App->gui->eyeAnim));
-	artifacts.push_back(AddArtifact({ 625,125 }, App->gui->scepterText, App->gui->scepterAnim));
+	artifacts.push_back(AddArtifact({ 100,125 }, App->gui->bookText, App->gui->bookAnim, 5));
+	artifacts.push_back(AddArtifact({ 275, 50 }, App->gui->skullText, App->gui->skullAnim, 5));
+	artifacts.push_back(AddArtifact({ 450, 50 }, App->gui->eyeText, App->gui->eyeAnim, 5));
+	artifacts.push_back(AddArtifact({ 625,125 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 
 
 }
 
+void j1Menu::CreateNewGame()
+{
+	//Return button
+	UIButton_Info buttonInfo;
+	buttonInfo.normalTexArea = { 1400, 45, 140, 33 };
+	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	returnButt = App->gui->CreateUIButton({ 645, 550 }, buttonInfo, this, nullptr);
+
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	labelInfo.normalColor = Black_;
+	labelInfo.hoverColor = ColorGreen;
+
+	labelInfo.text = "Return";
+	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
+
+
+	//Choose levels butt
+	CreateSimpleButt({ 1807,   0, 175, 135 }, { 1983,   0, 175, 135 }, { 2159,   0, 175, 135 }, { 170,175 }, easyOneButt, HORIZONTAL_POS_CENTER);
+	CreateSimpleButt({ 1807, 136, 175, 135 }, { 1983, 136, 175, 135 }, { 2159, 136, 175, 135 }, { 170,350 }, easyTwoButt, HORIZONTAL_POS_CENTER);
+	CreateSimpleButt({ 1807, 272, 175, 135 }, { 1983, 272, 175, 135 }, { 2159, 272, 175, 135 }, { 420,175 }, mediumOneButt, HORIZONTAL_POS_CENTER);
+	CreateSimpleButt({ 1807, 408, 175, 135 }, { 1983, 408, 175, 135 }, { 2159, 408, 175, 135 }, { 420,350 }, mediumTwoButt, HORIZONTAL_POS_CENTER);
+	CreateSimpleButt({ 1807, 544, 175, 135 }, { 1983, 544, 175, 135 }, { 2159, 544, 175, 135 }, { 675,275 }, hardButt, HORIZONTAL_POS_CENTER);
+
+	labelInfo.interactive = false;
+
+	labelInfo.text = "Choose your level";
+	chooseLevel = App->gui->CreateUILabel({ 375, 50 }, labelInfo, this);
+
+	labelInfo.text = "Easy";
+	labelInfo.normalColor = ColorGreen;
+	easy = App->gui->CreateUILabel({ 170, 150 }, labelInfo, this);
+	labelInfo.text = "Medium";
+	labelInfo.normalColor = ColorYellow;
+	medium = App->gui->CreateUILabel({ 420, 150 }, labelInfo, this);
+	labelInfo.text = "Hard";
+	labelInfo.normalColor = ColorRed;
+	hard = App->gui->CreateUILabel({ 675, 250 }, labelInfo, this);
+
+}
+
+void j1Menu::CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton* &butt, UIE_HORIZONTAL_POS hPos, UIE_VERTICAL_POS vPos)
+{
+
+	UIButton_Info infoButton;
+	infoButton.horizontalOrientation = hPos;
+	infoButton.verticalOrientation = vPos;
+	infoButton.normalTexArea = normal;
+	infoButton.hoverTexArea = hover;
+	infoButton.pressedTexArea = click;
+	butt = App->gui->CreateUIButton(pos, infoButton, this);
+
+}
 void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
 
 	UILabel_Info labelInfo;
@@ -318,13 +373,14 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, listener);
 }
 
-UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim) 
+UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed) 
 {
 	UIImage* retImage;
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = textArea;
 	retImage = App->gui->CreateUIImage(pos, imageInfo);
+	anim.speed = speed;
 	retImage->StartAnimation(anim);
 
 	return retImage;
@@ -360,8 +416,8 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		else if (UIelem == returnButt)
 			returnLabel->SetColor(ColorGreen, true);
-
 		break;
+
 	case UI_EVENT_MOUSE_LEAVE:
 		if (UIelem == playButt)
 			playLabel->SetColor(Black_, true);
@@ -373,14 +429,14 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		else if (UIelem == returnButt)
 			returnLabel->SetColor(Black_, true);
-
 		break;
+
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
 		if (UIelem == playButt) 
-			menuActions = MenuActions_PLAY;
+			menuActions = MenuActions_NEWGAME;
 		
 		else if (UIelem == exitButt) 
 			menuActions = MenuActions_EXIT;
@@ -404,6 +460,28 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			App->win->SetFullscreen();
 		}
+
+		else if (UIelem == easyOneButt)
+		{
+			menuActions = MenuActions_PLAY_EASYONE;
+		}
+		else if (UIelem == easyTwoButt)
+		{
+			menuActions = MenuActions_PLAY_EASYTWO;
+		}
+		else if (UIelem == mediumOneButt)
+		{
+			menuActions = MenuActions_PLAY_MEDIUMONE;
+		}
+		else if (UIelem == mediumTwoButt)
+		{
+			menuActions = MenuActions_PLAY_MEDIUMTWO;
+		}
+		else if (UIelem == hardButt)
+		{
+			menuActions = MenuActions_PLAY_HARD;
+		}
+
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;
@@ -456,5 +534,22 @@ void j1Menu::DeleteSettings() {
 	{
 		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
+
+}
+
+void j1Menu::DestroyNewGame()
+{
+	App->gui->RemoveElem((UIElement**)&easy);
+	App->gui->RemoveElem((UIElement**)&medium);
+	App->gui->RemoveElem((UIElement**)&hard);
+	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&chooseLevel);
+	App->gui->RemoveElem((UIElement**)&returnButt);
+	App->gui->RemoveElem((UIElement**)&easyOneButt);
+	App->gui->RemoveElem((UIElement**)&easyTwoButt);
+	App->gui->RemoveElem((UIElement**)&mediumTwoButt);
+	App->gui->RemoveElem((UIElement**)&mediumOneButt);
+	App->gui->RemoveElem((UIElement**)&hardButt);
 
 }

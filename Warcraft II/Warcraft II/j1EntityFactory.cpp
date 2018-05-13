@@ -3607,6 +3607,9 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 // Unselects all entities
 void j1EntityFactory::UnselectAllEntities()
 {
+	//Hide Dynamic stats from panel info
+	App->scene->HideUnselectedUnits();
+
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
 	while (it != activeDynamicEntities.end()) {
