@@ -161,6 +161,11 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	imageVector.push_back(App->gui->CreateUIImage({ 275, 375 }, imageInfo));
 	imageVector.push_back(App->gui->CreateUIImage({ 275, 475 }, imageInfo));
 
+	imageInfo.verticalOrientation = VERTICAL_POS_TOP;
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	imageInfo.texArea = { 850,750,55,55 };
+	imageVector.push_back(App->gui->CreateUIImage({ 550, 175 }, imageInfo));
+
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 
 	labelInfo.text = to_string(App->player->unitProduce);
@@ -185,15 +190,14 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
-	continueButt = App->gui->CreateUIButton({ 625, 525 }, buttonInfo, this, nullptr);
+	buttonInfo.normalTexArea = { 1400, 45, 250, 33 };
+	returnButt = App->gui->CreateUIButton({ 550, 525 }, buttonInfo, this, nullptr);
 
-	labelInfo.fontName = FONT_NAME_WARCRAFT25;
-	labelInfo.hoverColor = ColorGreen;
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
 
-	labelInfo.text = "Continue";
-	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, continueButt));
-	
+	labelInfo.text = "Return to Main Menu";
+	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt));
+
 	//Backgrounds and flag
 	if (isWin) {
 		UIImage_Info imageInfo;
@@ -259,46 +263,8 @@ void j1FinishGame::DeleteScene() {
 	{
 		App->gui->RemoveElem((UIElement**)&imageVector.back());
 	}
-	App->gui->RemoveElem((UIElement**)&continueButt);
+
 	App->gui->RemoveElem((UIElement**)&returnButt);
-
-}
-
-void j1FinishGame::LoadSceneTwo() {
-	UILabel_Info labelInfo;
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT;
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorGrey;
-	labelInfo.text = "Alpha out on May the 13h";
-	labelVector.push_back(App->gui->CreateUILabel({ 50, 542 }, labelInfo));
-
-	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	labelInfo.fontName = FONT_NAME_WARCRAFT25;
-	labelInfo.text = "Thanks for playing the demo!";
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorGreen;
-	labelVector.push_back(App->gui->CreateUILabel({ screen.w / 2, 50 }, labelInfo));
-
-	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1400, 45, 250, 33 };
-	returnButt = App->gui->CreateUIButton({ 550, 525 }, buttonInfo, this, nullptr);
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT20;
-	labelInfo.normalColor = White_;
-	labelInfo.text = "Return to Main Menu";
-	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt));
-	
-
-	labelInfo.hoverColor = labelInfo.pressedColor = White_;
-	labelInfo.fontName = FONT_NAME_WARCRAFT;
-	labelInfo.textWrapLength = 600;
-	string s = "If you want to know which artifact you would have gained, do not forget to play the full game when it is relased! The enemy base awaits for your troops...";
-	labelInfo.text = s;
-	labelVector.push_back(App->gui->CreateUILabel({ 750, 400 }, labelInfo));
-
-	imageVector.push_back(App->menu->AddArtifact({ 125,200 }, App->gui->bookText, App->gui->bookAnim, 5));
-	imageVector.push_back(App->menu->AddArtifact({ 275,300 }, App->gui->skullText, App->gui->skullAnim, 5));
-	imageVector.push_back(App->menu->AddArtifact({ 450,300 }, App->gui->eyeText, App->gui->eyeAnim, 5));
-	imageVector.push_back(App->menu->AddArtifact({ 600,200 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 
 }
 
@@ -315,12 +281,6 @@ void j1FinishGame::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
-
-		if (UIelem == continueButt) {
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-			DeleteScene();
-			LoadSceneTwo();
-		}
 
 		if (UIelem == returnButt) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
