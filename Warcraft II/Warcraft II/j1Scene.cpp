@@ -336,7 +336,7 @@ bool j1Scene::Update(float dt)
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
 
-	if (App->pathfinding->IsWalkable(mouseTile))
+	if (App->pathfinding->IsWalkable(mouseTile) && App->isDebug)
 		App->printer->PrintSprite(mouseTilePos, debugTex, { 0,0,32,32 }); // tile under the mouse pointer
 
 	// Units ---------------------------------------------------------------------------------
