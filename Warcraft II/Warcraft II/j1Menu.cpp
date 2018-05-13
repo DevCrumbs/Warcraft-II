@@ -195,7 +195,7 @@ bool j1Menu::CleanUp()
 void j1Menu::CreateMenu() 
 {
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
+	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
 	playButt = App->gui->CreateUIButton({ 590, 307 }, buttonInfo, this, nullptr);
 	settingsButt = App->gui->CreateUIButton({ 590, 382 }, buttonInfo, this, nullptr);
 	exitButt = App->gui->CreateUIButton({ 590, 457 }, buttonInfo, this, nullptr);
@@ -238,7 +238,7 @@ void j1Menu::CreateMenu()
 void j1Menu::CreateSettings() {
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
+	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
 	returnButt = App->gui->CreateUIButton({ 575, 550 }, buttonInfo, this, nullptr);
 
 	UILabel_Info labelInfo;
@@ -289,11 +289,11 @@ void j1Menu::CreateSettings() {
 
 void j1Menu::CreateNewGame()
 {
+	//Return button
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 20000, 0, 140, 33 };
+	buttonInfo.normalTexArea = { 1400, 45, 140, 33 };
 	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	returnButt = App->gui->CreateUIButton({ 645, 550 }, buttonInfo, this, nullptr);
-
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
@@ -305,43 +305,41 @@ void j1Menu::CreateNewGame()
 	labelInfo.text = "Return";
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
 
-	easyOneButt = App->gui->CreateUIButton({ 170, 250 }, buttonInfo, this, nullptr);
-	easyTwoButt = App->gui->CreateUIButton({ 170, 500 }, buttonInfo, this, nullptr);
-	mediumOneButt = App->gui->CreateUIButton({ 420, 250 }, buttonInfo, this, nullptr);
-	mediumTwoButt = App->gui->CreateUIButton({ 420, 500 }, buttonInfo, this, nullptr);
-	hardButt = App->gui->CreateUIButton({ 645, 400 }, buttonInfo, this, nullptr);
 
-	labelInfo.text = "Easy One";
-	easyOneLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, easyOneButt);
-	labelInfo.text = "Easy Two";
-	easyTwoLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, easyTwoButt);
-	labelInfo.text = "Medium One";
-	mediumOneLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, mediumOneButt);
-	labelInfo.text = "Hardddd";
-	hardLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, hardButt);
-	labelInfo.text = "Medium Two";
-	mediumTwoLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, mediumTwoButt);
+	//Choose levels butt
+	CreateSimpleButt({ 1807, 193, 175, 135 }, { 1807, 193, 175, 135 }, { 1807, 193, 175, 135 }, { 170,150 }, easyOneButt);
+	buttonInfo.normalTexArea = { 1807, 193, 175, 135 };
+	easyOneButt = App->gui->CreateUIButton({ 170, 150 }, buttonInfo, this, nullptr);
+	buttonInfo.normalTexArea = { 1983, 193, 175, 135 };
+	easyTwoButt = App->gui->CreateUIButton({ 170, 325 }, buttonInfo, this, nullptr);
+	buttonInfo.normalTexArea = { 1807, 329, 175, 135 };
+	mediumOneButt = App->gui->CreateUIButton({ 420, 150 }, buttonInfo, this, nullptr);
+	buttonInfo.normalTexArea = { 1983, 329, 175, 135 };
+	mediumTwoButt = App->gui->CreateUIButton({ 420, 325 }, buttonInfo, this, nullptr);
+	buttonInfo.normalTexArea = { 1807, 465, 175, 135 };
+	hardButt = App->gui->CreateUIButton({ 675, 250 }, buttonInfo, this, nullptr);
 
-	UIImage_Info imageInfo;
-	imageInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	imageInfo.texArea = { 0, 50, 175, 131 };
-	artifacts.push_back(App->gui->CreateUIImage({ 170,100 }, imageInfo));
-
-	imageInfo.texArea = { 0, 50, 175, 131 };
-	artifacts.push_back(App->gui->CreateUIImage({ 170,350 }, imageInfo));
-
-	imageInfo.texArea = { 0, 50, 175, 131 };
-	artifacts.push_back(App->gui->CreateUIImage({ 420,100 }, imageInfo));
-
-	imageInfo.texArea = { 0, 50, 175, 131 };
-	artifacts.push_back(App->gui->CreateUIImage({ 420,350 }, imageInfo));
-
-	imageInfo.texArea = { 0, 50, 175, 131 };
-	artifacts.push_back(App->gui->CreateUIImage({ 645,250 }, imageInfo));
+	labelInfo.interactive = false;
+	labelInfo.text = "Easy";
+	easy = App->gui->CreateUILabel({ 170, 125 }, labelInfo, this);
+	labelInfo.text = "Medium";
+	medium = App->gui->CreateUILabel({ 420, 125 }, labelInfo, this);
+	labelInfo.text = "Hard";
+	hard = App->gui->CreateUILabel({ 675, 225 }, labelInfo, this);
 
 }
 
+void j1Menu::CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton* &butt)
+{
 
+	UIButton_Info infoButton;
+
+	infoButton.normalTexArea = normal;
+	infoButton.hoverTexArea = hover;
+	infoButton.pressedTexArea = click;
+	butt = App->gui->CreateUIButton(pos, infoButton, this, (UIElement*)App->scene->entitiesStats);
+
+}
 void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
 
 	UILabel_Info labelInfo;
@@ -415,19 +413,8 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		else if (UIelem == returnButt)
 			returnLabel->SetColor(ColorGreen, true);
-
-		else if (UIelem == easyOneButt)
-			easyOneLabel->SetColor(ColorGreen, true);
-		else if (UIelem == easyTwoButt)
-			easyTwoLabel->SetColor(ColorGreen, true);
-		else if (UIelem == mediumOneButt)
-			mediumOneLabel->SetColor(ColorGreen, true);
-		else if (UIelem == mediumTwoButt)
-			mediumTwoLabel->SetColor(ColorGreen, true);
-		else if (UIelem == hardButt)
-			hardLabel->SetColor(ColorGreen, true);
-
 		break;
+
 	case UI_EVENT_MOUSE_LEAVE:
 		if (UIelem == playButt)
 			playLabel->SetColor(Black_, true);
@@ -439,19 +426,8 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		else if (UIelem == returnButt)
 			returnLabel->SetColor(Black_, true);
-
-		else if (UIelem == easyOneButt)
-			easyOneLabel->SetColor(Black_, true);
-		else if (UIelem == easyTwoButt)
-			easyTwoLabel->SetColor(Black_, true);
-		else if (UIelem == mediumOneButt)
-			mediumOneLabel->SetColor(Black_, true);
-		else if (UIelem == mediumTwoButt)
-			mediumTwoLabel->SetColor(Black_, true);
-		else if (UIelem == hardButt)
-			hardLabel->SetColor(Black_, true);
-
 		break;
+
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
@@ -560,11 +536,9 @@ void j1Menu::DeleteSettings() {
 
 void j1Menu::DestroyNewGame()
 {
-	App->gui->RemoveElem((UIElement**)&easyTwoLabel);
-	App->gui->RemoveElem((UIElement**)&easyOneLabel);
-	App->gui->RemoveElem((UIElement**)&hardLabel);
-	App->gui->RemoveElem((UIElement**)&mediumOneLabel);
-	App->gui->RemoveElem((UIElement**)&mediumTwoLabel);
+	App->gui->RemoveElem((UIElement**)&easy);
+	App->gui->RemoveElem((UIElement**)&medium);
+	App->gui->RemoveElem((UIElement**)&hard);
 	App->gui->RemoveElem((UIElement**)&returnLabel);
 	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&easyOneButt);
@@ -573,8 +547,4 @@ void j1Menu::DestroyNewGame()
 	App->gui->RemoveElem((UIElement**)&mediumOneButt);
 	App->gui->RemoveElem((UIElement**)&hardButt);
 
-	for (; !artifacts.empty(); artifacts.pop_back())
-	{
-		App->gui->RemoveElem((UIElement**)&artifacts.back());
-	}
 }

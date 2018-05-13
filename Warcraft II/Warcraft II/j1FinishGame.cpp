@@ -185,7 +185,7 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 2000, 0, 129, 33 };
+	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
 	continueButt = App->gui->CreateUIButton({ 625, 525 }, buttonInfo, this, nullptr);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
@@ -279,7 +279,7 @@ void j1FinishGame::LoadSceneTwo() {
 	labelVector.push_back(App->gui->CreateUILabel({ screen.w / 2, 50 }, labelInfo));
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 2000, 0, 250, 33 };
+	buttonInfo.normalTexArea = { 1400, 45, 250, 33 };
 	returnButt = App->gui->CreateUIButton({ 550, 525 }, buttonInfo, this, nullptr);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;

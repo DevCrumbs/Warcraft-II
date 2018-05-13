@@ -73,13 +73,13 @@ public:
 	void CreateNewGame();
 	void DestroyNewGame();
 
-	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
-
-
+	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt);
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
+	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim);
+
 	void UpdateSlider(SliderStruct &sliderStruct);
 
-	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim);
+	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
 public:
 
@@ -114,7 +114,7 @@ private:
 	//Start New Game
 
 	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;
-	UILabel* easyOneLabel = nullptr, *easyTwoLabel = nullptr, *mediumOneLabel = nullptr, *mediumTwoLabel = nullptr, *hardLabel = nullptr;
+	UILabel* easy = nullptr, *medium = nullptr, *hard = nullptr;
 
 	MenuActions menuActions = MenuActions_NONE;
 
