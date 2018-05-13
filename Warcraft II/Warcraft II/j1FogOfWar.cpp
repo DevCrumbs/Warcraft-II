@@ -53,7 +53,7 @@ bool j1FogOfWar::Update(float dt)
 	ResetTiles();
 	TilesNearPlayer();
 
-	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN && App->isDebug)
 	{
 		isActive = !isActive;
 	}
