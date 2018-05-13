@@ -24,9 +24,9 @@ Although each member of the team has been involved in similar projects before, w
 The overall aim of the company is to create enjoyable gaming experiences, a unique kind of work that we are passionate about. 
 If we are able to feed your imagination, our mission will be accomplished!
 
-# Version 0.5
+# Version 0.9
 
-The goal of the player in this demo version is to rescue two prisoners - Khadgar and Alleria. The prisoners are hidden somewhere in a dungeon full of enemies. 
+The goal of the player in this alpha version is to rescue two prisoners - Khadgar and Alleria. The prisoners are hidden somewhere in a dungeon full of enemies. 
 In order to complete this objective, the player will have to create troops and command them towards the victory.
 
 # Controls
@@ -56,6 +56,7 @@ N: Set command patrol to the units selected (click a tile to patrol there)
 M: Stop the units selected
 
 ## For the buildings:
+B: Open the building dropdown
 After opening the building dropdown in the top right of the screen:
 Mouse Left click: Place a building somwhere
 Mouse Right click: Delete the preview building from the view of the player
@@ -69,6 +70,7 @@ If debug mode is on:
 	H: -20 HP to last Chicken Farm created
 	G: Get + 500 gold
 	F: Get +3 food
+	K: Show/hide Fog of War
 
 	1: Spawn a Footman at mouse position
 	2: Spawn an Elven Archer at mouse position
@@ -85,6 +87,7 @@ If debug mode is on:
 	F2: Direct lose
 	F3: Spawn a new enemy wave (in player base)
 	F4: Activate or stop the spawn of waves
+	F5: Show/hide gam's colliders
 
 # Game system
 
@@ -97,6 +100,11 @@ building has a set number of gold cost.
 
 - The player can also heal themselves if they go to a runestone and click it.
 
+# Levels
+
+There are four levels for the player to choose in bettween. Two of them are easy, two of them have a medium difficulty
+and the other one is hard. 
+
 # About the units
 
 If the player clicks the barracks, and they have enough gold or food, the player creates units.
@@ -107,6 +115,9 @@ The footman is a melee attack unit.
 
 Elven Archer: 400 gold
 The elven archer is a long range atack unit.
+
+Gryphon Rider: 750 gold
+The Gryphon rider is an aerial unit.
 
 The units can move towards a tile or a target to attack it or patrol the area.
 
@@ -127,6 +138,9 @@ The player can build:
 
 Chicken farms: 500 gold
 They give the player 4 units of food.
+
+Gryphon Aviary
+This allows the player to spawn Gryphon Riders (it needs the Townhall upgrade to be built).
 
 Scout Tower: 400 gold
 Guard Tower: 600 gold
