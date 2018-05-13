@@ -3,6 +3,7 @@
 
 #include "j1Module.h"
 #include "p2List.h"
+#include "UIElement.h"
 
 #include <vector>
 
@@ -73,9 +74,10 @@ public:
 	void CreateNewGame();
 	void DestroyNewGame();
 
-	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt);
+	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt, 
+		UIE_HORIZONTAL_POS hPos = HORIZONTAL_POS_LEFT, UIE_VERTICAL_POS vPos = VERTICAL_POS_TOP);
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
-	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim);
+	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed);
 
 	void UpdateSlider(SliderStruct &sliderStruct);
 
@@ -114,7 +116,7 @@ private:
 	//Start New Game
 
 	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;
-	UILabel* easy = nullptr, *medium = nullptr, *hard = nullptr;
+	UILabel* easy = nullptr, *medium = nullptr, *hard = nullptr, *chooseLevel = nullptr;
 
 	MenuActions menuActions = MenuActions_NONE;
 

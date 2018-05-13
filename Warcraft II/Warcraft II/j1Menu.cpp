@@ -215,10 +215,10 @@ void j1Menu::CreateMenu()
 	labelInfo.text = "Settings";
 	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, settingsButt);
 
-	artifacts.push_back(AddArtifact({ 50, 475 }, App->gui->bookText, App->gui->bookAnim));
-	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim));
-	artifacts.push_back(AddArtifact({ 300,525 }, App->gui->eyeText, App->gui->eyeAnim));
-	artifacts.push_back(AddArtifact({ 425,475 }, App->gui->scepterText, App->gui->scepterAnim));
+	artifacts.push_back(AddArtifact({ 50, 475 }, App->gui->bookText, App->gui->bookAnim, 5));
+	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim, 5));
+	artifacts.push_back(AddArtifact({ 300,525 }, App->gui->eyeText, App->gui->eyeAnim, 5));
+	artifacts.push_back(AddArtifact({ 425,475 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = { 1039,740,345,141 };
@@ -279,10 +279,10 @@ void j1Menu::CreateSettings() {
 	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
 	fullScreenLabel = App->gui->CreateUILabel({ 250, 450 }, labelInfo, this);
 
-	artifacts.push_back(AddArtifact({ 100,125 }, App->gui->bookText, App->gui->bookAnim));
-	artifacts.push_back(AddArtifact({ 275, 50 }, App->gui->skullText, App->gui->skullAnim));
-	artifacts.push_back(AddArtifact({ 450, 50 }, App->gui->eyeText, App->gui->eyeAnim));
-	artifacts.push_back(AddArtifact({ 625,125 }, App->gui->scepterText, App->gui->scepterAnim));
+	artifacts.push_back(AddArtifact({ 100,125 }, App->gui->bookText, App->gui->bookAnim, 5));
+	artifacts.push_back(AddArtifact({ 275, 50 }, App->gui->skullText, App->gui->skullAnim, 5));
+	artifacts.push_back(AddArtifact({ 450, 50 }, App->gui->eyeText, App->gui->eyeAnim, 5));
+	artifacts.push_back(AddArtifact({ 625,125 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 
 
 }
@@ -307,37 +307,39 @@ void j1Menu::CreateNewGame()
 
 
 	//Choose levels butt
-	CreateSimpleButt({ 1807, 193, 175, 135 }, { 1807, 193, 175, 135 }, { 1807, 193, 175, 135 }, { 170,150 }, easyOneButt);
-	buttonInfo.normalTexArea = { 1807, 193, 175, 135 };
-	easyOneButt = App->gui->CreateUIButton({ 170, 150 }, buttonInfo, this, nullptr);
-	buttonInfo.normalTexArea = { 1983, 193, 175, 135 };
-	easyTwoButt = App->gui->CreateUIButton({ 170, 325 }, buttonInfo, this, nullptr);
-	buttonInfo.normalTexArea = { 1807, 329, 175, 135 };
-	mediumOneButt = App->gui->CreateUIButton({ 420, 150 }, buttonInfo, this, nullptr);
-	buttonInfo.normalTexArea = { 1983, 329, 175, 135 };
-	mediumTwoButt = App->gui->CreateUIButton({ 420, 325 }, buttonInfo, this, nullptr);
-	buttonInfo.normalTexArea = { 1807, 465, 175, 135 };
-	hardButt = App->gui->CreateUIButton({ 675, 250 }, buttonInfo, this, nullptr);
+	CreateSimpleButt({ 1807,   0, 175, 135 }, { 1983,   0, 175, 135 }, { 2159,   0, 175, 135 }, { 170,175 }, easyOneButt, HORIZONTAL_POS_CENTER);
+	CreateSimpleButt({ 1807, 136, 175, 135 }, { 1983, 136, 175, 135 }, { 2159, 136, 175, 135 }, { 170,350 }, easyTwoButt, HORIZONTAL_POS_CENTER);
+	CreateSimpleButt({ 1807, 272, 175, 135 }, { 1983, 272, 175, 135 }, { 2159, 272, 175, 135 }, { 420,175 }, mediumOneButt, HORIZONTAL_POS_CENTER);
+	CreateSimpleButt({ 1807, 408, 175, 135 }, { 1983, 408, 175, 135 }, { 2159, 408, 175, 135 }, { 420,350 }, mediumTwoButt, HORIZONTAL_POS_CENTER);
+	CreateSimpleButt({ 1807, 544, 175, 135 }, { 1983, 544, 175, 135 }, { 2159, 544, 175, 135 }, { 675,275 }, hardButt, HORIZONTAL_POS_CENTER);
 
 	labelInfo.interactive = false;
+
+	labelInfo.text = "Choose your level";
+	chooseLevel = App->gui->CreateUILabel({ 375, 50 }, labelInfo, this);
+
 	labelInfo.text = "Easy";
-	easy = App->gui->CreateUILabel({ 170, 125 }, labelInfo, this);
+	labelInfo.normalColor = ColorGreen;
+	easy = App->gui->CreateUILabel({ 170, 150 }, labelInfo, this);
 	labelInfo.text = "Medium";
-	medium = App->gui->CreateUILabel({ 420, 125 }, labelInfo, this);
+	labelInfo.normalColor = ColorYellow;
+	medium = App->gui->CreateUILabel({ 420, 150 }, labelInfo, this);
 	labelInfo.text = "Hard";
-	hard = App->gui->CreateUILabel({ 675, 225 }, labelInfo, this);
+	labelInfo.normalColor = ColorRed;
+	hard = App->gui->CreateUILabel({ 675, 250 }, labelInfo, this);
 
 }
 
-void j1Menu::CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton* &butt)
+void j1Menu::CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton* &butt, UIE_HORIZONTAL_POS hPos, UIE_VERTICAL_POS vPos)
 {
 
 	UIButton_Info infoButton;
-
+	infoButton.horizontalOrientation = hPos;
+	infoButton.verticalOrientation = vPos;
 	infoButton.normalTexArea = normal;
 	infoButton.hoverTexArea = hover;
 	infoButton.pressedTexArea = click;
-	butt = App->gui->CreateUIButton(pos, infoButton, this, (UIElement*)App->scene->entitiesStats);
+	butt = App->gui->CreateUIButton(pos, infoButton, this);
 
 }
 void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
@@ -371,13 +373,14 @@ void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, 
 	sliderStruct.value = App->gui->CreateUILabel({ x, y }, labelInfo, listener);
 }
 
-UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim) 
+UIImage* j1Menu::AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed) 
 {
 	UIImage* retImage;
 
 	UIImage_Info imageInfo;
 	imageInfo.texArea = textArea;
 	retImage = App->gui->CreateUIImage(pos, imageInfo);
+	anim.speed = speed;
 	retImage->StartAnimation(anim);
 
 	return retImage;
@@ -540,6 +543,8 @@ void j1Menu::DestroyNewGame()
 	App->gui->RemoveElem((UIElement**)&medium);
 	App->gui->RemoveElem((UIElement**)&hard);
 	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&chooseLevel);
 	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&easyOneButt);
 	App->gui->RemoveElem((UIElement**)&easyTwoButt);
