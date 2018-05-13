@@ -43,8 +43,12 @@ private:
 	
 	//Background
 	UIImage* background = nullptr;
-	Animation winBgAnimation;
-	Animation loseBgAnimation;
+	SDL_Rect winBG = { 0,0,0,0 };
+	SDL_Rect loseBG = { 0,0,0,0 };
+	//Flag
+	UIImage* flag = nullptr;
+	Animation winFlagAnimation;
+	Animation loseFlagAnimation;
 
 
 	SDL_Rect screen;

@@ -33,20 +33,27 @@ bool j1FinishGame::Awake(pugi::xml_node& config) {
 	victoryMusicPath = config.child("audioPaths").child("victoryScreen").attribute("path").as_string();
 	defeatMusicPath = config.child("audioPaths").child("defeatScreen").attribute("path").as_string();
 	
-	//Win background
-	pugi::xml_node winScreen = config.child("winScreen");
-	winBgAnimation.speed = winScreen.attribute("speed").as_float();
-	winBgAnimation.loop = winScreen.attribute("loop").as_bool();
-	for (winScreen = winScreen.child("frame"); winScreen; winScreen = winScreen.next_sibling("frame")) {
-		winBgAnimation.PushBack({ winScreen.attribute("x").as_int(), winScreen.attribute("y").as_int(), winScreen.attribute("w").as_int(), winScreen.attribute("h").as_int() });
+	//Win Backgorund
+	winBG = { config.child("winBackground").child("sprite").attribute("x").as_int(), config.child("winBackground").child("sprite").attribute("y").as_int(),
+		      config.child("winBackground").child("sprite").attribute("w").as_int(), config.child("winBackground").child("sprite").attribute("h").as_int() };
+	//Lose background
+	loseBG = { config.child("loseBackground").child("sprite").attribute("x").as_int(), config.child("loseBackground").child("sprite").attribute("y").as_int(),
+		      config.child("loseBackground").child("sprite").attribute("w").as_int(), config.child("loseBackground").child("sprite").attribute("h").as_int() };
+
+	//Win flag
+	pugi::xml_node winFlag = config.child("winFlag");
+	winFlagAnimation.speed = winFlag.attribute("speed").as_float();
+	winFlagAnimation.loop = winFlag.attribute("loop").as_bool();
+	for (winFlag = winFlag.child("frame"); winFlag; winFlag = winFlag.next_sibling("frame")) {
+		winFlagAnimation.PushBack({ winFlag.attribute("x").as_int(), winFlag.attribute("y").as_int(), winFlag.attribute("w").as_int(), winFlag.attribute("h").as_int() });
 	}
 
-	//Lose background
-	pugi::xml_node loseScreen = config.child("loseScreen");
-	loseBgAnimation.speed = loseScreen.attribute("speed").as_float();
-	loseBgAnimation.loop = loseScreen.attribute("loop").as_bool();
-	for (loseScreen = loseScreen.child("frame"); loseScreen; loseScreen = loseScreen.next_sibling("frame")) {
-		loseBgAnimation.PushBack({ loseScreen.attribute("x").as_int(), loseScreen.attribute("y").as_int(), loseScreen.attribute("w").as_int(), loseScreen.attribute("h").as_int() });
+	//Lose flag
+	pugi::xml_node loseFlag = config.child("loseFlag");
+	loseFlagAnimation.speed = loseFlag.attribute("speed").as_float();
+	loseFlagAnimation.loop = loseFlag.attribute("loop").as_bool();
+	for (loseFlag = loseFlag.child("frame"); loseFlag; loseFlag = loseFlag.next_sibling("frame")) {
+		loseFlagAnimation.PushBack({ loseFlag.attribute("x").as_int(), loseFlag.attribute("y").as_int(), loseFlag.attribute("w").as_int(), loseFlag.attribute("h").as_int() });
 	}
 
 
@@ -93,6 +100,7 @@ bool j1FinishGame::CleanUp()
 
 	//Delete background
 	App->gui->RemoveElem((UIElement**)&background);
+	App->gui->RemoveElem((UIElement**)&flag);
 	
 	active = false;
 
@@ -186,22 +194,30 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelInfo.text = "Continue";
 	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, continueButt));
 	
-	//Backgrounds
+	//Backgrounds and flag
 	if (isWin) {
 		UIImage_Info imageInfo;
-		imageInfo.texArea = { 0, 2200, 800, 600 };
+		imageInfo.texArea = winBG;
 		background = App->gui->CreateUIImage({ 0,0 }, imageInfo, this, nullptr);
-		background->StartAnimation(winBgAnimation);
 		background->SetPriorityDraw(PriorityDraw_FRAMEWORK);
+
+		imageInfo.texArea = { 0, 2200, 800, 600 };
+		flag = App->gui->CreateUIImage({ 300,202 }, imageInfo, this, nullptr);
+		flag->StartAnimation(winFlagAnimation);
+		flag->SetPriorityDraw(PriorityDraw_UIINGAME);
 	}
 
 	else if (!isWin)
 	{ 
 		UIImage_Info imageInfo;
-		imageInfo.texArea = { 0, 4000, 800, 600 };
+		imageInfo.texArea = loseBG;
 		background = App->gui->CreateUIImage({ 0,0 }, imageInfo, this, nullptr);
-		background->StartAnimation(loseBgAnimation);
 		background->SetPriorityDraw(PriorityDraw_FRAMEWORK);
+
+		imageInfo.texArea = { 0, 4000, 800, 600 };
+		flag = App->gui->CreateUIImage({ 300,202 }, imageInfo, this, nullptr);
+		flag->StartAnimation(loseFlagAnimation);
+		flag->SetPriorityDraw(PriorityDraw_UIINGAME);
 	}
 }
 
