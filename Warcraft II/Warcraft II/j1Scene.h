@@ -264,8 +264,6 @@ public:
 
 	bool isFrameByFrame = false;
 
-	bool isDebug = true;
-
 	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
 	TerenasAdvices terenasAdvices;
 

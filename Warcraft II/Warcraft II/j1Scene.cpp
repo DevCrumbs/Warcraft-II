@@ -239,45 +239,38 @@ bool j1Scene::PreUpdate()
 	UnitInfo unitInfo;
 	fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
 
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	if (App->isDebug)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, App->player);
 
-		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, App->player);
+		else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+		else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_GRYPHON_RIDER, pos, App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, App->player);
 
-		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, App->player);
+		else if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+		else if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, App->player);
 
-		App->entities->AddEntity(EntityType_GRYPHON_RIDER, pos, App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, App->player);
+		else if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_DRAGON, pos, App->entities->GetUnitInfo(EntityType_DRAGON), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+		else if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(EntityType_SHEEP), unitInfo, App->player);
 
-		App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, App->player);
+		else if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+		else if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
 
-		App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, App->player);
-
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
-
-		App->entities->AddEntity(EntityType_DRAGON, pos, App->entities->GetUnitInfo(EntityType_DRAGON), unitInfo, App->player);
-
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
-
-		App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(EntityType_SHEEP), unitInfo, App->player);
-
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
-
-		App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
-
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
-
-		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
-
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
-
-		App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
+		else if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
+	}
 	//_Entities_creation
 
 	if (hasGoldChanged != GoldChange_NoChange && hasGoldChanged != GoldChange_ChangeColor) {
@@ -329,7 +322,7 @@ bool j1Scene::Update(float dt)
 	// ---------------------------------------------------------------------
 
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
-		isDebug = !isDebug;
+		App->isDebug = !App->isDebug;
 	
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		debugDrawAttack = !debugDrawAttack;
@@ -463,7 +456,6 @@ bool j1Scene::Update(float dt)
 
 				/// COMMAND PATROL
 				if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN)
-
 					App->entities->CommandToUnits(units, UnitCommand_Patrol);
 
 				/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
@@ -794,7 +786,7 @@ bool j1Scene::PostUpdate()
 			isStartedFinalTransition = true;
 		}
 	}
-	else if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
+	else if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && App->isDebug) {
 	
 		App->player->isWin = true;
 		App->fade->FadeToBlack(this, App->finish);
@@ -819,7 +811,7 @@ bool j1Scene::PostUpdate()
 	//Not enogh gold to create Gryphos and have not barracks and we and have no units spawning
 			|| (App->player->GetCurrentGold() < App->player->gryphonRiderCost  && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning))
 	//Instant Lose with F2
-		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) 
+		|| (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && App->isDebug)
 	//Orde destroy townhall
 		|| App->player->townHall == nullptr) {
 
