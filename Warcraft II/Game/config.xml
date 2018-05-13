@@ -1603,6 +1603,37 @@
       <frame x="2522" y="3000" w="800" h="600"/>
       <frame x="800" y="3400" w="800" h="600"/>
     </loseScreen>
+    
+    
+    <winBackground>
+      <sprite x="1900" y="0" w="800" h="600"/>
+    </winBackground>
+
+    <loseBackground>
+	    <sprite x="2700" y="0" w="800" h="600"/>
+    </loseBackground>
+
+    <winFlag speed="4" loop="1">
+      <frame x="0" y="2200" w="500" h="400"/>
+      <frame x="500" y="2200" w="500" h="400"/>
+      <frame x="1000" y="2200" w="500" h="400"/>
+      <frame x="1500" y="2200" w="500" h="400"/>
+      <frame x="2000" y="2200" w="500" h="400"/>
+	    <frame x="2500" y="2200" w="500" h="400"/>
+      <frame x="3000" y="2200" w="500" h="400"/>
+    </winFlag>
+
+
+    <loseFlag speed="4" loop="1">
+      <frame x="0" y="2600" w="500" h="400"/>
+      <frame x="500" y="2600" w="500" h="400"/>
+      <frame x="1000" y="2600" w="500" h="400"/>
+      <frame x="1500" y="2600" w="500" h="400"/>
+      <frame x="2000" y="2600" w="500" h="400"/>
+	    <frame x="2500" y="2600" w="500" h="400"/>
+      <frame x="3000" y="2600" w="500" h="400"/>
+    </loseFlag>
+    
 
 
     <audioPaths>

@@ -312,24 +312,24 @@ void j1EnemyWave::PerformWave(int layer)
 			break;
 		}
 		ENTITY_TYPE type = EntityType_NONE;
-		if (iterator == currentList.begin() && App->player->gryphonAviary != nullptr)
-		{
-			if (SpawnEnemy(spawnProbability)) {
-
-				spawned++;
-				totalSpawnOfCurrWave++;
-
-				type = EntityType_DRAGON;
-				UnitInfo unitInfo;
-				fPoint pos{ (float)(*iterator).x, (float)(*iterator).y };
-				iPoint tile = App->map->WorldToMap((int)pos.x, (int)pos.y);
-
-				// Spawn the unit (the following searches for a new spawn tile if the tile is not valid)
-				App->player->SpawnUnitAtTile(tile, type, unitInfo);
-				LOG("Spawned %i entities from %i, type %i", spawned, size, type);
-			}
-		}
-		else if (SpawnEnemy(spawnProbability)) {
+		//if (iterator == currentList.begin() && App->player->gryphonAviary != nullptr)
+		//{
+		//	if (SpawnEnemy(spawnProbability)) {
+		//
+		//		spawned++;
+		//		totalSpawnOfCurrWave++;
+		//
+		//		type = EntityType_DRAGON;
+		//		UnitInfo unitInfo;
+		//		fPoint pos{ (float)(*iterator).x, (float)(*iterator).y };
+		//		iPoint tile = App->map->WorldToMap((int)pos.x, (int)pos.y);
+		//
+		//		// Spawn the unit (the following searches for a new spawn tile if the tile is not valid)
+		//		App->player->SpawnUnitAtTile(tile, type, unitInfo);
+		//		LOG("Spawned %i entities from %i, type %i", spawned, size, type);
+		//	}
+		//}
+		if (SpawnEnemy(spawnProbability)) {
 
 			spawned++;
 			totalSpawnOfCurrWave++;
