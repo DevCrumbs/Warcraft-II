@@ -192,6 +192,8 @@ bool j1Scene::Start()
 		enIt++;
 	}
 
+	App->isDebug = false;
+
 	return ret;
 }
 
