@@ -1236,10 +1236,17 @@ void j1Scene::HideUnselectedUnits()
 	//One Selection
 	if (App->player->entitySelectedStats.entitySelected != nullptr)
 	{
-		App->player->entitySelectedStats.entitySight->isActive = false;
-		App->player->entitySelectedStats.entityRange->isActive = false;
-		App->player->entitySelectedStats.entityDamage->isActive = false;
-		App->player->entitySelectedStats.entitySpeed->isActive = false;
+		if (App->player->entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			App->player->entitySelectedStats.entitySight->isActive = false;
+			App->player->entitySelectedStats.entityRange->isActive = false;
+			App->player->entitySelectedStats.entityDamage->isActive = false;
+			App->player->entitySelectedStats.entitySpeed->isActive = false;
+			App->player->entitySelectedStats.HP->isActive = false;
+			App->player->entitySelectedStats.entityName->isActive = false;
+			App->player->entitySelectedStats.entityIcon->isActive = false;
+			App->player->entitySelectedStats.lifeBar->isActive = false;
+			App->player->entitySelectedStats.entitySelected = nullptr;
+		}
 	}
 	//Group Selection
 	else {
