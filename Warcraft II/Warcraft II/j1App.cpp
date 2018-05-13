@@ -187,6 +187,11 @@ bool j1App::Start()
 		item++;
 	}
 
+	//Set title
+	static char title[256];
+	sprintf_s(title, 256, "Warcraft II: The Stolen Artifacts");
+	App->win->SetTitle(title);
+
 	return ret;
 }
 
@@ -288,17 +293,15 @@ void j1App::FinishUpdate()
 	else
 		godMode = "off";
 
-	static char title[256];
 
-	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u",
-		fps, avgFPS, lastFrameMs);
+//	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u",
+	//	fps, avgFPS, lastFrameMs);
 
 	if (App->scene->pause) {
 		auxiliarDt = dt;
 		dt = 0.0f;
 	}
-
-	App->win->SetTitle(title);
+	
 }
 
 // Call modules before each loop iteration
