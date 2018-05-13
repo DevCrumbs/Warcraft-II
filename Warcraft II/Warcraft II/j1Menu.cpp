@@ -124,7 +124,7 @@ bool j1Menu::Update(float dt)
 	case MenuActions_PLAY_MEDIUMTWO:
 	case MenuActions_PLAY_HARD:
 		DestroyNewGame();
-		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		App->audio->PlayFx(App->audio->GetFX().gameStart, 0); //Button sound
 		isFadetoScene = true;
 		App->scene->mapDifficulty = menuActions;
 		menuActions = MenuActions_NONE;
@@ -143,6 +143,7 @@ bool j1Menu::Update(float dt)
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_NEWGAME:
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		DeteleMenu();
 		CreateNewGame();
 		menuActions = MenuActions_NONE;

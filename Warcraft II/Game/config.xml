@@ -52,7 +52,7 @@
                        destroyBuilding = "buildings/buildingDestroy.wav"/>
         
         <buttonPaths menuButton ="UIButtons/GeneralClickButton.wav" errorBttn = "UIButtons/ButtonError.wav" healSound = "UIButtons/healSound.wav"
-                     goldSound = "UIButtons/GoldSound.wav"/>
+                     goldSound = "UIButtons/GoldSound.wav" gameStart = "UIButtons/GameStart.wav"/>
         
         <unitsPaths humanDeadSound ="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" dragonDeadSound="Units/DragonDeath.wav" 
                     prisonerRescue="Units/PrisonerRescue.wav" baseUnderAttack1 ="Units/BaseUnderAttack1.wav" 

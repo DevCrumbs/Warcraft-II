@@ -66,6 +66,7 @@ bool j1Audio::Awake(pugi::xml_node& config)
 
 	pugi::xml_node uIButtonsSounds = sounds.child("buttonPaths");
 	mainButtonSound = uIButtonsSounds.attribute("menuButton").as_string();
+	gameStartSound = uIButtonsSounds.attribute("gameStart").as_string();
 	errorButtonSound = uIButtonsSounds.attribute("errorBttn").as_string();
 	healSoundPath = uIButtonsSounds.attribute("healSound").as_string();
 	goldGetSoundPath = uIButtonsSounds.attribute("goldSound").as_string();
@@ -305,6 +306,7 @@ void j1Audio::PauseMusic() const {
 void j1Audio::ChargeFX()
 {
 	gameSounds.button = App->audio->LoadFx(mainButtonSound.data()); //1 Normal bttn sound
+	gameSounds.gameStart = App->audio->LoadFx(gameStartSound.data());
 	gameSounds.buildingConstruction = App->audio->LoadFx(buildingConstructionSound.data()); //2 Construction building
 	gameSounds.errorButt = App->audio->LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
 	gameSounds.errorButtBuilding = App->audio->LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
