@@ -42,11 +42,13 @@ X: Select all Elven Archer on screen
 C: Select all Gryphon Rider on screen
 
 ## For the minimap:
+
 TAB: Change minimap zoom
 Mouse Left click: Move camera to the pressed location
 Mouse Right click: Send a group of units to a destination
 
 ## For the units:
+
 Mouse Left click: Select a group of units
 Mouse Right click: Send a group of units to a destination
 Mouse Right click On an enemy or a critter: attack the enemy/critter
@@ -56,6 +58,7 @@ N: Set command patrol to the units selected (click a tile to patrol there)
 M: Stop the units selected
 
 ## For the buildings:
+
 B: Open the building dropdown
 After opening the building dropdown in the top right of the screen:
 Mouse Left click: Place a building somwhere
@@ -87,7 +90,7 @@ If debug mode is on:
 	F2: Direct lose
 	F3: Spawn a new enemy wave (in player base)
 	F4: Activate or stop the spawn of waves
-	F5: Show/hide gam's colliders
+	F5: Show/hide game's colliders
 
 # Game system
 
@@ -100,10 +103,25 @@ building has a set number of gold cost.
 
 - The player can also heal themselves if they go to a runestone and click it.
 
+## Win/lose condition
+
+- The player will win the game if they are able to rescue the two prisioners in the map and the enemies haven't destroyed
+  they Town Hall.
+
+- The player will lose the game if they are out of units and they have no gold to produce more, or if their Town Hall in the
+  base is destroyed.
+
 # Levels
 
 There are four levels for the player to choose in bettween. Two of them are easy, two of them have a medium difficulty
 and the other one is hard. 
+
+- The easy levels give the player more amout of gold in mines and have less intense attacks to the base.
+
+- The normal levels have a normal amount of gold given to the player, and have more intense attacks to base.
+
+- The hard level gives the player the same amount of gold as with the normal levels, but doesn't give them
+  gold when killing enemys. Also, the attacks to base are the more intense out of the three difficulties.
 
 # About the units
 
@@ -118,6 +136,7 @@ The elven archer is a long range atack unit.
 
 Gryphon Rider: 750 gold
 The Gryphon rider is an aerial unit.
+Gryphon Riders cannot rescue prisioners.
 
 The units can move towards a tile or a target to attack it or patrol the area.
 
@@ -125,7 +144,7 @@ Unit specific buttons:
 - Patrol: To patrol the area.
 - Stop: to stop the unit on its tracks.
 
-The enemy units are Grunts and Troll Axethrowers.
+The enemy units are Grunts, Troll Axethrowers and Dragons, which are the counterpart to the three main enemy units.
 
 # About the buildings
 
@@ -139,19 +158,41 @@ The player can build:
 Chicken farms: 500 gold
 They give the player 4 units of food.
 
-Gryphon Aviary
-This allows the player to spawn Gryphon Riders (it needs the Townhall upgrade to be built).
+Barracks: 1000 gold
+The barracks can spawn Footmans and Elven Archers if the player has enough gold.
+(They can only be built if there aren't any Barracks on the map)
+
+Gryphon Aviary: 400 gold
+This allows the player to spawn Gryphon Riders if they have enough gold (it needs the Townhall upgrade to be built).
+(They can only be built if there aren't any Gryphon Aviarys on the map)
 
 Scout Tower: 400 gold
 Guard Tower: 600 gold
 Cannon Tower: 800 gold
-They attack enemy entities and enemy buildings.
+They attack enemy units that are in base.
 
-There is a Town Hall and Barracks which the player cannot build.
-The barracks can spawn Footmans and Elven Archers if the player has enough gold.
+TOWN HALL:
+The Town Hall is a special building that the player cannot build. It can be upgraded to a Keep that allows
+the player to build a Gryphon Aviary. If the player
 
 There are many enemy buildings scattered throughout the map. Be careful because there are several orcish towers that 
 can attack you!
+
+## Building buttons
+
+Every building has a set of buttons when they are selected. 
+Normal buildings like Chicken Farms and Towers will only have a destroy building button, that destroys the building,
+in case the player has built the building in an inconvinient place.
+
+The production buildings, being the Barracks and the Gryphon Aviary have the pertinent creation units buttons. They create the pertinent
+unit that the player selects, if they have enough gold.
+
+The Town Hall has an upgrade button, that allows the building to upgrade to a Keep.
+
+## Room clear
+
+If the player clears a room of enemies and enemy buildings, they will get a message conforming they
+have cleared the room, and thay will be recompesned with a generous amount of gold.
 
 # Mini map
 
@@ -161,6 +202,30 @@ There's a mini map in the top left side of the screen that shows:
 - Allied troops (liight blue)
 - Allied buildings (dark blue)
 - Gold mines and Runestones (yellow)
+
+# Enemy waves to base
+
+Every 4-5 minutes, enemy troops will arrive to the player's base in a ship to destroy their buildings,
+but mostly the townhall. Remember that if your townhall is destroyed YOU WILL LOSE THE GAME.
+The number of ships and enemies that arrive to the base in every wave depends on the difficulty level that the player has
+chosen, but there will never be more than three boats per wave and more than six enemies per boat.
+When the wave is finished the player will be recompensed with gold.
+
+# The artifacts
+
+There are four artifacts present in the game. The player will get one artifact or another depending on how much time they
+spend beating the level.
+The four artifacts are:
+
+- Scepter of Sagreras: Less than 18 minutes to complete the level.
+
+- Eye of Dalaran: Less than 20 minutes to complete the level.
+
+- Skull of Gul'dan: Less than 25 minutes to complete the level
+
+- Book of Medivh: More than 25 minutes to complete the level
+
+Good luck on getting the Scepter of Sagreras!
 
 # Tools used
 
