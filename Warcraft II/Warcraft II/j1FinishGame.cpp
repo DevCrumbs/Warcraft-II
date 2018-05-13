@@ -161,11 +161,6 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	imageVector.push_back(App->gui->CreateUIImage({ 275, 375 }, imageInfo));
 	imageVector.push_back(App->gui->CreateUIImage({ 275, 475 }, imageInfo));
 
-	imageInfo.verticalOrientation = VERTICAL_POS_TOP;
-	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
-	imageInfo.texArea = { 850,750,55,55 };
-	imageVector.push_back(App->gui->CreateUIImage({ 550, 175 }, imageInfo));
-
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 
 	labelInfo.text = to_string(App->player->unitProduce);
@@ -194,7 +189,10 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	returnButt = App->gui->CreateUIButton({ 550, 525 }, buttonInfo, this, nullptr);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
-
+	if (isWin) 
+		labelInfo.hoverColor = ColorBlue;
+	else 
+		labelInfo.hoverColor = ColorRed;
 	labelInfo.text = "Return to Main Menu";
 	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt));
 
@@ -227,7 +225,6 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 
 void j1FinishGame::ArtifactWon(uint time)
 {
-
 	UILabel_Info labelInfo;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
@@ -250,6 +247,15 @@ void j1FinishGame::ArtifactWon(uint time)
 		labelInfo.text += "Scepter of Sagreras";
 	}
 	labelVector.push_back(App->gui->CreateUILabel({ 575, 145 }, labelInfo));
+
+	UIImage_Info imageInfo;
+	imageInfo.verticalOrientation = VERTICAL_POS_TOP;
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	imageInfo.texArea = { 268,384,59,59 };
+
+	UIImage* recover = App->gui->CreateUIImage({ 548, 173 }, imageInfo);
+	recover->SetPriorityDraw(PriorityDraw_WINDOW);
+	imageVector.push_back(recover);
 }
 
 void j1FinishGame::DeleteScene() {
