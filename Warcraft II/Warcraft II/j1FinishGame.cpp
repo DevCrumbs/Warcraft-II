@@ -229,15 +229,15 @@ void j1FinishGame::ArtifactWon(uint time)
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
 	labelInfo.text = "Artifact Obtained: ";
 
-	if (time >= 1200) {
+	if (time >= 1500) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->bookText, App->gui->bookAnim, 5));
 		labelInfo.text += "Book of Medivh";
 	}
-	else if (time >= 900) {
+	else if (time >= 1200) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->skullText, App->gui->skullAnim, 5));
 		labelInfo.text += "Skull of Gul'dan";
 	}
-	else if (time >= 600) {
+	else if (time >= 1080) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->eyeText, App->gui->eyeAnim, 5));
 		labelInfo.text += "Eye of Dalaran";
 	}
