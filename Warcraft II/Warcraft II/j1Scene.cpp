@@ -133,7 +133,7 @@ bool j1Scene::Start()
 	}
 
 	else if (warcraftActive) {
-		ret = LoadNewMap(4);
+		ret = LoadNewMap(mapDifficulty);
 	//	ret = App->map->Load("verticalSliceMap.tmx");
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
