@@ -159,6 +159,7 @@ public:
 	bool				toCap = true;
 	bool				quitGame = false;
 	double				auxiliarDt = 0;
+	bool				isDebug = false;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S
