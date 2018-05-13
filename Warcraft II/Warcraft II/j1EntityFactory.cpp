@@ -1312,7 +1312,7 @@ bool j1EntityFactory::Start()
 
 	isEntityFactoryCleanUp = false;
 
-	/// TODO Joan (balancing)
+	// TODO balancing
 
 	// ENTITIES INFO
 	/// ALLIANCE
@@ -4155,7 +4155,7 @@ void j1EntityFactory::UnselectAllPrisoners()
 
 uint j1EntityFactory::DetermineBuildingMaxLife(ENTITY_TYPE buildingType, StaticEntitySize buildingSize)
 {
-	/// TODO Joan (balancing)
+	// TODO balancing
 	uint maxLife = 0;
 
 		// Towers
@@ -4203,7 +4203,7 @@ uint j1EntityFactory::DetermineBuildingMaxLife(ENTITY_TYPE buildingType, StaticE
 
 uint j1EntityFactory::DetermineBuildingGold(ENTITY_TYPE buildingType, StaticEntitySize buildingSize)
 {
-	/// TODO Joan (balancing)
+	// TODO balancing
 	uint gold = 0;
 
 	// Towers

@@ -123,9 +123,12 @@ void Dragon::Move(float dt)
 			isDead = true;
 			App->player->enemiesKill++;
 
+			//TODO balancing
 			// Give gold to the player
-			App->player->AddGold(dragonInfo.droppedGold);
-			App->audio->PlayFx(App->audio->GetFX().goldGetSound);
+			if (App->scene->mapDifficulty != 4) {
+				App->player->AddGold(dragonInfo.droppedGold);
+				App->audio->PlayFx(App->audio->GetFX().goldGetSound);
+			}
 
 			// Remove the entity from the unitsSelected list
 			App->entities->RemoveUnitFromUnitsSelected(this);

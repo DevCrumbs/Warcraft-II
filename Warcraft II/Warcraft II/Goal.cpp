@@ -1467,34 +1467,69 @@ void Goal_PickNugget::Activate()
 	int random = rand() % 4;
 	int timesRepeatSound = 0;
 
-	switch (random) {
-	// TODO Valdivia: Times have to be changed to be shorter and the labels must show accordingly
-	case 0:
-		gold = 1400;
-		secondsGathering = 10.0f;
-		timesRepeatSound = 5;
-		break;
-	case 1:
-		gold = 1550;
-		secondsGathering = 14.0f;
-		timesRepeatSound = 6;
-		break;
-	case 2:
-		gold = 1700;
-		secondsGathering = 15.0f;
-		timesRepeatSound = 7;
-		break;
-	case 3:
-		gold = 1850;
-		secondsGathering = 17.0f;
-		timesRepeatSound = 8;
-		break;
+	//TODO balancing
+	int mapDifficulty = App->scene->mapDifficulty;
 
-	default:
-		gold = 2000;
-		secondsGathering = 20.0f;
-		timesRepeatSound = 9;
-		break;
+	if (mapDifficulty == 0 || mapDifficulty == 1) { //Easy
+		switch (random) {
+		case 0:
+			gold = 2000;
+			secondsGathering = 10.0f;
+			timesRepeatSound = 5;
+			break;
+		case 1:
+			gold = 2100;
+			secondsGathering = 14.0f;
+			timesRepeatSound = 6;
+			break;
+		case 2:
+			gold = 2300;
+			secondsGathering = 15.0f;
+			timesRepeatSound = 7;
+			break;
+		case 3:
+			gold = 2500;
+			secondsGathering = 17.0f;
+			timesRepeatSound = 8;
+			break;
+
+		default:
+			gold = 3000;
+			secondsGathering = 20.0f;
+			timesRepeatSound = 9;
+			break;
+		}
+	}
+
+	else  { //Medium/Hard
+		switch (random) {
+		case 0:
+			gold = 1400;
+			secondsGathering = 10.0f;
+			timesRepeatSound = 5;
+			break;
+		case 1:
+			gold = 1550;
+			secondsGathering = 14.0f;
+			timesRepeatSound = 6;
+			break;
+		case 2:
+			gold = 1700;
+			secondsGathering = 15.0f;
+			timesRepeatSound = 7;
+			break;
+		case 3:
+			gold = 1850;
+			secondsGathering = 17.0f;
+			timesRepeatSound = 8;
+			break;
+
+		default:
+			gold = 2000;
+			secondsGathering = 20.0f;
+			timesRepeatSound = 9;
+			break;
+		}
 	}
 
 	goldMine->totalGold = gold;
