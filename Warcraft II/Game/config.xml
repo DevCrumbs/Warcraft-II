@@ -1606,7 +1606,7 @@
     
     
     <winBackground>
-      <sprite x="1900" y="0" w="800" h="600"/>
+      <sprite x="2700" y="600" w="800" h="600"/>
     </winBackground>
 
     <loseBackground>

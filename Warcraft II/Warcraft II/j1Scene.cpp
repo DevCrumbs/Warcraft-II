@@ -2035,7 +2035,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else if (UIelem == buildingMenuButtons.chickenFarm.icon) {
 				if (App->player->GetCurrentGold() >= chickenFarmCost) {
+					//Unselect entities and hide their info
+					//---------------------------------------
 					App->entities->UnselectAllEntities();
+					HideUnselectedUnits();
+					App->player->HideEntitySelectedInfo();
+					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_CHICKEN_FARM;
@@ -2046,7 +2051,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade && App->player->townHall->buildingState == BuildingState_Normal) {
 				if (App->player->GetCurrentGold() >= gryphonAviaryCost) {
+					//Unselect entities and hide their info
+					//---------------------------------------
 					App->entities->UnselectAllEntities();
+					HideUnselectedUnits();
+					App->player->HideEntitySelectedInfo();
+					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_GRYPHON_AVIARY;
@@ -2060,7 +2070,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else if (UIelem == buildingMenuButtons.scoutTower.icon) {
 				if (App->player->GetCurrentGold() >= scoutTowerCost) {
+					//Unselect entities and hide their info
+					//---------------------------------------
 					App->entities->UnselectAllEntities();
+					HideUnselectedUnits();
+					App->player->HideEntitySelectedInfo();
+					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_SCOUT_TOWER;
@@ -2071,7 +2086,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else if (UIelem == buildingMenuButtons.guardTower.icon) {
 				if (App->player->GetCurrentGold() >= guardTowerCost) {
+					//Unselect entities and hide their info
+					//---------------------------------------
 					App->entities->UnselectAllEntities();
+					HideUnselectedUnits();
+					App->player->HideEntitySelectedInfo();
+					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
@@ -2082,7 +2102,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else if (UIelem == buildingMenuButtons.cannonTower.icon) {
 				if (App->player->GetCurrentGold() >= cannonTowerCost) {
+					//Unselect entities and hide their info
+					//---------------------------------------
 					App->entities->UnselectAllEntities();
+					HideUnselectedUnits();
+					App->player->HideEntitySelectedInfo();
+					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
@@ -2093,7 +2118,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			else if (UIelem == buildingMenuButtons.barracks.icon && App->player->barracks == nullptr) {
 				if (App->player->GetCurrentGold() >= barracksCost) {
+					//Unselect entities and hide their info
+					//---------------------------------------
 					App->entities->UnselectAllEntities();
+					HideUnselectedUnits();
+					App->player->HideEntitySelectedInfo();
+					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_BARRACKS;
