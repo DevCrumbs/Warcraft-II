@@ -450,8 +450,8 @@ bool UIMinimap::LoadMap()
 		mapSize = App->map->data.width;
 	}
 
-	currentScaleFactor = hiLevelScaleFactor = minimapSize / (float)(mapSize * App->map->data.tileHeight);
-	lowLevelScaleFactor = minimapInfo.h / (float)(40 * App->map->data.tileHeight);
+	currentScaleFactor = hiLevelScaleFactor = minimapSize / (float)(mapSize * App->map->defaultTileSize);
+	lowLevelScaleFactor = minimapSize / (float)(App->map->defaultBaseSize * App->map->defaultTileSize);
 
 	///-----------------	 Create a RGB surface
 	mapSurface = SDL_CreateRGBSurface(0, App->map->data.width * App->map->data.tileWidth, App->map->data.height * App->map->data.tileHeight, 32, 0, 0, 0, 0);
