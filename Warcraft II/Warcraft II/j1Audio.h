@@ -17,6 +17,7 @@ struct Mix_Chunk;
 struct GameSounds {
 
 	FX button = 0;
+	FX gameStart = 0;
 	FX buildingConstruction = 0;
 	FX errorButt = 0;
 	FX errorButtBuilding = 0;
@@ -145,6 +146,7 @@ private:
 	//FX paths
 	//---------------------
 	string mainButtonSound;
+	string gameStartSound;
 	string buildingConstructionSound;
 	string errorButtonSound;
 	string buildingErrorButtonSound;
