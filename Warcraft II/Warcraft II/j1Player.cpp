@@ -191,7 +191,7 @@ bool j1Player::Update(float dt)
 			}
 	*/
 
-	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) {
+	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN && App->isDebug) {
 		if (!chickenFarm.empty())
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)chickenFarm.back();
@@ -207,11 +207,11 @@ bool j1Player::Update(float dt)
 				}
 			}
 	}
-	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN) {
+	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN && App->isDebug) {
 		App->audio->PlayFx(App->audio->GetFX().goldMine, 0); // Gold mine sound
 		AddGold(500);
 	}
-	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
+	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN && App->isDebug) {
 		currentFood += 3;
 		App->scene->hasFoodChanged = true;
 	}
