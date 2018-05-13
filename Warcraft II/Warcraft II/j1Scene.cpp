@@ -2038,8 +2038,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					//Unselect entities and hide their info
 					//---------------------------------------
 					App->entities->UnselectAllEntities();
-					HideUnselectedUnits();
-					App->player->HideEntitySelectedInfo();
 					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
@@ -2054,8 +2052,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					//Unselect entities and hide their info
 					//---------------------------------------
 					App->entities->UnselectAllEntities();
-					HideUnselectedUnits();
-					App->player->HideEntitySelectedInfo();
 					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
@@ -2073,8 +2069,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					//Unselect entities and hide their info
 					//---------------------------------------
 					App->entities->UnselectAllEntities();
-					HideUnselectedUnits();
-					App->player->HideEntitySelectedInfo();
 					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
@@ -2089,8 +2083,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					//Unselect entities and hide their info
 					//---------------------------------------
 					App->entities->UnselectAllEntities();
-					HideUnselectedUnits();
-					App->player->HideEntitySelectedInfo();
 					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
@@ -2105,8 +2097,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					//Unselect entities and hide their info
 					//---------------------------------------
 					App->entities->UnselectAllEntities();
-					HideUnselectedUnits();
-					App->player->HideEntitySelectedInfo();
 					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
@@ -2121,8 +2111,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					//Unselect entities and hide their info
 					//---------------------------------------
 					App->entities->UnselectAllEntities();
-					HideUnselectedUnits();
-					App->player->HideEntitySelectedInfo();
 					//---------------------------------------
 					App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 					ChangeBuildingMenuState(&buildingMenuButtons);
