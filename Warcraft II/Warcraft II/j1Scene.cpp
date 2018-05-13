@@ -1187,8 +1187,8 @@ string j1Scene::ChooseMusicToPlay()
 
 void j1Scene::ShowSelectedUnits(list<DynamicEntity*> units)
 {
-	App->player->HideEntitySelectedInfo();
 	HideUnselectedUnits();
+	App->player->HideEntitySelectedInfo();
 	list<DynamicEntity*>::iterator iterator = units.begin();
 	while (iterator != units.end()) {
 		UIImage* image = nullptr;

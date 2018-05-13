@@ -305,9 +305,9 @@ void j1Menu::CreateNewGame()
 	labelInfo.text = "Return";
 	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
 
-	easyOneButt = App->gui->CreateUIButton({ 170, 200 }, buttonInfo, this, nullptr);
+	easyOneButt = App->gui->CreateUIButton({ 170, 250 }, buttonInfo, this, nullptr);
 	easyTwoButt = App->gui->CreateUIButton({ 170, 500 }, buttonInfo, this, nullptr);
-	mediumOneButt = App->gui->CreateUIButton({ 420, 200 }, buttonInfo, this, nullptr);
+	mediumOneButt = App->gui->CreateUIButton({ 420, 250 }, buttonInfo, this, nullptr);
 	mediumTwoButt = App->gui->CreateUIButton({ 420, 500 }, buttonInfo, this, nullptr);
 	hardButt = App->gui->CreateUIButton({ 645, 400 }, buttonInfo, this, nullptr);
 
@@ -325,13 +325,13 @@ void j1Menu::CreateNewGame()
 	UIImage_Info imageInfo;
 	imageInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	imageInfo.texArea = { 0, 50, 175, 131 };
-	artifacts.push_back(App->gui->CreateUIImage({ 170,50 }, imageInfo));
+	artifacts.push_back(App->gui->CreateUIImage({ 170,100 }, imageInfo));
 
 	imageInfo.texArea = { 0, 50, 175, 131 };
 	artifacts.push_back(App->gui->CreateUIImage({ 170,350 }, imageInfo));
 
 	imageInfo.texArea = { 0, 50, 175, 131 };
-	artifacts.push_back(App->gui->CreateUIImage({ 420,50 }, imageInfo));
+	artifacts.push_back(App->gui->CreateUIImage({ 420,100 }, imageInfo));
 
 	imageInfo.texArea = { 0, 50, 175, 131 };
 	artifacts.push_back(App->gui->CreateUIImage({ 420,350 }, imageInfo));
