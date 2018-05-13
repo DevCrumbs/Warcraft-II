@@ -36,8 +36,9 @@ bool j1FogOfWar::Start()
 
 bool j1FogOfWar::LoadFoW()
 {
-	bool ret = false;
+	bool ret = true;
 
+	isActive = true;
 
 	width = App->map->data.width ;
 	height = App->map->data.height ;
