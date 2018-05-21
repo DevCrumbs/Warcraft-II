@@ -442,7 +442,7 @@ bool j1Scene::Update(float dt)
 
 					while (sg != savedGroup.end()) {
 
-						(*sg)->BlitGroupSelection();
+						(*sg)->BlitSelectedGroupSelection();
 
 						sg++;
 					}
@@ -512,17 +512,35 @@ bool j1Scene::Update(float dt)
 				// a) Save group of units
 				if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT) {
 
+					bool isSavedGroup = false;
+
 					if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
 					
 						App->entities->SaveEntityGroup(units, 0);
+						isSavedGroup = true;
 					}
 					else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
 
 						App->entities->SaveEntityGroup(units, 1);
+						isSavedGroup = true;
 					}
 					else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
 
 						App->entities->SaveEntityGroup(units, 2);
+						isSavedGroup = true;
+					}
+
+					if (isSavedGroup) {
+
+						// Blit the selection of the units (just a few seconds) from alpha 255 to 0
+						list<DynamicEntity*>::const_iterator sg = units.begin();
+
+						while (sg != units.end()) {
+
+							(*sg)->BlitSavedGroupSelection();
+
+							sg++;
+						}
 					}
 				}
 

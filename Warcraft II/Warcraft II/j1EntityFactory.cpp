@@ -2610,6 +2610,13 @@ bool j1EntityFactory::CleanUp()
 	list<DynamicEntity*>::const_iterator unitSel = unitsSelected.begin();
 	unitsSelected.clear();
 
+	// Remove saved groups
+	for (uint i = 0; i < MAX_SAVED_GROUPS; ++i) {
+	
+		if (savedGroups[i].size() > 0)
+			savedGroups[i].clear();
+	}
+
 	// Free all textures
 	if (footmanTex != nullptr)
 		App->tex->UnLoad(footmanTex);

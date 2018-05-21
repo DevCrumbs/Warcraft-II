@@ -50,6 +50,9 @@ DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife
 
 DynamicEntity::~DynamicEntity()
 {
+	isBlitSavedGroupSelection = false;
+	isBlitSelectedGroupSelection = false;
+
 	// Remove Goals
 	if (brain != nullptr) {
 
@@ -1031,8 +1034,16 @@ iPoint DynamicEntity::GetLastSeenTile() const
 }
 
 // Group selection
-void DynamicEntity::BlitGroupSelection() 
+void DynamicEntity::BlitSavedGroupSelection()
 {
-	isBlitGroupSelection = true;
-	alphaGroupSelection = 255;
+	isBlitSelectedGroupSelection = false;
+	isBlitSavedGroupSelection = true;
+	alphaSavedGroupSelection = 255;
+}
+
+void DynamicEntity::BlitSelectedGroupSelection()
+{
+	isBlitSavedGroupSelection = false;
+	isBlitSelectedGroupSelection = true;
+	alphaSelectedGroupSelection = 255;
 }

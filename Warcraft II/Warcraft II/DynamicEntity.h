@@ -213,7 +213,8 @@ public:
 	iPoint GetLastSeenTile() const;
 
 	// Group selection
-	void BlitGroupSelection();
+	void BlitSavedGroupSelection();
+	void BlitSelectedGroupSelection();
 
 public:
 
@@ -283,8 +284,10 @@ protected:
 	iPoint lastSeenTile = { -1,-1 };
 
 	// Group selection
-	bool isBlitGroupSelection = false;
-	int alphaGroupSelection = 0;
+	bool isBlitSavedGroupSelection = false;
+	bool isBlitSelectedGroupSelection = false;
+	int alphaSavedGroupSelection = 0;
+	int alphaSelectedGroupSelection = 0;
 };
 
 // ---------------------------------------------------------------------

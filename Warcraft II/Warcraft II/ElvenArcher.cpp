@@ -102,6 +102,9 @@ void ElvenArcher::Move(float dt)
 			&& singleUnit->IsFittingTile()
 			&& !isDead) {
 
+			isBlitSavedGroupSelection = false;
+			isBlitSelectedGroupSelection = false;
+
 			App->audio->PlayFx(App->audio->GetFX().humanDeath, 0);
 
 			isDead = true;
@@ -353,18 +356,18 @@ void ElvenArcher::Move(float dt)
 	}
 
 	// Blit group selection
-	if (isBlitGroupSelection) {
+	if (isBlitSelectedGroupSelection) {
 
 		float alphaSpeed = 250.0f;
-		alphaGroupSelection -= alphaSpeed * dt;
+		alphaSelectedGroupSelection -= alphaSpeed * dt;
 
-		if (alphaGroupSelection <= 0) {
-			alphaGroupSelection = 0;
-			isBlitGroupSelection = false;
+		if (alphaSelectedGroupSelection <= 0) {
+			alphaSelectedGroupSelection = 0;
+			isBlitSelectedGroupSelection = false;
 		}
 
 		SDL_Color alphaColor = color;
-		alphaColor.a = alphaGroupSelection;
+		alphaColor.a = alphaSelectedGroupSelection;
 
 		const SDL_Rect entitySizeA = { pos.x + offsetSize.x - 1, pos.y + offsetSize.y - 1, size.x + 2, size.y + 2 };
 		const SDL_Rect entitySizeB = { pos.x + offsetSize.x - 2, pos.y + offsetSize.y - 2, size.x + 4, size.y + 4 };
@@ -372,6 +375,22 @@ void ElvenArcher::Move(float dt)
 		App->printer->PrintQuad(entitySizeA, alphaColor);
 		App->printer->PrintQuad(entitySizeB, alphaColor);
 		App->printer->PrintQuad(entitySizeC, alphaColor);
+	}
+	if (isBlitSavedGroupSelection) {
+
+		float alphaSpeed = 250.0f;
+		alphaSavedGroupSelection -= alphaSpeed * dt;
+
+		if (alphaSavedGroupSelection <= 0) {
+			alphaSavedGroupSelection = 0;
+			isBlitSavedGroupSelection = false;
+		}
+
+		SDL_Color alphaColor = color;
+		alphaColor.a = alphaSavedGroupSelection;
+
+		const SDL_Rect entitySize = { pos.x + offsetSize.x, pos.y + offsetSize.y, size.x, size.y };
+		App->printer->PrintQuad(entitySize, alphaColor, true, true, Layers_FloorColliders);
 	}
 }
 
