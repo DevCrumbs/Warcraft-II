@@ -45,9 +45,16 @@ enum AdviceMessages {
 
 	AdviceMessage_FOOD,
 	AdviceMessage_GOLD,
+
+	// Units selection
 	AdviceMessage_SELECT_FOOTMANS,
 	AdviceMessage_SELECT_ARCHERS,
 	AdviceMessage_SELECT_GRYPHS,
+	AdviceMessage_SELECT_ALL_UNITS,
+
+	// Group selection
+	AdviceMessage_EMPTY_GROUP,
+
 	AdviceMessage_ROOM_CLEAR,
 	AdviceMessage_BASE_DEFENDED,
 	AdviceMessage_UNDER_ATTACK,

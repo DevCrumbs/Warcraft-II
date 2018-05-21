@@ -126,6 +126,17 @@ bool j1Player::Update(float dt)
 		else
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 	}
+	else if (App->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN) {
+	
+		App->entities->SelectEntitiesOnScreen();
+
+		list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+		if (units.size() > 0)
+			App->scene->PlayUnitSound(units, true); // Unit selected sound
+		else
+			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);	
+	}
 
 	/*
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
@@ -1345,12 +1356,8 @@ void j1Player::ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect ico
 		case GoldMineState_Gathering:
 		{
 			uint currentGold = 0;
-			for (float i = goldMine->secondsGathering; i >= 0; i--) {
-				if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
-					currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
-					break;
-				}
-			}
+			currentGold = goldMine->totalGold - goldMine->currGold;
+
 			string goldString = "Gold = " + to_string(currentGold);
 			entitySelectedStats.HP->SetText(goldString);	
 		}
@@ -1768,13 +1775,8 @@ void j1Player::HandleGoldMineUIStates()
 	case GoldMineState_Gathering:
 	{
 		uint currentGold = 0;
+		currentGold = goldMine->totalGold - goldMine->currGold;
 
-		for (float i = goldMine->secondsGathering; i >= 0; i--) {
-			if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
-				currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
-				break;
-			}
-		}
 		string goldString = "Gold = " + to_string(currentGold);
 		entitySelectedStats.HP->SetText(goldString);
 	}

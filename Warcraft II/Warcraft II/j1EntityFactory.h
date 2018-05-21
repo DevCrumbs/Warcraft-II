@@ -55,6 +55,7 @@
 using namespace std;
 
 #define MAX_UNITS_SELECTED 8
+#define MAX_SAVED_GROUPS 3
 
 struct SDL_Texture;
 struct SDL_Rect;
@@ -156,7 +157,14 @@ public:
 	// Entities
 	Entity* IsEntityUnderMouse(iPoint mousePos, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide) const;
 	Entity* AreEntitiesColliding(SDL_Rect entityRect, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide) const;
+	iPoint CalculateCentroidEntities(list<DynamicEntity*> units);
+	// Entities selection
 	void SelectEntitiesOnScreen(ENTITY_TYPE entityType = EntityType_NONE);
+
+	// Dynamic entities groups
+	bool SaveEntityGroup(list<DynamicEntity*> units, uint index = 0);
+	list<DynamicEntity*> GetSavedEntityGroup(uint index);
+	void SelectEntitiesGroup(list<DynamicEntity*> units);
 
 	// Dynamic Entities
 	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);
@@ -188,6 +196,9 @@ public:
 	list<DynamicEntity*> activeDynamicEntities;
 	list<StaticEntity*> activeStaticEntities;
 	list<DynamicEntity*> unitsSelected;
+
+	// Saved entities groups
+	list<DynamicEntity*> savedGroups[MAX_SAVED_GROUPS];
 
 private:
 

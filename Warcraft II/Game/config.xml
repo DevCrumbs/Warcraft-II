@@ -13,7 +13,6 @@
 
   <window>
     <resolution width="800" height="600" scale="1"/>
-    <!--You should only set fullscreen to true, other options may cause problems.-->
     <fullscreen value="false"/>
     <borderless value="false"/>
     <resizable value="false"/>

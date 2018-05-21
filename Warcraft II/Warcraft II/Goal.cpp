@@ -1532,7 +1532,8 @@ void Goal_PickNugget::Activate()
 		}
 	}
 
-	goldMine->totalGold = gold;
+	goldMine->totalGold =  gold;
+	goldMine->currGold = gold;
 	goldMine->secondsGathering = secondsGathering;
 
 	App->audio->PlayFx(App->audio->GetFX().goldMine, timesRepeatSound); // Gold mine sound
@@ -1581,6 +1582,8 @@ GoalStatus Goal_PickNugget::Process(float dt)
 		auxGatherTimer.Start();
 	}
 
+	goldMine->currGold = goldGathered;
+
 	return goalStatus;
 }
 
@@ -1593,6 +1596,7 @@ void Goal_PickNugget::Terminate()
 		// Give remaining gold to the player
 		if(gold != goldGathered)
 			App->player->AddGold(gold - goldGathered);
+		goldMine->currGold = goldGathered;
 
 		owner->SetGoldMine(nullptr);
 		owner->SetUnitGatheringGold(false);

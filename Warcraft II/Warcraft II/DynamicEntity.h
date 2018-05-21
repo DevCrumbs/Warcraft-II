@@ -212,6 +212,10 @@ public:
 	void SetLastSeenTile(iPoint lastSeenTile);
 	iPoint GetLastSeenTile() const;
 
+	// Group selection
+	void BlitSavedGroupSelection();
+	void BlitSelectedGroupSelection();
+
 public:
 
 	ENTITY_TYPE dynamicEntityType = EntityType_NONE;
@@ -278,6 +282,12 @@ protected:
 
 	// Fow
 	iPoint lastSeenTile = { -1,-1 };
+
+	// Group selection
+	bool isBlitSavedGroupSelection = false;
+	bool isBlitSelectedGroupSelection = false;
+	int alphaSavedGroupSelection = 0;
+	int alphaSelectedGroupSelection = 0;
 };
 
 // ---------------------------------------------------------------------

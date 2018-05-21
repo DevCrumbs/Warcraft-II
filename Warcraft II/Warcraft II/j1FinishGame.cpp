@@ -185,15 +185,17 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 	labelVector.push_back(App->gui->CreateUILabel({ 275 , 475 }, labelInfo));
 
 	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
-	continueButt = App->gui->CreateUIButton({ 625, 525 }, buttonInfo, this, nullptr);
+	buttonInfo.normalTexArea = { 1400, 45, 250, 33 };
+	returnButt = App->gui->CreateUIButton({ 550, 525 }, buttonInfo, this, nullptr);
 
-	labelInfo.fontName = FONT_NAME_WARCRAFT25;
-	labelInfo.hoverColor = ColorGreen;
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	if (isWin) 
+		labelInfo.hoverColor = ColorBlue;
+	else 
+		labelInfo.hoverColor = ColorRed;
+	labelInfo.text = "Return to Main Menu";
+	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt));
 
-	labelInfo.text = "Continue";
-	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, continueButt));
-	
 	//Backgrounds and flag
 	if (isWin) {
 		UIImage_Info imageInfo;
@@ -223,29 +225,37 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 
 void j1FinishGame::ArtifactWon(uint time)
 {
-
 	UILabel_Info labelInfo;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
 	labelInfo.text = "Artifact Obtained: ";
 
-	if (time >= 1200) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->bookText, App->gui->bookAnim, 5));
+	if (time >= 1500) {
+		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->bookText, App->gui->bookAnim, 5));
 		labelInfo.text += "Book of Medivh";
 	}
-	else if (time >= 900) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->skullText, App->gui->skullAnim, 5));
+	else if (time >= 1200) {
+		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->skullText, App->gui->skullAnim, 5));
 		labelInfo.text += "Skull of Gul'dan";
 	}
-	else if (time >= 600) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->eyeText, App->gui->eyeAnim, 5));
+	else if (time >= 1080) {
+		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->eyeText, App->gui->eyeAnim, 5));
 		labelInfo.text += "Eye of Dalaran";
 	}
 	else if (time >= 0) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,300 }, App->gui->scepterText, App->gui->scepterAnim, 5));
+		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 		labelInfo.text += "Scepter of Sagreras";
 	}
-	labelVector.push_back(App->gui->CreateUILabel({ 575, 400 }, labelInfo));
+	labelVector.push_back(App->gui->CreateUILabel({ 575, 145 }, labelInfo));
+
+	UIImage_Info imageInfo;
+	imageInfo.verticalOrientation = VERTICAL_POS_TOP;
+	imageInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
+	imageInfo.texArea = { 268,384,59,59 };
+
+	UIImage* recover = App->gui->CreateUIImage({ 548, 173 }, imageInfo);
+	recover->SetPriorityDraw(PriorityDraw_WINDOW);
+	imageVector.push_back(recover);
 }
 
 void j1FinishGame::DeleteScene() {
@@ -259,46 +269,8 @@ void j1FinishGame::DeleteScene() {
 	{
 		App->gui->RemoveElem((UIElement**)&imageVector.back());
 	}
-	App->gui->RemoveElem((UIElement**)&continueButt);
+
 	App->gui->RemoveElem((UIElement**)&returnButt);
-
-}
-
-void j1FinishGame::LoadSceneTwo() {
-	UILabel_Info labelInfo;
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT;
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorGrey;
-	labelInfo.text = "Alpha out on May the 13h";
-	labelVector.push_back(App->gui->CreateUILabel({ 50, 542 }, labelInfo));
-
-	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	labelInfo.fontName = FONT_NAME_WARCRAFT25;
-	labelInfo.text = "Thanks for playing the demo!";
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorGreen;
-	labelVector.push_back(App->gui->CreateUILabel({ screen.w / 2, 50 }, labelInfo));
-
-	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1400, 45, 250, 33 };
-	returnButt = App->gui->CreateUIButton({ 550, 525 }, buttonInfo, this, nullptr);
-
-	labelInfo.fontName = FONT_NAME_WARCRAFT20;
-	labelInfo.normalColor = White_;
-	labelInfo.text = "Return to Main Menu";
-	labelVector.push_back(App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt));
-	
-
-	labelInfo.hoverColor = labelInfo.pressedColor = White_;
-	labelInfo.fontName = FONT_NAME_WARCRAFT;
-	labelInfo.textWrapLength = 600;
-	string s = "If you want to know which artifact you would have gained, do not forget to play the full game when it is relased! The enemy base awaits for your troops...";
-	labelInfo.text = s;
-	labelVector.push_back(App->gui->CreateUILabel({ 750, 400 }, labelInfo));
-
-	imageVector.push_back(App->menu->AddArtifact({ 125,200 }, App->gui->bookText, App->gui->bookAnim, 5));
-	imageVector.push_back(App->menu->AddArtifact({ 275,300 }, App->gui->skullText, App->gui->skullAnim, 5));
-	imageVector.push_back(App->menu->AddArtifact({ 450,300 }, App->gui->eyeText, App->gui->eyeAnim, 5));
-	imageVector.push_back(App->menu->AddArtifact({ 600,200 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 
 }
 
@@ -315,12 +287,6 @@ void j1FinishGame::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
-
-		if (UIelem == continueButt) {
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-			DeleteScene();
-			LoadSceneTwo();
-		}
 
 		if (UIelem == returnButt) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
