@@ -405,6 +405,59 @@ bool j1Scene::Update(float dt)
 		int height = mousePos.y - startRectangle.y;
 
 		/// SELECT UNITS
+
+		// b) Select a group of units
+		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT) {
+
+			bool isSelectedGroup = false;
+			uint numGroup = 0;
+
+			if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+
+				numGroup = 0;
+				isSelectedGroup = true;
+			}
+			else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+
+				numGroup = 1;
+				isSelectedGroup = true;
+			}
+			else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+
+				numGroup = 2;
+				isSelectedGroup = true;
+			}
+
+			if (isSelectedGroup) {
+
+				list<DynamicEntity*> savedGroup = App->entities->GetSavedEntityGroup(numGroup);
+
+				if (savedGroup.size() > 0) {
+
+					// Select the group
+					App->entities->SelectEntitiesGroup(savedGroup);
+
+					// Blit the selection of the units (just a few seconds) from alpha 255 to 0
+					list<DynamicEntity*>::const_iterator sg = savedGroup.begin();
+
+					while (sg != savedGroup.end()) {
+
+						(*sg)->BlitGroupSelection();
+
+						sg++;
+					}
+				}
+				else {
+
+					if (adviceMessage != AdviceMessage_EMPTY_GROUP) {
+						adviceMessageTimer.Start();
+						adviceMessage = AdviceMessage_EMPTY_GROUP;
+						ShowAdviceMessage(adviceMessage);
+					}
+				}
+			}
+		}
+
 		// Select units by rectangle drawing
 		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
@@ -442,7 +495,7 @@ bool j1Scene::Update(float dt)
 
 					if (!CompareSelectedUnitsLists(units)) {
 						ShowSelectedUnits(units);
-						PlayUnitSound(units, true); //Unit selected sound
+						PlayUnitSound(units, true); // Units selected sound
 					}
 				}
 			}
@@ -456,6 +509,61 @@ bool j1Scene::Update(float dt)
 
 			if (group != nullptr) {
 
+				// a) Save group of units
+				if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT) {
+
+					if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+					
+						App->entities->SaveEntityGroup(units, 0);
+					}
+					else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+
+						App->entities->SaveEntityGroup(units, 1);
+					}
+					else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+
+						App->entities->SaveEntityGroup(units, 2);
+					}
+				}
+
+				// Move the camera to the group of units
+				if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN) {
+
+					iPoint centroid = App->entities->CalculateCentroidEntities(units);
+					iPoint cameraPos = App->render->FindCameraPosFromCenterPos(centroid);
+
+					/// Check if there is an entity from the group on the centroid calculated
+					list<DynamicEntity*>::const_iterator u = units.begin();
+
+					bool isInScreen = false;
+					const SDL_Rect cameraRect{ -cameraPos.x, -cameraPos.y, App->render->camera.w, App->render->camera.h };
+
+					while (u != units.end()) {
+
+						const SDL_Rect entityRect = { (*u)->GetPos().x, (*u)->GetPos().y, (*u)->GetSize().x, (*u)->GetSize().y };
+
+						if (App->render->IsInRectangle(cameraRect, entityRect)) {
+
+							isInScreen = true;
+							break;
+						}
+
+						u++;
+					}
+
+					/// If there isn't, move the camera to the position of a random entity from the group
+					if (!isInScreen) {
+
+						centroid = { (int)units.front()->GetPos().x, (int)units.front()->GetPos().y };
+						cameraPos = App->render->FindCameraPosFromCenterPos(centroid);
+					}
+
+					// Move the camera to the resulting position
+					App->render->camera.x = cameraPos.x;
+					App->render->camera.y = cameraPos.y;
+				}
+
+				// Command a group of units
 				/// COMMAND PATROL
 				if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN)
 					App->entities->CommandToUnits(units, UnitCommand_Patrol);
@@ -963,10 +1071,9 @@ void j1Scene::DebugKeys()
 		App->render->camera.y = -basePos.y;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN) {
-		ChangeBuildingMenuState(&buildingMenuButtons);
-	}
+	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
 
+		ChangeBuildingMenuState(&buildingMenuButtons);
 }
 
 void j1Scene::CheckCameraMovement(float dt) 
@@ -1919,6 +2026,22 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 
 	case AdviceMessage_SELECT_GRYPHS:
 		text = "No gryphon rider on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_ALL_UNITS:
+		text = "No units on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_EMPTY_GROUP:
+		text = "No units in the group.";
 		adviceLabel->SetText(text, 340);
 		adviceLabel->SetLocalPos({ 275,265 });
 		adviceLabel->SetColor(White_);

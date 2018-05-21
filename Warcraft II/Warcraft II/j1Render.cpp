@@ -7,6 +7,7 @@
 #include "j1Render.h"
 #include "j1Input.h"
 #include "j1Scene.h"
+#include "j1Map.h"
 
 #define VSYNC true
 
@@ -146,8 +147,47 @@ iPoint j1Render::ScreenToWorld(int x, int y) const
 	return ret;
 }
 
-fPoint j1Render::GetMidCameraPos() const {
+fPoint j1Render::GetMidCameraPos() const 
+{
 	return { (camera.w / 2) - camera.x, (camera.h / 2) - camera.y };
+}
+
+iPoint j1Render::FindCameraPosFromCenterPos(iPoint centerPos)
+{
+	iPoint finalPos = centerPos;
+	finalPos.x -= camera.w / 2;
+	finalPos.y -= camera.h / 2;
+
+	finalPos.x = -finalPos.x;
+	finalPos.y = -finalPos.y;
+
+	// Check the boundaries of the map and reposition the camera accordingly
+	uint width = 0;
+	uint height = 0;
+	float scale = 0;
+	App->win->GetWindowSize(width, height);
+	scale = App->win->GetScale();
+
+	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
+	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
+
+	// Succeed! The camera fits the position calculated
+	if (finalPos.y <= 0 && finalPos.y >= downMargin && finalPos.x <= 0 && finalPos.x >= rightMargin)
+		return finalPos;
+
+	// Failed... Find the closest position for the camera to the position calculated
+	/// First, find the condition/s that failed
+	if (finalPos.y >= 0)
+		finalPos.y = 0;
+	else if (finalPos.y <= downMargin)
+		finalPos.y = downMargin;
+
+	if (finalPos.x >= 0)
+		finalPos.x = 0;
+	else if (finalPos.x <= rightMargin)
+		finalPos.x = rightMargin;
+
+	return finalPos;
 }
 
 // Blit to screen
@@ -300,6 +340,11 @@ bool j1Render::IsInScreen(const fPoint& item) const
 	SDL_Rect itemRect{ item.x,item.y,1,1 };
 
 	return IsInScreen(itemRect);
+}
+
+bool j1Render::IsInRectangle(const SDL_Rect& rectangle, const SDL_Rect& item) const 
+{
+	return SDL_HasIntersection(&item, &rectangle);
 }
 
 

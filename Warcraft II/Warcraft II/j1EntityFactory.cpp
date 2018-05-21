@@ -3534,8 +3534,6 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 		}
 	}
 
-	// TODO: Add StaticEntities
-
 	// Update the color of the selection of all entities (Dynamic and Static)
 	//SetUnitsSelectedColor();
 
@@ -3607,7 +3605,7 @@ void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTI
 // Unselects all entities
 void j1EntityFactory::UnselectAllEntities()
 {
-	//Hide Dynamic stats from panel info
+	// Hide Dynamic stats from panel info
 	App->scene->HideUnselectedUnits();
 
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
@@ -3646,6 +3644,7 @@ bool j1EntityFactory::RemoveUnitFromUnitsSelected(Entity* entity)
 {
 	bool ret = false;
 
+	// Remove the unit from the unitsSelected
 	list<DynamicEntity*>::const_iterator it = find(unitsSelected.begin(), unitsSelected.end(), entity);
 
 	if (it != unitsSelected.end()) {
@@ -3654,6 +3653,21 @@ bool j1EntityFactory::RemoveUnitFromUnitsSelected(Entity* entity)
 
 		unitsSelected.remove(*it);
 		ret = true;
+	}
+
+	// Also, remove the unit from savedGroups
+	for (uint i = 0; i < MAX_SAVED_GROUPS; ++i) {
+	
+		if (savedGroups[i].size() > 0) {
+		
+			list<DynamicEntity*>::const_iterator sg = find(savedGroups[i].begin(), savedGroups[i].end(), entity);
+
+			if (sg != savedGroups[i].end()) {
+
+				savedGroups[i].remove(*it);
+				ret = true;
+			}
+		}
 	}
 
 	return ret;
@@ -4002,6 +4016,30 @@ Entity* j1EntityFactory::AreEntitiesColliding(SDL_Rect entityRect, ENTITY_CATEGO
 	return nullptr;
 }
 
+iPoint j1EntityFactory::CalculateCentroidEntities(list<DynamicEntity*> units) 
+{
+	iPoint result = { 0,0 };
+
+	if (units.size() == 0)
+		return { -1,-1 };
+
+	list<DynamicEntity*>::const_iterator it = units.begin();
+
+	while (it != units.end()) {
+	
+		result.x += (*it)->GetPos().x;
+		result.y += (*it)->GetPos().y;
+
+		it++;
+	}
+
+	result.x /= units.size();
+	result.y /= units.size();
+
+	return result;
+}
+
+// Entities selection
 void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 {
 	UnselectAllEntities();
@@ -4042,7 +4080,9 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 
 		it++;
 	}
+
 	if (!isInScreen) {
+
 		if (entityType == EntityType_FOOTMAN) {
 			if (App->scene->adviceMessage != AdviceMessage_SELECT_FOOTMANS) {
 				App->scene->adviceMessageTimer.Start();
@@ -4050,21 +4090,85 @@ void j1EntityFactory::SelectEntitiesOnScreen(ENTITY_TYPE entityType)
 				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 			}
 		}
-		if (entityType == EntityType_ELVEN_ARCHER) {
+		else if (entityType == EntityType_ELVEN_ARCHER) {
 			if (App->scene->adviceMessage != AdviceMessage_SELECT_ARCHERS) {
 				App->scene->adviceMessageTimer.Start();
 				App->scene->adviceMessage = AdviceMessage_SELECT_ARCHERS;
 				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 			}
 		}
-		if (entityType == EntityType_GRYPHON_RIDER) {
+		else if (entityType == EntityType_GRYPHON_RIDER) {
 			if (App->scene->adviceMessage != AdviceMessage_SELECT_GRYPHS) {
 				App->scene->adviceMessageTimer.Start();
 				App->scene->adviceMessage = AdviceMessage_SELECT_GRYPHS;
 				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 			}
 		}
+		else {
+			if (App->scene->adviceMessage != AdviceMessage_SELECT_ALL_UNITS) {
+				App->scene->adviceMessageTimer.Start();
+				App->scene->adviceMessage = AdviceMessage_SELECT_ALL_UNITS;
+				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			}
+		}
 	}
+
+	App->scene->ShowSelectedUnits(unitsSelected);
+}
+
+// Dynamic entities groups
+bool j1EntityFactory::SaveEntityGroup(list<DynamicEntity*> units, uint index) 
+{
+	// Position can be 0, 1 or 2
+	if (units.size() == 0 
+		|| index >= 3 || index < 0)
+		return false;
+
+	savedGroups[index] = units;
+
+	return true;
+}
+
+list<DynamicEntity*> j1EntityFactory::GetSavedEntityGroup(uint index)
+{
+	list<DynamicEntity*> group;
+
+	// Position can be 0, 1 or 2
+	if (index >= 3 || index < 0)
+		return group;
+
+	group = savedGroups[index];
+
+	return group;
+}
+
+void j1EntityFactory::SelectEntitiesGroup(list<DynamicEntity*> units) 
+{
+	if (units.size() == 0)
+		return;
+
+	UnselectAllEntities();
+
+	list<DynamicEntity*>::const_iterator it = units.begin();
+
+	while (it != units.end()) {
+
+		// The unit cannot be dead and must be valid
+		if ((*it)->isDead || !(*it)->GetIsValid()) {
+
+			it++;
+			continue;
+		}
+
+		if (unitsSelected.size() < MAX_UNITS_SELECTED) {
+
+			(*it)->isSelected = true;
+			unitsSelected.push_back(*it);
+		}
+
+		it++;
+	}
+
 	App->scene->ShowSelectedUnits(unitsSelected);
 }
 

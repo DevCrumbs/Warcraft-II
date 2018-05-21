@@ -351,6 +351,28 @@ void ElvenArcher::Move(float dt)
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
 	}
+
+	// Blit group selection
+	if (isBlitGroupSelection) {
+
+		float alphaSpeed = 250.0f;
+		alphaGroupSelection -= alphaSpeed * dt;
+
+		if (alphaGroupSelection <= 0) {
+			alphaGroupSelection = 0;
+			isBlitGroupSelection = false;
+		}
+
+		SDL_Color alphaColor = color;
+		alphaColor.a = alphaGroupSelection;
+
+		const SDL_Rect entitySizeA = { pos.x + offsetSize.x - 1, pos.y + offsetSize.y - 1, size.x + 2, size.y + 2 };
+		const SDL_Rect entitySizeB = { pos.x + offsetSize.x - 2, pos.y + offsetSize.y - 2, size.x + 4, size.y + 4 };
+		const SDL_Rect entitySizeC = { pos.x + offsetSize.x - 3, pos.y + offsetSize.y - 3, size.x + 6, size.y + 6 };
+		App->printer->PrintQuad(entitySizeA, alphaColor);
+		App->printer->PrintQuad(entitySizeB, alphaColor);
+		App->printer->PrintQuad(entitySizeC, alphaColor);
+	}
 }
 
 void ElvenArcher::Draw(SDL_Texture* sprites)

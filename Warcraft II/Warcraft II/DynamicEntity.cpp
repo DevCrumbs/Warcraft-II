@@ -1029,3 +1029,10 @@ iPoint DynamicEntity::GetLastSeenTile() const
 {
 	return lastSeenTile;
 }
+
+// Group selection
+void DynamicEntity::BlitGroupSelection() 
+{
+	isBlitGroupSelection = true;
+	alphaGroupSelection = 255;
+}
