@@ -1356,12 +1356,8 @@ void j1Player::ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect ico
 		case GoldMineState_Gathering:
 		{
 			uint currentGold = 0;
-			for (float i = goldMine->secondsGathering; i >= 0; i--) {
-				if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
-					currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
-					break;
-				}
-			}
+			currentGold = goldMine->totalGold - goldMine->currGold;
+
 			string goldString = "Gold = " + to_string(currentGold);
 			entitySelectedStats.HP->SetText(goldString);	
 		}
@@ -1779,13 +1775,8 @@ void j1Player::HandleGoldMineUIStates()
 	case GoldMineState_Gathering:
 	{
 		uint currentGold = 0;
+		currentGold = goldMine->totalGold - goldMine->currGold;
 
-		for (float i = goldMine->secondsGathering; i >= 0; i--) {
-			if (goldMine->currentSec <= goldMine->secondsGathering - i + 1) {
-				currentGold = goldMine->totalGold - ((goldMine->secondsGathering - i) * 100);
-				break;
-			}
-		}
 		string goldString = "Gold = " + to_string(currentGold);
 		entitySelectedStats.HP->SetText(goldString);
 	}
