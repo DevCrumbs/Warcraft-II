@@ -192,6 +192,8 @@ bool j1Scene::Start()
 		enIt++;
 	}
 
+	App->isDebug = false;
+
 	return ret;
 }
 
@@ -239,45 +241,38 @@ bool j1Scene::PreUpdate()
 	UnitInfo unitInfo;
 	fPoint pos = { (float)mouseTilePos.x,(float)mouseTilePos.y };
 
-	if (isDebug && App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	if (App->isDebug)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, App->player);
 
-		App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, App->player);
+		else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+		else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_GRYPHON_RIDER, pos, App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, App->player);
 
-		App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, App->player);
+		else if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+		else if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, App->player);
 
-		App->entities->AddEntity(EntityType_GRYPHON_RIDER, pos, App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, App->player);
+		else if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_DRAGON, pos, App->entities->GetUnitInfo(EntityType_DRAGON), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+		else if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(EntityType_SHEEP), unitInfo, App->player);
 
-		App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, App->player);
+		else if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
 
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+		else if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
 
-		App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, App->player);
-
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
-
-		App->entities->AddEntity(EntityType_DRAGON, pos, App->entities->GetUnitInfo(EntityType_DRAGON), unitInfo, App->player);
-
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
-
-		App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(EntityType_SHEEP), unitInfo, App->player);
-
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
-
-		App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
-
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
-
-		App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
-
-	else if (isDebug && App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
-
-		App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
+		else if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
+			App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
+	}
 	//_Entities_creation
 
 	if (hasGoldChanged != GoldChange_NoChange && hasGoldChanged != GoldChange_ChangeColor) {
@@ -329,21 +324,21 @@ bool j1Scene::Update(float dt)
 	// ---------------------------------------------------------------------
 
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
-		isDebug = !isDebug;
+		App->isDebug = !App->isDebug;
 	
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->isDebug)
 		debugDrawAttack = !debugDrawAttack;
 
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
 
-	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN && App->isDebug)
 		debugDrawMovement = !debugDrawMovement;
 
 	if (debugDrawMovement)
 		App->movement->DebugDraw(); // debug draw movement
 
-	if (App->pathfinding->IsWalkable(mouseTile))
+	if (App->pathfinding->IsWalkable(mouseTile) && App->isDebug)
 		App->printer->PrintSprite(mouseTilePos, debugTex, { 0,0,32,32 }); // tile under the mouse pointer
 
 	// Units ---------------------------------------------------------------------------------
@@ -410,6 +405,59 @@ bool j1Scene::Update(float dt)
 		int height = mousePos.y - startRectangle.y;
 
 		/// SELECT UNITS
+
+		// b) Select a group of units
+		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT) {
+
+			bool isSelectedGroup = false;
+			uint numGroup = 0;
+
+			if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+
+				numGroup = 0;
+				isSelectedGroup = true;
+			}
+			else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+
+				numGroup = 1;
+				isSelectedGroup = true;
+			}
+			else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+
+				numGroup = 2;
+				isSelectedGroup = true;
+			}
+
+			if (isSelectedGroup) {
+
+				list<DynamicEntity*> savedGroup = App->entities->GetSavedEntityGroup(numGroup);
+
+				if (savedGroup.size() > 0) {
+
+					// Select the group
+					App->entities->SelectEntitiesGroup(savedGroup);
+
+					// Blit the selection of the units (just a few seconds) from alpha 255 to 0
+					list<DynamicEntity*>::const_iterator sg = savedGroup.begin();
+
+					while (sg != savedGroup.end()) {
+
+						(*sg)->BlitSelectedGroupSelection();
+
+						sg++;
+					}
+				}
+				else {
+
+					if (adviceMessage != AdviceMessage_EMPTY_GROUP) {
+						adviceMessageTimer.Start();
+						adviceMessage = AdviceMessage_EMPTY_GROUP;
+						ShowAdviceMessage(adviceMessage);
+					}
+				}
+			}
+		}
+
 		// Select units by rectangle drawing
 		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
@@ -447,7 +495,7 @@ bool j1Scene::Update(float dt)
 
 					if (!CompareSelectedUnitsLists(units)) {
 						ShowSelectedUnits(units);
-						PlayUnitSound(units, true); //Unit selected sound
+						PlayUnitSound(units, true); // Units selected sound
 					}
 				}
 			}
@@ -461,9 +509,81 @@ bool j1Scene::Update(float dt)
 
 			if (group != nullptr) {
 
+				// a) Save group of units
+				if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT) {
+
+					bool isSavedGroup = false;
+
+					if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+					
+						App->entities->SaveEntityGroup(units, 0);
+						isSavedGroup = true;
+					}
+					else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+
+						App->entities->SaveEntityGroup(units, 1);
+						isSavedGroup = true;
+					}
+					else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+
+						App->entities->SaveEntityGroup(units, 2);
+						isSavedGroup = true;
+					}
+
+					if (isSavedGroup) {
+
+						// Blit the selection of the units (just a few seconds) from alpha 255 to 0
+						list<DynamicEntity*>::const_iterator sg = units.begin();
+
+						while (sg != units.end()) {
+
+							(*sg)->BlitSavedGroupSelection();
+
+							sg++;
+						}
+					}
+				}
+
+				// Move the camera to the group of units
+				if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN) {
+
+					iPoint centroid = App->entities->CalculateCentroidEntities(units);
+					iPoint cameraPos = App->render->FindCameraPosFromCenterPos(centroid);
+
+					/// Check if there is an entity from the group on the centroid calculated
+					list<DynamicEntity*>::const_iterator u = units.begin();
+
+					bool isInScreen = false;
+					const SDL_Rect cameraRect{ -cameraPos.x, -cameraPos.y, App->render->camera.w, App->render->camera.h };
+
+					while (u != units.end()) {
+
+						const SDL_Rect entityRect = { (*u)->GetPos().x, (*u)->GetPos().y, (*u)->GetSize().x, (*u)->GetSize().y };
+
+						if (App->render->IsInRectangle(cameraRect, entityRect)) {
+
+							isInScreen = true;
+							break;
+						}
+
+						u++;
+					}
+
+					/// If there isn't, move the camera to the position of a random entity from the group
+					if (!isInScreen) {
+
+						centroid = { (int)units.front()->GetPos().x, (int)units.front()->GetPos().y };
+						cameraPos = App->render->FindCameraPosFromCenterPos(centroid);
+					}
+
+					// Move the camera to the resulting position
+					App->render->camera.x = cameraPos.x;
+					App->render->camera.y = cameraPos.y;
+				}
+
+				// Command a group of units
 				/// COMMAND PATROL
 				if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN)
-
 					App->entities->CommandToUnits(units, UnitCommand_Patrol);
 
 				/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
@@ -794,7 +914,7 @@ bool j1Scene::PostUpdate()
 			isStartedFinalTransition = true;
 		}
 	}
-	else if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
+	else if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && App->isDebug) {
 	
 		App->player->isWin = true;
 		App->fade->FadeToBlack(this, App->finish);
@@ -819,7 +939,7 @@ bool j1Scene::PostUpdate()
 	//Not enogh gold to create Gryphos and have not barracks and we and have no units spawning
 			|| (App->player->GetCurrentGold() < App->player->gryphonRiderCost  && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning))
 	//Instant Lose with F2
-		|| (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) 
+		|| (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && App->isDebug)
 	//Orde destroy townhall
 		|| App->player->townHall == nullptr) {
 
@@ -969,10 +1089,9 @@ void j1Scene::DebugKeys()
 		App->render->camera.y = -basePos.y;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN) {
-		ChangeBuildingMenuState(&buildingMenuButtons);
-	}
+	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
 
+		ChangeBuildingMenuState(&buildingMenuButtons);
 }
 
 void j1Scene::CheckCameraMovement(float dt) 
@@ -1925,6 +2044,22 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 
 	case AdviceMessage_SELECT_GRYPHS:
 		text = "No gryphon rider on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_SELECT_ALL_UNITS:
+		text = "No units on screen.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_EMPTY_GROUP:
+		text = "No units in the group.";
 		adviceLabel->SetText(text, 340);
 		adviceLabel->SetLocalPos({ 275,265 });
 		adviceLabel->SetColor(White_);

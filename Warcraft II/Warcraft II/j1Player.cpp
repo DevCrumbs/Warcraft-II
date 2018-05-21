@@ -126,6 +126,17 @@ bool j1Player::Update(float dt)
 		else
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 	}
+	else if (App->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN) {
+	
+		App->entities->SelectEntitiesOnScreen();
+
+		list<DynamicEntity*> units = App->entities->GetLastUnitsSelected();
+
+		if (units.size() > 0)
+			App->scene->PlayUnitSound(units, true); // Unit selected sound
+		else
+			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);	
+	}
 
 	/*
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
@@ -191,7 +202,7 @@ bool j1Player::Update(float dt)
 			}
 	*/
 
-	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) {
+	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN && App->isDebug) {
 		if (!chickenFarm.empty())
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)chickenFarm.back();
@@ -207,11 +218,11 @@ bool j1Player::Update(float dt)
 				}
 			}
 	}
-	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN) {
+	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN && App->isDebug) {
 		App->audio->PlayFx(App->audio->GetFX().goldMine, 0); // Gold mine sound
 		AddGold(500);
 	}
-	if (App->scene->isDebug && App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
+	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN && App->isDebug) {
 		currentFood += 3;
 		App->scene->hasFoodChanged = true;
 	}

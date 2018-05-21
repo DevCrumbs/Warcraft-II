@@ -53,9 +53,22 @@ bool j1EnemyWave::Start()
 	// -----
 
 	/// TODO Balancing (Waves)
+	int mapDifficulty = App->scene->mapDifficulty;
+
 	spawnProbability = 0.25f;
-	maxSpawnPerPhase = 3;
-	maxSpawnPerWave = 8;
+
+	if (mapDifficulty == 0 || mapDifficulty == 1) {
+		maxSpawnPerPhase = 2;
+		maxSpawnPerWave = 4;
+	}
+	else if (mapDifficulty == 2 || mapDifficulty == 3) {
+		maxSpawnPerPhase = 3;
+		maxSpawnPerWave = 5;
+	}
+	else {
+		maxSpawnPerPhase = 3;
+		maxSpawnPerWave = 6;
+	}
 
 	// Calculate the seconds until the first wave arrives
 	/// NOTE: the first wave takes more time to arrive than the following waves
@@ -103,11 +116,11 @@ bool j1EnemyWave::Update(float dt)
 	bool ret = true;
 
 	// F3: spawns a random phase of a wave
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN && App->isDebug)
 		PerformWave();
 
 	// F4: activates or stops the spawn of waves
-	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN && App->isDebug)
 
 		isActiveWaves = !isActiveWaves;
 

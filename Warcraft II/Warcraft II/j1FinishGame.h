@@ -29,9 +29,7 @@ private:
 
 	void LoadSceneOne(bool isWin);
 	void ArtifactWon(uint time);
-	void LoadSceneTwo();
 	void DeleteScene();
-	void DeleteSceneTwo();
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
@@ -39,7 +37,7 @@ private:
 
 	vector<UILabel*> labelVector;
 	vector<UIImage*> imageVector;
-	UIButton* continueButt = nullptr, *returnButt = nullptr;
+	UIButton* returnButt = nullptr;
 	
 	//Background
 	UIImage* background = nullptr;
@@ -57,7 +55,6 @@ private:
 	SDL_Texture* bg;
 
 	//Values
-
 	uint roomsExploredCont = 0u;
 
 	//Music paths
