@@ -40,6 +40,7 @@ public:
 public:
 
 	uint totalGold = 0;
+	uint currGold = 0;
 	float secondsGathering = 0.0f;
 	float currentSec = 0.0f;
 
