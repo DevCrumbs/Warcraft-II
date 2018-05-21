@@ -425,9 +425,7 @@ bool UIMinimap::LoadMap()
 
 
 	SDL_Renderer* renderer = nullptr;
-	SDL_Renderer* rendererAux = nullptr;
 	SDL_Surface* mapSurface = nullptr;
-	SDL_Surface* minimapSurface = nullptr;
 
 	///-----------------	Compute the scale factor 
 	int minimapSize = 0;
@@ -491,6 +489,7 @@ bool UIMinimap::LoadMap()
 					SDL_Rect* section = &rect;
 					iPoint world = App->map->MapToWorld(i, j);
 
+					LOG("Tile x = %i, y = %i", world.x, world.y);
 					ret = SaveInRenderer(tex, world.x, world.y, section, 1, renderer);
 				}
 			}
@@ -566,6 +565,17 @@ SDL_Texture* UIMinimap::CreateMinimapTexture(SDL_Rect mapSize, SDL_Renderer* ren
 	///-----------------	Save map texture
 	SDL_RenderReadPixels(rendererAux, NULL, 0, minimapSurface->pixels, minimapSurface->pitch);
 	minimapTexture = SDL_CreateTextureFromSurface(App->render->renderer, minimapSurface);
+
+	///-----------------	Clear renderer
+	SDL_RenderClear(rendererAux);
+
+	if (SDL_RenderClear(rendererAux) == 0)
+		rendererAux = nullptr;
+	else
+		LOG("Could not clear the renderer! SDL_Error: %s\n", SDL_GetError());
+
+	///-----------------	Clear Surface
+	SDL_FreeSurface(minimapSurface);
 
 	SDL_DestroyTexture(originalTexture);
 

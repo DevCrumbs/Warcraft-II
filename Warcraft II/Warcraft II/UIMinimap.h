@@ -101,8 +101,6 @@ private:
 	SDL_Rect hiLevelTextureSize{ 0,0,0,0 };
 	SDL_Rect lowLevelTextureSize{ 0,0,0,0 };
 
-	mutable list<Entity*> entities;
-
 	iPoint cameraOffset{ 0,0 };
 
 	mutable int maxOffsetX = 0;
@@ -120,15 +118,13 @@ private:
 
 	iPoint entitiesGoal{ 0,0 };
 
-	list<DynamicEntity*>* activeDynamicEntities;
-	list<StaticEntity*>* activeStaticEntities;
+	list<DynamicEntity*>* activeDynamicEntities = nullptr;
+	list<StaticEntity*>* activeStaticEntities = nullptr;
 
 	mutable bool isRoomCleared = false;
 	mutable SDL_Rect roomClearedRect{ 0,0,0,0 };
 	mutable bool startRoomClearedTimer = false;
 	mutable j1Timer roomClearedTimer;
-
-
 };
 
 #endif
