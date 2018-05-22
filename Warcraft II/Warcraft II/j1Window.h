@@ -18,6 +18,8 @@ public:
 	// Called before render is available
 	bool Awake(pugi::xml_node&);
 
+	bool Update(float dt);
+
 	// Called before quitting
 	bool CleanUp();
 
@@ -28,7 +30,8 @@ public:
 	void GetWindowSize(uint& width, uint& height) const;
 
 	// Retrieve window scale
-	uint GetScale() const;
+	float GetScale() const;
+	void SetFullscreen();
 
 public:
 	//The window we'll be rendering to
@@ -38,16 +41,20 @@ public:
 	SDL_Surface* screenSurface = nullptr;
 	SDL_Surface* iconSurface = nullptr;
 
-	bool fullscreen;
+	bool fullscreen = false;
+
+	bool isScreenUpdate = false;
+
+	// Screen parameters
+	uint		width = 0;
+	uint		height = 0;
+	float		scale = 0;
 
 private:
 	string		title;
 	string		icon;
 
-	// Screen parameters
-	uint		width = 0;
-	uint		height = 0;
-	uint		scale = 0;
+
 };
 
 #endif //__j1WINDOW_H__

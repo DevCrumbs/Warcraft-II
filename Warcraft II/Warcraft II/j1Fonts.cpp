@@ -55,6 +55,20 @@ bool j1Fonts::CleanUp()
 	return true;
 }
 
+bool j1Fonts::Start()
+{
+	mapFonts[FONT_NAME_WARCRAFT9] = App->font->Load("data/fonts/warcraft.ttf", 9);
+	mapFonts[FONT_NAME_WARCRAFT11] = App->font->Load("data/fonts/warcraft.ttf", 11);
+	mapFonts[FONT_NAME_WARCRAFT14] = App->font->Load("data/fonts/warcraft.ttf", 14);
+	mapFonts[FONT_NAME_WARCRAFT] = App->font->Load("data/fonts/warcraft.ttf", 16);
+	mapFonts[FONT_NAME_WARCRAFT20] = App->font->Load("data/fonts/warcraft.ttf", 20);
+	mapFonts[FONT_NAME_WARCRAFT25] = App->font->Load("data/fonts/warcraft.ttf", 25);
+	mapFonts[FONT_NAME_WARCRAFT30] = App->font->Load("data/fonts/warcraft.ttf", 30);
+
+
+	return true;
+}
+
 // Load new texture from file path
 TTF_Font* const j1Fonts::Load(const char* path, int size)
 {
@@ -105,4 +119,9 @@ bool j1Fonts::CalcSize(const char* text, int& width, int& height, _TTF_Font* fon
 		ret = true;
 
 	return ret;
+}
+
+_TTF_Font* j1Fonts::GetFont(FONT_NAME fontName)
+{
+	return mapFonts[fontName];
 }

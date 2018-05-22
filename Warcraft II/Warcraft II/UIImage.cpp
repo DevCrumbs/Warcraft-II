@@ -2,7 +2,7 @@
 #include "j1Render.h"
 #include "j1Window.h"
 
-UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), image(info)
+UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener, bool isInWorld) : UIElement(localPos, parent, listener, isInWorld), image(info)
 {
 	type = UIE_TYPE_IMAGE;
 
@@ -14,12 +14,24 @@ UIImage::UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Modul
 	width = texArea.w;
 	height = texArea.h;
 
+	priority = PriorityDraw_IMAGE;
 	SetOrientation();
+}
+
+UIImage::~UIImage()
+{
+	totalTime = 0.0f;
+	startTime = 0.0f;
+	reset = true;
+
+	anim = nullptr;
+	speed = 0.0f;
+	startAimation = false;
 }
 
 void UIImage::Update(float dt)
 {
-	if (startAimation && animToPlay.Finished()) {
+	if (startAimation && animToPlay.Finished() && !animToPlay.loop) {
 		animToPlay.Reset();
 		startAimation = false;
 	}
@@ -111,6 +123,11 @@ bool UIImage::FromAlphaToAlphaFade(float from, float to, float seconds)
 	}
 
 	return ret;
+}
+
+Animation * UIImage::GetAnimation()
+{
+	return anim;
 }
 
 void UIImage::ResetFade()

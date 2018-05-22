@@ -13,10 +13,17 @@
 using namespace std;
 
 class j1App;
+
 struct Collider;
+struct ColliderGroup;
+enum CollisionState;
 
 class UIElement;
 enum UI_EVENT;
+
+class StaticEntity;
+class DynamicEntity;
+enum EntitiesEvent;
 
 class j1Module
 {
@@ -77,9 +84,18 @@ public:
 	}
 
 	// Collision
-	virtual void OnCollision(Collider*, Collider*) {}
+	virtual void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState) {}
 
 	virtual void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {}
+
+	virtual void OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent) {}
+	virtual void OnDynamicEntitiesEvent(DynamicEntity* dinamicEntity, EntitiesEvent entitiesEvent) {}
+
+	// Load keys
+	virtual bool LoadKeys(pugi::xml_node& buttons)
+	{
+		return true;
+	}
 
 public:
 

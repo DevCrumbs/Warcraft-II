@@ -10,7 +10,7 @@
 #include "j1Gui.h"
 
 struct UIImage_Info {
-	UIE_RECT texArea = NO_ELEMENT_RECT;
+	SDL_Rect texArea = { 0,0,0,0 };
 	UIE_HORIZONTAL_POS horizontalOrientation = HORIZONTAL_POS_LEFT;
 	UIE_VERTICAL_POS verticalOrientation = VERTICAL_POS_TOP;
 
@@ -19,6 +19,7 @@ struct UIImage_Info {
 
 	SDL_Color color = { 0,0,0,255 };
 	bool draggable = false;
+
 };
 
 // ---------------------------------------------------
@@ -26,7 +27,8 @@ struct UIImage_Info {
 class UIImage : public UIElement
 {
 public:
-	UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener = nullptr);
+	UIImage(iPoint localPos, UIElement* parent, UIImage_Info& info, j1Module* listener = nullptr, bool isInWorld = false);
+	~UIImage();
 	void Draw() const;
 	void DebugDraw(iPoint blitPos) const;
 	void SetColor(const SDL_Color color);
@@ -38,6 +40,7 @@ public:
 
 	void ResetFade();
 	bool FromAlphaToAlphaFade(float from = 0.0f, float to = 0.0f, float seconds = 1.0f);
+	Animation* GetAnimation();
 
 private:
 	UIImage_Info image;

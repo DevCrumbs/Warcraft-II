@@ -3,10 +3,13 @@
 
 #include <map>
 #include <list>
+#include <queue>
+#include <functional>
 
 #include "j1Module.h"
 #include "UIElement.h"
 #include "NTree.h"
+#include "Animation.h"
 
 using namespace std;
 
@@ -25,44 +28,31 @@ using namespace std;
 
 struct _TTF_Font;
 
-enum FONT_NAME {
-	FONT_NAME_DEFAULT,
-	FONT_NAME_MSMINCHO,
-	FONT_NAME_ZELDA,
-	FONT_NAME_MAX_FONTS
-};
-
-enum UIE_RECT {
-
-	NO_ELEMENT_RECT,
-	MM_OPT_1_NORMAL,
-	MM_OPT_2_NORMAL,
-	MM_OPT_3_NORMAL,
-	MM_OPT_4_NORMAL,
-	MM_OPT_5_NORMAL,
-
-	MM_OPT_1_HOVER,
-	MM_OPT_2_HOVER,
-	MM_OPT_3_HOVER,
-	MM_OPT_4_HOVER,
-	MM_OPT_5_HOVER,
-
-	MAX_RECTS
-};
 
 struct UIImage_Info;
 struct UILabel_Info;
 struct UIButton_Info;
 struct UICursor_Info;
-//struct UIInpuText_info;
-struct UIImage;
-struct UILabel;
-struct UIButton;
-struct UICursor;
+struct UILifeBar_Info;
+struct UISlider_Info;
+struct UIMinimap_Info;
+class UIImage;
+class UILabel;
+class UIButton;
+class UICursor;
+class UILifeBar;
 class UIInputText;
-
+class UISlider;
+class UIMinimap;
 // ---------------------------------------------------
 
+struct compareUIPriority {
+	bool operator()(const UIElement* infoA, const UIElement* infoB)
+	{
+		if (infoA != nullptr && infoB != nullptr)
+			return infoA->GetPriorityDraw() > infoB->GetPriorityDraw();
+	}
+};
 class j1Gui : public j1Module
 {
 public:
@@ -90,30 +80,57 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	bool Blit(float dt) const;
-
 	// Gui creation functions
 	UIImage* CreateUIImage(iPoint localPos, UIImage_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UILabel* CreateUILabel(iPoint localPos, UILabel_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
-	UIButton* CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
+	UISlider* CreateUISlider(iPoint localPos, UISlider_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
+	UIButton* CreateUIButton(iPoint localPos, UIButton_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr, bool isInWorld = false);
+	UILifeBar* CreateUILifeBar(iPoint localPos, UILifeBar_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr, bool isInWorld = false);
 	UIInputText* CreateUIInputText(iPoint localPos, j1Module* listener = nullptr, UIElement* parent = nullptr);
 	UICursor* CreateUICursor(UICursor_Info& info, j1Module* listener = nullptr, UIElement* parent = nullptr);
+	UIMinimap * CreateUIMinimap(UIMinimap_Info & info, j1Module * listener = nullptr, UIElement * parent = nullptr);
 
-	bool DestroyElement(UIElement* elem);
-	bool ClearAllUI();
+	bool DestroyElement(UIElement** elem);
+	bool RemoveElem(UIElement ** elem);
+	bool ClearUI();
 	bool ClearMapTextures();
 
-	void SetUpDraggingChildren(UIElement* elem, bool dragging);
-	void SetUpDraggingNode(bool drag);
-
-	_TTF_Font* GetFont(FONT_NAME fontName);
-
 	const SDL_Texture* GetAtlas() const;
-	SDL_Rect GetRectFromAtlas(UIE_RECT rect);
+	SDL_Rect GetRectFromAtlas(SDL_Rect rect);
 
 	void SetTextureAlphaMod(float alpha);
 	float IncreaseDecreaseAlpha(float from, float to, float seconds);
+	bool IsMouseOnUI();
 	void ResetAlpha();
+
+	// Animations
+	void LoadAnimationsSpeed();
+	void UpdateAnimations(float dt);
+
+public:
+
+	std::list<UIElement*> addedElementUI;
+
+	//NTree<UIElement*>* UIElementsTree; Don't delete yet
+	bool isDebug = false;
+	Animation parchmentAnim;
+	SDL_Rect parchmentArea{ 0,0,0,0 };
+	float parchmentSpeed = 0.0f;
+
+	//artifacts
+	Animation scepterAnim, bookAnim, skullAnim, eyeAnim;
+	float scepterTextSpeed = 0.0f;
+	float bookTextSpeed = 0.0f;
+	float skullTextSpeed = 0.0f;
+	float eyeTextSpeed = 0.0f;
+
+	SDL_Rect scepterText{ 0,0,0,0 };
+	SDL_Rect bookText{ 0,0,0,0 };
+	SDL_Rect skullText{ 0,0,0,0 };
+	SDL_Rect eyeText{ 0,0,0,0 };
+
+	// CleanUp
+	bool isGuiCleanUp = false;
 
 private:
 
@@ -121,18 +138,12 @@ private:
 	const SDL_Texture* atlas = nullptr;
 
 	list<UIElement*> UIElementsList;
-
-	map<UIE_RECT, SDL_Rect> UIElementsRects;
-	map<FONT_NAME, _TTF_Font*> mapFonts;
+	priority_queue<UIElement*, vector<UIElement*>, compareUIPriority> drawOrder;
 
 	// Alpha parameters
 	float totalTime = 0.0f;
 	float startTime = 0.0f;
 	bool reset = true;
-
-public:
-	NTree<UIElement*>* UIElementsTree;
-	bool isDebug = false;
 };
 
 #endif //__j1GUI_H__

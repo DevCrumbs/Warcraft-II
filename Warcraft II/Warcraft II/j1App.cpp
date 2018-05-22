@@ -17,10 +17,19 @@
 #include "j1Pathfinding.h"
 #include "j1Fonts.h"
 #include "j1Gui.h"
+#include "j1Player.h"
+#include "j1Console.h"
+#include "j1Menu.h"
+#include "j1Movement.h"
+#include "j1PathManager.h"
+#include "j1FinishGame.h"
+#include "j1Printer.h"
+#include "j1EnemyWave.h"
+#include "j1FogOfWar.h"
+#include <time.h>
 
 #include "j1App.h"
 #include "Brofiler\Brofiler.h"
-
 
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
@@ -41,6 +50,15 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	pathfinding = new j1PathFinding();
 	font = new j1Fonts();
 	gui = new j1Gui();
+	player = new j1Player();
+	console = new j1Console();
+	menu = new j1Menu();
+	movement = new j1Movement();
+	pathmanager = new j1PathManager(MS_PATHFINDING);
+	finish = new j1FinishGame();
+	printer = new j1Printer();
+	wave = new j1EnemyWave();
+	fow = new j1FogOfWar();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -49,18 +67,49 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(tex);
 	AddModule(audio);
 	AddModule(map);
-	AddModule(pathfinding);
-	AddModule(entities);
-	AddModule(particles);
-	AddModule(collision);
-	AddModule(font);
-	AddModule(gui);
 
+	/// Do not change this order -->
+	AddModule(pathfinding);
+	AddModule(collision);
+	AddModule(printer);
+	AddModule(movement);
+	AddModule(pathmanager);
+	AddModule(particles);
+	AddModule(entities);
+	AddModule(wave);
+	/// <-- Do not change this order
+
+	AddModule(font);
+
+	AddModule(player);
 	AddModule(scene);
+
+	AddModule(fow);
+
+	AddModule(finish);
+	AddModule(menu);
+	AddModule(console);
+
+	AddModule(gui);
 	AddModule(fade);
 
 	// render last to swap buffer
 	AddModule(render);
+
+	map->active = false;
+	scene->active = false;
+	finish->active = false;
+	player->active = false;
+	entities->active = false;
+	collision->active = false;
+	pathfinding->active = false;
+	pathmanager->active = false;
+	movement->active = false;
+	particles->active = false;
+	wave->active = false;
+	fow->active = false;
+
+	srand(time(NULL));
 }
 
 // Destructor
@@ -138,6 +187,11 @@ bool j1App::Start()
 		item++;
 	}
 
+	//Set title
+	static char title[256];
+	sprintf_s(title, 256, "Warcraft II: The Stolen Artifacts");
+	App->win->SetTitle(title);
+
 	return ret;
 }
 
@@ -146,6 +200,9 @@ bool j1App::Update()
 {
 	bool ret = true;
 	PrepareUpdate();
+
+	if (scene->GetPauseMenuActions() != PauseMenuActions_NOT_EXIST)
+		dt = 0;
 
 	if (input->GetWindowEvent(WE_QUIT) || quitGame)
 		ret = false;
@@ -204,18 +261,6 @@ void j1App::FinishUpdate()
 	uint32 framesOnLastUpdate = 0;
 	frameCount++;
 
-	/*
-	if (App->entities->playerData != nullptr) {
-		if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN
-			&& (App->entities->playerData->animationPlayer == &App->entities->playerData->player.idle || App->entities->playerData->animationPlayer == &App->entities->playerData->player.idle2)
-			&& !App->menu->active)
-			toCap = !toCap;
-	}
-	else
-		if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN && !App->menu->active)
-			toCap = !toCap;
-	*/
-
 	// Cap frames
 	if (!App->render->vsync && toCap) {
 		float toVsync = 1000 / capFrames;
@@ -236,7 +281,6 @@ void j1App::FinishUpdate()
 	else
 		capOnOff = "off";
 
-
 	string vSyncOnOff;
 	if (App->render->vsync)
 		vSyncOnOff = "on";
@@ -249,17 +293,15 @@ void j1App::FinishUpdate()
 	else
 		godMode = "off";
 
-	static char title[256];
 
-	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u | capFrames: %s | Vsync: %s",
-		fps, avgFPS, actualFrameMs, capOnOff.data(), vSyncOnOff.data());
+//	sprintf_s(title, 256, "FPS: %.2f | AvgFPS: %.2f | Last Frame Ms: %02u",
+	//	fps, avgFPS, lastFrameMs);
 
 	if (App->scene->pause) {
 		auxiliarDt = dt;
 		dt = 0.0f;
 	}
-
-	App->win->SetTitle(title);
+	
 }
 
 // Call modules before each loop iteration
@@ -348,6 +390,12 @@ bool j1App::CleanUp()
 	}
 
 	return ret;
+}
+
+
+// ---------------------------------------
+uint32 j1App::GetSecondsSinceAppStartUp() {
+	return clock.Read();
 }
 
 // ---------------------------------------

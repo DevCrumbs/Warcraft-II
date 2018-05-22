@@ -6,27 +6,74 @@
 #include "Defs.h"
 #include "p2Point.h"
 #include "Animation.h"
+#include "j1Collision.h"
 
-#define MAX_ACTIVE_PARTICLES 100
+#include <string>
+#include <list>
+using namespace std;
 
 struct SDL_Texture;
+
 struct Collider;
-enum COLLIDER_TYPE;
+struct ColliderGroup;
+enum ColliderType;
 
-struct Particle
-{
-	Collider* collider = nullptr;
-	Animation anim;
-	uint fx = 0;
-	fPoint position = { 0,0 };
-	fPoint speed = { 0, 0 };
-	Uint32 born = 0;
+enum ParticleType {
+
+	ParticleType_NoType,
+
+	ParticleType_Player_Projectile,
+	ParticleType_Enemy_Projectile,
+	ParticleType_Cannon_Projectile,
+
+	ParticleType_Paws,
+
+	ParticleType_Fire,
+
+	ParticleType_Health,
+
+	ParticleType_Cross,
+
+	ParticleType_PeasantCarry,
+	ParticleType_Peasant,
+
+	ParticleType_DragonFire,
+	ParticleType_DragonSubFire,
+	ParticleType_GryphonFire,
+	ParticleType_GryphonSubFire,
+
+	ParticleType_MaxTypes
+};
+
+struct PawsInfo {
+
+	Animation up, down, left, right;
+	Animation upLeft, upRight, downLeft, downRight;
+};
+
+struct Particle {
+
+	ParticleType particleType = ParticleType_NoType;
+
+	Animation animation;
+
+	fPoint pos = { 0.0f,0.0f };
+	iPoint size = { 0,0 };
+	fPoint destination = { 0.0f,0.0f };
+
+	float speed = 0.0f;
 	Uint32 life = 0;
+	uint damage = 0;
 
-	iPoint collisionSize = { 0,0 };
-	fPoint destination = { 0,0 };
+	fPoint orientation = { 0.0f,0.0f };
+	Uint32 born = 0;
+	double angle = 0.0f;
 
-	bool left = true, right = true, up = true, down = true;
+	bool isRemove = false;
+	bool isDelete = false; // if true, it removes the particle definitely and also removes it from the activeParticles list
+
+	j1Timer damageTimer;
+	float secondsToDamage = 0.0f;
 
 	Particle();
 	Particle(const Particle& p);
@@ -37,6 +84,7 @@ struct Particle
 class j1Particles : public j1Module
 {
 public:
+
 	j1Particles();
 	~j1Particles();
 
@@ -44,21 +92,109 @@ public:
 	bool Awake(pugi::xml_node&);
 
 	bool Start();
+	bool PreUpdate();
 	bool Update(float dt);
 	bool CleanUp();
+	bool PostUpdate();
 
-	void AddParticle(const Particle& particle, int x, int y, COLLIDER_TYPE colliderType, Uint32 delay, fPoint speed);
-	void OnCollision(Collider* c1, Collider* c2);
+	Particle* AddParticle(const Particle& particle, iPoint pos, fPoint destination = { 0.0f,0.0f }, float speed = 0.0f, uint damage = 0, Uint32 delay = 0, double angle = 0.0f);
 
 	void UpdateAnimations(const float dt);
 	void LoadAnimationsSpeed();
 
+	PawsInfo& GetPawsInfo(bool isSheep = false, bool isBoar = false);
+	bool IsParticleOnTile(iPoint tile, ParticleType particleType = ParticleType_NoType);
+
 private:
-	Particle* active[MAX_ACTIVE_PARTICLES];
+
+	string atlasTexName;
+	SDL_Texture* atlasTex = nullptr;
+
+	list<Particle*> toSpawnParticles;
+	list<Particle*> activeParticles;
 	uint lastParticle = 0;
 
+	string pawsTexName;
+	SDL_Texture* pawsTex = nullptr;
+
+	PawsInfo boarPawsInfo;
+	PawsInfo sheepPawsInfo;
+
+	string peasantTexName;
+	SDL_Texture* peasantTex = nullptr;
+
+	// Animations speed
+	/// Boar Paws
+	float boarPawsUpSpeed = 0.0f, boarPawsDownSpeed = 0.0f, boarPawsLeftSpeed = 0.0f, boarPawsRightSpeed = 0.0f;
+	float boarPawsUpLeftSpeed = 0.0f, boarPawsUpRightSpeed = 0.0f, boarPawsDownLeftSpeed = 0.0f, boarPawsDownRightSpeed = 0.0f;
+
+	/// Sheep Paws
+	float sheepPawsUpSpeed = 0.0f, sheepPawsDownSpeed = 0.0f, sheepPawsLeftSpeed = 0.0f, sheepPawsRightSpeed = 0.0f;
+	float sheepPawsUpLeftSpeed = 0.0f, sheepPawsUpRightSpeed = 0.0f, sheepPawsDownLeftSpeed = 0.0f, sheepPawsDownRightSpeed = 0.0f;
+
+	/// Troll Axe
+	float trollAxeSpeed = 0.0f;
+
+	/// Fire Speed
+	float lowFireSpeed = 0.0f;
+	float hardFireSpeed = 0.0f;
+
+	/// Health Speed
+	float healthSpeed = 0.0f;
+
+	/// Dragon and Gryphon Fire Speed
+	float dragonSubFireSpeed = 0.0f;
+	float gryphonSubFireSpeed = 0.0f;
+
+	/// Cross
+	float crossSpeed = 0.0f;
+
+	/// Peasants
+	float peasantCarrySpeed = 0.0f;
+	float peasantSmallBuildingSpeed = 0.0f;
+	float peasantMediumBuildingSpeed = 0.0f;
+	float peasantBigBuildingSpeed = 0.0f;
+
+
+	///
+	bool isAnimationSpeedCharged = false;
+
 public:
-	Particle arrowRight;
+
+	// Fire
+	Particle lowFire;
+	Particle hardFire;
+
+	// Arrows, axes and cannon bullets
+	Particle playerArrows;
+	Particle enemyArrows;
+
+	Particle cannonBullet;
+
+	Particle trollAxe;
+
+	Particle dragonFire;
+	Particle dragonSubFire;
+	Particle gryphonFire;
+	Particle gryphonSubFire;
+
+	// Paws
+	Particle boarPaws;
+	Particle sheepPaws;
+
+	// Health +++
+	Particle playerHealth;
+	Particle enemyHealth;
+
+	//Ground X
+	Particle cross;
+
+	//Peasant construction particles
+	Particle carryPeasant;
+	Particle peasantSmallBuild;
+	Particle peasantMediumBuild;
+	Particle peasantBigBuild;
+
 };
 
 #endif //__j1PARTICLES_H__

@@ -7,6 +7,7 @@
 #include "j1Render.h"
 #include "j1Input.h"
 #include "j1Scene.h"
+#include "j1Map.h"
 
 #define VSYNC true
 
@@ -39,6 +40,7 @@ bool j1Render::Awake(pugi::xml_node& config)
 	}
 
 	renderer = SDL_CreateRenderer(App->win->window, -1, flags);
+
 
 	if (renderer == NULL)
 	{
@@ -93,7 +95,7 @@ bool j1Render::PostUpdate()
 
 // Called before quitting
 bool j1Render::CleanUp()
-{
+{	
 	LOG("Destroying SDL render");
 	SDL_DestroyRenderer(renderer);
 	return true;
@@ -137,7 +139,7 @@ void j1Render::ResetViewPort()
 iPoint j1Render::ScreenToWorld(int x, int y) const
 {
 	iPoint ret;
-	int scale = App->win->GetScale();
+	float scale = App->win->GetScale();
 
 	ret.x = (x - camera.x / scale);
 	ret.y = (y - camera.y / scale);
@@ -145,11 +147,54 @@ iPoint j1Render::ScreenToWorld(int x, int y) const
 	return ret;
 }
 
+fPoint j1Render::GetMidCameraPos() const 
+{
+	return { (camera.w / 2) - camera.x, (camera.h / 2) - camera.y };
+}
+
+iPoint j1Render::FindCameraPosFromCenterPos(iPoint centerPos)
+{
+	iPoint finalPos = centerPos;
+	finalPos.x -= camera.w / 2;
+	finalPos.y -= camera.h / 2;
+
+	finalPos.x = -finalPos.x;
+	finalPos.y = -finalPos.y;
+
+	// Check the boundaries of the map and reposition the camera accordingly
+	uint width = 0;
+	uint height = 0;
+	float scale = 0;
+	App->win->GetWindowSize(width, height);
+	scale = App->win->GetScale();
+
+	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
+	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
+
+	// Succeed! The camera fits the position calculated
+	if (finalPos.y <= 0 && finalPos.y >= downMargin && finalPos.x <= 0 && finalPos.x >= rightMargin)
+		return finalPos;
+
+	// Failed... Find the closest position for the camera to the position calculated
+	/// First, find the condition/s that failed
+	if (finalPos.y >= 0)
+		finalPos.y = 0;
+	else if (finalPos.y <= downMargin)
+		finalPos.y = downMargin;
+
+	if (finalPos.x >= 0)
+		finalPos.x = 0;
+	else if (finalPos.x <= rightMargin)
+		finalPos.x = rightMargin;
+
+	return finalPos;
+}
+
 // Blit to screen
 bool j1Render::Blit(const SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle, int pivot_x, int pivot_y) const
 {
 	bool ret = true;
-	uint scale = App->win->GetScale();
+	float scale = App->win->GetScale();
 
 	SDL_Rect rect;
 	rect.x = (int)(camera.x * speed) + x * scale;
@@ -254,8 +299,16 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 
 	for (uint i = 0; i < 360; ++i)
 	{
-		points[i].x = (int)(x + radius * cos(i * factor));
-		points[i].y = (int)(y + radius * sin(i * factor));
+		if (useCamera) {
+
+			points[i].x = (int)(x * scale + camera.x + radius * cos(i * factor));
+			points[i].y = (int)(y * scale + camera.y + radius * sin(i * factor));
+		}
+		else {
+
+			points[i].x = (int)(x + radius * cos(i * factor));
+			points[i].y = (int)(y + radius * sin(i * factor));
+		}
 	}
 
 	result = SDL_RenderDrawPoints(renderer, points, 360);
@@ -268,3 +321,30 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 
 	return ret;
 }
+
+bool j1Render::IsInScreen(const SDL_Rect& item) const
+{
+	SDL_Rect cameraRect{ -camera.x, -camera.y, camera.w, camera.h };
+	return SDL_HasIntersection(&item, &cameraRect);
+}
+
+bool j1Render::IsInScreen(const iPoint& item) const
+{
+	SDL_Rect itemRect{ item.x,item.y,1,1 };
+
+	return IsInScreen(itemRect);
+}
+
+bool j1Render::IsInScreen(const fPoint& item) const
+{
+	SDL_Rect itemRect{ item.x,item.y,1,1 };
+
+	return IsInScreen(itemRect);
+}
+
+bool j1Render::IsInRectangle(const SDL_Rect& rectangle, const SDL_Rect& item) const 
+{
+	return SDL_HasIntersection(&item, &rectangle);
+}
+
+

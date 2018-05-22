@@ -6,32 +6,37 @@
 #include "j1Window.h"
 #include "j1Textures.h"
 
-UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), label(info)
+UILabel::UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener, bool isInWorld) : UIElement(localPos, parent, listener, isInWorld), label(info)
 {
-	type = UIE_TYPE::UIE_TYPE_LABEL;
+	type = UIE_TYPE_LABEL;
 
 	draggable = label.draggable;
 	interactive = label.interactive;
 	horizontal = label.horizontalOrientation;
 	vertical = label.verticalOrientation;
-	font = App->gui->GetFont(label.fontName);
+	font = App->font->GetFont(label.fontName);
 	color = label.normalColor;
 
 	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.textWrapLength);
+
+	text = label.text.data();
+
 	App->font->CalcSize(label.text.data(), width, height, font);
+	priority = PrioriryDraw_LABEL;
 
 	SetOrientation();
 }
 
 void UILabel::Update(float dt)
 {
-	if (listener != nullptr && interactive)
+	if (listener != nullptr && interactive && isActive)
 		HandleInput();
 }
 
 UILabel::~UILabel()
 {
-	App->tex->UnLoad((SDL_Texture*)tex);
+	if (tex != nullptr)
+		App->tex->UnLoad(tex);
 }
 
 void UILabel::Draw() const
@@ -46,10 +51,13 @@ void UILabel::Draw() const
 		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
 	}
 
-	if (texArea.w > 0)
-		App->render->Blit(tex, blitPos.x, blitPos.y, &texArea);
-	else
-		App->render->Blit(tex, blitPos.x, blitPos.y);
+	if (tex != nullptr) {
+
+		if (texArea.w > 0)
+			App->render->Blit(tex, blitPos.x, blitPos.y, &texArea);
+		else
+			App->render->Blit(tex, blitPos.x, blitPos.y);
+	}
 
 	if (App->gui->isDebug)
 		DebugDraw(blitPos);
@@ -98,7 +106,7 @@ void UILabel::HandleInput()
 	case UI_EVENT_MOUSE_ENTER:
 
 		if (!MouseHover()) {
-			LOG("MOUSE LEAVE");
+			//LOG("MOUSE LEAVE");
 			nextEvent = false;
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
@@ -177,16 +185,28 @@ void UILabel::HandleInput()
 
 //---------------------------------------------------------------
 
-void UILabel::SetText(string text)
+void UILabel::SetText(string text, uint wrapLength)
 {
-	App->tex->UnLoad((SDL_Texture*)tex);
-	tex = App->font->Print(text.data(), color, font);
+	if (tex != nullptr)
+		App->tex->UnLoad(tex);
+
+	label.text = text;
+	tex = App->font->Print(text.data(), color, font, wrapLength);
+}
+
+
+string UILabel::GetText() 
+{
+	return label.text;
 }
 
 void UILabel::SetColor(SDL_Color color, bool normal, bool hover, bool pressed)
 {
 	this->color = color;
-	App->tex->UnLoad((SDL_Texture*)tex);
+
+	if (tex != nullptr)
+		App->tex->UnLoad(tex);
+
 	tex = App->font->Print(label.text.data(), color, font);
 
 	if (normal)
@@ -195,6 +215,15 @@ void UILabel::SetColor(SDL_Color color, bool normal, bool hover, bool pressed)
 		label.hoverColor = color;
 	else if (pressed)
 		label.pressedColor = color;
+}
+
+void UILabel::SetFontName(FONT_NAME fontName)
+{
+	if (this->tex != nullptr)
+		App->tex->UnLoad(tex);
+
+	font = App->font->GetFont(fontName);
+	tex = App->font->Print(label.text.data(), color, font, (Uint32)label.textWrapLength);
 }
 
 SDL_Color UILabel::GetColor(bool normal, bool hover, bool pressed)

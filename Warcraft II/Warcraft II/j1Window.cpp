@@ -4,6 +4,7 @@
 #include "p2Log.h"
 
 #include "j1App.h"
+#include "j1Render.h"
 
 #include "j1Window.h"
 
@@ -29,7 +30,10 @@ bool j1Window::Awake(pugi::xml_node& config)
 	icon = config.child("icon").attribute("name").as_string();
 	iconSurface = SDL_LoadBMP(icon.data());
 
-
+	if (iconSurface == nullptr)
+	{
+		LOG("Error! SDL_Error: %s\n", SDL_GetError());
+	}
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		LOG("SDL_VIDEO could not initialize! SDL_Error: %s\n", SDL_GetError());
@@ -39,6 +43,7 @@ bool j1Window::Awake(pugi::xml_node& config)
 	{
 		//Create window
 		Uint32 flags = SDL_WINDOW_SHOWN;
+
 		fullscreen = config.child("fullscreen").attribute("value").as_bool();
 		bool borderless = config.child("borderless").attribute("value").as_bool();
 		bool resizable = config.child("resizable").attribute("value").as_bool();
@@ -46,11 +51,12 @@ bool j1Window::Awake(pugi::xml_node& config)
 
 		width = config.child("resolution").attribute("width").as_int();
 		height = config.child("resolution").attribute("height").as_int();
-		scale = config.child("resolution").attribute("scale").as_int();
+		scale = config.child("resolution").attribute("scale").as_float();
 
 		if (fullscreen)
 		{
-			flags |= SDL_WINDOW_FULLSCREEN;
+	//		flags |= SDL_WINDOW_FULLSCREEN;
+			isScreenUpdate = true;
 		}
 
 		if (borderless)
@@ -68,6 +74,13 @@ bool j1Window::Awake(pugi::xml_node& config)
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
+		/*
+		flags |= SDL_WINDOW_MOUSE_CAPTURE;
+		flags |= SDL_WINDOW_INPUT_GRABBED;
+		flags |= SDL_WINDOW_INPUT_FOCUS;
+		flags |= SDL_WINDOW_MOUSE_FOCUS;
+		*/
+
 		window = SDL_CreateWindow(App->GetTitle(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 		SDL_SetWindowIcon(window, iconSurface);
 
@@ -84,6 +97,16 @@ bool j1Window::Awake(pugi::xml_node& config)
 	}
 
 	return ret;
+}
+
+bool j1Window::Update(float dt)
+{
+	if (isScreenUpdate)
+	{
+		fullscreen = !fullscreen;
+		SetFullscreen();
+	}
+	return true;
 }
 
 // Called before quitting
@@ -115,7 +138,36 @@ void j1Window::GetWindowSize(uint& width, uint& height) const
 	height = this->height;
 }
 
-uint j1Window::GetScale() const
+float j1Window::GetScale() const
 {
 	return scale;
+}
+
+void j1Window::SetFullscreen()
+{
+	if (fullscreen)
+	{
+		fullscreen = false;
+
+		SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_SHOWN);
+
+		SDL_SetWindowPosition(App->win->window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+		/*SDL_DisplayMode display;
+		SDL_GetCurrentDisplayMode(0, &display);
+		int width = display.w;
+		int height = display.h;
+
+		SDL_RenderSetLogicalSize(App->render->renderer, width, height);*/
+
+		//	SDL_RestoreWindow(App->win->window);
+
+	}
+	else
+	{
+		fullscreen = true;
+		SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN);
+
+		SDL_SetWindowPosition(App->win->window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	}
 }

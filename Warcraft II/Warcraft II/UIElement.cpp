@@ -10,7 +10,7 @@
 #include "j1Map.h"
 #include "j1Window.h"
 
-UIElement::UIElement(iPoint localPos, UIElement* parent, j1Module* listener) : localPos(localPos), parent(parent), listener(listener)
+UIElement::UIElement(iPoint localPos, UIElement* parent, j1Module* listener, bool isInWorld) : localPos(localPos), parent(parent), listener(listener), isInWorld(isInWorld)
 {
 	uint width = 0, height = 0, scale = 0;
 
@@ -18,7 +18,30 @@ UIElement::UIElement(iPoint localPos, UIElement* parent, j1Module* listener) : l
 	scale = App->win->GetScale();
 }
 
-UIElement::~UIElement() {}
+UIElement::~UIElement() 
+{
+	drag = false;
+	toRemove = false;
+
+	type = UIE_TYPE_NO_TYPE;
+
+	horizontal = HORIZONTAL_POS_LEFT;
+	vertical = VERTICAL_POS_TOP;
+
+	listener = nullptr;
+
+	draggable = false;
+	interactive = true;
+	isInWorld = false;
+	mouseClickPos = { 0,0 };
+
+	texArea = { 0,0,0,0 };
+	width = 0, height = 0;
+	priority = PriorityDraw_NONE;
+
+	localPos = { 0,0 };
+	parent = nullptr;
+}
 
 void UIElement::Update(float dt) {}
 
@@ -56,8 +79,13 @@ void UIElement::Draw() const
 		App->render->SetViewPort({ daddy.x,daddy.y,daddy.w * scale,daddy.h * scale });
 	}
 
-	if (texArea.w != 0)
-		App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);
+	if (texArea.w != 0 && App->gui->GetAtlas() != nullptr)
+	{
+		if (!isInWorld)
+			App->render->Blit(App->gui->GetAtlas(), blitPos.x, blitPos.y, &texArea);
+		else
+			App->render->Blit(App->gui->GetAtlas(), GetLocalPos().x, GetLocalPos().y, &texArea);
+	}
 
 	if (App->gui->isDebug)
 		DebugDraw(blitPos);
@@ -91,7 +119,10 @@ bool UIElement::MouseHover() const
 	App->input->GetMousePosition(x, y);
 	uint scale = App->win->GetScale();
 
-	return x > GetScreenPos().x / scale && x < GetScreenPos().x / scale + GetLocalRect().w && y > GetScreenPos().y / scale && y < GetScreenPos().y / scale + GetLocalRect().h;
+	iPoint screenPos{ GetScreenPos() };
+	SDL_Rect localRect{ GetLocalRect() };
+
+	return x > screenPos.x / scale && x < screenPos.x / scale + localRect.w && y > screenPos.y / scale && y < screenPos.y / scale + localRect.h;
 }
 
 void UIElement::SetOrientation()
@@ -141,9 +172,13 @@ iPoint UIElement::GetScreenPos() const
 		screen_pos.x = parent->GetScreenPos().x + localPos.x;
 		screen_pos.y = parent->GetScreenPos().y + localPos.y;
 	}
-	else {
+	else if (!isInWorld){
 		screen_pos.x = localPos.x;
 		screen_pos.y = localPos.y;
+	}
+	else {
+		screen_pos.x = localPos.x + App->render->camera.x;
+		screen_pos.y = localPos.y + App->render->camera.y;
 	}
 
 	return screen_pos;
@@ -179,4 +214,24 @@ void UIElement::SetInteraction(bool interactive)
 UIElement* UIElement::GetParent() const
 {
 	return parent;
+}
+
+void UIElement::SetPriorityDraw(PriorityDraw priority) {
+	this->priority = priority;
+}
+
+PriorityDraw UIElement::GetPriorityDraw() const
+{
+	return priority;
+}
+
+// Blit
+void UIElement::SetBlitState(bool isBlit) 
+{
+	this->isBlit = isBlit;
+}
+
+bool UIElement::GetBlitState() const 
+{
+	return isBlit;
 }

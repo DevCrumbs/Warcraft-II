@@ -6,19 +6,148 @@
 #include "j1Collision.h"
 #include "j1Input.h"
 #include "j1Render.h"
+#include "Entity.h"
+#include "j1Map.h"
+#include "j1Printer.h"
+
+#include "Brofiler\Brofiler.h"
 
 j1Collision::j1Collision()
 {
 	name.assign("collision");
 
-	for (uint i = 0; i < MAX_COLLIDERS; ++i)
-		colliders[i] = nullptr;
+	// COLLIDERS
+	/// PlayerUnit
+	matrix[ColliderType_PlayerUnit][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_NeutralUnit] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_PlayerUnit][ColliderType_NeutralBuilding] = false;
 
-	/*
-	matrix[COLLIDER_PLAYER][COLLIDER_ARROW] = false;
-	matrix[COLLIDER_PLAYER][COLLIDER_CATPEASANT] = true;
-	matrix[COLLIDER_PLAYER][COLLIDER_CATPEASANT_SHOT] = true;
-	*/
+	/// EnemyUnit
+	matrix[ColliderType_EnemyUnit][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_NeutralUnit] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_EnemyUnit][ColliderType_NeutralBuilding] = false;
+
+	/// NeutralUnit
+	matrix[ColliderType_NeutralUnit][ColliderType_NeutralUnit] = false;
+	matrix[ColliderType_NeutralUnit][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_NeutralUnit][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_NeutralUnit][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_NeutralUnit][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_NeutralUnit][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_NeutralUnit][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_NeutralUnit][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_NeutralUnit][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_NeutralUnit][ColliderType_NeutralBuilding] = false;
+
+	/// PlayerBuilding
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_NeutralUnit] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemySightRadius] = true;
+	matrix[ColliderType_PlayerBuilding][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_PlayerBuilding][ColliderType_EnemyAttackRadius] = true;
+	matrix[ColliderType_PlayerBuilding][ColliderType_NeutralBuilding] = false;
+
+	/// EnemyBuilding
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_NeutralUnit] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerSightRadius] = true;
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_PlayerAttackRadius] = true;
+	matrix[ColliderType_EnemyBuilding][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_EnemyBuilding][ColliderType_NeutralBuilding] = false;
+
+	/// Neutral Building
+	matrix[ColliderType_NeutralBuilding][ColliderType_NeutralBuilding] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_NeutralUnit] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_NeutralBuilding][ColliderType_EnemyBuilding] = false;
+
+	/// PlayerSightRadius
+	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyUnit] = true;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_NeutralUnit] = true;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyBuilding] = true;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_PlayerSightRadius][ColliderType_NeutralBuilding] = false;
+
+	/// EnemySightRadius
+	matrix[ColliderType_EnemySightRadius][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerUnit] = true;
+	matrix[ColliderType_EnemySightRadius][ColliderType_NeutralUnit] = true;
+	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerBuilding] = true;
+	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_EnemySightRadius][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_EnemySightRadius][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_EnemySightRadius][ColliderType_NeutralBuilding] = false;
+
+	/// PlayerAttackRadius
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_PlayerUnit] = false;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemyUnit] = true;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_NeutralUnit] = true;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_PlayerBuilding] = false;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_EnemyBuilding] = true;
+	matrix[ColliderType_PlayerAttackRadius][ColliderType_NeutralBuilding] = false;
+
+	/// EnemyAttackRadius
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyAttackRadius] = false;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerAttackRadius] = false;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemySightRadius] = false;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerSightRadius] = false;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyUnit] = false;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerUnit] = true;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_NeutralUnit] = true;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_PlayerBuilding] = true;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_EnemyBuilding] = false;
+	matrix[ColliderType_EnemyAttackRadius][ColliderType_NeutralBuilding] = false;
+
+	// DEBUG COLORS
+	debugColors[ColliderType_PlayerUnit] = ColorDarkBlue;
+	debugColors[ColliderType_EnemyUnit] = ColorDarkRed;
+	debugColors[ColliderType_NeutralUnit] = ColorWhite;
+	debugColors[ColliderType_PlayerBuilding] = ColorDarkBlue;
+	debugColors[ColliderType_EnemyBuilding] = ColorDarkRed;
+	debugColors[ColliderType_NeutralBuilding] = ColorWhite;
+	debugColors[ColliderType_PlayerSightRadius] = ColorLightBlue;
+	debugColors[ColliderType_EnemySightRadius] = ColorLightRed;
+	debugColors[ColliderType_PlayerAttackRadius] = ColorLightBlue;
+	debugColors[ColliderType_EnemyAttackRadius] = ColorLightRed;
 }
 
 // Destructor
@@ -27,141 +156,508 @@ j1Collision::~j1Collision()
 
 bool j1Collision::PreUpdate()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
+	bool ret = true;
+
 	// Remove all colliders scheduled for deletion
-	for (uint i = 0; i < MAX_COLLIDERS; ++i)
-	{
-		if (colliders[i] != nullptr && colliders[i]->toDelete)
-		{
-			delete colliders[i];
-			colliders[i] = nullptr;
+	list<ColliderGroup*>::iterator it = colliderGroups.begin();
+
+	while (it != colliderGroups.end()) {
+
+		if ((*it)->isRemove) {
+
+			EraseColliderGroup(*it);
+
+			it = colliderGroups.begin();
+			continue;
 		}
+
+		it++;
 	}
 
-	return true;
+	return ret;
 }
 
 // Called before render is available
 bool j1Collision::Update(float dt)
 {
-	Collider* c1;
-	Collider* c2;
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
-	for (uint i = 0; i < MAX_COLLIDERS; ++i)
-	{
-		// skip empty colliders
-		if (colliders[i] == nullptr)
+	bool ret = true;
+
+	Collider* offsetCollider1 = nullptr;
+	Collider* offsetCollider2 = nullptr;
+
+	list<ColliderGroup*>::const_iterator I = colliderGroups.begin();
+
+	while (I != colliderGroups.end()) {
+
+		if (!(*I)->isValid) {
+
+			I++;
 			continue;
-
-		c1 = colliders[i];
-
-		// avoid checking collisions already checked
-		for (uint k = i + 1; k < MAX_COLLIDERS; ++k)
-		{
-			// skip empty colliders
-			if (colliders[k] == nullptr)
-				continue;
-
-			c2 = colliders[k];
-
-			if (c1->CheckCollision(c2->rect))
-			{
-				if (matrix[c1->type][c2->type] && c1->callback)
-					c1->callback->OnCollision(c1, c2);
-
-				if (matrix[c2->type][c1->type] && c2->callback)
-					c2->callback->OnCollision(c2, c1);
-			}
 		}
+
+		offsetCollider1 = (*I)->offsetCollider;
+
+		list<ColliderGroup*>::const_iterator J = I;
+		J++;
+
+		// Avoid checking collisions already checked
+		while (J != colliderGroups.end()) {
+
+			if ((!matrix[(*I)->colliderType][(*J)->colliderType] && !matrix[(*J)->colliderType][(*I)->colliderType])
+				|| !(*J)->isValid) {
+
+				J++;
+				continue;
+			}
+
+			offsetCollider2 = (*J)->offsetCollider;
+
+			if (offsetCollider1 != nullptr && offsetCollider2 != nullptr) {
+
+				if (matrix[(*I)->colliderType][(*J)->colliderType]) {
+
+					// Check if there is a collision between the offsetColliders
+					if (offsetCollider1->CheckCollision(offsetCollider2->colliderRect) && offsetCollider1->colliderGroup->callback != nullptr) {
+
+						if (offsetCollider1->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY || offsetCollider2->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY) {
+
+							// If one of the colliders belongs to a Static Entity, process here the collision (by only checking the offsetColliders)
+							if (offsetCollider1->colliderGroup->isTrigger) {
+
+								if (find(offsetCollider1->colliderGroup->collidingGroups.begin(), offsetCollider1->colliderGroup->collidingGroups.end(), offsetCollider2->colliderGroup) == offsetCollider1->colliderGroup->collidingGroups.end()) {
+
+									offsetCollider1->colliderGroup->collidingGroups.push_back(offsetCollider2->colliderGroup);
+									offsetCollider1->colliderGroup->lastCollidingGroups.push_back(offsetCollider2->colliderGroup);
+
+									// Collision!
+									offsetCollider1->colliderGroup->callback->OnCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup, CollisionState_OnEnter);
+									ret = true;
+								}
+								else {
+
+									offsetCollider1->colliderGroup->lastCollidingGroups.push_back(offsetCollider2->colliderGroup);
+									ret = true;
+								}
+							}
+							else
+								offsetCollider1->colliderGroup->callback->OnCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup, CollisionState_OnEnter);
+						}
+						else
+							// Process the collision by checking the sub-colliders
+							ProcessCollision(offsetCollider1->colliderGroup, offsetCollider2->colliderGroup);
+					}
+				}
+
+				if (matrix[(*J)->colliderType][(*I)->colliderType]) {
+
+					// Check if there is a collision between the offsetColliders
+					if (offsetCollider2->CheckCollision(offsetCollider1->colliderRect) && offsetCollider2->colliderGroup->callback != nullptr) {
+
+						if (offsetCollider1->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY || offsetCollider2->colliderGroup->entity->entityType == EntityCategory_STATIC_ENTITY) {
+
+							// If one of the colliders belongs to a Static Entity, process here the collision (by only checking the offsetColliders)
+							if (offsetCollider2->colliderGroup->isTrigger) {
+
+								if (find(offsetCollider2->colliderGroup->collidingGroups.begin(), offsetCollider2->colliderGroup->collidingGroups.end(), offsetCollider1->colliderGroup) == offsetCollider2->colliderGroup->collidingGroups.end()) {
+
+									offsetCollider2->colliderGroup->collidingGroups.push_back(offsetCollider1->colliderGroup);
+									offsetCollider2->colliderGroup->lastCollidingGroups.push_back(offsetCollider1->colliderGroup);
+
+									// Collision!
+									offsetCollider2->colliderGroup->callback->OnCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup, CollisionState_OnEnter);
+									ret = true;
+								}
+								else {
+
+									offsetCollider2->colliderGroup->lastCollidingGroups.push_back(offsetCollider1->colliderGroup);
+									ret = true;
+								}
+							}
+							else
+								offsetCollider2->colliderGroup->callback->OnCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup, CollisionState_OnEnter);
+						}
+						else
+							// Process the collision by checking the sub-colliders
+							ProcessCollision(offsetCollider2->colliderGroup, offsetCollider1->colliderGroup);
+					}
+				}
+			}
+			J++;
+		}
+		I++;
 	}
 
-	DebugDraw();
+	HandleTriggers();
 
-	return true;
+	return ret;
 }
 
-void j1Collision::DebugDraw()
+bool j1Collision::ProcessCollision(ColliderGroup* I, ColliderGroup* J)
 {
-	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
-		debug = !debug;
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
-	if (debug == false)
-		return;
+	bool ret = false;
 
-	Uint8 alpha = 80;
-	for (uint i = 0; i < MAX_COLLIDERS; ++i)
-	{
-		if (colliders[i] == nullptr)
-			continue;
+	Collider* c1 = nullptr;
+	Collider* c2 = nullptr;
 
-		switch (colliders[i]->type)
-		{
-		case COLLIDER_NONE: // white
-			App->render->DrawQuad(colliders[i]->rect, 255, 255, 255, alpha);
-			break;
-		case COLLIDER_PLAYER: // green
-			App->render->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);
-			break;
-		case COLLIDER_ARROW: // blue
-			App->render->DrawQuad(colliders[i]->rect, 0, 0, 255, alpha);
-			break;
-		case COLLIDER_IMP_BOMB_EXPLOSION: // red
-			App->render->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
-			break;
+	for (uint i = 0; i < I->colliders.size(); ++i) {
+
+		c1 = I->colliders[i];
+
+		for (uint j = 0; j < J->colliders.size(); ++j) {
+
+			c2 = J->colliders[j];
+
+			// Check for the collision
+			if (c1->CheckCollision(c2->colliderRect) && c1->colliderGroup->callback != nullptr) {
+
+				if (c1->colliderGroup->isTrigger) {
+
+					if (find(c1->colliderGroup->collidingGroups.begin(), c1->colliderGroup->collidingGroups.end(), c2->colliderGroup) == c1->colliderGroup->collidingGroups.end()) {
+
+						c1->colliderGroup->collidingGroups.push_back(c2->colliderGroup);
+						c1->colliderGroup->lastCollidingGroups.push_back(c2->colliderGroup);
+
+						// Collision!
+						c1->colliderGroup->callback->OnCollision(c1->colliderGroup, c2->colliderGroup, CollisionState_OnEnter);
+						ret = true;
+					}
+					else {
+
+						c1->colliderGroup->lastCollidingGroups.push_back(c2->colliderGroup);
+						ret = true;
+					}
+				}
+				else
+					c1->colliderGroup->callback->OnCollision(c1->colliderGroup, c2->colliderGroup, CollisionState_OnEnter);
+			}
+
+			if (ret)
+				break;
 		}
+
+		if (ret)
+			break;
+	}
+
+	return ret;
+}
+
+void j1Collision::HandleTriggers()
+{
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
+	list<ColliderGroup*>::const_iterator groups = colliderGroups.begin();
+
+	while (groups != colliderGroups.end()) {
+
+		list<ColliderGroup*>::const_iterator collisions = (*groups)->collidingGroups.begin();
+
+		while (collisions != (*groups)->collidingGroups.end()) {
+
+			if (find((*groups)->lastCollidingGroups.begin(), (*groups)->lastCollidingGroups.end(), *collisions) == (*groups)->lastCollidingGroups.end()) {
+
+				// Not collision anymore...
+				(*groups)->callback->OnCollision(*groups, *collisions, CollisionState_OnExit);
+
+				(*groups)->collidingGroups.remove(*collisions++);
+				continue;
+			}
+			else
+				(*groups)->lastCollidingGroups.remove(*collisions);
+
+			collisions++;
+		}
+		groups++;
 	}
 }
 
 // Called before quitting
 bool j1Collision::CleanUp()
 {
+	bool ret = true;
 	LOG("Freeing all colliders");
 
-	for (uint i = 0; i < MAX_COLLIDERS; ++i)
-	{
-		if (colliders[i] != nullptr)
-		{
-			delete colliders[i];
-			colliders[i] = nullptr;
-		}
-	}
+	// Remove all colliderGroups
+	list<ColliderGroup*>::iterator it = colliderGroups.begin();
 
-	return true;
+	while (it != colliderGroups.end()) {
+
+		delete *it;
+		it++;
+	}
+	colliderGroups.clear();
+
+	return ret;
 }
 
-Collider* j1Collision::AddCollider(SDL_Rect rect, COLLIDER_TYPE type, j1Module* callback)
+void j1Collision::DebugDraw()
 {
-	Collider* ret = nullptr;
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
-	for (uint i = 0; i < MAX_COLLIDERS; ++i)
-	{
-		if (colliders[i] == nullptr)
-		{
-			ret = colliders[i] = new Collider(rect, type, callback);
-			break;
+	Uint8 alpha = 60;
+	SDL_Color color;
+
+	list<ColliderGroup*>::const_iterator it = colliderGroups.begin();
+
+	while (it != colliderGroups.end()) {
+
+		if ((*it)->offsetCollider != nullptr) {
+
+			if (!App->render->IsInScreen({ (int)(*it)->offsetCollider->colliderRect.x, (int)(*it)->offsetCollider->colliderRect.y, (*it)->offsetCollider->colliderRect.w, (*it)->offsetCollider->colliderRect.h })) {
+
+				it++;
+				continue;
+			}
 		}
+
+		color = debugColors[(*it)->colliderType];
+
+		for (uint i = 0; i < (*it)->colliders.size(); ++i) {
+
+			if (!App->render->IsInScreen({ (*it)->colliders[i]->colliderRect.x, (*it)->colliders[i]->colliderRect.y, (*it)->colliders[i]->colliderRect.w, (*it)->colliders[i]->colliderRect.h }))
+				continue;
+
+			App->printer->PrintQuad((*it)->colliders[i]->colliderRect, { color.r,color.g,color.b,alpha }, true);
+		}
+
+		if ((*it)->offsetCollider != nullptr)
+
+			App->printer->PrintQuad((*it)->offsetCollider->colliderRect, { 255,255,255,alpha }, true);
+
+		it++;
+	}
+}
+
+// ColliderGroups
+ColliderGroup* j1Collision::CreateAndAddColliderGroup(vector<Collider*> colliders, ColliderType colliderType, j1Module* callback, Entity* entity)
+{
+	if (callback == nullptr)
+		return nullptr;
+
+	ColliderGroup* collGroup = new ColliderGroup(colliders, colliderType, callback, entity);
+
+	for (uint i = 0; i < colliders.size(); ++i)
+		colliders[i]->SetColliderGroup(collGroup);
+
+	colliderGroups.push_back(collGroup);
+
+	return collGroup;
+}
+
+bool j1Collision::EraseColliderGroup(ColliderGroup* colliderGroup)
+{
+	bool ret = false;
+
+	if (colliderGroup != nullptr) {
+
+		delete colliderGroup;
+
+		if (colliderGroups.erase(remove(colliderGroups.begin(), colliderGroups.end(), colliderGroup), colliderGroups.end()) != colliderGroups.end())
+			ret = true;
+
+		colliderGroup = nullptr;
 	}
 
 	return ret;
 }
 
-bool j1Collision::EraseCollider(Collider* collider)
+// Colliders
+Collider* j1Collision::CreateCollider(SDL_Rect colliderRect)
 {
-	for (uint i = 0; i < MAX_COLLIDERS; ++i)
-	{
-		if (colliders[i] == collider)
-		{
-			delete colliders[i];
-			colliders[i] = nullptr;
+	Collider* coll = new Collider(colliderRect);
+	return coll;
+}
+
+bool j1Collision::AddColliderToAColliderGroup(ColliderGroup* colliderGroup, Collider* collider)
+{
+	if (colliderGroup != nullptr && collider != nullptr)
+
+		if (!colliderGroup->IsColliderInGroup(collider)) {
+
+			collider->SetColliderGroup(colliderGroup);
+			colliderGroup->colliders.push_back(collider);
 			return true;
 		}
-	}
 
 	return false;
 }
 
-// -----------------------------------------------------
+bool j1Collision::EraseColliderFromAColliderGroup(ColliderGroup* colliderGroup, Collider* collider)
+{
+	bool ret = false;
+
+	if (collider != nullptr) {
+
+		delete collider;
+
+		if (colliderGroup->colliders.erase(remove(colliderGroup->colliders.begin(), colliderGroup->colliders.end(), collider), colliderGroup->colliders.end()) != colliderGroup->colliders.end())
+			ret = true;
+
+		collider = nullptr;
+	}
+
+	return ret;
+}
+
+// Collider struct ---------------------------------------------------------------------------------
+
+Collider::Collider(SDL_Rect colliderRect) :colliderRect(colliderRect) {}
+
+Collider::~Collider()
+{
+	colliderGroup = nullptr;
+}
+
+void Collider::SetPos(int x, int y)
+{
+	colliderRect.x = x;
+	colliderRect.y = y;
+}
+
+iPoint Collider::GetPos() const
+{
+	return { colliderRect.x, colliderRect.y };
+}
+
+void Collider::SetColliderGroup(ColliderGroup* colliderGroup)
+{
+	this->colliderGroup = colliderGroup;
+}
 
 bool Collider::CheckCollision(const SDL_Rect& r) const
 {
-	return (rect.x < r.x + r.w && rect.x + rect.w > r.x && rect.y < r.y + r.h && rect.h + rect.y > r.y);
+	return (colliderRect.x < r.x + r.w && colliderRect.x + colliderRect.w > r.x && colliderRect.y < r.y + r.h && colliderRect.h + colliderRect.y > r.y);
+}
+
+// ColliderGroup struct ---------------------------------------------------------------------------------
+
+ColliderGroup::ColliderGroup(vector<Collider*> colliders, ColliderType colliderType, j1Module* callback, Entity* entity) :colliders(colliders), colliderType(colliderType), callback(callback), entity(entity) {}
+
+ColliderGroup::~ColliderGroup()
+{
+	callback = nullptr;
+	entity = nullptr;
+
+	// Remove all colliders
+	for (uint i = 0; i < colliders.size(); ++i)
+
+		colliders.erase(remove(colliders.begin(), colliders.end(), colliders[i]), colliders.end());
+
+	collidingGroups.clear();
+	lastCollidingGroups.clear();
+
+	if (offsetCollider != nullptr)
+		delete offsetCollider;
+	offsetCollider = nullptr;
+}
+
+bool ColliderGroup::IsColliderInGroup(Collider* collider)
+{
+	for (uint i = 0; i < colliders.size(); ++i)
+
+		if (colliders[i] == collider)
+			return true;
+
+	return false;
+}
+
+bool ColliderGroup::CreateOffsetCollider()
+{
+	bool ret = false;
+
+	if (offsetCollider != nullptr)
+		delete offsetCollider;
+	offsetCollider = nullptr;
+
+	Collider* left = GetCollider(true);
+	Collider* right = GetCollider(false, true);
+
+	Collider* top = GetCollider(false, false, true);
+	Collider* bottom = GetCollider(false, false, false, true);
+
+	if (left == nullptr || right == nullptr || top == nullptr || bottom == nullptr)
+		return false;
+
+	SDL_Rect colliderRect;
+	colliderRect.x = left->GetPos().x;
+	colliderRect.y = top->GetPos().y;
+
+	colliderRect.w = (right->GetPos().x + right->colliderRect.w) - left->GetPos().x;
+	colliderRect.h = (bottom->GetPos().y + right->colliderRect.h) - top->GetPos().y;
+
+	offsetCollider = new Collider(colliderRect);
+
+	if (offsetCollider != nullptr) {
+
+		offsetCollider->SetColliderGroup(this);
+		ret = true;
+	}
+
+	return ret;
+}
+
+Collider* ColliderGroup::GetCollider(bool left, bool right, bool top, bool bottom)
+{
+	if (colliders.empty())
+		return nullptr;
+
+	Collider* result = colliders.front();
+
+	for (uint i = 1; i < colliders.size(); ++i) {
+
+		if (left) {
+
+			if (result->GetPos().x > colliders[i]->GetPos().x)
+
+				result = colliders[i];
+		}
+		else if (right) {
+
+			if (result->GetPos().x < colliders[i]->GetPos().x)
+
+				result = colliders[i];
+		}
+		else if (top) {
+
+			if (result->GetPos().y > colliders[i]->GetPos().y)
+
+				result = colliders[i];
+		}
+		else if (bottom) {
+
+			if (result->GetPos().y < colliders[i]->GetPos().y)
+
+				result = colliders[i];
+		}
+	}
+
+	return result;
+}
+
+void ColliderGroup::RemoveCollider(Collider* collider)
+{
+	colliders.erase(remove(colliders.begin(), colliders.end(), collider), colliders.end());
+	collider = nullptr;
+}
+
+bool ColliderGroup::RemoveAllColliders()
+{
+	bool ret = false;
+
+	for (uint i = 0; i < colliders.size(); ++i) {
+
+		delete colliders[i];
+		colliders[i] = nullptr;
+
+		ret = true;
+	}
+	colliders.clear();
+
+	return ret;
 }

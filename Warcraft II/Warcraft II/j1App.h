@@ -10,6 +10,8 @@
 #include <string>
 using namespace std;
 
+#define MS_PATHFINDING 8.0
+
 // Modules
 class j1Window;
 class j1Input;
@@ -25,6 +27,17 @@ class j1PathFinding;
 class j1EntityFactory;
 class j1Fonts;
 class j1Gui;
+class j1Player;
+class j1Console;
+class j1Menu;
+class j1Movement;
+class j1PathManager;
+class j1FinishGame;
+class j1Printer;
+class j1EnemyWave;
+class j1FogOfWar;
+
+struct SDL_Rect;
 
 class j1App
 {
@@ -60,6 +73,8 @@ public:
 	void LoadGame();
 	void SaveGame() const;
 	void GetSaveGames(list<string>& list_to_fill) const;
+
+	uint32 GetSecondsSinceAppStartUp();
 
 private:
 
@@ -107,6 +122,15 @@ public:
 	j1PathFinding*				pathfinding = nullptr;
 	j1Fonts*					font = nullptr;
 	j1Gui*						gui = nullptr;
+	j1Player*					player = nullptr;
+	j1Console*					console = nullptr;
+	j1Menu*						menu = nullptr;
+	j1Movement*					movement = nullptr;
+	j1PathManager*				pathmanager = nullptr;
+	j1FinishGame*				finish = nullptr;
+	j1Printer*					printer = nullptr;
+	j1EnemyWave*				wave = nullptr;
+	j1FogOfWar*					fow = nullptr;
 
 private:
 
@@ -135,6 +159,7 @@ public:
 	bool				toCap = true;
 	bool				quitGame = false;
 	double				auxiliarDt = 0;
+	bool				isDebug = false;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S

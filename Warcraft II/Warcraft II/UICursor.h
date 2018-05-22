@@ -9,8 +9,12 @@
 #include "j1Gui.h"
 
 struct UICursor_Info {
-	UIE_RECT default = NO_ELEMENT_RECT;
-	UIE_RECT onClick = NO_ELEMENT_RECT;
+	SDL_Rect default = { 0,0,0,0 };
+	SDL_Rect onClick = { 0,0,0,0 };
+	SDL_Rect onMine = { 0,0,0,0 };
+	SDL_Rect onMineClick = { 0,0,0,0 };
+	SDL_Rect onEnemies = { 0,0,0,0 };
+	SDL_Rect onEnemiesClick = { 0,0,0,0 };
 };
 
 // ---------------------------------------------------
@@ -18,19 +22,28 @@ struct UICursor_Info {
 class UICursor : public UIElement
 {
 public:
-	UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Module* listener = nullptr);
+	UICursor(iPoint localPos, UIElement* parent, UICursor_Info& info, j1Module* listener = nullptr , bool isInWorld = false);
+	~UICursor();
 	void Update(float dt);
 	void SetMousePosition();
+	void SetTexArea(SDL_Rect texAreaDefault, SDL_Rect texAreaOnClick);
 	void HandleInput();
-	void Draw() const;
 	void DrawAbove() const;
+
+	SDL_Rect GetDefaultTexArea() const;
+
+public:
+	SDL_Rect default = { 0,0,0,0 };
+	SDL_Rect onClick = { 0,0,0,0 };
+	SDL_Rect onMine = { 0,0,0,0 };
+	SDL_Rect onMineClick = { 0,0,0,0 };
+	SDL_Rect onEnemies = { 0,0,0,0 };
+	SDL_Rect onEnemiesClick = { 0,0,0,0 };
+
+	UICursor_Info cursor;
 
 private:
 	UI_EVENT UIevent = UI_EVENT_NONE;
-	UICursor_Info cursor;
-
-	SDL_Rect default = { 0,0,0,0 };
-	SDL_Rect onClick = { 0,0,0,0 };
 };
 
 #endif //__UICursor_H__

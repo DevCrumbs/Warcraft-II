@@ -8,6 +8,7 @@
 #include "j1App.h"
 #include "UIElement.h"
 #include "j1Gui.h"
+#include "j1Fonts.h"
 
 struct _TTF_Font;
 struct SDL_Color;
@@ -35,7 +36,7 @@ struct UILabel_Info {
 class UILabel : public UIElement
 {
 public:
-	UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener = nullptr);
+	UILabel(iPoint localPos, UIElement* parent, UILabel_Info& info, j1Module* listener = nullptr, bool isInWorld = false);
 	~UILabel();
 	void Update(float dt);
 	void HandleInput();
@@ -43,8 +44,9 @@ public:
 	void Draw() const;
 	void DebugDraw(iPoint blitPos) const;
 
-	void SetText(string text);
+	void SetText(string text, uint wrapLength = 0);
 	void SetColor(SDL_Color color, bool normal = false, bool hover = false, bool pressed = false);
+	void SetFontName(FONT_NAME fontName);
 	SDL_Color GetColor(bool normal = true, bool hover = false, bool pressed = false);
 
 	bool IntermitentFade(float seconds = 1.0f, bool loop = true, bool halfLoop = false);
@@ -58,13 +60,16 @@ public:
 	bool Bounce(float dt, float bounceInterval = 1.0f, float bounceSpeed = 2.0f, bool down = true);
 	void InitializeBounce(float bounceInterval = 1.0f, bool down = true);
 
+	string GetText();
 private:
 	UILabel_Info label;
 	_TTF_Font* font = nullptr;
-	const SDL_Texture* tex = nullptr;
+	SDL_Texture* tex = nullptr;
 	SDL_Color color = { 255,255,255,255 };
 	UI_EVENT UIevent = UI_EVENT_NONE;
 	bool nextEvent = false;
+
+	const char* text = nullptr;
 
 	// Fade parameters
 	float totalTime = 0.0f;

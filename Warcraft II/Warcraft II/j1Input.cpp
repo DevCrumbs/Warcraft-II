@@ -136,7 +136,7 @@ bool j1Input::PreUpdate()
 			break;
 
 		case SDL_MOUSEMOTION:
-			int scale = App->win->GetScale();
+			float scale = App->win->GetScale();
 			mouseMotionX = event.motion.xrel / scale;
 			mouseMotionY = event.motion.yrel / scale;
 			mouseX = event.motion.x / scale;
@@ -171,6 +171,13 @@ void j1Input::GetMousePosition(int& x, int& y)
 {
 	x = mouseX;
 	y = mouseY;
+}
+iPoint j1Input::GetMousePosition()
+{
+	iPoint ret{ 0,0 };
+	ret.x = mouseX;
+	ret.y = mouseY;
+	return ret;
 }
 
 void j1Input::GetMouseMotion(int& x, int& y)

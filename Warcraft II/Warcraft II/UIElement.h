@@ -18,7 +18,10 @@ enum UIE_TYPE
 	UIE_TYPE_WINDOW,
 	UIE_TYPE_CURSOR,
 	UIE_TYPE_MAX_TYPES,
-	UIE_TYPE_INPUT_TEXT
+	UIE_TYPE_INPUT_TEXT,
+	UIE_TYPE_LIFE_BAR,
+	UIE_TYPE_SLIDER,
+	UIE_TYPE_MINIMAP
 };
 
 enum UIE_HORIZONTAL_POS {
@@ -44,12 +47,28 @@ enum UI_EVENT {
 	UI_EVENT_MAX_EVENTS
 };
 
+enum PriorityDraw {
+
+	PriorityDraw_NONE,
+	PriorityDraw_LIFEBAR_INGAME = -1,
+	PriorityDraw_BUTTONSINGAME,
+	PriorityDraw_UNDER_FRAMEWORK,
+	PriorityDraw_FRAMEWORK,
+	PriorityDraw_UIINGAME,
+	PriorityDraw_WINDOW,
+	PriorityDraw_SLIDER,
+	PriorityDraw_IMAGE,
+	PrioriryDraw_LABEL,
+
+	PriorityDraw_CURSOR
+
+};
 // ---------------------------------------------------
 
 class UIElement
 {
 public:
-	UIElement(iPoint localPos, UIElement* parent, j1Module* listener);
+	UIElement(iPoint localPos, UIElement* parent, j1Module* listener, bool isInWorld);
 
 	virtual ~UIElement();
 
@@ -80,15 +99,26 @@ public:
 	void SetLocalPos(iPoint localPos);
 	void IncreasePos(iPoint add_localPos);
 	void DecreasePos(iPoint add_localPos);
+	void SetPriorityDraw(PriorityDraw priority);
+	PriorityDraw GetPriorityDraw() const;
 
 	UIElement* GetParent() const;
 
+	// Blit
+	void SetBlitState(bool isBlit);
+	bool GetBlitState() const;
+
 public:
+
 	bool drag = false;
 	bool toRemove = false;
+	bool isBlit = true;
+	bool isActive = true;
+
+	UIE_TYPE type = UIE_TYPE_NO_TYPE;
 
 protected:
-	UIE_TYPE type = UIE_TYPE_NO_TYPE;
+
 	UIE_HORIZONTAL_POS horizontal = HORIZONTAL_POS_LEFT;
 	UIE_VERTICAL_POS vertical = VERTICAL_POS_TOP;
 
@@ -96,16 +126,18 @@ protected:
 
 	bool draggable = false;
 	bool interactive = true;
+	bool isInWorld = false;
 	iPoint mouseClickPos = { 0,0 };
 
 	// Texture parameters
 	SDL_Rect texArea = { 0,0,0,0 };
 	int width = 0, height = 0;
+	PriorityDraw priority = PriorityDraw_NONE;
 
 private:
+
 	iPoint localPos = { 0,0 };
 	UIElement* parent = nullptr;
-
 };
 
 #endif //__UIElement_H__

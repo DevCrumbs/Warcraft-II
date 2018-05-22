@@ -4,13 +4,13 @@
 #include "j1Render.h"
 #include "j1Window.h"
 
-UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener) : UIElement(localPos, parent, listener), button(info)
+UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Module* listener, bool isInWorld) : UIElement(localPos, parent, listener, isInWorld), button(info)
 {
-	type = UIE_TYPE::UIE_TYPE_BUTTON;
+	type = UIE_TYPE_BUTTON;
 
-	normalTexArea = App->gui->GetRectFromAtlas(button.normalTexArea);
-	hoverTexArea = App->gui->GetRectFromAtlas(button.hoverTexArea);
-	pressedTexArea = App->gui->GetRectFromAtlas(button.pressedTexArea);
+	normalTexArea = info.normalTexArea;
+	hoverTexArea = info.hoverTexArea;
+	pressedTexArea = info.pressedTexArea;
 
 	draggable = button.draggable;
 	interactive = button.interactive;
@@ -25,12 +25,32 @@ UIButton::UIButton(iPoint localPos, UIElement* parent, UIButton_Info& info, j1Mo
 	width = texArea.w;
 	height = texArea.h;
 
+	priority = PriorityDraw_IMAGE;
 	SetOrientation();
+}
+
+UIButton::~UIButton() 
+{
+	tab = false;
+	nextEvent = false;
+
+	bounceValue = 0.0f;
+	 startPos = { 0,0 };
+	firstBounce = true;
+	reset = true;
+	startBouncing = false;
+
+	isInWorld = false;
+	UIevent = UI_EVENT_NONE;
+
+	 normalTexArea = { 0,0,0,0 };
+	 hoverTexArea = { 0,0,0,0 };
+	 pressedTexArea = { 0,0,0,0 };
 }
 
 void UIButton::Update(float dt)
 {
-	if (listener != nullptr && interactive)
+	if (listener != nullptr && interactive && isActive)
 		HandleInput();
 }
 
@@ -60,12 +80,14 @@ void UIButton::HandleInput()
 	case UI_EVENT_MOUSE_ENTER:
 
 		if (!MouseHover() && !tab) {
-			LOG("MOUSE LEAVE");
+			//LOG("MOUSE LEAVE");
 			nextEvent = false;
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
-		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)) {
+
+		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN))
+		{
 			nextEvent = false;
 			LOG("MOUSE L CLICK START");
 			ChangeSprite(pressedTexArea);
@@ -76,10 +98,10 @@ void UIButton::HandleInput()
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
-		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)) {
+		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) || (tab && App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)) 
+		{
 			nextEvent = false;
 			LOG("MOUSE R CLICK START");
-			ChangeSprite(pressedTexArea);
 
 			mouseClickPos.x = mouse_pos.x * App->win->GetScale() - GetLocalPos().x;
 			mouseClickPos.y = mouse_pos.y * App->win->GetScale() - GetLocalPos().y;
@@ -98,7 +120,7 @@ void UIButton::HandleInput()
 		}
 
 		if (!nextEvent) {
-			LOG("MOUSE ENTER");
+			//LOG("MOUSE ENTER");
 			if (!button.isChecked)
 				ChangeSprite(hoverTexArea);
 			nextEvent = true;
@@ -152,6 +174,21 @@ void UIButton::ChangeSprite(SDL_Rect texArea)
 {
 	this->texArea = texArea;
 }
+
+void UIButton::ChangesTextsAreas(bool isDiferent, SDL_Rect normalText, SDL_Rect hoverText)
+{
+	if (isDiferent) {
+		normalTexArea = normalText;
+		hoverTexArea = hoverText;
+		ChangeSprite(normalTexArea);
+	}
+	else {
+		normalTexArea = hoverTexArea = pressedTexArea;
+		ChangeSprite(pressedTexArea);
+	}
+
+}
+
 
 SDL_Rect UIButton::GetHoverSprite() const
 {

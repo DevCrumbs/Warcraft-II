@@ -47,9 +47,9 @@ public:
 		currentFrame = 0;
 	}
 
-	void Start()
+	void Start(float velocity)
 	{
-		speed = 0.08f;
+		speed = velocity;
 	}
 
 	void Stop()

@@ -13,23 +13,22 @@ private:
 
 public:
 
-	UIInputText(iPoint localPos, UIElement* parent, j1Module* listener);
-	~UIInputText() {}
+	UIInputText(iPoint localPos, UIElement* parent, j1Module* listener = nullptr, bool isInWorld = false);
+	~UIInputText();
 
 	void Update(float dt);
+	void ChangeInputState();
+	void CleanText();
 
+	iPoint original_pos;
+	std::string text;
 
 private:
 
-	bool InputText_Actived = false;
-
-	std::string text;
+	bool isInputText = false;
 
 	SDL_Texture* texture = nullptr;
-	SDL_Rect r;
-
-	/*Label* labelInputText;
-	Image* imageInputText;*/
+	SDL_Rect r{ 0,0,0,0 };
 
 };
 
