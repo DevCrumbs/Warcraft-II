@@ -152,7 +152,14 @@ public:
 	// On triggered
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
-	void SaveAttribute(int value, char * name, pugi::xml_node & general, bool createGeneral);
+	pugi::xml_node GetNode(pugi::xml_node & node, char * name, bool create) const;
+
+	void SaveAttribute(int value, char * name, pugi::xml_node & general, bool createGeneral) const;
+
+	void SaveAttribute(SDL_Rect value, char * name, pugi::xml_node & node, bool createGeneral) const;
+
+	void SaveAttribute(uchar * value, char * name, pugi::xml_node & node, bool createGeneral, int size = 0) const;
+
 
 	// Save
 	bool Save(pugi::xml_node&) const;

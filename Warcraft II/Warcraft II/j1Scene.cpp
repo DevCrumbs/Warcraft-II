@@ -2360,20 +2360,53 @@ void j1Scene::BlitRoomClearedFloor(float dt)
 
 // -------------------------------------------------------------
 // -------------------------------------------------------------
-
-void j1Scene::SaveAttribute(int value, char* name, pugi::xml_node& general, bool createGeneral)
+pugi::xml_node j1Scene::GetNode(pugi::xml_node& node, char* name, bool create) const
 {
 	pugi::xml_node valueNode;
-	if (createGeneral)
+	if (create || node.child(name) == NULL)
 	{
-		valueNode = general.append_child(name);
+		valueNode = node.append_child(name);
 	}
 	else
 	{
-		valueNode = general.child(name);
+		valueNode = node.child(name);
 	}
+	return valueNode;
+}
+
+void j1Scene::SaveAttribute(int value, char* name, pugi::xml_node& node, bool create) const
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
 	valueNode.append_attribute(name) = value;
 }
+
+void j1Scene::SaveAttribute(SDL_Rect value, char* name, pugi::xml_node& node, bool create) const
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
+	valueNode.append_attribute("x") = value.x;
+	valueNode.append_attribute("y") = value.y;
+	valueNode.append_attribute("w") = value.w;
+	valueNode.append_attribute("h") = value.h;
+}
+
+void j1Scene::SaveAttribute(uchar* value, char* name, pugi::xml_node& node, bool create, int size) const
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
+	for (pugi::xml_node child = valueNode.first_child; child;)
+	{
+		valueNode.remove_child(child);
+	}
+
+	for (int i = 0; i < size; ++i)
+	{
+		valueNode.append_child(name).append_attribute(name) = value[i];
+	}
+}
+
+
 
 // Save
 bool j1Scene::Save(pugi::xml_node& save) const
@@ -2394,24 +2427,24 @@ bool j1Scene::Save(pugi::xml_node& save) const
 		general = save.child("general");
 	}
 
-	{
-		pugi::xml_node goalFromMinimap;
-		if (createGeneral)
-		{
-			goalFromMinimap = general.append_child("isGoalFromMinimap");
-		}
-		else
-		{
-			goalFromMinimap = general.child("isGoalFromMinimap");
-		}
-		goalFromMinimap.append_attribute("isGoalFromMinimap") = isGoalFromMinimap;
-	}
-	bool isMinimapChanged = false;
+	SaveAttribute(isGoalFromMinimap, "isGoalFromMinimap", general, createGeneral);
+	SaveAttribute(isMinimapChanged, "isMinimapChanged", general, createGeneral);
 
 	// Room cleared!
-	bool isRoomCleared = false;
-	SDL_Rect roomCleared = { -1,-1,-1,-1 };
-	int alpha = 0;
+	pugi::xml_node room;
+	if (save.child("room") == NULL)
+	{
+		room = save.append_child("room");
+		createGeneral = true;
+	}
+	else
+	{
+		room = save.child("room");
+	}
+
+	SaveAttribute(isRoomCleared, "isRoomCleared", room, createGeneral);
+	SaveAttribute(roomCleared, "roomCleared", room, createGeneral);
+	SaveAttribute(alpha, "alpha", room, createGeneral);
 
 	// Walkability map
 	int w = 0, h = 0;
