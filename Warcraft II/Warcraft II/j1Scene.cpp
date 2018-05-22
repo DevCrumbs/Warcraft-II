@@ -2361,21 +2361,195 @@ void j1Scene::BlitRoomClearedFloor(float dt)
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
+void j1Scene::SaveAttribute(int value, char* name, pugi::xml_node& general, bool createGeneral)
+{
+	pugi::xml_node valueNode;
+	if (createGeneral)
+	{
+		valueNode = general.append_child(name);
+	}
+	else
+	{
+		valueNode = general.child(name);
+	}
+	valueNode.append_attribute(name) = value;
+}
+
 // Save
 bool j1Scene::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
-	/*
-	if (save.child("gate") == NULL) {
-	save.append_child("gate").append_attribute("opened") = gate;
-	save.child("gate").append_attribute("fx") = fx;
+	bool createGeneral = false;
+
+	pugi::xml_node general;
+	
+	if (save.child("general") == NULL)
+	{
+		general = save.append_child("general");
+		createGeneral = true;
 	}
-	else {
-	save.child("gate").attribute("opened") = gate;
-	save.child("gate").attribute("fx") = fx;
+	else
+	{
+		general = save.child("general");
 	}
-	*/
+
+	{
+		pugi::xml_node goalFromMinimap;
+		if (createGeneral)
+		{
+			goalFromMinimap = general.append_child("isGoalFromMinimap");
+		}
+		else
+		{
+			goalFromMinimap = general.child("isGoalFromMinimap");
+		}
+		goalFromMinimap.append_attribute("isGoalFromMinimap") = isGoalFromMinimap;
+	}
+	bool isMinimapChanged = false;
+
+	// Room cleared!
+	bool isRoomCleared = false;
+	SDL_Rect roomCleared = { -1,-1,-1,-1 };
+	int alpha = 0;
+
+	// Walkability map
+	int w = 0, h = 0;
+	uchar* data = NULL;
+
+	// Building costs
+	int keepCost = 500;
+	int castleCost = 1500;
+	int barracksCost = 1000;
+	int chickenFarmCost = 250;
+	int gryphonAviaryCost = 400;
+	int churchCost = 900;
+	int blacksmithCost = 800;
+	int elvenLumberCost = 600;
+	int scoutTowerCost = 400;
+	int guardTowerCost = 600;
+	int cannonTowerCost = 800;
+
+	int numMaps = 0;
+
+	// Camera
+	float up = false, down = false, left = false, right = false;
+	uint width = 0;
+	uint height = 0;
+	float scale = 0;
+
+	// Player
+	bool god = false;
+
+	bool pause = false;
+
+	GoldChange hasGoldChanged = GoldChange_NoChange;
+
+	bool hasFoodChanged = false;
+
+	UIImage* entitiesStats = nullptr;
+	ENTITY_TYPE GetAlphaBuilding();
+	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
+
+	// Movement
+	bool debugDrawMovement = false;
+	bool debugDrawPath = false;
+	bool debugDrawMap = false;
+	bool debugDrawAttack = false;
+
+	bool isFrameByFrame = false;
+
+	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
+	TerenasAdvices terenasAdvices;
+
+	AdviceMessages adviceMessage = AdviceMessage_NONE;
+
+	j1Timer terenasDialogTimer;
+	j1Timer adviceMessageTimer;
+
+	iPoint basePos{ 0,0 };
+
+	list<DynamicEntity*> units;
+	list<GroupSelectedElements> groupElementsList;
+
+	int mapDifficulty = 0;
+
+
+	j1Timer goldLabelColorTime;
+	j1Timer finalTransition;
+	bool isStartedFinalTransition = false;
+
+	bool isStarted = false;
+	bool isAttackCursor = false;
+	bool isFadeToMenu = false;
+
+	// Draw rectangle
+	iPoint startRectangle = { 0,0 };
+
+	//UI
+	BuildingMenu buildingMenuButtons;
+	UIButton* buildingButton = nullptr;
+	UILabel* buildingLabel = nullptr;
+	UIImage* buildingMenu = nullptr;
+
+	//Frame InGame
+	UIImage* inGameFrameImage = nullptr;
+	UILabel* goldLabel, *foodLabel = nullptr;
+
+	//Pause Menu
+	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
+	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;
+	UIImage* parchmentImg = nullptr;
+	//Settings Menu
+	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
+	SliderStruct AudioFXPause;
+	SliderStruct AudioMusicPause;
+	//Entities Buttons
+	UIButton* commandPatrolButton = nullptr, *commandStopButton = nullptr;
+	//Minimap Button
+	UIButton* changeMinimapButt = nullptr;
+	//Advice label
+	UILabel* adviceLabel = nullptr;
+
+	bool buildingMenuOn = false;
+
+	string orthogonalMap, isometricMap, warcraftMap;
+	string orthogonalTexName, isometricTexName, warcraftTexName;
+	string levelTheme1;
+	string levelTheme2;
+	string levelTheme3;
+	string levelTheme4;
+
+	bool orthogonalActive, isometricActive, warcraftActive;
+
+	SDL_Texture* debugTex = nullptr;
+
+	iPoint mouse = { 0,0 };
+
+	//Camera attributes
+	float camSpeed = 0.0f;
+	int camMovement = 1;
+	float camMovMargin = 0.0f;
+	bool isCamMovMarginCharged = false;
+
+	SDL_Scancode buttonSaveGame = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonLoadGame = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonFullScreen = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonGodMode = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveUp = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveDown = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveLeft = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonMoveRight = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonLeaveGame = SDL_SCANCODE_UNKNOWN;
+	SDL_Scancode buttonReloadMap = SDL_SCANCODE_UNKNOWN;
+
+	ENTITY_TYPE alphaBuilding;
+
+	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
+
+	//Quad Fade
+	float alphaCont = 0;
 
 	return ret;
 }

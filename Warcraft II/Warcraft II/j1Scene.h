@@ -152,6 +152,8 @@ public:
 	// On triggered
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
+	void SaveAttribute(int value, char * name, pugi::xml_node & general, bool createGeneral);
+
 	// Save
 	bool Save(pugi::xml_node&) const;
 
