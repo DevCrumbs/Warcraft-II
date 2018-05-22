@@ -696,16 +696,93 @@ bool j1Player::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
-	/*
-	if (save.child("gate") == NULL) {
-	save.append_child("gate").append_attribute("opened") = gate;
-	save.child("gate").append_attribute("fx") = fx;
-	}
-	else {
-	save.child("gate").attribute("opened") = gate;
-	save.child("gate").attribute("fx") = fx;
-	}
-	*/
+
+	//Player
+	list<StaticEntity*> chickenFarm;
+	list<StaticEntity*> scoutTower;
+	list<StaticEntity*> cannonTower;
+	list<StaticEntity*> guardTower;
+	StaticEntity* barracks = nullptr;
+	StaticEntity* townHall = nullptr;
+	//StaticEntity* blacksmith = nullptr;
+	//StaticEntity* stables = nullptr;
+	//StaticEntity* church = nullptr;
+	//StaticEntity* mageTower = nullptr;
+	StaticEntity* gryphonAviary = nullptr;
+
+	vector<UIImage*> imagePrisonersVector;
+
+	//Neutral
+	list<StaticEntity*> goldMine;
+	list<StaticEntity*> runestone;
+	//Update lifeBar
+	//Entity* getEntityDamage = nullptr;
+
+	bool barracksUpgrade = false;
+	bool townHallUpgrade = false;
+	bool keepUpgrade = false;
+
+	uint totalGold = 0u; // total gold earned during the game
+	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
+	uint roomsCleared = 0;
+
+	//Units costs
+	int footmanCost = 500;
+	int elvenArcherCost = 400;
+	int paladinCost = 800;
+	int ballistaCost = 900;
+	int mageCost = 1200;
+	int gryphonRiderCost = 750;
+
+	//For finish Screen
+	bool isWin = false;
+	j1Timer startGameTimer;
+	uint unitProduce = 0u;
+	uint enemiesKill = 0u;
+	uint buildDestroy = 0u;
+
+	EntitySelectedStats entitySelectedStats;
+
+	//bool isUnitSpawning = false;
+	bool isMouseOnMine = false;
+
+	HoverInfo firstHoverInfo;
+	HoverInfo secondHoverInfo;
+	HoverInfo thirdHoverInfo;
+
+	UIMinimap* minimap = nullptr;
+
+	//Spawning units from barracks queues and variables
+	queue<ToSpawnUnit*> toSpawnUnitBarracks;
+	queue<ToSpawnUnit*> toSpawnUnitGrypho;
+
+	bool isUnitSpawning = false;
+
+	int currentGold = 0; // amount of gold that the player has at the current moment
+
+	uint maxUnitsSelected = 8;
+
+	double timer = 0.0f; // game time
+	uint totalEnemiesKilled = 0;
+	uint totalUnitsDead = 0;
+
+	GroupSelectionButtons groupSelectionButtons;
+
+	//list<GroupSpawning> toSpawnUnitStats;
+	//list<ToSpawnUnit*> newUnitsToSpawn;
+
+	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
+		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr, *repairBuildingButton = nullptr;
+
+
+	list<UIElement*> UIMenuInfoList;
+
+
+	uint spawningTime = 5; //In seconds
+	uint maxSpawnQueueSize = 2;
+
+	list<GroupSpawning> barracksSpawningListUI;
+	list<GroupSpawning> gryphoSpawningListUI;
 
 	return ret;
 }
