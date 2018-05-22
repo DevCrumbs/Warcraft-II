@@ -1083,6 +1083,10 @@ void j1Scene::DebugKeys()
 		App->map->cameraBlit = !App->map->cameraBlit;
 		*/
 
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN) {
+		App->SaveGame();
+	}
+
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		App->render->camera.x = -basePos.x;
@@ -2363,7 +2367,7 @@ void j1Scene::BlitRoomClearedFloor(float dt)
 pugi::xml_node j1Scene::GetNode(pugi::xml_node& node, char* name, bool create) const
 {
 	pugi::xml_node valueNode;
-	if (create || node.child(name) == NULL)
+	if ((create && node.child(name) == NULL) || node.child(name) == NULL)
 	{
 		valueNode = node.append_child(name);
 	}
@@ -2395,7 +2399,7 @@ void j1Scene::SaveAttribute(uchar* value, char* name, pugi::xml_node& node, bool
 {
 	pugi::xml_node valueNode = GetNode(node, name, create);
 
-	for (pugi::xml_node child = valueNode.first_child; child;)
+	for (pugi::xml_node child = valueNode.first_child(); child;)
 	{
 		valueNode.remove_child(child);
 	}
@@ -2413,112 +2417,167 @@ bool j1Scene::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
-	bool createGeneral = false;
+	bool create = false;
 
 	pugi::xml_node general;
 	
 	if (save.child("general") == NULL)
 	{
 		general = save.append_child("general");
-		createGeneral = true;
+		create = true;
 	}
 	else
 	{
 		general = save.child("general");
 	}
 
-	SaveAttribute(isGoalFromMinimap, "isGoalFromMinimap", general, createGeneral);
-	SaveAttribute(isMinimapChanged, "isMinimapChanged", general, createGeneral);
+	SaveAttribute(isGoalFromMinimap, "isGoalFromMinimap", general, create);
+	SaveAttribute(isMinimapChanged, "isMinimapChanged", general, create);
+
+	create = false;
 
 	// Room cleared!
 	pugi::xml_node room;
 	if (save.child("room") == NULL)
 	{
 		room = save.append_child("room");
-		createGeneral = true;
+		create = true;
 	}
 	else
 	{
 		room = save.child("room");
 	}
 
-	SaveAttribute(isRoomCleared, "isRoomCleared", room, createGeneral);
-	SaveAttribute(roomCleared, "roomCleared", room, createGeneral);
-	SaveAttribute(alpha, "alpha", room, createGeneral);
+	SaveAttribute(isRoomCleared, "isRoomCleared", room, create);
+	SaveAttribute(roomCleared, "roomCleared", room, create);
+	SaveAttribute(alpha, "alpha", room, create);
 
-	// Walkability map
-	int w = 0, h = 0;
-	uchar* data = NULL;
+	create = false;
 
 	// Building costs
-	int keepCost = 500;
-	int castleCost = 1500;
-	int barracksCost = 1000;
-	int chickenFarmCost = 250;
-	int gryphonAviaryCost = 400;
-	int churchCost = 900;
-	int blacksmithCost = 800;
-	int elvenLumberCost = 600;
-	int scoutTowerCost = 400;
-	int guardTowerCost = 600;
-	int cannonTowerCost = 800;
+	pugi::xml_node costs;
+	if (save.child("costs") == NULL)
+	{
+		room = save.append_child("costs");
+		create = true;
+	}
+	else
+	{
+		room = save.child("costs");
+	}
 
-	int numMaps = 0;
+	SaveAttribute(keepCost, "keepCost", costs, create);
+	SaveAttribute(castleCost, "castleCost", costs, create);
+	SaveAttribute(barracksCost, "barracksCost", costs, create);
+	SaveAttribute(chickenFarmCost, "chickenFarmCost", costs, create);
+	SaveAttribute(gryphonAviaryCost, "gryphonAviaryCost", costs, create);
+	SaveAttribute(churchCost, "churchCost", costs, create);
+	SaveAttribute(blacksmithCost, "blacksmithCost", costs, create);
+	SaveAttribute(elvenLumberCost, "elvenLumberCost", costs, create);
+	SaveAttribute(scoutTowerCost, "scoutTowerCost", costs, create);
+	SaveAttribute(guardTowerCost, "guardTowerCost", costs, create);
+	SaveAttribute(cannonTowerCost, "cannonTowerCost", costs, create);
+
+
+	create = false;
+
+	SaveAttribute(numMaps, "numMaps", general, create);
 
 	// Camera
-	float up = false, down = false, left = false, right = false;
-	uint width = 0;
-	uint height = 0;
-	float scale = 0;
+	pugi::xml_node camera;
+	if (save.child("camera") == NULL)
+	{
+		camera = save.append_child("camera");
+		create = true;
+	}
+	else
+	{
+		camera = save.child("camera");
+	}
+
+	SaveAttribute(up, "up", camera, create);
+	SaveAttribute(down, "down", camera, create);
+	SaveAttribute(left, "left", camera, create);
+	SaveAttribute(right, "right", camera, create);
+	SaveAttribute(width, "width", camera, create);
+	SaveAttribute(height, "height", camera, create);
+	SaveAttribute(scale, "scale", camera, create);
+
+	SaveAttribute(camSpeed, "camSpeed", camera, create);
+	SaveAttribute(camMovement, "camMovement", camera, create);
+	SaveAttribute(camMovMargin, "camMovMargin", camera, create);
+	SaveAttribute(isCamMovMarginCharged, "isCamMovMarginCharged", camera, create);
+
+	create = false;
 
 	// Player
-	bool god = false;
+	pugi::xml_node player;
+	if (save.child("player") == NULL)
+	{
+		player = save.append_child("player");
+		create = true;
+	}
+	else
+	{
+		player = save.child("player");
+	}
 
-	bool pause = false;
+	SaveAttribute(god, "god", player, create);
+	SaveAttribute(pause, "pause", player, create);
+	SaveAttribute(hasGoldChanged, "hasGoldChanged", player, create);
+	SaveAttribute(hasFoodChanged, "hasFoodChanged", player, create);
 
-	GoldChange hasGoldChanged = GoldChange_NoChange;
+	create = false;
 
-	bool hasFoodChanged = false;
-
-	UIImage* entitiesStats = nullptr;
-	ENTITY_TYPE GetAlphaBuilding();
-	void SetAplphaBuilding(ENTITY_TYPE alphaBuilding);
+	//UIImage* entitiesStats = nullptr;
 
 	// Movement
-	bool debugDrawMovement = false;
-	bool debugDrawPath = false;
-	bool debugDrawMap = false;
-	bool debugDrawAttack = false;
+	pugi::xml_node movement;
+	if (save.child("movement") == NULL)
+	{
+		movement = save.append_child("movement");
+		create = true;
+	}
+	else
+	{
+		movement = save.child("movement");
+	}
 
-	bool isFrameByFrame = false;
+	SaveAttribute(debugDrawMovement, "debugDrawMovement", movement, create);
+	SaveAttribute(debugDrawPath, "debugDrawPath", movement, create);
+	SaveAttribute(debugDrawMap, "debugDrawMap", movement, create);
+	SaveAttribute(debugDrawAttack, "debugDrawAttack", movement, create);
+	SaveAttribute(isFrameByFrame, "isFrameByFrame", movement, create);
 
-	TerenasDialogEvents terenasDialogEvent = TerenasDialog_NONE;
-	TerenasAdvices terenasAdvices;
+	create = false;
 
-	AdviceMessages adviceMessage = AdviceMessage_NONE;
+	// Terenas
+	pugi::xml_node terenas;
+	if (save.child("terenas") == NULL)
+	{
+		terenas = save.append_child("terenas");
+		create = true;
+	}
+	else
+	{
+		terenas = save.child("terenas");
+	}
 
-	j1Timer terenasDialogTimer;
-	j1Timer adviceMessageTimer;
+	SaveAttribute(terenasDialogEvent, "terenasDialogEvent", terenas, create);
+	SaveAttribute(adviceMessage, "adviceMessage", terenas, create);
+	SaveAttribute(terenasDialogTimer.Read(), "terenasDialogTimer", terenas, create);
+	SaveAttribute(adviceMessageTimer.Read(), "adviceMessageTimer", terenas, create);
 
-	iPoint basePos{ 0,0 };
-
-	list<DynamicEntity*> units;
-	list<GroupSelectedElements> groupElementsList;
+	create = false;
 
 	int mapDifficulty = 0;
 
+	SaveAttribute(isStarted, "isStarted", general, create);
+	SaveAttribute(isAttackCursor, "isAttackCursor", general, create);
+	SaveAttribute(isFadeToMenu, "isFadeToMenu", general, create);
 
-	j1Timer goldLabelColorTime;
-	j1Timer finalTransition;
-	bool isStartedFinalTransition = false;
 
-	bool isStarted = false;
-	bool isAttackCursor = false;
-	bool isFadeToMenu = false;
-
-	// Draw rectangle
-	iPoint startRectangle = { 0,0 };
-
+	/*
 	//UI
 	BuildingMenu buildingMenuButtons;
 	UIButton* buildingButton = nullptr;
@@ -2544,45 +2603,12 @@ bool j1Scene::Save(pugi::xml_node& save) const
 	UIButton* changeMinimapButt = nullptr;
 	//Advice label
 	UILabel* adviceLabel = nullptr;
-
-	bool buildingMenuOn = false;
-
-	string orthogonalMap, isometricMap, warcraftMap;
-	string orthogonalTexName, isometricTexName, warcraftTexName;
-	string levelTheme1;
-	string levelTheme2;
-	string levelTheme3;
-	string levelTheme4;
-
-	bool orthogonalActive, isometricActive, warcraftActive;
-
-	SDL_Texture* debugTex = nullptr;
-
-	iPoint mouse = { 0,0 };
-
-	//Camera attributes
-	float camSpeed = 0.0f;
-	int camMovement = 1;
-	float camMovMargin = 0.0f;
-	bool isCamMovMarginCharged = false;
-
-	SDL_Scancode buttonSaveGame = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonLoadGame = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonFullScreen = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonGodMode = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveUp = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveDown = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveLeft = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveRight = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonLeaveGame = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonReloadMap = SDL_SCANCODE_UNKNOWN;
-
-	ENTITY_TYPE alphaBuilding;
-
-	PauseMenuActions pauseMenuActions = PauseMenuActions_NOT_EXIST;
-
-	//Quad Fade
-	float alphaCont = 0;
+	*/
+	SaveAttribute(buildingMenuOn, "buildingMenuOn", general, create);
+	SaveAttribute(orthogonalActive, "orthogonalActive", general, create);
+	SaveAttribute(isometricActive, "isometricActive", general, create);
+	SaveAttribute(warcraftActive, "warcraftActive", general, create);
+	SaveAttribute(alphaCont, "alphaCont", general, create);
 
 	return ret;
 }
