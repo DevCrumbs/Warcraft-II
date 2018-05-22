@@ -10,18 +10,73 @@
 	<pathfinding />
 	<collision />
 	<:anonymous />
+	<:anonymous />
 	<pathmanager />
+	<particles />
 	<entities />
+	<surge />
 	<fonts />
 	<scene />
-	<scene />
-	<particles />
+	<scene>
+		<general>
+			<isGoalFromMinimap isGoalFromMinimap="0" />
+			<isMinimapChanged isMinimapChanged="0" />
+			<numMaps numMaps="5" />
+			<isStarted isStarted="1" />
+			<isAttackCursor isAttackCursor="0" />
+			<isFadeToMenu isFadeToMenu="0" />
+			<buildingMenuOn buildingMenuOn="1" />
+			<orthogonalActive orthogonalActive="0" />
+			<isometricActive isometricActive="0" />
+			<warcraftActive warcraftActive="1" />
+			<alphaCont alphaCont="0" />
+		</general>
+		<room>
+			<isRoomCleared isRoomCleared="0" />
+			<roomCleared x="-1" y="-1" w="-1" h="-1" />
+			<alpha alpha="0" />
+		</room>
+		<costs />
+		<camera>
+			<up up="0" />
+			<down down="0" />
+			<left left="0" />
+			<right right="0" />
+			<width width="800" />
+			<height height="600" />
+			<scale scale="1" />
+			<camSpeed camSpeed="600" />
+			<camMovement camMovement="4" />
+			<camMovMargin camMovMargin="21" />
+			<isCamMovMarginCharged isCamMovMarginCharged="1" />
+		</camera>
+		<player>
+			<god god="0" />
+			<pause pause="0" />
+			<hasGoldChanged hasGoldChanged="0" />
+			<hasFoodChanged hasFoodChanged="0" />
+		</player>
+		<movement>
+			<debugDrawMovement debugDrawMovement="0" />
+			<debugDrawPath debugDrawPath="0" />
+			<debugDrawMap debugDrawMap="0" />
+			<debugDrawAttack debugDrawAttack="0" />
+			<isFrameByFrame isFrameByFrame="0" />
+		</movement>
+		<terenas>
+			<terenasDialogEvent terenasDialogEvent="0" />
+			<adviceMessage adviceMessage="14" />
+			<terenasDialogTimer terenasDialogTimer="7907" />
+			<adviceMessageTimer adviceMessageTimer="13470" />
+		</terenas>
+	</scene>
+	<fow />
 	<finish />
 	<menu />
-	<:anonymous />
+	<Console />
 	<gui />
 	<fade />
 	<renderer>
-		<camera x="-416" y="-3943.70825" />
+		<camera x="-2124.25244" y="-3136" />
 	</renderer>
 </game_state>
