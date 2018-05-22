@@ -696,28 +696,6 @@ bool j1Player::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
-
-	//Player
-	list<StaticEntity*> chickenFarm;
-	list<StaticEntity*> scoutTower;
-	list<StaticEntity*> cannonTower;
-	list<StaticEntity*> guardTower;
-	StaticEntity* barracks = nullptr;
-	StaticEntity* townHall = nullptr;
-	//StaticEntity* blacksmith = nullptr;
-	//StaticEntity* stables = nullptr;
-	//StaticEntity* church = nullptr;
-	//StaticEntity* mageTower = nullptr;
-	StaticEntity* gryphonAviary = nullptr;
-
-	vector<UIImage*> imagePrisonersVector;
-
-	//Neutral
-	list<StaticEntity*> goldMine;
-	list<StaticEntity*> runestone;
-	//Update lifeBar
-	//Entity* getEntityDamage = nullptr;
-
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
 	bool keepUpgrade = false;

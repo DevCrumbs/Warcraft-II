@@ -518,3 +518,50 @@ bool j1App::SavegameNow() const
 	wantToSave = false;
 	return ret;
 }
+
+pugi::xml_node GetNode(pugi::xml_node& node, char* name, bool create)
+{
+	pugi::xml_node valueNode;
+	if ((create && node.child(name) == NULL) || node.child(name) == NULL)
+	{
+		valueNode = node.append_child(name);
+	}
+	else
+	{
+		valueNode = node.child(name);
+	}
+	return valueNode;
+}
+
+void SaveAttribute(int value, char* name, pugi::xml_node& node, bool create)
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
+	valueNode.append_attribute(name) = value;
+}
+
+void SaveAttribute(SDL_Rect value, char* name, pugi::xml_node& node, bool create)
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
+	valueNode.append_attribute("x") = value.x;
+	valueNode.append_attribute("y") = value.y;
+	valueNode.append_attribute("w") = value.w;
+	valueNode.append_attribute("h") = value.h;
+}
+
+void SaveAttribute(uchar* value, char* name, pugi::xml_node& node, bool create, int size)
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
+	for (pugi::xml_node child = valueNode.first_child(); child;)
+	{
+		valueNode.remove_child(child);
+	}
+
+	for (int i = 0; i < size; ++i)
+	{
+		valueNode.append_child(name).append_attribute(name) = value[i];
+	}
+}
+

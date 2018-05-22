@@ -2364,53 +2364,6 @@ void j1Scene::BlitRoomClearedFloor(float dt)
 
 // -------------------------------------------------------------
 // -------------------------------------------------------------
-pugi::xml_node j1Scene::GetNode(pugi::xml_node& node, char* name, bool create) const
-{
-	pugi::xml_node valueNode;
-	if ((create && node.child(name) == NULL) || node.child(name) == NULL)
-	{
-		valueNode = node.append_child(name);
-	}
-	else
-	{
-		valueNode = node.child(name);
-	}
-	return valueNode;
-}
-
-void j1Scene::SaveAttribute(int value, char* name, pugi::xml_node& node, bool create) const
-{
-	pugi::xml_node valueNode = GetNode(node, name, create);
-
-	valueNode.append_attribute(name) = value;
-}
-
-void j1Scene::SaveAttribute(SDL_Rect value, char* name, pugi::xml_node& node, bool create) const
-{
-	pugi::xml_node valueNode = GetNode(node, name, create);
-
-	valueNode.append_attribute("x") = value.x;
-	valueNode.append_attribute("y") = value.y;
-	valueNode.append_attribute("w") = value.w;
-	valueNode.append_attribute("h") = value.h;
-}
-
-void j1Scene::SaveAttribute(uchar* value, char* name, pugi::xml_node& node, bool create, int size) const
-{
-	pugi::xml_node valueNode = GetNode(node, name, create);
-
-	for (pugi::xml_node child = valueNode.first_child(); child;)
-	{
-		valueNode.remove_child(child);
-	}
-
-	for (int i = 0; i < size; ++i)
-	{
-		valueNode.append_child(name).append_attribute(name) = value[i];
-	}
-}
-
-
 
 // Save
 bool j1Scene::Save(pugi::xml_node& save) const
