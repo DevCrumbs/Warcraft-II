@@ -245,7 +245,8 @@ void Grunt::Move(float dt)
 					targetTownHall->target = App->player->townHall;
 					targets.push_back(targetTownHall);
 
-					brain->AddGoal_AttackTarget(targetTownHall);
+					list<TargetInfo*>::iterator it = find(targets.begin(), targets.end(), targetTownHall);
+					brain->AddGoal_AttackTarget(&(*it));
 				}
 			}
 		}
@@ -352,7 +353,6 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				if ((*it)->target == c2->entity) {
 
-					(*it)->isRemovedFromSight = false;
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
@@ -427,7 +427,6 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				if ((*it)->target == c2->entity) {
 
-					(*it)->isRemovedFromSight = false;
 					(*it)->isAttackSatisfied = true;
 					break;
 				}
@@ -454,16 +453,26 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			}
 
 			// Set the target's isSightSatisfied to false
-			list<TargetInfo*>::const_iterator it = targets.begin();
+			list<TargetInfo*>::iterator it = targets.begin();
 
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					//(*it)->isAttackSatisfied = false;
-					//(*it)->target->RemoveAttackingUnit(this);
-					SetIsRemovedFromSightTargetInfo((*it)->target);
+
+					if (!(*it)->IsTargetDead())
+
+						(*it)->target->RemoveAttackingUnit(this);
+
+					if (currTarget == *it)
+
+						InvalidateCurrTarget();
+
+					delete *it;
+					*it = nullptr;
+					targets.remove(*it);
+
 					break;
 				}
 				it++;
@@ -519,7 +528,7 @@ void Grunt::UnitStateMachine(float dt)
 
 					if (SetCurrTarget(newTarget->target))
 						//currTarget = newTarget;
-						brain->AddGoal_AttackTarget(currTarget);
+						brain->AddGoal_AttackTarget(&currTarget);
 
 					isHunting = false;
 				}
@@ -568,7 +577,7 @@ void Grunt::UnitStateMachine(float dt)
 
 						if (SetCurrTarget(newTarget->target))
 							//currTarget = newTarget;
-							brain->AddGoal_AttackTarget(currTarget);
+							brain->AddGoal_AttackTarget(&currTarget);
 
 						isSearchingForCritters = true;
 					}
@@ -612,7 +621,7 @@ void Grunt::UnitStateMachine(float dt)
 
 							if (SetCurrTarget(newTarget->target))
 								//currTarget = newTarget;
-								brain->AddGoal_AttackTarget(currTarget, false);
+								brain->AddGoal_AttackTarget(&currTarget, false);
 
 							isAttackingUnit = true;
 							isHunting = false;
@@ -630,7 +639,7 @@ void Grunt::UnitStateMachine(float dt)
 
 								if (SetCurrTarget((*it)->target))
 									//currTarget = *it;
-									brain->AddGoal_AttackTarget(currTarget, false);
+									brain->AddGoal_AttackTarget(&currTarget, false);
 
 								isAttackingUnit = true;
 								isHunting = false;
@@ -655,7 +664,7 @@ void Grunt::UnitStateMachine(float dt)
 							targets.push_back(targetInfo);
 
 							if (SetCurrTarget(targetInfo->target))
-								brain->AddGoal_AttackTarget(currTarget, false);
+								brain->AddGoal_AttackTarget(&currTarget, false);
 
 							isHunting = true;
 						}
@@ -694,7 +703,7 @@ void Grunt::UnitStateMachine(float dt)
 
 						if (SetCurrTarget(newTarget->target))
 							//currTarget = newTarget;
-							brain->AddGoal_AttackTarget(currTarget);
+							brain->AddGoal_AttackTarget(&currTarget);
 					}
 				}
 
@@ -729,7 +738,7 @@ void Grunt::UnitStateMachine(float dt)
 
 								if (SetCurrTarget(newTarget->target))
 									//currTarget = newTarget;
-									brain->AddGoal_AttackTarget(currTarget);
+									brain->AddGoal_AttackTarget(&currTarget);
 							}
 						}
 					}

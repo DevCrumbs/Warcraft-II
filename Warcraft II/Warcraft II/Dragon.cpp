@@ -242,7 +242,7 @@ void Dragon::Move(float dt)
 					targetTownHall->target = App->player->townHall;
 					targets.push_back(targetTownHall);
 
-					brain->AddGoal_AttackTarget(targetTownHall);
+					brain->AddGoal_AttackTarget(&targetTownHall);
 				}
 			}
 		}
@@ -509,7 +509,7 @@ void Dragon::UnitStateMachine(float dt)
 
 					if (SetCurrTarget(newTarget->target))
 						//currTarget = newTarget;
-						brain->AddGoal_AttackTarget(currTarget);
+						brain->AddGoal_AttackTarget(&currTarget);
 
 					isHunting = false;
 				}
@@ -558,7 +558,7 @@ void Dragon::UnitStateMachine(float dt)
 
 						if (SetCurrTarget(newTarget->target))
 							//currTarget = newTarget;
-							brain->AddGoal_AttackTarget(currTarget);
+							brain->AddGoal_AttackTarget(&currTarget);
 
 						isSearchingForCritters = true;
 					}
@@ -602,7 +602,7 @@ void Dragon::UnitStateMachine(float dt)
 
 							if (SetCurrTarget(newTarget->target))
 								//currTarget = newTarget;
-								brain->AddGoal_AttackTarget(currTarget, false);
+								brain->AddGoal_AttackTarget(&currTarget, false);
 
 							isAttackingUnit = true;
 							isHunting = false;
@@ -619,7 +619,7 @@ void Dragon::UnitStateMachine(float dt)
 							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
 
 								if (SetCurrTarget((*it)->target))
-									brain->AddGoal_AttackTarget(currTarget, false);
+									brain->AddGoal_AttackTarget(&currTarget, false);
 
 								isAttackingUnit = true;
 								isHunting = false;
@@ -644,7 +644,7 @@ void Dragon::UnitStateMachine(float dt)
 							targets.push_back(targetInfo);
 
 							if (SetCurrTarget(targetInfo->target))
-								brain->AddGoal_AttackTarget(currTarget, false);
+								brain->AddGoal_AttackTarget(&currTarget, false);
 
 							isHunting = true;
 						}
@@ -683,7 +683,7 @@ void Dragon::UnitStateMachine(float dt)
 
 						if (SetCurrTarget(newTarget->target))
 							//currTarget = newTarget;
-							brain->AddGoal_AttackTarget(currTarget);
+							brain->AddGoal_AttackTarget(&currTarget);
 					}
 				}
 
@@ -718,7 +718,7 @@ void Dragon::UnitStateMachine(float dt)
 
 								if (SetCurrTarget(newTarget->target))
 									//currTarget = newTarget;
-									brain->AddGoal_AttackTarget(currTarget);
+									brain->AddGoal_AttackTarget(&currTarget);
 							}
 						}
 					}

@@ -976,7 +976,7 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 				case EntityType_GRUNT:
 				case EntityType_TROLL_AXETHROWER:
 				case EntityType_DRAGON:
-					enemyEntity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+					//enemyEntity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
 					break;
 
 				case EntityType_SHEEP:

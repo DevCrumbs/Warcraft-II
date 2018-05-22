@@ -145,7 +145,8 @@ struct TargetInfo
 
 	// -----
 
-	bool IsTargetPresent() const;
+	bool IsTargetDead() const;
+	bool IsTargetValid() const;
 };
 
 class Entity

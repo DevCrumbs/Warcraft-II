@@ -84,7 +84,10 @@ DynamicEntity::~DynamicEntity()
 	isSpawned = true;
 
 	// Remove Attack
-	//App->entities->InvalidateTargetInfo(this);
+	if (!App->entities->isEntityFactoryCleanUp)
+
+		App->entities->InvalidateTargetInfo(this);
+
 	currTarget = nullptr;
 
 	// Remove Colliders
@@ -673,10 +676,8 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 
 	if (currTarget != nullptr) {
 
-		if (target == currTarget->target) {
-			currTarget->isRemovedFromSight = false;
+		if (target == currTarget->target)
 			return true;
-		}
 	}
 
 	list<TargetInfo*>::const_iterator it = targets.begin();
@@ -689,7 +690,6 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 		if ((*it)->target == target) {
 
 			targetInfo = *it;
-			targetInfo->isRemovedFromSight = false;
 			break;
 		}
 		it++;
@@ -994,13 +994,29 @@ UnitCommand DynamicEntity::GetUnitCommand() const
 
 // TargetInfo struct ---------------------------------------------------------------------------------
 
-bool TargetInfo::IsTargetPresent() const
+bool TargetInfo::IsTargetDead() const 
 {
+	// The target doesn't exist (just in case)
 	if (target == nullptr)
 		return false;
 
-	// The target is dead
+	// -----
+
 	if (target->GetCurrLife() <= 0 || target->isRemove)
+		return false;
+
+	return true;
+}
+
+bool TargetInfo::IsTargetValid() const 
+{
+	// The target doesn't exist (just in case)
+	if (target == nullptr)
+		return false;
+
+	// -----
+
+	if (!target->GetIsValid())
 		return false;
 
 	return true;

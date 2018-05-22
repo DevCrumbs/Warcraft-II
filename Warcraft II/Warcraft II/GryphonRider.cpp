@@ -239,7 +239,7 @@ void GryphonRider::Move(float dt)
 				if (singleUnit->IsFittingTile()) {
 
 					brain->RemoveAllSubgoals();
-					brain->AddGoal_AttackTarget(currTarget);
+					brain->AddGoal_AttackTarget(&currTarget);
 
 					unitState = UnitState_AttackTarget;
 					unitCommand = UnitCommand_NoCommand;
@@ -634,7 +634,7 @@ void GryphonRider::UnitStateMachine(float dt)
 
 							if (SetCurrTarget(newTarget->target))
 								//currTarget = newTarget;
-								brain->AddGoal_AttackTarget(currTarget, false);
+								brain->AddGoal_AttackTarget(&currTarget, false);
 						}
 					}
 				}
@@ -684,7 +684,7 @@ void GryphonRider::UnitStateMachine(float dt)
 
 					if (SetCurrTarget(newTarget->target))
 						//currTarget = newTarget;
-						brain->AddGoal_AttackTarget(currTarget);
+						brain->AddGoal_AttackTarget(&currTarget);
 				}
 			}
 		}
@@ -709,7 +709,7 @@ void GryphonRider::UnitStateMachine(float dt)
 
 					if (SetCurrTarget(newTarget->target))
 						//currTarget = newTarget;
-						brain->AddGoal_AttackTarget(currTarget);
+						brain->AddGoal_AttackTarget(&currTarget);
 				}
 			}
 		}
