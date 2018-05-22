@@ -34,6 +34,16 @@
 #include <ctime>
 #include <iostream>
 
+#ifdef _WIN32	
+#include <shellapi.h>
+void open_url(const string& url)
+{
+	ShellExecute(GetActiveWindow(), "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+}
+#else
+void open_url(const string& url) {}
+#endif
+
 
 j1Menu::j1Menu() : j1Module()
 {
@@ -123,7 +133,7 @@ bool j1Menu::Update(float dt)
 	case MenuActions_PLAY_MEDIUMONE:
 	case MenuActions_PLAY_MEDIUMTWO:
 	case MenuActions_PLAY_HARD:
-		DestroyNewGame();
+		DeleteNewGame();
 		App->audio->PlayFx(App->audio->GetFX().gameStart, 0); //Button sound
 		isFadetoScene = true;
 		App->scene->mapDifficulty = menuActions;
@@ -138,8 +148,15 @@ bool j1Menu::Update(float dt)
 	case MenuActions_RETURN:
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		DeleteSettings();
-		DestroyNewGame();
+		DeleteNewGame();
+		DeleteCredits();
 		CreateMenu();
+		menuActions = MenuActions_NONE;
+		break;
+	case MenuActions_CREDITS:
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		DeteleMenu();
+		CreateCredits();
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_NEWGAME:
@@ -195,36 +212,34 @@ bool j1Menu::CleanUp()
 
 void j1Menu::CreateMenu() 
 {
-	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
-	playButt = App->gui->CreateUIButton({ 590, 307 }, buttonInfo, this, nullptr);
-	settingsButt = App->gui->CreateUIButton({ 590, 382 }, buttonInfo, this, nullptr);
-	exitButt = App->gui->CreateUIButton({ 590, 457 }, buttonInfo, this, nullptr);
-
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
 	labelInfo.normalColor = Black_;
 	labelInfo.hoverColor = ColorGreen;
 	labelInfo.text = "New Game";
-	playLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w/2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, playButt);
-
-	labelInfo.text = "Quit Game";
-	exitLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, exitButt);
+	playLabel = App->gui->CreateUILabel({ 660, 290 }, labelInfo, this);
 
 	labelInfo.text = "Settings";
-	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, settingsButt);
+	settingsLabel = App->gui->CreateUILabel({ 660, 357 }, labelInfo, this);
+
+	labelInfo.text = "Credits";
+	creditsLabel = App->gui->CreateUILabel({ 660, 424 }, labelInfo, this);
+
+	labelInfo.text = "Quit Game";
+	exitLabel = App->gui->CreateUILabel({ 660, 491 }, labelInfo, this);
 
 	artifacts.push_back(AddArtifact({ 50, 475 }, App->gui->bookText, App->gui->bookAnim, 5));
 	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim, 5));
 	artifacts.push_back(AddArtifact({ 300,525 }, App->gui->eyeText, App->gui->eyeAnim, 5));
 	artifacts.push_back(AddArtifact({ 425,475 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 
+	//Logo
 	UIImage_Info imageInfo;
 	imageInfo.texArea = { 1039,740,345,141 };
 	logoImg = App->gui->CreateUIImage({ 95,370 }, imageInfo, this, nullptr);
 	
+	//Background
 	imageInfo.texArea = { 0,954,776,600 };
 	mainMenuImg = App->gui->CreateUIImage({ 0,0 }, imageInfo, this, nullptr);
 	menuImgAnim.speed = 5;
@@ -238,10 +253,6 @@ void j1Menu::CreateMenu()
 
 void j1Menu::CreateSettings() {
 
-	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
-	returnButt = App->gui->CreateUIButton({ 575, 550 }, buttonInfo, this, nullptr);
-
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
@@ -250,7 +261,7 @@ void j1Menu::CreateSettings() {
 	labelInfo.hoverColor = ColorGreen;
 
 	labelInfo.text = "Return";
-	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
+	returnLabel = App->gui->CreateUILabel({ 650, 550 }, labelInfo, this);
 
 	float relativeVol = (float)App->audio->fxVolume / MAX_AUDIO_VOLUM;
 	SDL_Rect butText = { 834,328,26,30 };
@@ -260,7 +271,7 @@ void j1Menu::CreateSettings() {
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
 	AddSlider(audioMusic, { 175,300 }, "Audio Music", relativeVol, butText, bgText, this);
 
-
+	UIButton_Info buttonInfo;
 	//Fullscreen
 	if (!App->win->fullscreen) {
 		buttonInfo.normalTexArea = buttonInfo.hoverTexArea = { 434, 370, 30, 30 };
@@ -290,12 +301,6 @@ void j1Menu::CreateSettings() {
 
 void j1Menu::CreateNewGame()
 {
-	//Return button
-	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1400, 45, 140, 33 };
-	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	returnButt = App->gui->CreateUIButton({ 645, 550 }, buttonInfo, this, nullptr);
-
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
@@ -304,7 +309,7 @@ void j1Menu::CreateNewGame()
 	labelInfo.hoverColor = ColorGreen;
 
 	labelInfo.text = "Return";
-	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2 ,buttonInfo.normalTexArea.h / 2 }, labelInfo, this, returnButt);
+	returnLabel = App->gui->CreateUILabel({ 650, 550 }, labelInfo, this);
 
 
 	//Choose levels butt
@@ -317,20 +322,70 @@ void j1Menu::CreateNewGame()
 	labelInfo.interactive = false;
 
 	labelInfo.text = "Choose your level";
-	chooseLevel = App->gui->CreateUILabel({ 375, 50 }, labelInfo, this);
+	staticLabels.push_back(App->gui->CreateUILabel({ 375, 50 }, labelInfo, this));
 
 	labelInfo.text = "Easy";
 	labelInfo.normalColor = ColorGreen;
-	easy = App->gui->CreateUILabel({ 170, 150 }, labelInfo, this);
+	staticLabels.push_back(App->gui->CreateUILabel({ 170, 150 }, labelInfo, this));
 	labelInfo.text = "Medium";
 	labelInfo.normalColor = ColorYellow;
-	medium = App->gui->CreateUILabel({ 420, 150 }, labelInfo, this);
+	staticLabels.push_back(App->gui->CreateUILabel({ 420, 150 }, labelInfo, this));
 	labelInfo.text = "Hard";
 	labelInfo.normalColor = ColorRed;
-	hard = App->gui->CreateUILabel({ 675, 250 }, labelInfo, this);
+	staticLabels.push_back(App->gui->CreateUILabel({ 675, 250 }, labelInfo, this));
 
 }
 
+void j1Menu::CreateCredits()
+{
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	labelInfo.pressedColor = Black_;
+	labelInfo.hoverColor = ColorGreen;
+
+	labelInfo.text = "Sandra Alvarez";
+	sandraLead = App->gui->CreateUILabel({ 500, 100 }, labelInfo, this);
+	labelInfo.text = "Óscar Hernández";
+	oscarCode = App->gui->CreateUILabel({ 500, 175 }, labelInfo, this);
+	labelInfo.text = "Manav Lakhwani";
+	manavManagment = App->gui->CreateUILabel({ 500, 250 }, labelInfo, this);
+	labelInfo.text = "Joan Valiente";
+	joanDesigner = App->gui->CreateUILabel({ 500, 325 }, labelInfo, this);
+	labelInfo.text = "David Valdivia";
+	davidQA = App->gui->CreateUILabel({ 500, 400 }, labelInfo, this);
+	labelInfo.text = "David Varela";
+	davidArt = App->gui->CreateUILabel({ 500, 475 }, labelInfo, this);
+	labelInfo.text = "Aleix Gabarró";
+	aleixUI = App->gui->CreateUILabel({ 500, 550 }, labelInfo, this);
+
+	labelInfo.pressedColor = White_;
+	labelInfo.normalColor = Black_;
+	labelInfo.text = "Return";
+	returnLabel = App->gui->CreateUILabel({ 650, 550 }, labelInfo, this);
+
+	labelInfo.interactive = false;
+	labelInfo.text = "Lead";
+	staticLabels.push_back(App->gui->CreateUILabel({ 200, 100 }, labelInfo, this));
+	labelInfo.text = "Code";						 
+	staticLabels.push_back(App->gui->CreateUILabel({ 200, 175 }, labelInfo, this));
+	labelInfo.text = "Management";					 
+	staticLabels.push_back(App->gui->CreateUILabel({ 200, 250 }, labelInfo, this));
+	labelInfo.text = "Game Designer";							 
+	staticLabels.push_back(App->gui->CreateUILabel({ 200, 325 }, labelInfo, this));
+	labelInfo.text = "QA";				 
+	staticLabels.push_back(App->gui->CreateUILabel({ 200, 400 }, labelInfo, this));
+	labelInfo.text = "Art";							 
+	staticLabels.push_back(App->gui->CreateUILabel({ 200, 475 }, labelInfo, this));
+	labelInfo.text = "UI";							 
+	staticLabels.push_back(App->gui->CreateUILabel({ 200, 550 }, labelInfo, this));
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT30;
+	labelInfo.text = "Contributors";
+	staticLabels.push_back(App->gui->CreateUILabel({ 375, 25 }, labelInfo, this));
+
+}
 void j1Menu::CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton* &butt, UIE_HORIZONTAL_POS hPos, UIE_VERTICAL_POS vPos)
 {
 
@@ -407,45 +462,26 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_NONE:
 		break;
 	case UI_EVENT_MOUSE_ENTER:
-		if (UIelem == playButt)
-			playLabel->SetColor(ColorGreen,true);
-		else if (UIelem == exitButt)
-			exitLabel->SetColor(ColorGreen, true);
-
-		else if (UIelem == settingsButt)
-			settingsLabel->SetColor(ColorGreen, true);
-
-		else if (UIelem == returnButt)
-			returnLabel->SetColor(ColorGreen, true);
-		break;
 
 	case UI_EVENT_MOUSE_LEAVE:
-		if (UIelem == playButt)
-			playLabel->SetColor(Black_, true);
-		else if (UIelem == exitButt)
-			exitLabel->SetColor(Black_, true);
-
-		else if (UIelem == settingsButt)
-			settingsLabel->SetColor(Black_, true);
-
-		else if (UIelem == returnButt)
-			returnLabel->SetColor(Black_, true);
-		break;
 
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
-		if (UIelem == playButt) 
+		if (UIelem == playLabel) 
 			menuActions = MenuActions_NEWGAME;
 		
-		else if (UIelem == exitButt) 
+		else if (UIelem == exitLabel)
 			menuActions = MenuActions_EXIT;
 		
-		else if (UIelem == settingsButt) 
+		else if (UIelem == settingsLabel)
 			menuActions = MenuActions_SETTINGS;
 
-		else if(UIelem == returnButt)
+		else if (UIelem == creditsLabel)
+			menuActions = MenuActions_CREDITS;
+
+		else if(UIelem == returnLabel)
 			menuActions = MenuActions_RETURN;
 
 		else if (UIelem == audioFX.slider) {
@@ -483,6 +519,38 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			menuActions = MenuActions_PLAY_HARD;
 		}
 
+		//Credits
+
+		else if (UIelem == sandraLead)
+		{
+			open_url("https://github.com/Sandruski");
+		}
+		else if (UIelem == oscarCode)
+		{
+			open_url("https://github.com/OscarHernandezG");
+		}
+		else if (UIelem == joanDesigner)
+		{
+			open_url("https://github.com/JoanValiente");
+		}
+		else if (UIelem == davidQA)
+		{
+			open_url("https://github.com/ValdiviaDev");
+		}
+		else if (UIelem == manavManagment)
+		{
+			open_url("https://github.com/manavld");
+		}
+		else if (UIelem == davidArt)
+		{
+			open_url("https://github.com/lFreecss");
+		}
+		else if (UIelem == aleixUI)
+		{
+			open_url("https://github.com/aleixgab");
+		}
+
+
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;
@@ -505,11 +573,9 @@ void j1Menu::DeteleMenu()
 	App->gui->RemoveElem((UIElement**)&mainMenuImg);
 	App->gui->RemoveElem((UIElement**)&logoImg);
 	App->gui->RemoveElem((UIElement**)&playLabel);
-	App->gui->RemoveElem((UIElement**)&playButt);
 	App->gui->RemoveElem((UIElement**)&exitLabel);
-	App->gui->RemoveElem((UIElement**)&exitButt);
 	App->gui->RemoveElem((UIElement**)&settingsLabel);
-	App->gui->RemoveElem((UIElement**)&settingsButt);
+	App->gui->RemoveElem((UIElement**)&creditsLabel);
 
 	
 	for (; !artifacts.empty(); artifacts.pop_back())
@@ -521,7 +587,6 @@ void j1Menu::DeteleMenu()
 void j1Menu::DeleteSettings() {
 
 	App->gui->RemoveElem((UIElement**)&returnLabel);
-	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&fullScreenLabel);
 	App->gui->RemoveElem((UIElement**)&fullScreenButt);
 	App->gui->RemoveElem((UIElement**)&audioFX.name);
@@ -538,19 +603,36 @@ void j1Menu::DeleteSettings() {
 
 }
 
-void j1Menu::DestroyNewGame()
+void j1Menu::DeleteNewGame()
 {
-	App->gui->RemoveElem((UIElement**)&easy);
-	App->gui->RemoveElem((UIElement**)&medium);
-	App->gui->RemoveElem((UIElement**)&hard);
 	App->gui->RemoveElem((UIElement**)&returnLabel);
-	App->gui->RemoveElem((UIElement**)&returnLabel);
-	App->gui->RemoveElem((UIElement**)&chooseLevel);
-	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&easyOneButt);
 	App->gui->RemoveElem((UIElement**)&easyTwoButt);
 	App->gui->RemoveElem((UIElement**)&mediumTwoButt);
 	App->gui->RemoveElem((UIElement**)&mediumOneButt);
 	App->gui->RemoveElem((UIElement**)&hardButt);
+
+	for (; !staticLabels.empty(); staticLabels.pop_back())
+	{
+		App->gui->RemoveElem((UIElement**)&staticLabels.back());
+	}
+
+}
+
+void j1Menu::DeleteCredits()
+{
+	App->gui->RemoveElem((UIElement**)&returnLabel);
+	App->gui->RemoveElem((UIElement**)&sandraLead);
+	App->gui->RemoveElem((UIElement**)&oscarCode);
+	App->gui->RemoveElem((UIElement**)&manavManagment);
+	App->gui->RemoveElem((UIElement**)&joanDesigner);
+	App->gui->RemoveElem((UIElement**)&davidQA);
+	App->gui->RemoveElem((UIElement**)&davidArt);
+	App->gui->RemoveElem((UIElement**)&aleixUI);
+
+	for (; !staticLabels.empty(); staticLabels.pop_back())
+	{
+		App->gui->RemoveElem((UIElement**)&staticLabels.back());
+	}
 
 }

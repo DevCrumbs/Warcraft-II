@@ -28,6 +28,7 @@ enum MenuActions
 	MenuActions_SLIDERFX,
 	MenuActions_SLIDERMUSIC,
 	MenuActions_NEWGAME,
+	MenuActions_CREDITS,
 	MenuActions_EXIT,
 };
 struct SliderStruct
@@ -67,14 +68,16 @@ public:
 
 	void CreateMenu();
 	void CreateSettings();
-	//void CreateCredits();
-	void DeleteSettings();
-	void CreateLoading();
-	void DeteleMenu();
 	void CreateNewGame();
-	void DestroyNewGame();
+	void CreateCredits();
+	//void CreateLoading();
 
-	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt, 
+	void DeleteSettings();
+	void DeteleMenu();
+	void DeleteNewGame();
+	void DeleteCredits();
+
+	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt,
 		UIE_HORIZONTAL_POS hPos = HORIZONTAL_POS_LEFT, UIE_VERTICAL_POS vPos = VERTICAL_POS_TOP);
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed);
@@ -94,29 +97,27 @@ public:
 private:
 
 	//Main Menu
-	UIImage* mainMenuImg = nullptr;
-	UIImage* settingsBackground = nullptr;
-	UIImage* logoImg = nullptr;
-	UIButton* playButt = nullptr;
-	UILabel*  playLabel = nullptr;
-	UIButton* exitButt = nullptr;
-	UILabel*  exitLabel = nullptr;
-	UIButton* settingsButt = nullptr;
-	UILabel*  settingsLabel = nullptr;
+	UIImage* mainMenuImg = nullptr, *settingsBackground = nullptr, *logoImg = nullptr;
+	UILabel*  playLabel = nullptr, *exitLabel = nullptr, *settingsLabel = nullptr, *creditsLabel = nullptr;
 
-	vector<UIImage*> artifacts;
 	Animation menuImgAnim;
 
 	//Settings
 	SliderStruct audioFX;
 	SliderStruct audioMusic;
-	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
+	UIButton* fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
 
 	//Start New Game
-
 	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;
-	UILabel* easy = nullptr, *medium = nullptr, *hard = nullptr, *chooseLevel = nullptr;
+
+	//Credits
+	UILabel* sandraLead = nullptr, *oscarCode = nullptr, *davidQA = nullptr, *joanDesigner = nullptr, *manavManagment = nullptr, *davidArt = nullptr, *aleixUI = nullptr;
+
+	//More than one page
+	vector<UILabel*> staticLabels; //Not Interactives
+	vector<UIImage*> artifacts;
+
 
 	MenuActions menuActions = MenuActions_NONE;
 
