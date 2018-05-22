@@ -10,6 +10,8 @@
 
 #include <queue>
 #include <list>
+#include <forward_list>
+
 using namespace std;
 
 struct UILabel;
@@ -94,7 +96,7 @@ public:
 	iPoint GetMouseTilePos() const;
 	iPoint GetMousePos() const;
 
-	void CheckUnitSpawning(queue<ToSpawnUnit*>* queue);
+	void CheckUnitSpawning(forward_list<ToSpawnUnit*>* queue);
 
 	void SpawnUnitFromBuilding(StaticEntity* spawnBuilding, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
 	void SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
@@ -213,8 +215,8 @@ public:
 	UIMinimap* minimap = nullptr;
 
 	//Spawning units from barracks queues and variables
-	queue<ToSpawnUnit*> toSpawnUnitBarracks;
-	queue<ToSpawnUnit*> toSpawnUnitGrypho;
+	forward_list<ToSpawnUnit*> toSpawnUnitBarracks;
+	forward_list<ToSpawnUnit*> toSpawnUnitGrypho;
 
 	bool isUnitSpawning = false;
 

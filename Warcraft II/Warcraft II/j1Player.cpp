@@ -696,41 +696,85 @@ bool j1Player::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
-	bool barracksUpgrade = false;
-	bool townHallUpgrade = false;
-	bool keepUpgrade = false;
+	bool create = false;
 
-	uint totalGold = 0u; // total gold earned during the game
-	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
-	uint roomsCleared = 0;
+	pugi::xml_node upgrades;
+	if (save.child("upgrades") == NULL)
+	{
+		upgrades = save.append_child("upgrades");
+		create = true;
+	}
+	else
+	{
+		upgrades = save.child("upgrades");
+	}
 
-	//Units costs
-	int footmanCost = 500;
-	int elvenArcherCost = 400;
-	int paladinCost = 800;
-	int ballistaCost = 900;
-	int mageCost = 1200;
-	int gryphonRiderCost = 750;
+	SaveAttribute(barracksUpgrade, "barracksUpgrade", upgrades, create);
+	SaveAttribute(townHallUpgrade, "townHallUpgrade", upgrades, create);
+	SaveAttribute(keepUpgrade, "keepUpgrade", upgrades, create);
+
+	create = false;
+
+	pugi::xml_node resources;
+	if (save.child("resources") == NULL)
+	{
+		resources = save.append_child("resources");
+		create = true;
+	}
+	else
+	{
+		resources = save.child("resources");
+	}
+
+	SaveAttribute(totalGold, "totalGold", resources, create);
+	SaveAttribute(currentFood, "currentFood", resources, create);
+	SaveAttribute(roomsCleared, "roomsCleared", resources, create);
+
+
+	create = false;
 
 	//For finish Screen
-	bool isWin = false;
-	j1Timer startGameTimer;
-	uint unitProduce = 0u;
-	uint enemiesKill = 0u;
-	uint buildDestroy = 0u;
+	pugi::xml_node stats;
+	if (save.child("stats") == NULL)
+	{
+		stats = save.append_child("stats");
+		create = true;
+	}
+	else
+	{
+		stats = save.child("stats");
+	}
 
-	EntitySelectedStats entitySelectedStats;
+	SaveAttribute(isWin, "isWin", stats, create);
+	SaveAttribute(startGameTimer.Read(), "startGameTimer", stats, create);
+	SaveAttribute(unitProduce, "unitProduce", stats, create);
+	SaveAttribute(enemiesKill, "enemiesKill", stats, create);
+	SaveAttribute(buildDestroy, "buildDestroy", stats, create);
 
-	//bool isUnitSpawning = false;
-	bool isMouseOnMine = false;
+	create = false;
 
-	HoverInfo firstHoverInfo;
-	HoverInfo secondHoverInfo;
-	HoverInfo thirdHoverInfo;
-
-	UIMinimap* minimap = nullptr;
 
 	//Spawning units from barracks queues and variables
+	pugi::xml_node barracks;
+	if (save.child("barracks") == NULL)
+	{
+		barracks = save.append_child("barracks");
+		create = true;
+	}
+	else
+	{
+		barracks = save.child("barracks");
+	}
+
+	toSpawnUnitBarracks
+
+	SaveAttribute(isWin, "isWin", barracks, create);
+	SaveAttribute(startGameTimer.Read(), "startGameTimer", barracks, create);
+	SaveAttribute(unitProduce, "unitProduce", barracks, create);
+	SaveAttribute(enemiesKill, "enemiesKill", barracks, create);
+	SaveAttribute(buildDestroy, "buildDestroy", barracks, create);
+
+	create = false;
 	queue<ToSpawnUnit*> toSpawnUnitBarracks;
 	queue<ToSpawnUnit*> toSpawnUnitGrypho;
 
