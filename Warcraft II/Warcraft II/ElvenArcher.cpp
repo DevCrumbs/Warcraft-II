@@ -314,24 +314,6 @@ void ElvenArcher::Move(float dt)
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
 
-	// Update FoW enemies
-	/*
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		if ((*it)->target != nullptr && !(*it)->isRemovedFromSight && !(*it)->isRemoved) {
-
-			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
-
-				DynamicEntity* dynEnt = (DynamicEntity*)(*it);
-				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
-			}
-		}
-		it++;
-	}
-	*/
-
 	// Update animations
 	if (!isStill || isHitting)
 		UpdateAnimationsSpeed(dt);
@@ -571,7 +553,6 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 					(*it)->isSightSatisfied = false;
 					//(*it)->isAttackSatisfied = false;
 					//(*it)->target->RemoveAttackingUnit(this);
-					SetIsRemovedFromSightTargetInfo((*it)->target);
 					break;
 				}
 				it++;

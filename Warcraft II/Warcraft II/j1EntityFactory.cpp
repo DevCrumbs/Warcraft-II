@@ -1024,7 +1024,6 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		dragonInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-
 	// Orc ship animations
 	pugi::xml_node orcShipAnimations = orcEntities.child("orcShip").child("animations");
 

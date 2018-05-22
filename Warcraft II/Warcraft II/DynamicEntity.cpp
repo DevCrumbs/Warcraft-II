@@ -709,7 +709,8 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 		// Only push it if it does not have to be removed
 		if (!targetInfo->isRemoved) {
 
-			currTarget = targetInfo;
+			list<TargetInfo*>::iterator it = find(targets.begin(), targets.end(), targetInfo);
+			currTarget = *it;
 			ret = true;
 		}
 	}
@@ -742,30 +743,6 @@ bool DynamicEntity::SetIsRemovedTargetInfo(Entity* target)
 					InvalidateCurrTarget();
 			}
 
-			return true;
-		}
-		it++;
-	}
-
-	return false;
-}
-
-bool DynamicEntity::SetIsRemovedFromSightTargetInfo(Entity* target) 
-{
-	if (target == nullptr)
-		return false;
-
-	// Set isRemoved to true
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		if ((*it)->target == target) {
-
-			if ((*it)->target != nullptr)
-				(*it)->target->RemoveAttackingUnit(this);
-
-			(*it)->isRemovedFromSight = true;
 			return true;
 		}
 		it++;
@@ -821,7 +798,7 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENT
 
 	while (it != targets.end()) {
 
-		if (!(*it)->isRemoved && !(*it)->isRemovedFromSight && (*it)->target->GetIsValid()) {
+		if (!(*it)->isRemoved && (*it)->target->GetIsValid()) {
 
 			if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_DYNAMIC_ENTITY) {
 

@@ -123,7 +123,7 @@ void Dragon::Move(float dt)
 			isDead = true;
 			App->player->enemiesKill++;
 
-			//TODO balancing
+			// TODO balancing
 			// Give gold to the player
 			if (App->scene->mapDifficulty != 4) {
 				App->player->AddGold(dragonInfo.droppedGold);
@@ -237,12 +237,8 @@ void Dragon::Move(float dt)
 
 				if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
 
-					TargetInfo* targetTownHall = new TargetInfo();
-
-					targetTownHall->target = App->player->townHall;
-					targets.push_back(targetTownHall);
-
-					brain->AddGoal_AttackTarget(&targetTownHall);
+					if (SetCurrTarget(App->player->townHall))
+						brain->AddGoal_AttackTarget(&currTarget);
 				}
 			}
 		}
@@ -254,8 +250,7 @@ void Dragon::Move(float dt)
 	UnitStateMachine(dt);
 
 	// Update animations
-	if (!isStill || isHitting)
-		UpdateAnimationsSpeed(dt);
+	UpdateAnimationsSpeed(dt);
 
 	ChangeAnimation();
 
@@ -453,7 +448,6 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 					(*it)->isSightSatisfied = false;
 					//(*it)->isAttackSatisfied = false;
 					//(*it)->target->RemoveAttackingUnit(this);
-					SetIsRemovedFromSightTargetInfo((*it)->target);
 					break;
 				}
 				it++;
@@ -508,7 +502,6 @@ void Dragon::UnitStateMachine(float dt)
 				if (newTarget != nullptr) {
 
 					if (SetCurrTarget(newTarget->target))
-						//currTarget = newTarget;
 						brain->AddGoal_AttackTarget(&currTarget);
 
 					isHunting = false;
@@ -544,20 +537,16 @@ void Dragon::UnitStateMachine(float dt)
 					if (currTarget != newTarget) {
 
 						// Anticipate the removing of this unit from the attacking units of the target
-						/*
 						if (currTarget != nullptr) {
 
 							if (!currTarget->isRemoved)
-
 								currTarget->target->RemoveAttackingUnit(this);
 						}
-						*/
 
 						isHitting = false;
 						isHunting = false;
 
 						if (SetCurrTarget(newTarget->target))
-							//currTarget = newTarget;
 							brain->AddGoal_AttackTarget(&currTarget);
 
 						isSearchingForCritters = true;
@@ -601,7 +590,6 @@ void Dragon::UnitStateMachine(float dt)
 						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
 							if (SetCurrTarget(newTarget->target))
-								//currTarget = newTarget;
 								brain->AddGoal_AttackTarget(&currTarget, false);
 
 							isAttackingUnit = true;
@@ -636,7 +624,7 @@ void Dragon::UnitStateMachine(float dt)
 					if (!App->map->IsOnBase(spawnPos) && !isAttackingUnit && !isHunting) {
 
 						if (unitsAttacking.size() > 0) {
-							//brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+
 							TargetInfo* targetInfo = new TargetInfo();
 							targetInfo->target = unitsAttacking.front();
 							targetInfo->isSightSatisfied = true;
@@ -667,7 +655,6 @@ void Dragon::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
-							/*
 							if (!currTarget->isRemoved) {
 
 								if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
@@ -675,14 +662,12 @@ void Dragon::UnitStateMachine(float dt)
 
 								currTarget->target->RemoveAttackingUnit(this);
 							}
-							*/
 						}
 
 						isHitting = false;
 						isHunting = false;
 
 						if (SetCurrTarget(newTarget->target))
-							//currTarget = newTarget;
 							brain->AddGoal_AttackTarget(&currTarget);
 					}
 				}
@@ -705,19 +690,14 @@ void Dragon::UnitStateMachine(float dt)
 								// Anticipate the removing of this unit from the attacking units of the target
 								if (currTarget != nullptr) {
 
-									/*
-									if (!currTarget->isRemoved) {
-
+									if (!currTarget->isRemoved)
 										currTarget->target->RemoveAttackingUnit(this);
-									}
-									*/
 								}
 
 								isHitting = false;
 								isHunting = false;
 
 								if (SetCurrTarget(newTarget->target))
-									//currTarget = newTarget;
 									brain->AddGoal_AttackTarget(&currTarget);
 							}
 						}
@@ -912,15 +892,6 @@ bool Dragon::ChangeAnimation()
 
 		case UnitDirection_Up:
 
-			if (isStill) {
-
-				dragonInfo.up.loop = false;
-				dragonInfo.up.Reset();
-				dragonInfo.up.speed = 0.0f;
-			}
-			else
-				dragonInfo.up.loop = true;
-
 			animation = &dragonInfo.up;
 
 			ret = true;
@@ -929,30 +900,12 @@ bool Dragon::ChangeAnimation()
 		case UnitDirection_NoDirection:
 		case UnitDirection_Down:
 
-			if (isStill) {
-
-				dragonInfo.down.loop = false;
-				dragonInfo.down.Reset();
-				dragonInfo.down.speed = 0.0f;
-			}
-			else
-				dragonInfo.down.loop = true;
-
 			animation = &dragonInfo.down;
 
 			ret = true;
 			break;
 
 		case UnitDirection_Left:
-
-			if (isStill) {
-
-				dragonInfo.left.loop = false;
-				dragonInfo.left.Reset();
-				dragonInfo.left.speed = 0.0f;
-			}
-			else
-				dragonInfo.left.loop = true;
 
 			animation = &dragonInfo.left;
 
@@ -961,30 +914,12 @@ bool Dragon::ChangeAnimation()
 
 		case UnitDirection_Right:
 
-			if (isStill) {
-
-				dragonInfo.right.loop = false;
-				dragonInfo.right.Reset();
-				dragonInfo.right.speed = 0.0f;
-			}
-			else
-				dragonInfo.right.loop = true;
-
 			animation = &dragonInfo.right;
 
 			ret = true;
 			break;
 
 		case UnitDirection_UpLeft:
-
-			if (isStill) {
-
-				dragonInfo.upLeft.loop = false;
-				dragonInfo.upLeft.Reset();
-				dragonInfo.upLeft.speed = 0.0f;
-			}
-			else
-				dragonInfo.upLeft.loop = true;
 
 			animation = &dragonInfo.upLeft;
 
@@ -993,15 +928,6 @@ bool Dragon::ChangeAnimation()
 
 		case UnitDirection_UpRight:
 
-			if (isStill) {
-
-				dragonInfo.upRight.loop = false;
-				dragonInfo.upRight.Reset();
-				dragonInfo.upRight.speed = 0.0f;
-			}
-			else
-				dragonInfo.upRight.loop = true;
-
 			animation = &dragonInfo.upRight;
 
 			ret = true;
@@ -1009,30 +935,12 @@ bool Dragon::ChangeAnimation()
 
 		case UnitDirection_DownLeft:
 
-			if (isStill) {
-
-				dragonInfo.downLeft.loop = false;
-				dragonInfo.downLeft.Reset();
-				dragonInfo.downLeft.speed = 0.0f;
-			}
-			else
-				dragonInfo.downLeft.loop = true;
-
 			animation = &dragonInfo.downLeft;
 
 			ret = true;
 			break;
 
 		case UnitDirection_DownRight:
-
-			if (isStill) {
-
-				dragonInfo.downRight.loop = false;
-				dragonInfo.downRight.Reset();
-				dragonInfo.downRight.speed = 0.0f;
-			}
-			else
-				dragonInfo.downRight.loop = true;
 
 			animation = &dragonInfo.downRight;
 

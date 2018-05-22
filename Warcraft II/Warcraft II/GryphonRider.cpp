@@ -316,27 +316,8 @@ void GryphonRider::Move(float dt)
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
 
-	// Update FoW enemies
-	/*
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		if ((*it)->target != nullptr && !(*it)->isRemovedFromSight && !(*it)->isRemoved) {
-
-			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
-
-				DynamicEntity* dynEnt = (DynamicEntity*)(*it);
-				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
-			}
-		}
-		it++;
-	}
-	*/
-
 	// Update animations
-	if (!isStill || isHitting)
-		UpdateAnimationsSpeed(dt);
+	UpdateAnimationsSpeed(dt);
 
 	ChangeAnimation();
 
@@ -569,7 +550,6 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 					(*it)->isSightSatisfied = false;
 					//(*it)->isAttackSatisfied = false;
 					//(*it)->target->RemoveAttackingUnit(this);
-					SetIsRemovedFromSightTargetInfo((*it)->target);
 					break;
 				}
 				it++;
@@ -911,15 +891,6 @@ bool GryphonRider::ChangeAnimation()
 
 		case UnitDirection_Up:
 
-			if (isStill) {
-
-				gryphonRiderInfo.up.loop = false;
-				gryphonRiderInfo.up.Reset();
-				gryphonRiderInfo.up.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.up.loop = true;
-
 			animation = &gryphonRiderInfo.up;
 
 			ret = true;
@@ -928,30 +899,12 @@ bool GryphonRider::ChangeAnimation()
 		case UnitDirection_NoDirection:
 		case UnitDirection_Down:
 
-			if (isStill) {
-
-				gryphonRiderInfo.down.loop = false;
-				gryphonRiderInfo.down.Reset();
-				gryphonRiderInfo.down.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.down.loop = true;
-
 			animation = &gryphonRiderInfo.down;
 
 			ret = true;
 			break;
 
 		case UnitDirection_Left:
-
-			if (isStill) {
-
-				gryphonRiderInfo.left.loop = false;
-				gryphonRiderInfo.left.Reset();
-				gryphonRiderInfo.left.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.left.loop = true;
 
 			animation = &gryphonRiderInfo.left;
 
@@ -960,30 +913,12 @@ bool GryphonRider::ChangeAnimation()
 
 		case UnitDirection_Right:
 
-			if (isStill) {
-
-				gryphonRiderInfo.right.loop = false;
-				gryphonRiderInfo.right.Reset();
-				gryphonRiderInfo.right.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.right.loop = true;
-
 			animation = &gryphonRiderInfo.right;
 
 			ret = true;
 			break;
 
 		case UnitDirection_UpLeft:
-
-			if (isStill) {
-
-				gryphonRiderInfo.upLeft.loop = false;
-				gryphonRiderInfo.upLeft.Reset();
-				gryphonRiderInfo.upLeft.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.upLeft.loop = true;
 
 			animation = &gryphonRiderInfo.upLeft;
 
@@ -992,15 +927,6 @@ bool GryphonRider::ChangeAnimation()
 
 		case UnitDirection_UpRight:
 
-			if (isStill) {
-
-				gryphonRiderInfo.upRight.loop = false;
-				gryphonRiderInfo.upRight.Reset();
-				gryphonRiderInfo.upRight.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.upRight.loop = true;
-
 			animation = &gryphonRiderInfo.upRight;
 
 			ret = true;
@@ -1008,30 +934,12 @@ bool GryphonRider::ChangeAnimation()
 
 		case UnitDirection_DownLeft:
 
-			if (isStill) {
-
-				gryphonRiderInfo.downLeft.loop = false;
-				gryphonRiderInfo.downLeft.Reset();
-				gryphonRiderInfo.downLeft.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.downLeft.loop = true;
-
 			animation = &gryphonRiderInfo.downLeft;
 
 			ret = true;
 			break;
 
 		case UnitDirection_DownRight:
-
-			if (isStill) {
-
-				gryphonRiderInfo.downRight.loop = false;
-				gryphonRiderInfo.downRight.Reset();
-				gryphonRiderInfo.downRight.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.downRight.loop = true;
 
 			animation = &gryphonRiderInfo.downRight;
 

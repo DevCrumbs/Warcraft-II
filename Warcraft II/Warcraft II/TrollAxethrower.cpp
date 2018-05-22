@@ -121,7 +121,7 @@ void TrollAxethrower::Move(float dt)
 			isDead = true;
 			App->player->enemiesKill++;
 
-			//TODO balancing
+			// TODO balancing
 			// Give gold to the player
 			if (App->scene->mapDifficulty != 4) {
 				App->player->AddGold(trollAxethrowerInfo.droppedGold);
@@ -235,12 +235,8 @@ void TrollAxethrower::Move(float dt)
 
 				if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
 
-					TargetInfo* targetTownHall = new TargetInfo();
-
-					targetTownHall->target = App->player->townHall;
-					targets.push_back(targetTownHall);
-
-					brain->AddGoal_AttackTarget(&targetTownHall);
+					if (SetCurrTarget(App->player->townHall))
+						brain->AddGoal_AttackTarget(&currTarget);
 				}
 			}
 		}
@@ -458,7 +454,6 @@ void TrollAxethrower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisio
 					(*it)->isSightSatisfied = false;
 					//(*it)->isAttackSatisfied = false;
 					//(*it)->target->RemoveAttackingUnit(this);
-					SetIsRemovedFromSightTargetInfo((*it)->target);
 					break;
 				}
 				it++;
@@ -513,7 +508,6 @@ void TrollAxethrower::UnitStateMachine(float dt)
 				if (newTarget != nullptr) {
 
 					if (SetCurrTarget(newTarget->target))
-						//currTarget = newTarget;
 						brain->AddGoal_AttackTarget(&currTarget);
 
 					isHunting = false;
@@ -551,18 +545,14 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
-							/*
 							if (!currTarget->isRemoved)
-
 								currTarget->target->RemoveAttackingUnit(this);
-								*/
 						}
 
 						isHitting = false;
 						isHunting = false;
 
 						if (SetCurrTarget(newTarget->target))
-							//currTarget = newTarget;
 							brain->AddGoal_AttackTarget(&currTarget);
 
 						isSearchingForCritters = true;
@@ -606,7 +596,6 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
 							if (SetCurrTarget(newTarget->target))
-								//currTarget = newTarget;
 								brain->AddGoal_AttackTarget(&currTarget, false);
 
 							isAttackingUnit = true;
@@ -641,7 +630,7 @@ void TrollAxethrower::UnitStateMachine(float dt)
 					if (!App->map->IsOnBase(spawnPos) && !isAttackingUnit && !isHunting) {
 
 						if (unitsAttacking.size() > 0) {
-							//brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+
 							TargetInfo* targetInfo = new TargetInfo();
 							targetInfo->target = unitsAttacking.front();
 							targetInfo->isSightSatisfied = true;
@@ -674,12 +663,10 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 							if (!currTarget->isRemoved) {
 
-								/*
 								if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
 									break;
 
 								currTarget->target->RemoveAttackingUnit(this);
-								*/
 							}
 						}
 
@@ -687,7 +674,6 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						isHunting = false;
 
 						if (SetCurrTarget(newTarget->target))
-							//currTarget = newTarget;
 							brain->AddGoal_AttackTarget(&currTarget);
 					}
 				}
@@ -710,19 +696,14 @@ void TrollAxethrower::UnitStateMachine(float dt)
 								// Anticipate the removing of this unit from the attacking units of the target
 								if (currTarget != nullptr) {
 
-									/*
-									if (!currTarget->isRemoved) {
-
+									if (!currTarget->isRemoved)
 										currTarget->target->RemoveAttackingUnit(this);
-									}
-									*/
 								}
 
 								isHitting = false;
 								isHunting = false;
 
 								if (SetCurrTarget(newTarget->target))
-									//currTarget = newTarget;
 									brain->AddGoal_AttackTarget(&currTarget);
 							}
 						}

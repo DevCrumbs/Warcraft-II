@@ -313,24 +313,6 @@ void Footman::Move(float dt)
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
 
-	// Update FoW enemies
-	/*
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		if ((*it)->target != nullptr && !(*it)->isRemovedFromSight && !(*it)->isRemoved) {
-
-			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
-
-				DynamicEntity* dynEnt = (DynamicEntity*)(*it);
-				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
-			}
-		}
-		it++;
-	}
-	*/
-
 	// Update animations
 	if (!isStill || isHitting)
 		UpdateAnimationsSpeed(dt);
@@ -642,7 +624,6 @@ void Footman::UnitStateMachine(float dt)
 						if (newTarget != nullptr) {
 
 							if (SetCurrTarget(newTarget->target))
-								//currTarget = newTarget;
 								brain->AddGoal_AttackTarget(&currTarget, false);
 						}
 					}
@@ -682,17 +663,13 @@ void Footman::UnitStateMachine(float dt)
 					// Anticipate the removing of this unit from the attacking units of the target
 					if (currTarget != nullptr) {
 
-						/*
 						if (!currTarget->isRemoved)
-
 							currTarget->target->RemoveAttackingUnit(this);
-							*/
 					}
 
 					isHitting = false;
 
 					if (SetCurrTarget(newTarget->target))
-						//currTarget = newTarget;
 						brain->AddGoal_AttackTarget(&currTarget);
 				}
 			}
@@ -717,7 +694,6 @@ void Footman::UnitStateMachine(float dt)
 				if (newTarget != nullptr) {
 
 					if (SetCurrTarget(newTarget->target))
-						//currTarget = newTarget;
 						brain->AddGoal_AttackTarget(&currTarget);
 				}
 			}
