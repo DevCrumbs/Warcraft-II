@@ -260,7 +260,10 @@ bool j1Player::Update(float dt)
 			}
 			//Erase info when entity dies
 			if (entitySelectedStats.entitySelected->GetCurrLife() <= 0)
-				HideEntitySelectedInfo();
+				if (entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY)
+					App->scene->HideUnselectedUnits();
+				else
+					HideEntitySelectedInfo();
 		}
 
 		else if (building->staticEntityType == EntityType_GOLD_MINE) {
@@ -1563,19 +1566,6 @@ void j1Player::HideEntitySelectedInfo()
 		}
 
 	}
-		/*
-	else if (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
-		StaticEntity* ent = (StaticEntity*)entitySelectedStats.entitySelected;
-		switch (ent->staticEntityType) {
-		case EntityType_CHICKEN_FARM:
-		case EntityType_SCOUT_TOWER:
-		case EntityType_PLAYER_GUARD_TOWER:
-		case EntityType_PLAYER_CANNON_TOWER:
-			destroyBuildingButton->isActive = false;
-			break;
-		}
-	}*/
-
 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		entitySelectedStats.HP->isActive = false;
