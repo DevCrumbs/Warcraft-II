@@ -458,6 +458,28 @@ bool j1Scene::Update(float dt)
 			}
 		}
 
+		// Manage units selection
+		/// Remove certain units from units selected
+		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_DOWN) {
+			App->entities->auxUnitsSelected = App->entities->unitsSelected;
+			isShift = true;
+			isCtrl = false;
+		}
+		else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_UP) {
+			isShift = false;
+			isCtrl = false;
+		}
+		/// Select more than one group of units
+		if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_DOWN) {
+			App->entities->auxUnitsSelected.clear();
+			isCtrl = true;
+			isShift = false;
+		}
+		else if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_UP || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_UP) {
+			isCtrl = false;
+			isShift = false;
+		}
+
 		// Select units by rectangle drawing
 		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
@@ -477,13 +499,35 @@ bool j1Scene::Update(float dt)
 					mouseRect.h *= -1;
 				}
 
-				App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+				App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player, isCtrl, isShift);
 			}
 		}
 
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP)
+		LOG("%i", App->entities->unitsSelected.size());
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 
 			startRectangle = { -1,-1 };
+
+			if (isShift)
+
+				App->entities->auxUnitsSelected.clear();
+
+			if (isCtrl) {
+			
+				list<DynamicEntity*>::const_iterator it = App->entities->auxUnitsSelected.begin();
+
+				while (it != App->entities->auxUnitsSelected.end()) {
+				
+					if (find(App->entities->unitsSelected.begin(), App->entities->unitsSelected.end(), *it) == App->entities->unitsSelected.end())
+						App->entities->unitsSelected.push_back(*it);
+
+					it++;
+				}
+
+				App->entities->auxUnitsSelected.clear();
+			}
+		}
 
 		units = App->entities->GetLastUnitsSelected();
 

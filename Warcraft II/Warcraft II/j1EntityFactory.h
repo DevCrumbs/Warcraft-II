@@ -128,7 +128,7 @@ public:
 	bool SelectEntity(Entity* entity);
 
 	// Selects the entities within a rectangle
-	void SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide);
+	void SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide, bool isCtrl = false, bool isShift = false);
 
 	// Unselects all entities
 	void UnselectAllEntities();
@@ -196,6 +196,7 @@ public:
 	list<DynamicEntity*> activeDynamicEntities;
 	list<StaticEntity*> activeStaticEntities;
 	list<DynamicEntity*> unitsSelected;
+	list<DynamicEntity*> auxUnitsSelected;
 
 	// Saved entities groups
 	list<DynamicEntity*> savedGroups[MAX_SAVED_GROUPS];

@@ -489,7 +489,7 @@ bool UIMinimap::LoadMap()
 					SDL_Rect* section = &rect;
 					iPoint world = App->map->MapToWorld(i, j);
 
-					LOG("Tile x = %i, y = %i", world.x, world.y);
+					//LOG("Tile x = %i, y = %i", world.x, world.y);
 					ret = SaveInRenderer(tex, world.x, world.y, section, 1, renderer);
 				}
 			}

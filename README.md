@@ -56,6 +56,9 @@ Mouse Right click: Send a group of units to a destination
 ## For the units:
 
 Mouse Left click: Select a group of units
+Left/Right Shift + Mouse Left click: Unselect unit/s from the units selected group
+Left/Right Ctrl + Mouse Left click: Add unit/s to the units selected group
+
 Mouse Right click: Send a group of units to a destination
 Mouse Right click On an enemy or a critter: attack the enemy/critter
 Mouse Right click On a Gold Mine or Runestone: (if there is a unit nearby) collect the gold / heal the units

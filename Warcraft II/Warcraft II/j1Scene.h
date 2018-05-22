@@ -220,6 +220,10 @@ public:
 	bool isGoalFromMinimap = false;
 	bool isMinimapChanged = false;
 
+	// Manage units selection
+	bool isCtrl = false;
+	bool isShift = false;
+
 	// Room cleared!
 	bool isRoomCleared = false;
 	SDL_Rect roomCleared = { -1,-1,-1,-1 };

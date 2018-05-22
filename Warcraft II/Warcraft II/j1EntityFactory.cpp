@@ -3514,16 +3514,31 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 	if (entity == nullptr)
 		return false;
 
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+	if (App->input->GetKey(SDL_SCANCODE_LCTRL) != KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_RCTRL) != KEY_REPEAT
+		&& App->input->GetKey(SDL_SCANCODE_LSHIFT) != KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_RSHIFT) != KEY_REPEAT) {
 
-	while (it != activeDynamicEntities.end()) {
+		list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
-		// Remove entities from the unitsSelected list
-		if ((*it) != entity) {
-			unitsSelected.remove(GetDynamicEntityByEntity(*it));
-			(*it)->isSelected = false;
+		while (it != activeDynamicEntities.end()) {
+
+			// Remove entities from the unitsSelected list
+			if ((*it) != entity) {
+				unitsSelected.remove(GetDynamicEntityByEntity(*it));
+				(*it)->isSelected = false;
+			}
+			it++;
 		}
-		it++;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT) {
+	
+		if (find(unitsSelected.begin(), unitsSelected.end(), entity) != unitsSelected.end()) {
+
+			unitsSelected.remove(GetDynamicEntityByEntity(entity));
+			entity->isSelected = false;
+		}
+
+		return true;
 	}
 
 	// If the unit isn't in the unitsSelected list, add it
@@ -3548,64 +3563,168 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 }
 
 // Selects the entities within a rectangle
-/// TODO:
-/// - If units are selected, buildings cannot be selected
-/// - If a building is selected, units cannot be selected
-/// · Only 1 building can be selected at a time
-void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTITY_CATEGORY entityCategory, EntitySide entitySide)
+void j1EntityFactory::SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTITY_CATEGORY entityCategory, EntitySide entitySide, bool isCtrl, bool isShift)
 {
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+	if (isShift) {
+	
+		list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
-	while (it != activeDynamicEntities.end()) {
+		while (it != activeDynamicEntities.end()) {
 
-		if (entitySide == EntitySide_NoSide
-			|| (entitySide == EntitySide_Player && (*it)->entitySide == EntitySide_Player)
-			|| (entitySide == EntitySide_Enemy && (*it)->entitySide == EntitySide_Enemy)) {
+			if (entitySide == EntitySide_NoSide
+				|| (entitySide == EntitySide_Player && (*it)->entitySide == EntitySide_Player)
+				|| (entitySide == EntitySide_Enemy && (*it)->entitySide == EntitySide_Enemy)) {
 
-			if (entityCategory == EntityCategory_NONE
-				|| (entityCategory == EntityCategory_DYNAMIC_ENTITY && (*it)->entityType == EntityCategory_DYNAMIC_ENTITY)) {
+				if (entityCategory == EntityCategory_NONE
+					|| (entityCategory == EntityCategory_DYNAMIC_ENTITY && (*it)->entityType == EntityCategory_DYNAMIC_ENTITY)) {
 
-				SDL_Rect entityRect = { (*it)->GetPos().x, (*it)->GetPos().y, (*it)->GetSize().x, (*it)->GetSize().y };
+					SDL_Rect entityRect = { (*it)->GetPos().x, (*it)->GetPos().y, (*it)->GetSize().x, (*it)->GetSize().y };
 
-				// If the unit is within the selection:
-				if (SDL_HasIntersection(&entityRect, &rectangleRect)) {
+					// If the unit is within the selection:
+					if (SDL_HasIntersection(&entityRect, &rectangleRect)) {
 
-					// It there are less units than MAX_UNITS_SELECTED selected:
-					if (unitsSelected.size() < MAX_UNITS_SELECTED) {
+						// It there are less units than MAX_UNITS_SELECTED selected:
+						if (unitsSelected.size() < MAX_UNITS_SELECTED) {
 
-						// If the unit isn't in the unitsSelected list, add it
-						if (find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
+							if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
 
-							// The unit cannot be dead and must be valid
-							if (!(*it)->isDead && (*it)->GetIsValid()) {
-
-								unitsSelected.push_back(GetDynamicEntityByEntity(*it));
-								(*it)->isSelected = true;
+								unitsSelected.remove(GetDynamicEntityByEntity(*it));
+								(*it)->isSelected = false;
 							}
 						}
 					}
-				}
 
-				else {
+					else {
 
-					// If the unit is in the unitsSelected list, remove it
-					if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
-						unitsSelected.remove(GetDynamicEntityByEntity(*it));
-						(*it)->isSelected = false;
+						if (find(auxUnitsSelected.begin(), auxUnitsSelected.end(), *it) != auxUnitsSelected.end()
+							&& find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
+
+							unitsSelected.push_back(GetDynamicEntityByEntity(*it));
+							(*it)->isSelected = true;
+						}
 					}
 				}
 			}
-		}
-		else {
 
-			// If the unit is in the unitsSelected list, remove it
-			if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
-				unitsSelected.remove(GetDynamicEntityByEntity(*it));
-				(*it)->isSelected = false;
+			it++;
+		}
+
+		return;
+	}
+
+	if (isCtrl) {
+	
+		list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+		while (it != activeDynamicEntities.end()) {
+
+			if (entitySide == EntitySide_NoSide
+				|| (entitySide == EntitySide_Player && (*it)->entitySide == EntitySide_Player)
+				|| (entitySide == EntitySide_Enemy && (*it)->entitySide == EntitySide_Enemy)) {
+
+				if (entityCategory == EntityCategory_NONE
+					|| (entityCategory == EntityCategory_DYNAMIC_ENTITY && (*it)->entityType == EntityCategory_DYNAMIC_ENTITY)) {
+
+					SDL_Rect entityRect = { (*it)->GetPos().x, (*it)->GetPos().y, (*it)->GetSize().x, (*it)->GetSize().y };
+
+					// If the unit is within the selection:
+					if (SDL_HasIntersection(&entityRect, &rectangleRect)) {
+
+						// It there are less units than MAX_UNITS_SELECTED selected:
+						if (auxUnitsSelected.size() + unitsSelected.size() < MAX_UNITS_SELECTED) {
+
+							// If the unit isn't in the unitsSelected list, add it
+							if (find(auxUnitsSelected.begin(), auxUnitsSelected.end(), *it) == auxUnitsSelected.end()) {
+
+								// The unit cannot be dead and must be valid
+								if (!(*it)->isDead && (*it)->GetIsValid()) {
+
+									auxUnitsSelected.push_back(GetDynamicEntityByEntity(*it));
+									(*it)->isSelected = true;
+								}
+							}
+						}
+					}
+
+					else {
+
+						// If the unit is in the unitsSelected list, remove it
+						if (find(auxUnitsSelected.begin(), auxUnitsSelected.end(), *it) != auxUnitsSelected.end()
+							&& find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
+							auxUnitsSelected.remove(GetDynamicEntityByEntity(*it));
+							(*it)->isSelected = false;
+						}
+					}
+				}
 			}
-		}
+			else {
 
-		it++;
+				// If the unit is in the unitsSelected list, remove it
+				if (find(auxUnitsSelected.begin(), auxUnitsSelected.end(), *it) != auxUnitsSelected.end()
+					&& find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
+					auxUnitsSelected.remove(GetDynamicEntityByEntity(*it));
+					(*it)->isSelected = false;
+				}
+			}
+
+			it++;
+		}	
+	}
+	else {
+
+		list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+		while (it != activeDynamicEntities.end()) {
+
+			if (entitySide == EntitySide_NoSide
+				|| (entitySide == EntitySide_Player && (*it)->entitySide == EntitySide_Player)
+				|| (entitySide == EntitySide_Enemy && (*it)->entitySide == EntitySide_Enemy)) {
+
+				if (entityCategory == EntityCategory_NONE
+					|| (entityCategory == EntityCategory_DYNAMIC_ENTITY && (*it)->entityType == EntityCategory_DYNAMIC_ENTITY)) {
+
+					SDL_Rect entityRect = { (*it)->GetPos().x, (*it)->GetPos().y, (*it)->GetSize().x, (*it)->GetSize().y };
+
+					// If the unit is within the selection:
+					if (SDL_HasIntersection(&entityRect, &rectangleRect)) {
+
+						// It there are less units than MAX_UNITS_SELECTED selected:
+						if (unitsSelected.size() < MAX_UNITS_SELECTED) {
+
+							// If the unit isn't in the unitsSelected list, add it
+							if (find(unitsSelected.begin(), unitsSelected.end(), *it) == unitsSelected.end()) {
+
+								// The unit cannot be dead and must be valid
+								if (!(*it)->isDead && (*it)->GetIsValid()) {
+
+									unitsSelected.push_back(GetDynamicEntityByEntity(*it));
+									(*it)->isSelected = true;
+								}
+							}
+						}
+					}
+
+					else {
+
+						// If the unit is in the unitsSelected list, remove it
+						if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
+							unitsSelected.remove(GetDynamicEntityByEntity(*it));
+							(*it)->isSelected = false;
+						}
+					}
+				}
+			}
+			else {
+
+				// If the unit is in the unitsSelected list, remove it
+				if (find(unitsSelected.begin(), unitsSelected.end(), *it) != unitsSelected.end()) {
+					unitsSelected.remove(GetDynamicEntityByEntity(*it));
+					(*it)->isSelected = false;
+				}
+			}
+
+			it++;
+		}
 	}
 }
 
