@@ -2020,8 +2020,15 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					upgradeTownHallButton->isActive = false;
 					ShowEntitySelectedInfo("Building...", "Keep", { 597,202,50,41 }, entitySelectedStats.entitySelected);
 				}
-				else
+				else {
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
 			}
 
 			//For destroying a building
@@ -2044,19 +2051,23 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						App->audio->PlayFx(App->audio->GetFX().button);
 						App->audio->PlayFx(App->audio->GetFX().repairBuild);
 					}
-					else if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+					else if(GetCurrentGold() < gold) {
 						App->audio->PlayFx(App->audio->GetFX().errorButt);
-						App->scene->adviceMessageTimer.Start();
-						App->scene->adviceMessage = AdviceMessage_GOLD;
-						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+						if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+							App->scene->adviceMessageTimer.Start();
+							App->scene->adviceMessage = AdviceMessage_GOLD;
+							App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+						}
 					}
 
 				}
-				else if (App->scene->adviceMessage != AdviceMessage_BUILDING_IS_FULL_LIFE) {
+				else { //Building has full life
 					App->audio->PlayFx(App->audio->GetFX().errorButt);
-					App->scene->adviceMessageTimer.Start();
-					App->scene->adviceMessage = AdviceMessage_BUILDING_IS_FULL_LIFE;
-					App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					if (App->scene->adviceMessage != AdviceMessage_BUILDING_IS_FULL_LIFE) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_BUILDING_IS_FULL_LIFE;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
 				}
 			}
 
