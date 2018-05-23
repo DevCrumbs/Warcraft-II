@@ -982,12 +982,14 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 				case EntityType_SHEEP:
 				case EntityType_BOAR:
 				{
+					/*
 					int type = rand() % 2;
 
 					if (type == 0)
 						App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
 					else
 						App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+						*/
 				}
 				break;
 

@@ -236,7 +236,7 @@ void GryphonRider::Move(float dt)
 				if (singleUnit->IsFittingTile()) {
 
 					brain->RemoveAllSubgoals();
-					brain->AddGoal_AttackTarget(&newTarget);
+					brain->AddGoal_AttackTarget(newTarget);
 
 					unitState = UnitState_AttackTarget;
 					unitCommand = UnitCommand_NoCommand;
@@ -546,13 +546,16 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 						(*it)->target->RemoveAttackingUnit(this);
 
-					delete *it;
-					*it = nullptr;
-
 					if (currTarget == *it)
+
 						InvalidateCurrTarget();
 
+					TargetInfo** aux = &(*it);
+
+					delete *it;
 					targets.remove(*it);
+
+					*aux = nullptr;
 
 					break;
 				}
@@ -612,12 +615,13 @@ void GryphonRider::UnitStateMachine(float dt)
 					if (currTarget == nullptr) {
 
 						// Check if there are available targets (DYNAMIC ENTITY) 
-						newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+						TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+						newTarget = &t;
 
-						if (newTarget != nullptr) {
+						if (*newTarget != nullptr) {
 
-							if (SetCurrTarget(newTarget->target))
-								brain->AddGoal_AttackTarget(&newTarget, false);
+							if (SetCurrTarget((*newTarget)->target))
+								brain->AddGoal_AttackTarget(newTarget, false);
 						}
 					}
 				}
@@ -646,12 +650,13 @@ void GryphonRider::UnitStateMachine(float dt)
 		if (singleUnit->IsFittingTile()) {
 
 			// Check if there are available targets (DYNAMIC ENTITY)
-			newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+			TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+			newTarget = &t;
 
-			if (newTarget != nullptr) {
+			if (*newTarget != nullptr) {
 
 				// A new target has found! Update the currTarget
-				if (currTarget != newTarget) {
+				if (currTarget != *newTarget) {
 
 					// Anticipate the removing of this unit from the attacking units of the target
 					if (currTarget != nullptr)
@@ -659,8 +664,8 @@ void GryphonRider::UnitStateMachine(float dt)
 
 					isHitting = false;
 
-					if (SetCurrTarget(newTarget->target))
-						brain->AddGoal_AttackTarget(&newTarget);
+					if (SetCurrTarget((*newTarget)->target))
+						brain->AddGoal_AttackTarget(newTarget);
 				}
 			}
 		}
@@ -678,13 +683,14 @@ void GryphonRider::UnitStateMachine(float dt)
 
 			if (currTarget == nullptr) {
 
-				// Check if there are available targets (DYNAMIC ENTITY) 
-				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+				// Check if there are available targets (DYNAMIC ENTITY)
+				TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+				newTarget = &t;
 
-				if (newTarget != nullptr) {
+				if (*newTarget != nullptr) {
 
-					if (SetCurrTarget(newTarget->target))
-						brain->AddGoal_AttackTarget(&newTarget);
+					if (SetCurrTarget((*newTarget)->target))
+						brain->AddGoal_AttackTarget(newTarget);
 				}
 			}
 		}

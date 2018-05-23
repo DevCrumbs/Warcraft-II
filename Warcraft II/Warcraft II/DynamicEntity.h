@@ -248,7 +248,7 @@ protected:
 	// Attack
 	list<TargetInfo*> targets;
 	TargetInfo* currTarget = nullptr;
-	TargetInfo* newTarget = nullptr;
+	TargetInfo** newTarget = nullptr;
 
 	bool isHitting = false; // if true, the unit is hitting their target
 

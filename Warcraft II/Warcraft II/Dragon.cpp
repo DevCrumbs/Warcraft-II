@@ -233,7 +233,7 @@ void Dragon::Move(float dt)
 				if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
 
 					if (SetCurrTarget(App->player->townHall))
-						brain->AddGoal_AttackTarget(&newTarget);
+						brain->AddGoal_AttackTarget(newTarget);
 				}
 			}
 		}
@@ -442,13 +442,16 @@ void Dragon::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState co
 
 						(*it)->target->RemoveAttackingUnit(this);
 
-					delete *it;
-					*it = nullptr;
-
 					if (currTarget == *it)
+
 						InvalidateCurrTarget();
 
+					TargetInfo** aux = &(*it);
+
+					delete *it;
 					targets.remove(*it);
+
+					*aux = nullptr;
 
 					break;
 				}
@@ -499,12 +502,13 @@ void Dragon::UnitStateMachine(float dt)
 			if (currTarget == nullptr) {
 
 				// Check if there are available targets (DYNAMIC ENTITY) 
-				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+				TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+				newTarget = &t;
 
-				if (newTarget != nullptr) {
+				if (*newTarget != nullptr) {
 
-					if (SetCurrTarget(newTarget->target))
-						brain->AddGoal_AttackTarget(&newTarget);
+					if (SetCurrTarget((*newTarget)->target))
+						brain->AddGoal_AttackTarget(newTarget);
 
 					isHunting = false;
 				}
@@ -531,12 +535,13 @@ void Dragon::UnitStateMachine(float dt)
 			if (!App->map->IsOnBase(spawnPos) && currLife <= 0.2f * maxLifeValue) {
 
 				// Check if there are available critters
-				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY, EntityType_NONE, false, true);
+				TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY, EntityType_NONE, false, true);
+				newTarget = &t;
 
-				if (newTarget != nullptr) {
+				if (*newTarget != nullptr) {
 
 					// A new target has found! Update the currTarget
-					if (currTarget != newTarget) {
+					if (currTarget != *newTarget) {
 
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr)
@@ -545,8 +550,8 @@ void Dragon::UnitStateMachine(float dt)
 						isHitting = false;
 						isHunting = false;
 
-						if (SetCurrTarget(newTarget->target))
-							brain->AddGoal_AttackTarget(&newTarget);
+						if (SetCurrTarget((*newTarget)->target))
+							brain->AddGoal_AttackTarget(newTarget);
 
 						isSearchingForCritters = true;
 					}
@@ -580,16 +585,17 @@ void Dragon::UnitStateMachine(float dt)
 				if (isDefend) {
 
 					// PHASE 1. Check if there are available targets (DYNAMIC ENTITY) 
-					newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+					TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+					newTarget = &t;
 					bool isAttackingUnit = false;
 
-					if (newTarget != nullptr) {
+					if (*newTarget != nullptr) {
 
 						// Is the best target an attacking unit?
-						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
+						if (find(unitsAttacking.begin(), unitsAttacking.end(), (*newTarget)->target) != unitsAttacking.end()) {
 
-							if (SetCurrTarget(newTarget->target))
-								brain->AddGoal_AttackTarget(&newTarget, false);
+							if (SetCurrTarget((*newTarget)->target))
+								brain->AddGoal_AttackTarget(newTarget, false);
 
 							isAttackingUnit = true;
 							isHunting = false;
@@ -606,7 +612,7 @@ void Dragon::UnitStateMachine(float dt)
 							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
 
 								if (SetCurrTarget((*it)->target))
-									brain->AddGoal_AttackTarget(&newTarget, false);
+									brain->AddGoal_AttackTarget(newTarget, false);
 
 								isAttackingUnit = true;
 								isHunting = false;
@@ -628,10 +634,10 @@ void Dragon::UnitStateMachine(float dt)
 							targetInfo->target = unitsAttacking.front();
 							targetInfo->isSightSatisfied = true;
 
-							targets.push_back(targetInfo);
+							targets.push_front(targetInfo);
 
 							if (SetCurrTarget(targetInfo->target))
-								brain->AddGoal_AttackTarget(&newTarget, false);
+								brain->AddGoal_AttackTarget(newTarget, false);
 
 							isHunting = true;
 						}
@@ -644,12 +650,13 @@ void Dragon::UnitStateMachine(float dt)
 			else {
 
 				// Check if there are available targets (DYNAMIC ENTITY)
-				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+				TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+				newTarget = &t;
 
-				if (newTarget != nullptr) {
+				if (*newTarget != nullptr) {
 
 					// A new target has found! Update the currTarget
-					if (currTarget != newTarget) {
+					if (currTarget != *newTarget) {
 
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
@@ -663,8 +670,8 @@ void Dragon::UnitStateMachine(float dt)
 						isHitting = false;
 						isHunting = false;
 
-						if (SetCurrTarget(newTarget->target))
-							brain->AddGoal_AttackTarget(&newTarget);
+						if (SetCurrTarget((*newTarget)->target))
+							brain->AddGoal_AttackTarget(newTarget);
 					}
 				}
 
@@ -676,12 +683,13 @@ void Dragon::UnitStateMachine(float dt)
 					if (App->map->IsOnBase(spawnPos)) {
 
 						// Check if there are available targets (DYNAMIC ENTITY)
-						newTarget = GetBestTargetInfo(EntityCategory_STATIC_ENTITY);
+						TargetInfo* t = GetBestTargetInfo(EntityCategory_STATIC_ENTITY);
+						newTarget = &t;
 
-						if (newTarget != nullptr) {
+						if (*newTarget != nullptr) {
 
 							// A new target has found! Update the currTarget
-							if (currTarget != newTarget) {
+							if (currTarget != *newTarget) {
 
 								// Anticipate the removing of this unit from the attacking units of the target
 								if (currTarget != nullptr)
@@ -690,8 +698,8 @@ void Dragon::UnitStateMachine(float dt)
 								isHitting = false;
 								isHunting = false;
 
-								if (SetCurrTarget(newTarget->target))
-									brain->AddGoal_AttackTarget(&newTarget);
+								if (SetCurrTarget((*newTarget)->target))
+									brain->AddGoal_AttackTarget(newTarget);
 							}
 						}
 					}

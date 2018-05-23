@@ -83,12 +83,8 @@ DynamicEntity::~DynamicEntity()
 	isDead = true;
 	isSpawned = true;
 
-	// Remove Attack
-	if (!App->entities->isEntityFactoryCleanUp)
-
-		App->entities->InvalidateTargetInfo(this);
-
-	currTarget = nullptr;
+	color = ColorWhite;
+	colorName = "White";
 
 	// Remove Colliders
 	if (sightRadiusCollider != nullptr)
@@ -99,12 +95,11 @@ DynamicEntity::~DynamicEntity()
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
 
-	color = ColorWhite;
-	colorName = "White";
+	// Remove Attack
+	if (!App->entities->isEntityFactoryCleanUp)
 
-	// ----
+		App->entities->InvalidateTargetInfo(this);
 
-	// Attack
 	isStill = true;
 
 	if (currTarget != nullptr)
@@ -680,7 +675,7 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 
 			list<TargetInfo*>::iterator it = find(targets.begin(), targets.end(), currTarget);
 			currTarget = *it;
-			newTarget = *it;
+			newTarget = &(*it);
 			return true;
 		}
 	}
@@ -713,7 +708,7 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 
 		list<TargetInfo*>::iterator it = find(targets.begin(), targets.end(), targetInfo);
 		currTarget = *it;
-		newTarget = *it;
+		newTarget = &(*it);
 		ret = true;
 	}
 
