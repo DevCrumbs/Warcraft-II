@@ -71,6 +71,25 @@ struct GroupSelectionButtons
 	UIButton* selectGryphonRiders = nullptr;
 };
 
+struct PlayerGroupsButtons
+{
+	UIButton* group1 = nullptr;
+	UIButton* group2 = nullptr;
+	UIButton* group3 = nullptr;
+};
+
+enum PlayerGroupTypes 
+{
+	PlayerGroupTypes_NONE,
+	PlayerGroupTypes_FOOTMAN,
+	PlayerGroupTypes_ARCHER,
+	PlayerGroupTypes_GRYPHON,
+	PlayerGroupTypes_FOOTMAN_ARCHER,
+	PlayerGroupTypes_FOOTMAN_GRYPHON,
+	PlayerGroupTypes_ARCHER_GRYPHON,
+	PlayerGroupTypes_ALL	
+};
+
 class j1Player : public j1Module
 {
 public:
@@ -119,16 +138,19 @@ public:
 
 	void CreateEntitiesStatsUI();
 	void CreateGroupSelectionButtons();
+	void CreatePlayerGroupsButtons();
 	void CreateUISpawningUnits();
 	void ShowEntitySelectedInfo(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect iconDim, string entName, Entity* currentEntity);
 	void ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range);
 	void ShowEntitySelectedButt(ENTITY_TYPE type);
+	void ShowPlayerGroupsButton(int group, PlayerGroupTypes playerGroupType = PlayerGroupTypes_NONE);
 	void HideEntitySelectedInfo();
 	void MakeUnitMenu(Entity* entity);
 	void MakePrisionerMenu(Entity* entity);
 	void DeleteEntitiesMenu();
 	void DeleteGroupSelectionButtons();
+	void DeletePlayerGroupsButtons();
 	void CreateHoverInfoMenu(HoverInfo* hoverInfo);
 	void ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, iPoint pos = { 644, 473 });
 	void HideHoverInfoMenu(HoverInfo* hoverInfo);
@@ -228,6 +250,7 @@ private:
 	uint totalEnemiesKilled = 0;
 	uint totalUnitsDead = 0;
 
+	PlayerGroupsButtons playerGroupsButtons;
 	GroupSelectionButtons groupSelectionButtons;
 
 	//list<GroupSpawning> toSpawnUnitStats;
