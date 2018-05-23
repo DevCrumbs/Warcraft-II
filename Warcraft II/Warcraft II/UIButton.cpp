@@ -175,11 +175,12 @@ void UIButton::ChangeSprite(SDL_Rect texArea)
 	this->texArea = texArea;
 }
 
-void UIButton::ChangesTextsAreas(bool isDiferent, SDL_Rect normalText, SDL_Rect hoverText)
+void UIButton::ChangesTextsAreas(bool isDiferent, SDL_Rect normalText, SDL_Rect hoverText, SDL_Rect pressedText)
 {
 	if (isDiferent) {
 		normalTexArea = normalText;
 		hoverTexArea = hoverText;
+		pressedTexArea = pressedText;
 		ChangeSprite(normalTexArea);
 	}
 	else {

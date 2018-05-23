@@ -1228,13 +1228,11 @@ void j1Scene::LoadInGameUI()
 	labelInfo.interactive = false;
 	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, buildingButton);
 
-
 	//Pause menu 
 	pauseMenuButt = App->gui->CreateUIButton({ 5,1 }, buttonInfo, this);
 
 	labelInfo.text = "Menu";
 	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, pauseMenuButt);
-
 
 	UIImage_Info entitiesInfo;
 	entitiesInfo.draggable = false;
@@ -1260,6 +1258,7 @@ void j1Scene::LoadInGameUI()
 	//create this before entitiesInfo (Parent)
 	App->player->CreateEntitiesStatsUI();
 	App->player->CreateGroupSelectionButtons();
+	App->player->CreatePlayerGroupsButtons();
 	App->player->CreateUISpawningUnits();
 }
 
@@ -1678,7 +1677,7 @@ void j1Scene::LoadBuildingMenu()
 
 	UIImage_Info imageInfo;
 	imageInfo.draggable = false;
-	imageInfo.texArea = { 0,33,240,529 };
+	imageInfo.texArea = { 0,33,240,345 };
 	imageInfo.horizontalOrientation = HORIZONTAL_POS_RIGHT;
 	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this, nullptr);
 	buildingMenuOn = true;

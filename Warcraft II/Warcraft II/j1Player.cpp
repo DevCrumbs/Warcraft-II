@@ -92,6 +92,16 @@ bool j1Player::Update(float dt)
 	if (!toSpawnUnitGrypho.empty())
 		CheckUnitSpawning(&toSpawnUnitGrypho);
 
+
+	////////////////////////////////////////
+
+	if (App->input->GetKey(SDL_SCANCODE_U) == KEY_DOWN) {
+		ShowPlayerGroupsButton(1, PlayerGroupTypes_ALL);
+		ShowPlayerGroupsButton(2, PlayerGroupTypes_FOOTMAN_ARCHER);
+		ShowPlayerGroupsButton(3, PlayerGroupTypes_GRYPHON);
+	}
+
+	///////////////////////////////////////
 	// Select all units on screen shortcuts
 	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN) {
 
@@ -621,6 +631,7 @@ bool j1Player::CleanUp()
 		DeleteHoverInfoMenu();
 		DeleteEntitiesMenu();
 		DeleteGroupSelectionButtons();
+		DeletePlayerGroupsButtons();
 
 		App->gui->RemoveElem((UIElement**)&minimap);
 	}
@@ -1252,6 +1263,17 @@ void j1Player::CreateGroupSelectionButtons()
 	CreateSimpleSelectionButton({ 649,286,50,41 }, { 700, 286, 50, 41 }, { 751,286,50,41 }, { 116, 540 }, groupSelectionButtons.selectGryphonRiders);
 }
 
+void j1Player::CreatePlayerGroupsButtons()
+{
+	CreateSimpleSelectionButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 178, 540 }, playerGroupsButtons.group1);
+	CreateSimpleSelectionButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 229, 540 }, playerGroupsButtons.group2);
+	CreateSimpleSelectionButton({ 649,286,50,41 }, { 700, 286, 50, 41 }, { 751,286,50,41 }, { 280, 540 }, playerGroupsButtons.group3);
+
+	playerGroupsButtons.group1->isActive = false;
+	playerGroupsButtons.group2->isActive = false;
+	playerGroupsButtons.group3->isActive = false;
+}
+
 void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) 
 {
 	if (currentEntity->entityType == EntityCategory_STATIC_ENTITY) 
@@ -1443,6 +1465,102 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	}
 }
 
+void j1Player::ShowPlayerGroupsButton(int group, PlayerGroupTypes playerGroupType)
+{
+	switch (group) {
+	case 1:
+		switch (playerGroupType) {
+		case PlayerGroupTypes_FOOTMAN:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, {241,244,50,41}, { 496,244,50,41 }, { 751,244,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 292,244,50,41 }, { 547,244,50,41 }, { 802,244,50,41 });
+			break;
+		case PlayerGroupTypes_GRYPHON:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 649,286,50,41 }, { 700,286,50,41 }, { 751,286,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_GRYPHON:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 51,379,50,41 }, { 51,421,50,41 }, { 51,463,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_ARCHER:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 102,379,50,41 }, { 102,421,50,41 }, { 102,463,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER_GRYPHON:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 153,379,50,41 }, { 153,421,50,41 }, { 153,463,50,41 });
+			break;
+		case PlayerGroupTypes_ALL:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 0,379,50,41 }, { 0,421,50,41 }, { 0,463,50,41 });
+			break;
+		default:
+			break;
+		}
+		if (!playerGroupsButtons.group1->isActive) {
+			playerGroupsButtons.group1->isActive = true;
+		}
+		break;
+	case 2:
+		switch (playerGroupType) {
+		case PlayerGroupTypes_FOOTMAN:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 241,244,50,41 }, { 496,244,50,41 }, { 751,244,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 292,244,50,41 }, { 547,244,50,41 }, { 802,244,50,41 });
+			break;
+		case PlayerGroupTypes_GRYPHON:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 649,286,50,41 }, { 700,286,50,41 }, { 751,286,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_GRYPHON:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 51,379,50,41 }, { 51,421,50,41 }, { 51,463,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_ARCHER:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 102,379,50,41 }, { 102,421,50,41 }, { 102,463,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER_GRYPHON:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 153,379,50,41 }, { 153,421,50,41 }, { 153,463,50,41 });
+			break;
+		case PlayerGroupTypes_ALL:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 0,379,50,41 }, { 0,421,50,41 }, { 0,463,50,41 });
+			break;
+		default:
+			break;
+		}
+		if (!playerGroupsButtons.group2->isActive) {
+			playerGroupsButtons.group2->isActive = true;
+		}
+		break;
+	case 3:
+		switch (playerGroupType) {
+		case PlayerGroupTypes_FOOTMAN:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 241,244,50,41 }, { 496,244,50,41 }, { 751,244,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 292,244,50,41 }, { 547,244,50,41 }, { 802,244,50,41 });
+			break;
+		case PlayerGroupTypes_GRYPHON:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 649,286,50,41 }, { 700,286,50,41 }, { 751,286,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_GRYPHON:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 51,379,50,41 }, { 51,421,50,41 }, { 51,463,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_ARCHER:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 102,379,50,41 }, { 102,421,50,41 }, { 102,463,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER_GRYPHON:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 153,379,50,41 }, { 153,421,50,41 }, { 153,463,50,41 });
+			break;
+		case PlayerGroupTypes_ALL:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 0,379,50,41 }, { 0,421,50,41 }, { 0,463,50,41 });
+			break;
+		default:
+			break;
+		}
+		if (!playerGroupsButtons.group3->isActive) {
+			playerGroupsButtons.group3->isActive = true;
+		}
+		break;
+	}
+}
+
 void j1Player::ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range)
 {
 	entitySelectedStats.entityDamage->SetText(damage);
@@ -1626,6 +1744,13 @@ void j1Player::DeleteGroupSelectionButtons()
 	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectFootmans);
 	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectElvenArchers);
 	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectGryphonRiders);
+}
+
+void j1Player::DeletePlayerGroupsButtons()
+{
+	App->gui->RemoveElem((UIElement**)&playerGroupsButtons.group1);
+	App->gui->RemoveElem((UIElement**)&playerGroupsButtons.group2);
+	App->gui->RemoveElem((UIElement**)&playerGroupsButtons.group3);
 }
 
 void j1Player::ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, iPoint pos) {
