@@ -2044,8 +2044,13 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						App->audio->PlayFx(App->audio->GetFX().button);
 						App->audio->PlayFx(App->audio->GetFX().repairBuild);
 					}
-					else
+					else if (App->scene->adviceMessage != AdviceMessage_GOLD) {
 						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+
 				}
 				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt);
