@@ -676,8 +676,13 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 
 	if (currTarget != nullptr) {
 
-		if (target == currTarget->target)
+		if (target == currTarget->target) {
+
+			list<TargetInfo*>::iterator it = find(targets.begin(), targets.end(), currTarget);
+			currTarget = *it;
+			newTarget = *it;
 			return true;
+		}
 	}
 
 	list<TargetInfo*>::const_iterator it = targets.begin();
@@ -706,13 +711,10 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 
 	if (targetInfo != nullptr) {
 
-		// Only push it if it does not have to be removed
-		if (!targetInfo->isRemoved) {
-
-			list<TargetInfo*>::iterator it = find(targets.begin(), targets.end(), targetInfo);
-			currTarget = *it;
-			ret = true;
-		}
+		list<TargetInfo*>::iterator it = find(targets.begin(), targets.end(), targetInfo);
+		currTarget = *it;
+		newTarget = *it;
+		ret = true;
 	}
 
 	return ret;
@@ -721,34 +723,6 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 void DynamicEntity::InvalidateCurrTarget() 
 {
 	currTarget = nullptr;
-}
-
-bool DynamicEntity::SetIsRemovedTargetInfo(Entity* target)
-{
-	if (target == nullptr)
-		return false;
-
-	// Set isRemoved to true
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		if ((*it)->target == target) {
-
-			(*it)->isRemoved = true;
-
-			if (currTarget != nullptr) {
-
-				if ((*it)->target == currTarget->target)
-					InvalidateCurrTarget();
-			}
-
-			return true;
-		}
-		it++;
-	}
-
-	return false;
 }
 
 bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
@@ -798,7 +772,7 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENT
 
 	while (it != targets.end()) {
 
-		if (!(*it)->isRemoved && (*it)->target->GetIsValid()) {
+		if ((*it)->target->GetIsValid()) {
 
 			if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_DYNAMIC_ENTITY) {
 
@@ -975,14 +949,14 @@ bool TargetInfo::IsTargetDead() const
 {
 	// The target doesn't exist (just in case)
 	if (target == nullptr)
-		return false;
+		return true;
 
 	// -----
 
 	if (target->GetCurrLife() <= 0 || target->isRemove)
-		return false;
+		return true;
 
-	return true;
+	return false;
 }
 
 bool TargetInfo::IsTargetValid() const 

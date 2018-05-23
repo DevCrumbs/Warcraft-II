@@ -256,5 +256,4 @@ bool Entity::GetIsValid() const
 TargetInfo::TargetInfo() {}
 
 TargetInfo::TargetInfo(const TargetInfo& t) :
-	isSightSatisfied(t.isSightSatisfied), isAttackSatisfied(t.isAttackSatisfied),
-	isRemoved(t.isRemoved), target(t.target) {}
+	isSightSatisfied(t.isSightSatisfied), isAttackSatisfied(t.isAttackSatisfied), target(t.target) {}

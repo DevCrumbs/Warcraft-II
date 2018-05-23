@@ -353,8 +353,11 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 	if (*targetInfo == nullptr) {
 
 		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
-		goalStatus = GoalStatus_Completed;
-		return goalStatus;
+		if (owner->GetSingleUnit()->IsFittingTile()) {
+
+			goalStatus = GoalStatus_Completed;
+			return goalStatus;
+		}
 	}
 	/*
 	else if ((*targetInfo)->target == nullptr) {
@@ -376,7 +379,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 			return goalStatus;
 		}
 	}
-	else if (!(*targetInfo)->IsTargetDead()) {
+	else if ((*targetInfo)->IsTargetDead()) {
 
 		/// The target has recently become invalid
 		if (owner->GetSingleUnit()->IsFittingTile()) {
@@ -450,7 +453,7 @@ void Goal_AttackTarget::Terminate()
 		owner->RemoveTargetInfo(*targetInfo);
 	}
 	*/
-	else if (!(*targetInfo)->IsTargetDead()) {
+	else if ((*targetInfo)->IsTargetDead()) {
 
 		/// The target has recently died
 
@@ -474,16 +477,16 @@ void Goal_AttackTarget::Terminate()
 
 		if (!App->entities->isEntityFactoryCleanUp) {
 
-			if ((*targetInfo)->target == owner->GetCurrTarget())
-
-				owner->InvalidateCurrTarget();
-
 			(*targetInfo)->target->RemoveAttackingUnit(owner);
 
 			// If the target is a building, set isAttackSatisfied to false (just in case)
 			if ((*targetInfo)->target->entityType == EntityCategory_STATIC_ENTITY && (*targetInfo)->isAttackSatisfied)
 
 				(*targetInfo)->isAttackSatisfied = false;
+
+			if ((*targetInfo)->target == owner->GetCurrTarget())
+
+				owner->InvalidateCurrTarget();
 		}
 	}
 
@@ -974,7 +977,7 @@ void Goal_HitTarget::Activate()
 		return;
 	}
 	*/
-	else if (!(*targetInfo)->IsTargetDead()) {
+	else if ((*targetInfo)->IsTargetDead()) {
 
 		/// The target has recently died
 		goalStatus = GoalStatus_Completed;
@@ -1022,7 +1025,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		return goalStatus;
 	}
 	*/
-	else if (!(*targetInfo)->IsTargetDead()) {
+	else if ((*targetInfo)->IsTargetDead()) {
 
 		/// The target has recently died
 

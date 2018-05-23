@@ -161,10 +161,7 @@ void ElvenArcher::Move(float dt)
 			/// The unit could be attacking before this command
 			if (currTarget != nullptr) {
 
-				if (!currTarget->isRemoved && currTarget->target != nullptr)
-
-					currTarget->target->RemoveAttackingUnit(this);
-
+				currTarget->target->RemoveAttackingUnit(this);
 				currTarget = nullptr;
 			}
 
@@ -232,12 +229,12 @@ void ElvenArcher::Move(float dt)
 
 		case UnitCommand_AttackTarget:
 
-			if (currTarget != nullptr) {
+			if (newTarget != nullptr) {
 
 				if (singleUnit->IsFittingTile()) {
 
 					brain->RemoveAllSubgoals();
-					brain->AddGoal_AttackTarget(&currTarget);
+					brain->AddGoal_AttackTarget(&newTarget);
 
 					unitState = UnitState_AttackTarget;
 					unitCommand = UnitCommand_NoCommand;
@@ -440,7 +437,6 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 				if ((*it)->target == c2->entity) {
 
-					(*it)->isRemovedFromSight = false;
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
@@ -464,8 +460,6 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
-					isFacingTowardsTarget = true;
-				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
@@ -511,7 +505,6 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 				if ((*it)->target == c2->entity) {
 
-					(*it)->isRemovedFromSight = false;
 					(*it)->isAttackSatisfied = true;
 					break;
 				}
@@ -544,15 +537,26 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			}
 
 			// Set the target's isSightSatisfied to false
-			list<TargetInfo*>::const_iterator it = targets.begin();
+			list<TargetInfo*>::iterator it = targets.begin();
 
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					//(*it)->isAttackSatisfied = false;
-					//(*it)->target->RemoveAttackingUnit(this);
+
+					if (!(*it)->IsTargetDead())
+
+						(*it)->target->RemoveAttackingUnit(this);
+
+					delete *it;
+					*it = nullptr;
+
+					if (currTarget == *it)
+						InvalidateCurrTarget();
+
+					targets.remove(*it);
+
 					break;
 				}
 				it++;
@@ -616,8 +620,7 @@ void ElvenArcher::UnitStateMachine(float dt)
 						if (newTarget != nullptr) {
 
 							if (SetCurrTarget(newTarget->target))
-								//currTarget = newTarget;
-								brain->AddGoal_AttackTarget(&currTarget, false);
+								brain->AddGoal_AttackTarget(&newTarget, false);
 						}
 					}
 				}
@@ -654,20 +657,13 @@ void ElvenArcher::UnitStateMachine(float dt)
 				if (currTarget != newTarget) {
 
 					// Anticipate the removing of this unit from the attacking units of the target
-					if (currTarget != nullptr) {
-
-						/*
-						if (!currTarget->isRemoved)
-
-							currTarget->target->RemoveAttackingUnit(this);
-							*/
-					}
+					if (currTarget != nullptr)
+						currTarget->target->RemoveAttackingUnit(this);
 
 					isHitting = false;
 
 					if (SetCurrTarget(newTarget->target))
-						//currTarget = newTarget;
-						brain->AddGoal_AttackTarget(&currTarget);
+						brain->AddGoal_AttackTarget(&newTarget);
 				}
 			}
 		}
@@ -691,8 +687,7 @@ void ElvenArcher::UnitStateMachine(float dt)
 				if (newTarget != nullptr) {
 
 					if (SetCurrTarget(newTarget->target))
-						//currTarget = newTarget;
-						brain->AddGoal_AttackTarget(&currTarget);
+						brain->AddGoal_AttackTarget(&newTarget);
 				}
 			}
 		}

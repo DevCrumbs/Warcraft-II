@@ -92,6 +92,8 @@ void Footman::Move(float dt)
 
 	// ---------------------------------------------------------------------
 
+	//LOG("Goals: %i", brain->GetSubgoalsList().size());
+
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
 	if (singleUnit != nullptr) {
@@ -160,10 +162,7 @@ void Footman::Move(float dt)
 			/// The unit could be attacking before this command
 			if (currTarget != nullptr) {
 
-				if (!currTarget->isRemoved && currTarget->target != nullptr)
-
-					currTarget->target->RemoveAttackingUnit(this);
-
+				currTarget->target->RemoveAttackingUnit(this);
 				currTarget = nullptr;
 			}
 
@@ -231,12 +230,12 @@ void Footman::Move(float dt)
 
 		case UnitCommand_AttackTarget:
 
-			if (currTarget != nullptr) {
+			if (newTarget != nullptr) {
 
 				if (singleUnit->IsFittingTile()) {
 
 					brain->RemoveAllSubgoals();
-					brain->AddGoal_AttackTarget(&currTarget);
+					brain->AddGoal_AttackTarget(&newTarget);
 
 					unitState = UnitState_AttackTarget;
 					unitCommand = UnitCommand_NoCommand;
@@ -424,11 +423,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
 			}
 				
-			if (isSelected) {
+			//if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("Footman Sight Radius %s", dynEnt->GetColorName().data());
-			}
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Footman Sight Radius %s", dynEnt->GetColorName().data());
+			//}
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -463,8 +462,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
 					isFacingTowardsTarget = true;
-				else if (currTarget->target == nullptr)
-					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
 
@@ -496,11 +493,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (c2->entity == nullptr)
 				return;
 
-			if (isSelected) {
+			//if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("Footman Attack Radius %s", dynEnt->GetColorName().data());
-			}
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Footman Attack Radius %s", dynEnt->GetColorName().data());
+			//}
 
 			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -534,11 +531,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
 			}
 
-			if (isSelected) {
+			//if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("NO MORE Footman Sight Radius %s", dynEnt->GetColorName().data());
-			}
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Footman Sight Radius %s", dynEnt->GetColorName().data());
+			//}
 
 			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::iterator it = targets.begin();
@@ -553,12 +550,12 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 						(*it)->target->RemoveAttackingUnit(this);
 
-					if (currTarget == *it)
-
-						InvalidateCurrTarget();
-
 					delete *it;
 					*it = nullptr;
+
+					if (currTarget == *it)
+						InvalidateCurrTarget();
+
 					targets.remove(*it);
 
 					break;
@@ -575,11 +572,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (c2->entity == nullptr)
 				return;
 
-			if (isSelected) {
+			//if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("NO MORE Footman Attack Radius %s", dynEnt->GetColorName().data());
-			}
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Footman Attack Radius %s", dynEnt->GetColorName().data());
+			//}
 
 			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -624,7 +621,7 @@ void Footman::UnitStateMachine(float dt)
 						if (newTarget != nullptr) {
 
 							if (SetCurrTarget(newTarget->target))
-								brain->AddGoal_AttackTarget(&currTarget, false);
+								brain->AddGoal_AttackTarget(&newTarget, false);
 						}
 					}
 				}
@@ -661,16 +658,13 @@ void Footman::UnitStateMachine(float dt)
 				if (currTarget != newTarget) {
 
 					// Anticipate the removing of this unit from the attacking units of the target
-					if (currTarget != nullptr) {
-
-						if (!currTarget->isRemoved)
-							currTarget->target->RemoveAttackingUnit(this);
-					}
+					if (currTarget != nullptr)
+						currTarget->target->RemoveAttackingUnit(this);
 
 					isHitting = false;
 
 					if (SetCurrTarget(newTarget->target))
-						brain->AddGoal_AttackTarget(&currTarget);
+						brain->AddGoal_AttackTarget(&newTarget);
 				}
 			}
 		}
@@ -694,7 +688,7 @@ void Footman::UnitStateMachine(float dt)
 				if (newTarget != nullptr) {
 
 					if (SetCurrTarget(newTarget->target))
-						brain->AddGoal_AttackTarget(&currTarget);
+						brain->AddGoal_AttackTarget(&newTarget);
 				}
 			}
 		}

@@ -101,10 +101,7 @@ void Grunt::Move(float dt)
 
 	// ---------------------------------------------------------------------
 
-	if (isSelected)
-	{
-		int x = 1;
-	}
+	LOG("Goals: %i", brain->GetSubgoalsList().size());
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -224,12 +221,6 @@ void Grunt::Move(float dt)
 		}
 	}
 
-	/// **Debug purposes**
-	if (isSelected)
-
-		int nothingToDoHere = 0;
-	///_**Debug_purposes**
-
 	if (!isDead) {
 
 		iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
@@ -241,7 +232,7 @@ void Grunt::Move(float dt)
 				if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
 
 					if (SetCurrTarget(App->player->townHall))
-						brain->AddGoal_AttackTarget(&currTarget);
+						brain->AddGoal_AttackTarget(&newTarget);
 				}
 			}
 		}
@@ -333,11 +324,11 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (c2->entity == nullptr)
 				return;
 
-			if (isSelected) {
+			//if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 				LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
-			}
+			//}
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -376,8 +367,6 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
 					isFacingTowardsTarget = true;
-				else if (currTarget->target == nullptr)
-					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
 
@@ -409,11 +398,11 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (c2->entity == nullptr)
 				return;
 
-			if (isSelected) {
+			//if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 				LOG("Grunt Attack Radius %s", dynEnt->GetColorName().data());
-			}
+			//}
 
 			// Set the target's isAttackSatisfied to true
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -441,11 +430,11 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (c2->entity == nullptr)
 				return;
 
-			if (isSelected) {
+			//if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 				LOG("NO MORE Grunt Sight Radius %s", dynEnt->GetColorName().data());
-			}
+			//}
 
 			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::iterator it = targets.begin();
@@ -460,12 +449,12 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 						(*it)->target->RemoveAttackingUnit(this);
 
-					if (currTarget == *it)
-
-						InvalidateCurrTarget();
-
 					delete *it;
 					*it = nullptr;
+
+					if (currTarget == *it)
+						InvalidateCurrTarget();
+
 					targets.remove(*it);
 
 					break;
@@ -482,11 +471,11 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (c2->entity == nullptr)
 				return;
 
-			if (isSelected) {
+			//if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 				LOG("NO MORE Grunt Attack Radius %s", dynEnt->GetColorName().data());
-			}
+			//}
 
 			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -522,7 +511,7 @@ void Grunt::UnitStateMachine(float dt)
 				if (newTarget != nullptr) {
 
 					if (SetCurrTarget(newTarget->target))
-						brain->AddGoal_AttackTarget(&currTarget);
+						brain->AddGoal_AttackTarget(&newTarget);
 
 					isHunting = false;
 				}
@@ -557,17 +546,14 @@ void Grunt::UnitStateMachine(float dt)
 					if (currTarget != newTarget) {
 
 						// Anticipate the removing of this unit from the attacking units of the target
-						if (currTarget != nullptr) {
-
-							if (!currTarget->isRemoved)
-								currTarget->target->RemoveAttackingUnit(this);
-						}
+						if (currTarget != nullptr)
+							currTarget->target->RemoveAttackingUnit(this);
 
 						isHitting = false;
 						isHunting = false;
 
 						if (SetCurrTarget(newTarget->target))
-							brain->AddGoal_AttackTarget(&currTarget);
+							brain->AddGoal_AttackTarget(&newTarget);
 
 						isSearchingForCritters = true;
 					}
@@ -610,7 +596,7 @@ void Grunt::UnitStateMachine(float dt)
 						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
 							if (SetCurrTarget(newTarget->target))
-								brain->AddGoal_AttackTarget(&currTarget, false);
+								brain->AddGoal_AttackTarget(&newTarget, false);
 
 							isAttackingUnit = true;
 							isHunting = false;
@@ -627,7 +613,7 @@ void Grunt::UnitStateMachine(float dt)
 							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
 
 								if (SetCurrTarget((*it)->target))
-									brain->AddGoal_AttackTarget(&currTarget, false);
+									brain->AddGoal_AttackTarget(&newTarget, false);
 
 								isAttackingUnit = true;
 								isHunting = false;
@@ -652,7 +638,7 @@ void Grunt::UnitStateMachine(float dt)
 							targets.push_back(targetInfo);
 
 							if (SetCurrTarget(targetInfo->target))
-								brain->AddGoal_AttackTarget(&currTarget, false);
+								brain->AddGoal_AttackTarget(&newTarget, false);
 
 							isHunting = true;
 						}
@@ -675,20 +661,17 @@ void Grunt::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
-							if (!currTarget->isRemoved) {
+							if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
+								break;
 
-								if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
-									break;
-
-								currTarget->target->RemoveAttackingUnit(this);
-							}
+							currTarget->target->RemoveAttackingUnit(this);
 						}
 
 						isHitting = false;
 						isHunting = false;
 
 						if (SetCurrTarget(newTarget->target))
-							brain->AddGoal_AttackTarget(&currTarget);
+							brain->AddGoal_AttackTarget(&newTarget);
 					}
 				}
 
@@ -708,17 +691,14 @@ void Grunt::UnitStateMachine(float dt)
 							if (currTarget != newTarget) {
 
 								// Anticipate the removing of this unit from the attacking units of the target
-								if (currTarget != nullptr) {
-
-									if (!currTarget->isRemoved)
-										currTarget->target->RemoveAttackingUnit(this);
-								}
+								if (currTarget != nullptr)
+									currTarget->target->RemoveAttackingUnit(this);
 
 								isHitting = false;
 								isHunting = false;
 
 								if (SetCurrTarget(newTarget->target))
-									brain->AddGoal_AttackTarget(&currTarget);
+									brain->AddGoal_AttackTarget(&newTarget);
 							}
 						}
 					}

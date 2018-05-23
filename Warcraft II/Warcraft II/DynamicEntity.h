@@ -172,8 +172,7 @@ public:
 	bool SetCurrTarget(Entity* target);
 	void InvalidateCurrTarget();
 
-	bool SetIsRemovedTargetInfo(Entity* target); // this action happens first
-	bool RemoveTargetInfo(TargetInfo* targetInfo); // this action happens second
+	bool RemoveTargetInfo(TargetInfo* targetInfo);
 
 	TargetInfo* GetBestTargetInfo(ENTITY_CATEGORY entityCategory = EntityCategory_NONE, ENTITY_TYPE entityType = EntityType_NONE, bool isCrittersCheck = true, bool isOnlyCritters = false) const; // TODO: add argument EntityType??? For critters vs enemies
 
