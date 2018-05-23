@@ -2052,8 +2052,12 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					}
 
 				}
-				else
+				else if (App->scene->adviceMessage != AdviceMessage_BUILDING_IS_FULL_LIFE) {
 					App->audio->PlayFx(App->audio->GetFX().errorButt);
+					App->scene->adviceMessageTimer.Start();
+					App->scene->adviceMessage = AdviceMessage_BUILDING_IS_FULL_LIFE;
+					App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+				}
 			}
 
 			else if (UIelem == produceFootmanButton) {
@@ -2073,6 +2077,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						HandleSpawningUnitsUIElem(&toSpawnUnitBarracks.back(), &barracksSpawningListUI);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_FOOD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
 						App->scene->adviceMessageTimer.Start();
 						App->scene->adviceMessage = AdviceMessage_FOOD;
 						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
