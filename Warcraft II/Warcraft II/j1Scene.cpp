@@ -2165,6 +2165,13 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 		adviceLabel->SetColor(White_);
 		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
 		break;
+	case AdviceMessage_BUILDING_IS_FULL_LIFE:
+		text = "This building has full life.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
 	}
 
 

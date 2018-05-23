@@ -62,6 +62,7 @@ enum AdviceMessages {
 	AdviceMessage_GRYPH_MINE,
 	AdviceMessage_GRYPH_PRISONER,
 	AdviceMessage_PRISONER,
+	AdviceMessage_BUILDING_IS_FULL_LIFE,
 	AdviceMessage_NONE
 };
 
