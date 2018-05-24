@@ -2235,8 +2235,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_CHICKEN_FARM;
 				}
-				else if (App->player->GetCurrentGold() < chickenFarmCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < chickenFarmCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
 
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade && App->player->townHall->buildingState == BuildingState_Normal) {
@@ -2249,8 +2257,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_GRYPHON_AVIARY;
 				}
-				else if (App->player->GetCurrentGold() < gryphonAviaryCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < gryphonAviaryCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon)
 				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
@@ -2266,8 +2282,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_SCOUT_TOWER;
 				}
-				else if (App->player->GetCurrentGold() < scoutTowerCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < scoutTowerCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
 
 			else if (UIelem == buildingMenuButtons.guardTower.icon) {
@@ -2280,8 +2304,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
 				}
-				else if (App->player->GetCurrentGold() < guardTowerCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < guardTowerCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
 
 			else if (UIelem == buildingMenuButtons.cannonTower.icon) {
@@ -2294,8 +2326,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
 				}
-				else if (App->player->GetCurrentGold() < cannonTowerCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < cannonTowerCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
 
 			else if (UIelem == buildingMenuButtons.barracks.icon && App->player->barracks == nullptr) {
@@ -2308,8 +2348,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_BARRACKS;
 				}
-				else if (App->player->GetCurrentGold() < barracksCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < barracksCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
 			else if (UIelem == buildingMenuButtons.barracks.icon)
 				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
