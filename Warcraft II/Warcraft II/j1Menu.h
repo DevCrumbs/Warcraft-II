@@ -38,6 +38,10 @@ struct SliderStruct
 	UILabel*  value = nullptr; 
 };
 
+struct ArtifactsWon
+{
+	int book, skull, scepter, eye = 0;
+};
 
 class j1Menu : public j1Module
 {
@@ -53,9 +57,6 @@ public:
 
 	// Called before the first frame
 	bool Start();
-
-	// Called before all Updates
-	bool PreUpdate();
 
 	// Called each loop iteration
 	bool Update(float dt);
@@ -94,6 +95,7 @@ public:
 
 	bool debug = false;
 
+	ArtifactsWon artifactsEasyOne, artifactsEasyTwo, artifactsMediumOne, artifactsMediumTwo, artifactsHard;
 private:
 
 	//Main Menu
@@ -110,6 +112,7 @@ private:
 
 	//Start New Game
 	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;
+	UILabel* bookArtifact = nullptr, *skullArtifact = nullptr, *eyeArtifact = nullptr, *scepterArtifact = nullptr;
 
 	//Credits
 	UILabel* sandraLead = nullptr, *oscarCode = nullptr, *davidQA = nullptr, *joanDesigner = nullptr, *manavManagment = nullptr, *davidArt = nullptr, *aleixUI = nullptr;

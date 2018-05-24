@@ -103,22 +103,6 @@ bool j1Menu::Start()
 	return true;
 }
 
-// Called each loop iteration
-bool j1Menu::PreUpdate()
-{
-	switch (menuActions)
-	{
-	case MenuActions_SLIDERFX:
-		UpdateSlider(audioFX);
-		break;
-	case MenuActions_SLIDERMUSIC:
-		UpdateSlider(audioMusic);
-		break;
-	default:
-		break;
-	}
-	return true;
-}
 
 // Called each loop iteration
 bool j1Menu::Update(float dt)
@@ -169,6 +153,12 @@ bool j1Menu::Update(float dt)
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		isExit = true;
 		break;
+	case MenuActions_SLIDERFX:
+		UpdateSlider(audioFX);
+		break;
+	case MenuActions_SLIDERMUSIC:
+		UpdateSlider(audioMusic);
+		break;
 	default:
 		break;
 	}
@@ -179,11 +169,6 @@ bool j1Menu::Update(float dt)
 bool j1Menu::PostUpdate()
 {
 	bool ret = true;
-
-	// Blit the background
-	//App->render->DrawQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, 70, 70, 70, 255);
-	//SDL_Color brown = { 70,70,70,255 };  150-113   1920 - 1080   175 - 
-	//App->printer->PrintQuad({ 0,0,(int)App->render->camera.w, (int)App->render->camera.h }, brown, true, false, Layers_PreviewBuildingsQuad);
 
 	if (isFadetoScene) {
 		App->fade->FadeToBlack(this, App->scene);
@@ -334,6 +319,17 @@ void j1Menu::CreateNewGame()
 	labelInfo.normalColor = ColorRed;
 	staticLabels.push_back(App->gui->CreateUILabel({ 675, 250 }, labelInfo, this));
 
+	labelInfo.normalColor = White_;
+	labelInfo.text = "-";
+	bookArtifact = App->gui->CreateUILabel({ 125, 555 }, labelInfo, this);
+	skullArtifact = App->gui->CreateUILabel({ 250, 555 }, labelInfo, this);
+	eyeArtifact = App->gui->CreateUILabel({ 375, 555 }, labelInfo, this);
+	scepterArtifact = App->gui->CreateUILabel({ 500, 555 }, labelInfo, this);
+
+	artifacts.push_back(AddArtifact({ 50, 525 }, App->gui->bookText, App->gui->bookAnim, 5));
+	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim, 5));
+	artifacts.push_back(AddArtifact({ 300,525 }, App->gui->eyeText, App->gui->eyeAnim, 5));
+	artifacts.push_back(AddArtifact({ 425,525 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 }
 
 void j1Menu::CreateCredits()
@@ -600,7 +596,6 @@ void j1Menu::DeleteSettings() {
 	{
 		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
-
 }
 
 void j1Menu::DeleteNewGame()
@@ -611,12 +606,19 @@ void j1Menu::DeleteNewGame()
 	App->gui->RemoveElem((UIElement**)&mediumTwoButt);
 	App->gui->RemoveElem((UIElement**)&mediumOneButt);
 	App->gui->RemoveElem((UIElement**)&hardButt);
+	App->gui->RemoveElem((UIElement**)&bookArtifact);
+	App->gui->RemoveElem((UIElement**)&skullArtifact);
+	App->gui->RemoveElem((UIElement**)&eyeArtifact);
+	App->gui->RemoveElem((UIElement**)&scepterArtifact);
 
 	for (; !staticLabels.empty(); staticLabels.pop_back())
 	{
 		App->gui->RemoveElem((UIElement**)&staticLabels.back());
 	}
-
+	for (; !artifacts.empty(); artifacts.pop_back())
+	{
+		App->gui->RemoveElem((UIElement**)&artifacts.back());
+	}
 }
 
 void j1Menu::DeleteCredits()

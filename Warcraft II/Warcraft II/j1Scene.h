@@ -183,8 +183,8 @@ public:
 	void HideUnselectedUnits();
 	void PlayUnitSound(list<DynamicEntity*> units, bool isSelect);
 	FX ChooseRandomUnitSound(ENTITY_TYPE unitType, bool isSelect);
-	void ChangeBuildingButtState(MenuBuildingButton* elem);
-	void ChangeBuildingMenuState(BuildingMenu* elem);
+	void ChangeBuildingButtState(MenuBuildingButton* elem, bool isForced = false);
+	void ChangeBuildingMenuState(BuildingMenu* elem, bool isForced = false);
 	void UpdateLabelsMenu();
 	void UpdateIconsMenu();
 	void ChangeMenuLabelInfo(UILabel* label, int cost, bool isSingle = false, StaticEntity* stcEnt = nullptr);

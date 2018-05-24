@@ -1568,21 +1568,32 @@ FX j1Scene::ChooseRandomUnitSound(ENTITY_TYPE unitType, bool isSelect)
 	return unitSound;
 }
 	
-void j1Scene::ChangeBuildingButtState(MenuBuildingButton* elem)
+void j1Scene::ChangeBuildingButtState(MenuBuildingButton* elem, bool isForced)
 {
-	elem->cost->isActive = !elem->cost->isActive;
-	elem->icon->isActive = !elem->icon->isActive;
-	elem->name->isActive = !elem->name->isActive;
+	if (!isForced) {
+		elem->cost->isActive = !elem->cost->isActive;
+		elem->icon->isActive = !elem->icon->isActive;
+		elem->name->isActive = !elem->name->isActive;
+	}
+	else
+	{
+		elem->cost->isActive = false;
+		elem->icon->isActive = false;
+		elem->name->isActive = false;
+	}
 }
-void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem)
+void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem, bool isForced)
 {
-	buildingMenu->isActive = !buildingMenu->isActive;
-	ChangeBuildingButtState(&elem->cannonTower);
-	ChangeBuildingButtState(&elem->chickenFarm);
-	ChangeBuildingButtState(&elem->gryphonAviary);
-	ChangeBuildingButtState(&elem->guardTower);
-	ChangeBuildingButtState(&elem->scoutTower);
-	ChangeBuildingButtState(&elem->barracks);
+	if (!isForced)
+		buildingMenu->isActive = !buildingMenu->isActive;
+	else
+		buildingMenu->isActive = false;
+	ChangeBuildingButtState(&elem->cannonTower, isForced);
+	ChangeBuildingButtState(&elem->chickenFarm, isForced);
+	ChangeBuildingButtState(&elem->gryphonAviary, isForced);
+	ChangeBuildingButtState(&elem->guardTower, isForced);
+	ChangeBuildingButtState(&elem->scoutTower, isForced);
+	ChangeBuildingButtState(&elem->barracks, isForced);
 	if (buildingMenu->isActive)
 	{
 		UpdateLabelsMenu();
@@ -2293,6 +2304,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		if (UIelem == pauseMenuButt) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			if (parchmentImg == nullptr) {
+				ChangeBuildingMenuState(&buildingMenuButtons, true);
 				UIImage_Info parchmentInfo;
 				parchmentInfo.texArea = App->gui->parchmentArea;
 				parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
