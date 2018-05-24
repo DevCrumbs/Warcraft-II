@@ -623,6 +623,10 @@ void Footman::UnitStateMachine(float dt)
 
 						// Check if there are available targets (DYNAMIC ENTITY) 
 						TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+						if (t == nullptr)
+							break;
+
 						newTarget = &t;
 
 						if (*newTarget != nullptr) {
@@ -659,6 +663,10 @@ void Footman::UnitStateMachine(float dt)
 
 			// Check if there are available targets (DYNAMIC ENTITY)
 			TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+			if (t == nullptr)
+				break;
+
 			newTarget = &t;
 
 			if (*newTarget != nullptr) {
@@ -694,6 +702,10 @@ void Footman::UnitStateMachine(float dt)
 
 				// Check if there are available targets (DYNAMIC ENTITY) 
 				TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+				if (t == nullptr)
+					break;
+
 				newTarget = &t;
 
 				if (*newTarget != nullptr) {

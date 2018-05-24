@@ -512,6 +512,10 @@ void Grunt::UnitStateMachine(float dt)
 
 				// Check if there are available targets (DYNAMIC ENTITY) 
 				TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+				if (t == nullptr)
+					break;
+
 				newTarget = &t;
 
 				if (*newTarget != nullptr) {
@@ -545,6 +549,10 @@ void Grunt::UnitStateMachine(float dt)
 
 				// Check if there are available critters
 				TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY, EntityType_NONE, false, true);
+
+				if (t == nullptr)
+					break;
+
 				newTarget = &t;
 
 				if (*newTarget != nullptr) {
@@ -595,6 +603,10 @@ void Grunt::UnitStateMachine(float dt)
 
 					// PHASE 1. Check if there are available targets (DYNAMIC ENTITY) 
 					TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+					if (t == nullptr)
+						break;
+
 					newTarget = &t;
 					bool isAttackingUnit = false;
 
@@ -660,6 +672,10 @@ void Grunt::UnitStateMachine(float dt)
 
 				// Check if there are available targets (DYNAMIC ENTITY)
 				TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
+				if (t == nullptr)
+					break;
+
 				newTarget = &t;
 
 				if (*newTarget != nullptr) {
@@ -694,6 +710,10 @@ void Grunt::UnitStateMachine(float dt)
 
 						// Check if there are available targets (DYNAMIC ENTITY)
 						TargetInfo* t = GetBestTargetInfo(EntityCategory_STATIC_ENTITY);
+
+						if (t == nullptr)
+							break;
+
 						newTarget = &t;
 
 						if (*newTarget != nullptr) {
