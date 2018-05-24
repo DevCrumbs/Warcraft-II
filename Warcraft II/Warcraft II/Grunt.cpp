@@ -328,8 +328,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 			//if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// 1. UPDATE TARGETS LIST
@@ -454,6 +454,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 					if (currTarget == *it)
 
 						InvalidateCurrTarget();
+
+					brain;
 
 					TargetInfo** aux = &(*it);
 					LOG("Grunt removed target: %p", &(*it));

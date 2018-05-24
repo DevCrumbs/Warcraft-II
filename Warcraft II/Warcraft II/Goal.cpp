@@ -424,6 +424,11 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 void Goal_AttackTarget::Terminate()
 {
+	if (owner->dynamicEntityType == EntityType_GRUNT)
+		LOG("Grunt AttackTarget terminate");
+	else if (owner->dynamicEntityType == EntityType_FOOTMAN)
+		LOG("Footman AttackTarget terminate");
+
 	RemoveAllSubgoals();
 
 	if (*targetInfo == nullptr) {
@@ -1244,6 +1249,11 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 void Goal_HitTarget::Terminate()
 {
+	if (owner->dynamicEntityType == EntityType_GRUNT)
+		LOG("Grunt HitTarget terminate");
+	else if (owner->dynamicEntityType == EntityType_FOOTMAN)
+		LOG("Footman HitTarget terminate");
+
 	owner->SetHitting(false);
 	owner->SetIsStill(true);
 

@@ -3762,19 +3762,17 @@ bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
 				(*dynEnt)->RemoveAttackingUnit(target);
 
 				// Remove the target from the entity targets list
-				if ((*dynEnt)->GetTargets().size() > 0) {
+				list<TargetInfo*> targetsInfo = (*dynEnt)->GetTargets();
+				list<TargetInfo*>::const_iterator it = targetsInfo.begin();
 
-					list<TargetInfo*>::const_iterator it = (*dynEnt)->GetTargets().begin();
+				while (it != targetsInfo.end()) {
 
-					while (it != (*dynEnt)->GetTargets().end()) {
+					if ((*it)->target == target) {
 
-						if ((*it)->target == target) {
-
-							(*dynEnt)->RemoveTargetInfo(*it);
-							break;
-						}
-						it++;
+						(*dynEnt)->RemoveTargetInfo(*it);
+						break;
 					}
+					it++;
 				}
 			}
 		}
