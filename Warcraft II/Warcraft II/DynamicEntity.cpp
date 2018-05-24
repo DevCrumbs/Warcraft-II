@@ -53,6 +53,28 @@ DynamicEntity::~DynamicEntity()
 	isBlitSavedGroupSelection = false;
 	isBlitSelectedGroupSelection = false;
 
+	// Remove Attack
+	if (!App->entities->isEntityFactoryCleanUp)
+
+		App->entities->InvalidateTargetInfo(this);
+
+	isStill = true;
+
+	if (currTarget != nullptr)
+		currTarget = nullptr;
+
+	if (newTarget != nullptr)
+		newTarget = nullptr;
+
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+
+		RemoveTargetInfo(*it);
+		it++;
+	}
+	targets.clear();
+
 	// Remove Goals
 	if (brain != nullptr) {
 
@@ -94,28 +116,6 @@ DynamicEntity::~DynamicEntity()
 	if (attackRadiusCollider != nullptr)
 		attackRadiusCollider->isRemove = true;
 	attackRadiusCollider = nullptr;
-
-	// Remove Attack
-	if (!App->entities->isEntityFactoryCleanUp)
-
-		App->entities->InvalidateTargetInfo(this);
-
-	isStill = true;
-
-	if (currTarget != nullptr)
-		currTarget = nullptr;
-
-	if (newTarget != nullptr)
-		newTarget = nullptr;
-
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		delete *it;
-		it++;
-	}
-	targets.clear();
 }
 
 void DynamicEntity::Move(float dt) {}
@@ -653,7 +653,11 @@ void DynamicEntity::UpdateRhombusColliderPos(ColliderGroup* collider, uint radiu
 }
 
 // Attack
-/// Unit attacks a target
+list<TargetInfo*> DynamicEntity::GetTargets() const 
+{
+	return targets;
+}
+
 Entity* DynamicEntity::GetCurrTarget() const
 {
 	if (currTarget != nullptr)
@@ -668,17 +672,6 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 
 	if (target == nullptr)
 		return false;
-
-	if (currTarget != nullptr) {
-
-		if (target == currTarget->target) {
-
-			list<TargetInfo*>::iterator it = find(targets.begin(), targets.end(), currTarget);
-			currTarget = *it;
-			newTarget = &(*it);
-			return true;
-		}
-	}
 
 	list<TargetInfo*>::const_iterator it = targets.begin();
 
@@ -710,6 +703,7 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 		currTarget = *it;
 		newTarget = &(*it);
 		ret = true;
+		LOG("Set currTarget: %p", &(*it));
 	}
 
 	return ret;
@@ -725,19 +719,28 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 	if (targetInfo == nullptr)
 		return false;
 
-	// If the target is the currTarget, set currTarget to nullptr
-	if (targetInfo == currTarget)
-		currTarget = nullptr;
-
 	// Remove the target from the targets list
-	list<TargetInfo*>::const_iterator it = targets.begin();
+	list<TargetInfo*>::iterator it = targets.begin();
 
 	while (it != targets.end()) {
 
 		if ((*it)->target == targetInfo->target) {
 
+			if (!(*it)->IsTargetDead())
+
+				(*it)->target->RemoveAttackingUnit(this);
+
+			if (currTarget == *it)
+
+				InvalidateCurrTarget();
+
+			TargetInfo** aux = &(*it);
+
 			delete *it;
 			targets.remove(*it);
+			LOG("A target has been removed");
+			*aux = nullptr;
+
 			return true;
 		}
 		it++;
@@ -844,6 +847,10 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENT
 				result = curr.targetInfo;
 		}
 	}
+
+	if (result != nullptr)
+
+		result = *find(targets.begin(), targets.end(), result);
 
 	return result;
 }

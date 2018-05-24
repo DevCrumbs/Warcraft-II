@@ -92,8 +92,8 @@ void Footman::Move(float dt)
 
 	// ---------------------------------------------------------------------
 
-	LOG("Goals: %i", brain->GetSubgoalsList().size());
-	LOG("Targets: %i", targets.size());
+	//LOG("Goals: %i", brain->GetSubgoalsList().size());
+	//LOG("Targets: %i", targets.size());
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -120,6 +120,7 @@ void Footman::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
+			App->entities->InvalidateTargetInfo(this);
 
 			// Remove any path request
 			pathPlanner->SetSearchRequested(false);
@@ -426,8 +427,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Footman Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Footman Sight Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// 1. UPDATE TARGETS LIST
@@ -496,8 +497,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Footman Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Footman Attack Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// Set the target's isAttackSatisfied to true
@@ -556,6 +557,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 						InvalidateCurrTarget();
 
 					TargetInfo** aux = &(*it);
+					LOG("Footman removed target: %p", &(*it));
 
 					delete *it;
 					targets.remove(*it);
@@ -578,8 +580,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Footman Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Footman Attack Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// Set the target's isAttackSatisfied to false
@@ -627,6 +629,7 @@ void Footman::UnitStateMachine(float dt)
 
 							if (SetCurrTarget((*newTarget)->target))
 								brain->AddGoal_AttackTarget(newTarget, false);
+							LOG("Footman Added target 1");
 						}
 					}
 				}
@@ -671,6 +674,7 @@ void Footman::UnitStateMachine(float dt)
 
 					if (SetCurrTarget((*newTarget)->target))
 						brain->AddGoal_AttackTarget(newTarget);
+					LOG("Footman Added target 2");
 				}
 			}
 		}
@@ -696,6 +700,7 @@ void Footman::UnitStateMachine(float dt)
 
 					if (SetCurrTarget((*newTarget)->target))
 						brain->AddGoal_AttackTarget(newTarget);
+					LOG("Footman Added target 3");
 				}
 			}
 		}
@@ -817,24 +822,19 @@ bool Footman::ChangeAnimation()
 	else if (isHitting) {
 
 		// Set the direction of the unit as the orientation towards the attacking target
-		/*
 		if (currTarget != nullptr) {
 
-			if (!currTarget->isRemoved) {
+			fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
 
-				fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
+			float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
-				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-				if (m > 0.0f) {
-					orientation.x /= m;
-					orientation.y /= m;
-				}
-
-				SetUnitDirectionByValue(orientation);
+			if (m > 0.0f) {
+				orientation.x /= m;
+				orientation.y /= m;
 			}
+
+			SetUnitDirectionByValue(orientation);
 		}
-		*/
 
 		switch (GetUnitDirection()) {
 

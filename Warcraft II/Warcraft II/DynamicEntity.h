@@ -168,6 +168,7 @@ public:
 
 	// Attack
 	/// Unit attacks a target
+	list<TargetInfo*> GetTargets() const;
 	Entity* GetCurrTarget() const;
 	bool SetCurrTarget(Entity* target);
 	void InvalidateCurrTarget();

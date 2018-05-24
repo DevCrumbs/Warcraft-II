@@ -962,7 +962,7 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 				case EntityType_WATCH_TOWER:
 				case EntityType_ENEMY_GUARD_TOWER:
 				case EntityType_ENEMY_CANNON_TOWER:
-					App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+					//App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 					break;
 
 					// Dynamic entities

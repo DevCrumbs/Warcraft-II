@@ -102,7 +102,7 @@ void Grunt::Move(float dt)
 	// ---------------------------------------------------------------------
 
 	//LOG("Goals: %i", brain->GetSubgoalsList().size());
-	LOG("Targets: %i", targets.size());
+	//LOG("Targets: %i", targets.size());
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -135,6 +135,7 @@ void Grunt::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
+			App->entities->InvalidateTargetInfo(this);
 
 			// Remove any path request
 			pathPlanner->SetSearchRequested(false);
@@ -327,8 +328,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// 1. UPDATE TARGETS LIST
@@ -401,8 +402,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Grunt Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Grunt Attack Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// Set the target's isAttackSatisfied to true
@@ -455,7 +456,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 						InvalidateCurrTarget();
 
 					TargetInfo** aux = &(*it);
-
+					LOG("Grunt removed target: %p", &(*it));
 					delete *it;
 					targets.remove(*it);
 
@@ -477,8 +478,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Grunt Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Grunt Attack Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// Set the target's isAttackSatisfied to false
@@ -517,7 +518,7 @@ void Grunt::UnitStateMachine(float dt)
 
 					if (SetCurrTarget((*newTarget)->target))
 						brain->AddGoal_AttackTarget(newTarget);
-
+					LOG("Grunt Added target 1");
 					isHunting = false;
 				}
 				else
@@ -560,7 +561,7 @@ void Grunt::UnitStateMachine(float dt)
 
 						if (SetCurrTarget((*newTarget)->target))
 							brain->AddGoal_AttackTarget(newTarget);
-
+						LOG("Grunt Added target 2");
 						isSearchingForCritters = true;
 					}
 				}
@@ -604,7 +605,7 @@ void Grunt::UnitStateMachine(float dt)
 
 							if (SetCurrTarget((*newTarget)->target))
 								brain->AddGoal_AttackTarget(newTarget, false);
-
+							LOG("Grunt Added target 3");
 							isAttackingUnit = true;
 							isHunting = false;
 						}
@@ -621,7 +622,7 @@ void Grunt::UnitStateMachine(float dt)
 
 								if (SetCurrTarget((*it)->target))
 									brain->AddGoal_AttackTarget(newTarget, false);
-
+								LOG("Grunt Added target 4");
 								isAttackingUnit = true;
 								isHunting = false;
 							}
@@ -646,7 +647,7 @@ void Grunt::UnitStateMachine(float dt)
 
 							if (SetCurrTarget(targetInfo->target))
 								brain->AddGoal_AttackTarget(newTarget, false);
-
+							LOG("Grunt Added target 5");
 							isHunting = true;
 						}
 					}
@@ -680,6 +681,7 @@ void Grunt::UnitStateMachine(float dt)
 
 						if (SetCurrTarget((*newTarget)->target))
 							brain->AddGoal_AttackTarget(newTarget);
+						LOG("Grunt Added target 6");
 					}
 				}
 
@@ -708,6 +710,7 @@ void Grunt::UnitStateMachine(float dt)
 
 								if (SetCurrTarget((*newTarget)->target))
 									brain->AddGoal_AttackTarget(newTarget);
+								LOG("Grunt Added target 7");
 							}
 						}
 					}
@@ -820,25 +823,20 @@ bool Grunt::ChangeAnimation()
 	// The unit is hitting their target
 	else if (isHitting) {
 
-		// Set the direction of the unit as the orientation towards the target
-		/*
+		// Set the direction of the unit as the orientation towards the attacking target
 		if (currTarget != nullptr) {
 
-			if (!currTarget->isRemoved) {
+			fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
 
-				fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
+			float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
-				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-				if (m > 0.0f) {
-					orientation.x /= m;
-					orientation.y /= m;
-				}
-
-				SetUnitDirectionByValue(orientation);
+			if (m > 0.0f) {
+				orientation.x /= m;
+				orientation.y /= m;
 			}
+
+			SetUnitDirectionByValue(orientation);
 		}
-		*/
 
 		switch (GetUnitDirection()) {
 

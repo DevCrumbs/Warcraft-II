@@ -3754,8 +3754,30 @@ bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		if ((*dynEnt)->dynamicEntityType != EntityType_ALLERIA && (*dynEnt)->dynamicEntityType != EntityType_TURALYON)
-			(*dynEnt)->RemoveAttackingUnit(target);
+		if (*dynEnt != target) {
+
+			if ((*dynEnt)->dynamicEntityType != EntityType_ALLERIA && (*dynEnt)->dynamicEntityType != EntityType_TURALYON) {
+
+				// Remove the target as an attacking unit
+				(*dynEnt)->RemoveAttackingUnit(target);
+
+				// Remove the target from the entity targets list
+				if ((*dynEnt)->GetTargets().size() > 0) {
+
+					list<TargetInfo*>::const_iterator it = (*dynEnt)->GetTargets().begin();
+
+					while (it != (*dynEnt)->GetTargets().end()) {
+
+						if ((*it)->target == target) {
+
+							(*dynEnt)->RemoveTargetInfo(*it);
+							break;
+						}
+						it++;
+					}
+				}
+			}
+		}
 
 		dynEnt++;
 	}
@@ -3764,7 +3786,11 @@ bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
 
 	while (statEnt != activeStaticEntities.end()) {
 
-		(*statEnt)->RemoveAttackingUnit(target);
+		if (*statEnt != target) {
+
+			// Remove the target as an attacking unit
+			(*statEnt)->RemoveAttackingUnit(target);
+		}
 
 		statEnt++;
 	}

@@ -812,25 +812,20 @@ bool Dragon::ChangeAnimation()
 	// The unit is hitting their target
 	else if (isHitting) {
 
-		// Set the direction of the unit as the orientation towards the target
-		/*
+		// Set the direction of the unit as the orientation towards the attacking target
 		if (currTarget != nullptr) {
 
-			if (!currTarget->isRemoved) {
+			fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
 
-				fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
+			float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
-				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-				if (m > 0.0f) {
-					orientation.x /= m;
-					orientation.y /= m;
-				}
-
-				SetUnitDirectionByValue(orientation);
+			if (m > 0.0f) {
+				orientation.x /= m;
+				orientation.y /= m;
 			}
+
+			SetUnitDirectionByValue(orientation);
 		}
-		*/
 
 		switch (GetUnitDirection()) {
 
