@@ -289,18 +289,6 @@ bool j1Scene::PreUpdate()
 		hasFoodChanged = false;
 	}
 
-	switch (pauseMenuActions) 
-	{
-	case PauseMenuActions_SLIDERFX:
-		App->menu->UpdateSlider(AudioFXPause);
-		break;
-	case PauseMenuActions_SLIDERMUSIC:
-		App->menu->UpdateSlider(AudioMusicPause);
-		break;
-	default:
-		break;
-	}
-
 	// Change to wite Gold Label Color before 2 sec
 	SDL_Color white = { 255,255,255,255 };
 	if (goldLabelColorTime.Read() > 1200 && hasGoldChanged == GoldChange_ChangeColor) {
@@ -916,7 +904,12 @@ bool j1Scene::Update(float dt)
 		CreateSettingsMenu();
 		pauseMenuActions = PauseMenuActions_NONE;
 		break;
-	
+	case PauseMenuActions_SLIDERFX:
+		App->menu->UpdateSlider(AudioFXPause);
+		break;
+	case PauseMenuActions_SLIDERMUSIC:
+		App->menu->UpdateSlider(AudioMusicPause);
+		break;
 	default:
 		break;
 	}
@@ -1793,19 +1786,6 @@ void j1Scene::UnLoadResourcesLabels()
 
 void j1Scene::CreatePauseMenu() 
 {
-	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
-	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	int x = parchmentImg->GetLocalPos().x + 100;
-	int y = parchmentImg->GetLocalPos().y + 110;
-	settingsButt = App->gui->CreateUIButton	 ({ x - 10, y }, buttonInfo, this);
-
-	y = parchmentImg->GetLocalPos().y + 60;
-	continueButt = App->gui->CreateUIButton	 ({ x - 8, y }, buttonInfo, this);
-
-	y = parchmentImg->GetLocalPos().y + 160;
-	buttonInfo.normalTexArea = { 1400, 45, 150, 33 };
-	ReturnMenuButt = App->gui->CreateUIButton({ x, y}, buttonInfo, this);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
@@ -1813,14 +1793,19 @@ void j1Scene::CreatePauseMenu()
 	labelInfo.normalColor = Black_;
 	labelInfo.hoverColor = ColorGreen;
 	labelInfo.text = "Settings";
-	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, settingsButt);
 
+	int x = parchmentImg->GetLocalPos().x + 100;
+	int y = parchmentImg->GetLocalPos().y + 70;
+	settingsLabel = App->gui->CreateUILabel({x, y}, labelInfo, this);
+
+	y += 50;
 	labelInfo.text = "Resume Game";
-	continueLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, continueButt);
+	continueLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
+	y += 50;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Return to Main Menu";
-	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
+	ReturnMenuLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
 	// Mouse texture
 	SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
@@ -1830,9 +1815,6 @@ void j1Scene::CreatePauseMenu()
 
 void j1Scene::DestroyPauseMenu() 
 {
-	App->gui->RemoveElem((UIElement**)&settingsButt);
-	App->gui->RemoveElem((UIElement**)&ReturnMenuButt);
-	App->gui->RemoveElem((UIElement**)&continueButt);
 	App->gui->RemoveElem((UIElement**)&settingsLabel);
 	App->gui->RemoveElem((UIElement**)&continueLabel);
 	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
@@ -1875,26 +1857,18 @@ void j1Scene::CreateSettingsMenu()
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
 	y += 50;
 	App->menu->AddSlider(AudioMusicPause, { x,y }, "Audio Music", relativeVol, butText, bgText, this);
-
-	buttonInfo.checkbox = false;
-	buttonInfo.normalTexArea = { 1400, 45, 40, 20 };
-	buttonInfo.hoverTexArea = { 0, 0, 0, 0 };
-	buttonInfo.pressedTexArea = { 0, 0, 0, 0 };
-	x = parchmentImg->GetLocalPos().x + 30;
-	y = parchmentImg->GetLocalPos().y + 195;
-	returnButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
-
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
 	labelInfo.hoverColor = ColorGreen;
 	labelInfo.pressedColor = White_;
 	labelInfo.text = "Back";
-	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
+	x = parchmentImg->GetLocalPos().x + 50;
+	y = parchmentImg->GetLocalPos().y + 185;
+	returnLabel = App->gui->CreateUILabel({x, y}, labelInfo, this);
 }
 
 void j1Scene::DestroySettingsMenu() 
 {
-	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&returnLabel);
 	App->gui->RemoveElem((UIElement**)&fullScreenButt);
 	App->gui->RemoveElem((UIElement**)&fullScreenLabel);
@@ -2330,22 +2304,22 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 		}
 
-		else if (UIelem == continueButt) {
+		else if (UIelem == continueLabel) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_DESTROY;
 		}
 
-		else if (UIelem == ReturnMenuButt) {
+		else if (UIelem == ReturnMenuLabel) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_RETURN_MENU;
 		}
 
-		else if (UIelem == settingsButt) {
+		else if (UIelem == settingsLabel) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_SETTINGS_MENU;
 		}
 
-		else if (UIelem == returnButt) {
+		else if (UIelem == returnLabel) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			DestroySettingsMenu();
 			pauseMenuActions = PauseMenuActions_CREATED;
