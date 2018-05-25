@@ -25,7 +25,7 @@
 
 j1Player::j1Player() : j1Module()
 {
-	name.assign("scene");
+	name.assign("player");
 }
 
 // Destructor
@@ -88,7 +88,7 @@ bool j1Player::Update(float dt)
 	isUnitSpawning = false;
 	if (!toSpawnUnitBarracks.empty())
 		CheckUnitSpawning(&toSpawnUnitBarracks);
-
+	
 	if (!toSpawnUnitGrypho.empty())
 		CheckUnitSpawning(&toSpawnUnitGrypho);
 
@@ -766,7 +766,16 @@ bool j1Player::Save(pugi::xml_node& save) const
 		barracks = save.child("barracks");
 	}
 
-	toSpawnUnitBarracks
+	queue<ToSpawnUnit*> unitsInBarracks = toSpawnUnitBarracks;
+
+	while (!unitsInBarracks.empty())
+	{
+		pugi::xml_node spawningUnit = barracks.append_child("spawningUnit");
+		SaveAttribute(unitsInBarracks.front()->entityType, "entityType", spawningUnit, create);
+		SaveAttribute(unitsInBarracks.front()->toSpawnTimer.Read(), "toSpawnTimer", spawningUnit, create);
+
+		unitsInBarracks.pop();
+	}
 
 	SaveAttribute(isWin, "isWin", barracks, create);
 	SaveAttribute(startGameTimer.Read(), "startGameTimer", barracks, create);

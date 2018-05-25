@@ -16,7 +16,44 @@
 	<entities />
 	<surge />
 	<fonts />
-	<scene />
+	<player>
+		<upgrades>
+			<barracksUpgrade barracksUpgrade="0" />
+			<townHallUpgrade townHallUpgrade="0" />
+			<keepUpgrade keepUpgrade="0" />
+		</upgrades>
+		<resources>
+			<totalGold totalGold="2500" />
+			<currentFood currentFood="9" />
+			<roomsCleared roomsCleared="0" />
+		</resources>
+		<stats>
+			<isWin isWin="0" />
+			<startGameTimer startGameTimer="18957" />
+			<unitProduce unitProduce="5" />
+			<enemiesKill enemiesKill="0" />
+			<buildDestroy buildDestroy="0" />
+		</stats>
+		<barracks>
+			<spawningUnit>
+				<entityType entityType="406" />
+				<toSpawnTimer toSpawnTimer="3643" />
+			</spawningUnit>
+			<spawningUnit>
+				<entityType entityType="407" />
+				<toSpawnTimer toSpawnTimer="3091" />
+			</spawningUnit>
+			<spawningUnit>
+				<entityType entityType="406" />
+				<toSpawnTimer toSpawnTimer="2453" />
+			</spawningUnit>
+			<isWin isWin="0" />
+			<startGameTimer startGameTimer="18957" />
+			<unitProduce unitProduce="5" />
+			<enemiesKill enemiesKill="0" />
+			<buildDestroy buildDestroy="0" />
+		</barracks>
+	</player>
 	<scene>
 		<general>
 			<isGoalFromMinimap isGoalFromMinimap="0" />
@@ -66,8 +103,8 @@
 		<terenas>
 			<terenasDialogEvent terenasDialogEvent="0" />
 			<adviceMessage adviceMessage="14" />
-			<terenasDialogTimer terenasDialogTimer="7907" />
-			<adviceMessageTimer adviceMessageTimer="13470" />
+			<terenasDialogTimer terenasDialogTimer="18671" />
+			<adviceMessageTimer adviceMessageTimer="22780" />
 		</terenas>
 	</scene>
 	<fow />
@@ -77,6 +114,6 @@
 	<gui />
 	<fade />
 	<renderer>
-		<camera x="-2124.25244" y="-3136" />
+		<camera x="-2016" y="-3136" />
 	</renderer>
 </game_state>

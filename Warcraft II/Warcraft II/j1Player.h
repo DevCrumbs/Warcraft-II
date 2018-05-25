@@ -96,7 +96,7 @@ public:
 	iPoint GetMouseTilePos() const;
 	iPoint GetMousePos() const;
 
-	void CheckUnitSpawning(forward_list<ToSpawnUnit*>* queue);
+	void CheckUnitSpawning(queue<ToSpawnUnit*>* queue);
 
 	void SpawnUnitFromBuilding(StaticEntity* spawnBuilding, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
 	void SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, UnitInfo unitInfo);
@@ -215,8 +215,8 @@ public:
 	UIMinimap* minimap = nullptr;
 
 	//Spawning units from barracks queues and variables
-	forward_list<ToSpawnUnit*> toSpawnUnitBarracks;
-	forward_list<ToSpawnUnit*> toSpawnUnitGrypho;
+	queue<ToSpawnUnit*> toSpawnUnitBarracks;
+	queue<ToSpawnUnit*> toSpawnUnitGrypho;
 
 	bool isUnitSpawning = false;
 
