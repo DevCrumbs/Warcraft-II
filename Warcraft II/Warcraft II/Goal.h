@@ -168,7 +168,7 @@ public:
 	// to be pursued. Calculate the desirability of the strategies
 	//void Arbitrate();
 	void AddGoal_Wander(uint maxDistance, iPoint startTile, bool isCurrTile, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted);
-	void AddGoal_AttackTarget(TargetInfo** targetInfo, bool isStateChanged = true);
+	void AddGoal_AttackTarget(TargetInfo* targetInfo, bool isStateChanged = true);
 	void AddGoal_MoveToPosition(iPoint destinationTile, bool isStateChanged = true);
 	void AddGoal_Patrol(iPoint originTile, iPoint destinationTile, bool isLookAround = false);
 	void AddGoal_GatherGold(GoldMine* goldMine);
@@ -181,7 +181,7 @@ class Goal_AttackTarget :public CompositeGoal
 {
 public:
 
-	Goal_AttackTarget(DynamicEntity* owner, TargetInfo** targetInfo, bool isStateChanged = true);
+	Goal_AttackTarget(DynamicEntity* owner, TargetInfo* targetInfo, bool isStateChanged = true);
 
 	void Activate();
 	GoalStatus Process(float dt);
@@ -189,7 +189,7 @@ public:
 
 private:
 
-	TargetInfo** targetInfo = nullptr;
+	TargetInfo* targetInfo = nullptr;
 
 	bool isStateChanged = true;
 
@@ -310,7 +310,7 @@ class Goal_HitTarget :public AtomicGoal
 {
 public:
 
-	Goal_HitTarget(DynamicEntity* owner, TargetInfo** target, bool isStateChanged = true);
+	Goal_HitTarget(DynamicEntity* owner, TargetInfo* target, bool isStateChanged = true);
 
 	void Activate();
 	GoalStatus Process(float dt);
@@ -318,7 +318,7 @@ public:
 
 private:
 
-	TargetInfo** targetInfo = nullptr;
+	TargetInfo* targetInfo = nullptr;
 	fPoint orientation = { 0,0 };
 
 	bool isStateChanged = true;

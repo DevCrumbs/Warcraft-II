@@ -236,6 +236,8 @@ void ElvenArcher::Move(float dt)
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_AttackTarget(newTarget);
 
+					newTarget = nullptr;
+
 					unitState = UnitState_AttackTarget;
 					unitCommand = UnitCommand_NoCommand;
 				}
@@ -618,13 +620,14 @@ void ElvenArcher::UnitStateMachine(float dt)
 					if (currTarget == nullptr) {
 
 						// Check if there are available targets (DYNAMIC ENTITY) 
-						TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
-						newTarget = &t;
+						newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
-						if (*newTarget != nullptr) {
+						if (newTarget != nullptr) {
 
-							if (SetCurrTarget((*newTarget)->target))
+							if (SetCurrTarget(newTarget->target))
 								brain->AddGoal_AttackTarget(newTarget, false);
+
+							newTarget = nullptr;
 						}
 					}
 				}
@@ -653,13 +656,12 @@ void ElvenArcher::UnitStateMachine(float dt)
 		if (singleUnit->IsFittingTile()) {
 
 			// Check if there are available targets (DYNAMIC ENTITY)
-			TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
-			newTarget = &t;
+			newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
-			if (*newTarget != nullptr) {
+			if (newTarget != nullptr) {
 
 				// A new target has found! Update the currTarget
-				if (currTarget != *newTarget) {
+				if (currTarget != newTarget) {
 
 					// Anticipate the removing of this unit from the attacking units of the target
 					if (currTarget != nullptr)
@@ -667,8 +669,10 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 					isHitting = false;
 
-					if (SetCurrTarget((*newTarget)->target))
+					if (SetCurrTarget(newTarget->target))
 						brain->AddGoal_AttackTarget(newTarget);
+
+					newTarget = nullptr;
 				}
 			}
 		}
@@ -687,13 +691,14 @@ void ElvenArcher::UnitStateMachine(float dt)
 			if (currTarget == nullptr) {
 
 				// Check if there are available targets (DYNAMIC ENTITY) 
-				TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
-				newTarget = &t;
+				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
-				if (*newTarget != nullptr) {
+				if (newTarget != nullptr) {
 
-					if (SetCurrTarget((*newTarget)->target))
+					if (SetCurrTarget(newTarget->target))
 						brain->AddGoal_AttackTarget(newTarget);
+
+					newTarget = nullptr;
 				}
 			}
 		}

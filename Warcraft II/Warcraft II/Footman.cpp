@@ -233,17 +233,16 @@ void Footman::Move(float dt)
 		case UnitCommand_AttackTarget:
 
 			if (newTarget != nullptr) {
-				if (*newTarget != nullptr) {
 
-					if (singleUnit->IsFittingTile()) {
+				if (singleUnit->IsFittingTile()) {
 
-						brain->RemoveAllSubgoals();
-						brain->AddGoal_AttackTarget(&*newTarget);
-						newTarget = nullptr;
+					brain->RemoveAllSubgoals();
+					brain->AddGoal_AttackTarget(newTarget);
 
-						unitState = UnitState_AttackTarget;
-						unitCommand = UnitCommand_NoCommand;
-					}
+					newTarget = nullptr;
+
+					unitState = UnitState_AttackTarget;
+					unitCommand = UnitCommand_NoCommand;
 				}
 			}
 
@@ -455,21 +454,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				it++;
 			}
 
-			if (!isTargetFound) {
-
-				it = targetsToRemove.begin();
-
-				while (it != targetsToRemove.end()) {
-
-					if ((*it)->target == c2->entity) {
-
-						isTargetFound = true;
-						break;
-					}
-					it++;
-				}
-			}
-
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
@@ -650,19 +634,14 @@ void Footman::UnitStateMachine(float dt)
 					if (currTarget == nullptr) {
 
 						// Check if there are available targets (DYNAMIC ENTITY) 
-						TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+						newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
-						if (t == nullptr)
-							break;
+						if (newTarget != nullptr) {
 
-						newTarget = &t;
+							if (SetCurrTarget(newTarget->target))
+								brain->AddGoal_AttackTarget(newTarget, false);
 
-						if (*newTarget != nullptr) {
-
-							if (SetCurrTarget((*newTarget)->target))
-								brain->AddGoal_AttackTarget(&*newTarget, false);
 							newTarget = nullptr;
-							LOG("Footman Added target 1");
 						}
 					}
 				}
@@ -691,17 +670,12 @@ void Footman::UnitStateMachine(float dt)
 		if (singleUnit->IsFittingTile()) {
 
 			// Check if there are available targets (DYNAMIC ENTITY)
-			TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+			newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
-			if (t == nullptr)
-				break;
-
-			newTarget = &t;
-
-			if (*newTarget != nullptr) {
+			if (newTarget != nullptr) {
 
 				// A new target has found! Update the currTarget
-				if (currTarget != *newTarget) {
+				if (currTarget != newTarget) {
 
 					// Anticipate the removing of this unit from the attacking units of the target
 					if (currTarget != nullptr)
@@ -709,10 +683,10 @@ void Footman::UnitStateMachine(float dt)
 
 					isHitting = false;
 
-					if (SetCurrTarget((*newTarget)->target))
-						brain->AddGoal_AttackTarget(&*newTarget);
+					if (SetCurrTarget(newTarget->target))
+						brain->AddGoal_AttackTarget(newTarget);
+
 					newTarget = nullptr;
-					LOG("Footman Added target 2");
 				}
 			}
 		}
@@ -731,19 +705,14 @@ void Footman::UnitStateMachine(float dt)
 			if (currTarget == nullptr) {
 
 				// Check if there are available targets (DYNAMIC ENTITY) 
-				TargetInfo* t = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
-				if (t == nullptr)
-					break;
+				if (newTarget != nullptr) {
 
-				newTarget = &t;
+					if (SetCurrTarget(newTarget->target))
+						brain->AddGoal_AttackTarget(newTarget);
 
-				if (*newTarget != nullptr) {
-
-					if (SetCurrTarget((*newTarget)->target))
-						brain->AddGoal_AttackTarget(&*newTarget);
 					newTarget = nullptr;
-					LOG("Footman Added target 3");
 				}
 			}
 		}

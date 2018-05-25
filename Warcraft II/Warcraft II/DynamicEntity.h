@@ -272,7 +272,7 @@ protected:
 	list<TargetInfo*> targets;
 	list<TargetInfo*> targetsToRemove;
 	TargetInfo* currTarget = nullptr;
-	TargetInfo** newTarget = nullptr;
+	TargetInfo* newTarget = nullptr;
 
 	bool isHitting = false; // if true, the unit is hitting their target
 

@@ -688,19 +688,9 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 	if (target == nullptr)
 		return false;
 
-	list<TargetInfo*>::const_iterator it = targetsToRemove.begin();
-
-	while (it != targetsToRemove.end()) {
-
-		if ((*it)->target == target)
-			return false;
-
-		it++;
-	}
+	list<TargetInfo*>::const_iterator it = targets.begin();
 
 	TargetInfo* targetInfo = nullptr;
-
-	it = targets.begin();
 
 	// Check if the target is already in the targets list (this means that the TargetInfo exists)
 	while (it != targets.end()) {
@@ -729,9 +719,8 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 		if (*it != nullptr) {
 
 			currTarget = *it;
-			newTarget = &(*it);
+			newTarget = currTarget;
 			ret = true;
-			LOG("Set currTarget: %x", &(*it));
 		}
 	}
 
@@ -748,6 +737,10 @@ bool DynamicEntity::UpdateTargetsToRemove()
 	list<TargetInfo*>::const_iterator it = targetsToRemove.begin();
 
 	while (it != targetsToRemove.end()) {
+
+		if (currTarget == *it)
+
+			InvalidateCurrTarget();
 	
 		if ((*it)->isInGoals == 0 && (*it)->isRemoveNeeded) {
 		

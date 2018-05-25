@@ -182,7 +182,7 @@ void Goal_Think::AddGoal_Wander(uint maxDistance, iPoint startTile, bool isCurrT
 	AddSubgoal(new Goal_Wander(owner, maxDistance, startTile, isCurrTile, minSecondsToChange, maxSecondsToChange, minSecondsUntilNextChange, maxSecondsUntilNextChange, probabilityGoalCompleted));
 }
 
-void Goal_Think::AddGoal_AttackTarget(TargetInfo** targetInfo, bool isStateChanged)
+void Goal_Think::AddGoal_AttackTarget(TargetInfo* targetInfo, bool isStateChanged)
 {
 	AddSubgoal(new Goal_AttackTarget(owner, targetInfo, isStateChanged));
 }
@@ -219,9 +219,9 @@ void Goal_Think::AddGoal_LookAround(uint minSecondsToChange, uint maxSecondsToCh
 
 // Goal_AttackTarget ---------------------------------------------------------------------
 
-Goal_AttackTarget::Goal_AttackTarget(DynamicEntity* owner, TargetInfo** targetInfo, bool isStateChanged) :CompositeGoal(owner, GoalType_AttackTarget), targetInfo(targetInfo), isStateChanged(isStateChanged) 
+Goal_AttackTarget::Goal_AttackTarget(DynamicEntity* owner, TargetInfo* targetInfo, bool isStateChanged) :CompositeGoal(owner, GoalType_AttackTarget), targetInfo(targetInfo), isStateChanged(isStateChanged) 
 {
-	(*this->targetInfo)->isInGoals++;
+	(this->targetInfo)->isInGoals++;
 }
 
 /*
@@ -243,7 +243,12 @@ void Goal_AttackTarget::Activate()
 
 	RemoveAllSubgoals();
 
-	if ((*targetInfo)->isRemoveNeeded || (*targetInfo)->IsTargetDead() || !(*targetInfo)->IsTargetValid()) {
+	if (targetInfo->isRemoveNeeded) {
+	
+		goalStatus = GoalStatus_Completed;
+		return;
+	}	
+	else if (targetInfo->IsTargetDead() || !targetInfo->IsTargetValid()) {
 
 		/// The target has recently died || The target has recently become invalid
 		goalStatus = GoalStatus_Completed;
@@ -255,13 +260,13 @@ void Goal_AttackTarget::Activate()
 	AddSubgoal(new Goal_HitTarget(owner, &*targetInfo, isStateChanged));
 
 	// If the target is far from the unit, head directly at the target's position
-	if (!(*targetInfo)->isAttackSatisfied) {
+	if (!targetInfo->isAttackSatisfied) {
 
-		iPoint targetTile = App->map->WorldToMap((*targetInfo)->target->GetPos().x, (*targetInfo)->target->GetPos().y);
+		iPoint targetTile = App->map->WorldToMap(targetInfo->target->GetPos().x, targetInfo->target->GetPos().y);
 
-		if ((*targetInfo)->target->entityType == EntityCategory_STATIC_ENTITY) {
+		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
 
-			StaticEntity* building = (StaticEntity*)(*targetInfo)->target;
+			StaticEntity* building = (StaticEntity*)targetInfo->target;
 			targetTile = { -1,-1 };
 
 			// Option a: the unit searches for a free surrounding tile of the building
@@ -321,7 +326,7 @@ void Goal_AttackTarget::Activate()
 	}
 
 	// The target is being attacked by this unit
-	(*targetInfo)->target->AddAttackingUnit(owner);
+	targetInfo->target->AddAttackingUnit(owner);
 
 	if (isStateChanged)
 		owner->SetUnitState(UnitState_AttackTarget);
@@ -332,16 +337,26 @@ void Goal_AttackTarget::Activate()
 
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
 
-	if (owner->GetCurrTarget() == nullptr)
-
-		owner->SetCurrTarget((*targetInfo)->target);
+	if (!targetInfo->isRemoveNeeded)
+		owner->SetCurrTarget(targetInfo->target);
+	else
+		owner->InvalidateCurrTarget();
 }
 
 GoalStatus Goal_AttackTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
-	if ((*targetInfo)->isRemoveNeeded || !(*targetInfo)->IsTargetValid()) {
+	if (targetInfo->isRemoveNeeded) {
+	
+		/// The target has recently become invalid
+		if (owner->GetSingleUnit()->IsFittingTile()) {
+
+			goalStatus = GoalStatus_Completed;
+			return goalStatus;
+		}
+	}
+	else if (!targetInfo->IsTargetValid()) {
 
 		/// The target has recently become invalid
 		if (owner->GetSingleUnit()->IsFittingTile()) {
@@ -353,9 +368,9 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 	else if (subgoals.size() > 0 && subgoals.front()->GetType() == GoalType_MoveToPosition) {
 
 		// If the target is a building, also check if DistanceManhattan is <= 1
-		if ((*targetInfo)->target->entityType == EntityCategory_STATIC_ENTITY && !(*targetInfo)->isAttackSatisfied) {
+		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && !targetInfo->isAttackSatisfied) {
 		
-			list<iPoint> buildingTiles = App->entities->GetBuildingTiles((StaticEntity*)(*targetInfo)->target);
+			list<iPoint> buildingTiles = App->entities->GetBuildingTiles((StaticEntity*)targetInfo->target);
 
 			if (buildingTiles.size() > 0) {
 
@@ -365,7 +380,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 					if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1)
 
-						(*targetInfo)->isAttackSatisfied = true;
+						targetInfo->isAttackSatisfied = true;
 
 					it++;
 				}
@@ -373,7 +388,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 		}
 
 		// The unit was chasing their target, but the attack distance has been suddenly satisfied
-		if ((*targetInfo)->isAttackSatisfied) {
+		if (targetInfo->isAttackSatisfied) {
 
 			if (owner->GetSingleUnit()->IsFittingTile()) {
 
@@ -391,9 +406,10 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
 
-	if (owner->GetCurrTarget() == nullptr)
-
-		owner->SetCurrTarget((*targetInfo)->target);
+	if (!targetInfo->isRemoveNeeded)
+		owner->SetCurrTarget(targetInfo->target);
+	else
+		owner->InvalidateCurrTarget();
 
 	return goalStatus;
 }
@@ -402,42 +418,42 @@ void Goal_AttackTarget::Terminate()
 {
 	RemoveAllSubgoals();
 
-	if ((*targetInfo)->isRemoveNeeded) {
+	owner->InvalidateCurrTarget();
+
+	if (targetInfo->isRemoveNeeded) {
 
 		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
-
 	}
-	else if ((*targetInfo)->IsTargetDead() || !(*targetInfo)->IsTargetValid()) {
+	else if (targetInfo->IsTargetDead() || !targetInfo->IsTargetValid()) {
 
 		/// The target has recently died || The target has recently become invalid
 
-		(*targetInfo)->isRemoveNeeded = true;
-		list<TargetInfo*> targets = owner->GetTargets();
-		list<TargetInfo*> targetsToRemove = owner->GetTargetsToRemove();
+		// Removing target process --
+		if (!targetInfo->isRemoveNeeded) {
 
-		list<TargetInfo*>::const_iterator it = find(targets.begin(), targets.end(), *targetInfo);
+			targetInfo->isRemoveNeeded = true;
+			list<TargetInfo*> targets = owner->GetTargets();
+			list<TargetInfo*> targetsToRemove = owner->GetTargetsToRemove();
 
-		if (it != targets.end())
+			list<TargetInfo*>::const_iterator it = find(targets.begin(), targets.end(), targetInfo);
 			targetsToRemove.splice(targetsToRemove.begin(), targets, it);
+		}
+		// -- Removing target process
 	}
 	else {
 
 		if (!App->entities->isEntityFactoryCleanUp) {
 
-			(*targetInfo)->target->RemoveAttackingUnit(owner);
+			targetInfo->target->RemoveAttackingUnit(owner);
 
 			// If the target is a building, set isAttackSatisfied to false (just in case)
-			if ((*targetInfo)->target->entityType == EntityCategory_STATIC_ENTITY && (*targetInfo)->isAttackSatisfied)
+			if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied)
 
-				(*targetInfo)->isAttackSatisfied = false;
-
-			if ((*targetInfo)->target == owner->GetCurrTarget())
-
-				owner->InvalidateCurrTarget();
+				targetInfo->isAttackSatisfied = false;
 		}
 	}
 
-	(*targetInfo)->isInGoals--;
+	targetInfo->isInGoals--;
 
 	// -----
 
@@ -906,19 +922,25 @@ void Goal_MoveToPosition::Terminate()
 
 // Goal_HitTarget ---------------------------------------------------------------------
 
-Goal_HitTarget::Goal_HitTarget(DynamicEntity* owner, TargetInfo** targetInfo, bool isStateChanged) :AtomicGoal(owner, GoalType_HitTarget), targetInfo(targetInfo), isStateChanged(isStateChanged) {}
+Goal_HitTarget::Goal_HitTarget(DynamicEntity* owner, TargetInfo* targetInfo, bool isStateChanged) :AtomicGoal(owner, GoalType_HitTarget), targetInfo(targetInfo), isStateChanged(isStateChanged) {}
 
 void Goal_HitTarget::Activate()
 {
 	goalStatus = GoalStatus_Active;
 
-	if ((*targetInfo)->isRemoveNeeded || (*targetInfo)->IsTargetDead() || !(*targetInfo)->IsTargetValid()) {
+	if (targetInfo->isRemoveNeeded) {
+	
+		/// The target has recently died || The target has recently become invalid
+		goalStatus = GoalStatus_Completed;
+		return;
+	}
+	else if (targetInfo->IsTargetDead() || !targetInfo->IsTargetValid()) {
 
 		/// The target has recently died || The target has recently become invalid
 		goalStatus = GoalStatus_Completed;
 		return;
 	}
-	else if (!(*targetInfo)->isAttackSatisfied || !(*targetInfo)->isSightSatisfied) {
+	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied) {
 
 		/// The target is no longer within the attack nor sight radius of the unit
 		goalStatus = GoalStatus_Failed;
@@ -931,29 +953,30 @@ void Goal_HitTarget::Activate()
 
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
 
-	if (owner->GetCurrTarget() == nullptr)
-
-		owner->SetCurrTarget((*targetInfo)->target);
+	if (!targetInfo->isRemoveNeeded)
+		owner->SetCurrTarget(targetInfo->target);
+	else
+		owner->InvalidateCurrTarget();
 }
 
 GoalStatus Goal_HitTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
-	if ((*targetInfo)->isRemoveNeeded) {
+	if (targetInfo->isRemoveNeeded) {
 
 		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
-	else if ((*targetInfo)->IsTargetDead()) {
+	else if (targetInfo->IsTargetDead()) {
 
 		/// The target has recently died
 
 		// If the target is a Sheep or a Boar, apply health to the unit that killed it (this unit)
-		if ((*targetInfo)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+		if (targetInfo->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-			DynamicEntity* dyn = (DynamicEntity*)(*targetInfo)->target;
+			DynamicEntity* dyn = (DynamicEntity*)targetInfo->target;
 
 			if (dyn->dynamicEntityType == EntityType_SHEEP) {
 
@@ -992,14 +1015,14 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
-	else if (!(*targetInfo)->IsTargetValid()) {
+	else if (!targetInfo->IsTargetValid()) {
 	
 		/// The target has recently become invalid
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
 	/// The target is no longer within the attack nor sight radius of the unit
-	else if (!(*targetInfo)->isAttackSatisfied || !(*targetInfo)->isSightSatisfied) {
+	else if (!targetInfo->isAttackSatisfied || !targetInfo->isSightSatisfied) {
 
 		goalStatus = GoalStatus_Failed;
 		return goalStatus;
@@ -1017,7 +1040,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		DynamicEntity* dyn = (DynamicEntity*)owner;
 
 		// Calculate the orientation of the particle (Elven Archer, Troll Axethrower, Gryphon Rider and Dragon)
-		orientation = { (*targetInfo)->target->GetPos().x - owner->GetPos().x, (*targetInfo)->target->GetPos().y - owner->GetPos().y };
+		orientation = { targetInfo->target->GetPos().x - owner->GetPos().x, targetInfo->target->GetPos().y - owner->GetPos().y };
 
 		float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 
@@ -1042,31 +1065,31 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				switch (owner->GetDirection(orientation)) {
 
 				case UnitDirection_DownRight:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpRight:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Right:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_DownLeft:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpLeft:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Left:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Down:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 
 				case UnitDirection_Up:
 				case UnitDirection_NoDirection:
 				default:
-					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->playerArrows, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), elvenArcher->GetArrowSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				}
 			}
@@ -1082,31 +1105,31 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				switch (owner->GetDirection(orientation)) {
 
 				case UnitDirection_DownRight:
-					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpRight:
-					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Right:
-					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_DownLeft:
-					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpLeft:
-					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Left:
-					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Down:
-					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 
 				case UnitDirection_Up:
 				case UnitDirection_NoDirection:
 				default:
-					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->gryphonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), gryphonRider->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				}
 			}
@@ -1123,31 +1146,31 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				switch (owner->GetDirection(orientation)) {
 
 				case UnitDirection_DownRight:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, (*targetInfo)->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpRight:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, (*targetInfo)->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Right:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, (*targetInfo)->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_DownLeft:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, (*targetInfo)->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_UpLeft:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, (*targetInfo)->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Left:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, (*targetInfo)->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				case UnitDirection_Down:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, (*targetInfo)->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 
 				case UnitDirection_Up:
 				case UnitDirection_NoDirection:
 				default:
-					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, (*targetInfo)->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage((*targetInfo)->target));
+					App->particles->AddParticle(App->particles->trollAxe, { (int)owner->GetPos().x + 8, (int)owner->GetPos().y + 8 }, targetInfo->target->GetPos(), trollAxethrower->GetAxeSpeed(), owner->GetDamage(targetInfo->target));
 					break;
 				}
 			}
@@ -1163,31 +1186,31 @@ GoalStatus Goal_HitTarget::Process(float dt)
 			switch (owner->GetDirection(orientation)) {
 
 			case UnitDirection_DownRight:
-				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 				break;
 			case UnitDirection_UpRight:
-				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 				break;
 			case UnitDirection_Right:
-				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 				break;
 			case UnitDirection_DownLeft:
-				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 				break;
 			case UnitDirection_UpLeft:
-				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 				break;
 			case UnitDirection_Left:
-				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 				break;
 			case UnitDirection_Down:
-				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 				break;
 
 			case UnitDirection_Up:
 			case UnitDirection_NoDirection:
 			default:
-				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, (*targetInfo)->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage((*targetInfo)->target));
+				App->particles->AddParticle(App->particles->dragonFire, { (int)owner->GetPos().x, (int)owner->GetPos().y }, targetInfo->target->GetPos(), dragon->GetFireSpeed(), owner->GetDamage(targetInfo->target));
 				break;
 			}
 		}
@@ -1198,11 +1221,11 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 			App->audio->PlayFx(App->audio->GetFX().swordClash, 0);
 
-			(*targetInfo)->target->ApplyDamage(owner->GetDamage((*targetInfo)->target));
+			targetInfo->target->ApplyDamage(owner->GetDamage(targetInfo->target));
 
-			if ((*targetInfo)->target->entityType == EntityCategory_STATIC_ENTITY) {
+			if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
 
-				StaticEntity* building = (StaticEntity*)(*targetInfo)->target;
+				StaticEntity* building = (StaticEntity*)targetInfo->target;
 				building->CheckBuildingState();
 			}
 			break;
@@ -1214,9 +1237,10 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
 
-	if (owner->GetCurrTarget() == nullptr)
-
-		owner->SetCurrTarget((*targetInfo)->target);
+	if (!targetInfo->isRemoveNeeded)
+		owner->SetCurrTarget(targetInfo->target);
+	else
+		owner->InvalidateCurrTarget();
 
 	return goalStatus;
 }
