@@ -135,7 +135,6 @@ void Grunt::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
-			//App->entities->InvalidateTargetInfo(this);
 
 			// Remove any path request
 			pathPlanner->SetSearchRequested(false);
@@ -221,6 +220,12 @@ void Grunt::Move(float dt)
 				}
 			}
 		}
+	}
+
+	if (currTarget != nullptr) {
+
+		if (currTarget->isRemoveNeeded)
+			currTarget = nullptr;
 	}
 
 	if (!isDead) {

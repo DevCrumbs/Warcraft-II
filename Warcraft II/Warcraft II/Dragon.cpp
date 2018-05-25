@@ -222,6 +222,12 @@ void Dragon::Move(float dt)
 		}
 	}
 
+	if (currTarget != nullptr) {
+
+		if (currTarget->isRemoveNeeded)
+			currTarget = nullptr;
+	}
+
 	if (!isDead) {
 
 		iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
@@ -240,6 +246,9 @@ void Dragon::Move(float dt)
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);
+
+		// Update targets to be removed
+		UpdateTargetsToRemove();
 	}
 	
 	UnitStateMachine(dt);

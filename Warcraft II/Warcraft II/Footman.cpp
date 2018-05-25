@@ -120,7 +120,6 @@ void Footman::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
-			//App->entities->InvalidateTargetInfo(this);
 
 			// Remove any path request
 			pathPlanner->SetSearchRequested(false);
@@ -145,6 +144,12 @@ void Footman::Move(float dt)
 
 			LOG("A Footman has died");
 		}
+	}
+
+	if (currTarget != nullptr) {
+	
+		if (currTarget->isRemoveNeeded)
+			currTarget = nullptr;
 	}
 
 	if (!isDead && isValid) {

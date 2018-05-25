@@ -144,6 +144,12 @@ void ElvenArcher::Move(float dt)
 		}
 	}
 
+	if (currTarget != nullptr) {
+
+		if (currTarget->isRemoveNeeded)
+			currTarget = nullptr;
+	}
+
 	if (!isDead && isValid) {
 
 		// PROCESS THE COMMANDS
@@ -306,9 +312,14 @@ void ElvenArcher::Move(float dt)
 		}
 	}
 
-	if (!isDead)
+	if (!isDead) {
+
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);
+
+		// Update targets to be removed
+		UpdateTargetsToRemove();
+	}
 
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
