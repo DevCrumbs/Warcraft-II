@@ -4467,6 +4467,7 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 	while (dynEnt != activeDynamicEntities.end()) {
 		// MYTODO: Add some code here
+
 		dynEnt++;
 	}
 
