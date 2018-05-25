@@ -390,5 +390,64 @@ bool j1EnemyWave::Load(pugi::xml_node& save)
 
 bool j1EnemyWave::Save(pugi::xml_node& save) const 
 {
+	bool create = false;
+
+	pugi::xml_node general;
+	if (save.child("general") == NULL)
+	{
+		general = save.append_child("general");
+		create = true;
+	}
+	else
+	{
+		general = save.child("general");
+	}
+
+	SaveAttribute(spawnProbability, "spawnProbability", general, create);
+	SaveAttribute(maxSpawnPerPhase, "maxSpawnPerPhase", general, create);
+	SaveAttribute(maxSpawnPerWave, "maxSpawnPerWave", general, create);
+	SaveAttribute(totalWaves, "totalWaves", general, create);
+	SaveAttribute(isActiveWaves, "isActiveWaves", general, create);
+	SaveAttribute(isStartWave, "isStartWave", general, create);
+	SaveAttribute(totalSpawnOfCurrWave, "totalSpawnOfCurrWave", general, create);
+
+	create = false;
+
+
+	pugi::xml_node currWave;
+	if (save.child("currWave") == NULL)
+	{
+		currWave = save.append_child("currWave");
+		create = true;
+	}
+	else
+	{
+		currWave = save.child("currWave");
+	}
+
+	SaveAttribute(totalPhasesOfCurrWave, "totalPhasesOfCurrWave", currWave, create);
+	SaveAttribute(phasesOfCurrWave, "phasesOfCurrWave", currWave, create);
+
+	create = false;
+
+	// Waves timeline
+	pugi::xml_node timeline;
+	if (save.child("timeline") == NULL)
+	{
+		timeline = save.append_child("timeline");
+		create = true;
+	}
+	else
+	{
+		timeline = save.child("timeline");
+	}
+
+	SaveAttribute(nextWaveTimer, "nextWaveTimer", currWave, timeline);
+	SaveAttribute(nextPhaseTimer, "nextPhaseTimer", currWave, timeline);
+	SaveAttribute(secondsToNextWave, "secondsToNextWave", currWave, timeline);
+	SaveAttribute(secondsToNextPhase, "secondsToNextPhase", currWave, timeline);
+
+	create = false;
+
 	return true;
 }
