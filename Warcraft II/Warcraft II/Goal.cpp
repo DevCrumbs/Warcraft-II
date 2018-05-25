@@ -412,7 +412,13 @@ void Goal_AttackTarget::Terminate()
 		/// The target has recently died || The target has recently become invalid
 
 		(*targetInfo)->isRemoveNeeded = true;
-		owner->GetTargets().splice(find(owner->GetTargets().begin(), owner->GetTargets().end(), *targetInfo), owner->GetTargetsToRemove());
+		list<TargetInfo*> targets = owner->GetTargets();
+		list<TargetInfo*> targetsToRemove = owner->GetTargetsToRemove();
+
+		list<TargetInfo*>::const_iterator it = find(targets.begin(), targets.end(), *targetInfo);
+
+		if (it != targets.end())
+			targetsToRemove.splice(targetsToRemove.begin(), targets, it);
 	}
 	else {
 
@@ -906,13 +912,7 @@ void Goal_HitTarget::Activate()
 {
 	goalStatus = GoalStatus_Active;
 
-	if (*targetInfo == nullptr) {
-
-		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
-		goalStatus = GoalStatus_Completed;
-		return;
-	}
-	else if ((*targetInfo)->IsTargetDead() || !(*targetInfo)->IsTargetValid()) {
+	if ((*targetInfo)->isRemoveNeeded || (*targetInfo)->IsTargetDead() || !(*targetInfo)->IsTargetValid()) {
 
 		/// The target has recently died || The target has recently become invalid
 		goalStatus = GoalStatus_Completed;
@@ -940,7 +940,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
-	if (*targetInfo == nullptr) {
+	if ((*targetInfo)->isRemoveNeeded) {
 
 		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
 		goalStatus = GoalStatus_Completed;
@@ -1223,15 +1223,10 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 void Goal_HitTarget::Terminate()
 {
-	if (owner->dynamicEntityType == EntityType_GRUNT)
-		LOG("Grunt HitTarget terminate");
-	else if (owner->dynamicEntityType == EntityType_FOOTMAN)
-		LOG("Footman HitTarget terminate");
-
 	owner->SetHitting(false);
 	owner->SetIsStill(true);
 
-	//targetInfo = nullptr;
+	targetInfo = nullptr;
 	orientation = { 0,0 };
 
 	if (isStateChanged)

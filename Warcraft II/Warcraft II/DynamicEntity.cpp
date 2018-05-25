@@ -53,28 +53,6 @@ DynamicEntity::~DynamicEntity()
 	isBlitSavedGroupSelection = false;
 	isBlitSelectedGroupSelection = false;
 
-	// Remove Attack
-	if (!App->entities->isEntityFactoryCleanUp)
-
-		App->entities->InvalidateTargetInfo(this);
-
-	isStill = true;
-
-	if (currTarget != nullptr)
-		currTarget = nullptr;
-
-	if (newTarget != nullptr)
-		newTarget = nullptr;
-
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		RemoveTargetInfo(*it);
-		it++;
-	}
-	targets.clear();
-
 	// Remove Goals
 	if (brain != nullptr) {
 
@@ -92,6 +70,47 @@ DynamicEntity::~DynamicEntity()
 		delete singleUnit;
 	singleUnit = nullptr;
 
+	// Remove Attack
+	//if (!App->entities->isEntityFactoryCleanUp)
+
+		//App->entities->InvalidateTargetInfo(this);
+
+	isStill = true;
+
+	if (currTarget != nullptr)
+		currTarget = nullptr;
+
+	if (newTarget != nullptr)
+		newTarget = nullptr;
+
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+
+		delete *it;
+		it++;
+	}
+	targets.clear();
+
+	it = targetsToRemove.begin();
+
+	while (it != targetsToRemove.end()) {
+
+		delete *it;
+		it++;
+	}
+	targetsToRemove.clear();
+
+	// Remove Colliders
+	if (sightRadiusCollider != nullptr)
+		sightRadiusCollider->isRemove = true;
+	sightRadiusCollider = nullptr;
+
+	if (attackRadiusCollider != nullptr)
+		attackRadiusCollider->isRemove = true;
+	attackRadiusCollider = nullptr;
+
+	// Other
 	if (!App->gui->isGuiCleanUp) {
 
 		if (lifeBar != nullptr) {
@@ -107,15 +126,6 @@ DynamicEntity::~DynamicEntity()
 
 	color = ColorWhite;
 	colorName = "White";
-
-	// Remove Colliders
-	if (sightRadiusCollider != nullptr)
-		sightRadiusCollider->isRemove = true;
-	sightRadiusCollider = nullptr;
-
-	if (attackRadiusCollider != nullptr)
-		attackRadiusCollider->isRemove = true;
-	attackRadiusCollider = nullptr;
 }
 
 void DynamicEntity::Move(float dt) {}
@@ -678,9 +688,19 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 	if (target == nullptr)
 		return false;
 
-	list<TargetInfo*>::const_iterator it = targets.begin();
+	list<TargetInfo*>::const_iterator it = targetsToRemove.begin();
+
+	while (it != targetsToRemove.end()) {
+
+		if ((*it)->target == target)
+			return false;
+
+		it++;
+	}
 
 	TargetInfo* targetInfo = nullptr;
+
+	it = targets.begin();
 
 	// Check if the target is already in the targets list (this means that the TargetInfo exists)
 	while (it != targets.end()) {
@@ -723,44 +743,13 @@ void DynamicEntity::InvalidateCurrTarget()
 	currTarget = nullptr;
 }
 
-bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
-{
-	if (targetInfo == nullptr)
-		return false;
-
-	// Remove the target from the targets list
-	list<TargetInfo*>::iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		if ((*it)->target == targetInfo->target) {
-
-			if (!(*it)->IsTargetDead())
-
-				(*it)->target->RemoveAttackingUnit(this);
-
-			if (currTarget == *it)
-
-				InvalidateCurrTarget();
-
-			delete *it;
-			targets.remove(*it);
-
-			return true;
-		}
-		it++;
-	}
-
-	return false;
-}
-
 bool DynamicEntity::UpdateTargetsToRemove() 
 {
 	list<TargetInfo*>::const_iterator it = targetsToRemove.begin();
 
 	while (it != targetsToRemove.end()) {
 	
-		if ((*it)->isInGoals == 0) {
+		if ((*it)->isInGoals == 0 && (*it)->isRemoveNeeded) {
 		
 			delete *it;
 			targetsToRemove.remove(*it);

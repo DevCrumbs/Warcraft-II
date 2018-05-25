@@ -3754,29 +3754,46 @@ bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
 
 	while (dynEnt != activeDynamicEntities.end()) {
 
-		if (*dynEnt != target) {
+		if (!(*dynEnt)->isDead && !(*dynEnt)->isRemove
+			&& *dynEnt != target
+			&& (*dynEnt)->dynamicEntityType != EntityType_ALLERIA && (*dynEnt)->dynamicEntityType != EntityType_TURALYON) {
 
-			if ((*dynEnt)->dynamicEntityType != EntityType_ALLERIA && (*dynEnt)->dynamicEntityType != EntityType_TURALYON) {
+			// Remove the target as an attacking unit
+			(*dynEnt)->RemoveAttackingUnit(target);
 
-				// Remove the target as an attacking unit
-				(*dynEnt)->RemoveAttackingUnit(target);
+			// Remove the target from the entity targets list
+			list<TargetInfo*> targets = (*dynEnt)->GetTargets();
+			list<TargetInfo*> targetsToRemove = (*dynEnt)->GetTargetsToRemove();
+			list<TargetInfo*>::const_iterator it = targets.begin();
 
-				// Remove the target from the entity targets list
-				list<TargetInfo*> targetsInfo = (*dynEnt)->GetTargets();
-				list<TargetInfo*>::const_iterator it = targetsInfo.begin();
+			while (it != targets.end()) {
 
-				while (it != targetsInfo.end()) {
+				if ((*it)->target == target) {
 
-					if ((*it)->target == target) {
+					if (!(*it)->IsTargetDead())
 
-						(*dynEnt)->RemoveTargetInfo(*it);
-						break;
+						(*it)->target->RemoveAttackingUnit(*dynEnt);
+
+					if ((*dynEnt)->GetCurrTarget() == (*it)->target)
+
+						(*dynEnt)->InvalidateCurrTarget();
+
+					if ((*it)->isInGoals > 0 && !(*it)->isRemoveNeeded) {
+
+						(*it)->isRemoveNeeded = true;
+						targetsToRemove.splice(targetsToRemove.begin(), targets, it);
 					}
-					it++;
+					else if (!(*it)->isRemoveNeeded) {
+
+						delete *it;
+						targets.remove(*it);
+					}
+
+					break;
 				}
+				it++;
 			}
 		}
-
 		dynEnt++;
 	}
 

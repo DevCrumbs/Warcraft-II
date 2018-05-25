@@ -135,7 +135,7 @@ void Grunt::Move(float dt)
 
 			// Remove Movement (so other units can walk above them)
 			App->entities->InvalidateMovementEntity(this);
-			App->entities->InvalidateTargetInfo(this);
+			//App->entities->InvalidateTargetInfo(this);
 
 			// Remove any path request
 			pathPlanner->SetSearchRequested(false);
@@ -342,13 +342,28 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				if ((*it)->target == c2->entity) {
 
-					LOG("Already target Grunt");
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
 				}
 				it++;
 			}
+
+			if (!isTargetFound) {
+			
+				it = targetsToRemove.begin();
+
+				while (it != targetsToRemove.end()) {
+
+					if ((*it)->target == c2->entity) {
+
+						isTargetFound = true;
+						break;
+					}
+					it++;
+				}
+			}
+
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
@@ -458,12 +473,12 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 						InvalidateCurrTarget();
 
-					if ((*it)->isInGoals > 0) {
+					if ((*it)->isInGoals > 0 && !(*it)->isRemoveNeeded) {
 
 						(*it)->isRemoveNeeded = true;
-						targets.splice(it, targetsToRemove);
+						targetsToRemove.splice(targetsToRemove.begin(), targets, it);
 					}
-					else {
+					else if (!(*it)->isRemoveNeeded) {
 					
 						delete *it;
 						targets.remove(*it);
