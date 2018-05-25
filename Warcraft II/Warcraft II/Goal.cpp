@@ -185,7 +185,7 @@ void Goal_Think::AddGoal_Wander(uint maxDistance, iPoint startTile, bool isCurrT
 void Goal_Think::AddGoal_AttackTarget(TargetInfo** targetInfo, bool isStateChanged)
 {
 	AddSubgoal(new Goal_AttackTarget(owner, targetInfo, isStateChanged));
-	LOG("Added Goal_AttackTarget: %p", &(*targetInfo));
+	LOG("Added Goal_AttackTarget: %x", &(*targetInfo));
 }
 
 void Goal_Think::AddGoal_MoveToPosition(iPoint destinationTile, bool isStateChanged)
@@ -256,7 +256,7 @@ void Goal_AttackTarget::Activate()
 
 	// -----
 
-	AddSubgoal(new Goal_HitTarget(owner, targetInfo, isStateChanged));
+	AddSubgoal(new Goal_HitTarget(owner, &*targetInfo, isStateChanged));
 
 	// If the target is far from the unit, head directly at the target's position
 	if (!(*targetInfo)->isAttackSatisfied) {
@@ -334,6 +334,8 @@ void Goal_AttackTarget::Activate()
 	chaseTimer.Start();
 	chaseTime = 6.0f;
 
+	(*targetInfo)->isAGoal = true;
+
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
 
 	if (owner->GetCurrTarget() == nullptr)
@@ -343,14 +345,6 @@ void Goal_AttackTarget::Activate()
 
 GoalStatus Goal_AttackTarget::Process(float dt)
 {
-	if (*targetInfo != nullptr) {
-
-		if (owner->dynamicEntityType == EntityType_GRUNT)
-			LOG("Grunt goal: %p", &(*targetInfo));
-		else if (owner->dynamicEntityType == EntityType_FOOTMAN)
-			LOG("Footman goal: %p", &(*targetInfo));
-	}
-
 	ActivateIfInactive();
 
 	if (*targetInfo == nullptr) {
@@ -358,6 +352,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
 		if (owner->GetSingleUnit()->IsFittingTile()) {
 
+			LOG("Target nullptr, Goal_Completed");
 			goalStatus = GoalStatus_Completed;
 			return goalStatus;
 		}
@@ -424,11 +419,6 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 void Goal_AttackTarget::Terminate()
 {
-	if (owner->dynamicEntityType == EntityType_GRUNT)
-		LOG("Grunt AttackTarget terminate");
-	else if (owner->dynamicEntityType == EntityType_FOOTMAN)
-		LOG("Footman AttackTarget terminate");
-
 	RemoveAllSubgoals();
 
 	if (*targetInfo == nullptr) {
@@ -445,6 +435,8 @@ void Goal_AttackTarget::Terminate()
 	else {
 
 		if (!App->entities->isEntityFactoryCleanUp) {
+
+			(*targetInfo)->isAGoal = false;
 
 			(*targetInfo)->target->RemoveAttackingUnit(owner);
 
@@ -1257,7 +1249,7 @@ void Goal_HitTarget::Terminate()
 	owner->SetHitting(false);
 	owner->SetIsStill(true);
 
-	targetInfo = nullptr;
+	//targetInfo = nullptr;
 	orientation = { 0,0 };
 
 	if (isStateChanged)

@@ -128,24 +128,6 @@ class Entity;
 
 struct EntityInfo; // empty container
 
-struct TargetInfo
-{
-	/// NOTE: if the target is nullptr, TargetInfo must also be nullptr!
-
-	TargetInfo();
-	TargetInfo(const TargetInfo& t);
-
-	bool isSightSatisfied = false; // if true, sight distance is satisfied
-	bool isAttackSatisfied = false; // if true, attack distance is satisfied
-
-	Entity* target = nullptr;
-
-	// -----
-
-	bool IsTargetDead() const;
-	bool IsTargetValid() const;
-};
-
 class Entity
 {
 public:

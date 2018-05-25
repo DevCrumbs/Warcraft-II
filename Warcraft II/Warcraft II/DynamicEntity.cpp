@@ -700,10 +700,14 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 	if (targetInfo != nullptr) {
 
 		list<TargetInfo*>::iterator it = find(targets.begin(), targets.end(), targetInfo);
-		currTarget = *it;
-		newTarget = &(*it);
-		ret = true;
-		LOG("Set currTarget: %p", &(*it));
+
+		if (*it != nullptr) {
+
+			currTarget = *it;
+			newTarget = &(*it);
+			ret = true;
+			LOG("Set currTarget: %x", &(*it));
+		}
 	}
 
 	return ret;
@@ -740,6 +744,28 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 			targets.remove(*it);
 			LOG("A target has been removed");
 			*aux = nullptr;
+
+			return true;
+		}
+		it++;
+	}
+
+	return false;
+}
+
+bool DynamicEntity::UpdateTargetsToRemove(TargetInfo* targetInfo) 
+{
+	if (targetInfo == nullptr)
+		return false;
+
+	list<TargetInfo*>::const_iterator it = targetsToRemove.begin();
+
+	while (it != targetsToRemove.end()) {
+	
+		if (*it == targetInfo) {
+		
+			delete *it;
+			targetsToRemove.remove(*it);
 
 			return true;
 		}

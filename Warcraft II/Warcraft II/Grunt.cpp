@@ -234,7 +234,7 @@ void Grunt::Move(float dt)
 				if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
 
 					if (SetCurrTarget(App->player->townHall))
-						brain->AddGoal_AttackTarget(newTarget);
+						brain->AddGoal_AttackTarget(&*newTarget);
 				}
 			}
 		}
@@ -278,13 +278,11 @@ void Grunt::Draw(SDL_Texture* sprites)
 			fPoint offset = { 0.0f,0.0f };
 			if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp)
 			{
-
 				offset = { animation->GetCurrentFrame().w / 2.5f, animation->GetCurrentFrame().h / 5.5f };
 				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
 			}
 			else
 			{
-
 				offset = { animation->GetCurrentFrame().w / 3.2f, animation->GetCurrentFrame().h / 3.1f };
 				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
 			}
@@ -341,6 +339,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				if ((*it)->target == c2->entity) {
 
+					LOG("Already target Grunt");
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
@@ -353,6 +352,7 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 				/// Do it only if the target is valid
 				if (c2->entity->GetIsValid()) {
 
+					LOG("New target Grunt");
 					TargetInfo* targetInfo = new TargetInfo();
 					targetInfo->target = c2->entity;
 					targetInfo->isSightSatisfied = true;
@@ -455,14 +455,19 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 						InvalidateCurrTarget();
 
-					brain;
+					if ((*it)->isAGoal) {
+					
+						TargetInfo** aux = &(*it);
+						targets.remove(*it);
+						targetsToRemove.push_back(*aux);
 
-					TargetInfo** aux = &(*it);
-					LOG("Grunt removed target: %p", &(*it));
-					delete *it;
-					targets.remove(*it);
-
-					*aux = nullptr;
+						*aux = nullptr;				
+					}
+					else {
+					
+						delete *it;
+						targets.remove(*it);
+					}
 
 					break;
 				}
@@ -523,7 +528,8 @@ void Grunt::UnitStateMachine(float dt)
 				if (*newTarget != nullptr) {
 
 					if (SetCurrTarget((*newTarget)->target))
-						brain->AddGoal_AttackTarget(newTarget);
+						brain->AddGoal_AttackTarget(&*newTarget);
+					newTarget = nullptr;
 					LOG("Grunt Added target 1");
 					isHunting = false;
 				}
@@ -570,7 +576,8 @@ void Grunt::UnitStateMachine(float dt)
 						isHunting = false;
 
 						if (SetCurrTarget((*newTarget)->target))
-							brain->AddGoal_AttackTarget(newTarget);
+							brain->AddGoal_AttackTarget(&*newTarget);
+						newTarget = nullptr;
 						LOG("Grunt Added target 2");
 						isSearchingForCritters = true;
 					}
@@ -620,6 +627,7 @@ void Grunt::UnitStateMachine(float dt)
 							if (SetCurrTarget((*newTarget)->target))
 								brain->AddGoal_AttackTarget(newTarget, false);
 							LOG("Grunt Added target 3");
+							newTarget = nullptr;
 							isAttackingUnit = true;
 							isHunting = false;
 						}
@@ -635,8 +643,9 @@ void Grunt::UnitStateMachine(float dt)
 							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
 
 								if (SetCurrTarget((*it)->target))
-									brain->AddGoal_AttackTarget(newTarget, false);
+									brain->AddGoal_AttackTarget(&*newTarget, false);
 								LOG("Grunt Added target 4");
+								newTarget = nullptr;
 								isAttackingUnit = true;
 								isHunting = false;
 							}
@@ -660,8 +669,9 @@ void Grunt::UnitStateMachine(float dt)
 							targets.push_front(targetInfo);
 
 							if (SetCurrTarget(targetInfo->target))
-								brain->AddGoal_AttackTarget(newTarget, false);
+								brain->AddGoal_AttackTarget(&*newTarget, false);
 							LOG("Grunt Added target 5");
+							newTarget = nullptr;
 							isHunting = true;
 						}
 					}
@@ -698,8 +708,9 @@ void Grunt::UnitStateMachine(float dt)
 						isHunting = false;
 
 						if (SetCurrTarget((*newTarget)->target))
-							brain->AddGoal_AttackTarget(newTarget);
+							brain->AddGoal_AttackTarget(&*newTarget);
 						LOG("Grunt Added target 6");
+						newTarget = nullptr;
 					}
 				}
 
@@ -731,8 +742,9 @@ void Grunt::UnitStateMachine(float dt)
 								isHunting = false;
 
 								if (SetCurrTarget((*newTarget)->target))
-									brain->AddGoal_AttackTarget(newTarget);
+									brain->AddGoal_AttackTarget(&*newTarget);
 								LOG("Grunt Added target 7");
+								newTarget = nullptr;
 							}
 						}
 					}

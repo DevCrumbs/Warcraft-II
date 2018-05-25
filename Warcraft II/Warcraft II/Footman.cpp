@@ -233,14 +233,17 @@ void Footman::Move(float dt)
 		case UnitCommand_AttackTarget:
 
 			if (newTarget != nullptr) {
+				if (*newTarget != nullptr) {
 
-				if (singleUnit->IsFittingTile()) {
+					if (singleUnit->IsFittingTile()) {
 
-					brain->RemoveAllSubgoals();
-					brain->AddGoal_AttackTarget(newTarget);
+						brain->RemoveAllSubgoals();
+						brain->AddGoal_AttackTarget(&*newTarget);
+						newTarget = nullptr;
 
-					unitState = UnitState_AttackTarget;
-					unitCommand = UnitCommand_NoCommand;
+						unitState = UnitState_AttackTarget;
+						unitCommand = UnitCommand_NoCommand;
+					}
 				}
 			}
 
@@ -440,6 +443,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 				if ((*it)->target == c2->entity) {
 
+					LOG("Already target Footman");
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
@@ -449,6 +453,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
+				LOG("New target Footman");
 				TargetInfo* targetInfo = new TargetInfo();
 				targetInfo->target = c2->entity;
 				targetInfo->isSightSatisfied = true;
@@ -556,15 +561,19 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 						InvalidateCurrTarget();
 
-					brain;
+					if ((*it)->isAGoal) {
 
-					TargetInfo** aux = &(*it);
-					LOG("Footman removed target: %p", &(*it));
+						TargetInfo** aux = &(*it);
+						targets.remove(*it);
+						targetsToRemove.push_back(*aux);
 
-					delete *it;
-					targets.remove(*it);
+						*aux = nullptr;
+					}
+					else {
 
-					*aux = nullptr;
+						delete *it;
+						targets.remove(*it);
+					}
 
 					break;
 				}
@@ -634,7 +643,8 @@ void Footman::UnitStateMachine(float dt)
 						if (*newTarget != nullptr) {
 
 							if (SetCurrTarget((*newTarget)->target))
-								brain->AddGoal_AttackTarget(newTarget, false);
+								brain->AddGoal_AttackTarget(&*newTarget, false);
+							newTarget = nullptr;
 							LOG("Footman Added target 1");
 						}
 					}
@@ -683,7 +693,8 @@ void Footman::UnitStateMachine(float dt)
 					isHitting = false;
 
 					if (SetCurrTarget((*newTarget)->target))
-						brain->AddGoal_AttackTarget(newTarget);
+						brain->AddGoal_AttackTarget(&*newTarget);
+					newTarget = nullptr;
 					LOG("Footman Added target 2");
 				}
 			}
@@ -713,7 +724,8 @@ void Footman::UnitStateMachine(float dt)
 				if (*newTarget != nullptr) {
 
 					if (SetCurrTarget((*newTarget)->target))
-						brain->AddGoal_AttackTarget(newTarget);
+						brain->AddGoal_AttackTarget(&*newTarget);
+					newTarget = nullptr;
 					LOG("Footman Added target 3");
 				}
 			}
