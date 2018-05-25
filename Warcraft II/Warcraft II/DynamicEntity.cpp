@@ -658,6 +658,11 @@ list<TargetInfo*> DynamicEntity::GetTargets() const
 	return targets;
 }
 
+list<TargetInfo*> DynamicEntity::GetTargetsToRemove() const 
+{
+	return targetsToRemove;
+}
+
 Entity* DynamicEntity::GetCurrTarget() const
 {
 	if (currTarget != nullptr)
@@ -738,12 +743,8 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 
 				InvalidateCurrTarget();
 
-			TargetInfo** aux = &(*it);
-
 			delete *it;
 			targets.remove(*it);
-			LOG("A target has been removed");
-			*aux = nullptr;
 
 			return true;
 		}
@@ -753,16 +754,13 @@ bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
 	return false;
 }
 
-bool DynamicEntity::UpdateTargetsToRemove(TargetInfo* targetInfo) 
+bool DynamicEntity::UpdateTargetsToRemove() 
 {
-	if (targetInfo == nullptr)
-		return false;
-
 	list<TargetInfo*>::const_iterator it = targetsToRemove.begin();
 
 	while (it != targetsToRemove.end()) {
 	
-		if (*it == targetInfo) {
+		if ((*it)->isInGoals == 0) {
 		
 			delete *it;
 			targetsToRemove.remove(*it);

@@ -561,13 +561,10 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 						InvalidateCurrTarget();
 
-					if ((*it)->isAGoal) {
+					if ((*it)->isInGoals > 0) {
 
-						TargetInfo** aux = &(*it);
-						targets.remove(*it);
-						targetsToRemove.push_back(*aux);
-
-						*aux = nullptr;
+						(*it)->isRemoveNeeded = true;
+						targets.splice(it, targetsToRemove);
 					}
 					else {
 

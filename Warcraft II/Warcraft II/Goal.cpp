@@ -185,7 +185,6 @@ void Goal_Think::AddGoal_Wander(uint maxDistance, iPoint startTile, bool isCurrT
 void Goal_Think::AddGoal_AttackTarget(TargetInfo** targetInfo, bool isStateChanged)
 {
 	AddSubgoal(new Goal_AttackTarget(owner, targetInfo, isStateChanged));
-	LOG("Added Goal_AttackTarget: %x", &(*targetInfo));
 }
 
 void Goal_Think::AddGoal_MoveToPosition(iPoint destinationTile, bool isStateChanged)
@@ -220,7 +219,10 @@ void Goal_Think::AddGoal_LookAround(uint minSecondsToChange, uint maxSecondsToCh
 
 // Goal_AttackTarget ---------------------------------------------------------------------
 
-Goal_AttackTarget::Goal_AttackTarget(DynamicEntity* owner, TargetInfo** targetInfo, bool isStateChanged) :CompositeGoal(owner, GoalType_AttackTarget), targetInfo(targetInfo), isStateChanged(isStateChanged) {}
+Goal_AttackTarget::Goal_AttackTarget(DynamicEntity* owner, TargetInfo** targetInfo, bool isStateChanged) :CompositeGoal(owner, GoalType_AttackTarget), targetInfo(targetInfo), isStateChanged(isStateChanged) 
+{
+	(*this->targetInfo)->isInGoals++;
+}
 
 /*
 If *targetInfo == nullptr:
@@ -241,13 +243,7 @@ void Goal_AttackTarget::Activate()
 
 	RemoveAllSubgoals();
 
-	if (*targetInfo == nullptr) {
-	
-		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
-		goalStatus = GoalStatus_Completed;
-		return;
-	}
-	else if ((*targetInfo)->IsTargetDead() || !(*targetInfo)->IsTargetValid()) {
+	if ((*targetInfo)->isRemoveNeeded || (*targetInfo)->IsTargetDead() || !(*targetInfo)->IsTargetValid()) {
 
 		/// The target has recently died || The target has recently become invalid
 		goalStatus = GoalStatus_Completed;
@@ -334,8 +330,6 @@ void Goal_AttackTarget::Activate()
 	chaseTimer.Start();
 	chaseTime = 6.0f;
 
-	(*targetInfo)->isAGoal = true;
-
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
 
 	if (owner->GetCurrTarget() == nullptr)
@@ -347,17 +341,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 {
 	ActivateIfInactive();
 
-	if (*targetInfo == nullptr) {
-
-		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
-		if (owner->GetSingleUnit()->IsFittingTile()) {
-
-			LOG("Target nullptr, Goal_Completed");
-			goalStatus = GoalStatus_Completed;
-			return goalStatus;
-		}
-	}
-	else if (!(*targetInfo)->IsTargetValid()) {
+	if ((*targetInfo)->isRemoveNeeded || !(*targetInfo)->IsTargetValid()) {
 
 		/// The target has recently become invalid
 		if (owner->GetSingleUnit()->IsFittingTile()) {
@@ -407,12 +391,9 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
 
-	if (*targetInfo != nullptr) {
+	if (owner->GetCurrTarget() == nullptr)
 
-		if (owner->GetCurrTarget() == nullptr)
-
-			owner->SetCurrTarget((*targetInfo)->target);
-	}
+		owner->SetCurrTarget((*targetInfo)->target);
 
 	return goalStatus;
 }
@@ -421,22 +402,21 @@ void Goal_AttackTarget::Terminate()
 {
 	RemoveAllSubgoals();
 
-	if (*targetInfo == nullptr) {
+	if ((*targetInfo)->isRemoveNeeded) {
 
 		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
+
 	}
 	else if ((*targetInfo)->IsTargetDead() || !(*targetInfo)->IsTargetValid()) {
 
 		/// The target has recently died || The target has recently become invalid
 
-		// Remove definitely the target from this owner
-		owner->RemoveTargetInfo(*targetInfo);
+		(*targetInfo)->isRemoveNeeded = true;
+		owner->GetTargets().splice(find(owner->GetTargets().begin(), owner->GetTargets().end(), *targetInfo), owner->GetTargetsToRemove());
 	}
 	else {
 
 		if (!App->entities->isEntityFactoryCleanUp) {
-
-			(*targetInfo)->isAGoal = false;
 
 			(*targetInfo)->target->RemoveAttackingUnit(owner);
 
@@ -450,6 +430,8 @@ void Goal_AttackTarget::Terminate()
 				owner->InvalidateCurrTarget();
 		}
 	}
+
+	(*targetInfo)->isInGoals--;
 
 	// -----
 

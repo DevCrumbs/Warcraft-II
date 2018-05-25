@@ -241,6 +241,9 @@ void Grunt::Move(float dt)
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);
+
+		// Update targets to be removed
+		UpdateTargetsToRemove();
 	}
 
 	UnitStateMachine(dt);
@@ -455,13 +458,10 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 						InvalidateCurrTarget();
 
-					if ((*it)->isAGoal) {
-					
-						TargetInfo** aux = &(*it);
-						targets.remove(*it);
-						targetsToRemove.push_back(*aux);
+					if ((*it)->isInGoals > 0) {
 
-						*aux = nullptr;				
+						(*it)->isRemoveNeeded = true;
+						targets.splice(it, targetsToRemove);
 					}
 					else {
 					

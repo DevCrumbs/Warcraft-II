@@ -118,7 +118,9 @@ struct TargetInfo
 	bool isSightSatisfied = false; // if true, sight distance is satisfied
 	bool isAttackSatisfied = false; // if true, attack distance is satisfied
 
-	bool isAGoal = false;
+	// Remove for targets that are in goals
+	uint isInGoals = 0;
+	bool isRemoveNeeded = false;
 
 	Entity* target = nullptr;
 
@@ -187,12 +189,14 @@ public:
 	// Attack
 	/// Unit attacks a target
 	list<TargetInfo*> GetTargets() const;
+	list<TargetInfo*> GetTargetsToRemove() const;
 	Entity* GetCurrTarget() const;
+
 	bool SetCurrTarget(Entity* target);
 	void InvalidateCurrTarget();
 
 	bool RemoveTargetInfo(TargetInfo* targetInfo);
-	bool UpdateTargetsToRemove(TargetInfo* targetInfo);
+	bool UpdateTargetsToRemove();
 
 	TargetInfo* GetBestTargetInfo(ENTITY_CATEGORY entityCategory = EntityCategory_NONE, ENTITY_TYPE entityType = EntityType_NONE, bool isCrittersCheck = true, bool isOnlyCritters = false) const; // TODO: add argument EntityType??? For critters vs enemies
 
