@@ -727,9 +727,11 @@ bool j1Player::Save(pugi::xml_node& save) const
 	}
 
 	SaveAttribute(totalGold, "totalGold", resources, create);
+	SaveAttribute(currentGold, "currentGold", resources, create);
 	SaveAttribute(currentFood, "currentFood", resources, create);
 	SaveAttribute(roomsCleared, "roomsCleared", resources, create);
-
+	SaveAttribute(totalEnemiesKilled, "totalEnemiesKilled", resources, create);
+	SaveAttribute(totalUnitsDead, "totalUnitsDead", resources, create);
 
 	create = false;
 
@@ -767,14 +769,23 @@ bool j1Player::Save(pugi::xml_node& save) const
 	}
 
 	queue<ToSpawnUnit*> unitsInBarracks = toSpawnUnitBarracks;
-
 	while (!unitsInBarracks.empty())
 	{
-		pugi::xml_node spawningUnit = barracks.append_child("spawningUnit");
+		pugi::xml_node spawningUnit = barracks.append_child("barracksSpawningUnit");
 		SaveAttribute(unitsInBarracks.front()->entityType, "entityType", spawningUnit, create);
 		SaveAttribute(unitsInBarracks.front()->toSpawnTimer.Read(), "toSpawnTimer", spawningUnit, create);
 
 		unitsInBarracks.pop();
+	}
+
+	queue<ToSpawnUnit*> unitsInGrypho = toSpawnUnitGrypho;
+	while (!unitsInGrypho.empty())
+	{
+		pugi::xml_node spawningUnit = barracks.append_child("gryphoSpawningUnit");
+		SaveAttribute(unitsInGrypho.front()->entityType, "entityType", spawningUnit, create);
+		SaveAttribute(unitsInGrypho.front()->toSpawnTimer.Read(), "toSpawnTimer", spawningUnit, create);
+
+		unitsInGrypho.pop();
 	}
 
 	SaveAttribute(isWin, "isWin", barracks, create);
@@ -782,38 +793,9 @@ bool j1Player::Save(pugi::xml_node& save) const
 	SaveAttribute(unitProduce, "unitProduce", barracks, create);
 	SaveAttribute(enemiesKill, "enemiesKill", barracks, create);
 	SaveAttribute(buildDestroy, "buildDestroy", barracks, create);
+	SaveAttribute(isUnitSpawning, "isUnitSpawning", barracks, create);
 
 	create = false;
-	queue<ToSpawnUnit*> toSpawnUnitBarracks;
-	queue<ToSpawnUnit*> toSpawnUnitGrypho;
-
-	bool isUnitSpawning = false;
-
-	int currentGold = 0; // amount of gold that the player has at the current moment
-
-	uint maxUnitsSelected = 8;
-
-	double timer = 0.0f; // game time
-	uint totalEnemiesKilled = 0;
-	uint totalUnitsDead = 0;
-
-	GroupSelectionButtons groupSelectionButtons;
-
-	//list<GroupSpawning> toSpawnUnitStats;
-	//list<ToSpawnUnit*> newUnitsToSpawn;
-
-	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
-		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr, *repairBuildingButton = nullptr;
-
-
-	list<UIElement*> UIMenuInfoList;
-
-
-	uint spawningTime = 5; //In seconds
-	uint maxSpawnQueueSize = 2;
-
-	list<GroupSpawning> barracksSpawningListUI;
-	list<GroupSpawning> gryphoSpawningListUI;
 
 	return ret;
 }
