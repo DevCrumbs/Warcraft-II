@@ -503,7 +503,7 @@ bool j1Scene::Update(float dt)
 			}
 		}
 
-		LOG("%i", App->entities->unitsSelected.size());
+		//LOG("%i", App->entities->unitsSelected.size());
 
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 
@@ -562,16 +562,19 @@ bool j1Scene::Update(float dt)
 					
 						App->entities->SaveEntityGroup(units, 0);
 						isSavedGroup = true;
+						App->entities->UpdateGroupIcons(0);
 					}
 					else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
 
 						App->entities->SaveEntityGroup(units, 1);
 						isSavedGroup = true;
+						App->entities->UpdateGroupIcons(1);
 					}
 					else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
 
 						App->entities->SaveEntityGroup(units, 2);
 						isSavedGroup = true;
+						App->entities->UpdateGroupIcons(2);
 					}
 
 					if (isSavedGroup) {
@@ -742,16 +745,16 @@ bool j1Scene::Update(float dt)
 				}
 
 				/// SET GOAL (COMMAND MOVE TO POSITION)
-				bool isGryphonRider = App->entities->IsOnlyThisTypeOfUnits(units, EntityType_GRYPHON_RIDER);
+				bool isOnlyGryphonRider = App->entities->IsOnlyThisTypeOfUnits(units, EntityType_GRYPHON_RIDER);
 				bool isGryphonRiderRunestone = false;
 
-				if (isGryphonRider)			
+				if (isOnlyGryphonRider)
 					isGryphonRiderRunestone = App->entities->AreAllUnitsDoingSomething(units, UnitState_HealRunestone);
 
 				// Draw a shaped goal
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT && !App->gui->IsMouseOnUI())
 
-					if (isGryphonRider && !isGryphonRiderRunestone)
+					if (isOnlyGryphonRider && !isGryphonRiderRunestone)
 						group->DrawShapedGoal(mouseTile, false);
 					else
 						group->DrawShapedGoal(mouseTile);
@@ -770,11 +773,13 @@ bool j1Scene::Update(float dt)
 
 							group->ClearShapedGoal();
 
-							if (isGryphonRider && !isGryphonRiderRunestone) {
-								if (group->SetGoal(mouseTile, false)) /// normal goal
+							if (isOnlyGryphonRider && isGryphonRiderRunestone) {
+
+								if (group->SetGoal(mouseTile, true)) /// normal goal
 									isGoal = true;
 							}
 							else {
+							
 								if (group->SetGoal(mouseTile)) /// normal goal
 									isGoal = true;
 							}

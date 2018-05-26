@@ -176,7 +176,6 @@ bool j1Player::Update(float dt)
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
 			}
-	
 
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
 		if (!scoutTower.empty())
@@ -193,7 +192,6 @@ bool j1Player::Update(float dt)
 					entitySelectedStats.lifeBar->DecreaseLife(20);
 				}
 			}
-	
 	
 	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
 		if (barracks != nullptr)
@@ -762,33 +760,38 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 						
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
 						it = units.begin();
+						list<DynamicEntity*> notGryphonRiders;
 
 						while (it != units.end()) {
 
-							(*it)->SetGoldMine((GoldMine*)staticEntity);
+							if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
+
+								(*it)->SetGoldMine((GoldMine*)staticEntity);
+								notGryphonRiders.push_back(*it);
+							}
 
 							it++;
 						}
 
-						App->entities->CommandToUnits(units, UnitCommand_GatherGold);
+						App->entities->CommandToUnits(notGryphonRiders, UnitCommand_GatherGold);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_MINE) {
 						App->scene->adviceMessageTimer.Start();
@@ -910,22 +913,22 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
 						GoldMine* goldMine = (GoldMine*)staticEntity;
 
@@ -1043,33 +1046,39 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
+						// Only command to units that are not Gryphon Rider
 						it = units.begin();
+						list<DynamicEntity*> notGryphonRiders;
 
 						while (it != units.end()) {
 
-							(*it)->SetPrisoner(dynamicEntity);
+							if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
+
+								(*it)->SetPrisoner(dynamicEntity);
+								notGryphonRiders.push_back(*it);
+							}
 
 							it++;
 						}
 
-						App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+						App->entities->CommandToUnits(notGryphonRiders, UnitCommand_RescuePrisoner);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_PRISONER) {
 						App->scene->adviceMessageTimer.Start();
@@ -1095,33 +1104,39 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
+						// Only command to units that are not Gryphon Rider
 						it = units.begin();
+						list<DynamicEntity*> notGryphonRiders;
 
 						while (it != units.end()) {
 
-							(*it)->SetPrisoner(dynamicEntity);
+							if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
+
+								(*it)->SetPrisoner(dynamicEntity);
+								notGryphonRiders.push_back(*it);
+							}
 
 							it++;
 						}
 
-						App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+						App->entities->CommandToUnits(notGryphonRiders, UnitCommand_RescuePrisoner);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_PRISONER) {
 						App->scene->adviceMessageTimer.Start();
@@ -1468,6 +1483,7 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 void j1Player::ShowPlayerGroupsButton(int group, PlayerGroupTypes playerGroupType)
 {
 	switch (group) {
+
 	case 1:
 		switch (playerGroupType) {
 		case PlayerGroupTypes_FOOTMAN:
@@ -1491,13 +1507,17 @@ void j1Player::ShowPlayerGroupsButton(int group, PlayerGroupTypes playerGroupTyp
 		case PlayerGroupTypes_ALL:
 			playerGroupsButtons.group1->ChangesTextsAreas(true, { 0,379,50,41 }, { 0,421,50,41 }, { 0,463,50,41 });
 			break;
+		case PlayerGroupTypes_NONE:
+			playerGroupsButtons.group1->isActive = false;
+			break;
 		default:
 			break;
 		}
-		if (!playerGroupsButtons.group1->isActive) {
+
+		if (!playerGroupsButtons.group1->isActive && playerGroupType != PlayerGroupTypes_NONE)
 			playerGroupsButtons.group1->isActive = true;
-		}
 		break;
+
 	case 2:
 		switch (playerGroupType) {
 		case PlayerGroupTypes_FOOTMAN:
@@ -1521,13 +1541,17 @@ void j1Player::ShowPlayerGroupsButton(int group, PlayerGroupTypes playerGroupTyp
 		case PlayerGroupTypes_ALL:
 			playerGroupsButtons.group2->ChangesTextsAreas(true, { 0,379,50,41 }, { 0,421,50,41 }, { 0,463,50,41 });
 			break;
+		case PlayerGroupTypes_NONE:
+			playerGroupsButtons.group2->isActive = false;
+			break;
 		default:
 			break;
 		}
-		if (!playerGroupsButtons.group2->isActive) {
+
+		if (!playerGroupsButtons.group2->isActive && playerGroupType != PlayerGroupTypes_NONE)
 			playerGroupsButtons.group2->isActive = true;
-		}
 		break;
+
 	case 3:
 		switch (playerGroupType) {
 		case PlayerGroupTypes_FOOTMAN:
@@ -1551,12 +1575,15 @@ void j1Player::ShowPlayerGroupsButton(int group, PlayerGroupTypes playerGroupTyp
 		case PlayerGroupTypes_ALL:
 			playerGroupsButtons.group3->ChangesTextsAreas(true, { 0,379,50,41 }, { 0,421,50,41 }, { 0,463,50,41 });
 			break;
+		case PlayerGroupTypes_NONE:
+			playerGroupsButtons.group3->isActive = false;
+			break;
 		default:
 			break;
 		}
-		if (!playerGroupsButtons.group3->isActive) {
+
+		if (!playerGroupsButtons.group3->isActive && playerGroupType != PlayerGroupTypes_NONE)
 			playerGroupsButtons.group3->isActive = true;
-		}
 		break;
 	}
 }
@@ -2089,6 +2116,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
+
 			if (UIelem == produceFootmanButton || UIelem == destroyBuildingButton || UIelem == groupSelectionButtons.selectFootmans || UIelem == upgradeTownHallButton)
 				HideHoverInfoMenu(&firstHoverInfo);
 			else if (UIelem == produceElvenArcherButton || UIelem == groupSelectionButtons.selectElvenArchers)
@@ -2096,6 +2124,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			else if (UIelem == produceGryphonRiderButton || UIelem == groupSelectionButtons.selectGryphonRiders || UIelem == repairBuildingButton)
 				HideHoverInfoMenu(&thirdHoverInfo);
 			break;
+
 		case UI_EVENT_MOUSE_RIGHT_CLICK:
 
 			// Order units to move to the minimap position
@@ -2350,6 +2379,90 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					App->scene->PlayUnitSound(units, true); // Unit selected sound
 				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
+			}
+			else if (UIelem == playerGroupsButtons.group1) {
+			
+				list<DynamicEntity*> savedGroup = App->entities->GetSavedEntityGroup(0);
+
+				if (savedGroup.size() > 0) {
+
+					// Select the group
+					App->entities->SelectEntitiesGroup(savedGroup);
+
+					// Blit the selection of the units (just a few seconds) from alpha 255 to 0
+					list<DynamicEntity*>::const_iterator sg = savedGroup.begin();
+
+					while (sg != savedGroup.end()) {
+
+						(*sg)->BlitSelectedGroupSelection();
+
+						sg++;
+					}
+				}
+				else {
+
+					if (App->scene->adviceMessage != AdviceMessage_EMPTY_GROUP) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_EMPTY_GROUP;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
+			}
+			else if (UIelem == playerGroupsButtons.group2) {
+
+				list<DynamicEntity*> savedGroup = App->entities->GetSavedEntityGroup(1);
+
+				if (savedGroup.size() > 0) {
+
+					// Select the group
+					App->entities->SelectEntitiesGroup(savedGroup);
+
+					// Blit the selection of the units (just a few seconds) from alpha 255 to 0
+					list<DynamicEntity*>::const_iterator sg = savedGroup.begin();
+
+					while (sg != savedGroup.end()) {
+
+						(*sg)->BlitSelectedGroupSelection();
+
+						sg++;
+					}
+				}
+				else {
+
+					if (App->scene->adviceMessage != AdviceMessage_EMPTY_GROUP) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_EMPTY_GROUP;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
+			}
+			else if (UIelem == playerGroupsButtons.group3) {
+
+				list<DynamicEntity*> savedGroup = App->entities->GetSavedEntityGroup(2);
+
+				if (savedGroup.size() > 0) {
+
+					// Select the group
+					App->entities->SelectEntitiesGroup(savedGroup);
+
+					// Blit the selection of the units (just a few seconds) from alpha 255 to 0
+					list<DynamicEntity*>::const_iterator sg = savedGroup.begin();
+
+					while (sg != savedGroup.end()) {
+
+						(*sg)->BlitSelectedGroupSelection();
+
+						sg++;
+					}
+				}
+				else {
+
+					if (App->scene->adviceMessage != AdviceMessage_EMPTY_GROUP) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_EMPTY_GROUP;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
 			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_UP:
