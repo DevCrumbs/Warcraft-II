@@ -463,7 +463,6 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
-				LOG("New target Footman");
 				TargetInfo* targetInfo = new TargetInfo();
 				targetInfo->target = c2->entity;
 				targetInfo->isSightSatisfied = true;
@@ -660,6 +659,8 @@ void Footman::UnitStateMachine(float dt)
 
 	case UnitState_Idle:
 
+		isRunAway = false;
+
 		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
 			break;
 
@@ -746,11 +747,6 @@ void Footman::UnitStateMachine(float dt)
 
 		break;
 	}
-
-	/// DEFENSE
-	if (unitsAttacking.size() == 0)
-
-		isRunAway = false;
 }
 
 // -------------------------------------------------------------

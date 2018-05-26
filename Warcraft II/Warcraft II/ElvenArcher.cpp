@@ -656,6 +656,8 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 	case UnitState_Idle:
 
+		isRunAway = false;
+
 		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
 			break;
 
@@ -742,11 +744,6 @@ void ElvenArcher::UnitStateMachine(float dt)
 
 		break;
 	}
-
-	/// DEFENSE
-	if (unitsAttacking.size() == 0)
-
-		isRunAway = false;
 }
 
 // -------------------------------------------------------------
