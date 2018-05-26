@@ -156,59 +156,61 @@ void Dragon::Move(float dt)
 
 			/// Check if the room of this enemy has been cleared
 			Room* room = App->map->GetEntityRoom(this);
+			
+			if (room != nullptr) {
+				if (!room->isCleared) {
 
-			if (!room->isCleared) {
+					if (App->map->GetEntitiesOnRoomByCategory(*room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
 
-				if (App->map->GetEntitiesOnRoomByCategory(*room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
+						// ROOM CLEARED!
+						iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+						if (!App->map->IsOnBase(spawnPos)) {
 
-					// ROOM CLEARED!
-					iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
-					if (!App->map->IsOnBase(spawnPos)) {
+							// Give gold to the player
+							if (room->roomRect.w == 30 * 32)
+								App->player->AddGold(300);
+							else if (room->roomRect.w == 50 * 32)
+								App->player->AddGold(800);
 
-						// Give gold to the player
-						if (room->roomRect.w == 30 * 32)
-							App->player->AddGold(300);
-						else if (room->roomRect.w == 50 * 32)
-							App->player->AddGold(800);
+							if (App->player->minimap != nullptr)
+								App->player->minimap->DrawRoomCleared(*room);
 
-						if (App->player->minimap != nullptr)
-							App->player->minimap->DrawRoomCleared(*room);
+							room->isCleared = true;
+							App->player->roomsCleared++;
 
-						room->isCleared = true;
-						App->player->roomsCleared++;
+							if (App->scene->adviceMessage != AdviceMessage_ROOM_CLEAR) {
 
-						if (App->scene->adviceMessage != AdviceMessage_ROOM_CLEAR) {
+								App->scene->adviceMessageTimer.Start();
+								App->scene->adviceMessage = AdviceMessage_ROOM_CLEAR;
+								App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+							}
 
-							App->scene->adviceMessageTimer.Start();
-							App->scene->adviceMessage = AdviceMessage_ROOM_CLEAR;
-							App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+							App->scene->alpha = 200;
+							App->scene->isRoomCleared = true;
+							App->scene->roomCleared = room->roomRect;
+
+							App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 						}
 
-						App->scene->alpha = 200;
-						App->scene->isRoomCleared = true;
-						App->scene->roomCleared = room->roomRect;
+						// WAVE DEFEATED
+						else if (App->map->IsOnBase(spawnPos) && App->wave->phasesOfCurrWave == App->wave->totalPhasesOfCurrWave - 1) {
 
-						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
-					}
+							// Give gold to the player
+							App->player->AddGold(500);
 
-					// WAVE DEFEATED
-					else if (App->map->IsOnBase(spawnPos) && App->wave->phasesOfCurrWave == App->wave->totalPhasesOfCurrWave - 1) {
+							if (App->scene->adviceMessage != AdviceMessage_BASE_DEFENDED) {
 
-						// Give gold to the player
-						App->player->AddGold(500);
+								App->scene->adviceMessageTimer.Start();
+								App->scene->adviceMessage = AdviceMessage_BASE_DEFENDED;
+								App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+							}
 
-						if (App->scene->adviceMessage != AdviceMessage_BASE_DEFENDED) {
+							App->scene->alpha = 200;
+							App->scene->isRoomCleared = true;
+							App->scene->roomCleared = room->roomRect;
 
-							App->scene->adviceMessageTimer.Start();
-							App->scene->adviceMessage = AdviceMessage_BASE_DEFENDED;
-							App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+							App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 						}
-
-						App->scene->alpha = 200;
-						App->scene->isRoomCleared = true;
-						App->scene->roomCleared = room->roomRect;
-
-						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 					}
 				}
 			}
