@@ -432,11 +432,11 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (c2->entity == nullptr)
 				return;
 
-			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			//if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
-			}
+				//DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+				//dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
+			//}
 				
 			//if (isSelected) {
 
@@ -550,8 +550,8 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Footman Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Footman Sight Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// Set the target's isSightSatisfied to false
@@ -842,7 +842,15 @@ bool Footman::ChangeAnimation()
 		// Set the direction of the unit as the orientation towards the attacking target
 		if (currTarget != nullptr) {
 
-			fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
+			fPoint orientation = { -1,-1 };
+
+			if (currTarget->attackingTile.x != -1 && currTarget->attackingTile.y != -1) {
+
+				iPoint attackingPos = App->map->MapToWorld(currTarget->attackingTile.x, currTarget->attackingTile.y);
+				orientation = { attackingPos.x - pos.x, attackingPos.y - pos.y };
+			}
+			else
+				orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
 
 			float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
 

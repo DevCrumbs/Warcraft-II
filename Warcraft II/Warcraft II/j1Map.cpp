@@ -966,8 +966,8 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 					break;
 
 					// Dynamic entities
-				//case EntityType_FOOTMAN:
-				case EntityType_ELVEN_ARCHER:
+				case EntityType_FOOTMAN:
+				//case EntityType_ELVEN_ARCHER:
 				case EntityType_ALLERIA:
 				case EntityType_TURALYON:
 					App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
@@ -982,12 +982,14 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 				case EntityType_SHEEP:
 				case EntityType_BOAR:
 				{
+					/*
 					int type = rand() % 2;
 
 					if (type == 0)
 						App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
 					else
 						App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+						*/
 				}
 				break;
 

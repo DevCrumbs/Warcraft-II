@@ -124,6 +124,9 @@ struct TargetInfo
 
 	Entity* target = nullptr;
 
+	// Attacking tile for buildings
+	iPoint attackingTile = { -1,-1 };
+
 	// -----
 
 	bool IsTargetDead() const;
