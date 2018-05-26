@@ -146,9 +146,6 @@ void Footman::Move(float dt)
 		}
 	}
 
-	if (isDead && unitState != UnitState_Die)
-		unitState = UnitState_Die;
-
 	// Update currTarget
 	if (currTarget != nullptr) {
 
@@ -566,6 +563,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 
 					(*it)->isSightSatisfied = false;
 
+					// Removing target process --
 					if (!(*it)->IsTargetDead())
 
 						(*it)->target->RemoveAttackingUnit(this);
@@ -584,6 +582,7 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 						delete *it;
 						targets.remove(*it);
 					}
+					// -- Removing target process
 
 					break;
 				}

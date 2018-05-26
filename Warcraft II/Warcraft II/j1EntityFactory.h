@@ -148,9 +148,6 @@ public:
 
 	bool RemoveAllUnitsGoals(list<DynamicEntity*> units);
 
-	// Attack
-	bool InvalidateTargetInfo(Entity* target);
-
 	// Movement
 	void InvalidateMovementEntity(Entity* entity);
 

@@ -71,10 +71,6 @@ DynamicEntity::~DynamicEntity()
 	singleUnit = nullptr;
 
 	// Remove Attack
-	//if (!App->entities->isEntityFactoryCleanUp)
-
-		//App->entities->InvalidateTargetInfo(this);
-
 	isStill = true;
 
 	if (currTarget != nullptr)
@@ -734,21 +730,61 @@ void DynamicEntity::InvalidateCurrTarget()
 
 bool DynamicEntity::UpdateTargetsToRemove() 
 {
-	list<TargetInfo*>::const_iterator it = targetsToRemove.begin();
+	list<TargetInfo*>::const_iterator it = targets.begin();
+
+	while (it != targets.end()) {
+
+		if ((*it)->target->isRemove) {
+
+			// Removing target process --
+			if (!(*it)->IsTargetDead())
+
+				(*it)->target->RemoveAttackingUnit(this);
+
+			if (currTarget == *it)
+
+				InvalidateCurrTarget();
+
+			if ((*it)->isInGoals > 0 && !(*it)->isRemoveNeeded) {
+
+				(*it)->isRemoveNeeded = true;
+				targetsToRemove.splice(targetsToRemove.begin(), targets, it);
+
+				it = targets.begin();
+				continue;
+			}
+			else if (!(*it)->isRemoveNeeded) {
+
+				delete *it;
+				targets.remove(*it);
+
+				it = targets.begin();
+				continue;
+			}
+			// -- Removing target process
+		}
+		it++;
+	}
+
+	it = targetsToRemove.begin();
 
 	while (it != targetsToRemove.end()) {
 
-		if (currTarget == *it)
-
-			InvalidateCurrTarget();
-	
+		// Removing target process --
 		if ((*it)->isInGoals == 0 && (*it)->isRemoveNeeded) {
 		
+			if (currTarget == *it)
+
+				InvalidateCurrTarget();
+
 			delete *it;
 			targetsToRemove.remove(*it);
 
-			return true;
+			it = targetsToRemove.begin();
+			continue;
 		}
+		// -- Removing target process
+
 		it++;
 	}
 

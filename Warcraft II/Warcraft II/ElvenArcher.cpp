@@ -144,9 +144,6 @@ void ElvenArcher::Move(float dt)
 		}
 	}
 
-	if (isDead && unitState != UnitState_Die)
-		unitState = UnitState_Die;
-
 	// Update currTarget
 	if (currTarget != nullptr) {
 
@@ -562,6 +559,7 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 					(*it)->isSightSatisfied = false;
 
+					// Removing target process --
 					if (!(*it)->IsTargetDead())
 
 						(*it)->target->RemoveAttackingUnit(this);
@@ -570,12 +568,17 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 						InvalidateCurrTarget();
 
-					TargetInfo** aux = &(*it);
+					if ((*it)->isInGoals > 0 && !(*it)->isRemoveNeeded) {
 
-					delete *it;
-					targets.remove(*it);
+						(*it)->isRemoveNeeded = true;
+						targetsToRemove.splice(targetsToRemove.begin(), targets, it);
+					}
+					else if (!(*it)->isRemoveNeeded) {
 
-					*aux = nullptr;
+						delete *it;
+						targets.remove(*it);
+					}
+					// -- Removing target process
 
 					break;
 				}

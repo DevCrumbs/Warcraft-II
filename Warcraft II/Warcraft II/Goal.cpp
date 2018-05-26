@@ -155,7 +155,8 @@ void Goal_Think::Activate()
 	// Initialize the goal
 	// TODO: Add some code here
 
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 GoalStatus Goal_Think::Process(float dt)
@@ -174,7 +175,8 @@ void Goal_Think::Terminate()
 	// Switch the goal off
 	// TODO: Add some code here
 
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 void Goal_Think::AddGoal_Wander(uint maxDistance, iPoint startTile, bool isCurrTile, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted)
@@ -234,34 +236,26 @@ void Goal_AttackTarget::Activate()
 	owner->SetIsStill(true);
 
 	if (targetInfo->isRemoveNeeded) {
-	
-		/// The target needs to be removed because, for example, is no longer within the sight of the unit (ordered from outside the goals)
-		if (owner->GetSingleUnit()->IsFittingTile()) {
 
-			goalStatus = GoalStatus_Completed;
-			return;
-		}
+		/// The target needs to be removed because, for example, is no longer within the sight of the unit (ordered from outside the goals)
+		goalStatus = GoalStatus_Completed;
 		return;
 	}
 	else if (targetInfo->IsTargetDead() || !targetInfo->IsTargetValid()) {
 
 		/// The target has recently died || The target has recently become invalid
-		if (owner->GetSingleUnit()->IsFittingTile()) {
-
-			goalStatus = GoalStatus_Completed;
-			return;
-		}
+		goalStatus = GoalStatus_Completed;
 		return;
 	}
 
 	// -----
 
-	AddSubgoal(new Goal_HitTarget(owner, &*targetInfo, isStateChanged));
+	AddSubgoal(new Goal_HitTarget(owner, targetInfo, isStateChanged));
+
+	iPoint targetTile = App->map->WorldToMap(targetInfo->target->GetPos().x, targetInfo->target->GetPos().y);
 
 	// If the target is far from the unit, head directly at the target's position
 	if (!targetInfo->isAttackSatisfied) {
-
-		iPoint targetTile = App->map->WorldToMap(targetInfo->target->GetPos().x, targetInfo->target->GetPos().y);
 
 		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
 
@@ -319,36 +313,43 @@ void Goal_AttackTarget::Activate()
 			}
 
 			owner->GetSingleUnit()->SetGoal(targetTile);
-
-			// Set the attacking tile of the building (the one that the unit will be facing to while attacking the building)
-			iPoint attackingTile = { -1,-1 };
-
-			list<iPoint> buildingTiles = App->entities->GetBuildingTiles(building);
-			priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> attackingTileQueue;
-
-			it = buildingTiles.begin();
-			while (it != buildingTiles.end()) {
-
-				priorityNeighbors.point = *it;
-				priorityNeighbors.priority = (*it).DistanceManhattan(targetTile);
-				attackingTileQueue.push(priorityNeighbors);
-
-				it++;
-			}
-
-			attackingTile = attackingTileQueue.top().point;
-			
-			if (attackingTile.x != -1 && attackingTile.y != -1)
-				targetInfo->attackingTile = attackingTile;
 		}
 
 		AddSubgoal(new Goal_MoveToPosition(owner, targetTile, isStateChanged));
 	}
 
+	// Set the attacking tile of the building (the one that the unit will be facing to while attacking the building)
+	if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
+
+		StaticEntity* building = (StaticEntity*)targetInfo->target;
+
+		iPoint attackingTile = { -1,-1 };
+
+		list<iPoint> buildingTiles = App->entities->GetBuildingTiles(building);
+		priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> attackingTileQueue;
+		iPointPriority priorityNeighbors;
+
+		list<iPoint>::const_iterator it = buildingTiles.begin();
+		while (it != buildingTiles.end()) {
+
+			priorityNeighbors.point = *it;
+			priorityNeighbors.priority = (*it).DistanceManhattan(targetTile);
+			attackingTileQueue.push(priorityNeighbors);
+
+			it++;
+		}
+
+		attackingTile = attackingTileQueue.top().point;
+
+		if (attackingTile.x != -1 && attackingTile.y != -1)
+
+			targetInfo->attackingTile = attackingTile;
+	}
+
 	// The target is being attacked by this unit
 	targetInfo->target->AddAttackingUnit(owner);
 
-	if (isStateChanged)
+	if (isStateChanged && !owner->isDead && !owner->isRemove)
 		owner->SetUnitState(UnitState_AttackTarget);
 
 	// Time enemies chase player units
@@ -432,7 +433,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 	else
 		owner->InvalidateCurrTarget();
 
-	if (isStateChanged && owner->GetUnitState() != UnitState_AttackTarget)
+	if (isStateChanged && owner->GetUnitState() != UnitState_AttackTarget && !owner->isDead && !owner->isRemove)
 		owner->SetUnitState(UnitState_AttackTarget);
 
 	return goalStatus;
@@ -525,7 +526,8 @@ void Goal_Patrol::Activate()
 
 	AddSubgoal(new Goal_MoveToPosition(owner, currGoal));
 
-	owner->SetUnitState(UnitState_Patrol);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Patrol);
 }
 
 GoalStatus Goal_Patrol::Process(float dt)
@@ -549,7 +551,8 @@ void Goal_Patrol::Terminate()
 {
 	RemoveAllSubgoals();
 
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_Wander ---------------------------------------------------------------------
@@ -584,7 +587,8 @@ void Goal_Wander::Activate()
 
 	AddSubgoal(new Goal_MoveToPosition(owner, destinationTile));
 
-	owner->SetUnitState(UnitState_Wander);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Wander);
 }
 
 GoalStatus Goal_Wander::Process(float dt)
@@ -622,7 +626,8 @@ void Goal_Wander::Terminate()
 	maxSecondsUntilNextChange = 0;
 	probabilityGoalCompleted = 0;
 
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_GatherGold ---------------------------------------------------------------------
@@ -719,7 +724,8 @@ void Goal_GatherGold::Terminate()
 	goldMine = nullptr;
 
 	//owner->SetGoldMine(nullptr);
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_HealRunestone ---------------------------------------------------------------------
@@ -816,7 +822,8 @@ void Goal_HealRunestone::Terminate()
 	runestone = nullptr;
 
 	//owner->SetRunestone(nullptr);
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_RescuePrisoner ---------------------------------------------------------------------
@@ -857,7 +864,8 @@ void Goal_RescuePrisoner::Terminate()
 	prisoner = nullptr;
 
 	//owner->SetPrisoner(nullptr);
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 // ATOMIC GOALS
@@ -958,7 +966,7 @@ void Goal_MoveToPosition::Terminate()
 
 	owner->GetSingleUnit()->ResetUnitParameters();
 
-	if (isStateChanged)
+	if (isStateChanged && !owner->isDead && !owner->isRemove)
 		owner->SetUnitState(UnitState_Idle);
 }
 
@@ -1295,7 +1303,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 	else
 		owner->InvalidateCurrTarget();
 
-	if (isStateChanged && owner->GetUnitState() != UnitState_AttackTarget)
+	if (isStateChanged && owner->GetUnitState() != UnitState_AttackTarget && !owner->isDead && !owner->isRemove)
 		owner->SetUnitState(UnitState_AttackTarget);
 
 	return goalStatus;
@@ -1487,7 +1495,8 @@ void Goal_LookAround::Terminate()
 	probabilityGoalCompleted = 0;
 	isChanged = false;
 
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_PickNugget ---------------------------------------------------------------------
@@ -1677,7 +1686,8 @@ void Goal_PickNugget::Terminate()
 	secondsGathering = 0.0f;
 	msAnimation = 0.0f;
 
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_HealArea ---------------------------------------------------------------------
@@ -1838,7 +1848,8 @@ void Goal_HealArea::Terminate()
 
 	alpha = 0;
 
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
 
 // Goal_FreePrisoner ---------------------------------------------------------------------
@@ -1948,5 +1959,6 @@ void Goal_FreePrisoner::Terminate()
 	alleria = nullptr;
 	turalyon = nullptr;
 
-	owner->SetUnitState(UnitState_Idle);
+	if (!owner->isDead && !owner->isRemove)
+		owner->SetUnitState(UnitState_Idle);
 }
