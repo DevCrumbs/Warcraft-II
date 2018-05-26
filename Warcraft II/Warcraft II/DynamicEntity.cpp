@@ -812,7 +812,7 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENT
 
 	while (it != targets.end()) {
 
-		if ((*it)->target->GetIsValid()) {
+		if ((*it)->target->GetIsValid() && !(*it)->target->isRemove && !(*it)->isRemoveNeeded) {
 
 			if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_DYNAMIC_ENTITY) {
 
