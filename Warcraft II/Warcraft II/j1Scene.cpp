@@ -503,7 +503,7 @@ bool j1Scene::Update(float dt)
 			}
 		}
 
-		LOG("%i", App->entities->unitsSelected.size());
+		//LOG("%i", App->entities->unitsSelected.size());
 
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 
@@ -562,16 +562,19 @@ bool j1Scene::Update(float dt)
 					
 						App->entities->SaveEntityGroup(units, 0);
 						isSavedGroup = true;
+						App->entities->UpdateGroupIcons(0);
 					}
 					else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
 
 						App->entities->SaveEntityGroup(units, 1);
 						isSavedGroup = true;
+						App->entities->UpdateGroupIcons(1);
 					}
 					else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
 
 						App->entities->SaveEntityGroup(units, 2);
 						isSavedGroup = true;
+						App->entities->UpdateGroupIcons(2);
 					}
 
 					if (isSavedGroup) {
