@@ -128,26 +128,6 @@ class Entity;
 
 struct EntityInfo; // empty container
 
-struct TargetInfo
-{
-	/// NOTE: if the target is nullptr, TargetInfo must also be nullptr!
-
-	TargetInfo();
-	TargetInfo(const TargetInfo& t);
-
-	bool isSightSatisfied = false; // if true, sight distance is satisfied
-	bool isAttackSatisfied = false; // if true, attack distance is satisfied
-
-	bool isRemoved = false; // if true, it means that the entity has been killed
-	bool isRemovedFromSight = false;
-
-	Entity* target = nullptr;
-
-	// -----
-
-	bool IsTargetPresent() const;
-};
-
 class Entity
 {
 public:

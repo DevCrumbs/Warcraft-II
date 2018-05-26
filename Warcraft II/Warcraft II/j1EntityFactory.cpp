@@ -1024,7 +1024,6 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		dragonInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-
 	// Orc ship animations
 	pugi::xml_node orcShipAnimations = orcEntities.child("orcShip").child("animations");
 
@@ -3862,37 +3861,6 @@ bool j1EntityFactory::RemoveAllUnitsGoals(list<DynamicEntity*> units)
 	}
 
 	return ret;
-}
-
-// Attack
-bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
-{
-	if (target == nullptr)
-		return false;
-
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
-
-	while (dynEnt != activeDynamicEntities.end()) {
-
-		if ((*dynEnt)->dynamicEntityType != EntityType_ALLERIA && (*dynEnt)->dynamicEntityType != EntityType_TURALYON) {
-
-			(*dynEnt)->SetIsRemovedTargetInfo(target);
-			(*dynEnt)->RemoveAttackingUnit(target);
-		}
-
-		dynEnt++;
-	}
-
-	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
-
-	while (statEnt != activeStaticEntities.end()) {
-
-		(*statEnt)->RemoveAttackingUnit(target);
-
-		statEnt++;
-	}
-
-	return true;
 }
 
 // Movement

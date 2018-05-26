@@ -147,6 +147,13 @@ void GryphonRider::Move(float dt)
 		}
 	}
 
+	// Update currTarget
+	if (currTarget != nullptr) {
+
+		if (currTarget->isRemoveNeeded || currTarget->target->isRemove)
+			currTarget = nullptr;
+	}
+
 	if (!isDead && isValid) {
 		// PROCESS THE COMMANDS
 
@@ -163,10 +170,7 @@ void GryphonRider::Move(float dt)
 			/// The unit could be attacking before this command
 			if (currTarget != nullptr) {
 
-				if (!currTarget->isRemoved && currTarget->target != nullptr)
-
-					currTarget->target->RemoveAttackingUnit(this);
-
+				currTarget->target->RemoveAttackingUnit(this);
 				currTarget = nullptr;
 			}
 
@@ -234,12 +238,14 @@ void GryphonRider::Move(float dt)
 
 		case UnitCommand_AttackTarget:
 
-			if (currTarget != nullptr) {
+			if (newTarget != nullptr) {
 
 				if (singleUnit->IsFittingTile()) {
 
 					brain->RemoveAllSubgoals();
-					brain->AddGoal_AttackTarget(currTarget);
+					brain->AddGoal_AttackTarget(newTarget);
+
+					newTarget = nullptr;
 
 					unitState = UnitState_AttackTarget;
 					unitCommand = UnitCommand_NoCommand;
@@ -309,34 +315,20 @@ void GryphonRider::Move(float dt)
 		}
 	}
 
-	if (!isDead)
+	if (!isDead) {
+
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);
+
+		// Update targets to be removed
+		UpdateTargetsToRemove();
+	}
 
 	UnitStateMachine(dt);
 	HandleInput(entityEvent);
 
-	// Update FoW enemies
-	/*
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		if ((*it)->target != nullptr && !(*it)->isRemovedFromSight && !(*it)->isRemoved) {
-
-			if ((*it)->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
-
-				DynamicEntity* dynEnt = (DynamicEntity*)(*it);
-				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
-			}
-		}
-		it++;
-	}
-	*/
-
 	// Update animations
-	if (!isStill || isHitting)
-		UpdateAnimationsSpeed(dt);
+	UpdateAnimationsSpeed(dt);
 
 	ChangeAnimation();
 
@@ -350,7 +342,7 @@ void GryphonRider::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
-	// Update Unit LifeBar
+	// Update unit's life bar
 	if (lifeBar != nullptr) {
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
@@ -443,8 +435,8 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("Gryphon Rider Sight Radius %s", dynEnt->GetColorName().data());
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Gryphon Rider Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// 1. UPDATE TARGETS LIST
@@ -456,7 +448,6 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 				if ((*it)->target == c2->entity) {
 
-					(*it)->isRemovedFromSight = false;
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
@@ -480,8 +471,6 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
-					isFacingTowardsTarget = true;
-				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
@@ -516,22 +505,35 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("Gryphon Rider Attack Radius %s", dynEnt->GetColorName().data());
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Gryphon Rider Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
-			// Set the target's isAttackSatisfied to true
+			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
+			bool isTargetFound = false;
 
+			// If the target is already in the targets list, set its isAttackSatisfied + isSightSatisfied to true
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
-					(*it)->isRemovedFromSight = false;
+					(*it)->isSightSatisfied = true;
 					(*it)->isAttackSatisfied = true;
+					isTargetFound = true;
 					break;
 				}
 				it++;
+			}
+			// Else, add the new target to the targets list (and set its isAttackSatisfied + isSightSatisfied to true)
+			if (!isTargetFound) {
+
+				TargetInfo* targetInfo = new TargetInfo();
+				targetInfo->target = c2->entity;
+				targetInfo->isSightSatisfied = true;
+				targetInfo->isAttackSatisfied = true;
+
+				targets.push_back(targetInfo);
 			}
 		}
 		break;
@@ -555,21 +557,40 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("NO MORE Gryphon Rider Sight Radius %s", dynEnt->GetColorName().data());
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Gryphon Rider Sight Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isSightSatisfied to false
-			list<TargetInfo*>::const_iterator it = targets.begin();
+			list<TargetInfo*>::iterator it = targets.begin();
 
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					//(*it)->isAttackSatisfied = false;
-					//(*it)->target->RemoveAttackingUnit(this);
-					SetIsRemovedFromSightTargetInfo((*it)->target);
+
+					// Removing target process --
+					if (!(*it)->IsTargetDead())
+
+						(*it)->target->RemoveAttackingUnit(this);
+
+					if (currTarget == *it)
+
+						InvalidateCurrTarget();
+
+					if ((*it)->isInGoals > 0 && !(*it)->isRemoveNeeded) {
+
+						(*it)->isRemoveNeeded = true;
+						targetsToRemove.splice(targetsToRemove.begin(), targets, it);
+					}
+					else if (!(*it)->isRemoveNeeded) {
+
+						delete *it;
+						targets.remove(*it);
+					}
+					// -- Removing target process
+
 					break;
 				}
 				it++;
@@ -586,8 +607,8 @@ void GryphonRider::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSt
 
 			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("NO MORE Gryphon Rider Attack Radius %s", dynEnt->GetColorName().data());
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Gryphon Rider Attack Radius %s", dynEnt->GetColorName().data());
 			}
 
 			// Set the target's isAttackSatisfied to false
@@ -633,8 +654,9 @@ void GryphonRider::UnitStateMachine(float dt)
 						if (newTarget != nullptr) {
 
 							if (SetCurrTarget(newTarget->target))
-								//currTarget = newTarget;
-								brain->AddGoal_AttackTarget(currTarget, false);
+								brain->AddGoal_AttackTarget(newTarget, false);
+
+							newTarget = nullptr;
 						}
 					}
 				}
@@ -644,6 +666,8 @@ void GryphonRider::UnitStateMachine(float dt)
 		break;
 
 	case UnitState_Idle:
+
+		isRunAway = false;
 
 		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
 			break;
@@ -671,20 +695,15 @@ void GryphonRider::UnitStateMachine(float dt)
 				if (currTarget != newTarget) {
 
 					// Anticipate the removing of this unit from the attacking units of the target
-					if (currTarget != nullptr) {
-
-						/*
-						if (!currTarget->isRemoved)
-
-							currTarget->target->RemoveAttackingUnit(this);
-							*/
-					}
+					if (currTarget != nullptr)
+						currTarget->target->RemoveAttackingUnit(this);
 
 					isHitting = false;
 
 					if (SetCurrTarget(newTarget->target))
-						//currTarget = newTarget;
-						brain->AddGoal_AttackTarget(currTarget);
+						brain->AddGoal_AttackTarget(newTarget);
+
+					newTarget = nullptr;
 				}
 			}
 		}
@@ -702,14 +721,15 @@ void GryphonRider::UnitStateMachine(float dt)
 
 			if (currTarget == nullptr) {
 
-				// Check if there are available targets (DYNAMIC ENTITY) 
+				// Check if there are available targets (DYNAMIC ENTITY)
 				newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
 
 				if (newTarget != nullptr) {
 
 					if (SetCurrTarget(newTarget->target))
-						//currTarget = newTarget;
-						brain->AddGoal_AttackTarget(currTarget);
+						brain->AddGoal_AttackTarget(newTarget);
+
+					newTarget = nullptr;
 				}
 			}
 		}
@@ -735,11 +755,6 @@ void GryphonRider::UnitStateMachine(float dt)
 
 		break;
 	}
-
-	/// DEFENSE
-	if (unitsAttacking.size() == 0)
-
-		isRunAway = false;
 }
 
 // -------------------------------------------------------------
@@ -831,24 +846,27 @@ bool GryphonRider::ChangeAnimation()
 	else if (isHitting) {
 
 		// Set the direction of the unit as the orientation towards the attacking target
-		/*
 		if (currTarget != nullptr) {
 
-			if (!currTarget->isRemoved) {
+			fPoint orientation = { -1,-1 };
 
-				fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
+			if (currTarget->attackingTile.x != -1 && currTarget->attackingTile.y != -1) {
 
-				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-				if (m > 0.0f) {
-					orientation.x /= m;
-					orientation.y /= m;
-				}
-
-				SetUnitDirectionByValue(orientation);
+				iPoint attackingPos = App->map->MapToWorld(currTarget->attackingTile.x, currTarget->attackingTile.y);
+				orientation = { attackingPos.x - pos.x, attackingPos.y - pos.y };
 			}
+			else
+				orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
+
+			float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+
+			if (m > 0.0f) {
+				orientation.x /= m;
+				orientation.y /= m;
+			}
+
+			SetUnitDirectionByValue(orientation);
 		}
-		*/
 
 		switch (GetUnitDirection()) {
 
@@ -911,15 +929,6 @@ bool GryphonRider::ChangeAnimation()
 
 		case UnitDirection_Up:
 
-			if (isStill) {
-
-				gryphonRiderInfo.up.loop = false;
-				gryphonRiderInfo.up.Reset();
-				gryphonRiderInfo.up.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.up.loop = true;
-
 			animation = &gryphonRiderInfo.up;
 
 			ret = true;
@@ -928,30 +937,12 @@ bool GryphonRider::ChangeAnimation()
 		case UnitDirection_NoDirection:
 		case UnitDirection_Down:
 
-			if (isStill) {
-
-				gryphonRiderInfo.down.loop = false;
-				gryphonRiderInfo.down.Reset();
-				gryphonRiderInfo.down.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.down.loop = true;
-
 			animation = &gryphonRiderInfo.down;
 
 			ret = true;
 			break;
 
 		case UnitDirection_Left:
-
-			if (isStill) {
-
-				gryphonRiderInfo.left.loop = false;
-				gryphonRiderInfo.left.Reset();
-				gryphonRiderInfo.left.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.left.loop = true;
 
 			animation = &gryphonRiderInfo.left;
 
@@ -960,30 +951,12 @@ bool GryphonRider::ChangeAnimation()
 
 		case UnitDirection_Right:
 
-			if (isStill) {
-
-				gryphonRiderInfo.right.loop = false;
-				gryphonRiderInfo.right.Reset();
-				gryphonRiderInfo.right.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.right.loop = true;
-
 			animation = &gryphonRiderInfo.right;
 
 			ret = true;
 			break;
 
 		case UnitDirection_UpLeft:
-
-			if (isStill) {
-
-				gryphonRiderInfo.upLeft.loop = false;
-				gryphonRiderInfo.upLeft.Reset();
-				gryphonRiderInfo.upLeft.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.upLeft.loop = true;
 
 			animation = &gryphonRiderInfo.upLeft;
 
@@ -992,15 +965,6 @@ bool GryphonRider::ChangeAnimation()
 
 		case UnitDirection_UpRight:
 
-			if (isStill) {
-
-				gryphonRiderInfo.upRight.loop = false;
-				gryphonRiderInfo.upRight.Reset();
-				gryphonRiderInfo.upRight.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.upRight.loop = true;
-
 			animation = &gryphonRiderInfo.upRight;
 
 			ret = true;
@@ -1008,30 +972,12 @@ bool GryphonRider::ChangeAnimation()
 
 		case UnitDirection_DownLeft:
 
-			if (isStill) {
-
-				gryphonRiderInfo.downLeft.loop = false;
-				gryphonRiderInfo.downLeft.Reset();
-				gryphonRiderInfo.downLeft.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.downLeft.loop = true;
-
 			animation = &gryphonRiderInfo.downLeft;
 
 			ret = true;
 			break;
 
 		case UnitDirection_DownRight:
-
-			if (isStill) {
-
-				gryphonRiderInfo.downRight.loop = false;
-				gryphonRiderInfo.downRight.Reset();
-				gryphonRiderInfo.downRight.speed = 0.0f;
-			}
-			else
-				gryphonRiderInfo.downRight.loop = true;
 
 			animation = &gryphonRiderInfo.downRight;
 

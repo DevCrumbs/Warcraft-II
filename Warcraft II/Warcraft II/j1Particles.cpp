@@ -720,7 +720,97 @@ bool Particle::Update(float dt)
 	switch (particleType) {
 
 	case ParticleType_Player_Projectile:
+	{
+		const SDL_Rect rectA = { (int)pos.x, (int)pos.y, size.x, size.y };
+		const SDL_Rect rectB = { destination.x, destination.y,  App->map->data.tileWidth, App->map->data.tileHeight };
+
+		if (SDL_HasIntersection(&rectA, &rectB)) {
+
+			// Apply damage on dynamic entities on the way of the particle, if the particle is a cannon bullet
+			Entity* entityEnemy = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y }, EntityCategory_NONE, EntitySide_Enemy);
+			Entity* entityNeutral = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y }, EntityCategory_NONE, EntitySide_Neutral);
+
+			Entity* entity = nullptr;
+
+			if (entityEnemy != nullptr)
+				entity = entityEnemy;
+			else if (entityNeutral != nullptr)
+				entity = entityNeutral;
+
+			// Apply damage and kill the particle if it reaches its target
+			if (entity != nullptr) {
+
+				if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+					entity->ApplyDamage(damage);
+
+					StaticEntity* statEnt = (StaticEntity*)entity;
+					statEnt->CheckBuildingState();
+				}
+				else
+					entity->ApplyDamage(damage);
+
+				return false;
+			}
+
+			return false;
+		}
+
+		pos.x += orientation.x * dt * speed;
+		pos.y += orientation.y * dt * speed;
+
+		if (isRemove)
+			return false;
+
+		return true;
+	}
+	break;
+
 	case ParticleType_Enemy_Projectile:
+	{
+		const SDL_Rect rectA = { (int)pos.x, (int)pos.y, size.x, size.y };
+		const SDL_Rect rectB = { destination.x, destination.y,  App->map->data.tileWidth, App->map->data.tileHeight };
+
+		if (SDL_HasIntersection(&rectA, &rectB)) {
+
+			// Apply damage on dynamic entities on the way of the particle, if the particle is a cannon bullet
+			Entity* entityPlayer = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y }, EntityCategory_NONE, EntitySide_Player);
+			Entity* entityNeutral = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y }, EntityCategory_NONE, EntitySide_Neutral);
+
+			Entity* entity = nullptr;
+
+			if (entityPlayer != nullptr)
+				entity = entityPlayer;
+			else if (entityNeutral != nullptr)
+				entity = entityNeutral;
+
+			// Apply damage and kill the particle if it reaches its target
+			if (entity != nullptr) {
+
+				if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+					entity->ApplyDamage(damage);
+
+					StaticEntity* statEnt = (StaticEntity*)entity;
+					statEnt->CheckBuildingState();
+				}
+				else
+					entity->ApplyDamage(damage);
+
+				return false;
+			}
+
+			return false;
+		}
+
+		pos.x += orientation.x * dt * speed;
+		pos.y += orientation.y * dt * speed;
+
+		if (isRemove)
+			return false;
+
+		return true;
+	}
+	break;
+
 	case ParticleType_Cannon_Projectile:
 	{
 		const SDL_Rect rectA = { (int)pos.x, (int)pos.y, size.x, size.y };
@@ -731,79 +821,22 @@ bool Particle::Update(float dt)
 			// Apply damage on dynamic entities on the way of the particle, if the particle is a cannon bullet
 			Entity* entity = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y });
 
-			if (particleType == ParticleType_Cannon_Projectile) {
-
-				if (entity != nullptr) {
-
-					if (entity->entitySide == EntitySide_Player ||
-						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy) {
-
-						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
-							entity->ApplyDamage(damage);
-							
-							StaticEntity* statEnt = (StaticEntity*)entity;
-							statEnt->CheckBuildingState();
-						}
-						else
-							entity->ApplyDamage(damage);
-					}
-
-					return false;
-				}
-			}
-
-			// Apply damage and kill the particle if it reaches its target
 			if (entity != nullptr) {
 
-				if (particleType == ParticleType_Player_Projectile) {
+				if (entity->entitySide == EntitySide_Player ||
+					entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy) {
 
-					if (entity->entitySide == EntitySide_Enemy || entity->entitySide == EntitySide_Neutral) {
-					
-						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
-							entity->ApplyDamage(damage);
+					if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+						entity->ApplyDamage(damage);
 
-							StaticEntity* statEnt = (StaticEntity*)entity;
-							statEnt->CheckBuildingState();
-						}
-						else
-							entity->ApplyDamage(damage);
+						StaticEntity* statEnt = (StaticEntity*)entity;
+						statEnt->CheckBuildingState();
 					}
-
-					return false;
+					else
+						entity->ApplyDamage(damage);
 				}
-				else if (particleType == ParticleType_Enemy_Projectile) {
 
-					if (entity->entitySide == EntitySide_Player || entity->entitySide == EntitySide_Neutral) {
-					
-						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
-							entity->ApplyDamage(damage);
-
-							StaticEntity* statEnt = (StaticEntity*)entity;
-							statEnt->CheckBuildingState();
-						}
-						else
-							entity->ApplyDamage(damage);
-					}
-
-					return false;
-				}
-				else if (particleType == ParticleType_Cannon_Projectile) {
-
-					if (entity->entitySide == EntitySide_Player ||
-						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy) {
-					
-						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
-							entity->ApplyDamage(damage);
-
-							StaticEntity* statEnt = (StaticEntity*)entity;
-							statEnt->CheckBuildingState();
-						}
-						else
-							entity->ApplyDamage(damage);
-					}
-
-					return false;
-				}
+				return false;
 			}
 
 			return false;
