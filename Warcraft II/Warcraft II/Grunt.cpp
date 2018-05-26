@@ -83,11 +83,6 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	entityCollider->isTrigger = true;
 	sightRadiusCollider->isTrigger = true;
 	attackRadiusCollider->isTrigger = true;
-
-	// Different behaviors for units on the base and units around the map
-	if (!App->map->IsOnBase(spawnPos))
-
-		brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
 void Grunt::Move(float dt)
@@ -100,9 +95,6 @@ void Grunt::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
-
-	//LOG("Goals: %i", brain->GetSubgoalsList().size());
-	//LOG("Targets: %i", targets.size());
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -193,7 +185,6 @@ void Grunt::Move(float dt)
 						App->scene->isRoomCleared = true;
 						App->scene->roomCleared = room->roomRect;
 
-						/// TODO Valdivia: sonido sala limpiada
 						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 					}
 
@@ -214,7 +205,6 @@ void Grunt::Move(float dt)
 						App->scene->isRoomCleared = true;
 						App->scene->roomCleared = room->roomRect;
 
-						/// TODO Valdivia: sonido sala limpiada
 						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);				
 					}
 				}
@@ -222,26 +212,32 @@ void Grunt::Move(float dt)
 		}
 	}
 
+	// Update currTarget
 	if (currTarget != nullptr) {
 
-		if (currTarget->isRemoveNeeded)
+		if (currTarget->isRemoveNeeded || currTarget->target->isRemove)
 			currTarget = nullptr;
 	}
 
 	if (!isDead) {
 
-		iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+		if (brain->GetSubgoalsList().size() == 0) {
 
-		if (App->map->IsOnBase(spawnPos) && brain->GetSubgoalsList().size() == 0) {
+			iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
-			if (App->player->townHall != nullptr) {
+			if (App->map->IsOnBase(spawnPos)) {
 
-				if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
+				if (App->player->townHall != nullptr) {
 
-					if (SetCurrTarget(App->player->townHall))
-						brain->AddGoal_AttackTarget(&*newTarget);
+					if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
+
+						if (SetCurrTarget(App->player->townHall))
+							brain->AddGoal_AttackTarget(&*newTarget);
+					}
 				}
 			}
+			else
+				brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
 		}
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL
@@ -269,8 +265,9 @@ void Grunt::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
-	// Update Unit LifeBar
+	// Update unit's life bar
 	if (lifeBar != nullptr) {
+
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
 	}
@@ -529,8 +526,10 @@ void Grunt::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					if (SetCurrTarget(newTarget->target))
+					if (SetCurrTarget(newTarget->target)) {
+						brain->RemoveAllSubgoals();
 						brain->AddGoal_AttackTarget(newTarget);
+					}
 
 					newTarget = nullptr;
 					isHunting = false;
@@ -572,8 +571,10 @@ void Grunt::UnitStateMachine(float dt)
 						isHitting = false;
 						isHunting = false;
 
-						if (SetCurrTarget(newTarget->target))
+						if (SetCurrTarget(newTarget->target)) {
+							brain->RemoveAllSubgoals();
 							brain->AddGoal_AttackTarget(newTarget);
+						}
 
 						newTarget = nullptr;
 						isSearchingForCritters = true;
@@ -585,6 +586,7 @@ void Grunt::UnitStateMachine(float dt)
 
 					if (!isHunting) {
 
+						brain->RemoveAllSubgoals();
 						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
 						isHunting = true;
 					}
@@ -617,8 +619,11 @@ void Grunt::UnitStateMachine(float dt)
 						// Is the best target an attacking unit?
 						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
-							if (SetCurrTarget(newTarget->target))
+							if (SetCurrTarget(newTarget->target)) {
+
+								brain->RemoveAllSubgoals();
 								brain->AddGoal_AttackTarget(newTarget, false);
+							}
 
 							newTarget = nullptr;
 							isAttackingUnit = true;
@@ -635,8 +640,11 @@ void Grunt::UnitStateMachine(float dt)
 
 							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
 
-								if (SetCurrTarget((*it)->target))
+								if (SetCurrTarget((*it)->target)) {
+
+									brain->RemoveAllSubgoals();
 									brain->AddGoal_AttackTarget(newTarget, false);
+								}
 
 								newTarget = nullptr;
 								isAttackingUnit = true;
@@ -661,8 +669,11 @@ void Grunt::UnitStateMachine(float dt)
 
 							targets.push_front(targetInfo);
 
-							if (SetCurrTarget(targetInfo->target))
+							if (SetCurrTarget(targetInfo->target)) {
+
+								brain->RemoveAllSubgoals();
 								brain->AddGoal_AttackTarget(newTarget, false);
+							}
 
 							newTarget = nullptr;
 							isHunting = true;
@@ -695,8 +706,11 @@ void Grunt::UnitStateMachine(float dt)
 						isHitting = false;
 						isHunting = false;
 
-						if (SetCurrTarget(newTarget->target))
+						if (SetCurrTarget(newTarget->target)) {
+
+							brain->RemoveAllSubgoals();
 							brain->AddGoal_AttackTarget(newTarget);
+						}
 
 						newTarget = nullptr;
 					}
@@ -724,8 +738,11 @@ void Grunt::UnitStateMachine(float dt)
 								isHitting = false;
 								isHunting = false;
 
-								if (SetCurrTarget(newTarget->target))
+								if (SetCurrTarget(newTarget->target)) {
+
+									brain->RemoveAllSubgoals();
 									brain->AddGoal_AttackTarget(newTarget);
+								}
 
 								newTarget = nullptr;
 							}

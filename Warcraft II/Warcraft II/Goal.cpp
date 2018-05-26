@@ -221,21 +221,8 @@ void Goal_Think::AddGoal_LookAround(uint minSecondsToChange, uint maxSecondsToCh
 
 Goal_AttackTarget::Goal_AttackTarget(DynamicEntity* owner, TargetInfo* targetInfo, bool isStateChanged) :CompositeGoal(owner, GoalType_AttackTarget), targetInfo(targetInfo), isStateChanged(isStateChanged) 
 {
-	(this->targetInfo)->isInGoals++;
+	(this->targetInfo)->isInGoals++; // THE TARGET IS A GOAL
 }
-
-/*
-If *targetInfo == nullptr:
-- The target has been removed from outside the Goals classes (from the OnCollision 'exit' of the entity who owns the Goal_AttackTarget)
-
-If (*targetInfo)->IsTargetDead():
-- The target has been killed from inside the Goal_HitTarget() class.
-
-NOTES:
-- Goal_AttackTarget Process(): always check if the owner is fitting the tile in order to proceed.
-- Goal_AttackTarget Process(): never check if (*targetInfo)->IsTargetDead(), since this condition has to become true FIRST in the Goal_HitTarget
-and SECOND in the Goal_AttackTarget (in order to give life, for example, to the units when they kill a critter).
-*/
 
 void Goal_AttackTarget::Activate()
 {
@@ -243,15 +230,27 @@ void Goal_AttackTarget::Activate()
 
 	RemoveAllSubgoals();
 
+	owner->SetHitting(false);
+	owner->SetIsStill(true);
+
 	if (targetInfo->isRemoveNeeded) {
 	
-		goalStatus = GoalStatus_Completed;
+		/// The target needs to be removed because, for example, is no longer within the sight of the unit (ordered from outside the goals)
+		if (owner->GetSingleUnit()->IsFittingTile()) {
+
+			goalStatus = GoalStatus_Completed;
+			return;
+		}
 		return;
 	}	
 	else if (targetInfo->IsTargetDead() || !targetInfo->IsTargetValid()) {
 
 		/// The target has recently died || The target has recently become invalid
-		goalStatus = GoalStatus_Completed;
+		if (owner->GetSingleUnit()->IsFittingTile()) {
+
+			goalStatus = GoalStatus_Completed;
+			return;
+		}
 		return;
 	}
 
@@ -349,7 +348,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 	if (targetInfo->isRemoveNeeded) {
 	
-		/// The target has recently become invalid
+		/// The target needs to be removed because, for example, is no longer within the sight of the unit (ordered from outside the goals)
 		if (owner->GetSingleUnit()->IsFittingTile()) {
 
 			goalStatus = GoalStatus_Completed;
@@ -418,11 +417,14 @@ void Goal_AttackTarget::Terminate()
 {
 	RemoveAllSubgoals();
 
+	owner->SetHitting(false);
+	owner->SetIsStill(true);
+
 	owner->InvalidateCurrTarget();
 
 	if (targetInfo->isRemoveNeeded) {
 
-		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
+		/// The target needs to be removed because, for example, is no longer within the sight of the unit (ordered from outside the goals)
 	}
 	else if (targetInfo->IsTargetDead() || !targetInfo->IsTargetValid()) {
 
@@ -453,7 +455,7 @@ void Goal_AttackTarget::Terminate()
 		}
 	}
 
-	targetInfo->isInGoals--;
+	targetInfo->isInGoals--; // THE TARGET IS NO LONGER A GOAL
 
 	// -----
 
@@ -830,6 +832,7 @@ void Goal_MoveToPosition::Activate()
 	goalStatus = GoalStatus_Active;
 
 	owner->SetHitting(false);
+	owner->SetIsStill(false);
 
 	if (owner->dynamicEntityType != EntityType_GRYPHON_RIDER && owner->dynamicEntityType != EntityType_DRAGON) {
 
@@ -912,9 +915,10 @@ GoalStatus Goal_MoveToPosition::Process(float dt)
 
 void Goal_MoveToPosition::Terminate()
 {
-	owner->GetSingleUnit()->ResetUnitParameters();
-
+	owner->SetHitting(false);
 	owner->SetIsStill(true);
+
+	owner->GetSingleUnit()->ResetUnitParameters();
 
 	if (isStateChanged)
 		owner->SetUnitState(UnitState_Idle);
@@ -930,7 +934,7 @@ void Goal_HitTarget::Activate()
 
 	if (targetInfo->isRemoveNeeded) {
 	
-		/// The target has recently died || The target has recently become invalid
+		/// The target needs to be removed because, for example, is no longer within the sight of the unit (ordered from outside the goals)
 		goalStatus = GoalStatus_Completed;
 		return;
 	}
@@ -950,6 +954,7 @@ void Goal_HitTarget::Activate()
 	// -----
 
 	owner->SetHitting(true);
+	owner->SetIsStill(true);
 
 	// ----- The owner may have lost their currTarget because of the processing order of the AttackTarget goals
 
@@ -965,7 +970,7 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 	if (targetInfo->isRemoveNeeded) {
 
-		// a) The TARGET and the TARGETINFO have been removed from OUTSIDE this class
+		/// The target needs to be removed because, for example, is no longer within the sight of the unit (ordered from outside the goals)
 		goalStatus = GoalStatus_Completed;
 		return goalStatus;
 	}
@@ -1265,6 +1270,8 @@ void Goal_LookAround::Activate()
 {
 	goalStatus = GoalStatus_Active;
 
+	owner->SetIsStill(true);
+
 	uint random = rand() % 3;
 
 	switch (owner->GetUnitDirection()) {
@@ -1362,8 +1369,6 @@ void Goal_LookAround::Activate()
 	timer.Start();
 	secondsToChange = (float)(rand() % maxSecondsToChange + minSecondsToChange);
 	secondsUntilNextChange = (float)(rand() % maxSecondsUntilNextChange + minSecondsUntilNextChange);
-
-	owner->SetIsStill(true);
 }
 
 GoalStatus Goal_LookAround::Process(float dt)
@@ -1419,6 +1424,8 @@ GoalStatus Goal_LookAround::Process(float dt)
 
 void Goal_LookAround::Terminate()
 {
+	owner->SetIsStill(true);
+
 	secondsToChange = 0.0f;
 	secondsUntilNextChange = 0.0f;
 
@@ -1429,7 +1436,6 @@ void Goal_LookAround::Terminate()
 	probabilityGoalCompleted = 0;
 	isChanged = false;
 
-	owner->SetIsStill(false);
 	owner->SetUnitState(UnitState_Idle);
 }
 

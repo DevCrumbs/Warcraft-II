@@ -147,9 +147,10 @@ void GryphonRider::Move(float dt)
 		}
 	}
 
+	// Update currTarget
 	if (currTarget != nullptr) {
 
-		if (currTarget->isRemoveNeeded)
+		if (currTarget->isRemoveNeeded || currTarget->target->isRemove)
 			currTarget = nullptr;
 	}
 
@@ -341,7 +342,7 @@ void GryphonRider::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
-	// Update Unit LifeBar
+	// Update unit's life bar
 	if (lifeBar != nullptr) {
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });

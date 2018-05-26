@@ -84,11 +84,6 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 	entityCollider->isTrigger = true;
 	sightRadiusCollider->isTrigger = true;
 	attackRadiusCollider->isTrigger = true;
-
-	// Different behaviors for units on the base and units around the map
-	if (!App->map->IsOnBase(spawnPos))
-
-		brain->AddGoal_Wander(4, spawnTile, false, 1, 3, 1, 2, 4);
 }
 
 void TrollAxethrower::Move(float dt)
@@ -191,7 +186,6 @@ void TrollAxethrower::Move(float dt)
 						App->scene->isRoomCleared = true;
 						App->scene->roomCleared = room->roomRect;
 
-						/// TODO Valdivia: sonido sala limpiada
 						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 					}
 
@@ -212,7 +206,6 @@ void TrollAxethrower::Move(float dt)
 						App->scene->isRoomCleared = true;
 						App->scene->roomCleared = room->roomRect;
 
-						/// TODO Valdivia: sonido sala limpiada
 						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 					}
 				}
@@ -220,26 +213,32 @@ void TrollAxethrower::Move(float dt)
 		}
 	}
 
+	// Update currTarget
 	if (currTarget != nullptr) {
 
-		if (currTarget->isRemoveNeeded)
+		if (currTarget->isRemoveNeeded || currTarget->target->isRemove)
 			currTarget = nullptr;
 	}
 
 	if (!isDead) {
 
-		iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+		if (brain->GetSubgoalsList().size() == 0) {
 
-		if (App->map->IsOnBase(spawnPos) && brain->GetSubgoalsList().size() == 0) {
+			iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
-			if (App->player->townHall != nullptr) {
+			if (App->map->IsOnBase(spawnPos)) {
 
-				if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
+				if (App->player->townHall != nullptr) {
 
-					if (SetCurrTarget(App->player->townHall))
-						brain->AddGoal_AttackTarget(newTarget);
+					if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
+
+						if (SetCurrTarget(App->player->townHall))
+							brain->AddGoal_AttackTarget(&*newTarget);
+					}
 				}
 			}
+			else
+				brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
 		}
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL
@@ -267,8 +266,9 @@ void TrollAxethrower::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
-	// Update Unit LifeBar
+	// Update unit's life bar
 	if (lifeBar != nullptr) {
+
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
 	}
