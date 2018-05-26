@@ -233,7 +233,7 @@ void TrollAxethrower::Move(float dt)
 					if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
 
 						if (SetCurrTarget(App->player->townHall))
-							brain->AddGoal_AttackTarget(&*newTarget);
+							brain->AddGoal_AttackTarget(newTarget);
 					}
 				}
 			}
@@ -521,8 +521,11 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					if (SetCurrTarget(newTarget->target))
+					if (SetCurrTarget(newTarget->target)) {
+
+						brain->RemoveAllSubgoals();
 						brain->AddGoal_AttackTarget(newTarget);
+					}
 
 					newTarget = nullptr;
 					isHunting = false;
@@ -564,8 +567,11 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						isHitting = false;
 						isHunting = false;
 
-						if (SetCurrTarget(newTarget->target))
+						if (SetCurrTarget(newTarget->target)) {
+
+							brain->RemoveAllSubgoals();
 							brain->AddGoal_AttackTarget(newTarget);
+						}
 
 						newTarget = nullptr;
 						isSearchingForCritters = true;
@@ -577,6 +583,7 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 					if (!isHunting) {
 
+						brain->RemoveAllSubgoals();
 						brain->AddGoal_Wander(5, singleUnit->currTile, true, 0, 1, 0, 1, 3);
 						isHunting = true;
 					}
@@ -609,8 +616,11 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						// Is the best target an attacking unit?
 						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
-							if (SetCurrTarget(newTarget->target))
+							if (SetCurrTarget(newTarget->target)) {
+
+								brain->RemoveAllSubgoals();
 								brain->AddGoal_AttackTarget(newTarget, false);
+							}
 
 							newTarget = nullptr;
 							isAttackingUnit = true;
@@ -627,8 +637,11 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
 
-								if (SetCurrTarget((*it)->target))
+								if (SetCurrTarget((*it)->target)) {
+
+									brain->RemoveAllSubgoals();
 									brain->AddGoal_AttackTarget(newTarget, false);
+								}
 
 								newTarget = nullptr;
 								isAttackingUnit = true;
@@ -653,8 +666,11 @@ void TrollAxethrower::UnitStateMachine(float dt)
 
 							targets.push_front(targetInfo);
 
-							if (SetCurrTarget(targetInfo->target))
+							if (SetCurrTarget(targetInfo->target)) {
+
+								brain->RemoveAllSubgoals();
 								brain->AddGoal_AttackTarget(newTarget, false);
+							}
 
 							newTarget = nullptr;
 							isHunting = true;
@@ -687,8 +703,11 @@ void TrollAxethrower::UnitStateMachine(float dt)
 						isHitting = false;
 						isHunting = false;
 
-						if (SetCurrTarget(newTarget->target))
+						if (SetCurrTarget(newTarget->target)) {
+
+							brain->RemoveAllSubgoals();
 							brain->AddGoal_AttackTarget(newTarget);
+						}
 
 						newTarget = nullptr;
 					}
@@ -716,8 +735,11 @@ void TrollAxethrower::UnitStateMachine(float dt)
 								isHitting = false;
 								isHunting = false;
 
-								if (SetCurrTarget(newTarget->target))
+								if (SetCurrTarget(newTarget->target)) {
+
+									brain->RemoveAllSubgoals();
 									brain->AddGoal_AttackTarget(newTarget);
+								}
 
 								newTarget = nullptr;
 							}

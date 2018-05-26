@@ -232,7 +232,7 @@ void Grunt::Move(float dt)
 					if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
 
 						if (SetCurrTarget(App->player->townHall))
-							brain->AddGoal_AttackTarget(&*newTarget);
+							brain->AddGoal_AttackTarget(newTarget);
 					}
 				}
 			}
@@ -527,6 +527,7 @@ void Grunt::UnitStateMachine(float dt)
 				if (newTarget != nullptr) {
 
 					if (SetCurrTarget(newTarget->target)) {
+
 						brain->RemoveAllSubgoals();
 						brain->AddGoal_AttackTarget(newTarget);
 					}
@@ -572,6 +573,7 @@ void Grunt::UnitStateMachine(float dt)
 						isHunting = false;
 
 						if (SetCurrTarget(newTarget->target)) {
+
 							brain->RemoveAllSubgoals();
 							brain->AddGoal_AttackTarget(newTarget);
 						}
