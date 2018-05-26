@@ -470,7 +470,9 @@ void Goal_AttackTarget::Terminate()
 	}
 	else {
 
-		targetInfo->target->RemoveAttackingUnit(owner);
+		if (!App->entities->isEntityFactoryCleanUp)
+
+			targetInfo->target->RemoveAttackingUnit(owner);
 
 		// If the target is a building, also check if DistanceManhattan is <= 1
 		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied) {
