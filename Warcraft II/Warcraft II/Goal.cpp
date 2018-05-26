@@ -389,7 +389,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 		// If the target is a building, also check if DistanceManhattan is <= 1
 		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && !targetInfo->isAttackSatisfied) {
-		
+
 			list<iPoint> buildingTiles = App->entities->GetBuildingTiles((StaticEntity*)targetInfo->target);
 
 			if (buildingTiles.size() > 0) {
@@ -398,10 +398,11 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 				while (it != buildingTiles.end()) {
 
-					if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1)
+					if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1) {
 
 						targetInfo->isAttackSatisfied = true;
-
+						break;
+					}
 					it++;
 				}
 			}
@@ -468,14 +469,27 @@ void Goal_AttackTarget::Terminate()
 	}
 	else {
 
-		if (!App->entities->isEntityFactoryCleanUp) {
+		targetInfo->target->RemoveAttackingUnit(owner);
 
-			targetInfo->target->RemoveAttackingUnit(owner);
+		// If the target is a building, also check if DistanceManhattan is <= 1
+		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied) {
 
-			// If the target is a building, set isAttackSatisfied to false (just in case)
-			if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied)
+			list<iPoint> buildingTiles = App->entities->GetBuildingTiles((StaticEntity*)targetInfo->target);
 
-				targetInfo->isAttackSatisfied = false;
+			if (buildingTiles.size() > 0) {
+
+				list<iPoint>::const_iterator it = buildingTiles.begin();
+
+				while (it != buildingTiles.end()) {
+
+					if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1) {
+
+						targetInfo->isAttackSatisfied = false;
+						break;
+					}
+					it++;
+				}
+			}
 		}
 	}
 

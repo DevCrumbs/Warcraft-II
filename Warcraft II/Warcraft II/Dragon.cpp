@@ -215,6 +215,9 @@ void Dragon::Move(float dt)
 		}
 	}
 
+	if (isDead && unitState != UnitState_Die)
+		unitState = UnitState_Die;
+
 	// Update currTarget
 	if (currTarget != nullptr) {
 
