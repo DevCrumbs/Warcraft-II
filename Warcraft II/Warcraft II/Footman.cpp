@@ -625,7 +625,7 @@ void Footman::UnitStateMachine(float dt)
 	switch (unitState) {
 
 	case UnitState_Walk:
-
+		
 		if (IsUnitGatheringGold() || IsUnitHealingRunestone() || IsUnitRescuingPrisoner())
 			break;
 

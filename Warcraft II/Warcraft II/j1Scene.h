@@ -297,7 +297,7 @@ private:
 	bool isFadeToMenu = false;
 
 	// Draw rectangle
-	iPoint startRectangle = { 0,0 };
+	iPoint startRectangle = { -1,-1 };
 
 	//UI
 	BuildingMenu buildingMenuButtons;

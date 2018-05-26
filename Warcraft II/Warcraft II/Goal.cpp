@@ -410,6 +410,9 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 	else
 		owner->InvalidateCurrTarget();
 
+	if (isStateChanged && owner->GetUnitState() != UnitState_AttackTarget)
+		owner->SetUnitState(UnitState_AttackTarget);
+
 	return goalStatus;
 }
 
@@ -1246,6 +1249,9 @@ GoalStatus Goal_HitTarget::Process(float dt)
 		owner->SetCurrTarget(targetInfo->target);
 	else
 		owner->InvalidateCurrTarget();
+
+	if (isStateChanged && owner->GetUnitState() != UnitState_AttackTarget)
+		owner->SetUnitState(UnitState_AttackTarget);
 
 	return goalStatus;
 }

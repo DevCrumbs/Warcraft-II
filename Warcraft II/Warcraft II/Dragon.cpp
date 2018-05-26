@@ -235,7 +235,7 @@ void Dragon::Move(float dt)
 					if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
 
 						if (SetCurrTarget(App->player->townHall))
-							brain->AddGoal_AttackTarget(newTarget);
+							brain->AddGoal_AttackTarget(newTarget, false);
 					}
 				}
 			}
@@ -714,7 +714,7 @@ void Dragon::UnitStateMachine(float dt)
 
 					if (App->map->IsOnBase(spawnPos)) {
 
-						// Check if there are available targets (DYNAMIC ENTITY)
+						// Check if there are available targets (STATIC ENTITY)
 						newTarget = GetBestTargetInfo(EntityCategory_STATIC_ENTITY);
 
 						if (newTarget != nullptr) {

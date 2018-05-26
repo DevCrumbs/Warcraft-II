@@ -966,7 +966,7 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 					break;
 
 					// Dynamic entities
-				case EntityType_FOOTMAN:
+				//case EntityType_FOOTMAN:
 				case EntityType_ELVEN_ARCHER:
 				case EntityType_ALLERIA:
 				case EntityType_TURALYON:
