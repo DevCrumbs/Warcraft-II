@@ -1621,38 +1621,44 @@ uint UnitGroup::GetSize() const
 }
 
 // Sets the destination tile (goal) of the group
-bool UnitGroup::SetGoal(iPoint goal, bool isWalkabilityChecked)
+bool UnitGroup::SetGoal(iPoint goal)
 {
 	bool ret = false;
 
-	bool isValid = false;
+	// Update the goal of all units
+	list<SingleUnit*>::const_iterator it = units.begin();
 
-	if (isWalkabilityChecked) {
-		if (App->pathfinding->IsWalkable(goal))
-			isValid = true;
-	}
-	else
-		isValid = true;
+	while (it != units.end()) {
 
-	if (isValid) {
+		if ((*it)->unit->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-		this->goal = goal;
-		isShapedGoal = false;
+			if (App->pathfinding->IsWalkable(goal)) {
 
-		// Update the goal of all units
-		list<SingleUnit*>::const_iterator it = units.begin();
+				(*it)->goal = goal;
 
-		while (it != units.end()) {
+				// Warn units that the goal has been changed
+				(*it)->isGoalChanged = true;
+
+				ret = true;
+			}
+		}
+		else {
 
 			(*it)->goal = goal;
 
 			// Warn units that the goal has been changed
 			(*it)->isGoalChanged = true;
 
-			it++;
+			ret = true;
 		}
 
-		ret = true;
+		it++;
+	}
+
+	if (ret) {
+
+		this->goal = goal;
+		isShapedGoal = false;
 	}
 
 	return ret;

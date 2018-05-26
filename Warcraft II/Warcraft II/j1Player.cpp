@@ -760,33 +760,38 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 						
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
 						it = units.begin();
+						list<DynamicEntity*> notGryphonRiders;
 
 						while (it != units.end()) {
 
-							(*it)->SetGoldMine((GoldMine*)staticEntity);
+							if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
+
+								(*it)->SetGoldMine((GoldMine*)staticEntity);
+								notGryphonRiders.push_back(*it);
+							}
 
 							it++;
 						}
 
-						App->entities->CommandToUnits(units, UnitCommand_GatherGold);
+						App->entities->CommandToUnits(notGryphonRiders, UnitCommand_GatherGold);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_MINE) {
 						App->scene->adviceMessageTimer.Start();
@@ -908,22 +913,22 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
 						GoldMine* goldMine = (GoldMine*)staticEntity;
 
@@ -1041,33 +1046,39 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
+						// Only command to units that are not Gryphon Rider
 						it = units.begin();
+						list<DynamicEntity*> notGryphonRiders;
 
 						while (it != units.end()) {
 
-							(*it)->SetPrisoner(dynamicEntity);
+							if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
+
+								(*it)->SetPrisoner(dynamicEntity);
+								notGryphonRiders.push_back(*it);
+							}
 
 							it++;
 						}
 
-						App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+						App->entities->CommandToUnits(notGryphonRiders, UnitCommand_RescuePrisoner);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_PRISONER) {
 						App->scene->adviceMessageTimer.Start();
@@ -1093,33 +1104,39 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
+						// Only command to units that are not Gryphon Rider
 						it = units.begin();
+						list<DynamicEntity*> notGryphonRiders;
 
 						while (it != units.end()) {
 
-							(*it)->SetPrisoner(dynamicEntity);
+							if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
+
+								(*it)->SetPrisoner(dynamicEntity);
+								notGryphonRiders.push_back(*it);
+							}
 
 							it++;
 						}
 
-						App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+						App->entities->CommandToUnits(notGryphonRiders, UnitCommand_RescuePrisoner);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_PRISONER) {
 						App->scene->adviceMessageTimer.Start();

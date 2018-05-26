@@ -745,19 +745,11 @@ bool j1Scene::Update(float dt)
 				}
 
 				/// SET GOAL (COMMAND MOVE TO POSITION)
-				bool isGryphonRider = App->entities->IsOnlyThisTypeOfUnits(units, EntityType_GRYPHON_RIDER);
-				bool isGryphonRiderRunestone = false;
-
-				if (isGryphonRider)			
-					isGryphonRiderRunestone = App->entities->AreAllUnitsDoingSomething(units, UnitState_HealRunestone);
 
 				// Draw a shaped goal
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT && !App->gui->IsMouseOnUI())
 
-					if (isGryphonRider && !isGryphonRiderRunestone)
-						group->DrawShapedGoal(mouseTile, false);
-					else
-						group->DrawShapedGoal(mouseTile);
+					group->DrawShapedGoal(mouseTile);
 
 				// Set a normal or shaped goal
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
@@ -773,14 +765,8 @@ bool j1Scene::Update(float dt)
 
 							group->ClearShapedGoal();
 
-							if (isGryphonRider && !isGryphonRiderRunestone) {
-								if (group->SetGoal(mouseTile, false)) /// normal goal
-									isGoal = true;
-							}
-							else {
-								if (group->SetGoal(mouseTile)) /// normal goal
-									isGoal = true;
-							}
+							if (group->SetGoal(mouseTile)) /// normal goal
+								isGoal = true;
 						}
 						else if (group->SetShapedGoal()) /// shaped goal
 

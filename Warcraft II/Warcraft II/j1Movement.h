@@ -132,7 +132,7 @@ struct UnitGroup
 	uint GetSize() const;
 
 	// Sets the destination tile (goal) of the group
-	bool SetGoal(iPoint goal, bool isWalkabilityChecked = true);
+	bool SetGoal(iPoint goal);
 
 	// Returns the destination tile (goal) of the group
 	iPoint GetGoal() const;
