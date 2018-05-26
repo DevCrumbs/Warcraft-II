@@ -140,7 +140,6 @@ void Grunt::Move(float dt)
 			if (!App->gui->isGuiCleanUp) {
 
 				if (lifeBar != nullptr)
-
 					lifeBar->isActive = false;
 			}
 
@@ -277,28 +276,31 @@ void Grunt::Move(float dt)
 
 void Grunt::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr)
-	{
+	if (animation != nullptr) {
+
 		// Not draw if not on fow sight
 		if (App->fow->IsOnSight(pos))
 		{
 			fPoint offset = { 0.0f,0.0f };
-			if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp)
-			{
+			if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp) {
+
 				offset = { animation->GetCurrentFrame().w / 2.5f, animation->GetCurrentFrame().h / 5.5f };
 				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+
+				if (lifeBar != nullptr)
+					lifeBar->isBlit = false;
 			}
-			else
-			{
+			else {
+
 				offset = { animation->GetCurrentFrame().w / 3.2f, animation->GetCurrentFrame().h / 3.1f };
 				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
-			}
 
-			if (lifeBar != nullptr)
-				lifeBar->isBlit = true;
+				if (lifeBar != nullptr)
+					lifeBar->isBlit = true;
+			}
 		}
-		else
-		{
+		else {
+
 			if (lifeBar != nullptr)
 				lifeBar->isBlit = false;
 		}

@@ -141,7 +141,6 @@ void TrollAxethrower::Move(float dt)
 			if (!App->gui->isGuiCleanUp) {
 
 				if (lifeBar != nullptr)
-
 					lifeBar->isActive = false;
 			}
 
@@ -278,8 +277,8 @@ void TrollAxethrower::Move(float dt)
 
 void TrollAxethrower::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr)
-	{
+	if (animation != nullptr) {
+
 		// Not draw if not on fow sight
 		if (App->fow->IsOnSight(pos))
 		{
@@ -289,6 +288,9 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 
 				offset = { animation->GetCurrentFrame().w / 6.0f, animation->GetCurrentFrame().h / 3.8f };
 				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+
+				if (lifeBar != nullptr)
+					lifeBar->isBlit = false;
 			}
 			else {
 
@@ -299,12 +301,11 @@ void TrollAxethrower::Draw(SDL_Texture* sprites)
 					lifeBar->isBlit = true;
 			}
 		}
-		else
-		{
+		else {
+
 			if (lifeBar != nullptr)
 				lifeBar->isBlit = false;
 		}
-
 	}
 
 	//if (isSelected)

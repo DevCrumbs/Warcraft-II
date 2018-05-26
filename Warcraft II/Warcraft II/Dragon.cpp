@@ -143,7 +143,6 @@ void Dragon::Move(float dt)
 			if (!App->gui->isGuiCleanUp) {
 
 				if (lifeBar != nullptr)
-
 					lifeBar->isActive = false;
 			}
 
@@ -279,28 +278,36 @@ void Dragon::Move(float dt)
 
 void Dragon::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr)
-	{
+	if (animation != nullptr) {
+
 		// Not draw if not on fow sight
 		if (App->fow->IsOnSight(pos))
 		{
 			fPoint offset = { 0.0f,0.0f };
-			if (animation == &dragonInfo.deathDown || animation == &dragonInfo.deathUp)
+			if (animation == &dragonInfo.deathDown || animation == &dragonInfo.deathUp) {
+
 				offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.7f };
-			else
+
+				if (lifeBar != nullptr)
+					lifeBar->isBlit = false;
+			}
+			else {
+
 				offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.5f };
 
-			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_DragonGryphon);
+				if (lifeBar != nullptr)
+					lifeBar->isBlit = true;
+			}
 
-			if (lifeBar != nullptr)
-				lifeBar->isBlit = true;
+			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_DragonGryphon);
 		}
-		else
-		{
+		else {
+
 			if (lifeBar != nullptr)
 				lifeBar->isBlit = false;
 		}
 	}
+
 	//if (isSelected)
 		//DebugDrawSelected();
 }
