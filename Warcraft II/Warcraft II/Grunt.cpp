@@ -293,9 +293,7 @@ void Grunt::Draw(SDL_Texture* sprites)
 			}
 
 			if (lifeBar != nullptr)
-			{
 				lifeBar->isBlit = true;
-			}
 		}
 		else
 		{
@@ -411,17 +409,31 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 				//LOG("Grunt Attack Radius %s", dynEnt->GetColorName().data());
 			//}
 
-			// Set the target's isAttackSatisfied to true
+			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
+			bool isTargetFound = false;
 
+			// If the target is already in the targets list, set its isAttackSatisfied + isSightSatisfied to true
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
+					(*it)->isSightSatisfied = true;
 					(*it)->isAttackSatisfied = true;
+					isTargetFound = true;
 					break;
 				}
 				it++;
+			}
+			// Else, add the new target to the targets list (and set its isAttackSatisfied + isSightSatisfied to true)
+			if (!isTargetFound) {
+
+				TargetInfo* targetInfo = new TargetInfo();
+				targetInfo->target = c2->entity;
+				targetInfo->isSightSatisfied = true;
+				targetInfo->isAttackSatisfied = true;
+
+				targets.push_back(targetInfo);
 			}
 		}
 		break;
