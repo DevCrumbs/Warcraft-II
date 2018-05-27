@@ -1,5 +1,13 @@
 ﻿### Welcome, travellers!
 
+[Sandra Alvarez](https://devcrumbs.github.io/Warcraft-II/Sandra_Alvarez)
+[Aleix Gabarró](https://devcrumbs.github.io/Warcraft-II/Aleix_Gabarro)
+[David Valdivia](https://devcrumbs.github.io/Warcraft-II/David_Valdivia)
+[David Varela](https://devcrumbs.github.io/Warcraft-II/David_Varela)
+[Óscar Hernández](https://devcrumbs.github.io/Warcraft-II/Oscar_Hernandez)
+[Manav Lakhwani](https://devcrumbs.github.io/Warcraft-II/Manav_Lakhwani)
+[Joan Valiente](https://devcrumbs.github.io/Warcraft-II/Joan_Valiente)
+
 # Warcraft II: The Stolen Artifacts
 
 Warcraft II: The Stolen Artifacts is an expansion that derives from the videogame Warcraft II: Tides of Darkness. 
