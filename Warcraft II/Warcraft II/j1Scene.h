@@ -316,7 +316,7 @@ private:
 
 	//Pause Menu
 	UIButton* pauseMenuButt = nullptr;
-	UILabel* pauseMenuLabel = nullptr, * settingsLabel = nullptr, * continueLabel = nullptr, * ReturnMenuLabel = nullptr;
+	UILabel* pauseMenuLabel = nullptr, * settingsLabel = nullptr, * continueLabel = nullptr, * ReturnMenuLabel = nullptr, *saveGameLabel;
 	UIImage* parchmentImg = nullptr;
 	//Settings Menu
 	UIButton* fullScreenButt = nullptr;

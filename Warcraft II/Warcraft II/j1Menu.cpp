@@ -123,6 +123,9 @@ bool j1Menu::Update(float dt)
 		App->scene->mapDifficulty = menuActions;
 		menuActions = MenuActions_NONE;
 		break;
+	case MenuActions_LOADGAME:
+		//Todo OSCAR LoadGame
+		break;
 	case MenuActions_SETTINGS:
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		DeteleMenu();
@@ -203,16 +206,24 @@ void j1Menu::CreateMenu()
 	labelInfo.normalColor = Black_;
 	labelInfo.hoverColor = ColorGreen;
 	labelInfo.text = "New Game";
-	playLabel = App->gui->CreateUILabel({ 660, 290 }, labelInfo, this);
+	int y = 290;
+	playLabel = App->gui->CreateUILabel({ 660, y }, labelInfo, this);
 
+	y += 50;
+	labelInfo.text = "Load Game";
+	loadLabel = App->gui->CreateUILabel({ 660, y }, labelInfo, this);
+
+	y += 50;
 	labelInfo.text = "Settings";
-	settingsLabel = App->gui->CreateUILabel({ 660, 357 }, labelInfo, this);
+	settingsLabel = App->gui->CreateUILabel({ 660, y }, labelInfo, this);
 
+	y += 50;
 	labelInfo.text = "Credits";
-	creditsLabel = App->gui->CreateUILabel({ 660, 424 }, labelInfo, this);
+	creditsLabel = App->gui->CreateUILabel({ 660, y }, labelInfo, this);
 
+	y += 50;
 	labelInfo.text = "Quit Game";
-	exitLabel = App->gui->CreateUILabel({ 660, 491 }, labelInfo, this);
+	exitLabel = App->gui->CreateUILabel({ 660, y }, labelInfo, this);
 
 	artifacts.push_back(AddArtifact({ 50, 475 }, App->gui->bookText, App->gui->bookAnim, 5));
 	artifacts.push_back(AddArtifact({ 175,525 }, App->gui->skullText, App->gui->skullAnim, 5));
@@ -459,33 +470,79 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		break;
 	case UI_EVENT_MOUSE_ENTER:
 
+		if (UIelem == easyOneButt)
+		{
+			bookArtifact->SetText(to_string(artifactsEasyOne.book));
+			skullArtifact->SetText(to_string(artifactsEasyOne.skull));
+			eyeArtifact->SetText(to_string(artifactsEasyOne.eye));
+			scepterArtifact->SetText(to_string(artifactsEasyOne.scepter));
+		}
+		else if (UIelem == easyTwoButt)
+		{
+			bookArtifact->SetText(to_string(artifactsEasyTwo.book));
+			skullArtifact->SetText(to_string(artifactsEasyTwo.skull));
+			eyeArtifact->SetText(to_string(artifactsEasyTwo.eye));
+			scepterArtifact->SetText(to_string(artifactsEasyTwo.scepter));
+		}
+		else if (UIelem == mediumOneButt)
+		{
+			bookArtifact->SetText(to_string(artifactsMediumOne.book));
+			skullArtifact->SetText(to_string(artifactsMediumOne.skull));
+			eyeArtifact->SetText(to_string(artifactsMediumOne.eye));
+			scepterArtifact->SetText(to_string(artifactsMediumOne.scepter));
+		}
+		else if (UIelem == mediumTwoButt)
+		{
+			bookArtifact->SetText(to_string(artifactsMediumTwo.book));
+			skullArtifact->SetText(to_string(artifactsMediumTwo.skull));
+			eyeArtifact->SetText(to_string(artifactsMediumTwo.eye));
+			scepterArtifact->SetText(to_string(artifactsMediumTwo.scepter));
+		}
+		else if (UIelem == hardButt)
+		{
+			bookArtifact->SetText(to_string(artifactsHard.book));
+			skullArtifact->SetText(to_string(artifactsHard.skull));
+			eyeArtifact->SetText(to_string(artifactsHard.eye));
+			scepterArtifact->SetText(to_string(artifactsHard.scepter));
+		}
+		break;
 	case UI_EVENT_MOUSE_LEAVE:
-
+		if (UIelem == easyOneButt || UIelem == easyTwoButt || UIelem == mediumOneButt || UIelem == mediumTwoButt || UIelem == hardButt)
+		{
+			bookArtifact->SetText("-");
+			skullArtifact->SetText("-");
+			eyeArtifact->SetText("-");
+			scepterArtifact->SetText("-");
+		}
+		break;
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
-		if (UIelem == playLabel) 
+		if (UIelem == playLabel)
 			menuActions = MenuActions_NEWGAME;
-		
+
 		else if (UIelem == exitLabel)
 			menuActions = MenuActions_EXIT;
-		
+
 		else if (UIelem == settingsLabel)
 			menuActions = MenuActions_SETTINGS;
 
 		else if (UIelem == creditsLabel)
 			menuActions = MenuActions_CREDITS;
 
-		else if(UIelem == returnLabel)
+		else if (UIelem == loadLabel)
+			menuActions = MenuActions_LOADGAME;
+
+		else if (UIelem == returnLabel)
 			menuActions = MenuActions_RETURN;
 
 		else if (UIelem == audioFX.slider) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_SLIDERFX;
 		}
-		
-		else if (UIelem == audioMusic.slider) 
+
+		else if (UIelem == audioMusic.slider)
 			menuActions = MenuActions_SLIDERMUSIC;
 
 		else if (UIelem == fullScreenButt)
@@ -572,8 +629,8 @@ void j1Menu::DeteleMenu()
 	App->gui->RemoveElem((UIElement**)&exitLabel);
 	App->gui->RemoveElem((UIElement**)&settingsLabel);
 	App->gui->RemoveElem((UIElement**)&creditsLabel);
+	App->gui->RemoveElem((UIElement**)&loadLabel);
 
-	
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{
 		App->gui->RemoveElem((UIElement**)&artifacts.back());

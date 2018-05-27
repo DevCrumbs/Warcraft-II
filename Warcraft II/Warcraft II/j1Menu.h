@@ -23,6 +23,7 @@ enum MenuActions
 	MenuActions_PLAY_MEDIUMONE,
 	MenuActions_PLAY_MEDIUMTWO,
 	MenuActions_PLAY_HARD,
+	MenuActions_LOADGAME,
 	MenuActions_SETTINGS,
 	MenuActions_RETURN,
 	MenuActions_SLIDERFX,
@@ -38,7 +39,7 @@ struct SliderStruct
 	UILabel*  value = nullptr; 
 };
 
-struct ArtifactsWon
+struct ArtifactsCollection
 {
 	int book, skull, scepter, eye = 0;
 };
@@ -95,12 +96,12 @@ public:
 
 	bool debug = false;
 
-	ArtifactsWon artifactsEasyOne, artifactsEasyTwo, artifactsMediumOne, artifactsMediumTwo, artifactsHard;
+	ArtifactsCollection artifactsEasyOne, artifactsEasyTwo, artifactsMediumOne, artifactsMediumTwo, artifactsHard;
 private:
 
 	//Main Menu
 	UIImage* mainMenuImg = nullptr, *settingsBackground = nullptr, *logoImg = nullptr;
-	UILabel*  playLabel = nullptr, *exitLabel = nullptr, *settingsLabel = nullptr, *creditsLabel = nullptr;
+	UILabel*  playLabel = nullptr, *exitLabel = nullptr, *settingsLabel = nullptr, *creditsLabel = nullptr, *loadLabel = nullptr;
 
 	Animation menuImgAnim;
 

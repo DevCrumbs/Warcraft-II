@@ -232,18 +232,22 @@ void j1FinishGame::ArtifactWon(uint time)
 
 	if (time >= 1500) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->bookText, App->gui->bookAnim, 5));
+		LevelWon(Artifact_BOOK);
 		labelInfo.text += "Book of Medivh";
 	}
 	else if (time >= 1200) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->skullText, App->gui->skullAnim, 5));
+		LevelWon(Artifact_SKULL);
 		labelInfo.text += "Skull of Gul'dan";
 	}
 	else if (time >= 1080) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->eyeText, App->gui->eyeAnim, 5));
+		LevelWon(Artifact_EYE);
 		labelInfo.text += "Eye of Dalaran";
 	}
 	else if (time >= 0) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->scepterText, App->gui->scepterAnim, 5));
+		LevelWon(Artifact_SCEPTER);
 		labelInfo.text += "Scepter of Sagreras";
 	}
 	labelVector.push_back(App->gui->CreateUILabel({ 575, 145 }, labelInfo));
@@ -258,6 +262,52 @@ void j1FinishGame::ArtifactWon(uint time)
 	imageVector.push_back(recover);
 }
 
+void j1FinishGame::LevelWon(Artifacts artifact)
+{
+	switch (App->scene->mapDifficulty)
+	{
+	case MenuActions_PLAY_EASYONE:
+		AddArtifact(App->menu->artifactsEasyOne, artifact);
+		break;
+	case MenuActions_PLAY_EASYTWO:
+		AddArtifact(App->menu->artifactsEasyTwo, artifact);
+		break;
+	case MenuActions_PLAY_MEDIUMONE:
+		AddArtifact(App->menu->artifactsMediumOne, artifact);
+		break;
+	case MenuActions_PLAY_MEDIUMTWO:
+		AddArtifact(App->menu->artifactsMediumTwo, artifact);
+		break;
+	case MenuActions_PLAY_HARD:
+		AddArtifact(App->menu->artifactsHard, artifact);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void j1FinishGame::AddArtifact(ArtifactsCollection &artifactStruct, Artifacts artifact)
+{
+	switch (artifact)
+	{
+	case Artifact_BOOK:
+		artifactStruct.book++;
+		break;
+	case Artifact_EYE:
+		artifactStruct.eye++;
+		break;
+	case Artifact_SKULL:
+		artifactStruct.skull++;
+		break;
+	case Artifact_SCEPTER:
+		artifactStruct.scepter++;
+		break;
+	default:
+		break;
+	}
+
+}
 void j1FinishGame::DeleteScene() {
 	
 	for (; !labelVector.empty(); labelVector.pop_back())

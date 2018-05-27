@@ -1811,14 +1811,18 @@ void j1Scene::CreatePauseMenu()
 	labelInfo.text = "Settings";
 
 	int x = parchmentImg->GetLocalPos().x + 100;
-	int y = parchmentImg->GetLocalPos().y + 70;
+	int y = parchmentImg->GetLocalPos().y + 60;
 	settingsLabel = App->gui->CreateUILabel({x, y}, labelInfo, this);
 
-	y += 50;
+	y += 40;
+	labelInfo.text = "Save Game";
+	saveGameLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+
+	y += 40;
 	labelInfo.text = "Resume Game";
 	continueLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
-	y += 50;
+	y += 40;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Return to Main Menu";
 	ReturnMenuLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
@@ -1834,6 +1838,7 @@ void j1Scene::DestroyPauseMenu()
 	App->gui->RemoveElem((UIElement**)&settingsLabel);
 	App->gui->RemoveElem((UIElement**)&continueLabel);
 	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
+	App->gui->RemoveElem((UIElement**)&saveGameLabel);
 }
 
 void j1Scene::CreateSettingsMenu() 
@@ -2382,6 +2387,11 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		else if (UIelem == settingsLabel) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_SETTINGS_MENU;
+		}
+
+		else if (UIelem == saveGameLabel)
+		{
+			//TODO OSCAR SAVE
 		}
 
 		else if (UIelem == returnLabel) {
