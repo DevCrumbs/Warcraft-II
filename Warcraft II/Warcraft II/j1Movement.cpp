@@ -1636,23 +1636,41 @@ bool UnitGroup::SetGoal(iPoint goal, bool isWalkabilityChecked)
 
 	if (isValid) {
 
-		this->goal = goal;
-		isShapedGoal = false;
-
 		// Update the goal of all units
 		list<SingleUnit*>::const_iterator it = units.begin();
 
 		while (it != units.end()) {
 
-			(*it)->goal = goal;
+			if ((*it)->unit->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-			// Warn units that the goal has been changed
-			(*it)->isGoalChanged = true;
+				if (App->pathfinding->IsWalkable(goal)) {
+
+					(*it)->goal = goal;
+
+					// Warn units that the goal has been changed
+					(*it)->isGoalChanged = true;
+
+					ret = true;
+				}
+			}
+			else {
+
+				(*it)->goal = goal;
+
+				// Warn units that the goal has been changed
+				(*it)->isGoalChanged = true;
+
+				ret = true;
+			}
 
 			it++;
 		}
 
-		ret = true;
+		if (ret) {
+
+			this->goal = goal;
+			isShapedGoal = false;
+		}
 	}
 
 	return ret;

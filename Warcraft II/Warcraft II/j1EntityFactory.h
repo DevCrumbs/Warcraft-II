@@ -148,9 +148,6 @@ public:
 
 	bool RemoveAllUnitsGoals(list<DynamicEntity*> units);
 
-	// Attack
-	bool InvalidateTargetInfo(Entity* target);
-
 	// Movement
 	void InvalidateMovementEntity(Entity* entity);
 
@@ -165,6 +162,7 @@ public:
 	bool SaveEntityGroup(list<DynamicEntity*> units, uint index = 0);
 	list<DynamicEntity*> GetSavedEntityGroup(uint index);
 	void SelectEntitiesGroup(list<DynamicEntity*> units);
+	void UpdateGroupIcons(uint index = 0);
 
 	// Dynamic Entities
 	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);

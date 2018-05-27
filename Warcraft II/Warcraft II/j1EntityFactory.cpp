@@ -1024,7 +1024,6 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		dragonInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-
 	// Orc ship animations
 	pugi::xml_node orcShipAnimations = orcEntities.child("orcShip").child("animations");
 
@@ -3791,10 +3790,13 @@ bool j1EntityFactory::RemoveUnitFromUnitsSelected(Entity* entity)
 			if (sg != savedGroups[i].end()) {
 
 				savedGroups[i].remove(*it);
+				UpdateGroupIcons(i);
 				ret = true;
 			}
 		}
 	}
+
+
 
 	return ret;
 }
@@ -3862,37 +3864,6 @@ bool j1EntityFactory::RemoveAllUnitsGoals(list<DynamicEntity*> units)
 	}
 
 	return ret;
-}
-
-// Attack
-bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
-{
-	if (target == nullptr)
-		return false;
-
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
-
-	while (dynEnt != activeDynamicEntities.end()) {
-
-		if ((*dynEnt)->dynamicEntityType != EntityType_ALLERIA && (*dynEnt)->dynamicEntityType != EntityType_TURALYON) {
-
-			(*dynEnt)->SetIsRemovedTargetInfo(target);
-			(*dynEnt)->RemoveAttackingUnit(target);
-		}
-
-		dynEnt++;
-	}
-
-	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
-
-	while (statEnt != activeStaticEntities.end()) {
-
-		(*statEnt)->RemoveAttackingUnit(target);
-
-		statEnt++;
-	}
-
-	return true;
 }
 
 // Movement
@@ -4296,6 +4267,47 @@ void j1EntityFactory::SelectEntitiesGroup(list<DynamicEntity*> units)
 	}
 
 	App->scene->ShowSelectedUnits(unitsSelected);
+}
+
+void j1EntityFactory::UpdateGroupIcons(uint index) 
+{
+
+	list<DynamicEntity*> unitsGroup = GetSavedEntityGroup(index);
+	list<DynamicEntity*>::const_iterator it = unitsGroup.begin();
+	PlayerGroupTypes groupTypes = PlayerGroupTypes_NONE;
+
+	bool isFootman = false;
+	bool isElvenArcher = false;
+	bool isGryphonRider = false;
+
+	while (it != unitsGroup.end()) {
+
+		if ((*it)->dynamicEntityType == EntityType_FOOTMAN)
+			isFootman = true;
+		else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER)
+			isElvenArcher = true;
+		else if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER)
+			isGryphonRider = true;
+
+		it++;
+	}
+
+	if (isFootman && isElvenArcher && isGryphonRider)
+		groupTypes = PlayerGroupTypes_ALL;
+	else if (isFootman && isElvenArcher)
+		groupTypes = PlayerGroupTypes_FOOTMAN_ARCHER;
+	else if (isFootman && isGryphonRider)
+		groupTypes = PlayerGroupTypes_FOOTMAN_GRYPHON;
+	else if (isElvenArcher && isGryphonRider)
+		groupTypes = PlayerGroupTypes_ARCHER_GRYPHON;
+	else if (isFootman)
+		groupTypes = PlayerGroupTypes_FOOTMAN;
+	else if (isElvenArcher)
+		groupTypes = PlayerGroupTypes_ARCHER;
+	else if (isGryphonRider)
+		groupTypes = PlayerGroupTypes_GRYPHON;
+
+	App->player->ShowPlayerGroupsButton(index + 1, groupTypes);
 }
 
 // Dynamic Entities
