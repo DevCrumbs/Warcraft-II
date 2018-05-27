@@ -1,12 +1,12 @@
 ﻿### Welcome, travellers!
 
-[Sandra Alvarez](https://devcrumbs.github.io/Warcraft-II/Sandra_Alvarez)
-[Aleix Gabarró](https://devcrumbs.github.io/Warcraft-II/Aleix_Gabarro)
-[David Valdivia](https://devcrumbs.github.io/Warcraft-II/David_Valdivia)
-[David Varela](https://devcrumbs.github.io/Warcraft-II/David_Varela)
-[Óscar Hernández](https://devcrumbs.github.io/Warcraft-II/Oscar_Hernandez)
-[Manav Lakhwani](https://devcrumbs.github.io/Warcraft-II/Manav_Lakhwani)
-[Joan Valiente](https://devcrumbs.github.io/Warcraft-II/Joan_Valiente)
+[Sandra Alvarez](https://devcrumbs.github.io/Warcraft-II/Sandra_Alvarez)<br><br>
+[Aleix Gabarró](https://devcrumbs.github.io/Warcraft-II/Aleix_Gabarro)<br><br>
+[David Valdivia](https://devcrumbs.github.io/Warcraft-II/David_Valdivia)<br><br>
+[David Varela](https://devcrumbs.github.io/Warcraft-II/David_Varela)<br><br>
+[Óscar Hernández](https://devcrumbs.github.io/Warcraft-II/Oscar_Hernandez)<br><br>
+[Manav Lakhwani](https://devcrumbs.github.io/Warcraft-II/Manav_Lakhwani)<br><br>
+[Joan Valiente](https://devcrumbs.github.io/Warcraft-II/Joan_Valiente)<br><br>
 
 # Warcraft II: The Stolen Artifacts
 
