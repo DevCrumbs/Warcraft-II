@@ -1861,12 +1861,22 @@ void j1Scene::CreateSettingsMenu()
 	int y = parchmentImg->GetLocalPos().y + 160;
 	fullScreenButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
 
-	x -= 100;
+	y += 25;
+	x -= 25;
+	labelInfo.text = "Controls";
+	labelInfo.hoverColor = ColorGreen;
+	labelInfo.normalColor = Black_;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	buttonsLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
+
+	y -= 25;
+	x -= 75;
 	labelInfo.text = "Fullscreen";
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
+	labelInfo.interactive = false;
 	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
+
 
 	// Sliders
 	x = parchmentImg->GetLocalPos().x + 30;
@@ -1878,10 +1888,9 @@ void j1Scene::CreateSettingsMenu()
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
 	y += 50;
 	App->menu->AddSlider(AudioMusicPause, { x,y }, "Audio Music", relativeVol, butText, bgText, this);
+	labelInfo.interactive = true;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
-	labelInfo.hoverColor = ColorGreen;
-	labelInfo.pressedColor = White_;
 	labelInfo.text = "Back";
 	x = parchmentImg->GetLocalPos().x + 50;
 	y = parchmentImg->GetLocalPos().y + 185;

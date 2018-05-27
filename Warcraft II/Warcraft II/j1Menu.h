@@ -109,7 +109,7 @@ private:
 	SliderStruct audioFX;
 	SliderStruct audioMusic;
 	UIButton* fullScreenButt = nullptr;
-	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr, *buttonsLabel = nullptr;
 
 	//Start New Game
 	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;

@@ -267,6 +267,9 @@ void j1Menu::CreateSettings() {
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
 	AddSlider(audioMusic, { 175,300 }, "Audio Music", relativeVol, butText, bgText, this);
 
+	labelInfo.text = "Controls";
+	buttonsLabel = App->gui->CreateUILabel({ 375, 550 }, labelInfo, this);
+
 	UIButton_Info buttonInfo;
 	//Fullscreen
 	if (!App->win->fullscreen) {
@@ -283,8 +286,7 @@ void j1Menu::CreateSettings() {
 
 	labelInfo.text = "Fullscreen";
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
-
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
+	labelInfo.interactive = false;
 	fullScreenLabel = App->gui->CreateUILabel({ 250, 450 }, labelInfo, this);
 
 	artifacts.push_back(AddArtifact({ 100,125 }, App->gui->bookText, App->gui->bookAnim, 5));
@@ -647,7 +649,8 @@ void j1Menu::DeleteSettings() {
 	App->gui->RemoveElem((UIElement**)&audioFX.slider);
 	App->gui->RemoveElem((UIElement**)&audioMusic.name);
 	App->gui->RemoveElem((UIElement**)&audioMusic.value);
-	App->gui->RemoveElem((UIElement**)&audioMusic.slider);
+	App->gui->RemoveElem((UIElement**)&audioMusic.slider); 
+	App->gui->RemoveElem((UIElement**)&buttonsLabel);
 
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{

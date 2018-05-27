@@ -320,7 +320,7 @@ private:
 	UIImage* parchmentImg = nullptr;
 	//Settings Menu
 	UIButton* fullScreenButt = nullptr;
-	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr, *buttonsLabel = nullptr;
 	SliderStruct AudioFXPause;
 	SliderStruct AudioMusicPause;
 	//Entities Buttons
