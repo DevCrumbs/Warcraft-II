@@ -205,7 +205,7 @@ void ElvenArcher::Move(float dt)
 				if (singleUnit->IsFittingTile()) {
 
 					brain->RemoveAllSubgoals();
-					brain->AddGoal_MoveToPosition(singleUnit->goal, true, false);
+					brain->AddGoal_MoveToPosition(singleUnit->goal);
 
 					isRunAway = true;
 
