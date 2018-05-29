@@ -40,8 +40,12 @@ public:
 	void DecreaseLife(const int life);
 	int GetLife() const;
 
-private:
+public:
+
 	UILifeBar_Info lifeBar;
+
+private:
+
 	bool isInWorld = false;
 
 	SDL_Rect bar = { 0,0,0,0 };

@@ -508,8 +508,8 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 
 			//if (isSelected) {
 
-			DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-			LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// 1. UPDATE TARGETS LIST

@@ -318,34 +318,6 @@ void Goal_AttackTarget::Activate()
 		AddSubgoal(new Goal_MoveToPosition(owner, targetTile, isStateChanged));
 	}
 
-	// Set the attacking tile of the building (the one that the unit will be facing to while attacking the building)
-	if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
-
-		StaticEntity* building = (StaticEntity*)targetInfo->target;
-
-		iPoint attackingTile = { -1,-1 };
-
-		list<iPoint> buildingTiles = App->entities->GetBuildingTiles(building);
-		priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> attackingTileQueue;
-		iPointPriority priorityNeighbors;
-
-		list<iPoint>::const_iterator it = buildingTiles.begin();
-		while (it != buildingTiles.end()) {
-
-			priorityNeighbors.point = *it;
-			priorityNeighbors.priority = (*it).DistanceManhattan(targetTile);
-			attackingTileQueue.push(priorityNeighbors);
-
-			it++;
-		}
-
-		attackingTile = attackingTileQueue.top().point;
-
-		if (attackingTile.x != -1 && attackingTile.y != -1)
-
-			targetInfo->attackingTile = attackingTile;
-	}
-
 	// The target is being attacked by this unit
 	targetInfo->target->AddAttackingUnit(owner);
 
@@ -1000,6 +972,34 @@ void Goal_HitTarget::Activate()
 	}
 
 	// -----
+
+	// Set the attacking tile of the building (the one that the unit will be facing to while attacking the building)
+	if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
+
+		StaticEntity* building = (StaticEntity*)targetInfo->target;
+
+		iPoint attackingTile = { -1,-1 };
+
+		list<iPoint> buildingTiles = App->entities->GetBuildingTiles(building);
+		priority_queue<iPointPriority, vector<iPointPriority>, iPointPriorityComparator> attackingTileQueue;
+		iPointPriority priorityNeighbors;
+
+		list<iPoint>::const_iterator it = buildingTiles.begin();
+		while (it != buildingTiles.end()) {
+
+			priorityNeighbors.point = *it;
+			priorityNeighbors.priority = (*it).DistanceManhattan(owner->GetSingleUnit()->currTile);
+			attackingTileQueue.push(priorityNeighbors);
+
+			it++;
+		}
+
+		attackingTile = attackingTileQueue.top().point;
+
+		if (attackingTile.x != -1 && attackingTile.y != -1)
+
+			targetInfo->attackingTile = attackingTile;
+	}
 
 	owner->SetHitting(true);
 	owner->SetIsStill(true);
