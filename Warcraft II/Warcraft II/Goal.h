@@ -169,7 +169,7 @@ public:
 	//void Arbitrate();
 	void AddGoal_Wander(uint maxDistance, iPoint startTile, bool isCurrTile, uint minSecondsToChange, uint maxSecondsToChange, uint minSecondsUntilNextChange, uint maxSecondsUntilNextChange, uint probabilityGoalCompleted);
 	void AddGoal_AttackTarget(TargetInfo* targetInfo, bool isStateChanged = true);
-	void AddGoal_MoveToPosition(iPoint destinationTile, bool isStateChanged = true);
+	void AddGoal_MoveToPosition(iPoint destinationTile, bool isStateChanged = true, bool isShapedGoalIgnored = true);
 	void AddGoal_Patrol(iPoint originTile, iPoint destinationTile, bool isLookAround = false);
 	void AddGoal_GatherGold(GoldMine* goldMine);
 	void AddGoal_HealRunestone(Runestone* runestone);
@@ -293,7 +293,7 @@ class Goal_MoveToPosition :public AtomicGoal
 {
 public:
 
-	Goal_MoveToPosition(DynamicEntity* owner, iPoint destinationTile, bool isStateChanged = true);
+	Goal_MoveToPosition(DynamicEntity* owner, iPoint destinationTile, bool isStateChanged = true, bool isShapedGoalIgnored = true);
 
 	void Activate();
 	GoalStatus Process(float dt);
@@ -304,6 +304,7 @@ private:
 	iPoint destinationTile = { -1,-1 }; // the position the bot wants to reach
 
 	bool isStateChanged = true;
+	bool isShapedGoalIgnored = true;
 };
 
 class Goal_HitTarget :public AtomicGoal

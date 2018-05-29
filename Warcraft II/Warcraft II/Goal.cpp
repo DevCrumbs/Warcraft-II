@@ -189,9 +189,9 @@ void Goal_Think::AddGoal_AttackTarget(TargetInfo* targetInfo, bool isStateChange
 	AddSubgoal(new Goal_AttackTarget(owner, targetInfo, isStateChanged));
 }
 
-void Goal_Think::AddGoal_MoveToPosition(iPoint destinationTile, bool isStateChanged)
+void Goal_Think::AddGoal_MoveToPosition(iPoint destinationTile, bool isStateChanged, bool isShapedGoalIgnored)
 {
-	AddSubgoal(new Goal_MoveToPosition(owner, destinationTile, isStateChanged));
+	AddSubgoal(new Goal_MoveToPosition(owner, destinationTile, isStateChanged, isShapedGoalIgnored));
 }
 
 void Goal_Think::AddGoal_Patrol(iPoint originTile, iPoint destinationTile, bool isLookAround)
@@ -845,7 +845,7 @@ void Goal_RescuePrisoner::Terminate()
 // ATOMIC GOALS
 // Goal_MoveToPosition ---------------------------------------------------------------------
 
-Goal_MoveToPosition::Goal_MoveToPosition(DynamicEntity* owner, iPoint destinationTile, bool isStateChanged) :AtomicGoal(owner, GoalType_MoveToPosition), destinationTile(destinationTile), isStateChanged(isStateChanged) {}
+Goal_MoveToPosition::Goal_MoveToPosition(DynamicEntity* owner, iPoint destinationTile, bool isStateChanged, bool isShapedGoalIgnored) :AtomicGoal(owner, GoalType_MoveToPosition), destinationTile(destinationTile), isStateChanged(isStateChanged), isShapedGoalIgnored(isShapedGoalIgnored) {}
 
 void Goal_MoveToPosition::Activate()
 {
@@ -920,7 +920,7 @@ GoalStatus Goal_MoveToPosition::Process(float dt)
 			return goalStatus;
 		}
 
-		if (owner->GetSingleUnit()->group->isShapedGoal) {
+		if (!isShapedGoalIgnored && owner->GetSingleUnit()->group->isShapedGoal) {
 
 			if (owner->GetSingleUnit()->goal == owner->GetSingleUnit()->shapedGoal)
 
@@ -938,7 +938,7 @@ void Goal_MoveToPosition::Terminate()
 	owner->SetHitting(false);
 	owner->SetIsStill(true);
 
-	owner->GetSingleUnit()->ResetUnitParameters();
+	//owner->GetSingleUnit()->ResetUnitParameters();
 
 	if (isStateChanged && !owner->isDead && !owner->isRemove)
 		owner->SetUnitState(UnitState_Idle);

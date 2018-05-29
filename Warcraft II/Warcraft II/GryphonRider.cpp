@@ -207,7 +207,7 @@ void GryphonRider::Move(float dt)
 				if (singleUnit->IsFittingTile()) {
 
 					brain->RemoveAllSubgoals();
-					brain->AddGoal_MoveToPosition(singleUnit->goal);
+					brain->AddGoal_MoveToPosition(singleUnit->goal, true, false);
 
 					isRunAway = true;
 

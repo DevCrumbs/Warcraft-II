@@ -297,6 +297,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 				singleUnit->unit->GetPathPlanner()->RequestDijkstra(singleUnit->changedGoal, FindActiveTrigger::ActiveTriggerType_Goal);
 
 				singleUnit->isSearching = true; /// The unit is changing its goal
+				singleUnit->isGoalNeeded = false; /// A new goal is no longer needed
 			}
 		}
 
@@ -308,11 +309,13 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 				singleUnit->goal = singleUnit->unit->GetPathPlanner()->GetTile();
 				singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
 
-				singleUnit->isSearching = false; /// The unit has finished changing its goal
-				singleUnit->isGoalNeeded = false; /// A new goal is no longer needed
+				singleUnit->isSearching = false; /// The unit has finished changing its goal				
 
-				if (singleUnit->goal.x == -1 && singleUnit->goal.y == -1)
-					singleUnit->goal = singleUnit->changedGoal;
+				if (singleUnit->goal.x == -1 && singleUnit->goal.y == -1) {
+
+					singleUnit->goal = singleUnit->currTile;
+					singleUnit->movementState = MovementState_GoalReached;
+				}
 			}
 			break;
 		}
@@ -503,7 +506,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 						if (singleUnit->waitUnit->unit->GetPathPlanner()->IsSearchCompleted()) {
 
-							singleUnit->waitUnit->unit->GetBrain()->AddGoal_MoveToPosition(singleUnit->waitUnit->unit->GetPathPlanner()->GetTile());
+							singleUnit->waitUnit->unit->GetBrain()->AddGoal_MoveToPosition(singleUnit->waitUnit->unit->GetPathPlanner()->GetTile(), true, false);
 							singleUnit->waitUnit->unit->GetPathPlanner()->SetSearchRequested(false);
 
 							singleUnit->waitUnit->isSearching = false;
@@ -1850,7 +1853,17 @@ bool UnitGroup::ClearShapedGoal()
 
 	if (shapedGoal.size() > 0) {
 
+		list<SingleUnit*>::const_iterator it = units.begin();
+
+		while (it != units.end()) {
+
+			(*it)->shapedGoal = { -1,-1 };
+			it++;
+		}
+
 		shapedGoal.clear();
+		isShapedGoal = false;
+
 		ret = true;
 	}
 
