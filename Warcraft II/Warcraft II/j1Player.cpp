@@ -548,11 +548,9 @@ void j1Player::SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, Uni
 	iPoint toSpawnTile = spawnTile;
 
 	// If the spawnTile is not valid, find a new, valid spawn tile
-	if ((toSpawnTile.x == -1 && toSpawnTile.y == -1)
-		|| App->entities->IsEntityOnTile(toSpawnTile) != nullptr || !App->pathfinding->IsWalkable(toSpawnTile)) {
+	if (App->entities->IsEntityOnTile(toSpawnTile) != nullptr || !App->pathfinding->IsWalkable(toSpawnTile))
 
 		toSpawnTile = App->movement->FindClosestValidTile(toSpawnTile);
-	}
 
 	// Spawn the entity on the spawn tile
 	if (toSpawnTile.x != -1 && toSpawnTile.y != -1) {

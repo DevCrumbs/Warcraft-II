@@ -110,6 +110,7 @@ DynamicEntity::~DynamicEntity()
 	if (!App->gui->isGuiCleanUp) {
 
 		if (lifeBar != nullptr) {
+			lifeBar->isActive = false;
 			lifeBar->toRemove = true;
 			lifeBar = nullptr;
 		}
