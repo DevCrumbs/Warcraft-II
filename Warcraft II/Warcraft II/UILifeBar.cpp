@@ -33,7 +33,7 @@ void UILifeBar::Update(float dt)
 void UILifeBar::Draw() const
 {
 	// Not draw if not on fow sight
-	iPoint pos{ GetLocalPos().x + lifeBar.lifeBarPosition.x, GetLocalPos().y + lifeBar.lifeBarPosition.y };
+	//iPoint pos{ GetLocalPos().x + lifeBar.lifeBarPosition.x, GetLocalPos().y + lifeBar.lifeBarPosition.y };
 
 	iPoint blit_pos;
 	int scale = App->win->GetScale();
