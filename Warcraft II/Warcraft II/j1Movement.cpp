@@ -1992,6 +1992,4 @@ void SingleUnit::SetCollisionParameters(CollisionType collisionType, SingleUnit*
 void SingleUnit::SetGoal(iPoint goal)
 {
 	this->goal = goal;
-	this->shapedGoal = { -1,-1 };
-	group->isShapedGoal = false;
 }
