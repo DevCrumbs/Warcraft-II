@@ -109,10 +109,9 @@ DynamicEntity::~DynamicEntity()
 	// Other
 	if (!App->gui->isGuiCleanUp) {
 
-		if (lifeBar != nullptr) {
-			lifeBar->toRemove = true;
-			lifeBar = nullptr;
-		}
+		if (lifeBar != nullptr)
+			App->gui->RemoveElem((UIElement**)&lifeBar);
+		lifeBar = nullptr;
 	}
 
 	animation = nullptr;

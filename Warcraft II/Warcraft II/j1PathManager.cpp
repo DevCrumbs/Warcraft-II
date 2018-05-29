@@ -212,6 +212,7 @@ void PathPlanner::GetReadyForNewSearch()
 	pathfindingAlgorithmType = PathfindingAlgorithmType_NoType;
 	isSearchCompleted = false;
 	isSearchRequested = true;
+	isSearchFailed = false;
 
 	// Delete any active search
 	if (currentSearch != nullptr)
@@ -233,6 +234,8 @@ PathfindingStatus PathPlanner::CycleOnce()
 
 		// Let the bot know of the failure to find a path
 		if (result == PathfindingStatus_PathNotFound) {
+
+			isSearchFailed = true;
 			// ERROR!
 		}
 		// Let the bot know a path has been found
@@ -248,6 +251,8 @@ PathfindingStatus PathPlanner::CycleOnce()
 
 		// Let the bot know of the failure to find a path/tile
 		if (result == PathfindingStatus_PathNotFound) {
+
+			isSearchFailed = true;
 			// ERROR!
 		}
 		// Let the bot know a path/tile has been found
@@ -285,6 +290,16 @@ bool PathPlanner::IsSearchCompleted() const
 void PathPlanner::SetSearchCompleted(bool isSearchCompleted)
 {
 	this->isSearchCompleted = isSearchCompleted;
+}
+
+bool PathPlanner::IsSearchFailed() const 
+{
+	return isSearchFailed;
+}
+
+void PathPlanner::SetSearchFailed(bool isSearchFailed) 
+{
+	this->isSearchFailed = isSearchFailed;
 }
 
 // Search requested

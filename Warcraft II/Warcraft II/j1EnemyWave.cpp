@@ -40,7 +40,7 @@ bool j1EnemyWave::Start()
 
 	// Reset waves general info
 	totalWaves = 0;
-	isActiveWaves = true;
+	isActiveWaves = false;
 	totalPhasesOfCurrWave = 0;
 	phasesOfCurrWave = 0;
 	isStartWave = false;
@@ -162,27 +162,31 @@ bool j1EnemyWave::Update(float dt)
 
 			totalWaves++;
 			isStartWave = true;
-			LOG("Wave %i", totalWaves);
+			LOG("Wave %i with %i phases", totalWaves, totalPhasesOfCurrWave);
 		}
 
 		nextPhaseTimer += dt;
 
 		/// PHASE!
 		// Start a new phase of the current wave
-		if (nextPhaseTimer >= secondsToNextPhase && phasesOfCurrWave < totalPhasesOfCurrWave) {
+		if ((nextPhaseTimer >= secondsToNextPhase && phasesOfCurrWave < totalPhasesOfCurrWave)
+			|| phasesOfCurrWave == 0) {
 
-			/// TODO Valdivia: sonido oleadas
 			uint rng = rand() % 1 + 1;
 			if (rng == 1)
 				App->audio->PlayFx(App->audio->GetFX().baseUnderAttack1, 0);
 			else if (rng == 2)
 				App->audio->PlayFx(App->audio->GetFX().baseUnderAttack2, 0);
 
-			if (App->scene->adviceMessage != AdviceMessage_UNDER_ATTACK) {
-				App->scene->adviceMessageTimer.Start();
-				App->scene->adviceMessage = AdviceMessage_UNDER_ATTACK;
-				App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+			if (phasesOfCurrWave == 0) {
+
+				if (App->scene->adviceMessage != AdviceMessage_UNDER_ATTACK) {
+					App->scene->adviceMessageTimer.Start();
+					App->scene->adviceMessage = AdviceMessage_UNDER_ATTACK;
+					App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+				}
 			}
+
 			// 1. Perform the small wave
 			UnitInfo unitInfo;
 			OrcShipInfo shipInfo = (OrcShipInfo&)App->entities->GetUnitInfo(EntityType_ORC_SHIP);
@@ -217,12 +221,11 @@ bool j1EnemyWave::Update(float dt)
 			secondsToNextPhase = rand() % (maxSecondsToNextPhase - minSecondsToNextPhase + 1) + minSecondsToNextPhase;
 
 			phasesOfCurrWave++;
-			LOG("Phase %i of the wave %i", phasesOfCurrWave, totalWaves);
+			LOG("Phase %i of the wave %i. %f seconds to next phase", phasesOfCurrWave, totalWaves, secondsToNextPhase);
 		}
-		// No more phases of the current wave
-		else if (phasesOfCurrWave >= totalPhasesOfCurrWave) {
 
-			nextWaveTimer = 0;
+		// No more phases of the current wave
+		if (phasesOfCurrWave >= totalPhasesOfCurrWave) {
 
 			// Calculate the seconds until the next wave arrives
 			int maxMinutesToNextWave = 1;
@@ -245,6 +248,8 @@ bool j1EnemyWave::Update(float dt)
 				minMinutesToNextWave = 2;
 			}
 
+			nextWaveTimer = 0;
+
 			secondsToNextWave = rand() % (maxMinutesToNextWave - minMinutesToNextWave + 1) + minMinutesToNextWave;
 			int i = rand() % 10;
 			float j = i / 10;
@@ -257,33 +262,7 @@ bool j1EnemyWave::Update(float dt)
 			maxSpawnPerWave++;
 			isStartWave = false;
 
-			// -----
-
-			// 2. Update variables for the next phase
-			nextPhaseTimer = 0;
-
-			// Calculate the seconds until the next phase of the wave arrives
-			int maxSecondsToNextPhase = 15;
-			int minSecondsToNextPhase = 5;
-
-			/// TODO Balancing (Waves)
-			if (totalWaves == 0) {
-
-				maxSecondsToNextPhase = 30;
-				minSecondsToNextPhase = 20;
-			}
-			else if (totalWaves <= 2) {
-
-				maxSecondsToNextPhase = 25;
-				minSecondsToNextPhase = 15;
-			}
-			else {
-
-				maxSecondsToNextPhase = 20;
-				minSecondsToNextPhase = 15;
-			}
-
-			secondsToNextPhase = rand() % (maxSecondsToNextPhase - minSecondsToNextPhase + 1) + minSecondsToNextPhase;
+			LOG("%f seconds to next wave", secondsToNextWave);
 		}
 	}
 
@@ -318,9 +297,12 @@ void j1EnemyWave::PerformWave(int layer)
 
 	int size = currentList.size();
 	int spawned = 0;
+	uint i = 0;
 
 	for (list<iPoint>::const_iterator iterator = currentList.begin(); iterator != currentList.end(); ++iterator)
 	{
+		++i;
+
 		if (spawned >= maxSpawnPerPhase || totalSpawnOfCurrWave >= maxSpawnPerWave) {
 			break;
 		}
@@ -358,7 +340,7 @@ void j1EnemyWave::PerformWave(int layer)
 		}
 
 		// Always spawn an enemy
-		if (*iterator == currentList.back() && spawned == 0) {
+		if (i == currentList.size() && spawned == 0) {
 		
 			spawned++;
 			totalSpawnOfCurrWave++;
