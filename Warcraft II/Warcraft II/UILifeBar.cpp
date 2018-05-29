@@ -80,6 +80,11 @@ void UILifeBar::SetMaxLife(const int maxLife)
 	lifeBar.maxLife = maxLife;
 }
 
+void UILifeBar::SetLifeBarPosition(iPoint pos)
+{
+	lifeBar.lifeBarPosition = pos;
+}
+
 void UILifeBar::IncreaseLife(const int life)
 {
 	lifeBar.life += life;

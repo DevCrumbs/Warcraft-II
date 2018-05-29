@@ -345,6 +345,7 @@ void ElvenArcher::Move(float dt)
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
+		lifeBar->SetLifeBarPosition({ 0,0 });
 	}
 
 	// Blit group selection
