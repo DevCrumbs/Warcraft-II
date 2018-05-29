@@ -35,6 +35,7 @@ public:
 
 	void SetLife(const int life);
 	void SetMaxLife(const int maxLife);
+	void SetLifeBarPosition(iPoint pos);
 	void IncreaseLife(const int life);
 	void DecreaseLife(const int life);
 	int GetLife() const;

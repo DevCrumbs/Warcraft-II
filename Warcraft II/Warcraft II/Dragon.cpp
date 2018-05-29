@@ -273,6 +273,7 @@ void Dragon::Move(float dt)
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
+		lifeBar->SetLifeBarPosition({ 0,0 });
 	}
 }
 
