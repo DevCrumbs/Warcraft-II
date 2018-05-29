@@ -1766,13 +1766,16 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile, bool isWalkabilityChecked)
 					}
 					else {
 
-						// Draw the invalid goal
-						SDL_Color col = ColorRed;
+						if (shapedGoal.size() < units.size()) {
 
-						iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-						const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-						//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
-						App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
+							// Draw the invalid goal
+							SDL_Color col = ColorRed;
+
+							iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+							const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+							//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+							App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
+						}
 					}
 				}
 				else {
