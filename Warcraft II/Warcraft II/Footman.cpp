@@ -133,7 +133,8 @@ void Footman::Move(float dt)
 			if (!App->gui->isGuiCleanUp) {
 
 				if (lifeBar != nullptr)
-					lifeBar->isActive = false;
+					App->gui->RemoveElem((UIElement**)&lifeBar);
+				lifeBar = nullptr;
 			}
 
 			// Invalidate colliders

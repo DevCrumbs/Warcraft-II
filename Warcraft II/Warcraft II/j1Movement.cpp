@@ -297,6 +297,7 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 				singleUnit->unit->GetPathPlanner()->RequestDijkstra(singleUnit->changedGoal, FindActiveTrigger::ActiveTriggerType_Goal);
 
 				singleUnit->isSearching = true; /// The unit is changing its goal
+				singleUnit->isGoalNeeded = false; /// A new goal is no longer needed
 			}
 		}
 
@@ -309,10 +310,20 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 				singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
 
 				singleUnit->isSearching = false; /// The unit has finished changing its goal
-				singleUnit->isGoalNeeded = false; /// A new goal is no longer needed
 
-				if (singleUnit->goal.x == -1 && singleUnit->goal.y == -1)
-					singleUnit->goal = singleUnit->changedGoal;
+				if (singleUnit->goal.x == -1 && singleUnit->goal.y == -1) {
+
+					singleUnit->goal = singleUnit->currTile;
+					singleUnit->movementState = MovementState_GoalReached;
+				}
+			}
+			else if (singleUnit->unit->GetPathPlanner()->IsSearchFailed()) {
+			
+				singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
+				singleUnit->isSearching = false;
+
+				singleUnit->goal = singleUnit->currTile;
+				singleUnit->movementState = MovementState_GoalReached;
 			}
 			break;
 		}
@@ -329,6 +340,14 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 				singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
 
 				singleUnit->movementState = MovementState_IncreaseWaypoint;
+			}
+			else if (singleUnit->unit->GetPathPlanner()->IsSearchFailed()) {
+
+				singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
+				singleUnit->isSearching = false;
+
+				singleUnit->goal = singleUnit->currTile;
+				singleUnit->movementState = MovementState_GoalReached;
 			}
 			break;
 		}
@@ -467,6 +486,14 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 						singleUnit->ResetUnitCollisionParameters();
 						break;
 					}
+					else if (singleUnit->unit->GetPathPlanner()->IsSearchFailed()) {
+					
+						singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
+						singleUnit->isSearching = false;
+
+						singleUnit->goal = singleUnit->currTile;
+						singleUnit->movementState = MovementState_GoalReached;
+					}
 					break;
 				}
 				else {
@@ -520,6 +547,14 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 							singleUnit->ResetUnitCollisionParameters();
 							break;
+						}
+						else if (singleUnit->unit->GetPathPlanner()->IsSearchFailed()) {
+
+							singleUnit->waitUnit->unit->GetPathPlanner()->SetSearchRequested(false);
+							singleUnit->waitUnit->isSearching = false;
+
+							singleUnit->waitUnit->goal = singleUnit->currTile;
+							singleUnit->waitUnit->movementState = MovementState_GoalReached;
 						}
 					}
 					break;
@@ -589,6 +624,14 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 							singleUnit->ResetUnitCollisionParameters();
 
 							break;
+						}
+						else if (singleUnit->unit->GetPathPlanner()->IsSearchFailed()) {
+
+							singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
+							singleUnit->isSearching = false;
+
+							singleUnit->goal = singleUnit->currTile;
+							singleUnit->movementState = MovementState_GoalReached;
 						}
 						break;
 					}
@@ -717,6 +760,14 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 
 						singleUnit->ResetUnitCollisionParameters();
 						break;
+					}
+					else if (singleUnit->unit->GetPathPlanner()->IsSearchFailed()) {
+
+						singleUnit->unit->GetPathPlanner()->SetSearchRequested(false);
+						singleUnit->isSearching = false;
+
+						singleUnit->goal = singleUnit->currTile;
+						singleUnit->movementState = MovementState_GoalReached;
 					}
 					break;
 				}
@@ -1715,13 +1766,16 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile, bool isWalkabilityChecked)
 					}
 					else {
 
-						// Draw the invalid goal
-						SDL_Color col = ColorRed;
+						if (shapedGoal.size() < units.size()) {
 
-						iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
-						const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-						//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
-						App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
+							// Draw the invalid goal
+							SDL_Color col = ColorRed;
+
+							iPoint goalTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
+							const SDL_Rect goalRect = { goalTilePos.x, goalTilePos.y, App->map->data.tileWidth, App->map->data.tileHeight };
+							//App->render->DrawQuad(goalRect, col.r, col.g, col.b, 255, false);
+							App->printer->PrintQuad(goalRect, { col.r,col.g,col.b,255 });
+						}
 					}
 				}
 				else {
@@ -1950,6 +2004,7 @@ void SingleUnit::ResetUnitParameters(bool isGoalReset)
 
 	unit->GetPathPlanner()->SetSearchRequested(false);
 	unit->GetPathPlanner()->SetSearchCompleted(false);
+	unit->GetPathPlanner()->SetSearchFailed(false);
 	App->pathmanager->UnRegister(unit->GetPathPlanner());
 
 	isSearching = false;
