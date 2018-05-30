@@ -370,13 +370,10 @@ bool UIMinimap::DrawRoomCleared(Room room)
 {
 	bool ret = false;
 
-	//if (room.isCleared)
-	{
-		roomClearedRect = MapToMinimap(room.roomRect);
-		isRoomCleared = true;
-		startRoomClearedTimer = true;
-		ret = true;
-	}
+	roomClearedRect = MapToMinimap(room.roomRect);
+	isRoomCleared = true;
+	startRoomClearedTimer = true;
+	ret = true;
 
 	return ret;
 }

@@ -11,6 +11,8 @@
 
 #include "Brofiler\Brofiler.h"
 
+
+
 j1FogOfWar::j1FogOfWar() : j1Module()
 {
 	name = "fow";
@@ -44,6 +46,8 @@ bool j1FogOfWar::LoadFoW()
 	height = App->map->data.height ;
 
 	LoadFoWMap(width, height);
+
+	clearZones.push_back(App->map->playerBase.roomRect);
 
 	return ret;
 }
@@ -210,7 +214,7 @@ void j1FogOfWar::TilesNearPlayer()
 		{
 			// Change camera for entity collider
 			ColliderGroup* entityCollider = (*iterator)->GetSightRadiusCollider();
-	
+
 			for (vector<Collider*>::iterator colliderIterator = entityCollider->colliders.begin(); colliderIterator != entityCollider->colliders.end(); ++colliderIterator)
 			{
 				int cont = 0;
@@ -218,7 +222,7 @@ void j1FogOfWar::TilesNearPlayer()
 
 				iPoint startTile = App->map->WorldToMap((*colliderIterator)->colliderRect.x - tile / App->win->GetScale(),
 					(*colliderIterator)->colliderRect.y - tile / App->win->GetScale());
-				iPoint endTile = App->map->WorldToMap((*colliderIterator)->colliderRect.x  + tile / App->win->GetScale() + (*colliderIterator)->colliderRect.w,
+				iPoint endTile = App->map->WorldToMap((*colliderIterator)->colliderRect.x + tile / App->win->GetScale() + (*colliderIterator)->colliderRect.w,
 					(*colliderIterator)->colliderRect.y + tile / App->win->GetScale() + (*colliderIterator)->colliderRect.h);
 
 				//App->printer->PrintQuad((*colliderIterator)->colliderRect, { 255, 255, 255, 255 });
@@ -288,11 +292,19 @@ void j1FogOfWar::TilesNearPlayer()
 
 		}
 	}
-	CleanSafeZone(App->map->playerBase.roomRect);
+	for (list<SDL_Rect>::const_iterator clearZoneIterator = clearZones.begin(); clearZoneIterator != clearZones.end(); ++clearZoneIterator)
+	{
+		CleanSafeZone(*clearZoneIterator);
+	}
 }
 
 
-// =================================== PART 2 ===================================
+bool j1FogOfWar::ClearRoom(Room room)
+{
+	bool ret = false;
+	
+	clearZones.push_back(room.roomRect);
+	ret = true;
 
-// TODO 6 (beauty): 
-// UNCOMMENT THE CODE BELOW
+	return ret;
+}

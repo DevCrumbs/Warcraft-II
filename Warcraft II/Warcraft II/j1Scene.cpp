@@ -821,8 +821,10 @@ bool j1Scene::Update(float dt)
 	//_*****UNITS*****
 	
 	if (isRoomCleared)
+	{
 		BlitRoomClearedFloor(dt);
-
+		App->fow->ClearRoom(roomCleared);
+	}
 	// ---------------------------------------------------------------------------------
 
 	DebugKeys();

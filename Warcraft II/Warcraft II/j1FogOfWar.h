@@ -19,6 +19,8 @@
 
 class Entity;
 
+struct Room;
+
 struct FogOfWarTile
 {
 	iPoint pos;
@@ -45,6 +47,7 @@ public:
 	bool IsOnSight(fPoint pos);
 	void UnLoadFowMap();
 	void TilesNearPlayer();
+	bool ClearRoom(Room room);
 	int TotalDistanceToPlayer(Entity* entity, int tile);
 
 	void ResetTiles();
@@ -54,6 +57,8 @@ public:
 public:
 	std::vector<FogOfWarTile*> fowTilesVector;
 	std::vector<FogOfWarTile*> fowSmallerTilesVector;
+
+	list<SDL_Rect> clearZones;
 
 	int width = 0;
 	int height = 0;
