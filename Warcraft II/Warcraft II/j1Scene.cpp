@@ -1993,7 +1993,7 @@ uint j1Scene::GetGroupElementSize()
 }
 void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 {
-	//TODO: Search the same pos and lenght
+	// TODO: Search the same pos and length
 	string text;
 	switch (dialogEvent)
 	{
@@ -2018,15 +2018,14 @@ void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 		terenasAdvices.text->SetLocalPos({ 355,37 });
 		break;
 	case TerenasDialog_GOLD_MINE:
-		text = "To get gold from the mine you have to select units and they will gather it.";
+		text = "To get gold from the mine, first select the units that will gather it.";
 		terenasAdvices.text->SetText(text, 320);
 		terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
 	case TerenasDialog_RUNESTONE:
-		//TODO ??
-		//text = "To get gold from the mine you have to select units and they will gather it.";
-		//terenasAdvices.text->SetText(text, 320);
-		//terenasAdvices.text->SetLocalPos({ 355,47 });
+		text = "To heal a group of units, first select the units.";
+		terenasAdvices.text->SetText(text, 320);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
 	case TerenasDialog_NONE:
 		break;
