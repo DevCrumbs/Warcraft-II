@@ -1909,7 +1909,7 @@ void j1Scene::DestroySettingsMenu()
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.slider);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.name);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.value);
-
+	App->gui->RemoveElem((UIElement**)&buttonsLabel);
 }
 
 void j1Scene::DestroyAllUI()
