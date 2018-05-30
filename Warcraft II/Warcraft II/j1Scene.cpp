@@ -2482,8 +2482,6 @@ bool j1Scene::Save(pugi::xml_node& save) const
 
 	create = false;
 
-	//UIImage* entitiesStats = nullptr;
-
 	// Movement
 	pugi::xml_node movement;
 	if (save.child("movement") == NULL)
@@ -2529,34 +2527,6 @@ bool j1Scene::Save(pugi::xml_node& save) const
 	SaveAttribute(isAttackCursor, "isAttackCursor", general, create);
 	SaveAttribute(isFadeToMenu, "isFadeToMenu", general, create);
 
-
-	/*
-	//UI
-	BuildingMenu buildingMenuButtons;
-	UIButton* buildingButton = nullptr;
-	UILabel* buildingLabel = nullptr;
-	UIImage* buildingMenu = nullptr;
-
-	//Frame InGame
-	UIImage* inGameFrameImage = nullptr;
-	UILabel* goldLabel, *foodLabel = nullptr;
-
-	//Pause Menu
-	UIButton* pauseMenuButt = nullptr, *settingsButt = nullptr, *continueButt = nullptr, *ReturnMenuButt = nullptr;
-	UILabel* pauseMenuLabel = nullptr, *settingsLabel = nullptr, *continueLabel = nullptr, *ReturnMenuLabel = nullptr;
-	UIImage* parchmentImg = nullptr;
-	//Settings Menu
-	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
-	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
-	SliderStruct AudioFXPause;
-	SliderStruct AudioMusicPause;
-	//Entities Buttons
-	UIButton* commandPatrolButton = nullptr, *commandStopButton = nullptr;
-	//Minimap Button
-	UIButton* changeMinimapButt = nullptr;
-	//Advice label
-	UILabel* adviceLabel = nullptr;
-	*/
 	SaveAttribute(buildingMenuOn, "buildingMenuOn", general, create);
 	SaveAttribute(orthogonalActive, "orthogonalActive", general, create);
 	SaveAttribute(isometricActive, "isometricActive", general, create);

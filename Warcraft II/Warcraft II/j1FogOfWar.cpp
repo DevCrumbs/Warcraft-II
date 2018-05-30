@@ -149,9 +149,6 @@ void j1FogOfWar::UnLoadFowMap()
 		delete fowTilesVector[i];
 	fowTilesVector.clear();
 
-	for (int i = 0; i < fowSmallerTilesVector.size(); i++)
-		delete fowSmallerTilesVector[i];
-	fowSmallerTilesVector.clear();
 }
 
 int j1FogOfWar::TotalDistanceToPlayer(Entity* entity, int tile)
@@ -249,31 +246,6 @@ void j1FogOfWar::TilesNearPlayer()
 						//SDL_Rect collider{ (*iterator)->GetPos().x, (*iterator)->GetPos().y, 128, 128 };
 
 						//if (RectIntersect(&collider, &fowTileRect)) {
-						if (TotalDistanceToPlayer(*iterator, pos) == RADIUS)
-						{
-							for (int x = 0; x < TILE_PARTITIONS; x++)
-								for (int j = 0; j < TILE_PARTITIONS; j++)
-								{
-									if (cont < fowSmallerTilesVector.size())
-									{
-										// TODO 5 (set the smaller tiles position & normalAlpha, example: "fowSmallerTilesVector[contador]->pos.x = ...;" )
-										fowSmallerTilesVector[cont]->pos.x = fowTilesVector[pos]->pos.x * FOW_TILE + (x * FOW_TILE / TILE_PARTITIONS);
-										fowSmallerTilesVector[cont]->pos.y = fowTilesVector[pos]->pos.y * FOW_TILE + (j * FOW_TILE / TILE_PARTITIONS);
-										fowSmallerTilesVector[cont]->normalAlpha = fowTilesVector[pos]->normalAlpha;
-									}
-									else
-									{
-										FogOfWarTile* aux = new FogOfWarTile();
-										aux->pos.x = fowTilesVector[pos]->pos.x * FOW_TILE + (x * FOW_TILE / TILE_PARTITIONS);
-										aux->pos.y = fowTilesVector[pos]->pos.y * FOW_TILE + (j * FOW_TILE / TILE_PARTITIONS);
-										aux->normalAlpha = fowTilesVector[pos]->normalAlpha;
-										fowSmallerTilesVector.push_back(aux);
-									}
-									cont++;
-
-								}
-							fowTilesVector[pos]->alpha = 0;
-						}
 
 						else if (TotalDistanceToPlayer(*iterator, pos) < RADIUS)
 						{
@@ -292,7 +264,45 @@ void j1FogOfWar::TilesNearPlayer()
 }
 
 
-// =================================== PART 2 ===================================
 
-// TODO 6 (beauty): 
-// UNCOMMENT THE CODE BELOW
+bool j1FogOfWar::Save(pugi::xml_node& save) const
+{
+	bool ret = true;
+
+	bool create = false;
+
+	pugi::xml_node general;
+
+	if (save.child("general") == NULL)
+	{
+		general = save.append_child("general");
+		create = true;
+	}
+	else
+	{
+		general = save.child("general");
+	}
+
+	SaveTiles(fowTilesVector, "fowTilesVector", general);
+
+	SaveAttribute(width, "width", general, false);
+	SaveAttribute(height, "height", general, false);
+
+	SaveAttribute(isActive, "isActive", general, false);
+
+	return ret;
+}
+
+void j1FogOfWar::SaveTiles(vector<FogOfWarTile*> tiles, char* name, pugi::xml_node node) const
+{
+	for (int i = 0; i < tiles.size(); i++)
+	{
+		pugi::xml_node currNode = node.append_child(name);
+		
+		currNode.append_attribute("alpha") = tiles[i]->alpha;
+		currNode.append_attribute("normalAlpha") = tiles[i]->normalAlpha;
+		currNode.append_attribute("xPos") = tiles[i]->pos.x;
+		currNode.append_attribute("yPos") = tiles[i]->pos.y;
+		currNode.append_attribute("size") =	tiles[i]->size;
+	}
+}

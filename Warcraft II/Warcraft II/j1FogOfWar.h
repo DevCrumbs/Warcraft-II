@@ -34,10 +34,17 @@ public:
 	~j1FogOfWar();
 
 	bool Start();
+
 	bool LoadFoW();
+
 	bool Update(float dt);
+
 	bool PostUpdate();
+
 	bool CleanUp();
+
+	bool Save(pugi::xml_node & save) const;
+
 	void print();
 
 	void LoadFoWMap(int mapWidth, int mapHeight);
@@ -45,15 +52,17 @@ public:
 	bool IsOnSight(fPoint pos);
 	void UnLoadFowMap();
 	void TilesNearPlayer();
+
 	int TotalDistanceToPlayer(Entity* entity, int tile);
 
 	void ResetTiles();
+
+	void SaveTiles(vector<FogOfWarTile*> tiles, char * name, pugi::xml_node node) const;
 
 	void CleanSafeZone(SDL_Rect zone);
 
 public:
 	std::vector<FogOfWarTile*> fowTilesVector;
-	std::vector<FogOfWarTile*> fowSmallerTilesVector;
 
 	int width = 0;
 	int height = 0;
