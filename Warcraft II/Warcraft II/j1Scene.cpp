@@ -471,7 +471,11 @@ bool j1Scene::Update(float dt)
 		// Select units by rectangle drawing
 		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
-			if (startRectangle.x != -1 && startRectangle.y != -1) {
+			Entity* playerBuilding = App->entities->IsEntityUnderMouse(startRectangle, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+			Entity* neutralBuilding = App->entities->IsEntityUnderMouse(startRectangle, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
+
+			if (startRectangle.x != -1 && startRectangle.y != -1
+				&& playerBuilding == nullptr && neutralBuilding == nullptr) {
 
 				// Draw the rectangle
 				SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
