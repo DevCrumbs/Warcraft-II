@@ -37,6 +37,9 @@ enum ParticleType {
 	ParticleType_PeasantCarry,
 	ParticleType_Peasant,
 
+	ParticleType_PeonCarry,
+	ParticleType_Peon,
+
 	ParticleType_DragonFire,
 	ParticleType_DragonSubFire,
 	ParticleType_GryphonFire,
@@ -123,6 +126,9 @@ private:
 	string peasantTexName;
 	SDL_Texture* peasantTex = nullptr;
 
+	string peonTexName;
+	SDL_Texture* peonTex = nullptr;
+
 	// Animations speed
 	/// Boar Paws
 	float boarPawsUpSpeed = 0.0f, boarPawsDownSpeed = 0.0f, boarPawsLeftSpeed = 0.0f, boarPawsRightSpeed = 0.0f;
@@ -154,6 +160,12 @@ private:
 	float peasantSmallBuildingSpeed = 0.0f;
 	float peasantMediumBuildingSpeed = 0.0f;
 	float peasantBigBuildingSpeed = 0.0f;
+
+	///Peons
+	float peonCarrySpeed = 0.0f;
+	float peonSmallBuildingSpeed = 0.0f;
+	float peonMediumBuildingSpeed = 0.0f;
+	float peonBigBuildingSpeed = 0.0f;
 
 
 	///
@@ -194,6 +206,12 @@ public:
 	Particle peasantSmallBuild;
 	Particle peasantMediumBuild;
 	Particle peasantBigBuild;
+
+	//Peon construction particles
+	Particle carryPeon;
+	Particle peonSmallBuild;
+	Particle peonMediumBuild;
+	Particle peonBigBuild;
 
 };
 

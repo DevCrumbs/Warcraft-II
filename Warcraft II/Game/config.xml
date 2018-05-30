@@ -1434,7 +1434,7 @@
     </peasantAnimations>
 
     <peonAnimations>
-      <carry speed="4" loop="0">
+      <carry speed="7" loop="0">
         <frame x="0" y="0" w="100" h="100"/>
         <frame x="100" y="0" w="100" h="100"/>
         <frame x="200" y="0" w="100" h="100"/>
@@ -1442,7 +1442,7 @@
         <frame x="400" y="0" w="100" h="100"/>
       </carry>
     
-      <smallBuilding speed="4" loop="1">
+      <smallBuilding speed="7" loop="1">
         <frame x="500" y="0" w="100" h="100"/>
         <frame x="600" y="0" w="100" h="100"/>
         <frame x="700" y="0" w="100" h="100"/>
@@ -1450,7 +1450,7 @@
         <frame x="900" y="0" w="100" h="100"/>
       </smallBuilding>
     
-      <mediumBuilding speed="4" loop="1">
+      <mediumBuilding speed="7" loop="1">
         <frame x="0" y="100" w="150" h="150"/>
         <frame x="150" y="100" w="150" h="150"/>
         <frame x="300" y="100" w="150" h="150"/>
@@ -1458,7 +1458,7 @@
         <frame x="600" y="100" w="150" h="150"/>
       </mediumBuilding>
     
-      <bigBuilding speed="4" loop="1">
+      <bigBuilding speed="7" loop="1">
         <frame x="0" y="250" w="200" h="200"/>
         <frame x="200" y="250" w="200" h="200"/>
         <frame x="400" y="250" w="200" h="200"/>
