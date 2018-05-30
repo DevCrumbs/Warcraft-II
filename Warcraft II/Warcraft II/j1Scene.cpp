@@ -138,9 +138,6 @@ bool j1Scene::Start()
 		debugTex = App->tex->Load(warcraftTexName.data());
 	}
 
-	// Load FoW map
-	App->fow->LoadFoW();
-
 	// Create walkability map
 	if (ret)
 		App->map->CreateWalkabilityMap(w, h, &data);
@@ -169,6 +166,9 @@ bool j1Scene::Start()
 	App->audio->PlayMusic(musicToPlay.data(), 2.0f);
 
 	App->map->LoadLogic();
+
+	// Load FoW map
+	App->fow->LoadFoW();
 
 	isStartedFinalTransition = false;
 
