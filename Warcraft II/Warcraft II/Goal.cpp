@@ -1036,32 +1036,46 @@ GoalStatus Goal_HitTarget::Process(float dt)
 				CritterSheepInfo c = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
 				owner->ApplyHealth(c.restoredHealth);
 
-				iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
+				CritterSheep* sheep = (CritterSheep*)dyn;
+				
+				if (!sheep->isHealth) {
 
-				if (owner->entitySide == EntitySide_Player) {
-					/// Green particles +++
-					App->particles->AddParticle(App->particles->playerHealth, pos);
-					App->audio->PlayFx(App->audio->GetFX().healSound);
+					iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
+
+					if (owner->entitySide == EntitySide_Player) {
+						/// Green particles +++
+						App->particles->AddParticle(App->particles->playerHealth, pos);
+						App->audio->PlayFx(App->audio->GetFX().healSound);
+					}
+					else if (owner->entitySide == EntitySide_Enemy)
+						/// Red particles +++
+						App->particles->AddParticle(App->particles->enemyHealth, pos);
+
+					sheep->isHealth = true;
 				}
-				else if (owner->entitySide == EntitySide_Enemy)
-					/// Red particles +++
-					App->particles->AddParticle(App->particles->enemyHealth, pos);
 			}
 			else if (dyn->dynamicEntityType == EntityType_BOAR) {
 
 				CritterBoarInfo b = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
 				owner->ApplyHealth(b.restoredHealth);
 
-				iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
+				CritterBoar* boar = (CritterBoar*)dyn;
 
-				if (owner->entitySide == EntitySide_Player) {
-					/// Green particles +++
-					App->particles->AddParticle(App->particles->playerHealth, pos);
-					App->audio->PlayFx(App->audio->GetFX().healSound);
+				if (!boar->isHealth) {
+
+					iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
+
+					if (owner->entitySide == EntitySide_Player) {
+						/// Green particles +++
+						App->particles->AddParticle(App->particles->playerHealth, pos);
+						App->audio->PlayFx(App->audio->GetFX().healSound);
+					}
+					else if (owner->entitySide == EntitySide_Enemy)
+						/// Red particles +++
+						App->particles->AddParticle(App->particles->enemyHealth, pos);
+
+					boar->isHealth = true;
 				}
-				else if (owner->entitySide == EntitySide_Enemy)
-					/// Red particles +++
-					App->particles->AddParticle(App->particles->enemyHealth, pos);
 			}
 		}
 
