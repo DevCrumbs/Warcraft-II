@@ -48,11 +48,15 @@ Down here you can find the GitHub page for each one of the team memebers and the
 * [Individual contribution](https://devcrumbs.github.io/Warcraft-II/Joan_Valiente)<br><br>
 
 
+<img src="Wiki_Files/Home/group.JPG" width="600">
+
 # Where you can find us
 
-[Twitter](https://twitter.com/DevCrumbsGames)
-[Instagram](https://www.instagram.com/devcrumbsgames/)
-[Facebook](https://es-la.facebook.com/DevCrumbsGames/)
+* [Twitter](https://twitter.com/DevCrumbsGames)
+
+* [Instagram](https://www.instagram.com/devcrumbsgames/)
+
+* [Facebook](https://es-la.facebook.com/DevCrumbsGames/)
 
 * **GitHub repository**: 
 [DevCrumbs](https://github.com/DevCrumbs/Warcraft-II)
@@ -67,18 +71,19 @@ Down here you can find the GitHub page for each one of the team memebers and the
 
 ## Controls
 
-   Space: Go to player base
-   Up arrow or W: Move the camera up
-   Down arrow or S: Move the camera down
-   Left arrow or A: Move the camera left
-   Right arrow or D: Move the camera right
-
-   Z: Select all Footman on screen (max 8 units)
-   X: Select all Elven Archer on screen (max 8 units)
-   C: Select all Gryphon Rider on screen (max 8 units)
-   V: Select all units on screen (max 8 units)
-
-   Q: Move the camera to the units selected
-
-   Left/Right Ctrl + 1/2/3: Save a group of units to a slot
-   Left/Right Shift + 1/2/3: Select a saved group of units from a slot
+   - Space: Go to player base
+   - Up arrow or W: Move the camera up
+   - Down arrow or S: Move the camera down
+   - Left arrow or A: Move the camera left
+   - Right arrow or D: Move the camera right
+  
+   - Z: Select all Footman on screen (max 8 units)
+   - X: Select all Elven Archer on screen (max 8 units)
+   - C: Select all Gryphon Rider on screen (max 8 units)
+   - V: Select all units on screen (max 8 units)
+  
+   - Q: Move the camera to the units selected
+  
+   - Left/Right Ctrl + 1/2/3: Save a group of units to a slot
+   - Left/Right Shift + 1/2/3: Select a saved group of units from a slot
+  
