@@ -2424,7 +2424,7 @@ bool j1EntityFactory::PostUpdate()
 		if ((*dynEnt)->isRemove) {
 
 			delete *dynEnt;
-			activeDynamicEntities.remove(*dynEnt);
+			activeDynamicEntities.erase(dynEnt);
 
 			dynEnt = activeDynamicEntities.begin();
 			continue;
@@ -2440,11 +2440,13 @@ bool j1EntityFactory::PostUpdate()
 
 		if ((*statEnt)->isRemove) {
 
+			LOG("Removed building");
+
 			if ((*statEnt)->staticEntityCategory == StaticEntityCategory_OrcishBuilding) //Increase building destroyed counter
 				App->player->buildDestroy++;
 
 			delete *statEnt;
-			activeStaticEntities.remove(*statEnt);
+			activeStaticEntities.erase(statEnt);
 
 			statEnt = activeStaticEntities.begin();
 			continue;
@@ -2534,6 +2536,7 @@ bool j1EntityFactory::PostUpdate()
 			(*statEnt)->Draw(orcishBuildingsTex);
 			break;
 		default:
+			LOG("Default building...");
 			break;
 		}
 

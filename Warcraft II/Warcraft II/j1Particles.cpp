@@ -740,14 +740,13 @@ bool Particle::Update(float dt)
 			// Apply damage and kill the particle if it reaches its target
 			if (entity != nullptr) {
 
+				entity->ApplyDamage(damage);
+
 				if (entity->entityType == EntityCategory_STATIC_ENTITY) {
-					entity->ApplyDamage(damage);
 
 					StaticEntity* statEnt = (StaticEntity*)entity;
 					statEnt->CheckBuildingState();
 				}
-				else
-					entity->ApplyDamage(damage);
 
 				return false;
 			}
@@ -786,14 +785,13 @@ bool Particle::Update(float dt)
 			// Apply damage and kill the particle if it reaches its target
 			if (entity != nullptr) {
 
+				entity->ApplyDamage(damage);
+
 				if (entity->entityType == EntityCategory_STATIC_ENTITY) {
-					entity->ApplyDamage(damage);
 
 					StaticEntity* statEnt = (StaticEntity*)entity;
 					statEnt->CheckBuildingState();
 				}
-				else
-					entity->ApplyDamage(damage);
 
 				return false;
 			}

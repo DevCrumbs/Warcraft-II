@@ -137,13 +137,6 @@ void Grunt::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
-			if (!App->gui->isGuiCleanUp) {
-
-				if (lifeBar != nullptr)
-					App->gui->RemoveElem((UIElement**)&lifeBar);
-				lifeBar = nullptr;
-			}
-
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
@@ -271,8 +264,9 @@ void Grunt::Move(float dt)
 	if (lifeBar != nullptr) {
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
-		lifeBar->SetLife(currLife);
-		//lifeBar->SetLifeBarPosition({ 0,0 });
+
+		if (currLife >= 0)
+			lifeBar->SetLife(currLife);
 	}
 }
 
@@ -335,8 +329,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// 1. UPDATE TARGETS LIST
@@ -410,8 +404,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Grunt Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Grunt Attack Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// 1. UPDATE TARGETS LIST
@@ -456,8 +450,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Grunt Sight Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Grunt Sight Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// Set the target's isSightSatisfied to false
@@ -506,8 +500,8 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Grunt Attack Radius %s", dynEnt->GetColorName().data());
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Grunt Attack Radius %s", dynEnt->GetColorName().data());
 			//}
 
 			// Set the target's isAttackSatisfied to false

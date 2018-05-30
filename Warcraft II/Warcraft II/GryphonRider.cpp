@@ -131,13 +131,6 @@ void GryphonRider::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
-			if (!App->gui->isGuiCleanUp) {
-
-				if (lifeBar != nullptr)
-					App->gui->RemoveElem((UIElement**)&lifeBar);
-				lifeBar = nullptr;
-			}
-
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
@@ -346,8 +339,9 @@ void GryphonRider::Move(float dt)
 	if (lifeBar != nullptr) {
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
-		lifeBar->SetLife(currLife);
-		//lifeBar->SetLifeBarPosition({ 0,0 });
+
+		if (currLife >= 0)
+			lifeBar->SetLife(currLife);
 	}
 
 	// Blit group selection
