@@ -420,55 +420,56 @@ void Goal_AttackTarget::Terminate()
 
 	owner->InvalidateCurrTarget();
 
-	if (targetInfo->isRemoveNeeded) {
+	if (!App->entities->isEntityFactoryCleanUp) {
 
-		/// The target needs to be removed because, for example, is no longer within the sight of the unit (ordered from outside the goals)
-	}
-	else if (targetInfo->IsTargetDead() || !targetInfo->IsTargetValid()) {
+		if (targetInfo->isRemoveNeeded) {
 
-		/// The target has recently died || The target has recently become invalid
-
-		// Removing target process --
-		if (!targetInfo->isRemoveNeeded) {
-
-			targetInfo->isRemoveNeeded = true;
-			list<TargetInfo*> targets = owner->GetTargets();
-			list<TargetInfo*> targetsToRemove = owner->GetTargetsToRemove();
-
-			list<TargetInfo*>::const_iterator it = find(targets.begin(), targets.end(), targetInfo);
-			targetsToRemove.splice(targetsToRemove.begin(), targets, it);
+			/// The target needs to be removed because, for example, is no longer within the sight of the unit (ordered from outside the goals)
 		}
-		// -- Removing target process
-	}
-	else {
+		else if (targetInfo->IsTargetDead() || !targetInfo->IsTargetValid()) {
 
-		if (!App->entities->isEntityFactoryCleanUp)
+			/// The target has recently died || The target has recently become invalid
+
+			// Removing target process --
+			if (!targetInfo->isRemoveNeeded) {
+
+				targetInfo->isRemoveNeeded = true;
+				list<TargetInfo*> targets = owner->GetTargets();
+				list<TargetInfo*> targetsToRemove = owner->GetTargetsToRemove();
+
+				list<TargetInfo*>::const_iterator it = find(targets.begin(), targets.end(), targetInfo);
+				targetsToRemove.splice(targetsToRemove.begin(), targets, it);
+			}
+			// -- Removing target process
+		}
+		else {
 
 			targetInfo->target->RemoveAttackingUnit(owner);
 
-		// If the target is a building, also check if DistanceManhattan is <= 1
-		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied) {
+			// If the target is a building, also check if DistanceManhattan is <= 1
+			if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied) {
 
-			list<iPoint> buildingTiles = App->entities->GetBuildingTiles((StaticEntity*)targetInfo->target);
+				list<iPoint> buildingTiles = App->entities->GetBuildingTiles((StaticEntity*)targetInfo->target);
 
-			if (buildingTiles.size() > 0) {
+				if (buildingTiles.size() > 0) {
 
-				list<iPoint>::const_iterator it = buildingTiles.begin();
+					list<iPoint>::const_iterator it = buildingTiles.begin();
 
-				while (it != buildingTiles.end()) {
+					while (it != buildingTiles.end()) {
 
-					if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1) {
+						if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1) {
 
-						targetInfo->isAttackSatisfied = false;
-						break;
+							targetInfo->isAttackSatisfied = false;
+							break;
+						}
+						it++;
 					}
-					it++;
 				}
 			}
 		}
-	}
 
-	targetInfo->isInGoals--; // THE TARGET IS NO LONGER A GOAL
+		targetInfo->isInGoals--; // THE TARGET IS NO LONGER A GOAL
+	}
 
 	// -----
 

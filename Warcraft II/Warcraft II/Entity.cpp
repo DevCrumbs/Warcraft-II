@@ -256,4 +256,18 @@ bool Entity::GetIsValid() const
 TargetInfo::TargetInfo() {}
 
 TargetInfo::TargetInfo(const TargetInfo& t) :
-	isSightSatisfied(t.isSightSatisfied), isAttackSatisfied(t.isAttackSatisfied), target(t.target) {}
+	isSightSatisfied(t.isSightSatisfied), isAttackSatisfied(t.isAttackSatisfied), target(t.target),
+	isInGoals(t.isInGoals), isRemoveNeeded(t.isRemoveNeeded), attackingTile(t.attackingTile) {}
+
+TargetInfo::~TargetInfo() 
+{
+	isSightSatisfied = false;
+	isAttackSatisfied = false;
+
+	isInGoals = 0;
+	isRemoveNeeded = false;
+
+	target = nullptr;
+
+	attackingTile = { -1,-1 };
+}

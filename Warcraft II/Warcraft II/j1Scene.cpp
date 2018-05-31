@@ -471,7 +471,11 @@ bool j1Scene::Update(float dt)
 		// Select units by rectangle drawing
 		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
-			if (startRectangle.x != -1 && startRectangle.y != -1) {
+			Entity* playerBuilding = App->entities->IsEntityUnderMouse(startRectangle, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+			Entity* neutralBuilding = App->entities->IsEntityUnderMouse(startRectangle, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
+
+			if (startRectangle.x != -1 && startRectangle.y != -1
+				&& playerBuilding == nullptr && neutralBuilding == nullptr) {
 
 				// Draw the rectangle
 				SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
@@ -2002,7 +2006,7 @@ uint j1Scene::GetGroupElementSize()
 }
 void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 {
-	//TODO: Search the same pos and lenght
+	// TODO: Search the same pos and length
 	string text;
 	switch (dialogEvent)
 	{
@@ -2027,15 +2031,14 @@ void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 		terenasAdvices.text->SetLocalPos({ 355,37 });
 		break;
 	case TerenasDialog_GOLD_MINE:
-		text = "To get gold from the mine you have to select units and they will gather it.";
+		text = "To get gold from the mine, first select the units that will gather it.";
 		terenasAdvices.text->SetText(text, 320);
 		terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
 	case TerenasDialog_RUNESTONE:
-		//TODO ??
-		//text = "To get gold from the mine you have to select units and they will gather it.";
-		//terenasAdvices.text->SetText(text, 320);
-		//terenasAdvices.text->SetLocalPos({ 355,47 });
+		text = "To heal a group of units, first select the units.";
+		terenasAdvices.text->SetText(text, 320);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
 	case TerenasDialog_NONE:
 		break;

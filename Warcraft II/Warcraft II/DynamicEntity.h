@@ -114,6 +114,7 @@ struct TargetInfo
 {
 	TargetInfo();
 	TargetInfo(const TargetInfo& t);
+	~TargetInfo();
 
 	bool isSightSatisfied = false; // if true, sight distance is satisfied
 	bool isAttackSatisfied = false; // if true, attack distance is satisfied

@@ -61,10 +61,10 @@ bool j1Player::Start()
 	return ret;
 }
 
-bool j1Player::PreUpdate() 
+bool j1Player::PreUpdate()
 {
-	if (minimap == nullptr)
-	{
+	if (minimap == nullptr) {
+
 		UIMinimap_Info info;
 
 		info.entityHeight = 32;
@@ -73,7 +73,6 @@ bool j1Player::PreUpdate()
 
 		minimap = App->gui->CreateUIMinimap(info, this);
 	}
-
 
 	return true;
 }
@@ -91,7 +90,6 @@ bool j1Player::Update(float dt)
 
 	if (!toSpawnUnitGrypho.empty())
 		CheckUnitSpawning(&toSpawnUnitGrypho);
-
 
 	////////////////////////////////////////
 

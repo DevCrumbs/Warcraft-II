@@ -131,13 +131,6 @@ void GryphonRider::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
-			if (!App->gui->isGuiCleanUp) {
-
-				if (lifeBar != nullptr)
-					App->gui->RemoveElem((UIElement**)&lifeBar);
-				lifeBar = nullptr;
-			}
-
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
@@ -158,6 +151,8 @@ void GryphonRider::Move(float dt)
 		// PROCESS THE COMMANDS
 
 		// 1. Remove attack
+		bool isAttacking = false;
+
 		switch (unitCommand) {
 
 		case UnitCommand_Stop:
@@ -170,6 +165,7 @@ void GryphonRider::Move(float dt)
 			/// The unit could be attacking before this command
 			if (currTarget != nullptr) {
 
+				isAttacking = true;
 				currTarget->target->RemoveAttackingUnit(this);
 				currTarget = nullptr;
 			}
@@ -207,10 +203,11 @@ void GryphonRider::Move(float dt)
 
 				if (singleUnit->IsFittingTile()) {
 
+					if (unitState == UnitState_AttackTarget || ((unitState == UnitState_Idle || unitState == UnitState_Walk) && isAttacking))
+						isRunAway = true;
+
 					brain->RemoveAllSubgoals();
 					brain->AddGoal_MoveToPosition(singleUnit->goal);
-
-					isRunAway = true;
 
 					unitState = UnitState_Walk;
 					unitCommand = UnitCommand_NoCommand;
@@ -346,8 +343,9 @@ void GryphonRider::Move(float dt)
 	if (lifeBar != nullptr) {
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
-		lifeBar->SetLife(currLife);
-		//lifeBar->SetLifeBarPosition({ 0,0 });
+
+		if (currLife >= 0)
+			lifeBar->SetLife(currLife);
 	}
 
 	// Blit group selection
@@ -692,19 +690,24 @@ void GryphonRider::UnitStateMachine(float dt)
 
 			if (newTarget != nullptr) {
 
+				Room* room = App->map->GetEntityRoom(this);
+
 				// A new target has found! Update the currTarget
-				if (currTarget != newTarget) {
+				if (currTarget != newTarget && room != nullptr) {
 
-					// Anticipate the removing of this unit from the attacking units of the target
-					if (currTarget != nullptr)
-						currTarget->target->RemoveAttackingUnit(this);
+					if (App->map->IsOnRoom(newTarget->target->GetPos(), *room)) {
 
-					isHitting = false;
+						// Anticipate the removing of this unit from the attacking units of the target
+						if (currTarget != nullptr)
+							currTarget->target->RemoveAttackingUnit(this);
 
-					if (SetCurrTarget(newTarget->target))
-						brain->AddGoal_AttackTarget(newTarget);
+						isHitting = false;
 
-					newTarget = nullptr;
+						if (SetCurrTarget(newTarget->target))
+							brain->AddGoal_AttackTarget(newTarget);
+
+						newTarget = nullptr;
+					}
 				}
 			}
 		}
