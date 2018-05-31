@@ -35,12 +35,17 @@ public:
 
 	void SetLife(const int life);
 	void SetMaxLife(const int maxLife);
+	void SetLifeBarPosition(iPoint pos);
 	void IncreaseLife(const int life);
 	void DecreaseLife(const int life);
 	int GetLife() const;
 
-private:
+public:
+
 	UILifeBar_Info lifeBar;
+
+private:
+
 	bool isInWorld = false;
 
 	SDL_Rect bar = { 0,0,0,0 };

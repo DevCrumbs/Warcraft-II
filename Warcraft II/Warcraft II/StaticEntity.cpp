@@ -215,14 +215,14 @@ bool StaticEntity::CheckBuildingState()
 		case BuildingState_HardFire:
 
 			if (fire != nullptr)
-			fire->isRemove = true;
+				fire->isRemove = true;
 			fire = App->particles->AddParticle(App->particles->hardFire, { (int)this->GetPos().x + this->GetSize().x / 5, (int)this->GetPos().y + this->GetSize().y / 5 });
 			break;
 
 		case BuildingState_Destroyed:
 
 			if (fire != nullptr)
-			fire->isRemove = true;
+				fire->isRemove = true;
 			isRemove = true;
 
 			if (entitySide == EntitySide_Enemy) {
