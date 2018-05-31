@@ -232,23 +232,23 @@ void j1FinishGame::ArtifactWon(uint time)
 
 	if (time >= 1500) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->bookText, App->gui->bookAnim, 5));
-		LevelWon(Artifact_BOOK);
-		labelInfo.text += "Book of Medivh";
+		LevelWon(Artifact_SCEPTER);
+		labelInfo.text += "Scepter of Sagreras";
 	}
 	else if (time >= 1200) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->skullText, App->gui->skullAnim, 5));
-		LevelWon(Artifact_SKULL);
-		labelInfo.text += "Skull of Gul'dan";
-	}
-	else if (time >= 1080) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->eyeText, App->gui->eyeAnim, 5));
 		LevelWon(Artifact_EYE);
 		labelInfo.text += "Eye of Dalaran";
 	}
+	else if (time >= 1080) {
+		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->eyeText, App->gui->eyeAnim, 5));
+		LevelWon(Artifact_SKULL);
+		labelInfo.text += "Skull of Gul'dan";
+	}
 	else if (time >= 0) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->scepterText, App->gui->scepterAnim, 5));
-		LevelWon(Artifact_SCEPTER);
-		labelInfo.text += "Scepter of Sagreras";
+		LevelWon(Artifact_BOOK);
+		labelInfo.text += "Book of Medivh";
 	}
 	labelVector.push_back(App->gui->CreateUILabel({ 575, 145 }, labelInfo));
 

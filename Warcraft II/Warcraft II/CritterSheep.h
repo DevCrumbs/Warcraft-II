@@ -45,6 +45,10 @@ public:
 	// Paws
 	void UpdatePaws();
 
+public:
+
+	bool isHealth = false;
+
 private:
 
 	CritterSheepInfo critterSheepInfo;

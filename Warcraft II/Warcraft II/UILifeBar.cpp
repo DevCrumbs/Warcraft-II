@@ -28,6 +28,9 @@ void UILifeBar::Update(float dt)
 		l = lifeBar.life * 100 / lifeBar.maxLife; //Pass life to %
 		bar.w = l * lifeBar.maxWidth / 100;//Pass % to width
 	}
+
+	if (bar.w > lifeBar.maxWidth)
+		bar.w = lifeBar.maxWidth;
 }
 
 void UILifeBar::Draw() const

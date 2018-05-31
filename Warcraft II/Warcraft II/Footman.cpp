@@ -133,7 +133,8 @@ void Footman::Move(float dt)
 			if (!App->gui->isGuiCleanUp) {
 
 				if (lifeBar != nullptr)
-					lifeBar->isActive = false;
+					App->gui->RemoveElem((UIElement**)&lifeBar);
+				lifeBar = nullptr;
 			}
 
 			// Invalidate colliders
@@ -347,7 +348,7 @@ void Footman::Move(float dt)
 
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
 		lifeBar->SetLife(currLife);
-		lifeBar->SetLifeBarPosition({ 0,0 });
+		//lifeBar->SetLifeBarPosition({ 0,0 });
 	}
 
 	// Blit group selection

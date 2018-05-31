@@ -940,27 +940,26 @@ bool j1Scene::PostUpdate()
 {
 	bool ret = true;
 
-	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
+	if (!isStartedFinalTransition) {
 
-		App->gui->RemoveElem((UIElement**)&parchmentImg);
-		return false;
-	}
+		if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
 
-	if (App->player->imagePrisonersVector.size() >= 2) {
+			App->gui->RemoveElem((UIElement**)&parchmentImg);
+			return false;
+		}
 
-		App->player->isWin = true;
+		if (App->player->imagePrisonersVector.size() >= 2) {
 
-		if (!isStartedFinalTransition) {
-		
+			App->player->isWin = true;
 			finalTransition.Start();
 			isStartedFinalTransition = true;
 		}
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && App->isDebug) {
-	
-		App->player->isWin = true;
-		App->fade->FadeToBlack(this, App->finish);
-		App->finish->active = true;
+		else if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && App->isDebug) {
+
+			App->player->isWin = true;
+			App->fade->FadeToBlack(this, App->finish);
+			App->finish->active = true;
+		}
 	}
 
 	// Final transition timer (when win is achieved)
@@ -970,32 +969,34 @@ bool j1Scene::PostUpdate()
 		App->finish->active = true;
 	}
 
+	if (!isStartedFinalTransition) {
 
-	//LoseConditions
-		//We have no more units in game
-	if ((App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && 
-	//Not enogh gold to create Archer (cheeper unit) and we have no units spawning
+		//LoseConditions
+			//We have no more units in game
+		if ((App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) &&
+			//Not enogh gold to create Archer (cheeper unit) and we have no units spawning
 			((App->player->GetCurrentGold() < App->player->elvenArcherCost && App->player->toSpawnUnitBarracks.empty() && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning)
-	//Have not barracks and gryphos and have not enogh gold for build it and create the cheeper option (grypho)
-			|| (App->player->GetCurrentGold() < (App->player->gryphonRiderCost + gryphonAviaryCost) && App->player->gryphonAviary == nullptr && App->player->barracks == nullptr)
-	//Not enogh gold to create Gryphos and have not barracks and we and have no units spawning
-			|| (App->player->GetCurrentGold() < App->player->gryphonRiderCost  && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning))
-	//Instant Lose with F2
-		|| (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && App->isDebug)
-	//Orde destroy townhall
-		|| App->player->townHall == nullptr) {
+				//Have not barracks and gryphos and have not enogh gold for build it and create the cheeper option (grypho)
+				|| (App->player->GetCurrentGold() < (App->player->gryphonRiderCost + gryphonAviaryCost) && App->player->gryphonAviary == nullptr && App->player->barracks == nullptr)
+				//Not enogh gold to create Gryphos and have not barracks and we and have no units spawning
+				|| (App->player->GetCurrentGold() < App->player->gryphonRiderCost  && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning))
+			//Instant Lose with F2
+			|| (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && App->isDebug)
+			//Orde destroy townhall
+			|| App->player->townHall == nullptr) {
 
-		App->player->isWin = false;
-		App->fade->FadeToBlack(this, App->finish);
-		App->finish->active = true;
-	}
-	else
-		isStarted = true;
+			App->player->isWin = false;
+			App->fade->FadeToBlack(this, App->finish);
+			App->finish->active = true;
+		}
+		else
+			isStarted = true;
 
-	if (isFadeToMenu) {
-		App->fade->FadeToBlack(this, App->menu);
-		App->menu->active = true;
-		isFadeToMenu = false;
+		if (isFadeToMenu) {
+			App->fade->FadeToBlack(this, App->menu);
+			App->menu->active = true;
+			isFadeToMenu = false;
+		}
 	}
 
 	return ret;
@@ -1908,7 +1909,7 @@ void j1Scene::DestroySettingsMenu()
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.slider);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.name);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.value);
-
+	App->gui->RemoveElem((UIElement**)&buttonsLabel);
 }
 
 void j1Scene::DestroyAllUI()
