@@ -42,10 +42,6 @@ OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	this->size = this->unitInfo.size;
 	offsetSize = this->unitInfo.offsetSize;
 
-	// IA
-	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
-	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
-
 	isSpawnedWave = false;
 
 	speed = orcShipInfo.unitInfo.currSpeed - 25;
