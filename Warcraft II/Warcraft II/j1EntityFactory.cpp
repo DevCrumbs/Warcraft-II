@@ -1478,9 +1478,9 @@ bool j1EntityFactory::Start()
 	dragonInfo.unitInfo.sightRadius = 12;
 
 	/// Damage
-	dragonInfo.unitInfo.heavyDamage = 5;
+	dragonInfo.unitInfo.heavyDamage = 3;
 	dragonInfo.unitInfo.lightDamage = 2;
-	dragonInfo.unitInfo.airDamage = 5;
+	dragonInfo.unitInfo.airDamage = 3;
 	dragonInfo.unitInfo.towerDamage = 8;
 
 	/// Speed

@@ -59,15 +59,15 @@ bool j1EnemyWave::Start()
 
 	if (mapDifficulty == 0 || mapDifficulty == 1) {
 		maxSpawnPerPhase = 2;
-		maxSpawnPerWave = 4;
+		maxSpawnPerWave = 3;
 	}
 	else if (mapDifficulty == 2 || mapDifficulty == 3) {
 		maxSpawnPerPhase = 3;
-		maxSpawnPerWave = 5;
+		maxSpawnPerWave = 3;
 	}
 	else {
 		maxSpawnPerPhase = 3;
-		maxSpawnPerWave = 6;
+		maxSpawnPerWave = 4;
 	}
 
 	// Calculate the seconds until the first wave arrives
@@ -154,7 +154,7 @@ bool j1EnemyWave::Update(float dt)
 			}
 			else {
 			
-				maxPhasesOfCurrWave = 4;
+				maxPhasesOfCurrWave = 3;
 				minPhasesOfCurrWave = 2;
 			}
 
