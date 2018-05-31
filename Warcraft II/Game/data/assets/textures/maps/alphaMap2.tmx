@@ -39153,7 +39153,7 @@
    <tile gid="381"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="382"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="381"/>
    <tile gid="0"/>
@@ -144294,7 +144294,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="logic" width="120" height="150" opacity="0.5">
+ <layer name="logic" width="120" height="150" opacity="0.64">
   <properties>
    <property name="logic" type="bool" value="true"/>
   </properties>
@@ -146953,10 +146953,10 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="392"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="387"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -162301,7 +162301,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <layer name="Navigation" width="120" height="150" opacity="0.67">
+ <layer name="Navigation" width="120" height="150" opacity="0.27">
   <properties>
    <property name="Navigation" type="bool" value="true"/>
   </properties>
