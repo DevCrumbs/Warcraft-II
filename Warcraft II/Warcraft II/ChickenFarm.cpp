@@ -56,6 +56,11 @@ ChickenFarm::~ChickenFarm()
 	App->player->currentFood -= 3;
 	App->scene->hasFoodChanged = true;
 
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+
 	LOG("Chicken farm destroyed");
 }
 
@@ -71,8 +76,13 @@ void ChickenFarm::Move(float dt)
 		isBuilt = true;
 		App->player->currentFood += 3;
 		App->scene->hasFoodChanged = true;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
+
 }
 
 // Animations

@@ -25,7 +25,7 @@ class PlayerCannonTower :public StaticEntity
 public:
 
 	PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint maxLife, const PlayerCannonTowerInfo& playerCannonTowerInfo, j1Module* listener);
-	~PlayerCannonTower() {};
+	~PlayerCannonTower();
 
 	void Move(float dt);
 	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);

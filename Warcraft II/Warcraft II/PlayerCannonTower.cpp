@@ -36,6 +36,14 @@ PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint
 	peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 }
 
+PlayerCannonTower::~PlayerCannonTower()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+}
+
 void PlayerCannonTower::Move(float dt)
 {
 	if (!isColliderCreated) {
@@ -71,7 +79,11 @@ void PlayerCannonTower::Move(float dt)
 	//Check is building is built already
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000)) {
 		isBuilt = true;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
 
 	//Delete arrow if it is fired when an enemy is already dead 
