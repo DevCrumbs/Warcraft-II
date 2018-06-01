@@ -26,10 +26,19 @@ j1FogOfWar::~j1FogOfWar()
 	fowTilesVector.clear();
 }
 
+bool j1FogOfWar::Awake(pugi::xml_node& config)
+{
+	fowTilesTexName = config.child("tilesTex").attribute("name").as_string();
+
+	return true;
+}
+
 bool j1FogOfWar::Start()
 {
-
 	UnLoadFowMap();
+
+	// Load texture
+	fowTilesTex = App->tex->Load(fowTilesTexName.data());
 
 	return true;
 }
@@ -65,17 +74,21 @@ bool j1FogOfWar::PostUpdate()
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Magenta);
 	if (isActive)
-		print();
+		Print();
 	return true;
 }
 
 bool j1FogOfWar::CleanUp()
 {
 	UnLoadFowMap();
+
+	// Unload texture
+	App->tex->UnLoad(fowTilesTex);
+
 	return true;
 }
 
-void j1FogOfWar::print()
+void j1FogOfWar::Print()
 {	
 	iPoint startTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale(),
 		-App->render->camera.y / App->win->GetScale());
@@ -98,9 +111,79 @@ void j1FogOfWar::print()
 
 			iPoint world = App->map->MapToWorld(i, j);
 			//	LOG("Pos is %i", pos);
-			App->render->DrawQuad({ world.x, world.y, FOW_TILE, FOW_TILE }, 0, 0, 0, fowTilesVector[pos]->alpha);
 
+			// Determine which sprites are going to be blit
+			DetermineSpriteTile(pos);
 
+			FogOfWarTile* currTile = fowTilesVector[pos];
+
+			// Blit the sprites for the current tile
+			for (uint x = 0; x < 4; x++) {
+
+				SDL_Rect squareToBlit = { 0,0,0,0 };
+				squareToBlit.w = 16;
+				squareToBlit.h = 16;
+
+				switch (currTile->tileSprite[x]) {
+
+				case FoWTileSprite_OpenCircleTopLeft: // x:64,y:0
+					squareToBlit.x = 64;
+					squareToBlit.y = 0;
+					break;
+				case FoWTileSprite_OpenCircleTopRight: // x:80,y:0
+					squareToBlit.x = 80;
+					squareToBlit.y = 0;
+					break;
+				case FoWTileSprite_OpenCircleBottomLeft: // x:64,y:16
+					squareToBlit.x = 64;
+					squareToBlit.y = 16;
+					break;
+				case FoWTileSprite_OpenCircleBottomRight: // x:80,y:16
+					squareToBlit.x = 80;
+					squareToBlit.y = 16;
+					break;
+					 
+				case FoWTileSprite_FullCircleTopLeft: // x:32,y:0
+					squareToBlit.x = 32;
+					squareToBlit.y = 0;
+					break;
+				case FoWTileSprite_FullCircleTopRight: // x:48,y:0
+					squareToBlit.x = 48;
+					squareToBlit.y = 0;
+					break;
+				case FoWTileSprite_FullCircleBottomLeft: // x:32,y:16
+					squareToBlit.x = 32;
+					squareToBlit.y = 16;
+					break;
+				case FoWTileSprite_FullCircleBottomRight: // x:48,y:16
+					squareToBlit.x = 48;
+					squareToBlit.y = 16;
+					break;
+
+				case FoWTileSprite_QuarterBlack: // x:0,y:0
+					break;
+				}
+
+				iPoint addedPosition = { 0,0 };
+				if (x == 1 || x == 3)
+					addedPosition.x = 16;
+				if (x == 2 || x == 3)
+					addedPosition.y = 16;
+
+				if (currTile->alpha == NORMAL_ALPHA) {
+
+					// Also blit grey squares under the irregular black tiles
+					if ((squareToBlit.x != 0 || squareToBlit.y != 0)
+						&& IsGreyTileSurroundingTile(pos, x))
+						App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, fowTilesTex, { 0,0,16,16 }, Layers_FoW, 0.0f, { 0,0,0,(Uint8)TRANSLUCID_ALPHA });
+
+					App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, fowTilesTex, squareToBlit, Layers_FoW, 0.0f, { 0,0,0,(Uint8)currTile->alpha });
+				}
+				else if (currTile->alpha == TRANSLUCID_ALPHA)
+					App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, fowTilesTex, squareToBlit, Layers_FoW, 0.0f, { 0,0,0,(Uint8)currTile->alpha });
+
+				//App->render->DrawQuad({ world.x, world.y, FOW_TILE, FOW_TILE }, 0, 0, 0, currTile->alpha);
+			}		
 		}//for
 	}//for
 }
@@ -164,6 +247,339 @@ int j1FogOfWar::TotalDistanceToPlayer(Entity* entity, int tile)
 		totalY *= -1;
 	// TODO 2 : RETURN DISTANCE (use functions as sqrt (square root))
 	return sqrt(totalX * totalX + totalY * totalY);;
+}
+
+void j1FogOfWar::DetermineSpriteTile(int tile) 
+{
+	FogOfWarTile* currTile = fowTilesVector[tile];
+
+	FogOfWarTile* right = fowTilesVector[tile + 1];
+	FogOfWarTile* left = fowTilesVector[tile - 1];
+	FogOfWarTile* bottom = fowTilesVector[tile + width];
+	FogOfWarTile* top = fowTilesVector[tile - width];
+
+	// Black tile
+	if (currTile->alpha == NORMAL_ALPHA) {
+
+		// 3 black tiles, 1 translucid or transparent tile
+		if (right->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA
+			&& (bottom->alpha == TRANSLUCID_ALPHA || bottom->alpha == 0)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_OpenCircleTopLeft;
+			currTile->tileSprite[3] = FoWTileSprite_OpenCircleTopRight;
+		}
+		else if (right->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA && bottom->alpha == NORMAL_ALPHA
+			&& (top->alpha == TRANSLUCID_ALPHA || top->alpha == 0)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_OpenCircleBottomLeft;
+			currTile->tileSprite[1] = FoWTileSprite_OpenCircleBottomRight;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+		else if (right->alpha == NORMAL_ALPHA && bottom->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA
+			&& (left->alpha == TRANSLUCID_ALPHA || left->alpha == 0)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_OpenCircleTopRight;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_OpenCircleBottomRight;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+		else if (bottom->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA
+			&& (right->alpha == TRANSLUCID_ALPHA || right->alpha == 0)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_OpenCircleTopLeft;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_OpenCircleBottomLeft;
+		}
+
+		// 3 translucid or transparent tiles, 1 black tile
+		else if ((right->alpha == TRANSLUCID_ALPHA || right->alpha == 0) && (left->alpha == TRANSLUCID_ALPHA || left->alpha == 0) && (top->alpha == TRANSLUCID_ALPHA || top->alpha == 0)
+			&& bottom->alpha == NORMAL_ALPHA) {
+
+			currTile->tileSprite[0] = FoWTileSprite_FullCircleTopLeft;
+			currTile->tileSprite[1] = FoWTileSprite_FullCircleTopRight;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+		else if ((right->alpha == TRANSLUCID_ALPHA || right->alpha == 0) && (left->alpha == TRANSLUCID_ALPHA || left->alpha == 0) && (bottom->alpha == TRANSLUCID_ALPHA || bottom->alpha == 0)
+			&& top->alpha == NORMAL_ALPHA) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_FullCircleBottomLeft;
+			currTile->tileSprite[3] = FoWTileSprite_FullCircleBottomRight;
+		}
+		else if ((right->alpha == TRANSLUCID_ALPHA || right->alpha == 0) && (bottom->alpha == TRANSLUCID_ALPHA || bottom->alpha == 0) && (top->alpha == TRANSLUCID_ALPHA || top->alpha == 0)
+			&& left->alpha == NORMAL_ALPHA) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_FullCircleTopRight;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_FullCircleBottomRight;
+		}
+		else if ((bottom->alpha == TRANSLUCID_ALPHA || bottom->alpha == 0) && (left->alpha == TRANSLUCID_ALPHA || left->alpha == 0) && (top->alpha == TRANSLUCID_ALPHA || top->alpha == 0)
+			&& right->alpha == NORMAL_ALPHA) {
+
+			currTile->tileSprite[0] = FoWTileSprite_FullCircleTopLeft;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_FullCircleBottomLeft;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+
+		// 2 translucid or transparent tiles, 2 black tiles
+		/// right (3)
+		else if ((right->alpha == TRANSLUCID_ALPHA || right->alpha == 0) && (left->alpha == TRANSLUCID_ALPHA || left->alpha == 0)
+			&& bottom->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA) {
+
+			currTile->tileSprite[0] = FoWTileSprite_OpenCircleTopRight;
+			currTile->tileSprite[1] = FoWTileSprite_OpenCircleTopLeft;
+			currTile->tileSprite[2] = FoWTileSprite_OpenCircleBottomRight;
+			currTile->tileSprite[3] = FoWTileSprite_OpenCircleBottomLeft;
+		}
+		else if ((right->alpha == TRANSLUCID_ALPHA || right->alpha == 0) && (top->alpha == TRANSLUCID_ALPHA || top->alpha == 0)
+			&& bottom->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_FullCircleTopRight;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+		else if ((right->alpha == TRANSLUCID_ALPHA || right->alpha == 0) && (bottom->alpha == TRANSLUCID_ALPHA || bottom->alpha == 0)
+			&& top->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_FullCircleBottomRight;
+		}
+
+		/// left (2)
+		else if ((left->alpha == TRANSLUCID_ALPHA || left->alpha == 0) && (top->alpha == TRANSLUCID_ALPHA || top->alpha == 0)
+			&& right->alpha == NORMAL_ALPHA && bottom->alpha == NORMAL_ALPHA) {
+
+			currTile->tileSprite[0] = FoWTileSprite_FullCircleTopLeft;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+		else if ((left->alpha == TRANSLUCID_ALPHA || left->alpha == 0) && (bottom->alpha == TRANSLUCID_ALPHA || bottom->alpha == 0)
+			&& right->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_FullCircleBottomLeft;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+
+		/// top (1)
+		else if ((top->alpha == TRANSLUCID_ALPHA || top->alpha == 0) && (bottom->alpha == TRANSLUCID_ALPHA || bottom->alpha == 0)
+			&& right->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
+
+			currTile->tileSprite[0] = FoWTileSprite_OpenCircleBottomRight;
+			currTile->tileSprite[1] = FoWTileSprite_OpenCircleBottomLeft;
+			currTile->tileSprite[2] = FoWTileSprite_OpenCircleTopRight;
+			currTile->tileSprite[3] = FoWTileSprite_OpenCircleTopLeft;
+		}
+
+		// All translucid or transparent tiles
+		else if ((top->alpha == TRANSLUCID_ALPHA || top->alpha == 0) && (bottom->alpha == TRANSLUCID_ALPHA || bottom->alpha == 0)
+			&& (right->alpha == TRANSLUCID_ALPHA || right->alpha == 0) && (left->alpha == TRANSLUCID_ALPHA || left->alpha == 0)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_FullCircleTopLeft;
+			currTile->tileSprite[1] = FoWTileSprite_FullCircleTopRight;
+			currTile->tileSprite[2] = FoWTileSprite_FullCircleBottomLeft;
+			currTile->tileSprite[3] = FoWTileSprite_FullCircleBottomRight;
+		}
+		// All black tiles
+		else {
+		
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+	}
+
+	// Grey tile
+	else if (currTile->alpha == TRANSLUCID_ALPHA) {
+	
+		// 3 black or translucid tiles, 1 transparent tile
+		if ((right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA) && (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA)
+			&& bottom->alpha == 0) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_OpenCircleTopLeft;
+			currTile->tileSprite[3] = FoWTileSprite_OpenCircleTopRight;
+		}
+		else if ((right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA)
+			&& top->alpha == 0) {
+
+			currTile->tileSprite[0] = FoWTileSprite_OpenCircleBottomLeft;
+			currTile->tileSprite[1] = FoWTileSprite_OpenCircleBottomRight;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+		else if ((right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA) && (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA)
+			&& left->alpha == 0) {
+
+			currTile->tileSprite[0] = FoWTileSprite_OpenCircleTopRight;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_OpenCircleBottomRight;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+		else if ((bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA) && (top->alpha == NORMAL_ALPHA == top->alpha == TRANSLUCID_ALPHA)
+			&& right->alpha == 0) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_OpenCircleTopLeft;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_OpenCircleBottomLeft;
+		}
+
+		// 3 transparent tiles, 1 black or translucid tile
+		else if (right->alpha == 0 && left->alpha == 0 && top->alpha == 0
+			&& (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_FullCircleTopLeft;
+			currTile->tileSprite[1] = FoWTileSprite_FullCircleTopRight;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+		else if (right->alpha == 0 && left->alpha == 0 && bottom->alpha == 0
+			&& (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_FullCircleBottomLeft;
+			currTile->tileSprite[3] = FoWTileSprite_FullCircleBottomRight;
+		}
+		else if (right->alpha == 0 && bottom->alpha == 0 && top->alpha == 0
+			&& (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_FullCircleTopRight;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_FullCircleBottomRight;
+		}
+		else if (bottom->alpha == 0 && left->alpha == 0 && top->alpha == 0
+			&& (right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_FullCircleTopLeft;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_FullCircleBottomLeft;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+
+		// 2 transparent tiles, 2 black or translucid tiles
+		/// right (3)
+		else if (right->alpha == 0 && left->alpha == 0
+			&& (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA) && (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_OpenCircleTopRight;
+			currTile->tileSprite[1] = FoWTileSprite_OpenCircleBottomRight;
+			currTile->tileSprite[2] = FoWTileSprite_OpenCircleTopLeft;
+			currTile->tileSprite[3] = FoWTileSprite_OpenCircleBottomLeft;
+		}
+		else if (right->alpha == 0 && top->alpha == 0
+			&& (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_FullCircleTopRight;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+		else if (right->alpha == 0 && bottom->alpha == 0
+			&& (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_FullCircleBottomRight;
+		}
+
+		/// left (2)
+		else if (left->alpha == 0 && top->alpha == 0
+			&& (right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_FullCircleTopLeft;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+		else if (left->alpha == 0 && bottom->alpha == 0
+			&& (right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_FullCircleBottomLeft;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+
+		/// top (1)
+		else if (top->alpha == 0 && bottom->alpha == 0
+			&& (right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_OpenCircleBottomRight;
+			currTile->tileSprite[1] = FoWTileSprite_OpenCircleBottomLeft;
+			currTile->tileSprite[2] = FoWTileSprite_OpenCircleTopRight;
+			currTile->tileSprite[3] = FoWTileSprite_OpenCircleTopLeft;
+		}
+
+		// All black or transparent tiles
+		else if ((top->alpha == 0 || top->alpha == NORMAL_ALPHA) && (bottom->alpha == 0 || bottom->alpha == NORMAL_ALPHA) 
+			&& (right->alpha == 0 || right->alpha == NORMAL_ALPHA) && (left->alpha == 0 || left->alpha == NORMAL_ALPHA)) {
+
+			currTile->tileSprite[0] = FoWTileSprite_FullCircleTopLeft;
+			currTile->tileSprite[1] = FoWTileSprite_FullCircleTopRight;
+			currTile->tileSprite[2] = FoWTileSprite_FullCircleBottomLeft;
+			currTile->tileSprite[3] = FoWTileSprite_FullCircleBottomRight;
+		}
+
+		// All black (grey) tiles
+		else {
+
+			currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+			currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+		}
+	}
+}
+
+bool j1FogOfWar::IsGreyTileSurroundingTile(int tile, uint position) 
+{
+	FogOfWarTile* currTile = fowTilesVector[tile];
+
+	FogOfWarTile* right = fowTilesVector[tile + 1];
+	FogOfWarTile* left = fowTilesVector[tile - 1];
+	FogOfWarTile* bottom = fowTilesVector[tile + width];
+	FogOfWarTile* top = fowTilesVector[tile - width];
+
+	// 0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right
+
+	switch (position) {
+	
+	case 0:
+		return top->alpha == TRANSLUCID_ALPHA || left->alpha == TRANSLUCID_ALPHA;
+		break;
+	case 1:
+		return top->alpha == TRANSLUCID_ALPHA || right->alpha == TRANSLUCID_ALPHA;
+		break;
+	case 2:
+		return bottom->alpha == TRANSLUCID_ALPHA || left->alpha == TRANSLUCID_ALPHA;
+		break;
+	case 3:
+		return bottom->alpha == TRANSLUCID_ALPHA || right->alpha == TRANSLUCID_ALPHA;
+		break;
+	default:
+		break;
+	}
+
+	return false;
 }
 
 void j1FogOfWar::ResetTiles()
@@ -270,7 +686,6 @@ void j1FogOfWar::TilesNearPlayer()
 										fowSmallerTilesVector.push_back(aux);
 									}
 									cont++;
-
 								}
 							fowTilesVector[pos]->alpha = 0;
 						}
@@ -285,7 +700,6 @@ void j1FogOfWar::TilesNearPlayer()
 					}
 				}
 			}
-
 		}
 	}
 	CleanSafeZone(App->map->playerBase.roomRect);
