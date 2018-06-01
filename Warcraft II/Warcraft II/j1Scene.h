@@ -63,6 +63,8 @@ enum AdviceMessages {
 	AdviceMessage_GRYPH_PRISONER,
 	AdviceMessage_PRISONER,
 	AdviceMessage_BUILDING_IS_FULL_LIFE,
+	AdviceMessage_TOWNHALL_IS_NOT_UPGRADE,
+	AdviceMessage_ONLY_ONE_BUILDING,
 	AdviceMessage_NONE
 };
 

@@ -62,6 +62,14 @@ Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const Ba
 
 }
 
+Barracks::~Barracks()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+}
+
 void Barracks::Move(float dt)
 {
 	if (listener != nullptr)
@@ -103,7 +111,11 @@ void Barracks::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= constructionTime * 1000) {
 		texArea = &barracksInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
 
 	//It isnt used anymore
