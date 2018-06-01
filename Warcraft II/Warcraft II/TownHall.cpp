@@ -59,6 +59,14 @@ TownHall::TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const To
 	entityCollider->isTrigger = true;
 }
 
+TownHall::~TownHall()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+}
+
 void TownHall::Move(float dt)
 {
 	if (listener != nullptr)
@@ -95,7 +103,11 @@ void TownHall::UpdateAnimations(float dt)
 			SetMaxLife(1400);
 			SetCurrLife(1400);
 			isBuilt = true;
-			peasants->isRemove = true;
+
+			if (peasants != nullptr) {
+				peasants->isRemove = true;
+				peasants = nullptr;
+			}
 		}
 	}
 	else {

@@ -32,7 +32,7 @@ class TownHall :public StaticEntity
 public:
 
 	TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const TownHallInfo& townHallInfo, j1Module* listener);
-	~TownHall() {};
+	~TownHall();
 
 	void Move(float dt);
 

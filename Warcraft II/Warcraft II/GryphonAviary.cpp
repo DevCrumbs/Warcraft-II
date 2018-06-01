@@ -51,6 +51,14 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife
 	peasants = App->particles->AddParticle(App->particles->peasantMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
 }
 
+GryphonAviary::~GryphonAviary()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+}
+
 void GryphonAviary::Move(float dt)
 {
 	if (listener != nullptr)
@@ -59,7 +67,11 @@ void GryphonAviary::Move(float dt)
 
 	if (constructionTimer.Read() >= (constructionTime * 1000)) {
 		isBuilt = true;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
 }
 

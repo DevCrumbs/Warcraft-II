@@ -2163,6 +2163,7 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 		adviceLabel->SetColor(White_);
 		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
 		break;
+
 	case AdviceMessage_BUILDING_IS_FULL_LIFE:
 		text = "This building has full life.";
 		adviceLabel->SetText(text, 340);
@@ -2170,6 +2171,23 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 		adviceLabel->SetColor(White_);
 		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
 		break;
+
+	case AdviceMessage_TOWNHALL_IS_NOT_UPGRADE:
+		text = "You need to upgrade the Townhall.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 235,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_ONLY_ONE_BUILDING:
+		text = "You already have this building.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 255,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
 	}
 
 
@@ -2267,8 +2285,26 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
 			}
-			else if (UIelem == buildingMenuButtons.gryphonAviary.icon)
-				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && !App->player->townHallUpgrade) { //Theres no townhall upgrade
+					if (App->scene->adviceMessage != AdviceMessage_TOWNHALL_IS_NOT_UPGRADE) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_TOWNHALL_IS_NOT_UPGRADE;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->townHallUpgrade) { //There's a aviary already on map
+					if (App->scene->adviceMessage != AdviceMessage_ONLY_ONE_BUILDING) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_ONLY_ONE_BUILDING;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 
 
 			else if (UIelem == buildingMenuButtons.scoutTower.icon) {
@@ -2358,9 +2394,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 				}
 			}
-			else if (UIelem == buildingMenuButtons.barracks.icon)
-				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+			else if (UIelem == buildingMenuButtons.barracks.icon) //There's a barrack already on map
 
+				if (App->scene->adviceMessage != AdviceMessage_ONLY_ONE_BUILDING) {
+					App->audio->PlayFx(App->audio->GetFX().errorButt);
+					App->scene->adviceMessageTimer.Start();
+					App->scene->adviceMessage = AdviceMessage_ONLY_ONE_BUILDING;
+					App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+				}
+				else
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 		}
 
 		if (UIelem == pauseMenuButt) {

@@ -36,6 +36,14 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 }
 
+ScoutTower::~ScoutTower()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+}
+
 void ScoutTower::Move(float dt)
 {
 	if (!isColliderCreated) {
@@ -71,7 +79,11 @@ void ScoutTower::Move(float dt)
 	//Check is building is built already
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000)) {
 		isBuilt = true;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
 
 	//Delete arrow if it is fired when an enemy is already dead 
