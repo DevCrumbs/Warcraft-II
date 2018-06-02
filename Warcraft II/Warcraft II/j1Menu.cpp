@@ -63,7 +63,7 @@ bool j1Menu::Awake(pugi::xml_node& config)
 	pugi::xml_node audio = config.child("audioPaths");
 
 	mainMenuMusicName = audio.child("mainTheme").attribute("path").as_string();
-
+	LoadKeysVector();
 	return ret;
 }
 
@@ -173,83 +173,94 @@ bool j1Menu::Update(float dt)
 		break;
 	}
 
-	if (changeLabel != nullptr) {
+	if (changeLabel != nullptr) 
+	{
 		if (App->input->isPresed) {
-			if (App->input->newLetter == " ")
+			if (*App->input->newLetter == 32)
 				App->input->newLetter = "SPACE";
 			changeLabel->SetText(App->input->newLetter);
+			LOG("Set text");
 			App->input->isPresed = false;
 			SDL_StopTextInput();
+			changeLabel = nullptr;
 		}
 		else if (App->input->scancode != SDL_SCANCODE_UNKNOWN)
 		{
-			string text = "NO";
-			switch (App->input->scancode)
-			{
-				case SDL_SCANCODE_ESCAPE:
-					text = "ESC";
-					break;
-				case SDL_SCANCODE_BACKSPACE:
-					text = "BACKSPACE";
-					break;
-				case SDL_SCANCODE_TAB:
-					text = "TAB";
-					break;
-				case SDL_SCANCODE_LCTRL:
-					text = "CONTROL";
-					break;
-				case SDL_SCANCODE_LSHIFT:
-					text = "SHIFT";
-					break;
-				case SDL_SCANCODE_LALT:
-					text = "ALT";
-					break;
-				case SDL_SCANCODE_RETURN:
-					text = "ENTER";
-					break;
+			//ctrl+k+c
+			//ctrl + k + u
+		//	string text = "NO";
+		//	switch (App->input->scancode)
+			//{
+			//	case SDL_SCANCODE_ESCAPE:
+			//		text = "ESC";
+			//		break;
+			//	case SDL_SCANCODE_BACKSPACE:
+			//		text = "BACKSPACE";
+			//		break;
+			//	case SDL_SCANCODE_TAB:
+			//		text = "TAB";
+			//		break;
+			//	case SDL_SCANCODE_LCTRL:
+			//		text = "CONTROL";
+			//		break;
+			//	case SDL_SCANCODE_LSHIFT:
+			//		text = "SHIFT";
+			//		break;
+			//	case SDL_SCANCODE_LALT:
+			//		text = "ALT";
+			//		break;
+			//	case SDL_SCANCODE_RETURN:
+			//		text = "ENTER";
+			//		break;
 
-				case SDL_SCANCODE_F1 :
-					text = "F1";
-					break;			 
-				case SDL_SCANCODE_F2:
-					text = "F2";
-					break;
-				case SDL_SCANCODE_F3:
-					text = "F3";
-					break;
-				case SDL_SCANCODE_F4:
-					text = "F4";
-					break;
-				case SDL_SCANCODE_F5:
-					text = "F5";
-					break;
-				case SDL_SCANCODE_F6:
-					text = "F6";
-					break;
-				case SDL_SCANCODE_F7:
-					text = "F7";
-					break;
-				case SDL_SCANCODE_F8:
-					text = "F8";
-					break;
-				case SDL_SCANCODE_F9:
-					text = "F9";
-					break;
-				case SDL_SCANCODE_F10:
-					text = "F10";
-					break;
-				case SDL_SCANCODE_F11:
-					text = "F11";
-					break;
-				case SDL_SCANCODE_F12:
-					text = "F12";
-					break;					
-			default:
-				break;
+			//	case SDL_SCANCODE_F1 :
+			//		text = "F1";
+			//		break;			 
+			//	case SDL_SCANCODE_F2:
+			//		text = "F2";
+			//		break;
+			//	case SDL_SCANCODE_F3:
+			//		text = "F3";
+			//		break;
+			//	case SDL_SCANCODE_F4:
+			//		text = "F4";
+			//		break;
+			//	case SDL_SCANCODE_F5:
+			//		text = "F5";
+			//		break;
+			//	case SDL_SCANCODE_F6:
+			//		text = "F6";
+			//		break;
+			//	case SDL_SCANCODE_F7:
+			//		text = "F7";
+			//		break;
+			//	case SDL_SCANCODE_F8:
+			//		text = "F8";
+			//		break;
+			//	case SDL_SCANCODE_F9:
+			//		text = "F9";
+			//		break;
+			//	case SDL_SCANCODE_F10:
+			//		text = "F10";
+			//		break;
+			//	case SDL_SCANCODE_F11:
+			//		text = "F11";
+			//		break;
+			//	case SDL_SCANCODE_F12:
+			//		text = "F12";
+			//		break;					
+			//default:
+			//	break;
+			//}
+		//	if(text != "NO")
+
+			if (App->input->scancode < keysName.size())
+			{
+				changeLabel->SetText(keysName[App->input->scancode]);
+				LOG("Set text");
 			}
-			if(text != "NO")
-				changeLabel->SetText(text);
 			SDL_StopTextInput();
+			changeLabel = nullptr;
 			App->input->scancode = SDL_SCANCODE_UNKNOWN;
 		}
 	}
@@ -888,4 +899,123 @@ void j1Menu::DeleteCredits()
 		App->gui->RemoveElem((UIElement**)&staticLabels.back());
 	}
 
+}
+
+
+void j1Menu::LoadKeysVector()
+{
+	if (keysName.empty())
+		keysName.clear();
+
+	for (int i = 0; i < 4; ++i)
+		keysName.push_back("");
+
+	keysName.push_back("A");
+	keysName.push_back("B");
+	keysName.push_back("C");
+	keysName.push_back("D");
+	keysName.push_back("E");
+	keysName.push_back("F");
+	keysName.push_back("G");
+	keysName.push_back("H");
+	keysName.push_back("I");
+	keysName.push_back("J");
+	keysName.push_back("K");
+	keysName.push_back("L");
+	keysName.push_back("M");
+	keysName.push_back("N");
+	keysName.push_back("O");
+	keysName.push_back("P");
+	keysName.push_back("Q");
+	keysName.push_back("R");
+	keysName.push_back("S");
+	keysName.push_back("T");
+	keysName.push_back("U");
+	keysName.push_back("V");
+	keysName.push_back("W");
+	keysName.push_back("X");
+	keysName.push_back("Y");
+	keysName.push_back("Z");
+
+	keysName.push_back("1");
+	keysName.push_back("2");
+	keysName.push_back("3");
+	keysName.push_back("4");
+	keysName.push_back("5");
+	keysName.push_back("6");
+	keysName.push_back("7");
+	keysName.push_back("8");
+	keysName.push_back("9");
+	keysName.push_back("0");
+
+	keysName.push_back("ENTER");
+	keysName.push_back("ESC");
+	keysName.push_back("BACKSPACE");
+	keysName.push_back("TAB");
+	keysName.push_back("SPACE");
+
+
+	for (int i = 0; i < 12; ++i)
+		keysName.push_back("");
+	
+
+	keysName.push_back("CAPSLOCK");
+
+	keysName.push_back("F1");
+	keysName.push_back("F2");
+	keysName.push_back("F3");
+	keysName.push_back("F4");
+	keysName.push_back("F5");
+	keysName.push_back("F6");
+	keysName.push_back("F7");
+	keysName.push_back("F8");
+	keysName.push_back("F9");
+	keysName.push_back("F10");
+	keysName.push_back("F11");
+	keysName.push_back("F12");
+
+	keysName.push_back("PRTSC");
+	keysName.push_back("SCRLK");
+	keysName.push_back("PAUSE");
+	keysName.push_back("INS");
+	keysName.push_back("HOME");
+	keysName.push_back("PGUP");
+	keysName.push_back("DEL");
+	keysName.push_back("END");
+	keysName.push_back("PGDN");
+
+	for (int i = 0; i < 4; ++i)
+		keysName.push_back("");
+	
+
+	keysName.push_back("NUMLOCK");
+
+	for (int i = 0; i < 4; ++i)
+		keysName.push_back("");
+	
+	keysName.push_back("ENTER");
+
+
+	for (int i = 0; i <	28; ++i)
+		keysName.push_back("");
+	
+
+	// Useless media keys
+	for (int i = 0; i < 29; ++i)
+		keysName.push_back("");
+	
+
+	// Useless chinese keys
+	for (int i = 0; i < 78; ++i)
+		keysName.push_back("");
+	
+
+	keysName.push_back("LCTRL");
+	keysName.push_back("LSHIFT");
+	keysName.push_back("LALT");
+	keysName.push_back("LWIN");
+	keysName.push_back("RCTRL");
+	keysName.push_back("RSHIFT");
+	keysName.push_back("RALT");
+	keysName.push_back("RWIN");
 }
