@@ -1612,15 +1612,15 @@ void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem, bool isForced)
 }
 void j1Scene::UpdateIconsMenu()
 {
-	ChangeMenuIconsText(buildingMenuButtons.chickenFarm.icon, chickenFarmCost, { 241,34,50,41 }, { 292,34,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.cannonTower.icon, cannonTowerCost, { 394,118,50,41 }, { 445,118,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.guardTower.icon, guardTowerCost, { 394,76,50,41 }, { 445,76,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.chickenFarm.icon, chickenFarmCost, { 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.cannonTower.icon, cannonTowerCost, { 394,118,50,41 }, { 445,118,50,41 }, { 496,118,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.guardTower.icon, guardTowerCost, { 394,76,50,41 }, { 445,76,50,41 }, { 496,76,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 }, { 496,34,50,41 });
 	//Only one construction for each one
-	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracksCost, { 547,160,50,41 }, { 802,286,50,41 }, true, App->player->barracks);
-	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 }, true, App->player->gryphonAviary);
+	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracksCost, { 547,160,50,41 }, { 802,286,50,41 }, { 853,286,50,41 }, true, App->player->barracks);
+	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 }, { 496,160,50,41 }, true, App->player->gryphonAviary);
 }
-void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle, StaticEntity* stcEntity)
+void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, SDL_Rect pressedText, bool isSingle, StaticEntity* stcEntity)
 {
 	if (isSingle) {
 
@@ -1628,14 +1628,14 @@ void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText
 			if (stcEntity == App->player->gryphonAviary && !App->player->townHallUpgrade)
 				butt->ChangesTextsAreas(false);
 			else
-				butt->ChangesTextsAreas(true, normalText, hoverText);
+				butt->ChangesTextsAreas(true, normalText, hoverText, pressedText);
 		}
 		else
 			butt->ChangesTextsAreas(false);
 	}
 	else {
 		if (App->player->GetCurrentGold() >= cost)
-			butt->ChangesTextsAreas(true, normalText, hoverText);
+			butt->ChangesTextsAreas(true, normalText, hoverText, pressedText);
 		else 
 			butt->ChangesTextsAreas(false);
 	}
