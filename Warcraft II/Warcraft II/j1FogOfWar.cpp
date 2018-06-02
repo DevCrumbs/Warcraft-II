@@ -121,7 +121,7 @@ void j1FogOfWar::Print()
 			int pos = (width * j) + i;
 
 			iPoint world = App->map->MapToWorld(i, j);
-			//	LOG("Pos is %i", pos);
+			// LOG("Pos is %i", pos);
 
 			// Determine which sprites are going to be blit
 			DetermineSpriteTile(pos);
@@ -402,10 +402,28 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 {
 	FogOfWarTile* currTile = fowTilesVector[tile];
 
-	FogOfWarTile* right = fowTilesVector[tile + 1];
-	FogOfWarTile* left = fowTilesVector[tile - 1];
-	FogOfWarTile* bottom = fowTilesVector[tile + width];
-	FogOfWarTile* top = fowTilesVector[tile - width];
+	FogOfWarTile* right = nullptr;
+	FogOfWarTile* left = nullptr;
+	FogOfWarTile* bottom = nullptr;
+	FogOfWarTile* top = nullptr;
+
+	int sum = 0;
+	
+	sum = tile + 1;
+	if (sum >= 0 && sum < fowTilesVector.size())
+		right = fowTilesVector[sum];
+
+	sum = tile - 1;
+	if (sum >= 0 && sum < fowTilesVector.size())
+		left = fowTilesVector[sum];
+
+	sum = tile + width;
+	if (sum >= 0 && sum < fowTilesVector.size())
+		bottom = fowTilesVector[sum];
+
+	sum = tile - width;
+	if (sum >= 0 && sum < fowTilesVector.size())
+		top = fowTilesVector[sum];
 
 	if (currTile != nullptr
 		&& right != nullptr && left != nullptr && bottom != nullptr && top != nullptr) {
@@ -427,8 +445,18 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[3] = FoWTileSprite_HorizontalWaveTopRight;
 
 				// Tiles at both sides of the checked tile
-				FogOfWarTile* bottomRightSide = fowTilesVector[tile + width + 1];
-				FogOfWarTile* bottomLeftSide = fowTilesVector[tile + width - 1];
+				FogOfWarTile* bottomRightSide = nullptr;
+				FogOfWarTile* bottomLeftSide = nullptr;
+
+				int sum = 0;
+
+				sum = tile + width + 1;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					bottomRightSide = fowTilesVector[sum];
+
+				sum = tile + width - 1;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					bottomLeftSide = fowTilesVector[sum];
 
 				if (bottomRightSide != nullptr && bottomLeftSide != nullptr) {
 				
@@ -450,8 +478,18 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
 
 				// Tiles at both sides of the checked tile
-				FogOfWarTile* topRightSide = fowTilesVector[tile - width + 1];
-				FogOfWarTile* topLeftSide = fowTilesVector[tile - width - 1];
+				FogOfWarTile* topRightSide = nullptr;
+				FogOfWarTile* topLeftSide = nullptr;
+
+				int sum = 0;
+
+				sum = tile - width + 1;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					topRightSide = fowTilesVector[sum];
+
+				sum = tile - width - 1;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					topLeftSide = fowTilesVector[sum];
 
 				if (topRightSide != nullptr && topLeftSide != nullptr) {
 
@@ -473,8 +511,18 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
 
 				// Tiles at both sides of the checked tile
-				FogOfWarTile* leftTopSide = fowTilesVector[tile - 1 - width];
-				FogOfWarTile* leftBottomSide = fowTilesVector[tile - 1 + width];
+				FogOfWarTile* leftTopSide = nullptr;
+				FogOfWarTile* leftBottomSide = nullptr;
+
+				int sum = 0;
+
+				sum = tile - 1 - width;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					leftTopSide = fowTilesVector[sum];
+
+				sum = tile - 1 + width;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					leftBottomSide = fowTilesVector[sum];
 
 				if (leftTopSide != nullptr && leftBottomSide != nullptr) {
 
@@ -496,8 +544,18 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[3] = FoWTileSprite_VerticalWaveBottomLeft;
 
 				// Tiles at both sides of the checked tile
-				FogOfWarTile* rightTopSide = fowTilesVector[tile + 1 - width];
-				FogOfWarTile* rightBottomSide = fowTilesVector[tile + 1 + width];
+				FogOfWarTile* rightTopSide = nullptr;
+				FogOfWarTile* rightBottomSide = nullptr;
+
+				int sum = 0;
+
+				sum = tile + 1 - width;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					rightTopSide = fowTilesVector[sum];
+
+				sum = tile + 1 + width;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					rightBottomSide = fowTilesVector[sum];
 
 				if (rightTopSide != nullptr && rightBottomSide != nullptr) {
 
@@ -637,8 +695,18 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[3] = FoWTileSprite_HorizontalWaveTopRight;
 
 				// Tiles at both sides of the checked tile
-				FogOfWarTile* bottomRightSide = fowTilesVector[tile + width + 1];
-				FogOfWarTile* bottomLeftSide = fowTilesVector[tile + width - 1];
+				FogOfWarTile* bottomRightSide = nullptr;
+				FogOfWarTile* bottomLeftSide = nullptr;
+
+				int sum = 0;
+
+				sum = tile + width + 1;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					bottomRightSide = fowTilesVector[sum];
+
+				sum = tile + width - 1;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					bottomLeftSide = fowTilesVector[sum];
 
 				if (bottomRightSide != nullptr && bottomLeftSide != nullptr) {
 
@@ -660,8 +728,18 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
 
 				// Tiles at both sides of the checked tile
-				FogOfWarTile* topRightSide = fowTilesVector[tile - width + 1];
-				FogOfWarTile* topLeftSide = fowTilesVector[tile - width - 1];
+				FogOfWarTile* topRightSide = nullptr;
+				FogOfWarTile* topLeftSide = nullptr;
+
+				int sum = 0;
+
+				sum = tile - width + 1;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					topRightSide = fowTilesVector[sum];
+
+				sum = tile - width - 1;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					topLeftSide = fowTilesVector[sum];
 
 				if (topRightSide != nullptr && topLeftSide != nullptr) {
 
@@ -683,8 +761,18 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
 
 				// Tiles at both sides of the checked tile
-				FogOfWarTile* leftTopSide = fowTilesVector[tile - 1 - width];
-				FogOfWarTile* leftBottomSide = fowTilesVector[tile - 1 + width];
+				FogOfWarTile* leftTopSide = nullptr;
+				FogOfWarTile* leftBottomSide = nullptr;
+
+				int sum = 0;
+
+				sum = tile - 1 - width;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					leftTopSide = fowTilesVector[sum];
+
+				sum = tile - 1 + width;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					leftBottomSide = fowTilesVector[sum];
 
 				if (leftTopSide != nullptr && leftBottomSide != nullptr) {
 
@@ -706,8 +794,18 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[3] = FoWTileSprite_VerticalWaveBottomLeft;
 
 				// Tiles at both sides of the checked tile
-				FogOfWarTile* rightTopSide = fowTilesVector[tile + 1 - width];
-				FogOfWarTile* rightBottomSide = fowTilesVector[tile + 1 + width];
+				FogOfWarTile* rightTopSide = nullptr;
+				FogOfWarTile* rightBottomSide = nullptr;
+
+				int sum = 0;
+
+				sum = tile + 1 - width;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					rightTopSide = fowTilesVector[sum];
+
+				sum = tile + 1 + width;
+				if (sum >= 0 && sum < fowTilesVector.size())
+					rightBottomSide = fowTilesVector[sum];
 
 				if (rightTopSide != nullptr && rightBottomSide != nullptr) {
 
@@ -1011,28 +1109,48 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 
 bool j1FogOfWar::IsGreyTileSurroundingTile(int tile, uint position) 
 {
-	FogOfWarTile* currTile = fowTilesVector[tile];
+	FogOfWarTile* right = nullptr;
+	FogOfWarTile* left = nullptr;
+	FogOfWarTile* bottom = nullptr;
+	FogOfWarTile* top = nullptr;
 
-	FogOfWarTile* right = fowTilesVector[tile + 1];
-	FogOfWarTile* left = fowTilesVector[tile - 1];
-	FogOfWarTile* bottom = fowTilesVector[tile + width];
-	FogOfWarTile* top = fowTilesVector[tile - width];
+	int sum = 0;
+
+	sum = tile + 1;
+	if (sum >= 0 && sum < fowTilesVector.size())
+		right = fowTilesVector[sum];
+
+	sum = tile - 1;
+	if (sum >= 0 && sum < fowTilesVector.size())
+		left = fowTilesVector[sum];
+
+	sum = tile + width;
+	if (sum >= 0 && sum < fowTilesVector.size())
+		bottom = fowTilesVector[sum];
+
+	sum = tile - width;
+	if (sum >= 0 && sum < fowTilesVector.size())
+		top = fowTilesVector[sum];
 
 	// 0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right
 
 	switch (position) {
 	
 	case 0:
-		return top->alpha == TRANSLUCID_ALPHA || left->alpha == TRANSLUCID_ALPHA;
+		if (top != nullptr && left != nullptr)
+			return top->alpha == TRANSLUCID_ALPHA || left->alpha == TRANSLUCID_ALPHA;
 		break;
 	case 1:
-		return top->alpha == TRANSLUCID_ALPHA || right->alpha == TRANSLUCID_ALPHA;
+		if (top != nullptr && right != nullptr)
+			return top->alpha == TRANSLUCID_ALPHA || right->alpha == TRANSLUCID_ALPHA;
 		break;
 	case 2:
-		return bottom->alpha == TRANSLUCID_ALPHA || left->alpha == TRANSLUCID_ALPHA;
+		if (bottom != nullptr && left != nullptr)
+			return bottom->alpha == TRANSLUCID_ALPHA || left->alpha == TRANSLUCID_ALPHA;
 		break;
 	case 3:
-		return bottom->alpha == TRANSLUCID_ALPHA || right->alpha == TRANSLUCID_ALPHA;
+		if (bottom != nullptr && right != nullptr)
+			return bottom->alpha == TRANSLUCID_ALPHA || right->alpha == TRANSLUCID_ALPHA;
 		break;
 	default:
 		break;

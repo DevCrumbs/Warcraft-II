@@ -1588,6 +1588,100 @@ bool j1EntityFactory::PreUpdate()
 {
 	bool ret = true;
 
+	// Send active entities to blit
+	/// Blit dynamic entities
+	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
+
+	while (dynEnt != activeDynamicEntities.end()) {
+
+		if (!(*dynEnt)->GetBlitState()) {
+
+			dynEnt++;
+			continue;
+		}
+
+		switch ((*dynEnt)->dynamicEntityType) {
+			// Player
+		case EntityType_FOOTMAN:
+			(*dynEnt)->Draw(footmanTex);
+			break;
+		case EntityType_ELVEN_ARCHER:
+			(*dynEnt)->Draw(elvenArcherTex);
+			break;
+		case EntityType_GRYPHON_RIDER:
+			(*dynEnt)->Draw(gryphonRiderTex);
+			break;
+		case EntityType_MAGE:
+			(*dynEnt)->Draw(mageTex);
+			break;
+		case EntityType_PALADIN:
+			(*dynEnt)->Draw(paladinTex);
+			break;
+
+		case EntityType_TURALYON:
+			(*dynEnt)->Draw(turalyonTex);
+			break;
+		case EntityType_ALLERIA:
+			(*dynEnt)->Draw(alleriaTex);
+			break;
+
+			// Enemy
+		case EntityType_GRUNT:
+			(*dynEnt)->Draw(gruntTex);
+			break;
+		case EntityType_TROLL_AXETHROWER:
+			(*dynEnt)->Draw(trollAxethrowerTex);
+			break;
+		case EntityType_DRAGON:
+			(*dynEnt)->Draw(dragonTex);
+			break;
+		case EntityType_ORC_SHIP:
+			(*dynEnt)->Draw(orcShipTex);
+			break;
+
+			// Neutral
+		case EntityType_SHEEP:
+		case EntityType_BOAR:
+			(*dynEnt)->Draw(crittersTex);
+			break;
+
+		default:
+			break;
+		}
+
+		dynEnt++;
+	}
+
+	/// Blit static entities
+	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
+
+	while (statEnt != activeStaticEntities.end()) {
+
+		switch ((*statEnt)->staticEntityCategory) {
+
+		case StaticEntityCategory_HumanBuilding:
+			(*statEnt)->Draw(humanBuildingsTex);
+			break;
+		case StaticEntityCategory_NeutralBuilding:
+			(*statEnt)->Draw(neutralBuildingsTex);
+			break;
+		case StaticEntityCategory_OrcishBuilding:
+			(*statEnt)->Draw(orcishBuildingsTex);
+			break;
+		default:
+			LOG("Default building...");
+			break;
+		}
+
+		statEnt++;
+	}
+
+	if (App->scene->GetAlphaBuilding() != EntityType_NONE) {
+		DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
+		if (App->scene->GetAlphaBuilding() != EntityType_MAX)
+			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
+	}
+
 	// Spawn entities
 	list<Entity*>::const_iterator it = toSpawnEntities.begin();
 
@@ -2454,101 +2548,6 @@ bool j1EntityFactory::PostUpdate()
 
 		statEnt++;
 	}
-
-	// Send active entities to blit
-	/// Blit dynamic entities
-	dynEnt = activeDynamicEntities.begin();
-
-	while (dynEnt != activeDynamicEntities.end()) {
-
-		if (!(*dynEnt)->GetBlitState()) {
-
-			dynEnt++;
-			continue;
-		}
-
-		switch ((*dynEnt)->dynamicEntityType) {
-			// Player
-		case EntityType_FOOTMAN:
-			(*dynEnt)->Draw(footmanTex);
-			break;
-		case EntityType_ELVEN_ARCHER:
-			(*dynEnt)->Draw(elvenArcherTex);
-			break;
-		case EntityType_GRYPHON_RIDER:
-			(*dynEnt)->Draw(gryphonRiderTex);
-			break;
-		case EntityType_MAGE:
-			(*dynEnt)->Draw(mageTex);
-			break;
-		case EntityType_PALADIN:
-			(*dynEnt)->Draw(paladinTex);
-			break;
-
-		case EntityType_TURALYON:
-			(*dynEnt)->Draw(turalyonTex);
-			break;
-		case EntityType_ALLERIA:
-			(*dynEnt)->Draw(alleriaTex);
-			break;
-
-			// Enemy
-		case EntityType_GRUNT:
-			(*dynEnt)->Draw(gruntTex);
-			break;
-		case EntityType_TROLL_AXETHROWER:
-			(*dynEnt)->Draw(trollAxethrowerTex);
-			break;
-		case EntityType_DRAGON:
-			(*dynEnt)->Draw(dragonTex);
-			break;
-		case EntityType_ORC_SHIP:
-			(*dynEnt)->Draw(orcShipTex);
-			break;
-
-			// Neutral
-		case EntityType_SHEEP:
-		case EntityType_BOAR:
-			(*dynEnt)->Draw(crittersTex);
-			break;
-
-		default:
-			break;
-		}
-
-		dynEnt++;
-	}
-
-	/// Blit static entities
-	statEnt = activeStaticEntities.begin();
-
-	while (statEnt != activeStaticEntities.end()) {
-
-		switch ((*statEnt)->staticEntityCategory) {
-
-		case StaticEntityCategory_HumanBuilding:
-			(*statEnt)->Draw(humanBuildingsTex);
-			break;
-		case StaticEntityCategory_NeutralBuilding:
-			(*statEnt)->Draw(neutralBuildingsTex);
-			break;
-		case StaticEntityCategory_OrcishBuilding:
-			(*statEnt)->Draw(orcishBuildingsTex);
-			break;
-		default:
-			LOG("Default building...");
-			break;
-		}
-
-		statEnt++;
-	}
-
-	if (App->scene->GetAlphaBuilding() != EntityType_NONE) {
-		DrawStaticEntityPreview(App->scene->GetAlphaBuilding(), App->player->GetMousePos());
-		if (App->scene->GetAlphaBuilding() != EntityType_MAX)
-			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
-	}
-
 
 	return ret;
 }
