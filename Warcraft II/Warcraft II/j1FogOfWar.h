@@ -27,6 +27,8 @@ class Entity;
 enum FoWTileSprite {
 
 	// w:16,h:16
+
+	/// ONLY FOR TRANSPARENT TILES
 	FoWTileSprite_OpenCircleTopLeft, // x:64,y:0
 	FoWTileSprite_OpenCircleTopRight, // x:80,y:0
 	FoWTileSprite_OpenCircleBottomLeft, // x:64,y:16
@@ -38,6 +40,17 @@ enum FoWTileSprite {
 	FoWTileSprite_FullCircleBottomRight, // x:48,y:16
 
 	FoWTileSprite_QuarterBlack, // x:0,y:0
+	FoWTileSprite_QuarterTransparent,
+
+	FoWTileSprite_HorizontalWaveTopLeft, // x:96,y:0
+	FoWTileSprite_HorizontalWaveTopRight, // x:112,y:0
+	FoWTileSprite_HorizontalWaveBottomLeft, // x:96,y:16
+	FoWTileSprite_HorizontalWaveBottomRight, // x:112,y:16
+
+	FoWTileSprite_VerticalWaveTopLeft, // x:128,y:0
+	FoWTileSprite_VerticalWaveTopRight, // x:144,y:0
+	FoWTileSprite_VerticalWaveBottomLeft, // x:128,y:16
+	FoWTileSprite_VerticalWaveBottomRight, // x:144,y:16
 };
 
 // 0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right
@@ -48,8 +61,10 @@ struct FogOfWarTile
 	int size = 32;
 	int alpha = NORMAL_ALPHA;
 	int normalAlpha = NORMAL_ALPHA;
+	int auxAlpha = 0;
 
 	FoWTileSprite tileSprite[4] = { FoWTileSprite_QuarterBlack, FoWTileSprite_QuarterBlack, FoWTileSprite_QuarterBlack, FoWTileSprite_QuarterBlack };
+	FoWTileSprite auxTileSprite[4] = { FoWTileSprite_QuarterTransparent, FoWTileSprite_QuarterTransparent, FoWTileSprite_QuarterTransparent, FoWTileSprite_QuarterTransparent };
 };
 
 class j1FogOfWar : public j1Module

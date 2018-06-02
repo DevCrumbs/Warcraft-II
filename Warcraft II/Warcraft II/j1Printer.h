@@ -23,7 +23,8 @@ enum Layers
 	Layers_BasicParticles = 5,
 	Layers_DragonGryphon = 6,
 	Layers_QuadsPrinters = 7,
-	Layers_FoW = 8
+	Layers_GreyFoW = 8,
+	Layers_BlackFoW = 9
 };
 
 class DrawingElem
