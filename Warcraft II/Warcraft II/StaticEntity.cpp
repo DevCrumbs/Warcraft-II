@@ -22,10 +22,6 @@ StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	constructionTime = 10;
 }
 
-StaticEntity::StaticEntity(const StaticEntity& e) :
-	staticEntityType(e.staticEntityType), staticEntityCategory(e.staticEntityCategory), buildingState(e.buildingState), buildingSize(e.buildingSize),
-	fire(e.fire), texArea(e.texArea), constructionTimer(e.constructionTimer), constructionTime(e.constructionTime), isBuilt(e.isBuilt), sightRadiusCollider(e.sightRadiusCollider) {}
-
 StaticEntity::~StaticEntity()
 {
 	// Remove Colliders
