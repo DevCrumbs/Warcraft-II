@@ -5,6 +5,10 @@
 
 Turalyon::Turalyon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TuralyonInfo& turalyonInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener, false), turalyonInfo(turalyonInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_TURALYON;
+	*(EntitySide*)&entitySide = EntitySide_NoSide;
+
 	TuralyonInfo info = (TuralyonInfo&)App->entities->GetUnitInfo(EntityType_TURALYON);
 	this->unitInfo = this->turalyonInfo.unitInfo;
 	this->turalyonInfo.idle = info.idle;

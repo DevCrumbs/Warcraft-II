@@ -11,6 +11,12 @@
 
 AltarOfStorms::AltarOfStorms(fPoint pos, iPoint size, int currLife, uint maxLife, const AltarOfStormsInfo& altarOfStormsInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), altarOfStormsInfo(altarOfStormsInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_ALTAR_OF_STORMS;
+	*(EntitySide*)&entitySide = EntitySide_Enemy;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Medium;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);

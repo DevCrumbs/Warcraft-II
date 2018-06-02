@@ -231,12 +231,6 @@
     <ClInclude Include="GryphonAviary.h">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClInclude>
-    <ClInclude Include="MageTower.h">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
-    </ClInclude>
-    <ClInclude Include="Stables.h">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
-    </ClInclude>
     <ClInclude Include="TownHall.h">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClInclude>
@@ -251,9 +245,6 @@
     </ClInclude>
     <ClInclude Include="j1Console.h">
       <Filter>Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ElvenLumberMill.h">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClInclude>
     <ClInclude Include="Paladin.h">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
@@ -485,12 +476,6 @@
     <ClCompile Include="GryphonAviary.cpp">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClCompile>
-    <ClCompile Include="MageTower.cpp">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
-    </ClCompile>
-    <ClCompile Include="Stables.cpp">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
-    </ClCompile>
     <ClCompile Include="TownHall.cpp">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClCompile>
@@ -505,9 +490,6 @@
     </ClCompile>
     <ClCompile Include="j1Console.cpp">
       <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ElvenLumberMill.cpp">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClCompile>
     <ClCompile Include="UILifeBar.cpp">
       <Filter>Modules\UIElements</Filter>

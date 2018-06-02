@@ -11,6 +11,12 @@
 
 OgreMound::OgreMound(fPoint pos, iPoint size, int currLife, uint maxLife, const OgreMoundInfo& ogreMoundInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), ogreMoundInfo(ogreMoundInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_OGRE_MOUND;
+	*(EntitySide*)&entitySide = EntitySide_Enemy;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Medium;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);

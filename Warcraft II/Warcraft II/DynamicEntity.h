@@ -85,6 +85,10 @@ enum UnitCommand
 // Struct UnitInfo: contains all necessary information of the movement and attack of the unit
 struct UnitInfo
 {
+	UnitInfo();
+	UnitInfo(const UnitInfo& u);
+	~UnitInfo();
+
 	uint priority = 1;
 
 	// Radius
@@ -243,7 +247,7 @@ public:
 
 public:
 
-	ENTITY_TYPE dynamicEntityType = EntityType_NONE;
+	const ENTITY_TYPE dynamicEntityType = EntityType_NONE;
 
 	// Dead
 	bool isDead = false; // if true, the unit is performing their dead animation

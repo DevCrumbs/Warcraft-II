@@ -25,6 +25,10 @@
 
 ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const ElvenArcherInfo& elvenArcherInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), elvenArcherInfo(elvenArcherInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_ELVEN_ARCHER;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+
 	// XML loading
 	/// Animations
 	ElvenArcherInfo info = (ElvenArcherInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER);
@@ -396,11 +400,19 @@ void ElvenArcher::Draw(SDL_Texture* sprites)
 
 			offset = { animation->GetCurrentFrame().w / 6.3f, animation->GetCurrentFrame().h / 4.3f };
 			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+
+			if (lifeBar != nullptr)
+				if (lifeBar->isBlit)
+					lifeBar->isBlit = false;
 		}
 		else {
 
 			offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 2.1f };
 			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+
+			if (lifeBar != nullptr)
+				if (lifeBar->isBlit)
+					lifeBar->isBlit = true;
 		}
 	}
 

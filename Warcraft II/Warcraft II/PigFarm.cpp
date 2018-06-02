@@ -11,6 +11,12 @@
 
 PigFarm::PigFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const PigFarmInfo& pigFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), pigFarmInfo(pigFarmInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_PIG_FARM;
+	*(EntitySide*)&entitySide = EntitySide_Enemy;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Small;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);

@@ -26,6 +26,10 @@
 
 OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const OrcShipInfo& orcShipInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener, false), orcShipInfo(orcShipInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_ORC_SHIP;
+	*(EntitySide*)&entitySide = EntitySide_EnemyShip;
+
 	// XML loading
 	/// Animations
 	OrcShipInfo info = (OrcShipInfo&)App->entities->GetUnitInfo(EntityType_ORC_SHIP);
