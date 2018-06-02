@@ -39,7 +39,9 @@
   </map>
 
   <fow>
-     <tilesTex name="data/assets/textures/fow/fow.png"/>  
+      <debugTilesTex name="data/assets/textures/fow/debugFoW.png"/>
+      <blackTilesTex name="data/assets/textures/fow/blackFoW.png"/>
+      <greyTilesTex name="data/assets/textures/fow/greyFoW.png"/>
   </fow>
 
   <audio>

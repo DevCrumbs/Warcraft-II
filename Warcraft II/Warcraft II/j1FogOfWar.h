@@ -104,10 +104,15 @@ public:
 	int height = 0;
 
 	bool isActive = true;
+	bool isFoWDebug = false;
 
 	// Beauty
-	string fowTilesTexName;
-	SDL_Texture* fowTilesTex = nullptr;
+	string debugTilesTexName;
+	string blackTilesTexName;
+	string greyTilesTexName;
+	SDL_Texture* debugTilesTex = nullptr;
+	SDL_Texture* blackTilesTex = nullptr;
+	SDL_Texture* greyTilesTex = nullptr;
 };
 
 #endif

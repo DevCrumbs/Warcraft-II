@@ -28,17 +28,23 @@ j1FogOfWar::~j1FogOfWar()
 
 bool j1FogOfWar::Awake(pugi::xml_node& config)
 {
-	fowTilesTexName = config.child("tilesTex").attribute("name").as_string();
+	debugTilesTexName = config.child("debugTilesTex").attribute("name").as_string();
+	blackTilesTexName = config.child("blackTilesTex").attribute("name").as_string();
+	greyTilesTexName = config.child("greyTilesTex").attribute("name").as_string();
 
 	return true;
 }
 
 bool j1FogOfWar::Start()
 {
+	isFoWDebug = false;
+
 	UnLoadFowMap();
 
-	// Load texture
-	fowTilesTex = App->tex->Load(fowTilesTexName.data());
+	// Load textures
+	debugTilesTex = App->tex->Load(debugTilesTexName.data());
+	blackTilesTex = App->tex->Load(blackTilesTexName.data());
+	greyTilesTex = App->tex->Load(greyTilesTexName.data());
 
 	return true;
 }
@@ -82,14 +88,19 @@ bool j1FogOfWar::CleanUp()
 {
 	UnLoadFowMap();
 
-	// Unload texture
-	App->tex->UnLoad(fowTilesTex);
+	// Unload textures
+	App->tex->UnLoad(debugTilesTex);
+	App->tex->UnLoad(blackTilesTex);
+	App->tex->UnLoad(greyTilesTex);
 
 	return true;
 }
 
 void j1FogOfWar::Print()
 {	
+	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+		isFoWDebug = !isFoWDebug;
+
 	iPoint startTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale(),
 		-App->render->camera.y / App->win->GetScale());
 	iPoint endTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale() + App->render->camera.w,
@@ -129,9 +140,6 @@ void j1FogOfWar::Print()
 				SDL_Rect squareToBlit = { 0,0,0,0 };
 				squareToBlit.w = 16;
 				squareToBlit.h = 16;
-
-				if (currTile->tileSprite[x] == FoWTileSprite_QuarterTransparent)
-					continue;
 
 				switch (currTile->tileSprite[x]) {
 
@@ -207,19 +215,31 @@ void j1FogOfWar::Print()
 					break;
 				}
 
+				SDL_Texture* tex = debugTilesTex;
+
 				// 1. Blit tileSprite
 				if (currTile->alpha == NORMAL_ALPHA) {
 
 					// Also blit grey squares under the irregular black tiles
 					if ((squareToBlit.x != 0 || squareToBlit.y != 0)
-						&& IsGreyTileSurroundingTile(pos, x))
-						App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, fowTilesTex, { 0,0,16,16 }, Layers_GreyFoW, 0.0f, { 0,0,0,(Uint8)TRANSLUCID_ALPHA });
+						&& IsGreyTileSurroundingTile(pos, x)) {
 
-					App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, fowTilesTex, squareToBlit, Layers_BlackFoW, 0.0f, { 0,0,0,(Uint8)currTile->alpha });
+						if (!isFoWDebug)
+							tex = greyTilesTex;
+						App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, tex, { 0,0,16,16 }, Layers_GreyFoW, 0.0f, { 0,0,0,(Uint8)TRANSLUCID_ALPHA });
+					}
+
+					if (!isFoWDebug)
+						tex = blackTilesTex;
+					App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, tex, squareToBlit, Layers_BlackFoW, 0.0f, { 0,0,0,(Uint8)currTile->alpha });
 				}
-				else if (currTile->alpha == TRANSLUCID_ALPHA)
-					App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, fowTilesTex, squareToBlit, Layers_GreyFoW, 0.0f, { 0,0,0,(Uint8)currTile->alpha });
-				
+				else if (currTile->alpha == TRANSLUCID_ALPHA) {
+
+					if (!isFoWDebug)
+						tex = greyTilesTex;
+					App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, tex, squareToBlit, Layers_GreyFoW, 0.0f, { 0,0,0,(Uint8)currTile->alpha });
+				}
+
 				if (currTile->auxTileSprite[x] == FoWTileSprite_QuarterTransparent)
 					continue;
 
@@ -298,11 +318,19 @@ void j1FogOfWar::Print()
 				}
 
 				// 2. Blit auxTileSprite
-				if (currTile->auxAlpha == NORMAL_ALPHA)
-					App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, fowTilesTex, squareToBlit, Layers_BlackFoW, 0.0f, { 0,0,0,(Uint8)currTile->auxAlpha });
-				else if (currTile->auxAlpha == TRANSLUCID_ALPHA)
-					App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, fowTilesTex, squareToBlit, Layers_GreyFoW, 0.0f, { 0,0,0,(Uint8)currTile->auxAlpha });
-				
+				if (currTile->auxAlpha == NORMAL_ALPHA) {
+
+					if (!isFoWDebug)
+						tex = blackTilesTex;
+					App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, tex, squareToBlit, Layers_BlackFoW, 0.0f, { 0,0,0,(Uint8)currTile->auxAlpha });
+				}
+				else if (currTile->auxAlpha == TRANSLUCID_ALPHA) {
+
+					if (!isFoWDebug)
+						tex = greyTilesTex;
+					App->printer->PrintSprite({ world.x + addedPosition.x, world.y + addedPosition.y }, tex, squareToBlit, Layers_GreyFoW, 0.0f, { 0,0,0,(Uint8)currTile->auxAlpha });
+				}
+
 				//App->render->DrawQuad({ world.x, world.y, FOW_TILE, FOW_TILE }, 0, 0, 0, currTile->alpha);
 			}		
 		}//for
@@ -379,11 +407,12 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 	FogOfWarTile* bottom = fowTilesVector[tile + width];
 	FogOfWarTile* top = fowTilesVector[tile - width];
 
-	if (currTile != nullptr 
+	if (currTile != nullptr
 		&& right != nullptr && left != nullptr && bottom != nullptr && top != nullptr) {
 
 		currTile->auxAlpha = 0;
 
+		// tileSprite (black and translucid tiles)
 		// BLACK TILE
 		if (currTile->alpha == NORMAL_ALPHA) {
 
@@ -685,6 +714,90 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 			}
 		}
 
+		// auxTileSprite (translucid and transparent tiles)
+		// TRANSLUCID TILE
+		if (currTile->alpha == TRANSLUCID_ALPHA) {
+
+			// 2 translucid tiles, 2 black tiles (ONLY CORNERS!)
+			/// OpenCircle
+			/// right (3)
+			if ((right->alpha == 0 || right->alpha == TRANSLUCID_ALPHA) && (left->alpha == 0 || left->alpha == TRANSLUCID_ALPHA)
+				&& bottom->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA) {
+
+				// Not a corner...
+			}
+			else if ((right->alpha == 0 || right->alpha == TRANSLUCID_ALPHA) && (top->alpha == 0 || top->alpha == TRANSLUCID_ALPHA)
+				&& bottom->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
+
+				if (bottom->tileSprite[0] == FoWTileSprite_QuarterBlack && left->tileSprite[3] == FoWTileSprite_QuarterBlack) {
+
+					currTile->auxTileSprite[0] = FoWTileSprite_QuarterTransparent;
+					currTile->auxTileSprite[1] = FoWTileSprite_QuarterTransparent;
+					currTile->auxTileSprite[2] = FoWTileSprite_OpenCircleBottomLeft;
+					currTile->auxTileSprite[3] = FoWTileSprite_QuarterTransparent;
+
+					currTile->auxAlpha = NORMAL_ALPHA;
+				}
+			}
+			else if ((right->alpha == 0 || right->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == 0 || bottom->alpha == TRANSLUCID_ALPHA)
+				&& top->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA ) {
+
+				if (top->tileSprite[2] == FoWTileSprite_QuarterBlack && left->tileSprite[1] == FoWTileSprite_QuarterBlack) {
+
+					currTile->auxTileSprite[0] = FoWTileSprite_OpenCircleTopLeft;
+					currTile->auxTileSprite[1] = FoWTileSprite_QuarterTransparent;
+					currTile->auxTileSprite[2] = FoWTileSprite_QuarterTransparent;
+					currTile->auxTileSprite[3] = FoWTileSprite_QuarterTransparent;
+
+					currTile->auxAlpha = NORMAL_ALPHA;
+				}
+			}
+
+			/// left (2)
+			else if ((left->alpha == 0 || left->alpha == TRANSLUCID_ALPHA) && (top->alpha == 0 || top->alpha == TRANSLUCID_ALPHA)
+				&& right->alpha == NORMAL_ALPHA && bottom->alpha == NORMAL_ALPHA) {
+
+				if (right->tileSprite[2] == FoWTileSprite_QuarterBlack && bottom->tileSprite[1] == FoWTileSprite_QuarterBlack) {
+
+					currTile->auxTileSprite[0] = FoWTileSprite_QuarterTransparent;
+					currTile->auxTileSprite[1] = FoWTileSprite_QuarterTransparent;
+					currTile->auxTileSprite[2] = FoWTileSprite_QuarterTransparent;
+					currTile->auxTileSprite[3] = FoWTileSprite_OpenCircleBottomRight;
+
+					currTile->auxAlpha = NORMAL_ALPHA;
+				}
+			}
+			else if ((left->alpha == 0 || left->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == 0 || bottom->alpha == TRANSLUCID_ALPHA)
+				&& right->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA ) {
+
+				if (right->tileSprite[0] == FoWTileSprite_QuarterBlack && top->tileSprite[3] == FoWTileSprite_QuarterBlack) {
+
+					currTile->auxTileSprite[0] = FoWTileSprite_QuarterTransparent;
+					currTile->auxTileSprite[1] = FoWTileSprite_OpenCircleTopRight;
+					currTile->auxTileSprite[2] = FoWTileSprite_QuarterTransparent;
+					currTile->auxTileSprite[3] = FoWTileSprite_QuarterTransparent;
+
+					currTile->auxAlpha = NORMAL_ALPHA;
+				}
+			}
+
+			/// top (1)
+			else if ((top->alpha == 0 || top->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == 0 || bottom->alpha == TRANSLUCID_ALPHA)
+				&& right->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
+
+				// Not a corner...
+			}
+
+			// All transparent tiles
+			else {
+
+				currTile->auxTileSprite[0] = FoWTileSprite_QuarterTransparent;
+				currTile->auxTileSprite[1] = FoWTileSprite_QuarterTransparent;
+				currTile->auxTileSprite[2] = FoWTileSprite_QuarterTransparent;
+				currTile->auxTileSprite[3] = FoWTileSprite_QuarterTransparent;
+			}
+		}
+
 		// TRANSPARENT TILE
 		else if (currTile->alpha == 0) {
 
@@ -779,13 +892,6 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->auxTileSprite[3] = FoWTileSprite_QuarterTransparent;
 			}
 		}
-	}
-	else {
-	
-		currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
-		currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
-		currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
-		currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
 	}
 }
 

@@ -225,7 +225,8 @@ If debug mode is on:
 	F2: Direct lose
 	F3: Spawn a new enemy wave (in player base)
 	F4: Activate or stop the spawn of waves
-	F5: Show/hide game's colliders
+	F5: Show/hide colliders
+	F6: Show fog of war sprites' distribution
 
 # Game system
 
