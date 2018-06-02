@@ -16,7 +16,8 @@ struct ColliderGroup;
 
 enum CollisionState;
 
-enum ENTITY_CATEGORY {
+enum ENTITY_CATEGORY 
+{
 
 	EntityCategory_NONE,
 	EntityCategory_STATIC_ENTITY,
@@ -91,10 +92,7 @@ enum ENTITY_TYPE
 
 	// Player buildings
 	/// Production buildings
-	EntityType_ELVEN_LUMBER_MILL = 418,
-	EntityType_MAGE_TOWER = 419,
 	EntityType_GRYPHON_AVIARY = 420,
-	EntityType_STABLES = 421,
 
 	/// Defense buildings
 	EntityType_SCOUT_TOWER = 422,
@@ -178,8 +176,8 @@ public:
 
 public:
 
-	ENTITY_CATEGORY entityType = EntityCategory_NONE;
-	EntitySide entitySide = EntitySide_NoSide;
+	const ENTITY_CATEGORY entityType = EntityCategory_NONE;
+	const EntitySide entitySide = EntitySide_NoSide;
 
 	bool isRemove = false;
 	bool isSelected = false;

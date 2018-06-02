@@ -28,6 +28,10 @@
 
 Dragon::Dragon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const DragonInfo& dragonInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), dragonInfo(dragonInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_DRAGON;
+	*(EntitySide*)&entitySide = EntitySide_Enemy;
+
 	pathPlanner->SetIsWalkabilityChecked(false);
 	pathPlanner->SetIsInSameRoomChecked(true);
 

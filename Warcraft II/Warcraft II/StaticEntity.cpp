@@ -16,8 +16,6 @@
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) 
 {
-	this->entityType = EntityCategory_STATIC_ENTITY;
-
 	if (App->GetSecondsSinceAppStartUp() < 700) // Checks for static entities built since startup
 		isBuilt = true;
 
@@ -161,7 +159,6 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 	}
 }
 
-
 bool StaticEntity::MouseHover() const
 {
 	int x, y;
@@ -174,7 +171,6 @@ bool StaticEntity::MouseHover() const
 
 	return x > screen_pos.x / scale && x < screen_pos.x / scale + size.x && y > screen_pos.y / scale && y < screen_pos.y / scale + size.y;
 }
-
 
 bool StaticEntity::CheckBuildingState()
 {

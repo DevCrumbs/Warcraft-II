@@ -27,6 +27,10 @@
 
 TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TrollAxethrowerInfo& trollAxethrowerInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), trollAxethrowerInfo(trollAxethrowerInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_TROLL_AXETHROWER;
+	*(EntitySide*)&entitySide = EntitySide_Enemy;
+
 	pathPlanner->SetIsInSameRoomChecked(true);
 
 	// XML loading

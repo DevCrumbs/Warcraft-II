@@ -26,6 +26,10 @@
 
 GryphonRider::GryphonRider(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GryphonRiderInfo& gryphonRiderInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), gryphonRiderInfo(gryphonRiderInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_GRYPHON_RIDER;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+
 	pathPlanner->SetIsWalkabilityChecked(false);
 
 	// XML loading
@@ -393,10 +397,21 @@ void GryphonRider::Draw(SDL_Texture* sprites)
 
 		fPoint offset = { 0.0f,0.0f };
 
-		if (animation == &gryphonRiderInfo.deathDown || animation == &gryphonRiderInfo.deathUp)
+		if (animation == &gryphonRiderInfo.deathDown || animation == &gryphonRiderInfo.deathUp) {
 			offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.3f };
-		else
+
+			if (lifeBar != nullptr)
+				if (lifeBar->isBlit)
+					lifeBar->isBlit = false;
+		}
+		else {
+
 			offset = { animation->GetCurrentFrame().w / 2.8f, animation->GetCurrentFrame().h / 2.5f };
+
+			if (lifeBar != nullptr)
+				if (lifeBar->isBlit)
+					lifeBar->isBlit = true;
+		}
 
 		App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_DragonGryphon);
 	}

@@ -11,6 +11,12 @@
 
 Stronghold::Stronghold(fPoint pos, iPoint size, int currLife, uint maxLife, const StrongholdInfo& strongholdInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), strongholdInfo(strongholdInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_STRONGHOLD;
+	*(EntitySide*)&entitySide = EntitySide_Enemy;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Big;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);

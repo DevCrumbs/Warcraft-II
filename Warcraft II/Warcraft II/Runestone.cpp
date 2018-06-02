@@ -13,6 +13,12 @@
 
 Runestone::Runestone(fPoint pos, iPoint size, int currLife, uint maxLife, const RunestoneInfo& runestoneInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), runestoneInfo(runestoneInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_NeutralBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_RUNESTONE;
+	*(EntitySide*)&entitySide = EntitySide_Neutral;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Small;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);

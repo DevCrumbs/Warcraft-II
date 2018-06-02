@@ -840,11 +840,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 }, ent);
 			}
 
-			else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER) {
-				App->audio->PlayFx(App->audio->GetFX().mageTower, 0); //Mage tower sound
-				ShowEntitySelectedInfo(ent->GetStringLife(), "Mage Tower", { 394,202,50,41 }, ent);
-			}
-
 			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 }, ent);
@@ -858,11 +853,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Cannon Tower", { 394,118,50,41 }, ent);
-			}
-
-			else if (staticEntity->staticEntityType == EntityType_STABLES) {
-				App->audio->PlayFx(App->audio->GetFX().stables, 0); //Stables sound
-				ShowEntitySelectedInfo(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->GetIsFinishedBuilt()) {
@@ -986,10 +976,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Gryphon Aviary", { 394,160,50,41 }, ent);
 			}
-			else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER) {
-				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-				ShowEntitySelectedInfo("Building...", "Mage Tower", { 394,202,50,41 }, ent);
-			}
 			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Scout Tower", { 394,34,50,41 }, ent);
@@ -1001,10 +987,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Cannon Tower", { 394,118,50,41 }, ent);
-			}
-			else if (staticEntity->staticEntityType == EntityType_STABLES) {
-				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-				ShowEntitySelectedInfo("Building...", "Stables", { 241,160,50,41 }, ent);
 			}
 			else if (staticEntity->staticEntityType == EntityType_BARRACKS) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
