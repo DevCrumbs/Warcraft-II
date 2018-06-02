@@ -31,6 +31,7 @@ enum MenuActions
 	MenuActions_NEWGAME,
 	MenuActions_CREDITS,
 	MenuActions_EXIT,
+	MenuActions_CHANGE_BUTTONS,
 };
 struct SliderStruct
 {
@@ -70,11 +71,13 @@ public:
 
 	void CreateMenu();
 	void CreateSettings();
+	void CreateChangingButtons();
 	void CreateNewGame();
 	void CreateCredits();
 	//void CreateLoading();
 
 	void DeleteSettings();
+	void DeleteChangingButtons();
 	void DeteleMenu();
 	void DeleteNewGame();
 	void DeleteCredits();
@@ -110,6 +113,9 @@ private:
 	SliderStruct audioMusic;
 	UIButton* fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr, *buttonsLabel = nullptr;
+		//Changing buttons
+	UILabel* returnSettings = nullptr, *changeLabel = nullptr;
+	list<UILabel*> interactiveLabels;
 
 	//Start New Game
 	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;

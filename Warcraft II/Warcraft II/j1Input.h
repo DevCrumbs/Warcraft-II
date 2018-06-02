@@ -80,6 +80,7 @@ public:
 	
 	char* newLetter = nullptr;
 	bool isPresed = false;
+	SDL_Scancode scancode = SDL_SCANCODE_UNKNOWN;
 
 private:
 	bool		windowEvents[WE_COUNT];

@@ -67,7 +67,7 @@ bool j1Input::PreUpdate()
 		if (keys[i] == 1)
 		{
 			isPressed = true;
-
+			scancode = event.key.keysym.scancode;
 			if (keyboard[i] == KEY_IDLE)
 				keyboard[i] = KEY_DOWN;
 			else
@@ -145,6 +145,7 @@ bool j1Input::PreUpdate()
 			break;
 		}
 	}
+
 
 	return ret;
 }
