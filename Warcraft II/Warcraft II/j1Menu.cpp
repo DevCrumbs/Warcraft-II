@@ -190,14 +190,13 @@ bool j1Menu::Update(float dt)
 			changeLabel->SetColor(color);
 			textColor = !textColor;
 			changeButtonTimer.Stop();
-			LOG("Color changed");
 		}
 
 		if (App->input->isPresed) {
 			if (*App->input->newLetter == 32)
 				App->input->newLetter = "SPACE";
 			changeLabel->SetText(App->input->newLetter);
-			LOG("Set text");
+
 			App->input->isPresed = false;
 			SDL_StopTextInput();
 			changeLabel = nullptr;

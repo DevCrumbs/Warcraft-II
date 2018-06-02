@@ -19,7 +19,6 @@ void j1Timer::Start()
 {
 	started = true;
 	startedAt = SDL_GetTicks();
-	LOG("Stareted at %i", startedAt);
 }
 
 // ---------------------------------------------
