@@ -38,6 +38,12 @@
     
   </map>
 
+  <fow>
+      <debugTilesTex name="data/assets/textures/fow/debugFoW.png"/>
+      <blackTilesTex name="data/assets/textures/fow/blackFoW.png"/>
+      <greyTilesTex name="data/assets/textures/fow/greyFoW.png"/>
+  </fow>
+
   <audio>
     <music_folder>data/assets/audio/music/</music_folder>
     <fx_folder>data/assets/audio/fx/</fx_folder>
