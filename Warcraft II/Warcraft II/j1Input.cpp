@@ -57,6 +57,7 @@ bool j1Input::PreUpdate()
 	bool ret = true;
 
 	isPressed = false;
+	scancode = SDL_SCANCODE_UNKNOWN;
 
 	static SDL_Event event;
 
