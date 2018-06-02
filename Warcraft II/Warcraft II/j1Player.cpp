@@ -2002,24 +2002,60 @@ uint j1Player::CalculateGoldRepair(StaticEntity* entity)
 void j1Player::CheckBuildingsState() 
 {
 	if (townHall != nullptr) {
-		if(townHall->GetCurrLife() <= 0 || townHall->isRemove)
+		if (townHall->GetCurrLife() <= 0 || townHall->isRemove) {
 			townHall = nullptr;
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+		}
 	}
 
 	if (barracks != nullptr) {
-		if (barracks->GetCurrLife() <= 0 || barracks->isRemove)
+		if (barracks->GetCurrLife() <= 0 || barracks->isRemove) {
 			barracks = nullptr;
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (secondHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&secondHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+		}
+
 	}
 
 	if (gryphonAviary != nullptr) {
-		if (gryphonAviary->GetCurrLife() <= 0 || gryphonAviary->isRemove)
+		if (gryphonAviary->GetCurrLife() <= 0 || gryphonAviary->isRemove) {
 			gryphonAviary = nullptr;
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (secondHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&secondHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+		}
+
 	}
 
 	if (!chickenFarm.empty())
 		for (list<StaticEntity*>::iterator iterator = chickenFarm.begin(); iterator != chickenFarm.end(); ++iterator)
 		{
 			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
+
+				if (firstHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&firstHoverInfo);
+
+				if (thirdHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&thirdHoverInfo);
+
 				if (chickenFarm.size() == 1) {
 					chickenFarm.remove((*iterator));
 					break;
@@ -2032,6 +2068,13 @@ void j1Player::CheckBuildingsState()
 		for (list<StaticEntity*>::iterator iterator = scoutTower.begin(); iterator != scoutTower.end(); ++iterator)
 		{
 			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
+
+				if (firstHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&firstHoverInfo);
+
+				if (thirdHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&thirdHoverInfo);
+
 				if (scoutTower.size() == 1) {
 					scoutTower.remove((*iterator));
 					break;
@@ -2044,6 +2087,13 @@ void j1Player::CheckBuildingsState()
 	if (!guardTower.empty())
 		for (list<StaticEntity*>::iterator iterator = guardTower.begin(); iterator != guardTower.end(); ++iterator)
 		{
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+
 			if (guardTower.size() == 1) {
 				guardTower.remove((*iterator));
 				break;
@@ -2057,6 +2107,13 @@ void j1Player::CheckBuildingsState()
 	if(!cannonTower.empty())
 		for (list<StaticEntity*>::iterator iterator = cannonTower.begin(); iterator != cannonTower.end(); ++iterator)
 		{
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+
 			if (cannonTower.size() == 1) {
 				cannonTower.remove((*iterator));
 				break;
