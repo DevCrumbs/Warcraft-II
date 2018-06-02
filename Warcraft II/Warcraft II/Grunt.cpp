@@ -26,6 +26,10 @@
 
 Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GruntInfo& gruntInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), gruntInfo(gruntInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_GRUNT;
+	*(EntitySide*)&entitySide = EntitySide_Enemy;
+
 	pathPlanner->SetIsInSameRoomChecked(true);
 
 	// XML loading

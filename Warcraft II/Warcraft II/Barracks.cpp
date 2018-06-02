@@ -13,6 +13,12 @@
 
 Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), barracksInfo(barracksInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_HumanBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_BARRACKS;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Medium;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -62,6 +68,14 @@ Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const Ba
 
 }
 
+Barracks::~Barracks()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+}
+
 void Barracks::Move(float dt)
 {
 	if (listener != nullptr)
@@ -103,7 +117,11 @@ void Barracks::UpdateAnimations(float dt)
 	if (constructionTimer.Read() >= constructionTime * 1000) {
 		texArea = &barracksInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
 
 	//It isnt used anymore

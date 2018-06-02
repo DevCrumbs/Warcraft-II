@@ -13,6 +13,7 @@ class PigFarm : public StaticEntity
 {
 public:
 	PigFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const PigFarmInfo& pigFarmInfo, j1Module* listener);
+	PigFarm(const PigFarm& p);
 	virtual ~PigFarm() {}
 
 	void Move(float dt);

@@ -16,13 +16,15 @@
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) 
 {
-	this->entityType = EntityCategory_STATIC_ENTITY;
-
 	if (App->GetSecondsSinceAppStartUp() < 700) // Checks for static entities built since startup
 		isBuilt = true;
 
 	constructionTime = 10;
 }
+
+StaticEntity::StaticEntity(const StaticEntity& e) :
+	staticEntityType(e.staticEntityType), staticEntityCategory(e.staticEntityCategory), buildingState(e.buildingState), buildingSize(e.buildingSize),
+	fire(e.fire), texArea(e.texArea), constructionTimer(e.constructionTimer), constructionTime(e.constructionTime), isBuilt(e.isBuilt), sightRadiusCollider(e.sightRadiusCollider) {}
 
 StaticEntity::~StaticEntity()
 {
@@ -161,7 +163,6 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 	}
 }
 
-
 bool StaticEntity::MouseHover() const
 {
 	int x, y;
@@ -174,7 +175,6 @@ bool StaticEntity::MouseHover() const
 
 	return x > screen_pos.x / scale && x < screen_pos.x / scale + size.x && y > screen_pos.y / scale && y < screen_pos.y / scale + size.y;
 }
-
 
 bool StaticEntity::CheckBuildingState()
 {

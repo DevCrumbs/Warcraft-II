@@ -31,10 +31,7 @@
 #include "Barracks.h"
 #include "ChickenFarm.h"
 #include "GryphonAviary.h"
-#include "MageTower.h"
-#include "Stables.h"
 #include "TownHall.h"
-#include "ElvenLumberMill.h"
 #include "GreatHall.h"
 #include "Stronghold.h"
 #include "Fortress.h"
@@ -264,10 +261,7 @@ private:
 	BarracksInfo builtBarracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
 	ChickenFarmInfo builtChickenFarmInfo;
-	ElvenLumberMillInfo elvenLumberMillInfo;
-	StablesInfo stablesInfo;
 	GryphonAviaryInfo gryphonAviaryInfo;
-	MageTowerInfo mageTowerInfo;
 	ScoutTowerInfo scoutTowerInfo;
 	PlayerGuardTowerInfo playerGuardTowerInfo; 
 	PlayerCannonTowerInfo playerCannonTowerInfo;

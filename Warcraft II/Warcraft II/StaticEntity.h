@@ -25,12 +25,13 @@ enum StaticEntityCategory
 
 enum BuildingState
 {
+	BuildingState_NoState,
 	BuildingState_Normal,
 	BuildingState_LowFire,
 	BuildingState_HardFire,
 	BuildingState_Destroyed,
-	BuildingState_Building
-
+	BuildingState_Building,
+	BuildingState_MaxStates
 };
 
 enum StaticEntitySize
@@ -38,22 +39,26 @@ enum StaticEntitySize
 	StaticEntitySize_None,
 	StaticEntitySize_Small,
 	StaticEntitySize_Medium,
-	StaticEntitySize_Big
+	StaticEntitySize_Big,
+	StaticEntitySize_MaxSize
 };
 
 enum TowerState
 {
+	TowerState_NoState,
 	TowerState_Idle,
 	TowerState_Attack,
-	TowerState_Die
+	TowerState_Die,
+	TowerState_MaxStates
 };
-
 
 class StaticEntity :public Entity
 {
 public:
 
+	StaticEntity() {}
 	StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener);
+	StaticEntity(const StaticEntity& e);
 	virtual ~StaticEntity();
 	virtual void Draw(SDL_Texture* sprites);
 	virtual void DebugDrawSelected();
@@ -76,10 +81,10 @@ public:
 
 public:
 
-	ENTITY_TYPE staticEntityType = EntityType_NONE;
-	StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
+	const ENTITY_TYPE staticEntityType = EntityType_NONE;
+	const StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
 	BuildingState buildingState = BuildingState_Normal;
-	StaticEntitySize buildingSize = StaticEntitySize_None;
+	const StaticEntitySize buildingSize = StaticEntitySize_None;
 
 protected:
 

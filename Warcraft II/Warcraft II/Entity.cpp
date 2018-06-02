@@ -16,6 +16,11 @@ Entity::Entity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* li
 		this->currLife = this->maxLife;
 }
 
+Entity::Entity(const Entity& e) :
+	entityType(e.entityType), entitySide(e.entitySide), isRemove(e.isRemove), isSelected(e.isSelected), pos(e.pos), minimapDrawColor(e.minimapDrawColor),
+	size(e.size), offsetSize(e.offsetSize), currLife(e.currLife), maxLife(e.maxLife), lifeString(e.lifeString), listener(e.listener), entityCollider(e.entityCollider),
+	unitsAttacking(e.unitsAttacking), color(e.color), colorName(e.colorName), isValid(e.isValid) {}
+
 Entity::~Entity()
 {
 	// Remove Colliders
@@ -249,25 +254,4 @@ void Entity::SetIsValid(bool isValid)
 bool Entity::GetIsValid() const
 {
 	return isValid;
-}
-
-// Struct TargetInfo -------------------------------------------------------------
-
-TargetInfo::TargetInfo() {}
-
-TargetInfo::TargetInfo(const TargetInfo& t) :
-	isSightSatisfied(t.isSightSatisfied), isAttackSatisfied(t.isAttackSatisfied), target(t.target),
-	isInGoals(t.isInGoals), isRemoveNeeded(t.isRemoveNeeded), attackingTile(t.attackingTile) {}
-
-TargetInfo::~TargetInfo() 
-{
-	isSightSatisfied = false;
-	isAttackSatisfied = false;
-
-	isInGoals = 0;
-	isRemoveNeeded = false;
-
-	target = nullptr;
-
-	attackingTile = { -1,-1 };
 }

@@ -106,3 +106,9 @@ int UILifeBar::GetLife() const
 {
 	return lifeBar.life;
 }
+
+// UILifeBar_Info struct ---------------------------------------------------------------------------------
+
+UILifeBar_Info::UILifeBar_Info(const UILifeBar_Info& l) :
+	background(l.background), bar(l.bar), horizontalOrientation(l.horizontalOrientation), verticalOrientation(l.verticalOrientation),
+	life(l.life), maxLife(l.maxLife), maxWidth(l.maxWidth), lifeBarPosition(l.lifeBarPosition), bgPosition(l.bgPosition) {}

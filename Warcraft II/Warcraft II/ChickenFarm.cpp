@@ -14,6 +14,12 @@
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_HumanBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_CHICKEN_FARM;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Small;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -56,6 +62,11 @@ ChickenFarm::~ChickenFarm()
 	App->player->currentFood -= 3;
 	App->scene->hasFoodChanged = true;
 
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+
 	LOG("Chicken farm destroyed");
 }
 
@@ -71,8 +82,13 @@ void ChickenFarm::Move(float dt)
 		isBuilt = true;
 		App->player->currentFood += 3;
 		App->scene->hasFoodChanged = true;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
+
 }
 
 // Animations

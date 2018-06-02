@@ -13,6 +13,12 @@
 
 PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint maxLife, const PlayerCannonTowerInfo& playerCannonTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), playerCannonTowerInfo(playerCannonTowerInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_HumanBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_PLAYER_CANNON_TOWER;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Small;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -34,6 +40,14 @@ PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint
 
 	//Construction peasants
 	peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
+}
+
+PlayerCannonTower::~PlayerCannonTower()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
 }
 
 void PlayerCannonTower::Move(float dt)
@@ -71,7 +85,11 @@ void PlayerCannonTower::Move(float dt)
 	//Check is building is built already
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000)) {
 		isBuilt = true;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
 
 	//Delete arrow if it is fired when an enemy is already dead 

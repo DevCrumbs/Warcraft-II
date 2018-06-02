@@ -24,6 +24,10 @@
 
 Footman::Footman(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const FootmanInfo& footmanInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), footmanInfo(footmanInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_FOOTMAN;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+
 	// XML loading
 	/// Animations
 	FootmanInfo info = (FootmanInfo&)App->entities->GetUnitInfo(EntityType_FOOTMAN);
@@ -398,11 +402,19 @@ void Footman::Draw(SDL_Texture* sprites)
 
 			offset = { animation->GetCurrentFrame().w / 3.8f, animation->GetCurrentFrame().h / 3.3f };
 			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+
+			if (lifeBar != nullptr)
+				if (lifeBar->isBlit)
+					lifeBar->isBlit = false;
 		}
 		else {
 
 			offset = { animation->GetCurrentFrame().w / 3.3f, animation->GetCurrentFrame().h / 3.3f };
 			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+
+			if (lifeBar != nullptr)
+				if (lifeBar->isBlit)
+					lifeBar->isBlit = true;
 		}
 	}
 
