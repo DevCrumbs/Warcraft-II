@@ -1313,15 +1313,15 @@
    <tile gid="221"/>
    <tile gid="316"/>
    <tile gid="315"/>
-   <tile gid="215"/>
-   <tile gid="207"/>
-   <tile gid="208"/>
+   <tile gid="308"/>
+   <tile gid="311"/>
+   <tile gid="216"/>
    <tile gid="207"/>
    <tile gid="208"/>
    <tile gid="206"/>
    <tile gid="208"/>
-   <tile gid="207"/>
    <tile gid="224"/>
+   <tile gid="302"/>
    <tile gid="308"/>
    <tile gid="310"/>
    <tile gid="330"/>
@@ -1418,15 +1418,15 @@
    <tile gid="231"/>
    <tile gid="305"/>
    <tile gid="301"/>
-   <tile gid="211"/>
-   <tile gid="331"/>
-   <tile gid="336"/>
+   <tile gid="304"/>
+   <tile gid="216"/>
+   <tile gid="203"/>
    <tile gid="338"/>
    <tile gid="337"/>
    <tile gid="335"/>
    <tile gid="337"/>
-   <tile gid="337"/>
-   <tile gid="204"/>
+   <tile gid="205"/>
+   <tile gid="206"/>
    <tile gid="223"/>
    <tile gid="322"/>
    <tile gid="314"/>
@@ -1522,9 +1522,9 @@
    <tile gid="221"/>
    <tile gid="307"/>
    <tile gid="312"/>
-   <tile gid="215"/>
-   <tile gid="203"/>
-   <tile gid="332"/>
+   <tile gid="320"/>
+   <tile gid="301"/>
+   <tile gid="212"/>
    <tile gid="336"/>
    <tile gid="333"/>
    <tile gid="338"/>
@@ -1627,9 +1627,9 @@
    <tile gid="204"/>
    <tile gid="207"/>
    <tile gid="208"/>
+   <tile gid="207"/>
+   <tile gid="208"/>
    <tile gid="202"/>
-   <tile gid="337"/>
-   <tile gid="337"/>
    <tile gid="336"/>
    <tile gid="338"/>
    <tile gid="335"/>
@@ -110679,7 +110679,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="409"/>
+   <tile gid="408"/>
    <tile/>
    <tile/>
    <tile/>
@@ -110781,7 +110781,6 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="393"/>
    <tile/>
    <tile/>
    <tile/>
@@ -110887,6 +110886,7 @@
    <tile/>
    <tile/>
    <tile/>
+   <tile gid="393"/>
    <tile/>
    <tile gid="392"/>
    <tile/>
@@ -123151,7 +123151,7 @@
    <tile/>
   </data>
  </layer>
- <layer name="Navigation" width="105" height="130" opacity="0.57">
+ <layer name="Navigation" width="105" height="130" opacity="0.62">
   <properties>
    <property name="Navigation" type="bool" value="true"/>
   </properties>
@@ -124332,9 +124332,7 @@
    <tile gid="52"/>
    <tile gid="52"/>
    <tile gid="52"/>
-   <tile/>
-   <tile/>
-   <tile/>
+   <tile gid="52"/>
    <tile/>
    <tile/>
    <tile/>
@@ -124345,6 +124343,8 @@
    <tile gid="52"/>
    <tile gid="52"/>
    <tile gid="52"/>
+   <tile gid="52"/>
+   <tile gid="52"/>
    <tile/>
    <tile/>
    <tile/>
@@ -124436,8 +124436,8 @@
    <tile gid="52"/>
    <tile gid="52"/>
    <tile gid="52"/>
-   <tile/>
-   <tile/>
+   <tile gid="52"/>
+   <tile gid="52"/>
    <tile/>
    <tile/>
    <tile/>
@@ -124540,9 +124540,9 @@
    <tile/>
    <tile gid="52"/>
    <tile gid="52"/>
-   <tile/>
-   <tile/>
-   <tile/>
+   <tile gid="52"/>
+   <tile gid="52"/>
+   <tile gid="52"/>
    <tile/>
    <tile/>
    <tile/>
