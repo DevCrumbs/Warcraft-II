@@ -443,17 +443,19 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (c2->entity == nullptr)
 				return;
 
-			//if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
-				//dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
-			//}
-				
-			//if (isSelected) {
+				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
+				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
+			}
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("Footman Sight Radius %s", dynEnt->GetColorName().data());
-			//}
+			/*
+			if (isSelected) {
+
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Footman Sight Radius %s", dynEnt->GetColorName().data());
+			}
+			*/
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -520,11 +522,13 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (c2->entity == nullptr)
 				return;
 
-			//if (isSelected) {
+			/*
+			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("Footman Attack Radius %s", dynEnt->GetColorName().data());
-			//}
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("Footman Attack Radius %s", dynEnt->GetColorName().data());
+			}
+			*/
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -572,11 +576,13 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
 			}
 
-			//if (isSelected) {
+			/*
+			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("NO MORE Footman Sight Radius %s", dynEnt->GetColorName().data());
-			//}
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Footman Sight Radius %s", dynEnt->GetColorName().data());
+			}
+			*/
 
 			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::iterator it = targets.begin();
@@ -622,11 +628,13 @@ void Footman::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState c
 			if (c2->entity == nullptr)
 				return;
 
-			//if (isSelected) {
+			/*
+			if (isSelected) {
 
-				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				//LOG("NO MORE Footman Attack Radius %s", dynEnt->GetColorName().data());
-			//}
+				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				LOG("NO MORE Footman Attack Radius %s", dynEnt->GetColorName().data());
+			}
+			*/
 
 			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();

@@ -16,11 +16,6 @@ Entity::Entity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* li
 		this->currLife = this->maxLife;
 }
 
-Entity::Entity(const Entity& e) :
-	entityType(e.entityType), entitySide(e.entitySide), isRemove(e.isRemove), isSelected(e.isSelected), pos(e.pos), minimapDrawColor(e.minimapDrawColor),
-	size(e.size), offsetSize(e.offsetSize), currLife(e.currLife), maxLife(e.maxLife), lifeString(e.lifeString), listener(e.listener), entityCollider(e.entityCollider),
-	unitsAttacking(e.unitsAttacking), color(e.color), colorName(e.colorName), isValid(e.isValid) {}
-
 Entity::~Entity()
 {
 	// Remove Colliders
