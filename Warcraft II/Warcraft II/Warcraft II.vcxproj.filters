@@ -339,6 +339,12 @@
     <ClInclude Include="OrcShip.h">
       <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
     </ClInclude>
+    <ClInclude Include="j1Intro.h">
+      <Filter>Modules\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Video.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PugiXml\src\pugixml.cpp">
@@ -583,6 +589,12 @@
     </ClCompile>
     <ClCompile Include="OrcShip.cpp">
       <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Intro.cpp">
+      <Filter>Modules\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Video.cpp">
+      <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
