@@ -425,6 +425,21 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
 				currTile->tileSprite[2] = FoWTileSprite_HorizontalWaveTopLeft;
 				currTile->tileSprite[3] = FoWTileSprite_HorizontalWaveTopRight;
+
+				// Tiles at both sides of the checked tile
+				FogOfWarTile* bottomRightSide = fowTilesVector[tile + width + 1];
+				FogOfWarTile* bottomLeftSide = fowTilesVector[tile + width - 1];
+
+				if (bottomRightSide != nullptr && bottomLeftSide != nullptr) {
+				
+					if (bottomRightSide->alpha == NORMAL_ALPHA || bottomLeftSide->alpha == NORMAL_ALPHA) {
+					
+						currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+					}
+				}
 			}
 			else if (right->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA && bottom->alpha == NORMAL_ALPHA
 				&& (top->alpha == TRANSLUCID_ALPHA || top->alpha == 0)) {
@@ -433,6 +448,21 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[1] = FoWTileSprite_HorizontalWaveBottomRight;
 				currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
 				currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+
+				// Tiles at both sides of the checked tile
+				FogOfWarTile* topRightSide = fowTilesVector[tile - width + 1];
+				FogOfWarTile* topLeftSide = fowTilesVector[tile - width - 1];
+
+				if (topRightSide != nullptr && topLeftSide != nullptr) {
+
+					if (topRightSide->alpha == NORMAL_ALPHA || topLeftSide->alpha == NORMAL_ALPHA) {
+
+						currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+					}
+				}
 			}
 			else if (right->alpha == NORMAL_ALPHA && bottom->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA
 				&& (left->alpha == TRANSLUCID_ALPHA || left->alpha == 0)) {
@@ -441,6 +471,21 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
 				currTile->tileSprite[2] = FoWTileSprite_VerticalWaveBottomRight;
 				currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+
+				// Tiles at both sides of the checked tile
+				FogOfWarTile* leftTopSide = fowTilesVector[tile - 1 - width];
+				FogOfWarTile* leftBottomSide = fowTilesVector[tile - 1 + width];
+
+				if (leftTopSide != nullptr && leftBottomSide != nullptr) {
+
+					if (leftTopSide->alpha == NORMAL_ALPHA || leftBottomSide->alpha == NORMAL_ALPHA) {
+
+						currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+					}
+				}
 			}
 			else if (bottom->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA
 				&& (right->alpha == TRANSLUCID_ALPHA || right->alpha == 0)) {
@@ -449,6 +494,21 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[1] = FoWTileSprite_VerticalWaveTopLeft;
 				currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
 				currTile->tileSprite[3] = FoWTileSprite_VerticalWaveBottomLeft;
+
+				// Tiles at both sides of the checked tile
+				FogOfWarTile* rightTopSide = fowTilesVector[tile + 1 - width];
+				FogOfWarTile* rightBottomSide = fowTilesVector[tile + 1 + width];
+
+				if (rightTopSide != nullptr && rightBottomSide != nullptr) {
+
+					if (rightTopSide->alpha == NORMAL_ALPHA || rightBottomSide->alpha == NORMAL_ALPHA) {
+
+						currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+					}
+				}
 			}
 
 			// 3 translucid or transparent tiles, 1 black tile
@@ -575,6 +635,21 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
 				currTile->tileSprite[2] = FoWTileSprite_HorizontalWaveTopLeft;
 				currTile->tileSprite[3] = FoWTileSprite_HorizontalWaveTopRight;
+
+				// Tiles at both sides of the checked tile
+				FogOfWarTile* bottomRightSide = fowTilesVector[tile + width + 1];
+				FogOfWarTile* bottomLeftSide = fowTilesVector[tile + width - 1];
+
+				if (bottomRightSide != nullptr && bottomLeftSide != nullptr) {
+
+					if (bottomRightSide->alpha == NORMAL_ALPHA || bottomRightSide->alpha == TRANSLUCID_ALPHA || bottomLeftSide->alpha == NORMAL_ALPHA || bottomLeftSide->alpha == TRANSLUCID_ALPHA) {
+
+						currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+					}
+				}
 			}
 			else if ((right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA)
 				&& top->alpha == 0) {
@@ -583,6 +658,21 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[1] = FoWTileSprite_HorizontalWaveBottomRight;
 				currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
 				currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+
+				// Tiles at both sides of the checked tile
+				FogOfWarTile* topRightSide = fowTilesVector[tile - width + 1];
+				FogOfWarTile* topLeftSide = fowTilesVector[tile - width - 1];
+
+				if (topRightSide != nullptr && topLeftSide != nullptr) {
+
+					if (topRightSide->alpha == NORMAL_ALPHA || topRightSide->alpha == TRANSLUCID_ALPHA || topLeftSide->alpha == NORMAL_ALPHA || topLeftSide->alpha == TRANSLUCID_ALPHA) {
+
+						currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+					}
+				}
 			}
 			else if ((right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA) && (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA)
 				&& left->alpha == 0) {
@@ -591,6 +681,21 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
 				currTile->tileSprite[2] = FoWTileSprite_VerticalWaveBottomRight;
 				currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+
+				// Tiles at both sides of the checked tile
+				FogOfWarTile* leftTopSide = fowTilesVector[tile - 1 - width];
+				FogOfWarTile* leftBottomSide = fowTilesVector[tile - 1 + width];
+
+				if (leftTopSide != nullptr && leftBottomSide != nullptr) {
+
+					if (leftTopSide->alpha == NORMAL_ALPHA || leftTopSide->alpha == TRANSLUCID_ALPHA || leftBottomSide->alpha == NORMAL_ALPHA || leftBottomSide->alpha == TRANSLUCID_ALPHA) {
+
+						currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+					}
+				}
 			}
 			else if ((bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA) && (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA)
 				&& right->alpha == 0) {
@@ -599,6 +704,21 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				currTile->tileSprite[1] = FoWTileSprite_VerticalWaveTopLeft;
 				currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
 				currTile->tileSprite[3] = FoWTileSprite_VerticalWaveBottomLeft;
+
+				// Tiles at both sides of the checked tile
+				FogOfWarTile* rightTopSide = fowTilesVector[tile + 1 - width];
+				FogOfWarTile* rightBottomSide = fowTilesVector[tile + 1 + width];
+
+				if (rightTopSide != nullptr && rightBottomSide != nullptr) {
+
+					if (rightTopSide->alpha == NORMAL_ALPHA || rightTopSide->alpha == TRANSLUCID_ALPHA || rightBottomSide->alpha == NORMAL_ALPHA || rightBottomSide->alpha == TRANSLUCID_ALPHA) {
+
+						currTile->tileSprite[0] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[1] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[2] = FoWTileSprite_QuarterBlack;
+						currTile->tileSprite[3] = FoWTileSprite_QuarterBlack;
+					}
+				}
 			}
 
 			// 3 transparent tiles, 1 black or translucid tile
@@ -721,13 +841,11 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 			// 2 translucid tiles, 2 black tiles (ONLY CORNERS!)
 			/// OpenCircle
 			/// right (3)
-			if ((right->alpha == 0 || right->alpha == TRANSLUCID_ALPHA) && (left->alpha == 0 || left->alpha == TRANSLUCID_ALPHA)
-				&& bottom->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA) {
+			if (bottom->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA) {
 
 				// Not a corner...
 			}
-			else if ((right->alpha == 0 || right->alpha == TRANSLUCID_ALPHA) && (top->alpha == 0 || top->alpha == TRANSLUCID_ALPHA)
-				&& bottom->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
+			else if (bottom->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
 
 				if (bottom->tileSprite[0] == FoWTileSprite_QuarterBlack && left->tileSprite[3] == FoWTileSprite_QuarterBlack) {
 
@@ -739,8 +857,7 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 					currTile->auxAlpha = NORMAL_ALPHA;
 				}
 			}
-			else if ((right->alpha == 0 || right->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == 0 || bottom->alpha == TRANSLUCID_ALPHA)
-				&& top->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA ) {
+			else if (top->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA ) {
 
 				if (top->tileSprite[2] == FoWTileSprite_QuarterBlack && left->tileSprite[1] == FoWTileSprite_QuarterBlack) {
 
@@ -754,8 +871,7 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 			}
 
 			/// left (2)
-			else if ((left->alpha == 0 || left->alpha == TRANSLUCID_ALPHA) && (top->alpha == 0 || top->alpha == TRANSLUCID_ALPHA)
-				&& right->alpha == NORMAL_ALPHA && bottom->alpha == NORMAL_ALPHA) {
+			else if (right->alpha == NORMAL_ALPHA && bottom->alpha == NORMAL_ALPHA) {
 
 				if (right->tileSprite[2] == FoWTileSprite_QuarterBlack && bottom->tileSprite[1] == FoWTileSprite_QuarterBlack) {
 
@@ -767,8 +883,7 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 					currTile->auxAlpha = NORMAL_ALPHA;
 				}
 			}
-			else if ((left->alpha == 0 || left->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == 0 || bottom->alpha == TRANSLUCID_ALPHA)
-				&& right->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA ) {
+			else if (right->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA ) {
 
 				if (right->tileSprite[0] == FoWTileSprite_QuarterBlack && top->tileSprite[3] == FoWTileSprite_QuarterBlack) {
 
@@ -782,8 +897,7 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 			}
 
 			/// top (1)
-			else if ((top->alpha == 0 || top->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == 0 || bottom->alpha == TRANSLUCID_ALPHA)
-				&& right->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
+			else if (right->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
 
 				// Not a corner...
 			}
