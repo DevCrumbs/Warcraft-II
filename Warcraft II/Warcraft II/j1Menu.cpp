@@ -175,6 +175,24 @@ bool j1Menu::Update(float dt)
 
 	if (changeLabel != nullptr) 
 	{
+		if (!changeButtonTimer.IsStarted())
+			changeButtonTimer.Start();
+
+		if (changeButtonTimer.Read() > 250)
+		{
+			SDL_Color color{ 0,0,0,0 };
+
+			if (textColor)
+				color = changeLabel->GetInfo()->hoverColor;
+			else
+				color = changeLabel->GetInfo()->normalColor;
+
+			changeLabel->SetColor(color);
+			textColor = !textColor;
+			changeButtonTimer.Stop();
+			LOG("Color changed");
+		}
+
 		if (App->input->isPresed) {
 			if (*App->input->newLetter == 32)
 				App->input->newLetter = "SPACE";

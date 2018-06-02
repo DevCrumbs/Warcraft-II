@@ -1,11 +1,12 @@
 #ifndef __j1MENU_H__
 #define __j1MENU_H__
+#include <vector>
 
 #include "j1Module.h"
 #include "p2List.h"
 #include "UIElement.h"
+#include "j1Timer.h"
 
-#include <vector>
 
 struct SDL_Texture;
 class UIImage;
@@ -118,6 +119,9 @@ private:
 		//Changing buttons
 	UILabel* returnSettings = nullptr, *changeLabel = nullptr;
 	list<UILabel*> interactiveLabels;
+
+	j1Timer changeButtonTimer;
+	bool textColor = false;
 
 	//Start New Game
 	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;
