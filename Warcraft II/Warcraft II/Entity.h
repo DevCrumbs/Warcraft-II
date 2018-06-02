@@ -130,7 +130,9 @@ class Entity
 {
 public:
 
+	Entity() {}
 	Entity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener);
+	Entity(const Entity& e);
 	virtual ~Entity();
 	virtual void Draw(SDL_Texture* sprites);
 	virtual void DebugDrawSelected();

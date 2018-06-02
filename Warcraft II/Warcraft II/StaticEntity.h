@@ -56,6 +56,7 @@ class StaticEntity :public Entity
 {
 public:
 
+	StaticEntity() {}
 	StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener);
 	StaticEntity(const StaticEntity& e);
 	virtual ~StaticEntity();
