@@ -36,6 +36,8 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	/// Animations
 	GruntInfo info = (GruntInfo&)App->entities->GetUnitInfo(EntityType_GRUNT);
 	this->unitInfo = this->gruntInfo.unitInfo;
+	this->unitInfo.isWanderSpawnTile = unitInfo.isWanderSpawnTile;
+
 	this->gruntInfo.up = info.up;
 	this->gruntInfo.down = info.down;
 	this->gruntInfo.left = info.left;
@@ -235,8 +237,13 @@ void Grunt::Move(float dt)
 					}
 				}
 			}
-			else
-				brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
+			else {
+
+				if (unitInfo.isWanderSpawnTile)
+					brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
+				else
+					brain->AddGoal_Wander(6, spawnTile, true, 1, 3, 1, 2, 2);
+			}
 		}
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL

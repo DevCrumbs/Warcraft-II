@@ -173,28 +173,39 @@ void EnemyBarracks::Move(float dt)
 		respawnTimer += dt;
 
 	if (respawnTimer >= secondsRespawn) {
-	
-		// Spawn the enemies
-		/// TODO Balancing
-		int minValue = 1;
-		int maxValue = 3;
 
-		int totalEnemies = rand() % (maxValue - minValue + 1) + minValue;
+		Room* room = App->map->GetEntityRoom(this);
 
-		for (uint i = 0; i < totalEnemies; ++i) {
+		if (room != nullptr) {
 
-			ENTITY_TYPE enemyType = EntityType_NONE;
-			UnitInfo unitInfo;
+			list<Entity*> roomEntities = App->map->GetEntitiesOnRoomByCategory(*room, EntityCategory_DYNAMIC_ENTITY, EntitySide_Enemy);
 
-			/// Enemy type
-			int randomValue = rand() % 2;
+			if (roomEntities.size() < GetMaxEnemiesPerRoom(room->roomType)) {
 
-			if (randomValue == 0)
-				enemyType = EntityType_GRUNT;
-			else
-				enemyType = EntityType_TROLL_AXETHROWER;
+				// Spawn the enemies
+				/// TODO Balancing
+				int minValue = 1;
+				int maxValue = 3;
 
-			App->player->SpawnUnitFromBuilding(this, enemyType, unitInfo);
+				int totalEnemies = rand() % (maxValue - minValue + 1) + minValue;
+
+				for (uint i = 0; i < totalEnemies; ++i) {
+
+					ENTITY_TYPE enemyType = EntityType_NONE;
+					UnitInfo unitInfo;
+					unitInfo.isWanderSpawnTile = false;
+
+					/// Enemy type
+					int randomValue = rand() % 2;
+
+					if (randomValue == 0)
+						enemyType = EntityType_GRUNT;
+					else
+						enemyType = EntityType_TROLL_AXETHROWER;
+
+					App->player->SpawnUnitFromBuilding(this, enemyType, unitInfo);
+				}
+			}
 		}
 
 		isRespawnTimer = false;

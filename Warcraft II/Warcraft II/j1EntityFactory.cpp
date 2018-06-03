@@ -3252,6 +3252,198 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 		}
 	}
 
+	// Also check toSpawnEntities
+	list<Entity*>::const_iterator toSpawn = toSpawnEntities.begin();
+
+	while (toSpawn != toSpawnEntities.end()) {
+	
+		if (entityCategory == EntityCategory_DYNAMIC_ENTITY || entityCategory == EntityCategory_NONE) {
+
+			if ((*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			
+				DynamicEntity* dynEnt = (DynamicEntity*)(*toSpawn);
+
+				// The unit cannot be dead and must be valid
+				if (!dynEnt->isDead && dynEnt->GetIsValid()) {
+
+					iPoint entityTile = App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y);
+
+					switch (entitySide) {
+
+					case EntitySide_Player:
+
+						if (dynEnt->entitySide == EntitySide_Player)
+							if (tile.x == entityTile.x && tile.y == entityTile.y)
+								return (Entity*)dynEnt;
+						break;
+
+					case EntitySide_Enemy:
+
+						if (dynEnt->entitySide == EntitySide_Enemy)
+							if (tile.x == entityTile.x && tile.y == entityTile.y)
+								return (Entity*)dynEnt;
+						break;
+
+					case EntitySide_Neutral:
+
+						if (dynEnt->entitySide == EntitySide_Neutral)
+							if (tile.x == entityTile.x && tile.y == entityTile.y)
+								return (Entity*)dynEnt;
+						break;
+
+					case EntitySide_NoSide:
+
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)dynEnt;
+						break;
+					}
+				}
+			}
+		}
+		if (entityCategory == EntityCategory_STATIC_ENTITY || entityCategory == EntityCategory_NONE) {
+		
+			if ((*toSpawn)->entityType == EntityCategory_STATIC_ENTITY) {
+
+				StaticEntity* statEnt = (StaticEntity*)(*toSpawn);
+
+				iPoint entityTile = App->map->WorldToMap(statEnt->GetPos().x, statEnt->GetPos().y);
+
+				switch (entitySide) {
+
+				case EntitySide_Player:
+
+					if (statEnt->entitySide == EntitySide_Player) {
+
+						if (statEnt->GetSize().x == 64 && statEnt->GetSize().y == 64) { //Small
+							for (int i = 0; i < 2; i++) {
+								for (int j = 0; j < 2; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 96 && statEnt->GetSize().y == 96) { //Medium
+							for (int i = 0; i < 3; i++) {
+								for (int j = 0; j < 3; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 128 && statEnt->GetSize().y == 128) { //Big
+
+							for (int i = 0; i < 4; i++) {
+								for (int j = 0; j < 4; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+
+					}
+					break;
+
+				case EntitySide_Enemy:
+
+					if (statEnt->entitySide == EntitySide_Enemy) {
+
+						if (statEnt->GetSize().x == 64 && statEnt->GetSize().y == 64) { //Small
+							for (int i = 0; i < 2; i++) {
+								for (int j = 0; j < 2; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 96 && statEnt->GetSize().y == 96) { //Medium
+							for (int i = 0; i < 3; i++) {
+								for (int j = 0; j < 3; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 128 && statEnt->GetSize().y == 128) { //Big
+
+							for (int i = 0; i < 4; i++) {
+								for (int j = 0; j < 4; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+
+					}
+					break;
+
+				case EntitySide_Neutral:
+
+					if (statEnt->entitySide == EntitySide_Neutral) {
+
+						if (statEnt->GetSize().x == 64 && statEnt->GetSize().y == 64) { //Small
+							for (int i = 0; i < 2; i++) {
+								for (int j = 0; j < 2; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 96 && statEnt->GetSize().y == 96) { //Medium
+							for (int i = 0; i < 3; i++) {
+								for (int j = 0; j < 3; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 128 && statEnt->GetSize().y == 128) { //Big
+
+							for (int i = 0; i < 4; i++) {
+								for (int j = 0; j < 4; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+
+					}
+					break;
+
+				case EntitySide_NoSide:
+
+					if (statEnt->GetSize().x == 64 && statEnt->GetSize().y == 64) { //Small
+						for (int i = 0; i < 2; i++) {
+							for (int j = 0; j < 2; j++) {
+								if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+									return (Entity*)statEnt;
+							}
+						}
+					}
+					else if (statEnt->GetSize().x == 96 && statEnt->GetSize().y == 96) { //Medium
+						for (int i = 0; i < 3; i++) {
+							for (int j = 0; j < 3; j++) {
+								if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+									return (Entity*)statEnt;
+							}
+						}
+					}
+					else if (statEnt->GetSize().x == 128 && statEnt->GetSize().y == 128) { //Big
+
+						for (int i = 0; i < 4; i++) {
+							for (int j = 0; j < 4; j++) {
+								if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+									return (Entity*)statEnt;
+							}
+						}
+					}
+					break;
+				}
+			}
+		}
+
+		toSpawn++;
+	}
+
 	return nullptr;
 }
 

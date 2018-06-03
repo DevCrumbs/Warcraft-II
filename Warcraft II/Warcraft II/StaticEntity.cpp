@@ -460,3 +460,22 @@ float StaticEntity::GetRandomSecondsRespawn() const
 
 	return (float)randomValue;
 }
+
+uint StaticEntity::GetMaxEnemiesPerRoom(ROOM_TYPE roomType) const 
+{
+	/// TODO Balancing (max enemies per room)
+	switch (roomType) {
+	
+	case roomType_LITTLE:
+		return 15;
+		break;
+	case roomType_LARGE:
+		return 20;
+		break;
+	default:
+		return 15;
+		break;
+	}
+
+	return 15;
+}
