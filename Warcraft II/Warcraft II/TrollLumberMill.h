@@ -12,18 +12,27 @@ class TrollLumberMill :public StaticEntity
 {
 public:
 	TrollLumberMill(fPoint pos, iPoint size, int currLife, uint maxLife, const TrollLumberMillInfo& trollLumberMillInfo, j1Module* listener);
-	virtual ~TrollLumberMill(){}
+	~TrollLumberMill();
 
 	void Move(float dt);
-
-	// Animations
-	void LoadAnimationsSpeed();
-	void UpdateAnimations(float dt);
 
 private:
 
 	TrollLumberMillInfo trollLumberMillInfo;
 
+	// Reconstruction
+	Particle* peon = nullptr;
+
+	float secondsReconstruction = 0.0f;
+
+	float startReconstructionTimer = 0.0f;
+	float inProgressReconstructionTimer = 0.0f;
+
+	bool isRestartReconstructionTimer = false;
+	bool isStartReconstructionTimer = false;
+	bool isInProgressReconstructionTimer = false;
+
+	BuildingState buildingStateBeforeReconstruction = BuildingState_NoState;
 };
 
 #endif

@@ -422,3 +422,41 @@ ColliderGroup* StaticEntity::GetSightRadiusCollider() const
 {
 	return sightRadiusCollider;
 }
+
+// Reconstruction
+float StaticEntity::GetSecondsReconstruction(StaticEntitySize buildingSize) const 
+{
+	/// TODO Balancing (enemy buildings reconstruction)
+	switch (buildingSize) {
+	
+	case StaticEntitySize_Small:
+		return 5.0f;
+		break;
+	case StaticEntitySize_Medium:
+		return 8.0f;
+		break;
+	case StaticEntitySize_Big:
+		return 12.0f;
+		break;
+	default:
+		return 5.0f;
+		break;
+	}
+
+	return 5.0f;
+}
+
+// Respawn
+float StaticEntity::GetRandomSecondsRespawn() const 
+{
+	/// TODO Balancing (respawn enemies)
+	int minValue = 10.0f;
+	int maxValue = 20.0f;
+	//int minValue = 30.0f;
+	//int maxValue = 120.0f;
+
+	/// rand() % (max - min + 1) + min
+	int randomValue = rand() % (maxValue - minValue + 1) + minValue;
+
+	return (float)randomValue;
+}

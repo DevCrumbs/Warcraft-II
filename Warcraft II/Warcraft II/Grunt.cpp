@@ -114,7 +114,7 @@ void Grunt::Move(float dt)
 			isDead = true;
 			App->player->enemiesKill++;
 
-			// TODO balancing
+			/// TODO Balancing
 			// Give gold to the player
 			if (App->scene->mapDifficulty != 4) {
 				App->player->AddGold(gruntInfo.droppedGold);
