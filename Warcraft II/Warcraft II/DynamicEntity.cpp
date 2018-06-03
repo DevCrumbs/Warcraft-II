@@ -991,7 +991,7 @@ UnitInfo::UnitInfo() {}
 UnitInfo::UnitInfo(const UnitInfo& u) :
 	priority(u.priority), sightRadius(u.sightRadius), attackRadius(u.attackRadius), heavyDamage(u.heavyDamage), lightDamage(u.lightDamage),
 	airDamage(u.airDamage), towerDamage(u.towerDamage), maxSpeed(u.maxSpeed), currSpeed(u.currSpeed), currLife(u.currLife), maxLife(u.maxLife),
-	size(u.size), offsetSize(u.offsetSize) {}
+	size(u.size), offsetSize(u.offsetSize), isWanderSpawnTile(u.isWanderSpawnTile) {}
 
 UnitInfo::~UnitInfo() {}
 

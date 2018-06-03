@@ -112,6 +112,9 @@ struct UnitInfo
 	// Size
 	iPoint size = { 0,0 };
 	iPoint offsetSize = { 0,0 };
+
+	// Wander (only enemies)
+	bool isWanderSpawnTile = true;
 };
 
 struct TargetInfo

@@ -227,6 +227,7 @@ If debug mode is on:
 	F4: Activate or stop the spawn of waves
 	F5: Show/hide colliders
 	F6: Show fog of war sprites' distribution
+	F7: Show group movement calculation
 
 # Game system
 

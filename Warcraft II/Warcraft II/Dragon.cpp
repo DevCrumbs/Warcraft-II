@@ -39,6 +39,8 @@ Dragon::Dragon(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitIn
 	/// Animations
 	DragonInfo info = (DragonInfo&)App->entities->GetUnitInfo(EntityType_DRAGON);
 	this->unitInfo = this->dragonInfo.unitInfo;
+	this->unitInfo.isWanderSpawnTile = unitInfo.isWanderSpawnTile;
+
 	this->dragonInfo.up = info.up;
 	this->dragonInfo.down = info.down;
 	this->dragonInfo.left = info.left;
@@ -238,8 +240,13 @@ void Dragon::Move(float dt)
 					}
 				}
 			}
-			else
-				brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
+			else {
+
+				if (unitInfo.isWanderSpawnTile)
+					brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
+				else
+					brain->AddGoal_Wander(5, spawnTile, true, 1, 3, 1, 2, 2);
+			}
 		}
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL

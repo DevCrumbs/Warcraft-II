@@ -34,13 +34,15 @@ enum ROOM_TYPE
 struct Room
 {
 public:
-	Room(SDL_Rect rect = { 0,0,0,0 }, bool cleared = false)
+	Room(SDL_Rect rect = { 0,0,0,0 }, bool cleared = false, ROOM_TYPE roomType = roomType_NONE)
 	{
 		roomRect = rect;
 		isCleared = cleared;
+		this->roomType = roomType;
 	}
 	Room()
 	{
+		roomType = roomType_NONE;
 		roomRect = { 0,0,0,0 };
 		isCleared = false;
 	}
@@ -58,6 +60,8 @@ public:
 	}
 
 public:
+
+	ROOM_TYPE roomType = roomType_NONE;
 	SDL_Rect roomRect{ 0,0,0,0 };
 	bool isCleared = false;
 };

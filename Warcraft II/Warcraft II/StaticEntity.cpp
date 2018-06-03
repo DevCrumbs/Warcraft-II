@@ -450,13 +450,30 @@ float StaticEntity::GetSecondsReconstruction(StaticEntitySize buildingSize) cons
 float StaticEntity::GetRandomSecondsRespawn() const 
 {
 	/// TODO Balancing (respawn enemies)
-	int minValue = 10.0f;
-	int maxValue = 20.0f;
-	//int minValue = 30.0f;
-	//int maxValue = 120.0f;
+	int minValue = 40.0f;
+	int maxValue = 80.0f;
 
 	/// rand() % (max - min + 1) + min
 	int randomValue = rand() % (maxValue - minValue + 1) + minValue;
 
 	return (float)randomValue;
+}
+
+uint StaticEntity::GetMaxEnemiesPerRoom(ROOM_TYPE roomType) const 
+{
+	/// TODO Balancing (max enemies per room)
+	switch (roomType) {
+	
+	case roomType_LITTLE:
+		return 15;
+		break;
+	case roomType_LARGE:
+		return 20;
+		break;
+	default:
+		return 15;
+		break;
+	}
+
+	return 15;
 }

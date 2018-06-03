@@ -1064,6 +1064,7 @@ bool j1Map::LoadRoomRect(MapLayer* layer)
 				{
 				case roomType_BASE:
 					playerBase.roomRect = { pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultBaseSize * defaultTileSize };
+					playerBase.roomType = roomType;
 					roomRectList.push_back(playerBase);
 					App->scene->basePos = { playerBase.roomRect.x + margin * defaultTileSize, playerBase.roomRect.y + margin * defaultTileSize };
 
@@ -1072,10 +1073,10 @@ bool j1Map::LoadRoomRect(MapLayer* layer)
 
 					break;
 				case roomType_LARGE:
-					roomRectList.push_back({{ pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultRoomSize * defaultTileSize }, false});
+					roomRectList.push_back({{ pos.x, pos.y, defaultRoomSize * defaultTileSize, defaultRoomSize * defaultTileSize }, false, roomType});
 					break;
 				case roomType_LITTLE:
-					roomRectList.push_back({ { pos.x, pos.y, defaultLittleSize * defaultTileSize, defaultLittleSize * defaultTileSize},false });
+					roomRectList.push_back({ { pos.x, pos.y, defaultLittleSize * defaultTileSize, defaultLittleSize * defaultTileSize},false, roomType });
 					break;
 				default:
 					break;

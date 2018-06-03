@@ -37,6 +37,8 @@ TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint max
 	/// Animations
 	TrollAxethrowerInfo info = (TrollAxethrowerInfo&)App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER);
 	this->unitInfo = this->trollAxethrowerInfo.unitInfo;
+	this->unitInfo.isWanderSpawnTile = unitInfo.isWanderSpawnTile;
+
 	this->trollAxethrowerInfo.up = info.up;
 	this->trollAxethrowerInfo.down = info.down;
 	this->trollAxethrowerInfo.left = info.left;
@@ -236,8 +238,13 @@ void TrollAxethrower::Move(float dt)
 					}
 				}
 			}
-			else
-				brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
+			else {
+
+				if (unitInfo.isWanderSpawnTile)
+					brain->AddGoal_Wander(5, spawnTile, false, 0, 1, 0, 1, 3);
+				else
+					brain->AddGoal_Wander(5, spawnTile, true, 0, 1, 0, 1, 3);
+			}
 		}
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL

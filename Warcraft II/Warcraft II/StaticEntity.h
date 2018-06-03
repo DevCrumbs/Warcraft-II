@@ -7,6 +7,7 @@
 #include "j1Input.h"
 #include "j1Window.h"
 
+/// TODO Balancing (seconds until the enemies reconstruct a building)
 #define SECONDS_START_RECONSTRUCTION 20.0f
 
 struct SDL_Texture;
@@ -15,6 +16,7 @@ struct Particle;
 enum ENTITY_TYPE;
 enum ColliderType;
 enum DistanceHeuristic;
+enum ROOM_TYPE;
 
 enum StaticEntityCategory
 {
@@ -84,6 +86,7 @@ public:
 
 	// Respawn
 	float GetRandomSecondsRespawn() const;
+	uint GetMaxEnemiesPerRoom(ROOM_TYPE roomType) const;
 
 public:
 
