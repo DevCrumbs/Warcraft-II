@@ -33,7 +33,6 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	// -----
 
 	texArea = &scoutTowerInfo.constructionPlanks1;
-	this->constructionTimer.Start();
 
 	buildingState = BuildingState_Building;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
@@ -79,11 +78,13 @@ void ScoutTower::Move(float dt)
 	TowerStateMachine(dt);
 
 	//Update animations for the construction cycle
-	if(!isBuilt)
-	UpdateAnimations(dt);
+	if (!isBuilt) {
+		constructionTimer += dt;
+		UpdateAnimations(dt);
+	}
 
 	//Check is building is built already
-	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000)) {
+	if (!isBuilt && constructionTimer >= constructionTime) {
 		isBuilt = true;
 
 		if (peasants != nullptr) {
@@ -198,13 +199,13 @@ void ScoutTower::LoadAnimationsSpeed()
 
 void ScoutTower::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer >= (constructionTime / 3))
 		texArea = &scoutTowerInfo.constructionPlanks2;
 
-	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &scoutTowerInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	if (constructionTimer >= constructionTime) {
 		texArea = &scoutTowerInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

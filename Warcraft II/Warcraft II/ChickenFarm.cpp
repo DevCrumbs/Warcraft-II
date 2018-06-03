@@ -44,7 +44,6 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	}
 	else if (!isBuilt) {
 		texArea = &chickenFarmInfo.constructionPlanks1;
-		this->constructionTimer.Start();
 		buildingState = BuildingState_Building;
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 
@@ -72,13 +71,16 @@ ChickenFarm::~ChickenFarm()
 
 void ChickenFarm::Move(float dt)
 {
+
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 
-	if(!isBuilt)
+	if (!isBuilt) {
+		constructionTimer += dt;
 		UpdateAnimations(dt);
-	
-	if (constructionTimer.Read() >= (constructionTime * 1000) && !isBuilt) {
+	}
+
+	if (constructionTimer >= constructionTime && !isBuilt) {
 		isBuilt = true;
 		App->player->currentFood += 3;
 		App->scene->hasFoodChanged = true;
@@ -99,13 +101,13 @@ void ChickenFarm::LoadAnimationsSpeed()
 
 void ChickenFarm::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer >= (constructionTime / 3))
 		texArea = &chickenFarmInfo.constructionPlanks2;
 
-	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &chickenFarmInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	if (constructionTimer >= constructionTime) {
 		texArea = &chickenFarmInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

@@ -81,7 +81,6 @@ void TownHall::Move(float dt)
 	if (App->player->townHallUpgrade) {
 		
 		if (startTimer) {
-			this->constructionTimer.Start();
 			isBuilt = false;
 			startTimer = false;
 
@@ -89,7 +88,11 @@ void TownHall::Move(float dt)
 			peasants = App->particles->AddParticle(App->particles->peasantBigBuild, { (int)pos.x - 40,(int)pos.y - 40 });
 		}
 		townHallInfo.townHallType = TownHallType_Keep;
-		UpdateAnimations(dt);
+
+		if (!isBuilt) {
+			constructionTimer += dt;
+			UpdateAnimations(dt);
+		}
 	}
 }
 
@@ -101,7 +104,7 @@ void TownHall::LoadAnimationsSpeed()
 
 void TownHall::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	if (constructionTimer >= constructionTime) {
 
 		if (townHallInfo.townHallType == TownHallType_Keep && buildingState == BuildingState_Building) {
 			texArea = &townHallInfo.keepCompleteTexArea;

@@ -71,8 +71,8 @@ public:
 	void HandleInput(EntitiesEvent &EntityEvent);
 	bool MouseHover() const;
 	bool CheckBuildingState();
-	uint GetConstructionTimer() const;
-	uint GetConstructionTime() const;
+	float GetConstructionTimer() const;
+	float GetConstructionTime() const;
 	bool GetIsFinishedBuilt() const;
 
 	BuildingState GetBuildingState() const;
@@ -99,8 +99,9 @@ protected:
 
 	Particle* fire = nullptr;
 	const SDL_Rect* texArea = nullptr;
-	j1Timer constructionTimer;
-	uint constructionTime = 0;
+
+	float constructionTimer = 0.0f;
+	float constructionTime = 0.0f;
 	bool isBuilt = false;
 
 	// Collision

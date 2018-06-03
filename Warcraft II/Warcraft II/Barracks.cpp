@@ -53,7 +53,6 @@ Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const Ba
 
 	else if (!isBuilt) {
 		texArea = &barracksInfo.constructionPlanks1;
-		this->constructionTimer.Start();
 		buildingState = BuildingState_Building;
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 
@@ -81,23 +80,19 @@ void Barracks::Move(float dt)
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 
-	if (!isBuilt) 
+	if (!isBuilt) {
+		constructionTimer += dt;
 		UpdateAnimations(dt);
+	}
 
-	if (constructionTimer.Read() >= (constructionTime * 1000) && !isBuilt)
+	if (constructionTimer >= (constructionTime) && !isBuilt) {
 		isBuilt = true;
 
-	//It isnt used anymore
-	/*if (App->player->barracksUpgrade) {
-		if (startTimer) {
-			this->constructionTimer.Start();
-			App->player->HideEntitySelectedInfo();
-			startTimer = false;
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
 		}
-		UpdateAnimations(dt);
-		barracksInfo.barracksType = BarracksType_Barracks2;
-	}*/
-	//-----------------------------
+	}
 }
 
 // Animations
@@ -108,36 +103,16 @@ void Barracks::LoadAnimationsSpeed()
 
 void Barracks::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer >= (constructionTime / 3))
 		texArea = &barracksInfo.constructionPlanks2;
 
-	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &barracksInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	if (constructionTimer >= constructionTime) {
 		texArea = &barracksInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 
-		if (peasants != nullptr) {
-			peasants->isRemove = true;
-			peasants = nullptr;
-		}
 	}
 
-	//It isnt used anymore
-	/*
-	if (constructionTimer.Read() >= constructionTime * 1000) {
-		if (barracksInfo.barracksType == BarracksType_Barracks2) {
-			texArea = &barracksInfo.barracks2CompleteTexArea;
-			buildingState = BuildingState_Normal;
-			SetMaxLife(1200);
-			SetCurrLife(1200);
-		}
-	}
-	else {
-		texArea = &barracksInfo.constructionPlanks2;
-		buildingState = BuildingState_Building;
-	}
-	*/
-	//-----------------------------
 }
