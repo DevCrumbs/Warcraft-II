@@ -173,7 +173,7 @@ bool j1Menu::Update(float dt)
 		break;
 	}
 
-	if (changeButt.changeLabel != nullptr) 
+	if (changeButt.changeLabel != nullptr)
 	{
 		if (!changeButtonTimer.IsStarted())
 			changeButtonTimer.Start();
@@ -192,7 +192,7 @@ bool j1Menu::Update(float dt)
 			changeButtonTimer.Stop();
 		}
 
-		if (App->input->scancode != SDL_SCANCODE_UNKNOWN)
+		if (App->input->scancode != SDL_SCANCODE_UNKNOWN && App->input->GetKey(App->input->scancode) == KEY_DOWN)
 		{
 			bool isChanged = false;
 			if (App->input->scancode < keysName.size())
@@ -203,21 +203,21 @@ bool j1Menu::Update(float dt)
 					*changeButt.currentButton = App->input->scancode;
 					isChanged = true;
 				}
-				else if (!CanSwapButt(App->input->scancode))
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
-				else
+				else if (CanSwapButt(App->input->scancode))
+				{
 					isChanged = true;
-			}
-			else
-			{
-				App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
+				}
 			}
 
 			if (isChanged) {
 				changeButt.changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);
 				changeButt.changeLabel = nullptr;
 				App->input->scancode = SDL_SCANCODE_UNKNOWN;
+				//TODO Audio Valdivia
 			}
+			else
+				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+
 		}
 	}
 	return true;
