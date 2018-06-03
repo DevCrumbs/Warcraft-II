@@ -213,7 +213,7 @@ bool j1Menu::Update(float dt)
 				changeButt.changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);
 				changeButt.changeLabel = nullptr;
 				App->input->scancode = SDL_SCANCODE_UNKNOWN;
-				//TODO Audio Valdivia
+				App->audio->PlayFx(App->audio->GetFX().changeKey);
 			}
 			else
 				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
