@@ -25,6 +25,10 @@
 
 ElvenArcher::ElvenArcher(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const ElvenArcherInfo& elvenArcherInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), elvenArcherInfo(elvenArcherInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_ELVEN_ARCHER;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+
 	// XML loading
 	/// Animations
 	ElvenArcherInfo info = (ElvenArcherInfo&)App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER);
@@ -396,11 +400,19 @@ void ElvenArcher::Draw(SDL_Texture* sprites)
 
 			offset = { animation->GetCurrentFrame().w / 6.3f, animation->GetCurrentFrame().h / 4.3f };
 			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+
+			if (lifeBar != nullptr)
+				if (lifeBar->isBlit)
+					lifeBar->isBlit = false;
 		}
 		else {
 
 			offset = { animation->GetCurrentFrame().w / 4.3f, animation->GetCurrentFrame().h / 2.1f };
 			App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
+
+			if (lifeBar != nullptr)
+				if (lifeBar->isBlit)
+					lifeBar->isBlit = true;
 		}
 	}
 
@@ -435,11 +447,13 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
 			}
 
-			//if (isSelected) {
+			/*
+			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 				LOG("Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
-			//}
+			}
+			*/
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -505,11 +519,13 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			if (c2->entity == nullptr)
 				return;
 
-			//if (isSelected) {
+			/*
+			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 				LOG("Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
-			//}
+			}
+			*/
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -551,17 +567,19 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			if (c2->entity == nullptr)
 				return;
 
-			//if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			if (c2->entity->entityType == EntityCategory_DYNAMIC_ENTITY) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c2->entity;
 				dynEnt->SetLastSeenTile(App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y));
-			//}
+			}
 
+			/*
 			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 				LOG("NO MORE Elven Archer Sight Radius %s", dynEnt->GetColorName().data());
 			}
+			*/
 
 			// Set the target's isSightSatisfied to false
 			list<TargetInfo*>::iterator it = targets.begin();
@@ -607,11 +625,13 @@ void ElvenArcher::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionSta
 			if (c2->entity == nullptr)
 				return;
 
-			//if (isSelected) {
+			/*
+			if (isSelected) {
 
 				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
 				LOG("NO MORE Elven Archer Attack Radius %s", dynEnt->GetColorName().data());
-			//}
+			}
+			*/
 
 			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();

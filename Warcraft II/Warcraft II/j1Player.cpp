@@ -790,11 +790,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 }, ent);
 			}
 
-			else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER) {
-				App->audio->PlayFx(App->audio->GetFX().mageTower, 0); //Mage tower sound
-				ShowEntitySelectedInfo(ent->GetStringLife(), "Mage Tower", { 394,202,50,41 }, ent);
-			}
-
 			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 }, ent);
@@ -808,11 +803,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Cannon Tower", { 394,118,50,41 }, ent);
-			}
-
-			else if (staticEntity->staticEntityType == EntityType_STABLES) {
-				App->audio->PlayFx(App->audio->GetFX().stables, 0); //Stables sound
-				ShowEntitySelectedInfo(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->GetIsFinishedBuilt()) {
@@ -936,10 +926,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Gryphon Aviary", { 394,160,50,41 }, ent);
 			}
-			else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER) {
-				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-				ShowEntitySelectedInfo("Building...", "Mage Tower", { 394,202,50,41 }, ent);
-			}
 			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Scout Tower", { 394,34,50,41 }, ent);
@@ -951,10 +937,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Cannon Tower", { 394,118,50,41 }, ent);
-			}
-			else if (staticEntity->staticEntityType == EntityType_STABLES) {
-				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-				ShowEntitySelectedInfo("Building...", "Stables", { 241,160,50,41 }, ent);
 			}
 			else if (staticEntity->staticEntityType == EntityType_BARRACKS) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
@@ -1952,24 +1934,60 @@ uint j1Player::CalculateGoldRepair(StaticEntity* entity)
 void j1Player::CheckBuildingsState() 
 {
 	if (townHall != nullptr) {
-		if(townHall->GetCurrLife() <= 0 || townHall->isRemove)
+		if (townHall->GetCurrLife() <= 0 || townHall->isRemove) {
 			townHall = nullptr;
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+		}
 	}
 
 	if (barracks != nullptr) {
-		if (barracks->GetCurrLife() <= 0 || barracks->isRemove)
+		if (barracks->GetCurrLife() <= 0 || barracks->isRemove) {
 			barracks = nullptr;
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (secondHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&secondHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+		}
+
 	}
 
 	if (gryphonAviary != nullptr) {
-		if (gryphonAviary->GetCurrLife() <= 0 || gryphonAviary->isRemove)
+		if (gryphonAviary->GetCurrLife() <= 0 || gryphonAviary->isRemove) {
 			gryphonAviary = nullptr;
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (secondHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&secondHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+		}
+
 	}
 
 	if (!chickenFarm.empty())
 		for (list<StaticEntity*>::iterator iterator = chickenFarm.begin(); iterator != chickenFarm.end(); ++iterator)
 		{
 			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
+
+				if (firstHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&firstHoverInfo);
+
+				if (thirdHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&thirdHoverInfo);
+
 				if (chickenFarm.size() == 1) {
 					chickenFarm.remove((*iterator));
 					break;
@@ -1982,6 +2000,13 @@ void j1Player::CheckBuildingsState()
 		for (list<StaticEntity*>::iterator iterator = scoutTower.begin(); iterator != scoutTower.end(); ++iterator)
 		{
 			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
+
+				if (firstHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&firstHoverInfo);
+
+				if (thirdHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&thirdHoverInfo);
+
 				if (scoutTower.size() == 1) {
 					scoutTower.remove((*iterator));
 					break;
@@ -1994,6 +2019,13 @@ void j1Player::CheckBuildingsState()
 	if (!guardTower.empty())
 		for (list<StaticEntity*>::iterator iterator = guardTower.begin(); iterator != guardTower.end(); ++iterator)
 		{
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+
 			if (guardTower.size() == 1) {
 				guardTower.remove((*iterator));
 				break;
@@ -2007,6 +2039,13 @@ void j1Player::CheckBuildingsState()
 	if(!cannonTower.empty())
 		for (list<StaticEntity*>::iterator iterator = cannonTower.begin(); iterator != cannonTower.end(); ++iterator)
 		{
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+
 			if (cannonTower.size() == 1) {
 				cannonTower.remove((*iterator));
 				break;

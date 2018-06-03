@@ -9,6 +9,7 @@
 #include "j1Textures.h"
 #include "j1Audio.h"
 #include "j1Scene.h"
+#include "j1Intro.h"
 #include "j1Map.h"
 #include "j1Particles.h"
 #include "j1Collision.h"
@@ -26,6 +27,7 @@
 #include "j1Printer.h"
 #include "j1EnemyWave.h"
 #include "j1FogOfWar.h"
+#include "j1Video.h"
 #include <time.h>
 
 #include "j1App.h"
@@ -42,6 +44,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new j1Textures();
 	audio = new j1Audio();
 	scene = new j1Scene();
+	intro = new j1Intro();
 	map = new j1Map();
 	particles = new j1Particles();
 	collision = new j1Collision();
@@ -59,6 +62,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	printer = new j1Printer();
 	wave = new j1EnemyWave();
 	fow = new j1FogOfWar();
+	video = new j1Video();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -82,7 +86,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(font);
 
 	AddModule(player);
+	AddModule(video);
 	AddModule(scene);
+	AddModule(intro);
 
 	AddModule(fow);
 
@@ -96,6 +102,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	// render last to swap buffer
 	AddModule(render);
 
+	//menu->active = false;
+	intro->active = false;
 	map->active = false;
 	scene->active = false;
 	finish->active = false;

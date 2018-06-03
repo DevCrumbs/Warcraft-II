@@ -16,8 +16,6 @@
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) 
 {
-	this->entityType = EntityCategory_STATIC_ENTITY;
-
 	if (App->GetSecondsSinceAppStartUp() < 700) // Checks for static entities built since startup
 		isBuilt = true;
 
@@ -161,7 +159,6 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 	}
 }
 
-
 bool StaticEntity::MouseHover() const
 {
 	int x, y;
@@ -174,7 +171,6 @@ bool StaticEntity::MouseHover() const
 
 	return x > screen_pos.x / scale && x < screen_pos.x / scale + size.x && y > screen_pos.y / scale && y < screen_pos.y / scale + size.y;
 }
-
 
 bool StaticEntity::CheckBuildingState()
 {
@@ -425,4 +421,59 @@ ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, ui
 ColliderGroup* StaticEntity::GetSightRadiusCollider() const
 {
 	return sightRadiusCollider;
+}
+
+// Reconstruction
+float StaticEntity::GetSecondsReconstruction(StaticEntitySize buildingSize) const 
+{
+	/// TODO Balancing (enemy buildings reconstruction)
+	switch (buildingSize) {
+	
+	case StaticEntitySize_Small:
+		return 5.0f;
+		break;
+	case StaticEntitySize_Medium:
+		return 8.0f;
+		break;
+	case StaticEntitySize_Big:
+		return 12.0f;
+		break;
+	default:
+		return 5.0f;
+		break;
+	}
+
+	return 5.0f;
+}
+
+// Respawn
+float StaticEntity::GetRandomSecondsRespawn() const 
+{
+	/// TODO Balancing (respawn enemies)
+	int minValue = 40.0f;
+	int maxValue = 80.0f;
+
+	/// rand() % (max - min + 1) + min
+	int randomValue = rand() % (maxValue - minValue + 1) + minValue;
+
+	return (float)randomValue;
+}
+
+uint StaticEntity::GetMaxEnemiesPerRoom(ROOM_TYPE roomType) const 
+{
+	/// TODO Balancing (max enemies per room)
+	switch (roomType) {
+	
+	case roomType_LITTLE:
+		return 15;
+		break;
+	case roomType_LARGE:
+		return 20;
+		break;
+	default:
+		return 15;
+		break;
+	}
+
+	return 15;
 }

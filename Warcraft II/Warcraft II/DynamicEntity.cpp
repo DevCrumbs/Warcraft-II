@@ -23,8 +23,6 @@
 
 DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, j1Module* listener, bool isSingleUnit) : Entity(pos, size, currLife, maxLife, listener), unitInfo(unitInfo)
 {
-	this->entityType = EntityCategory_DYNAMIC_ENTITY;
-
 	// Movement
 	/// UnitInfo
 	if (this->unitInfo.currSpeed == 0.0f)
@@ -986,7 +984,37 @@ UnitCommand DynamicEntity::GetUnitCommand() const
 	return unitCommand;
 }
 
+// UnitInfo struct ---------------------------------------------------------------------------------
+
+UnitInfo::UnitInfo() {}
+
+UnitInfo::UnitInfo(const UnitInfo& u) :
+	priority(u.priority), sightRadius(u.sightRadius), attackRadius(u.attackRadius), heavyDamage(u.heavyDamage), lightDamage(u.lightDamage),
+	airDamage(u.airDamage), towerDamage(u.towerDamage), maxSpeed(u.maxSpeed), currSpeed(u.currSpeed), currLife(u.currLife), maxLife(u.maxLife),
+	size(u.size), offsetSize(u.offsetSize), isWanderSpawnTile(u.isWanderSpawnTile) {}
+
+UnitInfo::~UnitInfo() {}
+
 // TargetInfo struct ---------------------------------------------------------------------------------
+
+TargetInfo::TargetInfo() {}
+
+TargetInfo::TargetInfo(const TargetInfo& t) :
+	isSightSatisfied(t.isSightSatisfied), isAttackSatisfied(t.isAttackSatisfied), target(t.target),
+	isInGoals(t.isInGoals), isRemoveNeeded(t.isRemoveNeeded), attackingTile(t.attackingTile) {}
+
+TargetInfo::~TargetInfo()
+{
+	isSightSatisfied = false;
+	isAttackSatisfied = false;
+
+	isInGoals = 0;
+	isRemoveNeeded = false;
+
+	target = nullptr;
+
+	attackingTile = { -1,-1 };
+}
 
 bool TargetInfo::IsTargetDead() const 
 {

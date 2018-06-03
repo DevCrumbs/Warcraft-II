@@ -190,7 +190,7 @@ public:
 	void UpdateLabelsMenu();
 	void UpdateIconsMenu();
 	void ChangeMenuLabelInfo(UILabel* label, int cost, bool isSingle = false, StaticEntity* stcEnt = nullptr);
-	void ChangeMenuIconsText(UIButton* butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle = false, StaticEntity* stcEnt = nullptr);
+	void ChangeMenuIconsText(UIButton* butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, SDL_Rect pressedText, bool isSingle = false, StaticEntity* stcEnt = nullptr);
 	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();

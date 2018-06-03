@@ -7,7 +7,11 @@
 #include "j1App.h"
 #include "j1Gui.h"
 
-struct UILifeBar_Info {
+struct UILifeBar_Info 
+{
+	UILifeBar_Info() {}
+	UILifeBar_Info(const UILifeBar_Info& l);
+	~UILifeBar_Info() {}
 
 	SDL_Rect background = {0, 0, 0, 0};
 	SDL_Rect bar =        {0, 0, 0, 0};

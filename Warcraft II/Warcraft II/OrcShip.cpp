@@ -26,6 +26,10 @@
 
 OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const OrcShipInfo& orcShipInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener, false), orcShipInfo(orcShipInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_ORC_SHIP;
+	*(EntitySide*)&entitySide = EntitySide_EnemyShip;
+
 	// XML loading
 	/// Animations
 	OrcShipInfo info = (OrcShipInfo&)App->entities->GetUnitInfo(EntityType_ORC_SHIP);
@@ -42,16 +46,11 @@ OrcShip::OrcShip(fPoint pos, iPoint size, int currLife, uint maxLife, const Unit
 	this->size = this->unitInfo.size;
 	offsetSize = this->unitInfo.offsetSize;
 
-	// IA
-	spawnTile = { singleUnit->currTile.x, singleUnit->currTile.y };
-	iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
-
 	isSpawnedWave = false;
 
 	speed = orcShipInfo.unitInfo.currSpeed - 25;
 
 	movementTimer.Start();
-
 }
 
 void OrcShip::Move(float dt)
@@ -173,7 +172,6 @@ void OrcShip::Move(float dt)
 	}
 
 	// --------------------------------------------------------------------
-	
 }
 
 void OrcShip::Draw(SDL_Texture* sprites)

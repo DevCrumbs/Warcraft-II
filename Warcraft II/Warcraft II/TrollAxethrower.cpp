@@ -27,12 +27,18 @@
 
 TrollAxethrower::TrollAxethrower(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const TrollAxethrowerInfo& trollAxethrowerInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), trollAxethrowerInfo(trollAxethrowerInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_TROLL_AXETHROWER;
+	*(EntitySide*)&entitySide = EntitySide_Enemy;
+
 	pathPlanner->SetIsInSameRoomChecked(true);
 
 	// XML loading
 	/// Animations
 	TrollAxethrowerInfo info = (TrollAxethrowerInfo&)App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER);
 	this->unitInfo = this->trollAxethrowerInfo.unitInfo;
+	this->unitInfo.isWanderSpawnTile = unitInfo.isWanderSpawnTile;
+
 	this->trollAxethrowerInfo.up = info.up;
 	this->trollAxethrowerInfo.down = info.down;
 	this->trollAxethrowerInfo.left = info.left;
@@ -111,7 +117,7 @@ void TrollAxethrower::Move(float dt)
 			isDead = true;
 			App->player->enemiesKill++;
 
-			// TODO balancing
+			/// TODO Balancing
 			// Give gold to the player
 			if (App->scene->mapDifficulty != 4) {
 				App->player->AddGold(trollAxethrowerInfo.droppedGold);
@@ -232,8 +238,13 @@ void TrollAxethrower::Move(float dt)
 					}
 				}
 			}
-			else
-				brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
+			else {
+
+				if (unitInfo.isWanderSpawnTile)
+					brain->AddGoal_Wander(5, spawnTile, false, 0, 1, 0, 1, 3);
+				else
+					brain->AddGoal_Wander(5, spawnTile, true, 0, 1, 0, 1, 3);
+			}
 		}
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL

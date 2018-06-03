@@ -228,6 +228,7 @@ KEYPAD Buttons
 	F8: Activate or stop the spawn of waves
 	F10: Show/hide game's colliders
 	F11: Show/hide movements debug
+	KP.: Show fog of war sprites' distribution
 
 # Game system
 
