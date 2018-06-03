@@ -159,9 +159,48 @@
         buttonPauseMenu = "41"
         buttonPatrolUnits = "17"
         buttonStopUnits = "16"
-    />
-    
-  </scene>
+        buttonDrawFow = "14"
+        
+        buttonSpawnFootman = "89"
+        buttonSpawnArcher ="90"
+        buttonSpawnGryphon ="91"
+        buttonSpawnGrunt ="92"
+        buttonSpawnTroll ="93"
+        buttonSpawnDragon ="94"
+        buttonSpawnSheep ="95"
+        buttonSpawnBoar ="96"
+        buttonSpawnAlleria ="97"
+        buttonSpawnTauralyon ="98"
+        
+        buttonTogleDebug = "65"
+        buttonTogleDebugAttack = "62"
+        buttonTogleDebugMovement = "66"
+        
+        buttonSelectGroup = "225"
+        buttonSelectGroupb = "229"
+
+        buttonSelectGroup1 = "30"
+        buttonSelectGroup2 = "31"
+        buttonSelectGroup3 = "32"
+        
+        buttonSaveGroup = "224"
+        buttonSaveGroupb = "228"
+        
+        buttonWinGame = "58"
+        buttonLoseGame = "59"
+        
+        buttonMoveUp = "82"
+        buttonMoveDown = "81"
+        buttonMoveLeft = "80"
+        buttonMoveRight = "79"
+      
+        buttonMoveUpb = "26"
+        buttonMoveDownb = "22"
+        buttonMoveLeftb = "4"
+        buttonMoveRightb = "7"
+      />
+
+    </scene>
 
   <player>
     <buttons
@@ -169,9 +208,26 @@
        buttonSelectArcher = "27"
        buttonSelectGryphon = "6"
        buttonSelectAll = "25"
+       buttonDamageCF = "11"
+       buttonAddGold = "10"
+       buttonAddFood = "9"
     />
   </player>
-  
+
+  <fow>
+    <buttons
+       buttonDrawFow = "14"
+    />
+  </fow>
+
+  <!-- Enemy wave-->
+  <surge>
+    <buttons
+       buttonNewWave = "60"
+       buttonActivateWave = "61"
+    />
+  </surge>
+
   <entities>
     <spritesheets>
       <humanBuildings name="data/assets/textures/buildings/HumanBuildings.png"/>
