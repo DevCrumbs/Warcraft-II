@@ -145,9 +145,9 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	pugi::xml_node mediumConstructionPlanks = humanBuildings.child("constructionPlanks").child("mediumTilePlanks");
 	aux = mediumConstructionPlanks.child("first");
-	barracksInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+	barracksInfo.constructionPlanks1 = gryphonAviaryInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 	aux = mediumConstructionPlanks.child("second");
-	barracksInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+	barracksInfo.constructionPlanks2 = gryphonAviaryInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 
 	//Neutral buildings
 	pugi::xml_node neutralBuildings = staticEntities.child("neutralBuildings");
