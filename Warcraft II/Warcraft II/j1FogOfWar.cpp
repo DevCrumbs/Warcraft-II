@@ -310,8 +310,10 @@ bool j1FogOfWar::LoadKeys(pugi::xml_node& buttons)
 
 void j1FogOfWar::SaveKeys()
 {
-	//config.remove_child("buttons");
-	//pugi::xml_node buttons = config.append_child("buttons");
-	//
-	//buttons.append_attribute("buttonDrawFow") = *buttonDrawFow;
+	App->configFile.child("config").child(name.data()).remove_child("buttons");
+	pugi::xml_node buttons = App->configFile.child("config").child(name.data()).append_child("buttons");
+
+	buttons.remove_child("buttonDrawFow");
+
+	buttons.append_child("buttonDrawFow").append_attribute("buttonDrawFow") = *buttonDrawFow;
 }

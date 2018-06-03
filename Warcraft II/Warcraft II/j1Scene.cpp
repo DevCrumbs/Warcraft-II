@@ -2556,105 +2556,109 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 
 void j1Scene::SaveKeys()
 {
+	App->configFile.child("config").child(name.data()).remove_child("buttons");
+	pugi::xml_node buttons = App->configFile.child("config").child(name.data()).append_child("buttons");
+
 	//Clear
-//config.child("buttons").remove_attribute("buttonGoToBase");
-//config.child("buttons").remove_attribute("buttonGoToUnits");
-//config.child("buttons").remove_attribute("buttonMinimap");
-//config.child("buttons").remove_attribute("buttonBuildingMenu");
-//config.child("buttons").remove_attribute("buttonPauseMenu");
-//config.child("buttons").remove_attribute("buttonPatrolUnits");
-//config.child("buttons").remove_attribute("buttonStopUnits");
-//config.child("buttons").remove_attribute("buttonStopUnits");
-//
-//config.child("buttons").remove_attribute("buttonSpawnFootman");
-//config.child("buttons").remove_attribute("buttonSpawnArcher");
-//config.child("buttons").remove_attribute("buttonSpawnGryphon");
-//config.child("buttons").remove_attribute("buttonBuildingMenu");
-//config.child("buttons").remove_attribute("buttonSpawnGrunt");
-//config.child("buttons").remove_attribute("buttonSpawnTroll");
-//config.child("buttons").remove_attribute("buttonSpawnDragon");
-//config.child("buttons").remove_attribute("buttonSpawnSheep");
-//config.child("buttons").remove_attribute("buttonSpawnBoar");
-//config.child("buttons").remove_attribute("buttonSpawnAlleria");
-//config.child("buttons").remove_attribute("buttonSpawnTauralyon");
-//
-//config.child("buttons").remove_attribute("buttonTogleDebug");
-//config.child("buttons").remove_attribute("buttonTogleDebugAttack");
-//config.child("buttons").remove_attribute("buttonTogleDebugMovement");
-//
-//config.child("buttons").remove_attribute("buttonSelectGroup");
-//config.child("buttons").remove_attribute("buttonSelectGroupb");
-//config.child("buttons").remove_attribute("buttonSelectGroup1");
-//config.child("buttons").remove_attribute("buttonSelectGroup2");
-//config.child("buttons").remove_attribute("buttonSelectGroup3");
-//
-//config.child("buttons").remove_attribute("buttonSaveGroup");
-//config.child("buttons").remove_attribute("buttonSaveGroupb");
-//config.child("buttons").remove_attribute("buttonWinGame");
-//
-//config.child("buttons").remove_attribute("buttonLoseGame");
-//config.child("buttons").remove_attribute("buttonMoveUp");
-//config.child("buttons").remove_attribute("buttonMoveUpb");
-//
-//config.child("buttons").remove_attribute("buttonMoveDown");
-//config.child("buttons").remove_attribute("buttonMoveDownb");
-//config.child("buttons").remove_attribute("buttonMoveLeft");
-//config.child("buttons").remove_attribute("buttonMoveLeftb");
-//config.child("buttons").remove_attribute("buttonMoveRight");
-//config.child("buttons").remove_attribute("buttonMoveRightb");
+	buttons.remove_child("buttonGoToBase");
+	buttons.remove_child("buttonGoToUnits");
+	buttons.remove_child("buttonMinimap");
+	buttons.remove_child("buttonBuildingMenu");
+	buttons.remove_child("buttonPauseMenu");
+	buttons.remove_child("buttonPatrolUnits");
+	buttons.remove_child("buttonStopUnits");
+	buttons.remove_child("buttonStopUnits");
+				   
+	buttons.remove_child("buttonSpawnFootman");
+	buttons.remove_child("buttonSpawnArcher");
+	buttons.remove_child("buttonSpawnGryphon");
+	buttons.remove_child("buttonBuildingMenu");
+	buttons.remove_child("buttonSpawnGrunt");
+	buttons.remove_child("buttonSpawnTroll");
+	buttons.remove_child("buttonSpawnDragon");
+	buttons.remove_child("buttonSpawnSheep");
+	buttons.remove_child("buttonSpawnBoar");
+	buttons.remove_child("buttonSpawnAlleria");
+	buttons.remove_child("buttonSpawnTauralyon");
+				   
+	buttons.remove_child("buttonTogleDebug");
+	buttons.remove_child("buttonTogleDebugAttack");
+	buttons.remove_child("buttonTogleDebugMovement");
+				   
+	buttons.remove_child("buttonSelectGroup");
+	buttons.remove_child("buttonSelectGroupb");
+	buttons.remove_child("buttonSelectGroup1");
+	buttons.remove_child("buttonSelectGroup2");
+	buttons.remove_child("buttonSelectGroup3");
+				   
+	buttons.remove_child("buttonSaveGroup");
+	buttons.remove_child("buttonSaveGroupb");
+	buttons.remove_child("buttonWinGame");
+				   
+	buttons.remove_child("buttonLoseGame");
+	buttons.remove_child("buttonMoveUp");
+	buttons.remove_child("buttonMoveUpb");
+				   
+	buttons.remove_child("buttonMoveDown");
+	buttons.remove_child("buttonMoveDownb");
+	buttons.remove_child("buttonMoveLeft");
+	buttons.remove_child("buttonMoveLeftb");
+	buttons.remove_child("buttonMoveRight");
+	buttons.remove_child("buttonMoveRightb");
 
 
-//	config.remove_child("buttons");
-//	pugi::xml_node buttons = config.append_child("buttons");
-	
-	//App->configFile.child("config").child("scene").remove_child("buttons");
-	//pugi::xml_node buttons = App->configFile.child("config").child("scene").append_child("buttons");
-	//// = config.child("buttons");
-	////Save
-	//buttons.append_attribute("buttonGoToBase")				= *buttonGoToBase;
-	//buttons.append_attribute("buttonGoToUnits")				= *buttonGoToUnits;
-	//buttons.append_attribute("buttonMinimap")				= *buttonMinimap;
-	//buttons.append_attribute("buttonBuildingMenu")			= *buttonBuildingMenu;
-	//buttons.append_attribute("buttonPauseMenu")				= *buttonPauseMenu;
-	//buttons.append_attribute("buttonPatrolUnits")			= *buttonPatrolUnits;
-	//buttons.append_attribute("buttonStopUnits")				= *buttonStopUnits;
-	//buttons.append_attribute("buttonStopUnits")				= *buttonStopUnits;
+	//	config.remove_child("buttons");
+	//	pugi::xml_node buttons = config.append_child("buttons");
 
-	//buttons.append_attribute("buttonSpawnFootman")			= *buttonSpawnFootman;
-	//buttons.append_attribute("buttonSpawnArcher")			= *buttonSpawnArcher;
-	//buttons.append_attribute("buttonSpawnGryphon")			= *buttonSpawnGryphon;
-	//buttons.append_attribute("buttonBuildingMenu")			= *buttonBuildingMenu;
-	//buttons.append_attribute("buttonSpawnGrunt")			= *buttonSpawnGrunt;
-	//buttons.append_attribute("buttonSpawnTroll")			= *buttonSpawnTroll;
-	//buttons.append_attribute("buttonSpawnDragon")			= *buttonSpawnDragon;
-	//buttons.append_attribute("buttonSpawnSheep")			= *buttonSpawnSheep;
-	//buttons.append_attribute("buttonSpawnBoar")				= *buttonSpawnBoar;
-	//buttons.append_attribute("buttonSpawnAlleria")			= *buttonSpawnAlleria;
-	//buttons.append_attribute("buttonSpawnTauralyon")		= *buttonSpawnTauralyon;
-	//
-	//buttons.append_attribute("buttonTogleDebug")			= *buttonTogleDebug;
-	//buttons.append_attribute("buttonTogleDebugAttack")		= *buttonTogleDebugAttack;
-	//buttons.append_attribute("buttonTogleDebugMovement")	= *buttonTogleDebugMovement;
-	//										
-	//buttons.append_attribute("buttonSelectGroup")			= *buttonSelectGroup;
-	//buttons.append_attribute("buttonSelectGroupb")			= *buttonSelectGroupb;
-	//buttons.append_attribute("buttonSelectGroup1")			= *buttonSelectGroup1;
-	//buttons.append_attribute("buttonSelectGroup2")			= *buttonSelectGroup2;
-	//buttons.append_attribute("buttonSelectGroup3")			= *buttonSelectGroup3;
-	//												
-	//buttons.append_attribute("buttonSaveGroup")				= *buttonSaveGroup;
-	//buttons.append_attribute("buttonSaveGroupb")			= *buttonSaveGroupb;
-	//buttons.append_attribute("buttonWinGame")				= *buttonWinGame;
-	//													
-	//buttons.append_attribute("buttonLoseGame")				= *buttonLoseGame;
-	//buttons.append_attribute("buttonMoveUp")				= *buttonMoveUp;
-	//buttons.append_attribute("buttonMoveUpb")				= *buttonMoveUpb;
-	//													
-	//buttons.append_attribute("buttonMoveDown")				= *buttonMoveDown;
-	//buttons.append_attribute("buttonMoveDownb")				= *buttonMoveDownb;
-	//buttons.append_attribute("buttonMoveLeft")				= *buttonMoveLeft;
-	//buttons.append_attribute("buttonMoveLeftb")				= *buttonMoveLeftb;
-	//buttons.append_attribute("buttonMoveRight")				= *buttonMoveRight;
-	//buttons.append_attribute("buttonMoveRightb")			= *buttonMoveRightb;
+		//App->configFile.child("config").child("scene").remove_child("buttons");
+		//pugi::xml_node buttons = App->configFile.child("config").child("scene").append_child("buttons");
+		//// = config.child("buttons");
+		////Save
 
-}															   
+	buttons.append_child("buttonGoToBase").append_attribute("buttonGoToBase") = *buttonGoToBase;
+	buttons.append_child("buttonGoToUnits").append_attribute("buttonGoToUnits") = *buttonGoToUnits;
+	buttons.append_child("buttonMinimap").append_attribute("buttonMinimap") = *buttonMinimap;
+	buttons.append_child("buttonBuildingMenu").append_attribute("buttonBuildingMenu") = *buttonBuildingMenu;
+	buttons.append_child("buttonPauseMenu").append_attribute("buttonPauseMenu") = *buttonPauseMenu;
+	buttons.append_child("buttonPatrolUnits").append_attribute("buttonPatrolUnits") = *buttonPatrolUnits;
+	buttons.append_child("buttonStopUnits").append_attribute("buttonStopUnits") = *buttonStopUnits;
+	buttons.append_child("buttonStopUnits").append_attribute("buttonStopUnits") = *buttonStopUnits;
+				   
+	buttons.append_child("buttonSpawnFootman").append_attribute("buttonSpawnFootman") = *buttonSpawnFootman;
+	buttons.append_child("buttonSpawnArcher").append_attribute("buttonSpawnArcher") = *buttonSpawnArcher;
+	buttons.append_child("buttonSpawnGryphon").append_attribute("buttonSpawnGryphon") = *buttonSpawnGryphon;
+	buttons.append_child("buttonBuildingMenu").append_attribute("buttonBuildingMenu") = *buttonBuildingMenu;
+	buttons.append_child("buttonSpawnGrunt").append_attribute("buttonSpawnGrunt") = *buttonSpawnGrunt;
+	buttons.append_child("buttonSpawnTroll").append_attribute("buttonSpawnTroll") = *buttonSpawnTroll;
+	buttons.append_child("buttonSpawnDragon").append_attribute("buttonSpawnDragon") = *buttonSpawnDragon;
+	buttons.append_child("buttonSpawnSheep").append_attribute("buttonSpawnSheep") = *buttonSpawnSheep;
+	buttons.append_child("buttonSpawnBoar").append_attribute("buttonSpawnBoar") = *buttonSpawnBoar;
+	buttons.append_child("buttonSpawnAlleria").append_attribute("buttonSpawnAlleria") = *buttonSpawnAlleria;
+	buttons.append_child("buttonSpawnTauralyon").append_attribute("buttonSpawnTauralyon") = *buttonSpawnTauralyon;
+				   
+	buttons.append_child("buttonTogleDebug").append_attribute("buttonTogleDebug") = *buttonTogleDebug;
+	buttons.append_child("buttonTogleDebugAttack").append_attribute("buttonTogleDebugAttack") = *buttonTogleDebugAttack;
+	buttons.append_child("buttonTogleDebugMovement").append_attribute("buttonTogleDebugMovement") = *buttonTogleDebugMovement;
+				   
+	buttons.append_child("buttonSelectGroup").append_attribute("buttonSelectGroup") = *buttonSelectGroup;
+	buttons.append_child("buttonSelectGroupb").append_attribute("buttonSelectGroupb") = *buttonSelectGroupb;
+	buttons.append_child("buttonSelectGroup1").append_attribute("buttonSelectGroup1") = *buttonSelectGroup1;
+	buttons.append_child("buttonSelectGroup2").append_attribute("buttonSelectGroup2") = *buttonSelectGroup2;
+	buttons.append_child("buttonSelectGroup3").append_attribute("buttonSelectGroup3") = *buttonSelectGroup3;
+				   
+	buttons.append_child("buttonSaveGroup").append_attribute("buttonSaveGroup") = *buttonSaveGroup;
+	buttons.append_child("buttonSaveGroupb").append_attribute("buttonSaveGroupb") = *buttonSaveGroupb;
+	buttons.append_child("buttonWinGame").append_attribute("buttonWinGame") = *buttonWinGame;
+				   
+	buttons.append_child("buttonLoseGame").append_attribute("buttonLoseGame") = *buttonLoseGame;
+	buttons.append_child("buttonMoveUp").append_attribute("buttonMoveUp") = *buttonMoveUp;
+	buttons.append_child("buttonMoveUpb").append_attribute("buttonMoveUpb") = *buttonMoveUpb;
+				   
+	buttons.append_child("buttonMoveDown").append_attribute("buttonMoveDown") = *buttonMoveDown;
+	buttons.append_child("buttonMoveDownb").append_attribute("buttonMoveDownb") = *buttonMoveDownb;
+	buttons.append_child("buttonMoveLeft").append_attribute("buttonMoveLeft") = *buttonMoveLeft;
+	buttons.append_child("buttonMoveLeftb").append_attribute("buttonMoveLeftb") = *buttonMoveLeftb;
+	buttons.append_child("buttonMoveRight").append_attribute("buttonMoveRight") = *buttonMoveRight;
+	buttons.append_child("buttonMoveRightb").append_attribute("buttonMoveRightb") = *buttonMoveRightb;
+
+}

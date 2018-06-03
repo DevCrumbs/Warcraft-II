@@ -391,12 +391,12 @@ bool j1EnemyWave::LoadKeys(pugi::xml_node& buttons)
 
 void j1EnemyWave::SaveKeys()
 {
-	//config.child("buttons").remove_attribute("buttonNewWave");
-	//config.child("buttons").remove_attribute("buttonActivateWave");
+	App->configFile.child("config").child(name.data()).remove_child("buttons");
+	pugi::xml_node buttons = App->configFile.child("config").child(name.data()).append_child("buttons");
 
-	config.remove_child("buttons");
-	pugi::xml_node buttons = config.append_child("buttons");
+	buttons.remove_child("buttonNewWave");
+	buttons.remove_child("buttonActivateWave");
 
-	buttons.append_attribute("buttonNewWave") = *buttonNewWave;
-	buttons.append_attribute("buttonActivateWave") = *buttonActivateWave;
+	buttons.append_child("buttonNewWave").append_attribute("buttonNewWave") = *buttonNewWave;
+	buttons.append_child("buttonActivateWave").append_attribute("buttonActivateWave") = *buttonActivateWave;
 }

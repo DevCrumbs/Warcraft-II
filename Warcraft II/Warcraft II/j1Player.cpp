@@ -2440,26 +2440,27 @@ bool j1Player::LoadKeys(pugi::xml_node& buttons)
 
 void j1Player::SaveKeys()
 {
-	//config.child("buttons").remove_attribute("buttonSelectFootman");
-	//config.child("buttons").remove_attribute("buttonSelectArcher");
-	//config.child("buttons").remove_attribute("buttonSelectGryphon");
-	//config.child("buttons").remove_attribute("buttonSelectAll");
+	App->configFile.child("config").child(name.data()).remove_child("buttons");
+	pugi::xml_node buttons = App->configFile.child("config").child(name.data()).append_child("buttons");
 
-	//config.child("buttons").remove_attribute("buttonDamageCF");
-	//config.child("buttons").remove_attribute("buttonAddGold");
-	//config.child("buttons").remove_attribute("buttonAddFood");
+	buttons.remove_child("buttonSelectFootman");
+	buttons.remove_child("buttonSelectArcher");
+	buttons.remove_child("buttonSelectGryphon");
+	buttons.remove_child("buttonSelectAll");
+	
+	buttons.remove_child("buttonDamageCF");
+	buttons.remove_child("buttonAddGold");
+	buttons.remove_child("buttonAddFood");
 
-	config.remove_child("buttons");
-	pugi::xml_node buttons = config.append_child("buttons");
 
-	buttons.append_attribute("buttonSelectFootman") = *buttonSelectFootman;
-	buttons.append_attribute("buttonSelectArcher") = *buttonSelectArcher;
-	buttons.append_attribute("buttonSelectGryphon") = *buttonSelectGryphon;
-	buttons.append_attribute("buttonSelectAll") = *buttonSelectAll;
+	buttons.append_child("buttonSelectFootman").append_attribute("buttonSelectFootman") = *buttonSelectFootman;
+	buttons.append_child("buttonSelectArcher").append_attribute("buttonSelectArcher") = *buttonSelectArcher;
+	buttons.append_child("buttonSelectGryphon").append_attribute("buttonSelectGryphon") = *buttonSelectGryphon;
+	buttons.append_child("buttonSelectAll").append_attribute("buttonSelectAll") = *buttonSelectAll;
 
-	buttons.append_attribute("buttonDamageCF") = *buttonDamageCF;
-	buttons.append_attribute("buttonAddGold") = *buttonAddGold;
-	buttons.append_attribute("buttonAddFood") = *buttonAddFood;
+	buttons.append_child("buttonDamageCF").append_attribute("buttonDamageCF") = *buttonDamageCF;
+	buttons.append_child("buttonAddGold").append_attribute("buttonAddGold") = *buttonAddGold;
+	buttons.append_child("buttonAddFood").append_attribute("buttonAddFood") = *buttonAddFood;
 }
 
 // GroupSpawning
