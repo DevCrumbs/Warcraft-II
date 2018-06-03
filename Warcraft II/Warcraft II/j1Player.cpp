@@ -139,7 +139,7 @@ bool j1Player::Update(float dt)
 		else
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 	}
-	// SDL_SCANCODE_C
+	// SDL_SCANCODE_V
 	else if (App->input->GetKey(buttonSelectAll) == KEY_DOWN) {
 	
 		App->entities->SelectEntitiesOnScreen();

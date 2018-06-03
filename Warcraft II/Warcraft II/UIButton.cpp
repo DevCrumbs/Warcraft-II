@@ -87,6 +87,7 @@ void UIButton::HandleInput()
 			break;
 		}
 
+		//SDL_SCANCODE_RETURN (Enter)
 		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) || (tab && App->input->GetKey(App->scene->buttonAccept) == KEY_DOWN))
 		{
 			nextEvent = false;
