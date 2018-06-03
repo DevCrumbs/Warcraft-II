@@ -58,8 +58,8 @@ bool j1Intro::Update(float dt)
 	}
 	else
 	{
+		App->fade->FadeToBlack(this, App->menu);
 		Mix_PauseMusic();
-		CleanUp();
 	}
 
 	return true;
@@ -75,9 +75,10 @@ bool j1Intro::PostUpdate()
 // Called before quitting
 bool j1Intro::CleanUp()
 {
-	App->fade->FadeToBlack(this, App->menu);
-	active = false;
-	App->video->CloseAVI();
+	if (active) {
+		App->video->CloseAVI();
+		active = false;
+	}
 
 	return true;
 }

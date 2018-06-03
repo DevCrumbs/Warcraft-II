@@ -112,7 +112,8 @@ bool j1Video::GrabAVIFrame()
 
 void j1Video::CloseAVI()
 {
-	//AVIStreamRelease(pavi);										// Release The Stream
+	AVIStreamGetFrameClose(pgf);								// Deallocates The GetFrame Resources
+	AVIStreamRelease(pavi);										// Release The Stream
 	AVIFileExit();												// Release The File 
-	//AVIStreamGetFrameClose(pgf);								// Deallocates The GetFrame Resources
+	
 }
