@@ -31,6 +31,8 @@ bool j1EnemyWave::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
+	LoadKeys(config.child("buttons"));
+
 	return ret;
 }
 
@@ -116,12 +118,12 @@ bool j1EnemyWave::Update(float dt)
 	bool ret = true;
 
 	// F3: spawns a random phase of a wave
-	// SDL_SCANCODE_F3
+	// SDL_SCANCODE_F7
 	if (App->input->GetKey(buttonNewWave) == KEY_DOWN && App->isDebug)
 		PerformWave();
 
 	// F4: activates or stops the spawn of waves
-	// SDL_SCANCODE_F4
+	// SDL_SCANCODE_F8
 	if (App->input->GetKey(buttonActivateWave) == KEY_DOWN && App->isDebug)
 
 		isActiveWaves = !isActiveWaves;

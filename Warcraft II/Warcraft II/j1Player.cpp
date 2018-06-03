@@ -152,69 +152,7 @@ bool j1Player::Update(float dt)
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);	
 	}
 
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
-		if (stables != nullptr) {
-			if (stables->GetIsFinishedBuilt()) {
-				Entity* ent = (Entity*)stables;
-				ent->ApplyDamage(20);
-				if (!stables->CheckBuildingState() && entitySelectedStats.entitySelected == ent) 
-					DeleteEntitiesMenu();			
-				else if (entitySelectedStats.entitySelected == ent) {
-					entitySelectedStats.HP->SetText(ent->GetStringLife());
-					entitySelectedStats.lifeBar->DecreaseLife(20);
-				}
-			}
-		}
-
-	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
-		if (mageTower != nullptr)
-			if (mageTower->GetIsFinishedBuilt()) {
-				Entity* ent = (Entity*)mageTower;
-				ent->ApplyDamage(20);
-				if (!mageTower->CheckBuildingState() && entitySelectedStats.entitySelected == ent) {
-					DeleteEntitiesMenu();
-				}
-				else if (entitySelectedStats.entitySelected == ent) {
-					entitySelectedStats.HP->SetText(ent->GetStringLife());
-					entitySelectedStats.lifeBar->DecreaseLife(20);
-				}
-			}
-
-	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-		if (!scoutTower.empty())
-			if (scoutTower.back()->GetIsFinishedBuilt()) {
-				Entity* ent = (Entity*)scoutTower.back();
-				ent->ApplyDamage(20);
-				if (!scoutTower.back()->CheckBuildingState()) {
-					if (entitySelectedStats.entitySelected == ent)
-						DeleteEntitiesMenu();
-					scoutTower.pop_back();
-				}
-				else if (entitySelectedStats.entitySelected == ent) {
-					entitySelectedStats.HP->SetText(ent->GetStringLife());
-					entitySelectedStats.lifeBar->DecreaseLife(20);
-				}
-			}
-	
-	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
-		if (barracks != nullptr)
-			if (barracks->GetIsFinishedBuilt()) {
-				Entity* ent = (Entity*)barracks;
-				ent->ApplyDamage(200);
-				if (!barracks->CheckBuildingState()){
-					if(entitySelectedStats.entitySelected == ent)
-						HideEntitySelectedInfo();
-					barracks = nullptr;
-				}
-				else if (entitySelectedStats.entitySelected == ent) {
-					entitySelectedStats.HP->SetText(ent->GetStringLife());
-					entitySelectedStats.lifeBar->DecreaseLife(200);
-				}
-			}
-	*/
-
-	// SDL_SCANCODE_H
+	// SDL_SCANCODE_KP_MINUS
 	if (App->isDebug && App->input->GetKey(buttonDamageCF) == KEY_DOWN && App->isDebug) {
 		if (!chickenFarm.empty())
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
@@ -232,12 +170,12 @@ bool j1Player::Update(float dt)
 			}
 	}
 
-	// SDL_SCANCODE_G
+	// SDL_SCANCODE_KP_MULTIPLY
 	if (App->isDebug && App->input->GetKey(buttonAddGold) == KEY_DOWN && App->isDebug) {
 		App->audio->PlayFx(App->audio->GetFX().goldMine, 0); // Gold mine sound
 		AddGold(500);
 	}
-	// SDL_SCANCODE_F
+	// SDL_SCANCODE_KP_DIVIDE
 	if (App->isDebug && App->input->GetKey(buttonAddFood) == KEY_DOWN && App->isDebug) {
 		currentFood += 3;
 		App->scene->hasFoodChanged = true;
@@ -2493,8 +2431,6 @@ bool j1Player::LoadKeys(pugi::xml_node& buttons)
 	ret = LoadKey(&buttonSelectGryphon, "buttonSelectGryphon", buttons);
 
 	ret = LoadKey(&buttonSelectAll, "buttonSelectAll", buttons);
-
-	ret = LoadKey(&buttonShowPlayerButt, "buttonShowPlayerButt", buttons);
 
 	ret = LoadKey(&buttonDamageCF, "buttonDamageCF", buttons);
 

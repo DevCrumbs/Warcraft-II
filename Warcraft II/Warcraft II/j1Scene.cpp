@@ -969,19 +969,13 @@ bool j1Scene::PostUpdate()
 
 	if (!isStartedFinalTransition) {
 
-		//if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
-
-		//	App->gui->RemoveElem((UIElement**)&parchmentImg);
-		//	return false;
-		//}
-
 		if (App->player->imagePrisonersVector.size() >= 2) {
 
 			App->player->isWin = true;
 			finalTransition.Start();
 			isStartedFinalTransition = true;
 		}
-		// SDL_SCANCODE_F
+		// SDL_SCANCODE_F5
 		else if (App->input->GetKey(buttonWinGame) == KEY_DOWN && App->isDebug)
 		{
 			App->player->isWin = true;
@@ -1008,8 +1002,8 @@ bool j1Scene::PostUpdate()
 				|| (App->player->GetCurrentGold() < (App->player->gryphonRiderCost + gryphonAviaryCost) && App->player->gryphonAviary == nullptr && App->player->barracks == nullptr)
 				//Not enogh gold to create Gryphos and have not barracks and we and have no units spawning
 				|| (App->player->GetCurrentGold() < App->player->gryphonRiderCost  && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning))
-			//Instant Lose with F2
-			// SDL_SCANCODE_F2
+			//Instant Lose with F6
+			// SDL_SCANCODE_F6
 			|| (App->input->GetKey(buttonLoseGame) == KEY_DOWN && App->isDebug)
 			//Orde destroy townhall
 			|| App->player->townHall == nullptr) {
@@ -1102,14 +1096,6 @@ void j1Scene::CheckCameraMovement(float dt)
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
 	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
 
-	buttonMoveUp = nullptr;
-	buttonMoveUpb = nullptr;
-	buttonMoveDown = nullptr;
-	buttonMoveDownb = nullptr;
-	buttonMoveLeft = nullptr;
-	buttonMoveLeftb = nullptr;
-	buttonMoveRight = nullptr;
-	buttonMoveRightb = nullptr;
 	//NOT MOVING WITH App->input->GetKey(buttonMoveUp) == KEY_REPEAT
 	//Move with arrows
 	//UP
@@ -2552,7 +2538,7 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 	ret = LoadKey(&buttonSelectGroup3, "buttonSelectGroup3", buttons);
 
 	ret = LoadKey(&buttonSaveGroup, "buttonSaveGroup", buttons);
-	ret = LoadKey(&buttonSaveGroupb, "//buttonSaveGroupb", buttons);
+	ret = LoadKey(&buttonSaveGroupb, "buttonSaveGroupb", buttons);
 	ret = LoadKey(&buttonWinGame, "buttonWinGame", buttons);
 	ret = LoadKey(&buttonLoseGame, "buttonLoseGame", buttons);
 	ret = LoadKey(&buttonMoveUp, "buttonMoveUp", buttons);
@@ -2563,8 +2549,6 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 	ret = LoadKey(&buttonMoveLeftb, "buttonMoveLeftb", buttons);
 	ret = LoadKey(&buttonMoveRight, "buttonMoveRight", buttons);
 	ret = LoadKey(&buttonMoveRightb, "buttonMoveRightb", buttons);
-
-	ret = LoadKey(&buttonAccept, "buttonAccept", buttons);
 
 	return ret;
 }
