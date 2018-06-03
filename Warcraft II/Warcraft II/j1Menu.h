@@ -33,6 +33,7 @@ enum MenuActions
 	MenuActions_CREDITS,
 	MenuActions_EXIT,
 	MenuActions_CHANGE_BUTTONS,
+	MenuActions_DEFAULT_BUTTONS
 };
 struct SliderStruct
 {
@@ -85,6 +86,7 @@ public:
 
 	void DeleteSettings();
 	void DeleteChangingButtons();
+	void CleanInteractiveLabels();
 	void DeteleMenu();
 	void DeleteNewGame();
 	void DeleteCredits();
@@ -97,8 +99,9 @@ public:
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed);
 
 	void UpdateSlider(SliderStruct &sliderStruct);
-	bool CanChangeButt(SDL_Scancode button);
+	void CreateInteractiveLabels();
 	bool CheckCorrectButt(SDL_Scancode button);
+	void SetDefaultButtons();
 	bool CanSwapButt(SDL_Scancode button);
 	void SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB);
 
@@ -127,7 +130,7 @@ private:
 	UIButton* fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr, *buttonsLabel = nullptr;
 		//Changing buttons
-	UILabel* returnSettings = nullptr;
+	UILabel* returnSettings = nullptr, *defaultButton = nullptr;
 	ChangeButtons changeButt;
 	list<ChangeButtons> interactiveLabels;
 

@@ -115,11 +115,11 @@
 			<isometric name="iso_walk.tmx" active="0" tex="data/assets/textures/maps/isometricDebugTex.png" />
 			<warcraft name="warcraft_walk.tmx" active="1" tex="data/assets/textures/maps/warcraftDebugTex.png" numMaps="5" />
 		</maps>
-		<buttons>
-			<buttonGoToBase buttonGoToBase="226" />
-			<buttonGoToUnits buttonGoToUnits="25" />
-			<buttonMinimap buttonMinimap="5" />
-			<buttonBuildingMenu buttonBuildingMenu="44" />
+		<defaultButtons>
+			<buttonGoToBase buttonGoToBase="44" />
+			<buttonGoToUnits buttonGoToUnits="20" />
+			<buttonMinimap buttonMinimap="43" />
+			<buttonBuildingMenu buttonBuildingMenu="5" />
 			<buttonPauseMenu buttonPauseMenu="41" />
 			<buttonPatrolUnits buttonPatrolUnits="17" />
 			<buttonStopUnits buttonStopUnits="16" />
@@ -127,7 +127,48 @@
 			<buttonSpawnFootman buttonSpawnFootman="89" />
 			<buttonSpawnArcher buttonSpawnArcher="90" />
 			<buttonSpawnGryphon buttonSpawnGryphon="91" />
-			<buttonBuildingMenu buttonBuildingMenu="44" />
+			<buttonBuildingMenu buttonBuildingMenu="5" />
+			<buttonSpawnGrunt buttonSpawnGrunt="92" />
+			<buttonSpawnTroll buttonSpawnTroll="93" />
+			<buttonSpawnDragon buttonSpawnDragon="94" />
+			<buttonSpawnSheep buttonSpawnSheep="95" />
+			<buttonSpawnBoar buttonSpawnBoar="96" />
+			<buttonSpawnAlleria buttonSpawnAlleria="97" />
+			<buttonSpawnTauralyon buttonSpawnTauralyon="98" />
+			<buttonTogleDebug buttonTogleDebug="66" />
+			<buttonTogleDebugAttack buttonTogleDebugAttack="67" />
+			<buttonTogleDebugMovement buttonTogleDebugMovement="68" />
+			<buttonSelectGroup buttonSelectGroup="225" />
+			<buttonSelectGroupb buttonSelectGroupb="229" />
+			<buttonSelectGroup1 buttonSelectGroup1="30" />
+			<buttonSelectGroup2 buttonSelectGroup2="31" />
+			<buttonSelectGroup3 buttonSelectGroup3="32" />
+			<buttonSaveGroup buttonSaveGroup="224" />
+			<buttonSaveGroupb buttonSaveGroupb="228" />
+			<buttonWinGame buttonWinGame="62" />
+			<buttonLoseGame buttonLoseGame="63" />
+			<buttonMoveUp buttonMoveUp="82" />
+			<buttonMoveUpb buttonMoveUpb="26" />
+			<buttonMoveDown buttonMoveDown="81" />
+			<buttonMoveDownb buttonMoveDownb="22" />
+			<buttonMoveLeft buttonMoveLeft="80" />
+			<buttonMoveLeftb buttonMoveLeftb="4" />
+			<buttonMoveRight buttonMoveRight="79" />
+			<buttonMoveRightb buttonMoveRightb="7" />
+		</defaultButtons>
+		<buttons>
+			<buttonGoToBase buttonGoToBase="44" />
+			<buttonGoToUnits buttonGoToUnits="20" />
+			<buttonMinimap buttonMinimap="43" />
+			<buttonBuildingMenu buttonBuildingMenu="5" />
+			<buttonPauseMenu buttonPauseMenu="41" />
+			<buttonPatrolUnits buttonPatrolUnits="17" />
+			<buttonStopUnits buttonStopUnits="16" />
+			<buttonStopUnits buttonStopUnits="16" />
+			<buttonSpawnFootman buttonSpawnFootman="89" />
+			<buttonSpawnArcher buttonSpawnArcher="90" />
+			<buttonSpawnGryphon buttonSpawnGryphon="91" />
+			<buttonBuildingMenu buttonBuildingMenu="5" />
 			<buttonSpawnGrunt buttonSpawnGrunt="92" />
 			<buttonSpawnTroll buttonSpawnTroll="93" />
 			<buttonSpawnDragon buttonSpawnDragon="94" />
@@ -158,22 +199,38 @@
 		</buttons>
 	</scene>
 	<player>
+		<defaultButtons>
+			<buttonSelectFootman buttonSelectFootman="29" />
+			<buttonSelectArcher buttonSelectArcher="27" />
+			<buttonSelectGryphon buttonSelectGryphon="6" />
+			<buttonSelectAll buttonSelectAll="25" />
+			<buttonDamageCF buttonDamageCF="86" />
+			<buttonAddGold buttonAddGold="85" />
+			<buttonAddFood buttonAddFood="84" />
+		</defaultButtons>
 		<buttons>
 			<buttonSelectFootman buttonSelectFootman="29" />
 			<buttonSelectArcher buttonSelectArcher="27" />
 			<buttonSelectGryphon buttonSelectGryphon="6" />
-			<buttonSelectAll buttonSelectAll="9" />
+			<buttonSelectAll buttonSelectAll="25" />
 			<buttonDamageCF buttonDamageCF="86" />
 			<buttonAddGold buttonAddGold="85" />
 			<buttonAddFood buttonAddFood="84" />
 		</buttons>
 	</player>
 	<fow>
+		<defaultButtons>
+			<buttonDrawFow buttonDrawFow="87" />
+		</defaultButtons>
 		<buttons>
 			<buttonDrawFow buttonDrawFow="87" />
 		</buttons>
 	</fow>
 	<surge>
+		<defaultButtons>
+			<buttonNewWave buttonNewWave="64" />
+			<buttonActivateWave buttonActivateWave="65" />
+		</defaultButtons>
 		<buttons>
 			<buttonNewWave buttonNewWave="64" />
 			<buttonActivateWave buttonActivateWave="65" />
