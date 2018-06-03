@@ -20,6 +20,7 @@
 #include "j1PathManager.h"
 #include "j1Movement.h"
 #include "j1Printer.h"
+#include "j1EnemyWave.h"
 
 #include "j1Gui.h"
 #include "UIImage.h"
@@ -210,13 +211,19 @@ bool j1Menu::Update(float dt)
 				{
 					isChanged = true;
 				}
-			}
+			}	
 
 			if (isChanged) {
 				changeButt.changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);
 				changeButt.changeLabel = nullptr;
 				App->input->scancode = SDL_SCANCODE_UNKNOWN;
-				//TODO Audio Valdivia
+				App->audio->PlayFx(App->audio->GetFX().changeKey);
+
+				App->scene->SaveKeys();
+				App->player->SaveKeys();
+				App->fow->SaveKeys();
+				App->wave->SaveKeys();
+				App->configFile.save_file("config.xml");
 			}
 			else
 				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound

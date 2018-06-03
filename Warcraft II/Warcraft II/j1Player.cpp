@@ -38,6 +38,8 @@ bool j1Player::Awake(pugi::xml_node& config)
 
 	LoadKeys(config.child("buttons"));
 
+	this->config = App->config.child(this->name.data());
+
 	return ret;
 }
 
@@ -2425,20 +2427,39 @@ bool j1Player::LoadKeys(pugi::xml_node& buttons)
 	bool ret = true;
 
 	ret = LoadKey(&buttonSelectFootman, "buttonSelectFootman", buttons);
-
 	ret = LoadKey(&buttonSelectArcher, "buttonSelectArcher", buttons);
-
 	ret = LoadKey(&buttonSelectGryphon, "buttonSelectGryphon", buttons);
-
 	ret = LoadKey(&buttonSelectAll, "buttonSelectAll", buttons);
 
 	ret = LoadKey(&buttonDamageCF, "buttonDamageCF", buttons);
-
 	ret = LoadKey(&buttonAddGold, "buttonAddGold", buttons);
-
 	ret = LoadKey(&buttonAddFood, "buttonAddFood", buttons);
 
 	return ret;
+}
+
+void j1Player::SaveKeys()
+{
+	//config.child("buttons").remove_attribute("buttonSelectFootman");
+	//config.child("buttons").remove_attribute("buttonSelectArcher");
+	//config.child("buttons").remove_attribute("buttonSelectGryphon");
+	//config.child("buttons").remove_attribute("buttonSelectAll");
+
+	//config.child("buttons").remove_attribute("buttonDamageCF");
+	//config.child("buttons").remove_attribute("buttonAddGold");
+	//config.child("buttons").remove_attribute("buttonAddFood");
+
+	config.remove_child("buttons");
+	pugi::xml_node buttons = config.append_child("buttons");
+
+	buttons.append_attribute("buttonSelectFootman") = *buttonSelectFootman;
+	buttons.append_attribute("buttonSelectArcher") = *buttonSelectArcher;
+	buttons.append_attribute("buttonSelectGryphon") = *buttonSelectGryphon;
+	buttons.append_attribute("buttonSelectAll") = *buttonSelectAll;
+
+	buttons.append_attribute("buttonDamageCF") = *buttonDamageCF;
+	buttons.append_attribute("buttonAddGold") = *buttonAddGold;
+	buttons.append_attribute("buttonAddFood") = *buttonAddFood;
 }
 
 // GroupSpawning
@@ -2449,3 +2470,5 @@ void GroupSpawning::IsActive(bool isActive)
 	entityIcon->isActive = isActive;
 	entityLifeBar->isActive = isActive;
 }
+
+

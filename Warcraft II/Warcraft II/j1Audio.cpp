@@ -67,6 +67,7 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	pugi::xml_node uIButtonsSounds = sounds.child("buttonPaths");
 	mainButtonSound = uIButtonsSounds.attribute("menuButton").as_string();
 	gameStartSound = uIButtonsSounds.attribute("gameStart").as_string();
+	changeKeySound = uIButtonsSounds.attribute("changeKey").as_string();
 	errorButtonSound = uIButtonsSounds.attribute("errorBttn").as_string();
 	healSoundPath = uIButtonsSounds.attribute("healSound").as_string();
 	goldGetSoundPath = uIButtonsSounds.attribute("goldSound").as_string();
@@ -305,18 +306,19 @@ void j1Audio::PauseMusic() const {
 
 void j1Audio::ChargeFX()
 {
-	gameSounds.button = App->audio->LoadFx(mainButtonSound.data()); //1 Normal bttn sound
+	gameSounds.button = App->audio->LoadFx(mainButtonSound.data()); 
 	gameSounds.gameStart = App->audio->LoadFx(gameStartSound.data());
-	gameSounds.buildingConstruction = App->audio->LoadFx(buildingConstructionSound.data()); //2 Construction building
-	gameSounds.errorButt = App->audio->LoadFx(errorButtonSound.data()); //3 Normal error bttn sound
-	gameSounds.errorButtBuilding = App->audio->LoadFx(buildingErrorButtonSound.data()); //4 Building placement error sound
-	gameSounds.chickenFarm = App->audio->LoadFx(chickenFarmSound.data()); //5 chicken farm sound
-	gameSounds.goldMine = App->audio->LoadFx(goldMineSound.data()); //6 gold mine sound
-	gameSounds.gryphonAviary = App->audio->LoadFx(gryphonAviarySound.data()); //7 gryphon aviary sound
-	gameSounds.mageTower = App->audio->LoadFx(mageTowerSound.data()); //8 mage tower sound
-	gameSounds.stables = App->audio->LoadFx(stablesSound.data()); //9 stables sound
-	gameSounds.repairBuild = App->audio->LoadFx(repairBuildingSound.data()); //10 repair building sound
-	gameSounds.destroyBuild = App->audio->LoadFx(destroyBuildingSound.data()); //11 destroy building sound
+	gameSounds.changeKey = App->audio->LoadFx(changeKeySound.data());
+	gameSounds.buildingConstruction = App->audio->LoadFx(buildingConstructionSound.data()); 
+	gameSounds.errorButt = App->audio->LoadFx(errorButtonSound.data()); 
+	gameSounds.errorButtBuilding = App->audio->LoadFx(buildingErrorButtonSound.data()); 
+	gameSounds.chickenFarm = App->audio->LoadFx(chickenFarmSound.data()); 
+	gameSounds.goldMine = App->audio->LoadFx(goldMineSound.data()); 
+	gameSounds.gryphonAviary = App->audio->LoadFx(gryphonAviarySound.data()); 
+	gameSounds.mageTower = App->audio->LoadFx(mageTowerSound.data());
+	gameSounds.stables = App->audio->LoadFx(stablesSound.data()); 
+	gameSounds.repairBuild = App->audio->LoadFx(repairBuildingSound.data()); 
+	gameSounds.destroyBuild = App->audio->LoadFx(destroyBuildingSound.data());
 	
 	//Death and rescue sounds
 	gameSounds.humanDeath = App->audio->LoadFx(humanDeadSound.data()); 

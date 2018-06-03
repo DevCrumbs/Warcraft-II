@@ -138,6 +138,8 @@ public:
 
 	bool LoadKeys(pugi::xml_node & buttons);
 
+	void SaveKeys();
+
 	void CreateEntitiesStatsUI();
 	void CreateGroupSelectionButtons();
 	void CreatePlayerGroupsButtons();
@@ -272,6 +274,7 @@ private:
 	list<GroupSpawning> barracksSpawningListUI;
 	list<GroupSpawning> gryphoSpawningListUI;
 
+	pugi::xml_node config;
 };
 
 #endif //__j1PLAYER_H__

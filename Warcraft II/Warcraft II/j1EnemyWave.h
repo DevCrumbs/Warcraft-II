@@ -57,6 +57,8 @@ public:
 
 	bool LoadKeys(pugi::xml_node & buttons);
 
+	void SaveKeys();
+
 	// Load
 	bool Load(pugi::xml_node&);
 
@@ -68,6 +70,8 @@ public:
 
 	SDL_Scancode* buttonNewWave = nullptr;
 	SDL_Scancode* buttonActivateWave = nullptr;
+
+	pugi::xml_node config;
 
 private:
 
