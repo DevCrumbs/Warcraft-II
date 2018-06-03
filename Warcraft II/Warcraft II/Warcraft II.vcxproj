@@ -245,6 +245,7 @@
     <ClCompile Include="j1Main.cpp" />
     <ClCompile Include="j1Map.cpp" />
     <ClCompile Include="j1Menu.cpp" />
+    <ClCompile Include="j1Module.cpp" />
     <ClCompile Include="j1Movement.cpp" />
     <ClCompile Include="j1Particles.cpp" />
     <ClCompile Include="j1Pathfinding.cpp" />

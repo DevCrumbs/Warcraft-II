@@ -602,6 +602,9 @@
     <ClCompile Include="OrcShip.cpp">
       <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
     </ClCompile>
+    <ClCompile Include="j1Module.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\Game\config.xml">

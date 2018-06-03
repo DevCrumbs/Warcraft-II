@@ -136,6 +136,8 @@ public:
 	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
+	bool LoadKeys(pugi::xml_node & buttons);
+
 	void CreateEntitiesStatsUI();
 	void CreateGroupSelectionButtons();
 	void CreatePlayerGroupsButtons();
@@ -268,6 +270,11 @@ private:
 
 	list<GroupSpawning> barracksSpawningListUI;
 	list<GroupSpawning> gryphoSpawningListUI;
+
+	SDL_Scancode* buttonSelectFootman =		 nullptr;
+	SDL_Scancode* buttonSelectArcher =		 nullptr;
+	SDL_Scancode* buttonSelectGryphon =		nullptr;
+	SDL_Scancode* buttonSelectAll =			 nullptr;
 
 };
 

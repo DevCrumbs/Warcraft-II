@@ -45,6 +45,7 @@ public:
 	bool IsOnSight(fPoint pos);
 	void UnLoadFowMap();
 	void TilesNearPlayer();
+	bool LoadKeys(pugi::xml_node & buttons);
 	int TotalDistanceToPlayer(Entity* entity, int tile);
 
 	void ResetTiles();
@@ -59,6 +60,9 @@ public:
 	int height = 0;
 
 	bool isActive = true;
+
+private:
+	SDL_Scancode* buttonDrawFow = nullptr;
 };
 
 #endif

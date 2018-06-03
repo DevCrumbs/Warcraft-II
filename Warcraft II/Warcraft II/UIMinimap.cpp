@@ -270,8 +270,8 @@ void UIMinimap::HandleInput(float dt)
 	{
 		moveCamera = false;
 	}
-
-	if (App->scene->isMinimapChanged || App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
+										// SDL_SCANCODE_TAB
+	if (App->scene->isMinimapChanged || App->input->GetKey(App->scene->buttonMinimap) == KEY_DOWN)
 	{
 		if (lowLevel)
 		{

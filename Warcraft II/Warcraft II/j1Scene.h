@@ -216,8 +216,8 @@ public:
 	// Room cleared!
 	void BlitRoomClearedFloor(float dt);
 
-	bool LoadKeys(pugi::xml_node&);
-
+	bool LoadKeys(pugi::xml_node& node);
+	
 public:
 
 	bool isGoalFromMinimap = false;
@@ -293,6 +293,15 @@ public:
 
 	int mapDifficulty = 0;
 
+	SDL_Scancode* buttonGoToBase = nullptr;
+	SDL_Scancode* buttonGoToUnits = nullptr;
+	SDL_Scancode* buttonMinimap = nullptr;
+	SDL_Scancode* buttonBuildingMenu = nullptr;
+	SDL_Scancode* buttonPauseMenu = nullptr;
+	SDL_Scancode* buttonPatrolUnits = nullptr;
+	SDL_Scancode* buttonStopUnits = nullptr;
+
+
 private:
 
 	j1Timer goldLabelColorTime;
@@ -352,17 +361,6 @@ private:
 	int camMovement = 1;
 	float camMovMargin = 0.0f;
 	bool isCamMovMarginCharged = false;
-
-	SDL_Scancode buttonSaveGame =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonLoadGame =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonFullScreen = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonGodMode =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveUp =		SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveDown =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveLeft =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveRight =  SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonLeaveGame =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonReloadMap = SDL_SCANCODE_UNKNOWN;
 
 	ENTITY_TYPE alphaBuilding;
 

@@ -291,8 +291,9 @@ void j1FogOfWar::TilesNearPlayer()
 	CleanSafeZone(App->map->playerBase.roomRect);
 }
 
+bool j1FogOfWar::LoadKeys(pugi::xml_node& buttons)
+{
+	bool ret = true;
 
-// =================================== PART 2 ===================================
-
-// TODO 6 (beauty): 
-// UNCOMMENT THE CODE BELOW
+	return ret;
+}

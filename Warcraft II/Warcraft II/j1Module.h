@@ -10,6 +10,8 @@
 
 #include "PugiXml\src\pugixml.hpp"
 
+#include "SDL\include\SDL_scancode.h"
+
 using namespace std;
 
 class j1App;
@@ -96,6 +98,8 @@ public:
 	{
 		return true;
 	}
+
+	bool LoadKey(SDL_Scancode* button, char* name, pugi::xml_node& buttons);
 
 public:
 

@@ -25,7 +25,7 @@
 
 j1Player::j1Player() : j1Module()
 {
-	name.assign("scene");
+	name.assign("player");
 }
 
 // Destructor
@@ -35,6 +35,8 @@ j1Player::~j1Player() {}
 bool j1Player::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
+
+	LoadKeys(config.child("buttons"));
 
 	return ret;
 }
@@ -101,7 +103,8 @@ bool j1Player::Update(float dt)
 
 	///////////////////////////////////////
 	// Select all units on screen shortcuts
-	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN) {
+	// SDL_SCANCODE_Z
+	if (App->input->GetKey(buttonSelectFootman) == KEY_DOWN) {
 
 		App->entities->SelectEntitiesOnScreen(EntityType_FOOTMAN);
 
@@ -112,7 +115,8 @@ bool j1Player::Update(float dt)
 		else
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN) {
+	// SDL_SCANCODE_X
+	else if (App->input->GetKey(buttonSelectArcher) == KEY_DOWN) {
 
 		App->entities->SelectEntitiesOnScreen(EntityType_ELVEN_ARCHER);
 
@@ -123,7 +127,8 @@ bool j1Player::Update(float dt)
 		else
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN) {
+	// SDL_SCANCODE_C
+	else if (App->input->GetKey(buttonSelectGryphon) == KEY_DOWN) {
 
 		App->entities->SelectEntitiesOnScreen(EntityType_GRYPHON_RIDER);
 
@@ -134,7 +139,8 @@ bool j1Player::Update(float dt)
 		else
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN) {
+	// SDL_SCANCODE_C
+	else if (App->input->GetKey(buttonSelectAll) == KEY_DOWN) {
 	
 		App->entities->SelectEntitiesOnScreen();
 
@@ -2470,6 +2476,25 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		default:
 			break;
 		}
+}
+
+bool j1Player::LoadKeys(pugi::xml_node& buttons)
+{
+	bool ret = true;
+
+	buttonSelectFootman = new SDL_Scancode;
+	ret = LoadKey(buttonSelectFootman, "buttonSelectFootman", buttons);
+
+	buttonSelectArcher = new SDL_Scancode;
+	ret = LoadKey(buttonSelectArcher, "buttonSelectArcher", buttons);
+
+	buttonSelectGryphon = new SDL_Scancode;
+	ret = LoadKey(buttonSelectGryphon, "buttonSelectGryphon", buttons);
+
+	buttonSelectAll = new SDL_Scancode;
+	ret = LoadKey(buttonSelectAll, "buttonSelectAll", buttons);
+
+	return ret;
 }
 
 // GroupSpawning

@@ -156,6 +156,8 @@ bool j1Input::CleanUp()
 {
 	bool ret = true;
 
+	ClearKeys();
+
 	LOG("Quitting SDL event subsystem");
 
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
@@ -193,4 +195,37 @@ bool j1Input::IsAnyKeyPressed()
 	bool isAnyKeyPressed = isPressed;
 	isPressed = false;
 	return isAnyKeyPressed;
+}
+
+KEY_STATE j1Input::GetKey(int id) const
+{
+	return keyboard[id];
+}
+
+KEY_STATE j1Input::GetKey(SDL_Scancode* id) const
+{
+	if (id != nullptr)
+	{
+		if (*id >= 0 && *id < MAX_KEYS)
+			return keyboard[*id];
+	}
+		return KEY_IDLE;
+}
+
+void j1Input::AddKey(SDL_Scancode* key)
+{
+	if (key != nullptr)
+	{
+		inGameKeys.push_back(key);
+	}
+}
+
+void j1Input::ClearKeys()
+{
+	for (list<SDL_Scancode*>::iterator iterator = inGameKeys.begin(); iterator != inGameKeys.begin(); ++iterator)
+	{
+		delete *iterator;
+	}
+
+	inGameKeys.clear();
 }

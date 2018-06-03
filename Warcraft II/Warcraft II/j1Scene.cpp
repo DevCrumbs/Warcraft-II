@@ -79,7 +79,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	levelTheme3 = audio.child("levelTheme3").attribute("path").as_string();
 	levelTheme4 = audio.child("levelTheme4").attribute("path").as_string();
 
-	//LoadKeys(config.child("buttons"));
+	LoadKeys(config.child("buttons"));
 
 	//Load camera attributes
 	pugi::xml_node camera = config.child("camera");
@@ -584,7 +584,8 @@ bool j1Scene::Update(float dt)
 				}
 
 				// Move the camera to the group of units
-				if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN) {
+				// SDL_SCANCODE_Q
+				if (App->input->GetKey(buttonGoToUnits) == KEY_DOWN) {
 
 					iPoint centroid = App->entities->CalculateCentroidEntities(units);
 					iPoint cameraPos = App->render->FindCameraPosFromCenterPos(centroid);
@@ -622,11 +623,13 @@ bool j1Scene::Update(float dt)
 
 				// Command a group of units
 				/// COMMAND PATROL
-				if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN)
+				// SDL_SCANCODE_N
+				if (App->input->GetKey(buttonPatrolUnits) == KEY_DOWN)
 					App->entities->CommandToUnits(units, UnitCommand_Patrol);
 
 				/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
-				if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
+				// SDL_SCANCODE_M
+				if (App->input->GetKey(buttonStopUnits) == KEY_DOWN)
 
 					App->entities->CommandToUnits(units, UnitCommand_Stop);
 
@@ -847,11 +850,6 @@ bool j1Scene::Update(float dt)
 	if (adviceMessageTimer.Read() >= 3500 && adviceMessage == AdviceMessage_UNDER_ATTACK) {
 		HideAdviceMessage();
 	}
-	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
-	{
-		App->map->UnLoad();
-		//App->map->CreateNewMap();
-	}
 
 	if (parchmentImg != nullptr) {
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
@@ -922,8 +920,8 @@ bool j1Scene::Update(float dt)
 	default:
 		break;
 	}
-
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
+	// SDL_SCANCODE_ESCAPE
+	if (App->input->GetKey(buttonPauseMenu) == KEY_DOWN) {
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		if (parchmentImg == nullptr) {
 			UIImage_Info parchmentInfo;
@@ -946,11 +944,11 @@ bool j1Scene::PostUpdate()
 
 	if (!isStartedFinalTransition) {
 
-		if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
+		//if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
 
-			App->gui->RemoveElem((UIElement**)&parchmentImg);
-			return false;
-		}
+		//	App->gui->RemoveElem((UIElement**)&parchmentImg);
+		//	return false;
+		//}
 
 		if (App->player->imagePrisonersVector.size() >= 2) {
 
@@ -1101,18 +1099,14 @@ void j1Scene::DebugKeys()
 	//}
 
 	// F5: save the current state
-	//if (App->input->GetKey(buttonSaveGame) == KEY_DOWN) {
+	//if (App->input->GetKey(*buttonSaveGame) == KEY_DOWN) {
 	//	App->SaveGame();
 	//}
 
 	// F6: load the previous state
-	//if (App->input->GetKey(buttonLoadGame) == KEY_DOWN) {
+	//if (App->input->GetKey(*buttonLoadGame) == KEY_DOWN) {
 	//	App->LoadGame();
 	//}
-
-	// F7: fullscreen
-	if (App->input->GetKey(buttonFullScreen) == KEY_DOWN)
-		App->win->SetFullscreen();
 
 	// F10: God mode
 	//if (App->input->GetKey(buttonGodMode) == KEY_DOWN)
@@ -1130,13 +1124,15 @@ void j1Scene::DebugKeys()
 		App->map->cameraBlit = !App->map->cameraBlit;
 		*/
 
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	// SDL_SCANCODE_SPACE
+	if (App->input->GetKey(buttonGoToBase) == KEY_DOWN)
 	{
 		App->render->camera.x = -basePos.x;
 		App->render->camera.y = -basePos.y;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
+	// SDL_SCANCODE_B
+	if (App->input->GetKey(buttonBuildingMenu) == KEY_DOWN)
 
 		ChangeBuildingMenuState(&buildingMenuButtons);
 }
@@ -2554,65 +2550,26 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 {
 	bool ret = true;
 
-	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) ==  SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load SaveGame button");
-		ret = false;
-	}
+	buttonGoToBase = new SDL_Scancode;
+	ret = LoadKey(buttonGoToBase, "buttonGoToBase", buttons);
 
-	if ((buttonLoadGame = (SDL_Scancode)buttons.attribute("buttonLoadGame").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load SaveGame button");
-		ret = false;
-	}
+	buttonGoToUnits = new SDL_Scancode;
+	ret = LoadKey(buttonGoToUnits, "buttonGoToUnits", buttons);
 
-	if ((buttonFullScreen = (SDL_Scancode)buttons.attribute("buttonFullScreen").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load FullScreen button");
-		ret = false;
-	}
+	buttonMinimap = new SDL_Scancode;
+	ret = LoadKey(buttonMinimap, "buttonMinimap", buttons);
 
-	if ((buttonGodMode = (SDL_Scancode)buttons.attribute("buttonGodMode").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load GodMode button");
-		ret = false;
-	}
+	buttonBuildingMenu = new SDL_Scancode;
+	ret = LoadKey(buttonBuildingMenu, "buttonBuildingMenu", buttons);
 
-	if ((buttonMoveUp = (SDL_Scancode)buttons.attribute("buttonMoveUp").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveUp button");
-		ret = false;
-	}
+	buttonPauseMenu = new SDL_Scancode;
+	ret = LoadKey(buttonPauseMenu, "buttonPauseMenu", buttons);
 
-	if ((buttonMoveDown = (SDL_Scancode)buttons.attribute("buttonMoveDown").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveDown button");
-		ret = false;
-	}
+	buttonPatrolUnits = new SDL_Scancode;
+	ret = LoadKey(buttonPatrolUnits, "buttonPatrolUnits", buttons);
 
-	if ((buttonMoveLeft = (SDL_Scancode)buttons.attribute("buttonMoveLeft").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveLeft button");
-		ret = false;
-	}
-
-	if ((buttonMoveRight = (SDL_Scancode)buttons.attribute("buttonMoveRight").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveRight button");
-		ret = false;
-	}
-
-	if ((buttonLeaveGame = (SDL_Scancode)buttons.attribute("buttonLeaveGame").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load LeaveGame button");
-		ret = false;
-	}
-
-	if ((buttonReloadMap = (SDL_Scancode)buttons.attribute("buttonReloadMap").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load ReloadMap button");
-		ret = false;
-	}
+	buttonStopUnits = new SDL_Scancode;
+	ret = LoadKey(buttonStopUnits, "buttonStopUnits", buttons);
 	
 	return ret;
 }

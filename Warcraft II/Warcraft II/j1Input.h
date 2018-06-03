@@ -3,6 +3,8 @@
 
 #include "j1Module.h"
 
+#include <list>
+
 #include "SDL\include\SDL_gamecontroller.h"
 #include "SDL\include\SDL_scancode.h"
 #include "p2Point.h"
@@ -55,10 +57,9 @@ public:
 	bool GetWindowEvent(j1EventWindow ev);
 
 	// Check key states (includes mouse and joy buttons)
-	KEY_STATE GetKey(int id) const
-	{
-		return keyboard[id];
-	}
+	KEY_STATE GetKey(int id) const;
+
+	KEY_STATE GetKey(SDL_Scancode* id) const;
 
 	KEY_STATE GetMouseButtonDown(int id) const
 	{
@@ -74,6 +75,10 @@ public:
 	void GetMouseMotion(int& x, int& y);
 
 	bool IsAnyKeyPressed();
+
+	void AddKey(SDL_Scancode* key);
+
+	void ClearKeys();
 
 
 public:
@@ -92,6 +97,8 @@ private:
 	int			mouseY = 0;
 
 	bool		isPressed = false;
+
+	list<SDL_Scancode*> inGameKeys;
 };
 
 #endif // __j1INPUT_H__

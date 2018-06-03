@@ -152,20 +152,26 @@
     </maps>
 
     <buttons
-        buttonSaveGame = "62"
-        buttonLoadGame = "63"
-        buttonFullScreen = "64"
-        buttonGodMode = "67"
-        buttonMoveUp = "82"
-        buttonMoveDown = "81"
-        buttonMoveLeft = "80"
-        buttonMoveRight = "79"
-        buttonLeaveGame = "41"
-        buttonReloadMap = "30"
+        buttonGoToBase = "44"
+        buttonGoToUnits = "20"
+        buttonMinimap = "43"
+        buttonBuildingMenu = "5"
+        buttonPauseMenu = "41"
+        buttonPatrolUnits = "17"
+        buttonStopUnits = "18"
     />
     
   </scene>
 
+  <player>
+    <buttons
+       buttonSelectFootman = "29"
+       buttonSelectArcher = "27"
+       buttonSelectGryphon = "6"
+       buttonSelectAll = "25"
+    />
+  </player>
+  
   <entities>
     <spritesheets>
       <humanBuildings name="data/assets/textures/buildings/HumanBuildings.png"/>
