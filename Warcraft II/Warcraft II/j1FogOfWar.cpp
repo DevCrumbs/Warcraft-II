@@ -933,6 +933,8 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 		}
 
 		// auxTileSprite (translucid and transparent tiles)
+		bool isAuxTileSprite = false;
+
 		// TRANSLUCID TILE
 		if (currTile->alpha == TRANSLUCID_ALPHA) {
 
@@ -942,8 +944,9 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 			if (bottom->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA) {
 
 				// Not a corner...
+				isAuxTileSprite = true;
 			}
-			else if (bottom->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
+			if (bottom->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
 
 				if (bottom->tileSprite[0] == FoWTileSprite_QuarterBlack && left->tileSprite[3] == FoWTileSprite_QuarterBlack) {
 
@@ -953,9 +956,10 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 					currTile->auxTileSprite[3] = FoWTileSprite_QuarterTransparent;
 
 					currTile->auxAlpha = NORMAL_ALPHA;
+					isAuxTileSprite = true;
 				}
 			}
-			else if (top->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA ) {
+			if (top->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA ) {
 
 				if (top->tileSprite[2] == FoWTileSprite_QuarterBlack && left->tileSprite[1] == FoWTileSprite_QuarterBlack) {
 
@@ -965,11 +969,12 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 					currTile->auxTileSprite[3] = FoWTileSprite_QuarterTransparent;
 
 					currTile->auxAlpha = NORMAL_ALPHA;
+					isAuxTileSprite = true;
 				}
 			}
 
 			/// left (2)
-			else if (right->alpha == NORMAL_ALPHA && bottom->alpha == NORMAL_ALPHA) {
+			if (right->alpha == NORMAL_ALPHA && bottom->alpha == NORMAL_ALPHA) {
 
 				if (right->tileSprite[2] == FoWTileSprite_QuarterBlack && bottom->tileSprite[1] == FoWTileSprite_QuarterBlack) {
 
@@ -979,9 +984,10 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 					currTile->auxTileSprite[3] = FoWTileSprite_OpenCircleBottomRight;
 
 					currTile->auxAlpha = NORMAL_ALPHA;
+					isAuxTileSprite = true;
 				}
 			}
-			else if (right->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA ) {
+			if (right->alpha == NORMAL_ALPHA && top->alpha == NORMAL_ALPHA ) {
 
 				if (right->tileSprite[0] == FoWTileSprite_QuarterBlack && top->tileSprite[3] == FoWTileSprite_QuarterBlack) {
 
@@ -991,17 +997,19 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 					currTile->auxTileSprite[3] = FoWTileSprite_QuarterTransparent;
 
 					currTile->auxAlpha = NORMAL_ALPHA;
+					isAuxTileSprite = true;
 				}
 			}
 
 			/// top (1)
-			else if (right->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
+			if (right->alpha == NORMAL_ALPHA && left->alpha == NORMAL_ALPHA) {
 
 				// Not a corner...
+				isAuxTileSprite = true;
 			}
 
 			// All transparent tiles
-			else {
+			if (!isAuxTileSprite) {
 
 				currTile->auxTileSprite[0] = FoWTileSprite_QuarterTransparent;
 				currTile->auxTileSprite[1] = FoWTileSprite_QuarterTransparent;
@@ -1020,8 +1028,9 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 				&& (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA) && (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA)) {
 
 				// Not a corner...
+				isAuxTileSprite = true;
 			}
-			else if (right->alpha == 0 && top->alpha == 0
+			if (right->alpha == 0 && top->alpha == 0
 				&& (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA)) {
 
 				if (bottom->tileSprite[0] == FoWTileSprite_QuarterBlack && left->tileSprite[3] == FoWTileSprite_QuarterBlack) {
@@ -1035,9 +1044,11 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 						currTile->auxAlpha = NORMAL_ALPHA;
 					else
 						currTile->auxAlpha = TRANSLUCID_ALPHA;
+
+					isAuxTileSprite = true;
 				}
 			}
-			else if (right->alpha == 0 && bottom->alpha == 0
+			if (right->alpha == 0 && bottom->alpha == 0
 				&& (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA)) {
 
 				if (top->tileSprite[2] == FoWTileSprite_QuarterBlack && left->tileSprite[1] == FoWTileSprite_QuarterBlack) {
@@ -1051,11 +1062,13 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 						currTile->auxAlpha = NORMAL_ALPHA;
 					else
 						currTile->auxAlpha = TRANSLUCID_ALPHA;
+
+					isAuxTileSprite = true;
 				}
 			}
 
 			/// left (2)
-			else if (left->alpha == 0 && top->alpha == 0
+			if (left->alpha == 0 && top->alpha == 0
 				&& (right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (bottom->alpha == NORMAL_ALPHA || bottom->alpha == TRANSLUCID_ALPHA)) {
 
 				if (right->tileSprite[2] == FoWTileSprite_QuarterBlack && bottom->tileSprite[1] == FoWTileSprite_QuarterBlack) {
@@ -1069,9 +1082,11 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 						currTile->auxAlpha = NORMAL_ALPHA;
 					else
 						currTile->auxAlpha = TRANSLUCID_ALPHA;
+
+					isAuxTileSprite = true;
 				}
 			}
-			else if (left->alpha == 0 && bottom->alpha == 0
+			if (left->alpha == 0 && bottom->alpha == 0
 				&& (right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (top->alpha == NORMAL_ALPHA || top->alpha == TRANSLUCID_ALPHA)) {
 
 				if (right->tileSprite[0] == FoWTileSprite_QuarterBlack && top->tileSprite[3] == FoWTileSprite_QuarterBlack) {
@@ -1085,18 +1100,21 @@ void j1FogOfWar::DetermineSpriteTile(int tile)
 						currTile->auxAlpha = NORMAL_ALPHA;
 					else
 						currTile->auxAlpha = TRANSLUCID_ALPHA;
+
+					isAuxTileSprite = true;
 				}
 			}
 
 			/// top (1)
-			else if (top->alpha == 0 && bottom->alpha == 0
+			if (top->alpha == 0 && bottom->alpha == 0
 				&& (right->alpha == NORMAL_ALPHA || right->alpha == TRANSLUCID_ALPHA) && (left->alpha == NORMAL_ALPHA || left->alpha == TRANSLUCID_ALPHA)) {
 
 				// Not a corner...
+				isAuxTileSprite = true;
 			}
 
 			// All transparent tiles
-			else {
+			if (!isAuxTileSprite) {
 
 				currTile->auxTileSprite[0] = FoWTileSprite_QuarterTransparent;
 				currTile->auxTileSprite[1] = FoWTileSprite_QuarterTransparent;
