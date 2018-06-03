@@ -426,7 +426,7 @@ ColliderGroup* StaticEntity::GetSightRadiusCollider() const
 // Reconstruction
 float StaticEntity::GetSecondsReconstruction(StaticEntitySize buildingSize) const 
 {
-	/// TODO Balancing
+	/// TODO Balancing (enemy buildings reconstruction)
 	switch (buildingSize) {
 	
 	case StaticEntitySize_Small:
@@ -444,4 +444,19 @@ float StaticEntity::GetSecondsReconstruction(StaticEntitySize buildingSize) cons
 	}
 
 	return 5.0f;
+}
+
+// Respawn
+float StaticEntity::GetRandomSecondsRespawn() const 
+{
+	/// TODO Balancing (respawn enemies)
+	int minValue = 10.0f;
+	int maxValue = 20.0f;
+	//int minValue = 30.0f;
+	//int maxValue = 120.0f;
+
+	/// rand() % (max - min + 1) + min
+	int randomValue = rand() % (maxValue - minValue + 1) + minValue;
+
+	return (float)randomValue;
 }

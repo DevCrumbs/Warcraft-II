@@ -176,7 +176,6 @@ void EnemyGuardTower::Move(float dt)
 		if (!enemyAttackList.empty())
 			attackingTarget = enemyAttackList.front();
 	}
-
 }
 
 void EnemyGuardTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionState collisionState)

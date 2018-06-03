@@ -82,6 +82,9 @@ public:
 	// Reconstruction
 	float GetSecondsReconstruction(StaticEntitySize buildingSize) const;
 
+	// Respawn
+	float GetRandomSecondsRespawn() const;
+
 public:
 
 	const ENTITY_TYPE staticEntityType = EntityType_NONE;

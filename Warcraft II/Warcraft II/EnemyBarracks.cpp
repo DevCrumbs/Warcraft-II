@@ -8,6 +8,7 @@
 #include "j1Scene.h"
 #include "j1Movement.h"
 #include "j1Particles.h"
+#include "j1Player.h"
 
 EnemyBarracks::EnemyBarracks(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyBarracksInfo& enemyBarracksInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), enemyBarracksInfo(enemyBarracksInfo)
 {
@@ -59,6 +60,8 @@ EnemyBarracks::~EnemyBarracks()
 
 void EnemyBarracks::Move(float dt) 
 {
+	// 1.RECONSTRUCTION
+
 	// Reconstruction conditions
 	if (buildingState == BuildingState_LowFire && !isStartReconstructionTimer) {
 
@@ -141,6 +144,61 @@ void EnemyBarracks::Move(float dt)
 
 		isInProgressReconstructionTimer = false;
 		inProgressReconstructionTimer = 0.0f;
+	}
+
+	// ------------------------------------------------------------------------------------
+
+	// 2. RESPAWN
+
+	if (buildingState == BuildingState_Normal) {
+	
+		if (!isRespawnTimer) {
+
+			secondsRespawn = GetRandomSecondsRespawn();
+			isRespawnTimer = true;
+			respawnTimer = 0.0f;
+		}
+	}
+	else {
+	
+		if (isRespawnTimer) {
+
+			isRespawnTimer = false;
+			respawnTimer = 0.0f;
+		}
+	}
+
+	if (isRespawnTimer)
+
+		respawnTimer += dt;
+
+	if (respawnTimer >= secondsRespawn) {
+	
+		// Spawn the enemies
+		/// TODO Balancing
+		int minValue = 1;
+		int maxValue = 3;
+
+		int totalEnemies = rand() % (maxValue - minValue + 1) + minValue;
+
+		for (uint i = 0; i < totalEnemies; ++i) {
+
+			ENTITY_TYPE enemyType = EntityType_NONE;
+			UnitInfo unitInfo;
+
+			/// Enemy type
+			int randomValue = rand() % 2;
+
+			if (randomValue == 0)
+				enemyType = EntityType_GRUNT;
+			else
+				enemyType = EntityType_TROLL_AXETHROWER;
+
+			App->player->SpawnUnitFromBuilding(this, enemyType, unitInfo);
+		}
+
+		isRespawnTimer = false;
+		respawnTimer = 0.0f;
 	}
 }
 

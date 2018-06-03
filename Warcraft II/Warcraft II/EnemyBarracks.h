@@ -16,10 +16,6 @@ public:
 
 	void Move(float dt);
 
-	// Animations
-	void LoadAnimationsSpeed();
-	void UpdateAnimations(float dt);
-
 private:
 
 	EnemyBarracksInfo enemyBarracksInfo;
@@ -37,6 +33,12 @@ private:
 	bool isInProgressReconstructionTimer = false;
 
 	BuildingState buildingStateBeforeReconstruction = BuildingState_NoState;
+
+	// Respawn
+	float secondsRespawn = 0.0f;
+
+	float respawnTimer = 0.0f;
+	bool isRespawnTimer = false;
 };
 
 #endif
