@@ -102,10 +102,12 @@ bool j1Video::GrabAVIFrame()
 
 
 	// BONUS. Window title with information about our video.
+	/*
 	char   title[100];
 	mpf = AVIStreamSampleToTime(pavi, lastFrame) / lastFrame;        // Calculate Rough Milliseconds Per Frame
 	wsprintf(title, "AVI Player: Width: %d, Height: %d, Frames: %d, Miliseconds per frame: %d", width, height, lastFrame, mpf);
 	App->win->SetTitle(title);
+	*/
 
 	return true;
 }
