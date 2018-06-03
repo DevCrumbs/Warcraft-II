@@ -801,13 +801,18 @@ bool Particle::Update(float dt)
 			// Apply damage and kill the particle if it reaches its target
 			if (entity != nullptr) {
 
-				entity->ApplyDamage(damage);
-
 				if (entity->entityType == EntityCategory_STATIC_ENTITY) {
 
-					StaticEntity* statEnt = (StaticEntity*)entity;
-					statEnt->CheckBuildingState();
+					StaticEntity* building = (StaticEntity*)entity;
+
+					if (building->GetBuildingState() != BuildingState_Building) {
+
+						entity->ApplyDamage(damage);
+						building->CheckBuildingState();
+					}
 				}
+				else
+					entity->ApplyDamage(damage);
 
 				return false;
 			}
@@ -846,13 +851,18 @@ bool Particle::Update(float dt)
 			// Apply damage and kill the particle if it reaches its target
 			if (entity != nullptr) {
 
-				entity->ApplyDamage(damage);
-
 				if (entity->entityType == EntityCategory_STATIC_ENTITY) {
 
-					StaticEntity* statEnt = (StaticEntity*)entity;
-					statEnt->CheckBuildingState();
+					StaticEntity* building = (StaticEntity*)entity;
+
+					if (building->GetBuildingState() != BuildingState_Building) {
+
+						entity->ApplyDamage(damage);
+						building->CheckBuildingState();
+					}
 				}
+				else
+					entity->ApplyDamage(damage);
 
 				return false;
 			}
@@ -886,10 +896,14 @@ bool Particle::Update(float dt)
 					entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy) {
 
 					if (entity->entityType == EntityCategory_STATIC_ENTITY) {
-						entity->ApplyDamage(damage);
 
-						StaticEntity* statEnt = (StaticEntity*)entity;
-						statEnt->CheckBuildingState();
+						StaticEntity* building = (StaticEntity*)entity;
+
+						if (building->GetBuildingState() != BuildingState_Building) {
+
+							entity->ApplyDamage(damage);
+							building->CheckBuildingState();
+						}
 					}
 					else
 						entity->ApplyDamage(damage);
@@ -1003,10 +1017,13 @@ bool Particle::Update(float dt)
 				else if (critter != nullptr)
 					critter->ApplyDamage(damage);
 				else if (playerBuilding != nullptr) {
-					playerBuilding->ApplyDamage(damage);
+					StaticEntity* building = (StaticEntity*)playerBuilding;
 
-					StaticEntity* statEnt = (StaticEntity*)playerBuilding;
-					statEnt->CheckBuildingState();
+					if (building->GetBuildingState() != BuildingState_Building) {
+
+						playerBuilding->ApplyDamage(damage);
+						building->CheckBuildingState();
+					}
 				}
 
 				damageTimer.Start();
@@ -1082,10 +1099,13 @@ bool Particle::Update(float dt)
 				else if (critter != nullptr)
 					critter->ApplyDamage(damage);
 				else if (enemyBuilding != nullptr) {
-					enemyBuilding->ApplyDamage(damage);
+					StaticEntity* building = (StaticEntity*)enemyBuilding;
 
-					StaticEntity* statEnt = (StaticEntity*)enemyBuilding;
-					statEnt->CheckBuildingState();
+					if (building->GetBuildingState() != BuildingState_Building) {
+
+						enemyBuilding->ApplyDamage(damage);
+						building->CheckBuildingState();
+					}
 				}
 
 				damageTimer.Start();

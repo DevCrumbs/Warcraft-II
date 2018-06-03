@@ -4,7 +4,6 @@
 #include "GoldMine.h"
 
 #include "j1Player.h"
-#include "j1Pathfinding.h"
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
@@ -47,6 +46,8 @@ GoldMine::GoldMine(fPoint pos, iPoint size, int currLife, uint maxLife, const Go
 
 void GoldMine::Move(float dt)
 {
+	buildingState;
+
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 

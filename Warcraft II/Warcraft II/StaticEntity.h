@@ -7,6 +7,8 @@
 #include "j1Input.h"
 #include "j1Window.h"
 
+#define SECONDS_START_RECONSTRUCTION 20.0f
+
 struct SDL_Texture;
 struct Particle;
 
@@ -74,8 +76,11 @@ public:
 	BuildingState GetBuildingState() const;
 
 	// Collision
-	ColliderGroup* GetSightRadiusCollider() const;
 	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
+	ColliderGroup* GetSightRadiusCollider() const;
+
+	// Reconstruction
+	float GetSecondsReconstruction(StaticEntitySize buildingSize) const;
 
 public:
 

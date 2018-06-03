@@ -422,3 +422,26 @@ ColliderGroup* StaticEntity::GetSightRadiusCollider() const
 {
 	return sightRadiusCollider;
 }
+
+// Reconstruction
+float StaticEntity::GetSecondsReconstruction(StaticEntitySize buildingSize) const 
+{
+	/// TODO Balancing
+	switch (buildingSize) {
+	
+	case StaticEntitySize_Small:
+		return 5.0f;
+		break;
+	case StaticEntitySize_Medium:
+		return 8.0f;
+		break;
+	case StaticEntitySize_Big:
+		return 12.0f;
+		break;
+	default:
+		return 5.0f;
+		break;
+	}
+
+	return 5.0f;
+}

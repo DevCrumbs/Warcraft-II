@@ -360,23 +360,38 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 	}
 	else if (subgoals.size() > 0 && subgoals.front()->GetType() == GoalType_MoveToPosition) {
 
-		// If the target is a building, also check if DistanceManhattan is <= 1
-		if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && !targetInfo->isAttackSatisfied) {
+		// If DistanceManhattan is <= 1 -> isAttackSatisfied = true
+		if (!targetInfo->isAttackSatisfied) {
 
-			list<iPoint> buildingTiles = App->entities->GetBuildingTiles((StaticEntity*)targetInfo->target);
+			if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
 
-			if (buildingTiles.size() > 0) {
+				list<iPoint> buildingTiles = App->entities->GetBuildingTiles((StaticEntity*)targetInfo->target);
 
-				list<iPoint>::const_iterator it = buildingTiles.begin();
+				if (buildingTiles.size() > 0) {
 
-				while (it != buildingTiles.end()) {
+					list<iPoint>::const_iterator it = buildingTiles.begin();
 
-					if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1) {
+					while (it != buildingTiles.end()) {
+
+						if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1) {
+
+							targetInfo->isAttackSatisfied = true;
+							break;
+						}
+						it++;
+					}
+				}
+			}
+			else if (targetInfo->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			
+				DynamicEntity* dynEnt = (DynamicEntity*)targetInfo->target;
+				SingleUnit* singleUnit = dynEnt->GetSingleUnit();
+
+				if (singleUnit != nullptr) {
+
+					if (owner->GetSingleUnit()->currTile.DistanceTo(singleUnit->currTile) <= 1)
 
 						targetInfo->isAttackSatisfied = true;
-						break;
-					}
-					it++;
 				}
 			}
 		}
@@ -445,27 +460,6 @@ void Goal_AttackTarget::Terminate()
 		else {
 
 			targetInfo->target->RemoveAttackingUnit(owner);
-
-			// If the target is a building, also check if DistanceManhattan is <= 1
-			if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY && targetInfo->isAttackSatisfied) {
-
-				list<iPoint> buildingTiles = App->entities->GetBuildingTiles((StaticEntity*)targetInfo->target);
-
-				if (buildingTiles.size() > 0) {
-
-					list<iPoint>::const_iterator it = buildingTiles.begin();
-
-					while (it != buildingTiles.end()) {
-
-						if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1) {
-
-							targetInfo->isAttackSatisfied = false;
-							break;
-						}
-						it++;
-					}
-				}
-			}
 		}
 
 		targetInfo->isInGoals--; // THE TARGET IS NO LONGER A GOAL
@@ -904,7 +898,7 @@ GoalStatus Goal_MoveToPosition::Process(float dt)
 
 	App->movement->MoveUnit(owner, dt);
 
-	if (owner->GetSingleUnit()->movementState == MovementState_WaitForPath) {
+	if (owner->GetSingleUnit()->movementState == MovementState_WaitForPath || owner->GetSingleUnit()->movementState == MovementState_FollowPath) {
 
 		// The unit has changed their goal (because it was not valid) through the GroupMovement module
 		if (owner->GetSingleUnit()->goal != destinationTile 
@@ -1299,13 +1293,19 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 			App->audio->PlayFx(App->audio->GetFX().swordClash, 0);
 
-			targetInfo->target->ApplyDamage(owner->GetDamage(targetInfo->target));
-
 			if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
 
 				StaticEntity* building = (StaticEntity*)targetInfo->target;
-				building->CheckBuildingState();
+
+				if (building->GetBuildingState() != BuildingState_Building) {
+
+					targetInfo->target->ApplyDamage(owner->GetDamage(targetInfo->target));
+					building->CheckBuildingState();
+				}
 			}
+			else
+				targetInfo->target->ApplyDamage(owner->GetDamage(targetInfo->target));
+
 			break;
 		}
 
@@ -1555,7 +1555,7 @@ void Goal_PickNugget::Activate()
 	int random = rand() % 4;
 	int timesRepeatSound = 0;
 
-	//TODO balancing
+	/// TODO Balancing
 	int mapDifficulty = App->scene->mapDifficulty;
 
 	if (mapDifficulty == 0 || mapDifficulty == 1) { //Easy

@@ -12,18 +12,27 @@ class AltarOfStorms :public StaticEntity
 {
 public:
 	AltarOfStorms(fPoint pos, iPoint size, int currLife, uint maxLife, const AltarOfStormsInfo& altarOfStormsInfo, j1Module* listener);
-	virtual ~AltarOfStorms(){}
+	~AltarOfStorms();
 
 	void Move(float dt);
-
-	// Animations
-	void LoadAnimationsSpeed();
-	void UpdateAnimations(float dt);
 
 private:
 
 	AltarOfStormsInfo altarOfStormsInfo;
 
+	// Reconstruction
+	Particle* peon = nullptr;
+
+	float secondsReconstruction = 0.0f;
+
+	float startReconstructionTimer = 0.0f;
+	float inProgressReconstructionTimer = 0.0f;
+
+	bool isRestartReconstructionTimer = false;
+	bool isStartReconstructionTimer = false;
+	bool isInProgressReconstructionTimer = false;
+
+	BuildingState buildingStateBeforeReconstruction = BuildingState_NoState;
 };
 
 #endif

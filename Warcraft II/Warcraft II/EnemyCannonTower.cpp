@@ -39,12 +39,109 @@ EnemyCannonTower::EnemyCannonTower(fPoint pos, iPoint size, int currLife, uint m
 	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, enemyCannonTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 	sightRadiusCollider->isTrigger = true;
 	entityCollider->isTrigger = true;
+
+	secondsReconstruction = GetSecondsReconstruction(buildingSize);
+}
+
+EnemyCannonTower::~EnemyCannonTower() 
+{
+	if (peon != nullptr)
+		peon->isRemove = true;
+	peon = nullptr;
 }
 
 void EnemyCannonTower::Move(float dt)
 {
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
+
+	// ------------------------------------------------------------------------------------
+
+	// Reconstruction conditions
+	if (buildingState == BuildingState_LowFire && !isStartReconstructionTimer) {
+
+		isRestartReconstructionTimer = false;
+		isStartReconstructionTimer = true;
+		startReconstructionTimer = 0.0f;
+	}
+
+	else if (buildingState == BuildingState_HardFire && !isRestartReconstructionTimer) {
+
+		startReconstructionTimer = 0.0f;
+		isRestartReconstructionTimer = true;
+	}
+
+	else if (buildingState == BuildingState_Destroyed && isStartReconstructionTimer) {
+
+		isRestartReconstructionTimer = false;
+		isStartReconstructionTimer = false;
+		startReconstructionTimer = 0.0f;
+	}
+
+	// START Reconstruction timer
+	if (isStartReconstructionTimer)
+
+		startReconstructionTimer += dt;
+
+	//LOG("startReconstructionTimer: %f", startReconstructionTimer);
+
+	// Reconstruction start
+	if (startReconstructionTimer >= SECONDS_START_RECONSTRUCTION) {
+
+		buildingStateBeforeReconstruction = buildingState;
+		buildingState = BuildingState_Building;
+
+		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0);
+		peon = App->particles->AddParticle(App->particles->peonMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
+
+		isRestartReconstructionTimer = false;
+		isStartReconstructionTimer = false;
+		startReconstructionTimer = 0.0f;
+
+		isInProgressReconstructionTimer = true;
+		inProgressReconstructionTimer = 0.0f;
+	}
+
+	// IN PROGRESS Reconstruction timer
+	if (isInProgressReconstructionTimer)
+
+		inProgressReconstructionTimer += dt;
+
+	//LOG("inProgressReconstructionTimer: %f", inProgressReconstructionTimer);
+
+	// Reconstruction end
+	if (buildingStateBeforeReconstruction == BuildingState_HardFire) {
+
+		// Remove the hard fire and add a low fire
+		if (inProgressReconstructionTimer >= secondsReconstruction / 2.0f) {
+
+			if (fire != nullptr)
+				fire->isRemove = true;
+			fire = App->particles->AddParticle(App->particles->lowFire, { (int)this->GetPos().x + this->GetSize().x / 3, (int)this->GetPos().y + this->GetSize().y / 3 });
+
+			buildingStateBeforeReconstruction = BuildingState_NoState;
+		}
+	}
+
+	if (inProgressReconstructionTimer >= secondsReconstruction) {
+
+		buildingState = BuildingState_Normal;
+		SetCurrLife(maxLife);
+
+		// Remove the low fire
+		if (fire != nullptr)
+			fire->isRemove = true;
+
+		// Remove the peon
+		if (peon != nullptr)
+			peon->isRemove = true;
+		peon = nullptr;
+
+		isInProgressReconstructionTimer = false;
+		inProgressReconstructionTimer = 0.0f;
+	}
+
+	// ------------------------------------------------------------------------------------
 
 	//Check if building is destroyed
 	if (currLife <= 0)
@@ -59,10 +156,6 @@ void EnemyCannonTower::Move(float dt)
 	}
 
 	TowerStateMachine(dt);
-
-	//Update animations for the construction cycle
-	if (!isBuilt)
-		UpdateAnimations(dt);
 
 	//Check is building is built already
 	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
@@ -166,15 +259,4 @@ void EnemyCannonTower::CreateCannonBullet()
 {
 	cannonParticle = App->particles->AddParticle(App->particles->cannonBullet, 
 	{ (int)this->GetPos().x + 32, (int)this->GetPos().y + 16 }, attackingTarget->GetPos(), enemyCannonTowerInfo.arrowSpeed, enemyCannonTowerInfo.damage);
-}
-
-// Animations
-void EnemyCannonTower::LoadAnimationsSpeed()
-{
-
-}
-
-void EnemyCannonTower::UpdateAnimations(float dt)
-{
-
 }
