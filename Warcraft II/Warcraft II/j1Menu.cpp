@@ -219,11 +219,7 @@ bool j1Menu::Update(float dt)
 				App->input->scancode = SDL_SCANCODE_UNKNOWN;
 				App->audio->PlayFx(App->audio->GetFX().changeKey);
 
-				App->scene->SaveKeys();
-				App->player->SaveKeys();
-				App->fow->SaveKeys();
-				App->wave->SaveKeys();
-				App->configFile.save_file("config.xml");
+				UpdateConfig();
 			}
 			else
 				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
@@ -681,6 +677,7 @@ void j1Menu::SetDefaultButtons()
 	CleanInteractiveLabels();
 	CreateInteractiveLabels(); 
 
+	UpdateConfig();
 }
 
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -1130,4 +1127,13 @@ void j1Menu::LoadKeysVector()
 	keysName.push_back("RSHIFT");
 	keysName.push_back("RALT");
 	keysName.push_back("RWIN");
+}
+
+void j1Menu::UpdateConfig()
+{
+	App->scene->SaveKeys();
+	App->player->SaveKeys();
+	App->fow->SaveKeys();
+	App->wave->SaveKeys();
+	App->configFile.save_file("config.xml");
 }

@@ -2515,7 +2515,6 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 	ret = LoadKey(&buttonPauseMenu, "buttonPauseMenu", buttons);
 	ret = LoadKey(&buttonPatrolUnits, "buttonPatrolUnits", buttons);
 	ret = LoadKey(&buttonStopUnits, "buttonStopUnits", buttons);
-	ret = LoadKey(&buttonDrawFow, "buttonStopUnits", buttons);
 
 	ret = LoadKey(&buttonSpawnFootman, "buttonSpawnFootman", buttons);
 	ret = LoadKey(&buttonSpawnArcher, "buttonSpawnArcher", buttons);
@@ -2567,7 +2566,6 @@ void j1Scene::SaveKeys()
 	buttons.remove_child("buttonBuildingMenu");
 	buttons.remove_child("buttonPauseMenu");
 	buttons.remove_child("buttonPatrolUnits");
-	buttons.remove_child("buttonStopUnits");
 	buttons.remove_child("buttonStopUnits");
 				   
 	buttons.remove_child("buttonSpawnFootman");
@@ -2622,7 +2620,6 @@ void j1Scene::SaveKeys()
 	buttons.append_child("buttonBuildingMenu").append_attribute("buttonBuildingMenu") = *buttonBuildingMenu;
 	buttons.append_child("buttonPauseMenu").append_attribute("buttonPauseMenu") = *buttonPauseMenu;
 	buttons.append_child("buttonPatrolUnits").append_attribute("buttonPatrolUnits") = *buttonPatrolUnits;
-	buttons.append_child("buttonStopUnits").append_attribute("buttonStopUnits") = *buttonStopUnits;
 	buttons.append_child("buttonStopUnits").append_attribute("buttonStopUnits") = *buttonStopUnits;
 				   
 	buttons.append_child("buttonSpawnFootman").append_attribute("buttonSpawnFootman") = *buttonSpawnFootman;

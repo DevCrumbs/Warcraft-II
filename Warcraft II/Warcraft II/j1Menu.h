@@ -93,6 +93,8 @@ public:
 
 	void LoadKeysVector();
 
+	void UpdateConfig();
+
 	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt,
 		UIE_HORIZONTAL_POS hPos = HORIZONTAL_POS_LEFT, UIE_VERTICAL_POS vPos = VERTICAL_POS_TOP);
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
