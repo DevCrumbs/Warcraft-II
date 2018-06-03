@@ -157,10 +157,6 @@ void EnemyGuardTower::Move(float dt)
 
 	TowerStateMachine(dt);
 
-	//Check is building is built already
-	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
-		isBuilt = true;
-
 	//Delete arrow if it is fired when an enemy is already dead 
 	if (attackingTarget == nullptr && arrowParticle != nullptr) {
 		arrowParticle->isRemove = true;

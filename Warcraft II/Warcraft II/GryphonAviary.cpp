@@ -45,7 +45,6 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife
 	// -----
 
 	texArea = &gryphonAviaryInfo.constructionPlanks1;
-	this->constructionTimer.Start();
 	buildingState = BuildingState_Building;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 	
@@ -69,9 +68,13 @@ void GryphonAviary::Move(float dt)
 {
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
-	UpdateAnimations(dt);
 
-	if (constructionTimer.Read() >= (constructionTime * 1000)) {
+	if (!isBuilt) {
+		constructionTimer += dt;
+		UpdateAnimations(dt);
+	}
+
+	if (constructionTimer >= constructionTime && !isBuilt) {
 		isBuilt = true;
 
 		if (peasants != nullptr) {
@@ -88,13 +91,13 @@ void GryphonAviary::LoadAnimationsSpeed()
 }
 void GryphonAviary::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer >= (constructionTime / 3))
 		texArea = &gryphonAviaryInfo.constructionPlanks2;
 
-	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &gryphonAviaryInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000){
+	if (constructionTimer >= constructionTime){
 		texArea = &gryphonAviaryInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}
