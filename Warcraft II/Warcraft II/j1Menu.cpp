@@ -1056,9 +1056,9 @@ void j1Menu::LoadKeysVector()
 	keysName.push_back("?");
 
 	keysName.push_back("GRAVE");
+	keysName.push_back(" , ");
+	keysName.push_back(" . ");
 
-	keysName.push_back("?");
-	keysName.push_back("?");
 	keysName.push_back("?");
 
 	keysName.push_back("CAPSLOCK");

@@ -205,12 +205,12 @@ Mouse Right click: Delete the preview building from the view of the player
 F9: debug mode
 
 If debug mode is on:
-KEYPAD Buttons
+	KEYPAD Buttons
 	- : -20 HP to last Chicken Farm created
 	* : Get + 500 gold
 	/ : Get +3 food
 	+ : Show/hide Fog of War
-
+	. : Show/hide fog of war sprites' distribution
 	1: Spawn a Footman at mouse position
 	2: Spawn an Elven Archer at mouse position
 	3: Spawn a Gryphon Rider at mouse position
@@ -228,7 +228,6 @@ KEYPAD Buttons
 	F8: Activate or stop the spawn of waves
 	F10: Show/hide game's colliders
 	F11: Show/hide movements debug
-	KP.: Show fog of war sprites' distribution
 
 # Game system
 
