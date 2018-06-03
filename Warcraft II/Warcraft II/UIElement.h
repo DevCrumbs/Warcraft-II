@@ -137,6 +137,7 @@ protected:
 private:
 
 	iPoint localPos = { 0,0 };
+	iPoint originalPos = { 0,0 };
 	UIElement* parent = nullptr;
 };
 

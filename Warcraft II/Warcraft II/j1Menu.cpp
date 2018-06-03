@@ -192,91 +192,14 @@ bool j1Menu::Update(float dt)
 			changeButtonTimer.Stop();
 		}
 
-		if (App->input->isPresed) {
-			if (*App->input->newLetter == 32)
-				App->input->newLetter = "SPACE";
-			changeLabel->SetText(App->input->newLetter);
-
-			App->input->isPresed = false;
-			SDL_StopTextInput();
-			changeLabel = nullptr;
-		}
-		else if (App->input->scancode != SDL_SCANCODE_UNKNOWN)
+		if (App->input->scancode != SDL_SCANCODE_UNKNOWN)
 		{
-			//ctrl+k+c
-			//ctrl + k + u
-		//	string text = "NO";
-		//	switch (App->input->scancode)
-			//{
-			//	case SDL_SCANCODE_ESCAPE:
-			//		text = "ESC";
-			//		break;
-			//	case SDL_SCANCODE_BACKSPACE:
-			//		text = "BACKSPACE";
-			//		break;
-			//	case SDL_SCANCODE_TAB:
-			//		text = "TAB";
-			//		break;
-			//	case SDL_SCANCODE_LCTRL:
-			//		text = "CONTROL";
-			//		break;
-			//	case SDL_SCANCODE_LSHIFT:
-			//		text = "SHIFT";
-			//		break;
-			//	case SDL_SCANCODE_LALT:
-			//		text = "ALT";
-			//		break;
-			//	case SDL_SCANCODE_RETURN:
-			//		text = "ENTER";
-			//		break;
-
-			//	case SDL_SCANCODE_F1 :
-			//		text = "F1";
-			//		break;			 
-			//	case SDL_SCANCODE_F2:
-			//		text = "F2";
-			//		break;
-			//	case SDL_SCANCODE_F3:
-			//		text = "F3";
-			//		break;
-			//	case SDL_SCANCODE_F4:
-			//		text = "F4";
-			//		break;
-			//	case SDL_SCANCODE_F5:
-			//		text = "F5";
-			//		break;
-			//	case SDL_SCANCODE_F6:
-			//		text = "F6";
-			//		break;
-			//	case SDL_SCANCODE_F7:
-			//		text = "F7";
-			//		break;
-			//	case SDL_SCANCODE_F8:
-			//		text = "F8";
-			//		break;
-			//	case SDL_SCANCODE_F9:
-			//		text = "F9";
-			//		break;
-			//	case SDL_SCANCODE_F10:
-			//		text = "F10";
-			//		break;
-			//	case SDL_SCANCODE_F11:
-			//		text = "F11";
-			//		break;
-			//	case SDL_SCANCODE_F12:
-			//		text = "F12";
-			//		break;					
-			//default:
-			//	break;
-			//}
-		//	if(text != "NO")
-
 			if (App->input->scancode < keysName.size())
 			{
 				changeLabel->SetText(keysName[App->input->scancode]);
 				LOG("Set text");
 			}
-			SDL_StopTextInput();
+			changeLabel->SetColor(changeLabel->GetInfo()->normalColor);
 			changeLabel = nullptr;
 			App->input->scancode = SDL_SCANCODE_UNKNOWN;
 		}
@@ -430,52 +353,52 @@ void j1Menu::CreateChangingButtons() {
 	labelInfo.interactive = false;
 
 	labelInfo.text = "Select all Footman on screen";
-	staticLabels.push_back(App->gui->CreateUILabel({  150, 100 }, labelInfo, this));
+	staticLabels.push_back(App->gui->CreateUILabel({ 175, 100 }, labelInfo, this));
 	labelInfo.text = "Select all Archer on screen";	  
-	staticLabels.push_back(App->gui->CreateUILabel({ 150, 180 }, labelInfo, this));
+	staticLabels.push_back(App->gui->CreateUILabel({ 175, 180 }, labelInfo, this));
 	labelInfo.text = "Select all Gryphon on screen";  
-	staticLabels.push_back(App->gui->CreateUILabel({ 150, 260 }, labelInfo, this));
-	labelInfo.text = "Select all Units on screen";	  
-	staticLabels.push_back(App->gui->CreateUILabel({ 150, 340 }, labelInfo, this));
+	staticLabels.push_back(App->gui->CreateUILabel({ 175, 260 }, labelInfo, this));
+	labelInfo.text = "Select all Units on screen";
+	staticLabels.push_back(App->gui->CreateUILabel({ 175, 340 }, labelInfo, this));
 	labelInfo.text = "Go to base";					 
-	staticLabels.push_back(App->gui->CreateUILabel({ 150, 420 }, labelInfo, this));
-	labelInfo.text = "Go to unitis selected";		 
-	staticLabels.push_back(App->gui->CreateUILabel({ 150, 500 }, labelInfo, this));
-	labelInfo.text = "Change minimap zoom";			  
-	staticLabels.push_back(App->gui->CreateUILabel({ 550, 180 }, labelInfo, this));
+	staticLabels.push_back(App->gui->CreateUILabel({ 175, 420 }, labelInfo, this));
+	labelInfo.text = "Go to unitis selected";
+	staticLabels.push_back(App->gui->CreateUILabel({ 175, 500 }, labelInfo, this));
+	labelInfo.text = "Change minimap zoom";
+	staticLabels.push_back(App->gui->CreateUILabel({ 575, 180 }, labelInfo, this));
 	labelInfo.text = "Open building menu";
-	staticLabels.push_back(App->gui->CreateUILabel({ 550, 260 }, labelInfo, this));
+	staticLabels.push_back(App->gui->CreateUILabel({ 575, 260 }, labelInfo, this));
 	labelInfo.text = "Open pause menu";
-	staticLabels.push_back(App->gui->CreateUILabel({ 550, 340 }, labelInfo, this));
+	staticLabels.push_back(App->gui->CreateUILabel({ 575, 340 }, labelInfo, this));
 	labelInfo.text = "Patrol units";
-	staticLabels.push_back(App->gui->CreateUILabel({ 550, 420 }, labelInfo, this));
+	staticLabels.push_back(App->gui->CreateUILabel({ 575, 420 }, labelInfo, this));
 	labelInfo.text = "Stop units";
-	staticLabels.push_back(App->gui->CreateUILabel({ 550, 500 }, labelInfo, this));
+	staticLabels.push_back(App->gui->CreateUILabel({ 575, 500 }, labelInfo, this));
 
 	labelInfo.normalColor = White_;
 	labelInfo.interactive = true;						 
-	labelInfo.text = "Z";		//"Select all Footman on screen";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 325, 100 }, labelInfo, this));
-	labelInfo.text = "X";	// "Select all Archer on screen
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 325, 180 }, labelInfo, this));
-	labelInfo.text = "C";	// "Select all Gryphon on screen;
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 325, 260 }, labelInfo, this));
-	labelInfo.text = "V";	// "Select all Units on scree
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 325, 340 }, labelInfo, this));
-	labelInfo.text = "Space";	// "Go to base";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 325, 420 }, labelInfo, this));
-	labelInfo.text = "Q";	// "Go to unities selected";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 325, 500 }, labelInfo, this));
-	labelInfo.text = "TAB";	// "Change minimap zoom";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 675, 180 }, labelInfo, this));
-	labelInfo.text = "B";	//	  "Open building menu";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 675, 260 }, labelInfo, this));
-	labelInfo.text = "ESC";	//	  "Open pause menu";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 675, 340 }, labelInfo, this));
-	labelInfo.text = "N";	//	  "Patrol units";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 675, 420 }, labelInfo, this));
-	labelInfo.text = "M";	//	  "Stop units";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 675, 500 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_Z];		//"Select all Footman on screen";
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 100 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_X];	// "Select all Archer on screen
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 180 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_C];	// "Select all Gryphon on screen;
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 260 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_V];	// "Select all Units on scree
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 340 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_SPACE];	// "Go to base";
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 420 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_Q];	// "Go to unities selected";
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 500 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_TAB];	// "Change minimap zoom";
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 700, 180 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_B];	//	  "Open building menu";
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 700, 260 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_ESCAPE];	//	  "Open pause menu";
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 700, 340 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_N];	//	  "Patrol units";
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 700, 420 }, labelInfo, this));
+	labelInfo.text = keysName[SDL_SCANCODE_M];	//	  "Stop units";
+	interactiveLabels.push_back(App->gui->CreateUILabel({ 700, 500 }, labelInfo, this));
 
 }
 
@@ -759,26 +682,9 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			menuActions = MenuActions_PLAY_HARD;
 		}
 
-		//ChangeButtons
-
-		else if (UIelem == buttonsLabel)
-		{
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-			menuActions = MenuActions_CHANGE_BUTTONS;
-		}
-
-		for (list<UILabel*>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
-		{
-			if (UIelem == (*iterator)){
-				changeLabel = (UILabel*)UIelem;
-				SDL_StartTextInput();
-				continue;
-			}
-		}
-
 		//Credits
 
-		if (UIelem == sandraLead)
+		else if (UIelem == sandraLead)
 		{
 			open_url("https://github.com/Sandruski");
 		}
@@ -807,6 +713,22 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			open_url("https://github.com/aleixgab");
 		}
 
+
+		//ChangeButtons
+
+		else if (UIelem == buttonsLabel)
+		{
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+			menuActions = MenuActions_CHANGE_BUTTONS;
+		}
+
+		for (list<UILabel*>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
+		{
+			if (UIelem == (*iterator)) {
+				changeLabel = (UILabel*)UIelem;
+				break;
+			}
+		}
 
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
@@ -864,6 +786,7 @@ void j1Menu::DeleteChangingButtons()
 {
 
 	App->gui->RemoveElem((UIElement**)&returnSettings);
+	App->gui->RemoveElem((UIElement**)&changeLabel);
 
 	for (; !interactiveLabels.empty(); interactiveLabels.pop_back())
 	{
@@ -925,45 +848,45 @@ void j1Menu::LoadKeysVector()
 		keysName.clear();
 
 	for (int i = 0; i < 4; ++i)
-		keysName.push_back("");
+		keysName.push_back("¿?");
 
-	keysName.push_back("A");
-	keysName.push_back("B");
-	keysName.push_back("C");
-	keysName.push_back("D");
-	keysName.push_back("E");
-	keysName.push_back("F");
-	keysName.push_back("G");
-	keysName.push_back("H");
-	keysName.push_back("I");
-	keysName.push_back("J");
-	keysName.push_back("K");
-	keysName.push_back("L");
-	keysName.push_back("M");
-	keysName.push_back("N");
-	keysName.push_back("O");
-	keysName.push_back("P");
-	keysName.push_back("Q");
-	keysName.push_back("R");
-	keysName.push_back("S");
-	keysName.push_back("T");
-	keysName.push_back("U");
-	keysName.push_back("V");
-	keysName.push_back("W");
-	keysName.push_back("X");
-	keysName.push_back("Y");
-	keysName.push_back("Z");
-
-	keysName.push_back("1");
-	keysName.push_back("2");
-	keysName.push_back("3");
-	keysName.push_back("4");
-	keysName.push_back("5");
-	keysName.push_back("6");
-	keysName.push_back("7");
-	keysName.push_back("8");
-	keysName.push_back("9");
-	keysName.push_back("0");
+	keysName.push_back(" A ");
+	keysName.push_back(" B ");
+	keysName.push_back(" C ");
+	keysName.push_back(" D ");
+	keysName.push_back(" E ");
+	keysName.push_back(" F ");
+	keysName.push_back(" G ");
+	keysName.push_back(" H ");
+	keysName.push_back(" I ");
+	keysName.push_back(" J ");
+	keysName.push_back(" K ");
+	keysName.push_back(" L ");
+	keysName.push_back(" M ");
+	keysName.push_back(" N ");
+	keysName.push_back(" O ");
+	keysName.push_back(" P ");
+	keysName.push_back(" Q ");
+	keysName.push_back(" R ");
+	keysName.push_back(" S ");
+	keysName.push_back(" T ");
+	keysName.push_back(" U ");
+	keysName.push_back(" V ");
+	keysName.push_back(" W ");
+	keysName.push_back(" X ");
+	keysName.push_back(" Y ");
+	keysName.push_back(" Z ");
+						 
+	keysName.push_back(" 1 ");
+	keysName.push_back(" 2 ");
+	keysName.push_back(" 3 ");
+	keysName.push_back(" 4 ");
+	keysName.push_back(" 5 ");
+	keysName.push_back(" 6 ");
+	keysName.push_back(" 7 ");
+	keysName.push_back(" 8 ");
+	keysName.push_back(" 9 ");
+	keysName.push_back(" 0 ");
 
 	keysName.push_back("ENTER");
 	keysName.push_back("ESC");
@@ -971,9 +894,21 @@ void j1Menu::LoadKeysVector()
 	keysName.push_back("TAB");
 	keysName.push_back("SPACE");
 
+	//NOT 100% REAL DEPENDS KEYBOARD
+	keysName.push_back(" - ");
+	keysName.push_back(" = ");
+	keysName.push_back(" [ ");
+	keysName.push_back(" ] ");
+	keysName.push_back(" ? ");
+	keysName.push_back(" # ");
+	keysName.push_back(" ; ");
+	keysName.push_back(" + ");
+	keysName.push_back("GRAVE");
+	keysName.push_back(" , ");
+	keysName.push_back(" . ");
+	keysName.push_back(" - ");
 
-	for (int i = 0; i < 12; ++i)
-		keysName.push_back("");
+
 	
 
 	keysName.push_back("CAPSLOCK");
@@ -1002,29 +937,39 @@ void j1Menu::LoadKeysVector()
 	keysName.push_back("PGDN");
 
 	for (int i = 0; i < 4; ++i)
-		keysName.push_back("");
-	
+		keysName.push_back("¿?");
 
 	keysName.push_back("NUMLOCK");
-
-	for (int i = 0; i < 4; ++i)
-		keysName.push_back("");
-	
+	keysName.push_back(" / ");
+	keysName.push_back(" * ");
+	keysName.push_back(" - ");
+	keysName.push_back(" + ");	
 	keysName.push_back("ENTER");
 
+	keysName.push_back(" 1 ");
+	keysName.push_back(" 2 ");
+	keysName.push_back(" 3 ");
+	keysName.push_back(" 4 ");
+	keysName.push_back(" 5 ");
+	keysName.push_back(" 6 ");
+	keysName.push_back(" 7 ");
+	keysName.push_back(" 8 ");
+	keysName.push_back(" 9 ");
+	keysName.push_back(" 0 ");
+	keysName.push_back(" . ");
+	keysName.push_back(" < ");
 
-	for (int i = 0; i <	28; ++i)
-		keysName.push_back("");
-	
+	for (int i = 0; i <	16; ++i)
+		keysName.push_back("¿?");
 
 	// Useless media keys
 	for (int i = 0; i < 29; ++i)
-		keysName.push_back("");
+		keysName.push_back("¿?");
 	
 
 	// Useless chinese keys
 	for (int i = 0; i < 78; ++i)
-		keysName.push_back("");
+		keysName.push_back("¿?");
 	
 
 	keysName.push_back("LCTRL");
