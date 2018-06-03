@@ -87,7 +87,7 @@ void UIButton::HandleInput()
 			break;
 		}
 
-		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED) || (tab && App->input->GetKey(App->scene->buttonAccept) == KEY_DOWN))
+		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_PRESSED))
 		{
 			nextEvent = false;
 			LOG("MOUSE L CLICK START");
@@ -99,7 +99,7 @@ void UIButton::HandleInput()
 			listener->OnUIEvent((UIElement*)this, UIevent);
 			break;
 		}
-		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED) || (tab && App->input->GetKey(App->scene->buttonAccept) == KEY_DOWN))
+		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_PRESSED))
 		{
 			nextEvent = false;
 			LOG("MOUSE R CLICK START");
@@ -130,7 +130,7 @@ void UIButton::HandleInput()
 		break;
 	case UI_EVENT_MOUSE_RIGHT_CLICK:
 
-		if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED) || (tab && App->input->GetKey(App->scene->buttonAccept) == KEY_UP)) {
+		if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == SDL_RELEASED)) {
 			LOG("MOUSE R CLICK FINISH");
 
 			if (draggable) {
@@ -151,7 +151,7 @@ void UIButton::HandleInput()
 			UIevent = UI_EVENT_MOUSE_LEAVE;
 			break;
 		}
-		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED) || (tab && App->input->GetKey(App->scene->buttonAccept) == KEY_UP)) {
+		else if ((!tab && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == SDL_RELEASED)) {
 			LOG("MOUSE L CLICK FINISH");
 			UIevent = UI_EVENT_MOUSE_LEFT_UP;
 			listener->OnUIEvent((UIElement*)this, UIevent);

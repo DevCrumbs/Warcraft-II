@@ -1173,14 +1173,6 @@ void j1Scene::CheckCameraMovement(float dt)
 	int downMargin = -(App->map->data.height * App->map->data.tileHeight) + height / scale;
 	int rightMargin = -(App->map->data.width * App->map->data.tileWidth) + width / scale;
 
-	buttonMoveUp = nullptr;
-	buttonMoveUpb = nullptr;
-	buttonMoveDown = nullptr;
-	buttonMoveDownb = nullptr;
-	buttonMoveLeft = nullptr;
-	buttonMoveLeftb = nullptr;
-	buttonMoveRight = nullptr;
-	buttonMoveRightb = nullptr;
 	//NOT MOVING WITH App->input->GetKey(buttonMoveUp) == KEY_REPEAT
 	//Move with arrows
 	//UP
@@ -2623,7 +2615,7 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 	ret = LoadKey(&buttonSelectGroup3, "buttonSelectGroup3", buttons);
 
 	ret = LoadKey(&buttonSaveGroup, "buttonSaveGroup", buttons);
-	ret = LoadKey(&buttonSaveGroupb, "//buttonSaveGroupb", buttons);
+	ret = LoadKey(&buttonSaveGroupb, "buttonSaveGroupb", buttons);
 	ret = LoadKey(&buttonWinGame, "buttonWinGame", buttons);
 	ret = LoadKey(&buttonLoseGame, "buttonLoseGame", buttons);
 	ret = LoadKey(&buttonMoveUp, "buttonMoveUp", buttons);
@@ -2634,8 +2626,6 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 	ret = LoadKey(&buttonMoveLeftb, "buttonMoveLeftb", buttons);
 	ret = LoadKey(&buttonMoveRight, "buttonMoveRight", buttons);
 	ret = LoadKey(&buttonMoveRightb, "buttonMoveRightb", buttons);
-
-	ret = LoadKey(&buttonAccept, "buttonAccept", buttons);
 
 	return ret;
 }

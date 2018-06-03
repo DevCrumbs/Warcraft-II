@@ -31,6 +31,8 @@ bool j1EnemyWave::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
+	LoadKeys(config.child("buttons"));
+
 	return ret;
 }
 

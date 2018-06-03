@@ -340,8 +340,6 @@ public:
 	SDL_Scancode* buttonMoveRight = nullptr;
 	SDL_Scancode* buttonMoveRightb = nullptr;
 
-	SDL_Scancode* buttonAccept = nullptr;
-
 private:
 
 	j1Timer goldLabelColorTime;

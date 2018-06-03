@@ -26,6 +26,16 @@ j1FogOfWar::~j1FogOfWar()
 	fowTilesVector.clear();
 }
 
+// Called before render is available
+bool j1FogOfWar::Awake(pugi::xml_node& config)
+{
+	bool ret = true;
+
+	LoadKeys(config.child("buttons"));
+
+	return ret;
+}
+
 bool j1FogOfWar::Start()
 {
 

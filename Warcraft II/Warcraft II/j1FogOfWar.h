@@ -33,6 +33,8 @@ public:
 	j1FogOfWar();
 	~j1FogOfWar();
 
+	bool Awake(pugi::xml_node & config);
+
 	bool Start();
 	bool LoadFoW();
 	bool Update(float dt);

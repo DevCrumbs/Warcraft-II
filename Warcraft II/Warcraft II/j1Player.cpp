@@ -2494,8 +2494,6 @@ bool j1Player::LoadKeys(pugi::xml_node& buttons)
 
 	ret = LoadKey(&buttonSelectAll, "buttonSelectAll", buttons);
 
-	ret = LoadKey(&buttonShowPlayerButt, "buttonShowPlayerButt", buttons);
-
 	ret = LoadKey(&buttonDamageCF, "buttonDamageCF", buttons);
 
 	ret = LoadKey(&buttonAddGold, "buttonAddGold", buttons);
