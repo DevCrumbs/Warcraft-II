@@ -178,7 +178,7 @@ bool j1Menu::Update(float dt)
 		if (!changeButtonTimer.IsStarted())
 			changeButtonTimer.Start();
 
-		if (changeButtonTimer.Read() > 250)
+		if (changeButtonTimer.Read() > 2050)
 		{
 			SDL_Color color{ 0,0,0,0 };
 
@@ -196,7 +196,8 @@ bool j1Menu::Update(float dt)
 		{
 			if (App->input->scancode < keysName.size())
 			{
-				if (CanChangeButt(App->input->scancode)) {
+				if (CanChangeButt(App->input->scancode)) 
+				{
 					changeButt.changeLabel->SetText(keysName[App->input->scancode]);
 					*changeButt.currentButton = App->input->scancode;
 				}
@@ -204,22 +205,22 @@ bool j1Menu::Update(float dt)
 				{
 					for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
 					{
-						if (*(*iterator).currentButton == App->input->scancode) {
+						if (*(*iterator).currentButton == App->input->scancode) 
+						{
 							SwapButt((*iterator), changeButt);
-							(*iterator).currentButton = changeButt.currentButton;
-							*changeButt.currentButton = App->input->scancode;
 
-							(*iterator).changeLabel->SetText(keysName[*(*iterator).currentButton]);
-							changeButt.changeLabel->SetText(keysName[*changeButt.currentButton]);
-							(*iterator).changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);
 							break;
 						}
 					}
 
 				}
+
+
+
 			}
+
 			changeButt.changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);
-			//changeButt.changeLabel = nullptr;
+			changeButt.changeLabel = nullptr;
 			App->input->scancode = SDL_SCANCODE_UNKNOWN;
 		}
 	}
@@ -606,9 +607,13 @@ bool j1Menu::CanSwapButt(SDL_Scancode button)
 
 void j1Menu::SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB)
 {
-	UILabel* aux = buttonA.changeLabel;
-	buttonA.changeLabel = buttonB.changeLabel;
-	buttonB.changeLabel = aux;
+	SDL_Scancode aux = *buttonA.currentButton;
+	*buttonA.currentButton = *buttonB.currentButton;
+	*buttonB.currentButton = aux;
+
+	string aText = buttonA.changeLabel->GetText();
+	buttonA.changeLabel->SetText(buttonB.changeLabel->GetText());
+	buttonB.changeLabel->SetText(aText);
 }
 
 bool j1Menu::CanChangeButt(SDL_Scancode button)
