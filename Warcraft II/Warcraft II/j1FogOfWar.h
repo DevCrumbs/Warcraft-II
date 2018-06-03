@@ -73,12 +73,8 @@ public:
 	j1FogOfWar();
 	~j1FogOfWar();
 
-<<<<<<< HEAD
 	bool Awake(pugi::xml_node & config);
 
-=======
-	bool Awake(pugi::xml_node& config);
->>>>>>> Develompent
 	bool Start();
 	bool LoadFoW();
 	bool Update(float dt);
@@ -111,13 +107,12 @@ public:
 	int height = 0;
 
 	bool isActive = true;
-<<<<<<< HEAD
 
 private:
 	SDL_Scancode* buttonDrawFow = nullptr;
 
 	pugi::xml_node config;
-=======
+
 	bool isFoWDebug = false;
 
 	// Beauty
@@ -127,7 +122,6 @@ private:
 	SDL_Texture* debugTilesTex = nullptr;
 	SDL_Texture* blackTilesTex = nullptr;
 	SDL_Texture* greyTilesTex = nullptr;
->>>>>>> Develompent
 };
 
 #endif

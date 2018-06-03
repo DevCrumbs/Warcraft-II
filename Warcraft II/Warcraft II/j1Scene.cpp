@@ -245,17 +245,11 @@ bool j1Scene::PreUpdate()
 
 	if (App->isDebug)
 	{
-<<<<<<< HEAD
+
 		// SDL_SCANCODE_KP_1
 		if (App->input->GetKey(buttonSpawnFootman) == KEY_DOWN)
-=======
-		if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
-			debugDrawMovement = !debugDrawMovement;
-
-		else if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
->>>>>>> Develompent
 			App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, App->player);
-		
+
 		// SDL_SCANCODE_KP_2
 		else if (App->input->GetKey(buttonSpawnArcher) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, App->player);

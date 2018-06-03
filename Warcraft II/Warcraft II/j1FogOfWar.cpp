@@ -26,26 +26,18 @@ j1FogOfWar::~j1FogOfWar()
 	fowTilesVector.clear();
 }
 
-<<<<<<< HEAD
 // Called before render is available
-bool j1FogOfWar::Awake(pugi::xml_node& config)
-{
-	bool ret = true;
-
-	LoadKeys(config.child("buttons"));
-
-	this->config = App->config.child(this->name.data());
-
-	return ret;
-=======
 bool j1FogOfWar::Awake(pugi::xml_node& config)
 {
 	debugTilesTexName = config.child("debugTilesTex").attribute("name").as_string();
 	blackTilesTexName = config.child("blackTilesTex").attribute("name").as_string();
 	greyTilesTexName = config.child("greyTilesTex").attribute("name").as_string();
 
+	LoadKeys(config.child("buttons"));
+
+	this->config = App->config.child(this->name.data());
+
 	return true;
->>>>>>> Develompent
 }
 
 bool j1FogOfWar::Start()
