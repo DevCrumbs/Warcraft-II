@@ -193,7 +193,7 @@ bool j1Player::Update(float dt)
 		{
 			if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
 				//1st time that building finished to build
-				if (building->GetConstructionTimer() == building->GetConstructionTime()) {
+				if (building->GetConstructionTimer() >= building->GetConstructionTime()) {
 					entitySelectedStats.lifeBar->SetMaxLife(building->GetMaxLife());
 					entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
 					ShowEntitySelectedButt(building->staticEntityType);

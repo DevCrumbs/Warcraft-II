@@ -366,7 +366,7 @@ private:
 
 	uint gold = 0;
 	float secondsGathering = 0.0f;
-	j1Timer timerGathering;
+	float timerGathering = 0.0f;
 
 	double msAnimation = 0.0f;
 	j1PerfTimer timerAnimation;
