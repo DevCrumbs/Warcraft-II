@@ -158,7 +158,7 @@
         buttonBuildingMenu = "5"
         buttonPauseMenu = "41"
         buttonPatrolUnits = "17"
-        buttonStopUnits = "18"
+        buttonStopUnits = "16"
     />
     
   </scene>

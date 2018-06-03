@@ -188,10 +188,6 @@ public:
 	list<StaticEntity*> guardTower;
 	StaticEntity* barracks = nullptr;
 	StaticEntity* townHall = nullptr;
-	//StaticEntity* blacksmith = nullptr;
-	//StaticEntity* stables = nullptr;
-	//StaticEntity* church = nullptr;
-	//StaticEntity* mageTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
 
 	vector<UIImage*> imagePrisonersVector;
@@ -199,8 +195,6 @@ public:
 	//Neutral
 	list<StaticEntity*> goldMine;
 	list<StaticEntity*> runestone;
-	//Update lifeBar
-	//Entity* getEntityDamage = nullptr;
 
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
@@ -267,15 +261,10 @@ private:
 	PlayerGroupsButtons playerGroupsButtons;
 	GroupSelectionButtons groupSelectionButtons;
 
-	//list<GroupSpawning> toSpawnUnitStats;
-	//list<ToSpawnUnit*> newUnitsToSpawn;
-
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
 		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr, *repairBuildingButton = nullptr;
-	
 
 	list<UIElement*> UIMenuInfoList;
-
 
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;

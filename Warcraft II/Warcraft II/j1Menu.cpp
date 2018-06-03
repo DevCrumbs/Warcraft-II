@@ -173,7 +173,7 @@ bool j1Menu::Update(float dt)
 		break;
 	}
 
-	if (changeLabel != nullptr) 
+	if (changeButt.changeLabel != nullptr) 
 	{
 		if (!changeButtonTimer.IsStarted())
 			changeButtonTimer.Start();
@@ -183,11 +183,11 @@ bool j1Menu::Update(float dt)
 			SDL_Color color{ 0,0,0,0 };
 
 			if (textColor)
-				color = changeLabel->GetInfo()->hoverColor;
+				color = changeButt.changeLabel->GetInfo()->hoverColor;
 			else
-				color = changeLabel->GetInfo()->normalColor;
+				color = changeButt.changeLabel->GetInfo()->normalColor;
 
-			changeLabel->SetColor(color);
+			changeButt.changeLabel->SetColor(color);
 			textColor = !textColor;
 			changeButtonTimer.Stop();
 		}
@@ -196,11 +196,30 @@ bool j1Menu::Update(float dt)
 		{
 			if (App->input->scancode < keysName.size())
 			{
-				changeLabel->SetText(keysName[App->input->scancode]);
-				LOG("Set text");
+				if (CanChangeButt(App->input->scancode)) {
+					changeButt.changeLabel->SetText(keysName[App->input->scancode]);
+					*changeButt.currentButton = App->input->scancode;
+				}
+				else
+				{
+					for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
+					{
+						if (*(*iterator).currentButton == App->input->scancode) {
+							SwapButt((*iterator), changeButt);
+							(*iterator).currentButton = changeButt.currentButton;
+							*changeButt.currentButton = App->input->scancode;
+
+							(*iterator).changeLabel->SetText(keysName[*(*iterator).currentButton]);
+							changeButt.changeLabel->SetText(keysName[*changeButt.currentButton]);
+							(*iterator).changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);
+							break;
+						}
+					}
+
+				}
 			}
-			changeLabel->SetColor(changeLabel->GetInfo()->normalColor);
-			changeLabel = nullptr;
+			changeButt.changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);
+			//changeButt.changeLabel = nullptr;
 			App->input->scancode = SDL_SCANCODE_UNKNOWN;
 		}
 	}
@@ -377,28 +396,28 @@ void j1Menu::CreateChangingButtons() {
 
 	labelInfo.normalColor = White_;
 	labelInfo.interactive = true;						 
-	labelInfo.text = keysName[SDL_SCANCODE_Z];		//"Select all Footman on screen";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 100 }, labelInfo, this));
-	labelInfo.text = keysName[SDL_SCANCODE_X];	// "Select all Archer on screen
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 180 }, labelInfo, this));
-	labelInfo.text = keysName[SDL_SCANCODE_C];	// "Select all Gryphon on screen;
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 260 }, labelInfo, this));
-	labelInfo.text = keysName[SDL_SCANCODE_V];	// "Select all Units on scree
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 340 }, labelInfo, this));
-	labelInfo.text = keysName[SDL_SCANCODE_SPACE];	// "Go to base";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 420 }, labelInfo, this));
-	labelInfo.text = keysName[SDL_SCANCODE_Q];	// "Go to unities selected";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 350, 500 }, labelInfo, this));
-	labelInfo.text = keysName[SDL_SCANCODE_TAB];	// "Change minimap zoom";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 700, 180 }, labelInfo, this));
-	labelInfo.text = keysName[SDL_SCANCODE_B];	//	  "Open building menu";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 700, 260 }, labelInfo, this));
-	labelInfo.text = keysName[SDL_SCANCODE_ESCAPE];	//	  "Open pause menu";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 700, 340 }, labelInfo, this));
-	labelInfo.text = keysName[SDL_SCANCODE_N];	//	  "Patrol units";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 700, 420 }, labelInfo, this));
-	labelInfo.text = keysName[SDL_SCANCODE_M];	//	  "Stop units";
-	interactiveLabels.push_back(App->gui->CreateUILabel({ 700, 500 }, labelInfo, this));
+	labelInfo.text = keysName[*App->player->buttonSelectFootman];		//"Select all Footman on screen";
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 100 }, labelInfo, this), App->player->buttonSelectFootman });
+	labelInfo.text = keysName[*App->player->buttonSelectArcher];	// "Select all Archer on screen
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 180 }, labelInfo, this), App->player->buttonSelectArcher });
+	labelInfo.text = keysName[*App->player->buttonSelectGryphon];	// "Select all Gryphon on screen;
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 260 }, labelInfo, this), App->player->buttonSelectGryphon });
+	labelInfo.text = keysName[*App->player->buttonSelectAll];	// "Select all Units on scree
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 340 }, labelInfo, this), App->player->buttonSelectAll });
+	labelInfo.text = keysName[*App->scene->buttonGoToBase];	// "Go to base";
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 420 }, labelInfo, this), App->scene->buttonGoToBase });
+	labelInfo.text = keysName[*App->scene->buttonGoToUnits];	// "Go to unities selected";
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 500 }, labelInfo, this), App->scene->buttonGoToUnits });
+	labelInfo.text = keysName[*App->scene->buttonMinimap];	// "Change minimap zoom";
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 180 }, labelInfo, this), App->scene->buttonMinimap });
+	labelInfo.text = keysName[*App->scene->buttonBuildingMenu];	//	  "Open building menu";
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 260 }, labelInfo, this), App->scene->buttonBuildingMenu });
+	labelInfo.text = keysName[*App->scene->buttonPauseMenu];	//	  "Open pause menu";
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 340 }, labelInfo, this), App->scene->buttonPauseMenu });
+	labelInfo.text = keysName[*App->scene->buttonPatrolUnits];	//	  "Patrol units";
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 420 }, labelInfo, this), App->scene->buttonPatrolUnits });
+	labelInfo.text = keysName[*App->scene->buttonStopUnits];	//	  "Stop units";
+	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 500 }, labelInfo, this), App->scene->buttonStopUnits });
 
 }
 
@@ -571,6 +590,41 @@ void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
 	//LOG("%f", volume);
 }
 
+bool j1Menu::CanSwapButt(SDL_Scancode button)
+{
+	bool ret = false;
+
+	for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
+	{
+		if (*(*iterator).currentButton == button) {
+			ret = true;
+			break;
+		}
+	}
+	return ret;
+}
+
+void j1Menu::SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB)
+{
+	UILabel* aux = buttonA.changeLabel;
+	buttonA.changeLabel = buttonB.changeLabel;
+	buttonB.changeLabel = aux;
+}
+
+bool j1Menu::CanChangeButt(SDL_Scancode button)
+{
+	bool ret = true;
+
+	for (list<SDL_Scancode*>::iterator iterator = App->input->inGameKeys.begin(); iterator != App->input->inGameKeys.end(); ++iterator)
+	{
+		if (*(*iterator) == button) {
+			ret = false;
+			break;
+		}
+	}
+	return ret;
+}
+
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 	switch (UIevent)
@@ -722,10 +776,12 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			menuActions = MenuActions_CHANGE_BUTTONS;
 		}
 
-		for (list<UILabel*>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
+		for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
 		{
-			if (UIelem == (*iterator)) {
-				changeLabel = (UILabel*)UIelem;
+			if (UIelem == (*iterator).changeLabel) {
+				changeButt.changeLabel = (UILabel*)UIelem;
+				changeButt.currentButton = (*iterator).currentButton;
+
 				break;
 			}
 		}
@@ -786,11 +842,10 @@ void j1Menu::DeleteChangingButtons()
 {
 
 	App->gui->RemoveElem((UIElement**)&returnSettings);
-	App->gui->RemoveElem((UIElement**)&changeLabel);
 
 	for (; !interactiveLabels.empty(); interactiveLabels.pop_back())
 	{
-		App->gui->RemoveElem((UIElement**)&interactiveLabels.back());
+		App->gui->RemoveElem((UIElement**)&interactiveLabels.back().changeLabel);
 	}
 	for (; !staticLabels.empty(); staticLabels.pop_back())
 	{
@@ -907,10 +962,6 @@ void j1Menu::LoadKeysVector()
 	keysName.push_back(" , ");
 	keysName.push_back(" . ");
 	keysName.push_back(" - ");
-
-
-	
-
 	keysName.push_back("CAPSLOCK");
 
 	keysName.push_back("F1");
@@ -939,24 +990,24 @@ void j1Menu::LoadKeysVector()
 	for (int i = 0; i < 4; ++i)
 		keysName.push_back("¿?");
 
+	//KeyPad
 	keysName.push_back("NUMLOCK");
-	keysName.push_back(" / ");
-	keysName.push_back(" * ");
-	keysName.push_back(" - ");
-	keysName.push_back(" + ");	
-	keysName.push_back("ENTER");
-
-	keysName.push_back(" 1 ");
-	keysName.push_back(" 2 ");
-	keysName.push_back(" 3 ");
-	keysName.push_back(" 4 ");
-	keysName.push_back(" 5 ");
-	keysName.push_back(" 6 ");
-	keysName.push_back(" 7 ");
-	keysName.push_back(" 8 ");
-	keysName.push_back(" 9 ");
-	keysName.push_back(" 0 ");
-	keysName.push_back(" . ");
+	keysName.push_back("KP /");
+	keysName.push_back("KP *");
+	keysName.push_back("KP -");
+	keysName.push_back("KP +");	
+	keysName.push_back("KP ENTER");
+	keysName.push_back("KP 1");
+	keysName.push_back("KP 2");
+	keysName.push_back("KP 3");
+	keysName.push_back("KP 4");
+	keysName.push_back("KP 5");
+	keysName.push_back("KP 6");
+	keysName.push_back("KP 7");
+	keysName.push_back("KP 8");
+	keysName.push_back("KP 9");
+	keysName.push_back("KP 0");
+	keysName.push_back("KP .");
 	keysName.push_back(" < ");
 
 	for (int i = 0; i <	16; ++i)

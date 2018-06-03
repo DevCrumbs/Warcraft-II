@@ -87,6 +87,7 @@ public:
 	bool isPresed = false;
 	SDL_Scancode scancode = SDL_SCANCODE_UNKNOWN;
 
+	list<SDL_Scancode*> inGameKeys;
 private:
 	bool		windowEvents[WE_COUNT];
 	KEY_STATE*	keyboard = nullptr;
@@ -97,8 +98,6 @@ private:
 	int			mouseY = 0;
 
 	bool		isPressed = false;
-
-	list<SDL_Scancode*> inGameKeys;
 };
 
 #endif // __j1INPUT_H__

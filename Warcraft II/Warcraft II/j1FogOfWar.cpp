@@ -106,13 +106,8 @@ void j1FogOfWar::print()
 	}//for
 }
 
-
-// =================================== PART 1 ===================================
-
 void j1FogOfWar::LoadFoWMap(int mapWidth, int mapHeight)
 {
-	// TODO 1: WE HAVE TO COVER THE MAP WITH FOW TILES (Use: 2 'for', mapWith & mapHeight to know the limit & FOW_TILE_MULTIPLIER)
-	// THIS TO ADD A NEW FOW_TILE : 
 	for (int y = 0; y <mapHeight  / FOW_TILE_MULTIPLIER; ++y)
 		for (int x = 0; x < mapWidth / FOW_TILE_MULTIPLIER; ++x)
 		{
