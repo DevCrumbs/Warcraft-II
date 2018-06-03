@@ -2486,30 +2486,21 @@ bool j1Player::LoadKeys(pugi::xml_node& buttons)
 {
 	bool ret = true;
 
-	buttonSelectFootman = new SDL_Scancode(SDL_SCANCODE_UNKNOWN);
-	ret = LoadKey(buttonSelectFootman, "buttonSelectFootman", buttons);
+	ret = LoadKey(&buttonSelectFootman, "buttonSelectFootman", buttons);
 
-	buttonSelectArcher = new SDL_Scancode(SDL_SCANCODE_UNKNOWN);
-	ret = LoadKey(buttonSelectArcher, "buttonSelectArcher", buttons);
+	ret = LoadKey(&buttonSelectArcher, "buttonSelectArcher", buttons);
 
-	buttonSelectGryphon = new SDL_Scancode(SDL_SCANCODE_UNKNOWN);
-	ret = LoadKey(buttonSelectGryphon, "buttonSelectGryphon", buttons);
+	ret = LoadKey(&buttonSelectGryphon, "buttonSelectGryphon", buttons);
 
-	buttonSelectAll = new SDL_Scancode(SDL_SCANCODE_UNKNOWN);
-	ret = LoadKey(buttonSelectAll, "buttonSelectAll", buttons);
+	ret = LoadKey(&buttonSelectAll, "buttonSelectAll", buttons);
 
-	buttonShowPlayerButt = new SDL_Scancode(SDL_SCANCODE_UNKNOWN);
-	ret = LoadKey(buttonShowPlayerButt, "buttonShowPlayerButt", buttons);
+	ret = LoadKey(&buttonShowPlayerButt, "buttonShowPlayerButt", buttons);
 
-	buttonDamageCF = new SDL_Scancode(SDL_SCANCODE_UNKNOWN);
-	ret = LoadKey(buttonDamageCF, "buttonDamageCF", buttons);
+	ret = LoadKey(&buttonDamageCF, "buttonDamageCF", buttons);
 
-	buttonAddGold = new SDL_Scancode(SDL_SCANCODE_UNKNOWN);
-	ret = LoadKey(buttonAddGold, "buttonAddGold", buttons);
+	ret = LoadKey(&buttonAddGold, "buttonAddGold", buttons);
 
-	buttonAddFood = new SDL_Scancode(SDL_SCANCODE_UNKNOWN);
-	ret = LoadKey(buttonAddFood, "buttonAddFood", buttons);
-
+	ret = LoadKey(&buttonAddFood, "buttonAddFood", buttons);
 
 	return ret;
 }
