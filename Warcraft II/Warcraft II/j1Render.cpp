@@ -191,7 +191,7 @@ iPoint j1Render::FindCameraPosFromCenterPos(iPoint centerPos)
 }
 
 // Blit to screen
-bool j1Render::Blit(const SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle, int pivot_x, int pivot_y) const
+bool j1Render::Blit(const SDL_Texture* texture, int x, int y, const SDL_Rect* section, SDL_RendererFlip rendererFlip, float speed, double angle, int pivot_x, int pivot_y) const
 {
 	bool ret = true;
 	float scale = App->win->GetScale();
@@ -223,7 +223,7 @@ bool j1Render::Blit(const SDL_Texture* texture, int x, int y, const SDL_Rect* se
 		p = &pivot;
 	}
 
-	if (SDL_RenderCopyEx(renderer, (SDL_Texture*)texture, section, &rect, angle, p, SDL_FLIP_NONE) != 0)
+	if (SDL_RenderCopyEx(renderer, (SDL_Texture*)texture, section, &rect, angle, p, rendererFlip) != 0)
 	{
 		LOG("Cannot blit to screen. SDL_RenderCopy error: %s", SDL_GetError());
 		ret = false;

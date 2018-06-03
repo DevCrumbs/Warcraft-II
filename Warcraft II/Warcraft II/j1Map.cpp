@@ -82,7 +82,7 @@ void j1Map::Draw()
 					SDL_Rect* section = &rect;
 					iPoint world = MapToWorld(i, j);
 
-					App->render->Blit(tileset->texture, world.x, world.y, section, (*layer)->speed);
+					App->render->Blit(tileset->texture, world.x, world.y, section, SDL_FLIP_NONE, (*layer)->speed);
 					//App->printer->PrintSprite(world, tileset->texture, *section, Layers_Map);
 				}
 			}//for
