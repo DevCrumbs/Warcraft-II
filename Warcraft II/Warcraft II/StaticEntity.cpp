@@ -450,10 +450,8 @@ float StaticEntity::GetSecondsReconstruction(StaticEntitySize buildingSize) cons
 float StaticEntity::GetRandomSecondsRespawn() const 
 {
 	/// TODO Balancing (respawn enemies)
-	int minValue = 10.0f;
-	int maxValue = 20.0f;
-	//int minValue = 30.0f;
-	//int maxValue = 120.0f;
+	int minValue = 40.0f;
+	int maxValue = 80.0f;
 
 	/// rand() % (max - min + 1) + min
 	int randomValue = rand() % (maxValue - minValue + 1) + minValue;

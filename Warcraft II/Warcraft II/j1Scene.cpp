@@ -243,7 +243,10 @@ bool j1Scene::PreUpdate()
 
 	if (App->isDebug)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
+			debugDrawMovement = !debugDrawMovement;
+
+		else if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, App->player);
 
 		else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
