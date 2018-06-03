@@ -36,7 +36,7 @@ bool j1Printer::PostUpdate()
 			if (sprite->color.a != 255)
 				SDL_SetTextureAlphaMod(sprite->texture, sprite->color.a);
 
-			App->render->Blit(sprite->texture, sprite->pos.x, sprite->pos.y, &sprite->squareToBlit, 1.0f, sprite->degAngle);
+			App->render->Blit(sprite->texture, sprite->pos.x, sprite->pos.y, &sprite->squareToBlit, SDL_FLIP_NONE, 1.0f, sprite->degAngle);
 			//SDL_SetTextureColorMod(sprite->texture, 255, 255, 255);
 
 			break;

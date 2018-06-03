@@ -95,7 +95,7 @@ void UIMinimap::Draw() const
 
 
 	///-----------------	 Draw the map
-	App->render->Blit(currentMapTexture, offsetX, offsetY, NULL, 0);
+	App->render->Blit(currentMapTexture, offsetX, offsetY, NULL, SDL_FLIP_NONE,0);
 
 	///-----------------	 Draw all entities in the minimap
 	for (list<DynamicEntity*>::iterator iterator = (*activeDynamicEntities).begin(); iterator != (*activeDynamicEntities).end(); ++iterator)
