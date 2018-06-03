@@ -99,7 +99,7 @@ public:
 		return true;
 	}
 
-	bool LoadKey(SDL_Scancode* button, char* name, pugi::xml_node& buttons);
+	bool LoadKey(SDL_Scancode** button, char* name, pugi::xml_node& buttons);
 
 public:
 

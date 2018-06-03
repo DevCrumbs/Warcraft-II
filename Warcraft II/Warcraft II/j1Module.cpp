@@ -5,7 +5,7 @@
 #include "p2Log.h"
 
 
-bool j1Module::LoadKey(SDL_Scancode* button, char* name, pugi::xml_node& buttons)
+bool j1Module::LoadKey(SDL_Scancode** button, char* name, pugi::xml_node& buttons)
 {
 	bool ret = false;
 
@@ -15,8 +15,8 @@ bool j1Module::LoadKey(SDL_Scancode* button, char* name, pugi::xml_node& buttons
 
 		if (buttonValue != SDL_SCANCODE_UNKNOWN)
 		{
-			*button = buttonValue;
-			App->input->AddKey(button);
+			*button = new SDL_Scancode(buttonValue);
+			App->input->AddKey(*button);
 			ret = true;
 		}
 		else
