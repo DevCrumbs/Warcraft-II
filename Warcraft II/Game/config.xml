@@ -172,9 +172,9 @@
         buttonSpawnAlleria ="97"
         buttonSpawnTauralyon ="98"
         
-        buttonTogleDebug = "65"
-        buttonTogleDebugAttack = "62"
-        buttonTogleDebugMovement = "66"
+        buttonTogleDebug = "66"
+        buttonTogleDebugAttack = "67"
+        buttonTogleDebugMovement = "68"
         
         buttonSelectGroup = "225"
         buttonSelectGroupb = "229"
@@ -186,8 +186,8 @@
         buttonSaveGroup = "224"
         buttonSaveGroupb = "228"
         
-        buttonWinGame = "58"
-        buttonLoseGame = "59"
+        buttonWinGame = "62"
+        buttonLoseGame = "63"
         
         buttonMoveUp = "82"
         buttonMoveDown = "81"
@@ -208,23 +208,23 @@
        buttonSelectArcher = "27"
        buttonSelectGryphon = "6"
        buttonSelectAll = "25"
-       buttonDamageCF = "11"
-       buttonAddGold = "10"
-       buttonAddFood = "9"
+       buttonDamageCF = "86"
+       buttonAddGold = "85"
+       buttonAddFood = "84"
     />
   </player>
 
   <fow>
     <buttons
-       buttonDrawFow = "14"
+       buttonDrawFow = "87"
     />
   </fow>
 
   <!-- Enemy wave-->
   <surge>
     <buttons
-       buttonNewWave = "60"
-       buttonActivateWave = "61"
+       buttonNewWave = "64"
+       buttonActivateWave = "65"
     />
   </surge>
 
