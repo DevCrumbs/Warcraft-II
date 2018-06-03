@@ -86,6 +86,7 @@ public:
 
 	void DeleteSettings();
 	void DeleteChangingButtons();
+	void CleanInteractiveLabels();
 	void DeteleMenu();
 	void DeleteNewGame();
 	void DeleteCredits();
@@ -98,7 +99,9 @@ public:
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed);
 
 	void UpdateSlider(SliderStruct &sliderStruct);
+	void CreateInteractiveLabels();
 	bool CheckCorrectButt(SDL_Scancode button);
+	void SetDefaultButtons();
 	bool CanSwapButt(SDL_Scancode button);
 	void SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB);
 

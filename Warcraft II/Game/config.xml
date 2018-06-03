@@ -116,14 +116,18 @@
 			<warcraft name="warcraft_walk.tmx" active="1" tex="data/assets/textures/maps/warcraftDebugTex.png" numMaps="5" />
 		</maps>
 		<buttons buttonGoToBase="44" buttonGoToUnits="20" buttonMinimap="43" buttonBuildingMenu="5" buttonPauseMenu="41" buttonPatrolUnits="17" buttonStopUnits="16" buttonDrawFow="14" buttonSpawnFootman="89" buttonSpawnArcher="90" buttonSpawnGryphon="91" buttonSpawnGrunt="92" buttonSpawnTroll="93" buttonSpawnDragon="94" buttonSpawnSheep="95" buttonSpawnBoar="96" buttonSpawnAlleria="97" buttonSpawnTauralyon="98" buttonTogleDebug="66" buttonTogleDebugAttack="67" buttonTogleDebugMovement="68" buttonSelectGroup="225" buttonSelectGroupb="229" buttonSelectGroup1="30" buttonSelectGroup2="31" buttonSelectGroup3="32" buttonSaveGroup="224" buttonSaveGroupb="228" buttonWinGame="62" buttonLoseGame="63" buttonMoveUp="82" buttonMoveDown="81" buttonMoveLeft="80" buttonMoveRight="79" buttonMoveUpb="26" buttonMoveDownb="22" buttonMoveLeftb="4" buttonMoveRightb="7" />
+		<defaultButtons buttonGoToBase="44" buttonGoToUnits="20" buttonMinimap="43" buttonBuildingMenu="5" buttonPauseMenu="41" buttonPatrolUnits="17" buttonStopUnits="16" buttonDrawFow="14" buttonSpawnFootman="89" buttonSpawnArcher="90" buttonSpawnGryphon="91" buttonSpawnGrunt="92" buttonSpawnTroll="93" buttonSpawnDragon="94" buttonSpawnSheep="95" buttonSpawnBoar="96" buttonSpawnAlleria="97" buttonSpawnTauralyon="98" buttonTogleDebug="66" buttonTogleDebugAttack="67" buttonTogleDebugMovement="68" buttonSelectGroup="225" buttonSelectGroupb="229" buttonSelectGroup1="30" buttonSelectGroup2="31" buttonSelectGroup3="32" buttonSaveGroup="224" buttonSaveGroupb="228" buttonWinGame="62" buttonLoseGame="63" buttonMoveUp="82" buttonMoveDown="81" buttonMoveLeft="80" buttonMoveRight="79" buttonMoveUpb="26" buttonMoveDownb="22" buttonMoveLeftb="4" buttonMoveRightb="7" />
 	</scene>
 	<player>
+		<defaultButtons buttonSelectFootman="29" buttonSelectArcher="27" buttonSelectGryphon="6" buttonSelectAll="25" buttonDamageCF="86" buttonAddGold="85" buttonAddFood="84" />
 		<buttons buttonSelectFootman="29" buttonSelectArcher="27" buttonSelectGryphon="6" buttonSelectAll="25" buttonDamageCF="86" buttonAddGold="85" buttonAddFood="84" />
 	</player>
 	<fow>
 		<buttons buttonDrawFow="87" />
+		<defaultButtons buttonDrawFow="87" />
 	</fow>
 	<surge>
+		<defaultButtons buttonNewWave="64" buttonActivateWave="65" />
 		<buttons buttonNewWave="64" buttonActivateWave="65" />
 	</surge>
 	<entities>
