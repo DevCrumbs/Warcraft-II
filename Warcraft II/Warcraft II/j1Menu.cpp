@@ -20,6 +20,7 @@
 #include "j1PathManager.h"
 #include "j1Movement.h"
 #include "j1Printer.h"
+#include "j1EnemyWave.h"
 
 #include "j1Gui.h"
 #include "UIImage.h"
@@ -215,8 +216,11 @@ bool j1Menu::Update(float dt)
 
 				}
 
-
-
+				App->scene->SaveKeys();
+				App->player->SaveKeys();
+				App->fow->SaveKeys();
+				App->wave->SaveKeys();
+				App->configFile.save_file("config.xml");
 			}
 
 			changeButt.changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);

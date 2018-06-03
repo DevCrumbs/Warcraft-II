@@ -88,6 +88,8 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	camMovement = camera.attribute("movement").as_int();
 	camMovMargin = camera.attribute("movMarginPcnt").as_float();
 
+	this->config = App->config.child(this->name.data());
+
 	return ret;
 }
 
@@ -2532,7 +2534,6 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 
 	ret = LoadKey(&buttonSelectGroup, "buttonSelectGroup", buttons);
 	ret = LoadKey(&buttonSelectGroupb, "buttonSelectGroupb", buttons);
-
 	ret = LoadKey(&buttonSelectGroup1, "buttonSelectGroup1", buttons);
 	ret = LoadKey(&buttonSelectGroup2, "buttonSelectGroup2", buttons);
 	ret = LoadKey(&buttonSelectGroup3, "buttonSelectGroup3", buttons);
@@ -2552,3 +2553,108 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 
 	return ret;
 }
+
+void j1Scene::SaveKeys()
+{
+	//Clear
+//config.child("buttons").remove_attribute("buttonGoToBase");
+//config.child("buttons").remove_attribute("buttonGoToUnits");
+//config.child("buttons").remove_attribute("buttonMinimap");
+//config.child("buttons").remove_attribute("buttonBuildingMenu");
+//config.child("buttons").remove_attribute("buttonPauseMenu");
+//config.child("buttons").remove_attribute("buttonPatrolUnits");
+//config.child("buttons").remove_attribute("buttonStopUnits");
+//config.child("buttons").remove_attribute("buttonStopUnits");
+//
+//config.child("buttons").remove_attribute("buttonSpawnFootman");
+//config.child("buttons").remove_attribute("buttonSpawnArcher");
+//config.child("buttons").remove_attribute("buttonSpawnGryphon");
+//config.child("buttons").remove_attribute("buttonBuildingMenu");
+//config.child("buttons").remove_attribute("buttonSpawnGrunt");
+//config.child("buttons").remove_attribute("buttonSpawnTroll");
+//config.child("buttons").remove_attribute("buttonSpawnDragon");
+//config.child("buttons").remove_attribute("buttonSpawnSheep");
+//config.child("buttons").remove_attribute("buttonSpawnBoar");
+//config.child("buttons").remove_attribute("buttonSpawnAlleria");
+//config.child("buttons").remove_attribute("buttonSpawnTauralyon");
+//
+//config.child("buttons").remove_attribute("buttonTogleDebug");
+//config.child("buttons").remove_attribute("buttonTogleDebugAttack");
+//config.child("buttons").remove_attribute("buttonTogleDebugMovement");
+//
+//config.child("buttons").remove_attribute("buttonSelectGroup");
+//config.child("buttons").remove_attribute("buttonSelectGroupb");
+//config.child("buttons").remove_attribute("buttonSelectGroup1");
+//config.child("buttons").remove_attribute("buttonSelectGroup2");
+//config.child("buttons").remove_attribute("buttonSelectGroup3");
+//
+//config.child("buttons").remove_attribute("buttonSaveGroup");
+//config.child("buttons").remove_attribute("buttonSaveGroupb");
+//config.child("buttons").remove_attribute("buttonWinGame");
+//
+//config.child("buttons").remove_attribute("buttonLoseGame");
+//config.child("buttons").remove_attribute("buttonMoveUp");
+//config.child("buttons").remove_attribute("buttonMoveUpb");
+//
+//config.child("buttons").remove_attribute("buttonMoveDown");
+//config.child("buttons").remove_attribute("buttonMoveDownb");
+//config.child("buttons").remove_attribute("buttonMoveLeft");
+//config.child("buttons").remove_attribute("buttonMoveLeftb");
+//config.child("buttons").remove_attribute("buttonMoveRight");
+//config.child("buttons").remove_attribute("buttonMoveRightb");
+
+
+//	config.remove_child("buttons");
+//	pugi::xml_node buttons = config.append_child("buttons");
+	
+	//App->configFile.child("config").child("scene").remove_child("buttons");
+	//pugi::xml_node buttons = App->configFile.child("config").child("scene").append_child("buttons");
+	//// = config.child("buttons");
+	////Save
+	//buttons.append_attribute("buttonGoToBase")				= *buttonGoToBase;
+	//buttons.append_attribute("buttonGoToUnits")				= *buttonGoToUnits;
+	//buttons.append_attribute("buttonMinimap")				= *buttonMinimap;
+	//buttons.append_attribute("buttonBuildingMenu")			= *buttonBuildingMenu;
+	//buttons.append_attribute("buttonPauseMenu")				= *buttonPauseMenu;
+	//buttons.append_attribute("buttonPatrolUnits")			= *buttonPatrolUnits;
+	//buttons.append_attribute("buttonStopUnits")				= *buttonStopUnits;
+	//buttons.append_attribute("buttonStopUnits")				= *buttonStopUnits;
+
+	//buttons.append_attribute("buttonSpawnFootman")			= *buttonSpawnFootman;
+	//buttons.append_attribute("buttonSpawnArcher")			= *buttonSpawnArcher;
+	//buttons.append_attribute("buttonSpawnGryphon")			= *buttonSpawnGryphon;
+	//buttons.append_attribute("buttonBuildingMenu")			= *buttonBuildingMenu;
+	//buttons.append_attribute("buttonSpawnGrunt")			= *buttonSpawnGrunt;
+	//buttons.append_attribute("buttonSpawnTroll")			= *buttonSpawnTroll;
+	//buttons.append_attribute("buttonSpawnDragon")			= *buttonSpawnDragon;
+	//buttons.append_attribute("buttonSpawnSheep")			= *buttonSpawnSheep;
+	//buttons.append_attribute("buttonSpawnBoar")				= *buttonSpawnBoar;
+	//buttons.append_attribute("buttonSpawnAlleria")			= *buttonSpawnAlleria;
+	//buttons.append_attribute("buttonSpawnTauralyon")		= *buttonSpawnTauralyon;
+	//
+	//buttons.append_attribute("buttonTogleDebug")			= *buttonTogleDebug;
+	//buttons.append_attribute("buttonTogleDebugAttack")		= *buttonTogleDebugAttack;
+	//buttons.append_attribute("buttonTogleDebugMovement")	= *buttonTogleDebugMovement;
+	//										
+	//buttons.append_attribute("buttonSelectGroup")			= *buttonSelectGroup;
+	//buttons.append_attribute("buttonSelectGroupb")			= *buttonSelectGroupb;
+	//buttons.append_attribute("buttonSelectGroup1")			= *buttonSelectGroup1;
+	//buttons.append_attribute("buttonSelectGroup2")			= *buttonSelectGroup2;
+	//buttons.append_attribute("buttonSelectGroup3")			= *buttonSelectGroup3;
+	//												
+	//buttons.append_attribute("buttonSaveGroup")				= *buttonSaveGroup;
+	//buttons.append_attribute("buttonSaveGroupb")			= *buttonSaveGroupb;
+	//buttons.append_attribute("buttonWinGame")				= *buttonWinGame;
+	//													
+	//buttons.append_attribute("buttonLoseGame")				= *buttonLoseGame;
+	//buttons.append_attribute("buttonMoveUp")				= *buttonMoveUp;
+	//buttons.append_attribute("buttonMoveUpb")				= *buttonMoveUpb;
+	//													
+	//buttons.append_attribute("buttonMoveDown")				= *buttonMoveDown;
+	//buttons.append_attribute("buttonMoveDownb")				= *buttonMoveDownb;
+	//buttons.append_attribute("buttonMoveLeft")				= *buttonMoveLeft;
+	//buttons.append_attribute("buttonMoveLeftb")				= *buttonMoveLeftb;
+	//buttons.append_attribute("buttonMoveRight")				= *buttonMoveRight;
+	//buttons.append_attribute("buttonMoveRightb")			= *buttonMoveRightb;
+
+}															   

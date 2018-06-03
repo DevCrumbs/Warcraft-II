@@ -133,6 +133,7 @@ public:
 	j1FogOfWar*					fow = nullptr;
 
 private:
+	
 
 	list<j1Module*>		modules;
 	uint				frames = 0;
@@ -154,6 +155,8 @@ private:
 	j1PerfTimer perfClock;
 
 public:
+	pugi::xml_document	configFile;
+	pugi::xml_node		config;
 
 	uint				capFrames = 0;
 	bool				toCap = true;

@@ -48,6 +48,7 @@ public:
 	void UnLoadFowMap();
 	void TilesNearPlayer();
 	bool LoadKeys(pugi::xml_node & buttons);
+	void SaveKeys();
 	int TotalDistanceToPlayer(Entity* entity, int tile);
 
 	void ResetTiles();
@@ -65,6 +66,8 @@ public:
 
 private:
 	SDL_Scancode* buttonDrawFow = nullptr;
+
+	pugi::xml_node config;
 };
 
 #endif

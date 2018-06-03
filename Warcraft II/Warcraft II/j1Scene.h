@@ -217,6 +217,8 @@ public:
 	void BlitRoomClearedFloor(float dt);
 
 	bool LoadKeys(pugi::xml_node& node);
+
+	void SaveKeys();
 	
 public:
 
@@ -341,6 +343,8 @@ public:
 	SDL_Scancode* buttonMoveRightb = nullptr;
 
 private:
+
+	pugi::xml_node config;
 
 	j1Timer goldLabelColorTime;
 	j1Timer finalTransition;
