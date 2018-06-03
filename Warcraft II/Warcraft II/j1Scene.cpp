@@ -321,18 +321,18 @@ bool j1Scene::Update(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 	// ---------------------------------------------------------------------
 
-	// SDL_SCANCODE_F8
+	// SDL_SCANCODE_F9
 	if (App->input->GetKey(buttonTogleDebug) == KEY_DOWN)
 		App->isDebug = !App->isDebug;
 	
-	// SDL_SCANCODE_F5
+	// SDL_SCANCODE_F10
 	if (App->input->GetKey(buttonTogleDebugAttack) == KEY_DOWN && App->isDebug)
 		debugDrawAttack = !debugDrawAttack;
 
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
 
-	// SDL_SCANCODE_F9
+	// SDL_SCANCODE_F11
 	if (App->input->GetKey(buttonTogleDebugMovement) == KEY_DOWN && App->isDebug)
 		debugDrawMovement = !debugDrawMovement;
 
@@ -969,19 +969,13 @@ bool j1Scene::PostUpdate()
 
 	if (!isStartedFinalTransition) {
 
-		//if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
-
-		//	App->gui->RemoveElem((UIElement**)&parchmentImg);
-		//	return false;
-		//}
-
 		if (App->player->imagePrisonersVector.size() >= 2) {
 
 			App->player->isWin = true;
 			finalTransition.Start();
 			isStartedFinalTransition = true;
 		}
-		// SDL_SCANCODE_F1
+		// SDL_SCANCODE_F5
 		else if (App->input->GetKey(buttonWinGame) == KEY_DOWN && App->isDebug)
 		{
 			App->player->isWin = true;
@@ -1008,8 +1002,8 @@ bool j1Scene::PostUpdate()
 				|| (App->player->GetCurrentGold() < (App->player->gryphonRiderCost + gryphonAviaryCost) && App->player->gryphonAviary == nullptr && App->player->barracks == nullptr)
 				//Not enogh gold to create Gryphos and have not barracks and we and have no units spawning
 				|| (App->player->GetCurrentGold() < App->player->gryphonRiderCost  && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning))
-			//Instant Lose with F2
-			// SDL_SCANCODE_F2
+			//Instant Lose with F6
+			// SDL_SCANCODE_F6
 			|| (App->input->GetKey(buttonLoseGame) == KEY_DOWN && App->isDebug)
 			//Orde destroy townhall
 			|| App->player->townHall == nullptr) {
@@ -1079,77 +1073,6 @@ bool j1Scene::CleanUp()
 // Debug keys
 void j1Scene::DebugKeys()
 {
-	// Movement
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN)
-		isFrameByFrame = !isFrameByFrame;
-
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-		debugDrawMovement = !debugDrawMovement;
-
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
-		debugDrawPath = !debugDrawPath;
-
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
-		debugDrawMap = !debugDrawMap;
-*/
-
-	// F1: start from the beginning of the first level
-	//if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
-		/*
-		if (index == 0)
-			App->entities->playerData->position = App->entities->playerData->startPos;
-		else
-			index = 0;
-
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
-		*/
-	//}
-
-	// F2: start from the beginning of the current level
-	//if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
-		/*
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
-		*/
-	//}
-
-	// F4: change between maps
-	//if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN) {
-		/*
-		if (index == 0)
-			index = 1;
-		else
-			index = 0;
-
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
-		*/
-	//}
-
-	// F5: save the current state
-	//if (App->input->GetKey(*buttonSaveGame) == KEY_DOWN) {
-	//	App->SaveGame();
-	//}
-
-	// F6: load the previous state
-	//if (App->input->GetKey(*buttonLoadGame) == KEY_DOWN) {
-	//	App->LoadGame();
-	//}
-
-	// F10: God mode
-	//if (App->input->GetKey(buttonGodMode) == KEY_DOWN)
-		//god = !god;
-
-	// 1, 2, 3: camera blit
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN && App->map->blitOffset < 15 && App->map->cameraBlit)
-		App->map->blitOffset += 7;
-
-	else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN && App->map->blitOffset > -135 && App->map->cameraBlit)
-		App->map->blitOffset -= 7;
-
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-		App->map->cameraBlit = !App->map->cameraBlit;
-		*/
 
 	// SDL_SCANCODE_SPACE
 	if (App->input->GetKey(buttonGoToBase) == KEY_DOWN)
