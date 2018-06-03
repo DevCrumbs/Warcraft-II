@@ -291,5 +291,7 @@ bool j1FogOfWar::LoadKeys(pugi::xml_node& buttons)
 {
 	bool ret = true;
 
+	ret = LoadKey(&buttonDrawFow, "buttonDrawFow", buttons);
+
 	return ret;
 }
