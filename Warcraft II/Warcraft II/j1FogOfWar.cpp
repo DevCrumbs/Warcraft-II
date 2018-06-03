@@ -74,8 +74,8 @@ bool j1FogOfWar::Update(float dt)
 	ResetTiles();
 	TilesNearPlayer();
 	
-	// SDL_SCANCODE_KP_PLUS
-	if (App->input->GetKey(App->scene->buttonDrawFow) == KEY_DOWN && App->isDebug)
+	// SDL_SCANCODE_KP_ENTER
+	if (App->input->GetKey(buttonDrawFow) == KEY_DOWN && App->isDebug)
 	{
 		isActive = !isActive;
 	}
@@ -104,7 +104,8 @@ bool j1FogOfWar::CleanUp()
 
 void j1FogOfWar::Print()
 {	
-	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	// SDL_SCANCODE_F6
+	if (App->isDebug && App->input->GetKey(buttonDebugDrawFow) == KEY_DOWN)
 		isFoWDebug = !isFoWDebug;
 
 	iPoint startTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale(),
@@ -1306,6 +1307,7 @@ bool j1FogOfWar::LoadKeys(pugi::xml_node& buttons)
 	bool ret = true;
 
 	ret = LoadKey(&buttonDrawFow, "buttonDrawFow", buttons);
+	ret = LoadKey(&buttonDebugDrawFow, "buttonDebugDrawFow", buttons);
 
 	return ret;
 }
@@ -1316,6 +1318,8 @@ void j1FogOfWar::SaveKeys()
 	pugi::xml_node buttons = App->configFile.child("config").child(name.data()).append_child("buttons");
 
 	buttons.remove_child("buttonDrawFow");
+	buttons.remove_child("buttonDebugDrawFow");
 
 	buttons.append_child("buttonDrawFow").append_attribute("buttonDrawFow") = *buttonDrawFow;
+	buttons.append_child("buttonDebugDrawFow").append_attribute("buttonDebugDrawFow") = *buttonDrawFow;
 }

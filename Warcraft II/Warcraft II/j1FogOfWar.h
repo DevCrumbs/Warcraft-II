@@ -110,6 +110,7 @@ public:
 
 private:
 	SDL_Scancode* buttonDrawFow = nullptr;
+	SDL_Scancode* buttonDebugDrawFow = nullptr;
 
 	pugi::xml_node config;
 

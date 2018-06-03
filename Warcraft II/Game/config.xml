@@ -123,7 +123,6 @@
 			<buttonPauseMenu buttonPauseMenu="41" />
 			<buttonPatrolUnits buttonPatrolUnits="17" />
 			<buttonStopUnits buttonStopUnits="16" />
-			<buttonStopUnits buttonStopUnits="16" />
 			<buttonSpawnFootman buttonSpawnFootman="89" />
 			<buttonSpawnArcher buttonSpawnArcher="90" />
 			<buttonSpawnGryphon buttonSpawnGryphon="91" />
@@ -163,7 +162,6 @@
 			<buttonBuildingMenu buttonBuildingMenu="5" />
 			<buttonPauseMenu buttonPauseMenu="41" />
 			<buttonPatrolUnits buttonPatrolUnits="17" />
-			<buttonStopUnits buttonStopUnits="16" />
 			<buttonStopUnits buttonStopUnits="16" />
 			<buttonSpawnFootman buttonSpawnFootman="89" />
 			<buttonSpawnArcher buttonSpawnArcher="90" />
@@ -220,14 +218,16 @@
 	</player>
 	<fow>
 		<defaultButtons>
-			<buttonDrawFow buttonDrawFow="87" />
+			<buttonDrawFow buttonDrawFow="88" />
+			<buttonDebugDrawFow buttonDebugDrawFow="99" />
 		</defaultButtons>
+		<debugTilesTex name="data/assets/textures/fow/debugFoW.png" />
+		<blackTilesTex name="data/assets/textures/fow/blackFoW.png" />
+		<greyTilesTex name="data/assets/textures/fow/greyFoW.png" />
 		<buttons>
-			<buttonDrawFow buttonDrawFow="87" />
+			<buttonDrawFow buttonDrawFow="88" />
+			<buttonDebugDrawFow buttonDebugDrawFow="88" />
 		</buttons>
-    <debugTilesTex name="data/assets/textures/fow/debugFoW.png"/>
-    <blackTilesTex name="data/assets/textures/fow/blackFoW.png"/>
-    <greyTilesTex name="data/assets/textures/fow/greyFoW.png"/>
 	</fow>
 	<surge>
 		<defaultButtons>
