@@ -46,6 +46,12 @@ struct ArtifactsCollection
 	int book, skull, scepter, eye = 0;
 };
 
+struct ChangeButtons
+{
+	UILabel *changeLabel = nullptr;
+	SDL_Scancode* currentButton = nullptr;
+};
+
 class j1Menu : public j1Module
 {
 public:
@@ -91,6 +97,9 @@ public:
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed);
 
 	void UpdateSlider(SliderStruct &sliderStruct);
+	bool CanChangeButt(SDL_Scancode button);
+	bool CanSwapButt(SDL_Scancode button);
+	void SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB);
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
@@ -117,8 +126,9 @@ private:
 	UIButton* fullScreenButt = nullptr;
 	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr, *buttonsLabel = nullptr;
 		//Changing buttons
-	UILabel* returnSettings = nullptr, *changeLabel = nullptr;
-	list<UILabel*> interactiveLabels;
+	UILabel* returnSettings = nullptr;
+	ChangeButtons changeButt;
+	list<ChangeButtons> interactiveLabels;
 
 	j1Timer changeButtonTimer;
 	bool textColor = false;
@@ -145,7 +155,6 @@ private:
 	bool isFadetoScene = false;
 	bool isMouseTextCreated = false;
 
-	
 	vector<string> keysName;
 };
 
