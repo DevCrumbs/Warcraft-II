@@ -376,3 +376,13 @@ bool j1EnemyWave::Save(pugi::xml_node& save) const
 {
 	return true;
 }
+
+bool j1EnemyWave::LoadKeys(pugi::xml_node& buttons)
+{
+	bool ret = true;
+
+	ret = LoadKey(&buttonNewWave, "buttonNewWave", buttons);
+	ret = LoadKey(&buttonActivateWave, "buttonActivateWave", buttons);
+
+	return ret;
+}

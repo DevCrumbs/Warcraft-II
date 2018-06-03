@@ -55,6 +55,8 @@ public:
 	// Save
 	bool Save(pugi::xml_node&) const;
 
+	bool LoadKeys(pugi::xml_node & buttons);
+
 	// Load
 	bool Load(pugi::xml_node&);
 
