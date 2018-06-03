@@ -243,9 +243,9 @@ void Dragon::Move(float dt)
 			else {
 
 				if (unitInfo.isWanderSpawnTile)
-					brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
+					brain->AddGoal_Wander(5, spawnTile, false, 1, 3, 1, 2, 2);
 				else
-					brain->AddGoal_Wander(6, spawnTile, true, 1, 3, 1, 2, 2);
+					brain->AddGoal_Wander(5, spawnTile, true, 1, 3, 1, 2, 2);
 			}
 		}
 
