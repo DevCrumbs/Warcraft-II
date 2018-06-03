@@ -64,6 +64,9 @@ public:
 	uint totalPhasesOfCurrWave = 0;
 	uint phasesOfCurrWave = 0;
 
+	SDL_Scancode* buttonNewWave = nullptr;
+	SDL_Scancode* buttonActivateWave = nullptr;
+
 private:
 
 	vector<SpawnTiles> spawnTiles;

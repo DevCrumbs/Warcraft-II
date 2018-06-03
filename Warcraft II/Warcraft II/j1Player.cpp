@@ -94,8 +94,8 @@ bool j1Player::Update(float dt)
 		CheckUnitSpawning(&toSpawnUnitGrypho);
 
 	////////////////////////////////////////
-
-	if (App->input->GetKey(SDL_SCANCODE_U) == KEY_DOWN) {
+	//SDL_SCANCODE_U
+	if (App->input->GetKey(buttonShowPlayerButt) == KEY_DOWN) {
 		ShowPlayerGroupsButton(1, PlayerGroupTypes_ALL);
 		ShowPlayerGroupsButton(2, PlayerGroupTypes_FOOTMAN_ARCHER);
 		ShowPlayerGroupsButton(3, PlayerGroupTypes_GRYPHON);
@@ -214,7 +214,8 @@ bool j1Player::Update(float dt)
 			}
 	*/
 
-	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN && App->isDebug) {
+	// SDL_SCANCODE_H
+	if (App->isDebug && App->input->GetKey(buttonDamageCF) == KEY_DOWN && App->isDebug) {
 		if (!chickenFarm.empty())
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)chickenFarm.back();
@@ -230,11 +231,14 @@ bool j1Player::Update(float dt)
 				}
 			}
 	}
-	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN && App->isDebug) {
+
+	// SDL_SCANCODE_G
+	if (App->isDebug && App->input->GetKey(buttonAddGold) == KEY_DOWN && App->isDebug) {
 		App->audio->PlayFx(App->audio->GetFX().goldMine, 0); // Gold mine sound
 		AddGold(500);
 	}
-	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN && App->isDebug) {
+	// SDL_SCANCODE_F
+	if (App->isDebug && App->input->GetKey(buttonAddFood) == KEY_DOWN && App->isDebug) {
 		currentFood += 3;
 		App->scene->hasFoodChanged = true;
 	}

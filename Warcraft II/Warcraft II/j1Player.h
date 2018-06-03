@@ -242,6 +242,18 @@ public:
 
 	bool isUnitSpawning = false;
 
+	SDL_Scancode* buttonSelectFootman = nullptr;
+	SDL_Scancode* buttonSelectArcher = nullptr;
+	SDL_Scancode* buttonSelectGryphon = nullptr;
+	SDL_Scancode* buttonSelectAll = nullptr;
+
+	SDL_Scancode* buttonShowPlayerButt = nullptr;
+
+	SDL_Scancode* buttonDamageCF = nullptr;
+
+	SDL_Scancode* buttonAddGold = nullptr;
+	SDL_Scancode* buttonAddFood = nullptr;
+
 private:
 
 	int currentGold = 0; // amount of gold that the player has at the current moment
@@ -270,11 +282,6 @@ private:
 
 	list<GroupSpawning> barracksSpawningListUI;
 	list<GroupSpawning> gryphoSpawningListUI;
-
-	SDL_Scancode* buttonSelectFootman =		 nullptr;
-	SDL_Scancode* buttonSelectArcher =		 nullptr;
-	SDL_Scancode* buttonSelectGryphon =		nullptr;
-	SDL_Scancode* buttonSelectAll =			 nullptr;
 
 };
 

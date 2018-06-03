@@ -301,6 +301,46 @@ public:
 	SDL_Scancode* buttonPatrolUnits = nullptr;
 	SDL_Scancode* buttonStopUnits = nullptr;
 
+	SDL_Scancode* buttonDrawFow = nullptr;
+
+	SDL_Scancode* buttonSpawnFootman = nullptr;
+	SDL_Scancode* buttonSpawnArcher = nullptr;
+	SDL_Scancode* buttonSpawnGryphon = nullptr;
+	SDL_Scancode* buttonSpawnGrunt = nullptr;
+	SDL_Scancode* buttonSpawnTroll = nullptr;
+	SDL_Scancode* buttonSpawnDragon = nullptr;
+	SDL_Scancode* buttonSpawnSheep = nullptr;
+	SDL_Scancode* buttonSpawnBoar = nullptr;
+	SDL_Scancode* buttonSpawnAlleria = nullptr;
+	SDL_Scancode* buttonSpawnTauralyon = nullptr;
+
+	SDL_Scancode* buttonTogleDebug = nullptr;
+	SDL_Scancode* buttonTogleDebugAttack = nullptr;
+	SDL_Scancode* buttonTogleDebugMovement = nullptr;
+
+	SDL_Scancode* buttonSelectGroup = nullptr;
+	SDL_Scancode* buttonSelectGroupb = nullptr;
+
+	SDL_Scancode* buttonSelectGroup1 = nullptr;
+	SDL_Scancode* buttonSelectGroup2 = nullptr;
+	SDL_Scancode* buttonSelectGroup3 = nullptr; 
+
+	SDL_Scancode* buttonSaveGroup = nullptr;
+	SDL_Scancode* buttonSaveGroupb = nullptr;
+
+	SDL_Scancode* buttonWinGame = nullptr;
+	SDL_Scancode* buttonLoseGame = nullptr;
+
+	SDL_Scancode* buttonMoveUp = nullptr;
+	SDL_Scancode* buttonMoveUpb = nullptr;
+	SDL_Scancode* buttonMoveDown = nullptr;
+	SDL_Scancode* buttonMoveDownb = nullptr;
+	SDL_Scancode* buttonMoveLeft = nullptr;
+	SDL_Scancode* buttonMoveLeftb = nullptr;
+	SDL_Scancode* buttonMoveRight = nullptr;
+	SDL_Scancode* buttonMoveRightb = nullptr;
+
+	SDL_Scancode* buttonAccept = nullptr;
 
 private:
 

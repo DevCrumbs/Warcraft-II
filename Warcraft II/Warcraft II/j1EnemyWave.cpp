@@ -116,11 +116,13 @@ bool j1EnemyWave::Update(float dt)
 	bool ret = true;
 
 	// F3: spawns a random phase of a wave
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN && App->isDebug)
+	// SDL_SCANCODE_F3
+	if (App->input->GetKey(buttonNewWave) == KEY_DOWN && App->isDebug)
 		PerformWave();
 
 	// F4: activates or stops the spawn of waves
-	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN && App->isDebug)
+	// SDL_SCANCODE_F4
+	if (App->input->GetKey(buttonActivateWave) == KEY_DOWN && App->isDebug)
 
 		isActiveWaves = !isActiveWaves;
 
