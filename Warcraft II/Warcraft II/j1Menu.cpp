@@ -192,18 +192,7 @@ bool j1Menu::Update(float dt)
 			changeButtonTimer.Stop();
 		}
 
-		if (App->input->isPresed) {
-			string compare = "", spaceCompare = " ";
-			if (App->input->newLetter == compare || App->input->newLetter == spaceCompare)
-				App->input->newLetter = "SPACE";
-			changeLabel->SetText(App->input->newLetter);
-
-			changeLabel->SetColor(changeLabel->GetInfo()->normalColor);
-			App->input->isPresed = false;
-			SDL_StopTextInput();
-			changeLabel = nullptr;
-		}
-		else if (App->input->scancode != SDL_SCANCODE_UNKNOWN)
+		if (App->input->scancode != SDL_SCANCODE_UNKNOWN)
 		{
 			if (App->input->scancode < keysName.size())
 			{
@@ -211,7 +200,6 @@ bool j1Menu::Update(float dt)
 				LOG("Set text");
 			}
 			changeLabel->SetColor(changeLabel->GetInfo()->normalColor);
-			SDL_StopTextInput();
 			changeLabel = nullptr;
 			App->input->scancode = SDL_SCANCODE_UNKNOWN;
 		}
@@ -694,26 +682,9 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			menuActions = MenuActions_PLAY_HARD;
 		}
 
-		//ChangeButtons
-
-		else if (UIelem == buttonsLabel)
-		{
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-			menuActions = MenuActions_CHANGE_BUTTONS;
-		}
-
-		for (list<UILabel*>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
-		{
-			if (UIelem == (*iterator)){
-				changeLabel = (UILabel*)UIelem;
-				SDL_StartTextInput();
-				continue;
-			}
-		}
-
 		//Credits
 
-		if (UIelem == sandraLead)
+		else if (UIelem == sandraLead)
 		{
 			open_url("https://github.com/Sandruski");
 		}
@@ -742,6 +713,22 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			open_url("https://github.com/aleixgab");
 		}
 
+
+		//ChangeButtons
+
+		else if (UIelem == buttonsLabel)
+		{
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+			menuActions = MenuActions_CHANGE_BUTTONS;
+		}
+
+		for (list<UILabel*>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
+		{
+			if (UIelem == (*iterator)) {
+				changeLabel = (UILabel*)UIelem;
+				break;
+			}
+		}
 
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
@@ -863,43 +850,43 @@ void j1Menu::LoadKeysVector()
 	for (int i = 0; i < 4; ++i)
 		keysName.push_back("¿?");
 
-	keysName.push_back("A");
-	keysName.push_back("B");
-	keysName.push_back("C");
-	keysName.push_back("D");
-	keysName.push_back("E");
-	keysName.push_back("F");
-	keysName.push_back("G");
-	keysName.push_back("H");
-	keysName.push_back("I");
-	keysName.push_back("J");
-	keysName.push_back("K");
-	keysName.push_back("L");
-	keysName.push_back("M");
-	keysName.push_back("N");
-	keysName.push_back("O");
-	keysName.push_back("P");
-	keysName.push_back("Q");
-	keysName.push_back("R");
-	keysName.push_back("S");
-	keysName.push_back("T");
-	keysName.push_back("U");
-	keysName.push_back("V");
-	keysName.push_back("W");
-	keysName.push_back("X");
-	keysName.push_back("Y");
-	keysName.push_back("Z");
-
-	keysName.push_back("1");
-	keysName.push_back("2");
-	keysName.push_back("3");
-	keysName.push_back("4");
-	keysName.push_back("5");
-	keysName.push_back("6");
-	keysName.push_back("7");
-	keysName.push_back("8");
-	keysName.push_back("9");
-	keysName.push_back("0");
+	keysName.push_back(" A ");
+	keysName.push_back(" B ");
+	keysName.push_back(" C ");
+	keysName.push_back(" D ");
+	keysName.push_back(" E ");
+	keysName.push_back(" F ");
+	keysName.push_back(" G ");
+	keysName.push_back(" H ");
+	keysName.push_back(" I ");
+	keysName.push_back(" J ");
+	keysName.push_back(" K ");
+	keysName.push_back(" L ");
+	keysName.push_back(" M ");
+	keysName.push_back(" N ");
+	keysName.push_back(" O ");
+	keysName.push_back(" P ");
+	keysName.push_back(" Q ");
+	keysName.push_back(" R ");
+	keysName.push_back(" S ");
+	keysName.push_back(" T ");
+	keysName.push_back(" U ");
+	keysName.push_back(" V ");
+	keysName.push_back(" W ");
+	keysName.push_back(" X ");
+	keysName.push_back(" Y ");
+	keysName.push_back(" Z ");
+						 
+	keysName.push_back(" 1 ");
+	keysName.push_back(" 2 ");
+	keysName.push_back(" 3 ");
+	keysName.push_back(" 4 ");
+	keysName.push_back(" 5 ");
+	keysName.push_back(" 6 ");
+	keysName.push_back(" 7 ");
+	keysName.push_back(" 8 ");
+	keysName.push_back(" 9 ");
+	keysName.push_back(" 0 ");
 
 	keysName.push_back("ENTER");
 	keysName.push_back("ESC");
@@ -907,9 +894,21 @@ void j1Menu::LoadKeysVector()
 	keysName.push_back("TAB");
 	keysName.push_back("SPACE");
 
+	//NOT 100% REAL DEPENDS KEYBOARD
+	keysName.push_back(" - ");
+	keysName.push_back(" = ");
+	keysName.push_back(" [ ");
+	keysName.push_back(" ] ");
+	keysName.push_back(" ? ");
+	keysName.push_back(" # ");
+	keysName.push_back(" ; ");
+	keysName.push_back(" + ");
+	keysName.push_back("GRAVE");
+	keysName.push_back(" , ");
+	keysName.push_back(" . ");
+	keysName.push_back(" - ");
 
-	for (int i = 0; i < 12; ++i)
-		keysName.push_back("¿?");
+
 	
 
 	keysName.push_back("CAPSLOCK");
@@ -939,19 +938,29 @@ void j1Menu::LoadKeysVector()
 
 	for (int i = 0; i < 4; ++i)
 		keysName.push_back("¿?");
-	
 
 	keysName.push_back("NUMLOCK");
-
-	for (int i = 0; i < 4; ++i)
-		keysName.push_back("¿?");
-	
+	keysName.push_back(" / ");
+	keysName.push_back(" * ");
+	keysName.push_back(" - ");
+	keysName.push_back(" + ");	
 	keysName.push_back("ENTER");
 
+	keysName.push_back(" 1 ");
+	keysName.push_back(" 2 ");
+	keysName.push_back(" 3 ");
+	keysName.push_back(" 4 ");
+	keysName.push_back(" 5 ");
+	keysName.push_back(" 6 ");
+	keysName.push_back(" 7 ");
+	keysName.push_back(" 8 ");
+	keysName.push_back(" 9 ");
+	keysName.push_back(" 0 ");
+	keysName.push_back(" . ");
+	keysName.push_back(" < ");
 
-	for (int i = 0; i <	28; ++i)
+	for (int i = 0; i <	16; ++i)
 		keysName.push_back("¿?");
-	
 
 	// Useless media keys
 	for (int i = 0; i < 29; ++i)
