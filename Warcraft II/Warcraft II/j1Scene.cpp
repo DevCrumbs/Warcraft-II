@@ -1766,7 +1766,7 @@ void j1Scene::CreatePauseMenu()
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.normalColor = Black_;
 	labelInfo.hoverColor = ColorGreen;
-	labelInfo.text = "Settings";
+	labelInfo.text = "Resume Game";
 
 	int x = parchmentImg->GetLocalPos().x + 100;
 	int y = parchmentImg->GetLocalPos().y + 60;
@@ -1777,7 +1777,7 @@ void j1Scene::CreatePauseMenu()
 	saveGameLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
 	y += 40;
-	labelInfo.text = "Resume Game";
+	labelInfo.text = "Settings";
 	continueLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
 	y += 40;
@@ -2407,6 +2407,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			DestroySettingsMenu();
 			pauseMenuActions = PauseMenuActions_CREATED;
+		}
+
+		else if (UIelem == buttonsLabel)
+		{
+			App->menu->active = true;
+			App->menu->menuActions = MenuActions_CHANGE_BUTTONS;
 		}
 
 		else if (UIelem == (UIElement*)AudioFXPause.slider)

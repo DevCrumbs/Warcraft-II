@@ -15,6 +15,8 @@ class UIButton;
 class UISlider;
 struct UICursor;
 struct Particle;
+struct UILabel_Info;
+
 
 enum MenuActions
 {
@@ -33,7 +35,8 @@ enum MenuActions
 	MenuActions_CREDITS,
 	MenuActions_EXIT,
 	MenuActions_CHANGE_BUTTONS,
-	MenuActions_DEFAULT_BUTTONS
+	MenuActions_DEFAULT_BUTTONS,
+	MenuActions_CLEANUP
 };
 struct SliderStruct
 {
@@ -97,6 +100,7 @@ public:
 
 	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt,
 		UIE_HORIZONTAL_POS hPos = HORIZONTAL_POS_LEFT, UIE_VERTICAL_POS vPos = VERTICAL_POS_TOP);
+	UILabel * CreateSimpleLabel(iPoint pos, UILabel_Info labelInfo);
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed);
 
@@ -118,6 +122,9 @@ public:
 	bool debug = false;
 
 	ArtifactsCollection artifactsEasyOne, artifactsEasyTwo, artifactsMediumOne, artifactsMediumTwo, artifactsHard;
+
+	MenuActions menuActions = MenuActions_NONE;
+
 private:
 
 	//Main Menu
@@ -149,10 +156,6 @@ private:
 	//More than one page
 	vector<UILabel*> staticLabels; //Not Interactives
 	vector<UIImage*> artifacts;
-
-
-	MenuActions menuActions = MenuActions_NONE;
-
 
 	//Audio path
 	string mainMenuMusicName;

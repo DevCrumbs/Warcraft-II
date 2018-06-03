@@ -173,6 +173,10 @@ bool j1Menu::Update(float dt)
 	case MenuActions_DEFAULT_BUTTONS:
 		SetDefaultButtons();
 		menuActions = MenuActions_NONE;
+		break;
+	case MenuActions_CLEANUP:
+		CleanUp();
+		break;
 	default:
 		break;
 	}
@@ -251,6 +255,7 @@ bool j1Menu::CleanUp()
 
 	if (!App->gui->isGuiCleanUp) {
 		DeteleMenu();
+		DeleteChangingButtons();
 		App->gui->RemoveElem((UIElement**)&settingsBackground);
 	}
 
@@ -369,33 +374,33 @@ void j1Menu::CreateChangingButtons() {
 
 	labelInfo.text = "Back";
 	returnSettings = App->gui->CreateUILabel({ 450, 575 }, labelInfo, this);
-
+	returnSettings->SetPriorityDraw(PrioriryDraw_MENU_LABEL);
 
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
 	labelInfo.interactive = false;
-
 	labelInfo.text = "Select all Footman on screen";
-	staticLabels.push_back(App->gui->CreateUILabel({ 175, 100 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 175, 100 }, labelInfo));
 	labelInfo.text = "Select all Archer on screen";	  
-	staticLabels.push_back(App->gui->CreateUILabel({ 175, 180 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 175, 180 }, labelInfo));
 	labelInfo.text = "Select all Gryphon on screen";  
-	staticLabels.push_back(App->gui->CreateUILabel({ 175, 260 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 175, 260 }, labelInfo));
 	labelInfo.text = "Select all Units on screen";
-	staticLabels.push_back(App->gui->CreateUILabel({ 175, 340 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 175, 340 }, labelInfo));
 	labelInfo.text = "Go to base";					 
-	staticLabels.push_back(App->gui->CreateUILabel({ 175, 420 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 175, 420 }, labelInfo));
 	labelInfo.text = "Go to unitis selected";
-	staticLabels.push_back(App->gui->CreateUILabel({ 175, 500 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 175, 500 }, labelInfo));
 	labelInfo.text = "Change minimap zoom";
-	staticLabels.push_back(App->gui->CreateUILabel({ 575, 180 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 575, 180 }, labelInfo));
 	labelInfo.text = "Open building menu";
-	staticLabels.push_back(App->gui->CreateUILabel({ 575, 260 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 575, 260 }, labelInfo));
 	labelInfo.text = "Open pause menu";
-	staticLabels.push_back(App->gui->CreateUILabel({ 575, 340 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 575, 340 }, labelInfo));
 	labelInfo.text = "Patrol units";
-	staticLabels.push_back(App->gui->CreateUILabel({ 575, 420 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 575, 420 }, labelInfo));
 	labelInfo.text = "Stop units";
-	staticLabels.push_back(App->gui->CreateUILabel({ 575, 500 }, labelInfo, this));
+	staticLabels.push_back(CreateSimpleLabel({ 575, 500 }, labelInfo));
+
 
 	CreateInteractiveLabels();
 
@@ -405,8 +410,15 @@ void j1Menu::CreateChangingButtons() {
 	labelInfo.fontName = FONT_NAME_WARCRAFT25;
 	labelInfo.text = "RESTORE DEFAULT";
 	defaultButton = App->gui->CreateUILabel({ 100, 25 }, labelInfo, this);
-
+	defaultButton->SetPriorityDraw(PrioriryDraw_MENU_LABEL);
 	 
+	if (App->scene->active)
+	{
+		UIImage_Info imageInfo;
+		imageInfo.texArea = { 1722, 950, 800, 600 };
+		settingsBackground = App->gui->CreateUIImage({ 0, 0 }, imageInfo, this, nullptr);
+		settingsBackground->SetPriorityDraw(PrioriryDraw_MENU_IMAGE);
+	}
 }
 
 
@@ -521,6 +533,14 @@ void j1Menu::CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, i
 	butt = App->gui->CreateUIButton(pos, infoButton, this);
 
 }
+
+UILabel* j1Menu::CreateSimpleLabel(iPoint pos, UILabel_Info labelInfo)
+{
+	UILabel* label = App->gui->CreateUILabel(pos, labelInfo, this);
+	label->SetPriorityDraw(PrioriryDraw_MENU_LABEL);
+	return label;
+}
+
 void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
 
 	UILabel_Info labelInfo;
@@ -589,27 +609,27 @@ void j1Menu::CreateInteractiveLabels()
 	labelInfo.interactive = true;
 
 	labelInfo.text = keysName[*App->player->buttonSelectFootman];		//"Select all Footman on screen";
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 100 }, labelInfo, this), App->player->buttonSelectFootman });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 100 }, labelInfo), App->player->buttonSelectFootman });
 	labelInfo.text = keysName[*App->player->buttonSelectArcher];	// "Select all Archer on screen
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 180 }, labelInfo, this), App->player->buttonSelectArcher });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 180 }, labelInfo), App->player->buttonSelectArcher });
 	labelInfo.text = keysName[*App->player->buttonSelectGryphon];	// "Select all Gryphon on screen;
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 260 }, labelInfo, this), App->player->buttonSelectGryphon });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 260 }, labelInfo), App->player->buttonSelectGryphon });
 	labelInfo.text = keysName[*App->player->buttonSelectAll];	// "Select all Units on scree
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 340 }, labelInfo, this), App->player->buttonSelectAll });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 340 }, labelInfo), App->player->buttonSelectAll });
 	labelInfo.text = keysName[*App->scene->buttonGoToBase];	// "Go to base";
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 420 }, labelInfo, this), App->scene->buttonGoToBase });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 420 }, labelInfo), App->scene->buttonGoToBase });
 	labelInfo.text = keysName[*App->scene->buttonGoToUnits];	// "Go to unities selected";
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 350, 500 }, labelInfo, this), App->scene->buttonGoToUnits });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 500 }, labelInfo), App->scene->buttonGoToUnits });
 	labelInfo.text = keysName[*App->scene->buttonMinimap];	// "Change minimap zoom";
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 180 }, labelInfo, this), App->scene->buttonMinimap });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 700, 180 }, labelInfo), App->scene->buttonMinimap });
 	labelInfo.text = keysName[*App->scene->buttonBuildingMenu];	//	  "Open building menu";
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 260 }, labelInfo, this), App->scene->buttonBuildingMenu });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 700, 260 }, labelInfo), App->scene->buttonBuildingMenu });
 	labelInfo.text = keysName[*App->scene->buttonPauseMenu];	//	  "Open pause menu";
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 340 }, labelInfo, this), App->scene->buttonPauseMenu });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 700, 340 }, labelInfo), App->scene->buttonPauseMenu });
 	labelInfo.text = keysName[*App->scene->buttonPatrolUnits];	//	  "Patrol units";
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 420 }, labelInfo, this), App->scene->buttonPatrolUnits });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 700, 420 }, labelInfo), App->scene->buttonPatrolUnits });
 	labelInfo.text = keysName[*App->scene->buttonStopUnits];	//	  "Stop units";
-	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 500 }, labelInfo, this), App->scene->buttonStopUnits });
+	interactiveLabels.push_back({ CreateSimpleLabel({ 700, 500 }, labelInfo), App->scene->buttonStopUnits });
 
 }
 
@@ -747,11 +767,10 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 
-		else if (UIelem == settingsLabel || UIelem == returnSettings){
+		else if (UIelem == settingsLabel){
 			menuActions = MenuActions_SETTINGS;
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
-
 		else if (UIelem == creditsLabel) {
 			menuActions = MenuActions_CREDITS;
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
@@ -861,6 +880,16 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			changeButt.changeLabel = nullptr;
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
+
+		else if (UIelem == returnSettings)
+		{
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+			if (App->scene->active)
+				menuActions = MenuActions_CLEANUP;
+			else
+				menuActions = MenuActions_SETTINGS;
+		}
+
 		for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
 		{
 			if (UIelem == (*iterator).changeLabel) {

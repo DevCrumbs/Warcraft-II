@@ -59,6 +59,8 @@ enum PriorityDraw {
 	PriorityDraw_SLIDER,
 	PriorityDraw_IMAGE,
 	PrioriryDraw_LABEL,
+	PrioriryDraw_MENU_IMAGE,
+	PrioriryDraw_MENU_LABEL,
 
 	PriorityDraw_CURSOR
 
