@@ -169,6 +169,9 @@ bool j1Menu::Update(float dt)
 	case MenuActions_SLIDERMUSIC:
 		UpdateSlider(audioMusic);
 		break;
+	case MenuActions_DEFAULT_BUTTONS:
+
+		menuActions = MenuActions_NONE;
 	default:
 		break;
 	}
@@ -197,7 +200,7 @@ bool j1Menu::Update(float dt)
 			bool isChanged = false;
 			if (App->input->scancode < keysName.size())
 			{
-				if (CanChangeButt(App->input->scancode) && CheckCorrectButt(App->input->scancode))
+				if (CheckCorrectButt(App->input->scancode))
 				{
 					changeButt.changeLabel->SetText(keysName[App->input->scancode]);
 					*changeButt.currentButton = App->input->scancode;
@@ -416,6 +419,11 @@ void j1Menu::CreateChangingButtons() {
 	labelInfo.text = keysName[*App->scene->buttonStopUnits];	//	  "Stop units";
 	interactiveLabels.push_back({ App->gui->CreateUILabel({ 700, 500 }, labelInfo, this), App->scene->buttonStopUnits });
 
+	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	labelInfo.text = "RESTORE DEFAULT";
+	defaultButton = App->gui->CreateUILabel({ 100, 25 }, labelInfo, this);
+
+	 
 }
 
 
@@ -614,27 +622,24 @@ void j1Menu::SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB)
 	buttonB.changeLabel->SetText(aText);
 }
 
-bool j1Menu::CanChangeButt(SDL_Scancode button)
+bool j1Menu::CheckCorrectButt(SDL_Scancode button)
 {
 	bool ret = true;
 
 	if (keysName[button] == "?")
 		ret = false;
 
-	return ret;
-}
-
-bool j1Menu::CheckCorrectButt(SDL_Scancode button)
-{
-	bool ret = true;
-
-	for (list<SDL_Scancode*>::iterator iterator = App->input->inGameKeys.begin(); iterator != App->input->inGameKeys.end(); ++iterator)
+	else
 	{
-		if (*(*iterator) == button) {
-			ret = false;
-			break;
+		for (list<SDL_Scancode*>::iterator iterator = App->input->inGameKeys.begin(); iterator != App->input->inGameKeys.end(); ++iterator)
+		{
+			if (*(*iterator) == button) {
+				ret = false;
+				break;
+			}
 		}
 	}
+
 	return ret;
 }
 
@@ -812,6 +817,13 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_CHANGE_BUTTONS;
 		}
+
+		else if(UIelem == defaultButton)
+		{
+			menuActions = MenuActions_DEFAULT_BUTTONS;
+			changeButt.changeLabel = nullptr;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
 		for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
 		{
 			if (UIelem == (*iterator).changeLabel) {
@@ -878,6 +890,7 @@ void j1Menu::DeleteChangingButtons()
 
 	App->gui->RemoveElem((UIElement**)&returnSettings);
 	App->gui->RemoveElem((UIElement**)&changeButt);
+	App->gui->RemoveElem((UIElement**)&defaultButton);
 
 	for (; !interactiveLabels.empty(); interactiveLabels.pop_back())
 	{
