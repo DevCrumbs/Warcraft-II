@@ -1770,7 +1770,7 @@ void j1Scene::CreatePauseMenu()
 
 	int x = parchmentImg->GetLocalPos().x + 100;
 	int y = parchmentImg->GetLocalPos().y + 60;
-	settingsLabel = App->gui->CreateUILabel({x, y}, labelInfo, this);
+	continueLabel = App->gui->CreateUILabel({x, y}, labelInfo, this);
 
 	y += 40;
 	labelInfo.text = "Save Game";
@@ -1778,7 +1778,7 @@ void j1Scene::CreatePauseMenu()
 
 	y += 40;
 	labelInfo.text = "Settings";
-	continueLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+	settingsLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
 	y += 40;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
