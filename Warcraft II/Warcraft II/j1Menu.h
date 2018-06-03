@@ -98,6 +98,7 @@ public:
 
 	void UpdateSlider(SliderStruct &sliderStruct);
 	bool CanChangeButt(SDL_Scancode button);
+	bool CheckCorrectButt(SDL_Scancode button);
 	bool CanSwapButt(SDL_Scancode button);
 	void SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB);
 
