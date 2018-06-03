@@ -2590,52 +2590,52 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 	bool ret = true;
 
 
-	ret = LoadKey(buttonGoToBase, "buttonGoToBase", buttons);
-	ret = LoadKey(buttonGoToUnits, "buttonGoToUnits", buttons);
-	ret = LoadKey(buttonMinimap, "buttonMinimap", buttons);
-	ret = LoadKey(buttonBuildingMenu, "buttonBuildingMenu", buttons);
-	ret = LoadKey(buttonPauseMenu, "buttonPauseMenu", buttons);
-	ret = LoadKey(buttonPatrolUnits, "buttonPatrolUnits", buttons);
-	ret = LoadKey(buttonStopUnits, "buttonStopUnits", buttons);
-	ret = LoadKey(buttonDrawFow, "buttonStopUnits", buttons);
+	ret = LoadKey(&buttonGoToBase, "buttonGoToBase", buttons);
+	ret = LoadKey(&buttonGoToUnits, "buttonGoToUnits", buttons);
+	ret = LoadKey(&buttonMinimap, "buttonMinimap", buttons);
+	ret = LoadKey(&buttonBuildingMenu, "buttonBuildingMenu", buttons);
+	ret = LoadKey(&buttonPauseMenu, "buttonPauseMenu", buttons);
+	ret = LoadKey(&buttonPatrolUnits, "buttonPatrolUnits", buttons);
+	ret = LoadKey(&buttonStopUnits, "buttonStopUnits", buttons);
+	ret = LoadKey(&buttonDrawFow, "buttonStopUnits", buttons);
 
-	ret = LoadKey(buttonSpawnFootman, "buttonSpawnFootman", buttons);
-	ret = LoadKey(buttonSpawnArcher, "buttonSpawnArcher", buttons);
-	ret = LoadKey(buttonSpawnGryphon, "buttonSpawnGryphon", buttons);
-	ret = LoadKey(buttonSpawnGrunt, "buttonSpawnGrunt", buttons);
-	ret = LoadKey(buttonSpawnTroll, "buttonSpawnTroll", buttons);
-	ret = LoadKey(buttonSpawnDragon, "buttonSpawnDragon", buttons);
-	ret = LoadKey(buttonSpawnSheep, "buttonSpawnSheep", buttons);
-	ret = LoadKey(buttonSpawnBoar, "buttonSpawnBoar", buttons);
-	ret = LoadKey(buttonSpawnAlleria, "buttonSpawnAlleria", buttons);
-	ret = LoadKey(buttonSpawnTauralyon, "buttonSpawnTauralyon", buttons);
+	ret = LoadKey(&buttonSpawnFootman, "buttonSpawnFootman", buttons);
+	ret = LoadKey(&buttonSpawnArcher, "buttonSpawnArcher", buttons);
+	ret = LoadKey(&buttonSpawnGryphon, "buttonSpawnGryphon", buttons);
+	ret = LoadKey(&buttonSpawnGrunt, "buttonSpawnGrunt", buttons);
+	ret = LoadKey(&buttonSpawnTroll, "buttonSpawnTroll", buttons);
+	ret = LoadKey(&buttonSpawnDragon, "buttonSpawnDragon", buttons);
+	ret = LoadKey(&buttonSpawnSheep, "buttonSpawnSheep", buttons);
+	ret = LoadKey(&buttonSpawnBoar, "buttonSpawnBoar", buttons);
+	ret = LoadKey(&buttonSpawnAlleria, "buttonSpawnAlleria", buttons);
+	ret = LoadKey(&buttonSpawnTauralyon, "buttonSpawnTauralyon", buttons);
 
-	ret = LoadKey(buttonTogleDebug, "buttonTogleDebug", buttons);
-	ret = LoadKey(buttonTogleDebugAttack, "buttonTogleDebugAttack", buttons);
-	ret = LoadKey(buttonTogleDebugMovement, "buttonTogleDebugMovement", buttons);
+	ret = LoadKey(&buttonTogleDebug, "buttonTogleDebug", buttons);
+	ret = LoadKey(&buttonTogleDebugAttack, "buttonTogleDebugAttack", buttons);
+	ret = LoadKey(&buttonTogleDebugMovement, "buttonTogleDebugMovement", buttons);
 
 
-	ret = LoadKey(buttonSelectGroup, "buttonSelectGroup", buttons);
-	ret = LoadKey(buttonSelectGroupb, "buttonSelectGroupb", buttons);
+	ret = LoadKey(&buttonSelectGroup, "buttonSelectGroup", buttons);
+	ret = LoadKey(&buttonSelectGroupb, "buttonSelectGroupb", buttons);
 
-	ret = LoadKey(buttonSelectGroup1, "buttonSelectGroup1", buttons);
-	ret = LoadKey(buttonSelectGroup2, "buttonSelectGroup2", buttons);
-	ret = LoadKey(buttonSelectGroup3, "buttonSelectGroup3", buttons);
+	ret = LoadKey(&buttonSelectGroup1, "buttonSelectGroup1", buttons);
+	ret = LoadKey(&buttonSelectGroup2, "buttonSelectGroup2", buttons);
+	ret = LoadKey(&buttonSelectGroup3, "buttonSelectGroup3", buttons);
 
-	ret = LoadKey(buttonSaveGroup, "buttonSaveGroup", buttons);
-	ret = LoadKey(buttonSaveGroupb, "//buttonSaveGroupb", buttons);
-	ret = LoadKey(buttonWinGame, "buttonWinGame", buttons);
-	ret = LoadKey(buttonLoseGame, "buttonLoseGame", buttons);
-	ret = LoadKey(buttonMoveUp, "buttonMoveUp", buttons);
-	ret = LoadKey(buttonMoveUpb, "buttonMoveUpb", buttons);
-	ret = LoadKey(buttonMoveDown, "buttonMoveDown", buttons);
-	ret = LoadKey(buttonMoveDownb, "buttonMoveDownb", buttons);
-	ret = LoadKey(buttonMoveLeft, "buttonMoveLeft", buttons);
-	ret = LoadKey(buttonMoveLeftb, "buttonMoveLeftb", buttons);
-	ret = LoadKey(buttonMoveRight, "buttonMoveRight", buttons);
-	ret = LoadKey(buttonMoveRightb, "buttonMoveRightb", buttons);
+	ret = LoadKey(&buttonSaveGroup, "buttonSaveGroup", buttons);
+	ret = LoadKey(&buttonSaveGroupb, "//buttonSaveGroupb", buttons);
+	ret = LoadKey(&buttonWinGame, "buttonWinGame", buttons);
+	ret = LoadKey(&buttonLoseGame, "buttonLoseGame", buttons);
+	ret = LoadKey(&buttonMoveUp, "buttonMoveUp", buttons);
+	ret = LoadKey(&buttonMoveUpb, "buttonMoveUpb", buttons);
+	ret = LoadKey(&buttonMoveDown, "buttonMoveDown", buttons);
+	ret = LoadKey(&buttonMoveDownb, "buttonMoveDownb", buttons);
+	ret = LoadKey(&buttonMoveLeft, "buttonMoveLeft", buttons);
+	ret = LoadKey(&buttonMoveLeftb, "buttonMoveLeftb", buttons);
+	ret = LoadKey(&buttonMoveRight, "buttonMoveRight", buttons);
+	ret = LoadKey(&buttonMoveRightb, "buttonMoveRightb", buttons);
 
-	ret = LoadKey(buttonAccept, "buttonAccept", buttons);
+	ret = LoadKey(&buttonAccept, "buttonAccept", buttons);
 
 	return ret;
 }
