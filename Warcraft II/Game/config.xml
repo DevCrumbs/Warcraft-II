@@ -39,7 +39,7 @@
 		<audioPaths>
 			<sounds>
 				<buildingPaths buildingConstruction="buildings/Construct.wav" errorBttn="buildings/BuildingPositionError.wav" chickenFarm="buildings/farm.wav" goldMine="buildings/goldMine.wav" gryphAviar="buildings/gryphonAviary.wav" mageTower="buildings/mageTower.wav" stables="buildings/stables.wav" repair="buildings/buildingRepair.wav" destroyBuilding="buildings/buildingDestroy.wav" />
-				<buttonPaths menuButton="UIButtons/GeneralClickButton.wav" errorBttn="UIButtons/ButtonError.wav" healSound="UIButtons/healSound.wav" goldSound="UIButtons/GoldSound.wav" gameStart="UIButtons/GameStart.wav" />
+				<buttonPaths menuButton="UIButtons/GeneralClickButton.wav" errorBttn="UIButtons/ButtonError.wav" healSound="UIButtons/healSound.wav" goldSound="UIButtons/GoldSound.wav" gameStart="UIButtons/GameStart.wav" changeKey="UIButtons/ChangeKey.wav" />
 				<unitsPaths humanDeadSound="Units/HumanDead.wav" orcDeadSound="Units/OrcDead.wav" dragonDeadSound="Units/DragonDeath.wav" prisonerRescue="Units/PrisonerRescue.wav" baseUnderAttack1="Units/BaseUnderAttack1.wav" baseUnderAttack2="Units/BaseUnderAttack2.wav" roomClear="Units/RoomClear.wav" />
 				<archerPaths goToPlace1="Units/Archer/GoToPlace1.wav" goToPlace2="Units/Archer/GoToPlace2.wav" goToPlace3="Units/Archer/GoToPlace3.wav" goToPlace4="Units/Archer/GoToPlace4.wav" ready="Units/Archer/Ready.wav" selected1="Units/Archer/Selected1.wav" selected2="Units/Archer/Selected2.wav" selected3="Units/Archer/Selected3.wav" selected4="Units/Archer/Selected4.wav" />
 				<footmanPaths goToPlace1="Units/Footman/GoToPlace1.wav" goToPlace2="Units/Footman/GoToPlace2.wav" goToPlace3="Units/Footman/GoToPlace3.wav" goToPlace4="Units/Footman/GoToPlace4.wav" ready="Units/Footman/Ready.wav" selected1="Units/Footman/Selected1.wav" selected2="Units/Footman/Selected2.wav" selected3="Units/Footman/Selected3.wav" selected4="Units/Footman/Selected4.wav" selected5="Units/Footman/Selected5.wav" />
@@ -115,19 +115,15 @@
 			<isometric name="iso_walk.tmx" active="0" tex="data/assets/textures/maps/isometricDebugTex.png" />
 			<warcraft name="warcraft_walk.tmx" active="1" tex="data/assets/textures/maps/warcraftDebugTex.png" numMaps="5" />
 		</maps>
-		<defaultButtons buttonGoToBase="44" buttonGoToUnits="20" buttonMinimap="43" buttonBuildingMenu="5" buttonPauseMenu="41" buttonPatrolUnits="17" buttonStopUnits="16" buttonSpawnFootman="89" buttonSpawnArcher="90" buttonSpawnGryphon="91" buttonSpawnGrunt="92" buttonSpawnTroll="93" buttonSpawnDragon="94" buttonSpawnSheep="95" buttonSpawnBoar="96" buttonSpawnAlleria="97" buttonSpawnTauralyon="98" buttonTogleDebug="66" buttonTogleDebugAttack="67" buttonTogleDebugMovement="68" buttonSelectGroup="225" buttonSelectGroupb="229" buttonSelectGroup1="30" buttonSelectGroup2="31" buttonSelectGroup3="32" buttonSaveGroup="224" buttonSaveGroupb="228" buttonWinGame="62" buttonLoseGame="63" buttonMoveUp="82" buttonMoveDown="81" buttonMoveLeft="80" buttonMoveRight="79" buttonMoveUpb="26" buttonMoveDownb="22" buttonMoveLeftb="4" buttonMoveRightb="7" />
-		<buttons buttonGoToBase="43" buttonGoToUnits="20" buttonMinimap="44" buttonBuildingMenu="5" buttonPauseMenu="41" buttonPatrolUnits="17" buttonStopUnits="16" buttonStopUnits="16" buttonSpawnFootman="89" buttonSpawnArcher="90" buttonSpawnGryphon="91" buttonBuildingMenu="5" buttonSpawnGrunt="92" buttonSpawnTroll="93" buttonSpawnDragon="94" buttonSpawnSheep="95" buttonSpawnBoar="96" buttonSpawnAlleria="97" buttonSpawnTauralyon="98" buttonTogleDebug="66" buttonTogleDebugAttack="67" buttonTogleDebugMovement="68" buttonSelectGroup="225" buttonSelectGroupb="229" buttonSelectGroup1="30" buttonSelectGroup2="31" buttonSelectGroup3="32" buttonSaveGroup="224" buttonSaveGroupb="228" buttonWinGame="62" buttonLoseGame="63" buttonMoveUp="82" buttonMoveUpb="26" buttonMoveDown="81" buttonMoveDownb="22" buttonMoveLeft="80" buttonMoveLeftb="4" buttonMoveRight="79" buttonMoveRightb="7" ajajajaja="true" />
+		<buttons buttonGoToBase="44" buttonGoToUnits="20" buttonMinimap="43" buttonBuildingMenu="5" buttonPauseMenu="41" buttonPatrolUnits="17" buttonStopUnits="16" buttonDrawFow="14" buttonSpawnFootman="89" buttonSpawnArcher="90" buttonSpawnGryphon="91" buttonSpawnGrunt="92" buttonSpawnTroll="93" buttonSpawnDragon="94" buttonSpawnSheep="95" buttonSpawnBoar="96" buttonSpawnAlleria="97" buttonSpawnTauralyon="98" buttonTogleDebug="66" buttonTogleDebugAttack="67" buttonTogleDebugMovement="68" buttonSelectGroup="225" buttonSelectGroupb="229" buttonSelectGroup1="30" buttonSelectGroup2="31" buttonSelectGroup3="32" buttonSaveGroup="224" buttonSaveGroupb="228" buttonWinGame="62" buttonLoseGame="63" buttonMoveUp="82" buttonMoveDown="81" buttonMoveLeft="80" buttonMoveRight="79" buttonMoveUpb="26" buttonMoveDownb="22" buttonMoveLeftb="4" buttonMoveRightb="7" />
 	</scene>
 	<player>
-		<Defaultbuttons buttonSelectFootman="29" buttonSelectArcher="27" buttonSelectGryphon="6" buttonSelectAll="25" buttonDamageCF="86" buttonAddGold="85" buttonAddFood="84" />
 		<buttons buttonSelectFootman="29" buttonSelectArcher="27" buttonSelectGryphon="6" buttonSelectAll="25" buttonDamageCF="86" buttonAddGold="85" buttonAddFood="84" />
 	</player>
 	<fow>
 		<buttons buttonDrawFow="87" />
-		<Defaultbuttons buttonDrawFow="87" />
 	</fow>
 	<surge>
-		<Defaultbuttons buttonNewWave="64" buttonActivateWave="65" />
 		<buttons buttonNewWave="64" buttonActivateWave="65" />
 	</surge>
 	<entities>

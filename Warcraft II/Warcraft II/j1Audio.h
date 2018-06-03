@@ -18,6 +18,7 @@ struct GameSounds {
 
 	FX button = 0;
 	FX gameStart = 0;
+	FX changeKey = 0;
 	FX buildingConstruction = 0;
 	FX errorButt = 0;
 	FX errorButtBuilding = 0;
@@ -147,6 +148,7 @@ private:
 	//---------------------
 	string mainButtonSound;
 	string gameStartSound;
+	string changeKeySound;
 	string buildingConstructionSound;
 	string errorButtonSound;
 	string buildingErrorButtonSound;

@@ -174,12 +174,12 @@ bool j1Menu::Update(float dt)
 		break;
 	}
 
-	if (changeButt.changeLabel != nullptr) 
+	if (changeButt.changeLabel != nullptr)
 	{
 		if (!changeButtonTimer.IsStarted())
 			changeButtonTimer.Start();
 
-		if (changeButtonTimer.Read() > 2050)
+		if (changeButtonTimer.Read() > 250)
 		{
 			SDL_Color color{ 0,0,0,0 };
 
@@ -193,28 +193,28 @@ bool j1Menu::Update(float dt)
 			changeButtonTimer.Stop();
 		}
 
-		if (App->input->scancode != SDL_SCANCODE_UNKNOWN)
+		if (App->input->scancode != SDL_SCANCODE_UNKNOWN && App->input->GetKey(App->input->scancode) == KEY_DOWN)
 		{
+			bool isChanged = false;
 			if (App->input->scancode < keysName.size())
 			{
-				if (CanChangeButt(App->input->scancode)) 
+				if (CanChangeButt(App->input->scancode) && CheckCorrectButt(App->input->scancode))
 				{
 					changeButt.changeLabel->SetText(keysName[App->input->scancode]);
 					*changeButt.currentButton = App->input->scancode;
+					isChanged = true;
 				}
-				else
+				else if (CanSwapButt(App->input->scancode))
 				{
-					for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
-					{
-						if (*(*iterator).currentButton == App->input->scancode) 
-						{
-							SwapButt((*iterator), changeButt);
-
-							break;
-						}
-					}
-
+					isChanged = true;
 				}
+			}	
+
+			if (isChanged) {
+				changeButt.changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);
+				changeButt.changeLabel = nullptr;
+				App->input->scancode = SDL_SCANCODE_UNKNOWN;
+				App->audio->PlayFx(App->audio->GetFX().changeKey);
 
 				App->scene->SaveKeys();
 				App->player->SaveKeys();
@@ -222,10 +222,9 @@ bool j1Menu::Update(float dt)
 				App->wave->SaveKeys();
 				App->configFile.save_file("config.xml");
 			}
+			else
+				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 
-			changeButt.changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);
-			changeButt.changeLabel = nullptr;
-			App->input->scancode = SDL_SCANCODE_UNKNOWN;
 		}
 	}
 	return true;
@@ -601,7 +600,9 @@ bool j1Menu::CanSwapButt(SDL_Scancode button)
 
 	for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
 	{
-		if (*(*iterator).currentButton == button) {
+		if (*(*iterator).currentButton == App->input->scancode)
+		{
+			SwapButt((*iterator), changeButt);
 			ret = true;
 			break;
 		}
@@ -621,6 +622,16 @@ void j1Menu::SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB)
 }
 
 bool j1Menu::CanChangeButt(SDL_Scancode button)
+{
+	bool ret = true;
+
+	if (keysName[button] == "?")
+		ret = false;
+
+	return ret;
+}
+
+bool j1Menu::CheckCorrectButt(SDL_Scancode button)
 {
 	bool ret = true;
 
@@ -691,31 +702,45 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
-		if (UIelem == playLabel)
+		if (UIelem == playLabel){
 			menuActions = MenuActions_NEWGAME;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
 
-		else if (UIelem == exitLabel)
+		else if (UIelem == exitLabel){
 			menuActions = MenuActions_EXIT;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
 
-		else if (UIelem == settingsLabel || UIelem == returnSettings)
+		else if (UIelem == settingsLabel || UIelem == returnSettings){
 			menuActions = MenuActions_SETTINGS;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
 
-		else if (UIelem == creditsLabel)
+		else if (UIelem == creditsLabel) {
 			menuActions = MenuActions_CREDITS;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
 
-		else if (UIelem == loadLabel)
+		else if (UIelem == loadLabel) {
 			menuActions = MenuActions_LOADGAME;
-
-		else if (UIelem == returnLabel)
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
+		
+		else if (UIelem == returnLabel) {
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_RETURN;
+		}
 
 		else if (UIelem == audioFX.slider) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_SLIDERFX;
 		}
 
-		else if (UIelem == audioMusic.slider)
+		else if (UIelem == audioMusic.slider){
 			menuActions = MenuActions_SLIDERMUSIC;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
 
 		else if (UIelem == fullScreenButt)
 		{
@@ -727,55 +752,65 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if (UIelem == easyOneButt)
 		{
 			menuActions = MenuActions_PLAY_EASYONE;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == easyTwoButt)
 		{
 			menuActions = MenuActions_PLAY_EASYTWO;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == mediumOneButt)
 		{
 			menuActions = MenuActions_PLAY_MEDIUMONE;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == mediumTwoButt)
 		{
 			menuActions = MenuActions_PLAY_MEDIUMTWO;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == hardButt)
 		{
 			menuActions = MenuActions_PLAY_HARD;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
-
 		//Credits
 
 		else if (UIelem == sandraLead)
 		{
 			open_url("https://github.com/Sandruski");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == oscarCode)
 		{
 			open_url("https://github.com/OscarHernandezG");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == joanDesigner)
 		{
 			open_url("https://github.com/JoanValiente");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == davidQA)
 		{
 			open_url("https://github.com/ValdiviaDev");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == manavManagment)
 		{
 			open_url("https://github.com/manavld");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == davidArt)
 		{
 			open_url("https://github.com/lFreecss");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == aleixUI)
 		{
 			open_url("https://github.com/aleixgab");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
-
 
 		//ChangeButtons
 
@@ -784,13 +819,12 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_CHANGE_BUTTONS;
 		}
-
 		for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
 		{
 			if (UIelem == (*iterator).changeLabel) {
 				changeButt.changeLabel = (UILabel*)UIelem;
 				changeButt.currentButton = (*iterator).currentButton;
-
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				break;
 			}
 		}
@@ -800,7 +834,6 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		break;
 	case UI_EVENT_MOUSE_LEFT_UP:
 		if (UIelem == audioFX.slider || UIelem == audioMusic.slider) {
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_NONE;
 		}
 		break;
@@ -851,6 +884,7 @@ void j1Menu::DeleteChangingButtons()
 {
 
 	App->gui->RemoveElem((UIElement**)&returnSettings);
+	App->gui->RemoveElem((UIElement**)&changeButt);
 
 	for (; !interactiveLabels.empty(); interactiveLabels.pop_back())
 	{
@@ -912,7 +946,7 @@ void j1Menu::LoadKeysVector()
 		keysName.clear();
 
 	for (int i = 0; i < 4; ++i)
-		keysName.push_back("¿?");
+		keysName.push_back("?");
 
 	keysName.push_back(" A ");
 	keysName.push_back(" B ");
@@ -959,18 +993,21 @@ void j1Menu::LoadKeysVector()
 	keysName.push_back("SPACE");
 
 	//NOT 100% REAL DEPENDS KEYBOARD
-	keysName.push_back(" - ");
-	keysName.push_back(" = ");
-	keysName.push_back(" [ ");
-	keysName.push_back(" ] ");
-	keysName.push_back(" ? ");
-	keysName.push_back(" # ");
-	keysName.push_back(" ; ");
-	keysName.push_back(" + ");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+
 	keysName.push_back("GRAVE");
-	keysName.push_back(" , ");
-	keysName.push_back(" . ");
-	keysName.push_back(" - ");
+
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+
 	keysName.push_back("CAPSLOCK");
 
 	keysName.push_back("F1");
@@ -997,7 +1034,7 @@ void j1Menu::LoadKeysVector()
 	keysName.push_back("PGDN");
 
 	for (int i = 0; i < 4; ++i)
-		keysName.push_back("¿?");
+		keysName.push_back("?");
 
 	//KeyPad
 	keysName.push_back("NUMLOCK");
@@ -1020,16 +1057,16 @@ void j1Menu::LoadKeysVector()
 	keysName.push_back(" < ");
 
 	for (int i = 0; i <	16; ++i)
-		keysName.push_back("¿?");
+		keysName.push_back("?");
 
 	// Useless media keys
 	for (int i = 0; i < 29; ++i)
-		keysName.push_back("¿?");
+		keysName.push_back("?");
 	
 
 	// Useless chinese keys
 	for (int i = 0; i < 78; ++i)
-		keysName.push_back("¿?");
+		keysName.push_back("?");
 	
 
 	keysName.push_back("LCTRL");
