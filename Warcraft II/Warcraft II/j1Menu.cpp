@@ -830,6 +830,7 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if (UIelem == mediumTwoButt)
 		{
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+			menuActions = MenuActions_PLAY_MEDIUMTWO;
 		}
 		else if (UIelem == hardButt)
 		{
