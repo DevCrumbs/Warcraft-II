@@ -212,9 +212,9 @@ bool j1Scene::Start()
 
 			Load(root.child(name.data()));
 			App->player->Load(root.child(App->player->name.data()));
-			App->entities->Load(root.child(App->player->name.data()));
-			App->wave->Load(root.child(App->player->name.data()));
-			App->fow->Load(root.child(App->player->name.data()));
+			App->entities->Load(root.child(App->entities->name.data()));
+			App->wave->Load(root.child(App->wave->name.data()));
+			App->fow->Load(root.child(App->fow->name.data()));
 
 			App->menu->isLoad = false;
 		}
@@ -2648,7 +2648,6 @@ bool j1Scene::Load(pugi::xml_node& save)
 	bool ret = true;
 
 
-
 //	SaveAttribute(up, "up", camera, create);
 //	SaveAttribute(down, "down", camera, create);
 //	SaveAttribute(left, "left", camera, create);
@@ -2661,6 +2660,7 @@ bool j1Scene::Load(pugi::xml_node& save)
 //	SaveAttribute(camMovement, "camMovement", camera, create);
 //	SaveAttribute(camMovMargin, "camMovMargin", camera, create);
 //	SaveAttribute(isCamMovMarginCharged, "isCamMovMarginCharged", camera, create);
+
 
 	return ret;
 }
