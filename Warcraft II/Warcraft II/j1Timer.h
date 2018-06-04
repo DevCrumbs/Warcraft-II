@@ -15,6 +15,7 @@ public:
 	float ReadSec() const;
 
 	void Stop();
+	void Resume(int time);
 	bool IsStarted();
 
 private:

@@ -667,9 +667,7 @@ bool j1Player::Save(pugi::xml_node& save) const
 		upgrades = save.child("upgrades");
 	}
 
-	SaveAttribute(barracksUpgrade, "barracksUpgrade", upgrades, create);
 	SaveAttribute(townHallUpgrade, "townHallUpgrade", upgrades, create);
-	SaveAttribute(keepUpgrade, "keepUpgrade", upgrades, create);
 
 	create = false;
 
@@ -746,11 +744,6 @@ bool j1Player::Save(pugi::xml_node& save) const
 		unitsInGrypho.pop();
 	}
 
-	SaveAttribute(isWin, "isWin", barracks, create);
-	SaveAttribute(startGameTimer.Read(), "startGameTimer", barracks, create);
-	SaveAttribute(unitProduce, "unitProduce", barracks, create);
-	SaveAttribute(enemiesKill, "enemiesKill", barracks, create);
-	SaveAttribute(buildDestroy, "buildDestroy", barracks, create);
 	SaveAttribute(isUnitSpawning, "isUnitSpawning", barracks, create);
 
 	create = false;
@@ -763,15 +756,44 @@ bool j1Player::Load(pugi::xml_node& save)
 {
 	bool ret = true;
 
-	/*
-	if (save.child("gate") != NULL) {
-	gate = save.child("gate").attribute("opened").as_bool();
-	fx = save.child("gate").attribute("fx").as_bool();
+	pugi::xml_node general = save.child("general");
+
+	townHallUpgrade = general.child("townHallUpgrade").attribute("townHallUpgrade").as_bool();
+
+	totalGold = general.child("totalGold").attribute("totalGold").as_uint();
+	currentGold = general.child("currentGold").attribute("currentGold").as_int();
+	currentFood = general.child("currentFood").attribute("currentFood").as_int();
+	roomsCleared = general.child("roomsCleared").attribute("roomsCleared").as_uint();
+	totalEnemiesKilled = general.child("totalEnemiesKilled").attribute("totalEnemiesKilled").as_uint();
+	totalUnitsDead = general.child("totalUnitsDead").attribute("totalUnitsDead").as_uint();
+
+	isWin = general.child("isWin").attribute("isWin").as_bool();
+	startGameTimer.Resume(general.child("startGameTimer").attribute("startGameTimer").as_int());
+	unitProduce = general.child("unitProduce").attribute("unitProduce").as_uint();
+	enemiesKill = general.child("enemiesKill").attribute("enemiesKill").as_uint();
+	buildDestroy = general.child("buildDestroy").attribute("buildDestroy").as_uint();
+
+	pugi::xml_node spawning = save.child("barracks");
+
+	for (spawning = spawning.child("barracksSpawningUnit"); spawning; spawning = spawning.next_sibling("barracksSpawningUnit")) {
+
+		ToSpawnUnit* toSpawn = new ToSpawnUnit((ENTITY_TYPE)spawning.child("entityType").attribute("entityType").as_int);
+
+		toSpawn->toSpawnTimer.Resume(spawning.child("entityType").attribute("entityType").as_int);
+		toSpawnUnitGrypho.push(toSpawn);
 	}
-	*/
 
+	for (spawning = spawning.child("gryphoSpawningUnit"); spawning; spawning = spawning.next_sibling("gryphoSpawningUnit")) {
+
+		ToSpawnUnit* toSpawn = new ToSpawnUnit((ENTITY_TYPE)spawning.child("entityType").attribute("entityType").as_int);
+
+		toSpawn->toSpawnTimer.Resume(spawning.child("entityType").attribute("entityType").as_int);
+		toSpawnUnitGrypho.push(toSpawn);
+	}
+	
+	isUnitSpawning = general.attribute("isUnitSpawning").as_bool();
+	
 	return ret;
-
 }
 
 void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent entitiesEvent)
@@ -898,11 +920,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->GetIsFinishedBuilt()) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Barracks", { 546,160,50,41 }, ent);
-			}
-
-			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && keepUpgrade && staticEntity->GetIsFinishedBuilt()) {
-				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-				ShowEntitySelectedInfo(ent->GetStringLife(), "Castle", { 546,202,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_TOWN_HALL && townHallUpgrade && staticEntity->GetIsFinishedBuilt()) {
@@ -2232,15 +2249,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		case UI_EVENT_MOUSE_LEFT_CLICK:
 
 			if (UIelem == upgradeTownHallButton) {
-				
-				//if (townHallUpgrade && currentGold >= 1500) {
-				//	keepUpgrade = true;
-				//	AddGold(-1500);
-				//	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Constructuion sound
-				//	HideHoverInfoMenu(&firstHoverInfo);
-				//	entitySelectedStats.entitySelected = townHall;
-				//	ShowEntitySelectedInfo(entitySelectedStats.entitySelected->GetStringLife(), "Keep", { 597,202,50,41 }, entitySelectedStats.entitySelected);
-				//}
+			
 				if (currentGold >= 500) {
 					townHallUpgrade = true;
 					AddGold(-500);
@@ -2580,7 +2589,6 @@ void j1Player::SaveKeys()
 	buttons.remove_child("buttonDamageCF");
 	buttons.remove_child("buttonAddGold");
 	buttons.remove_child("buttonAddFood");
-
 
 	buttons.append_child("buttonSelectFootman").append_attribute("buttonSelectFootman") = *buttonSelectFootman;
 	buttons.append_child("buttonSelectArcher").append_attribute("buttonSelectArcher") = *buttonSelectArcher;
