@@ -194,10 +194,12 @@ bool j1EnemyWave::Update(float dt)
 			// 1. Perform the small wave
 			UnitInfo unitInfo;
 			OrcShipInfo shipInfo = (OrcShipInfo&)App->entities->GetUnitInfo(EntityType_ORC_SHIP);
-			int shipRand = rand() % spawnTiles.size();
-			shipInfo.orcShipType = (ShipType)shipRand;
-			App->entities->AddEntity(EntityType_ORC_SHIP,{ (float)spawnTiles[shipRand].ship.x, (float)spawnTiles[shipRand].ship.y }, (EntityInfo&)shipInfo, unitInfo, this);
-
+			if (!spawnTiles.empty())
+			{
+				int shipRand = rand() % spawnTiles.size();
+				shipInfo.orcShipType = (ShipType)shipRand;
+				App->entities->AddEntity(EntityType_ORC_SHIP, { (float)spawnTiles[shipRand].ship.x, (float)spawnTiles[shipRand].ship.y }, (EntityInfo&)shipInfo, unitInfo, this);
+			}
 			// 2. Update variables for the next phase
 			nextPhaseTimer = 0;
 

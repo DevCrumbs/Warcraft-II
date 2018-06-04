@@ -228,7 +228,7 @@ public:
 	// Load new map
 	bool LoadNewMap(const char* path);
 
-	bool LoadLogic();
+	bool LoadLogic(bool isLoad = false);
 
 	list<Entity*> LoadLayerEntities(MapLayer* layer);
 

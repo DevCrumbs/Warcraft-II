@@ -171,29 +171,9 @@ bool j1Scene::Start()
 	musicToPlay = ChooseMusicToPlay();
 	App->audio->PlayMusic(musicToPlay.data(), 2.0f);
 
-	App->map->LoadLogic();
+	App->map->LoadLogic(App->menu->isLoad);
 
 	isStartedFinalTransition = false;
-
-	// Create the groups of the enemies
-	list<list<Entity*>>::const_iterator enIt = App->map->entityGroups.begin();
-
-	while (enIt != App->map->entityGroups.end()) {
-
-		list<Entity*>::const_iterator groupIt = (*enIt).begin();
-		list<DynamicEntity*> units;
-
-		while (groupIt != (*enIt).end()) {
-
-			units.push_back((DynamicEntity*)(*groupIt));
-			groupIt++;
-		}
-
-		if (units.size() > 0)
-			App->movement->CreateGroupFromUnits(units);
-
-		enIt++;
-	}
 
 	App->isDebug = false;
 
@@ -219,6 +199,28 @@ bool j1Scene::Start()
 			App->menu->isLoad = false;
 		}
 	}
+
+	// Create the groups of the enemies
+	list<list<Entity*>>::const_iterator enIt = App->map->entityGroups.begin();
+
+	while (enIt != App->map->entityGroups.end()) {
+
+		list<Entity*>::const_iterator groupIt = (*enIt).begin();
+		list<DynamicEntity*> units;
+
+		while (groupIt != (*enIt).end()) {
+
+			units.push_back((DynamicEntity*)(*groupIt));
+			groupIt++;
+		}
+
+		if (units.size() > 0)
+			App->movement->CreateGroupFromUnits(units);
+
+		enIt++;
+	}
+
+
 	return ret;
 }
 
@@ -2506,139 +2508,6 @@ bool j1Scene::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
-	bool create = false;
-
-	pugi::xml_node general;
-	
-	if (save.child("general") == NULL)
-	{
-		general = save.append_child("general");
-		create = true;
-	}
-	else
-	{
-		general = save.child("general");
-	}
-
-	SaveAttribute(isGoalFromMinimap, "isGoalFromMinimap", general, create);
-	SaveAttribute(isMinimapChanged, "isMinimapChanged", general, create);
-
-	create = false;
-
-	// Room cleared!
-	pugi::xml_node room;
-	if (save.child("room") == NULL)
-	{
-		room = save.append_child("room");
-		create = true;
-	}
-	else
-	{
-		room = save.child("room");
-	}
-
-	SaveAttribute(isRoomCleared, "isRoomCleared", room, create);
-	SaveAttribute(roomCleared, "roomCleared", room, create);
-	SaveAttribute(alpha, "alpha", room, create);
-
-	create = false;
-
-
-	// Camera
-	pugi::xml_node camera;
-	if (save.child("camera") == NULL)
-	{
-		camera = save.append_child("camera");
-		create = true;
-	}
-	else
-	{
-		camera = save.child("camera");
-	}
-
-	SaveAttribute(up, "up", camera, create);
-	SaveAttribute(down, "down", camera, create);
-	SaveAttribute(left, "left", camera, create);
-	SaveAttribute(right, "right", camera, create);
-	SaveAttribute(width, "width", camera, create);
-	SaveAttribute(height, "height", camera, create);
-	SaveAttribute(scale, "scale", camera, create);
-
-	SaveAttribute(camSpeed, "camSpeed", camera, create);
-	SaveAttribute(camMovement, "camMovement", camera, create);
-	SaveAttribute(camMovMargin, "camMovMargin", camera, create);
-	SaveAttribute(isCamMovMarginCharged, "isCamMovMarginCharged", camera, create);
-
-	create = false;
-
-	// Player
-	pugi::xml_node player;
-	if (save.child("player") == NULL)
-	{
-		player = save.append_child("player");
-		create = true;
-	}
-	else
-	{
-		player = save.child("player");
-	}
-
-	SaveAttribute(god, "god", player, create);
-	SaveAttribute(pause, "pause", player, create);
-	SaveAttribute(hasGoldChanged, "hasGoldChanged", player, create);
-	SaveAttribute(hasFoodChanged, "hasFoodChanged", player, create);
-
-	create = false;
-
-	// Movement
-	pugi::xml_node movement;
-	if (save.child("movement") == NULL)
-	{
-		movement = save.append_child("movement");
-		create = true;
-	}
-	else
-	{
-		movement = save.child("movement");
-	}
-
-	SaveAttribute(debugDrawMovement, "debugDrawMovement", movement, create);
-	SaveAttribute(debugDrawPath, "debugDrawPath", movement, create);
-	SaveAttribute(debugDrawMap, "debugDrawMap", movement, create);
-	SaveAttribute(debugDrawAttack, "debugDrawAttack", movement, create);
-	SaveAttribute(isFrameByFrame, "isFrameByFrame", movement, create);
-
-	create = false;
-
-	// Terenas
-	pugi::xml_node terenas;
-	if (save.child("terenas") == NULL)
-	{
-		terenas = save.append_child("terenas");
-		create = true;
-	}
-	else
-	{
-		terenas = save.child("terenas");
-	}
-
-	SaveAttribute(terenasDialogEvent, "terenasDialogEvent", terenas, create);
-	SaveAttribute(adviceMessage, "adviceMessage", terenas, create);
-	SaveAttribute(terenasDialogTimer.Read(), "terenasDialogTimer", terenas, create);
-	SaveAttribute(adviceMessageTimer.Read(), "adviceMessageTimer", terenas, create);
-
-	create = false;
-
-	SaveAttribute(isStarted, "isStarted", general, create);
-	SaveAttribute(isAttackCursor, "isAttackCursor", general, create);
-	SaveAttribute(isFadeToMenu, "isFadeToMenu", general, create);
-
-	SaveAttribute(buildingMenuOn, "buildingMenuOn", general, create);
-	SaveAttribute(orthogonalActive, "orthogonalActive", general, create);
-	SaveAttribute(isometricActive, "isometricActive", general, create);
-	SaveAttribute(warcraftActive, "warcraftActive", general, create);
-	SaveAttribute(alphaCont, "alphaCont", general, create);
-
 	return ret;
 }
 
@@ -2646,20 +2515,6 @@ bool j1Scene::Save(pugi::xml_node& save) const
 bool j1Scene::Load(pugi::xml_node& save)
 {
 	bool ret = true;
-
-
-//	SaveAttribute(up, "up", camera, create);
-//	SaveAttribute(down, "down", camera, create);
-//	SaveAttribute(left, "left", camera, create);
-//	SaveAttribute(right, "right", camera, create);
-//	SaveAttribute(width, "width", camera, create);
-//	SaveAttribute(height, "height", camera, create);
-//	SaveAttribute(scale, "scale", camera, create);
-//
-//	SaveAttribute(camSpeed, "camSpeed", camera, create);
-//	SaveAttribute(camMovement, "camMovement", camera, create);
-//	SaveAttribute(camMovMargin, "camMovMargin", camera, create);
-//	SaveAttribute(isCamMovMarginCharged, "isCamMovMarginCharged", camera, create);
 
 
 	return ret;

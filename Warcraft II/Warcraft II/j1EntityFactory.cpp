@@ -4677,6 +4677,7 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 		pugi::xml_node entity = dynamicEntities.append_child("entity");
 
 		entity.append_attribute("lastSeenTileX") = (*dynEnt)->lastSeenTile.x;
+
 		entity.append_attribute("lastSeenTilew") = (*dynEnt)->lastSeenTile.y;
 		
 		entity.append_attribute("posX") = (*dynEnt)->GetPos().x;
