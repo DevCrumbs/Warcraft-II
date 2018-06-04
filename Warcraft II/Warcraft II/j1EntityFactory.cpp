@@ -4594,6 +4594,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		if (newEntity != nullptr)
 		{
 			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+			App->player->unitProduce--;
 		}
 	}
 
@@ -4647,6 +4648,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		if (newEntity != nullptr)
 		{
 			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+			newEntity->CheckBuildingState();
 		}
 
 	}
