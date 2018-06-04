@@ -45,9 +45,15 @@ EnemyCannonTower::EnemyCannonTower(fPoint pos, iPoint size, int currLife, uint m
 
 EnemyCannonTower::~EnemyCannonTower() 
 {
-	if (peon != nullptr)
+	if (peon != nullptr) {
 		peon->isRemove = true;
-	peon = nullptr;
+		peon = nullptr;
+	}
+
+	if (fire != nullptr) {
+		fire->isRemove = true;
+		fire = nullptr;
+	}
 }
 
 void EnemyCannonTower::Move(float dt)

@@ -47,6 +47,11 @@ ScoutTower::~ScoutTower()
 		peasants->isRemove = true;
 		peasants = nullptr;
 	}
+
+	if (fire != nullptr) {
+		fire->isRemove = true;
+		fire = nullptr;
+	}
 }
 
 void ScoutTower::Move(float dt)

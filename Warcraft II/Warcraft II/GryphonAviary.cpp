@@ -62,6 +62,11 @@ GryphonAviary::~GryphonAviary()
 		peasants->isRemove = true;
 		peasants = nullptr;
 	}
+
+	if (fire != nullptr) {
+		fire->isRemove = true;
+		fire = nullptr;
+	}
 }
 
 void GryphonAviary::Move(float dt)
