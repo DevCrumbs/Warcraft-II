@@ -41,6 +41,8 @@ EnemyGuardTower::EnemyGuardTower(fPoint pos, iPoint size, int currLife, uint max
 	sightRadiusCollider->isTrigger = true;
 
 	secondsReconstruction = GetSecondsReconstruction(buildingSize);
+
+	isBuilt = true;
 }
 
 EnemyGuardTower::~EnemyGuardTower() 
@@ -189,7 +191,7 @@ void EnemyGuardTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, Collis
 
 			if (attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 			}
 		}
 
@@ -216,7 +218,7 @@ void EnemyGuardTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, Collis
 
 			if (!enemyAttackList.empty() && attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 
 			}
 		}
@@ -233,9 +235,12 @@ void EnemyGuardTower::TowerStateMachine(float dt)
 
 	case TowerState_Attack:
 	{
-		if (attackingTarget != nullptr) {
-			if (attackTimer.Read() >= (enemyGuardTowerInfo.attackWaitTime * 1000)) {
-				attackTimer.Start();
+		if (attackingTarget != nullptr) 
+		{
+			attackTimer += dt;
+			
+			if (attackTimer >= enemyGuardTowerInfo.attackWaitTime) {
+				attackTimer = 0.0f;
 				CreateArrow();
 				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 			}

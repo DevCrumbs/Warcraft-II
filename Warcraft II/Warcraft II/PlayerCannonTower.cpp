@@ -123,7 +123,7 @@ void PlayerCannonTower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collis
 
 			if (attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 			}
 		}
 
@@ -149,7 +149,7 @@ void PlayerCannonTower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collis
 
 			if (!enemyAttackList.empty() && attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 
 			}
 		}
@@ -171,8 +171,10 @@ void PlayerCannonTower::TowerStateMachine(float dt)
 	case TowerState_Attack:
 	{
 		if (attackingTarget != nullptr) {
-			if (attackTimer.Read() >= (playerCannonTowerInfo.attackWaitTime * 1000)) {
-				attackTimer.Start();
+			attackTimer += dt;
+
+			if (attackTimer >= playerCannonTowerInfo.attackWaitTime) {
+				attackTimer = 0.0f;
 				CreateCannonBullet();
 				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0); //TODO Valdivia: cannon sound
 			}

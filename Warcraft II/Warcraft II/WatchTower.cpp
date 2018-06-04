@@ -41,6 +41,8 @@ WatchTower::WatchTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	entityCollider->isTrigger = true;
 
 	secondsReconstruction = GetSecondsReconstruction(buildingSize);
+
+	isBuilt = true;
 }
 
 WatchTower::~WatchTower() 
@@ -190,7 +192,7 @@ void WatchTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 
 			if (attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 			}
 		}
 
@@ -217,7 +219,7 @@ void WatchTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 
 			if (!enemyAttackList.empty() && attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 
 			}
 		}
@@ -235,9 +237,12 @@ void WatchTower::TowerStateMachine(float dt)
 
 	case TowerState_Attack:
 	{
-		if (attackingTarget != nullptr) {
-			if (attackTimer.Read() >= (watchTowerInfo.attackWaitTime * 1000)) {
-				attackTimer.Start();
+		if (attackingTarget != nullptr) 
+		{
+			attackTimer += dt;
+
+			if (attackTimer >= watchTowerInfo.attackWaitTime) {
+				attackTimer = 0.0f;
 				CreateArrow();
 				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 			}

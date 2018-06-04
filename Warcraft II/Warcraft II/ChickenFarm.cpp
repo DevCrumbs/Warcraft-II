@@ -66,6 +66,11 @@ ChickenFarm::~ChickenFarm()
 		peasants = nullptr;
 	}
 
+	if (fire != nullptr) {
+		fire->isRemove = true;
+		fire = nullptr;
+	}
+
 	LOG("Chicken farm destroyed");
 }
 

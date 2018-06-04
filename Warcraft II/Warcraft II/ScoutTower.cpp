@@ -47,6 +47,11 @@ ScoutTower::~ScoutTower()
 		peasants->isRemove = true;
 		peasants = nullptr;
 	}
+
+	if (fire != nullptr) {
+		fire->isRemove = true;
+		fire = nullptr;
+	}
 }
 
 void ScoutTower::Move(float dt)
@@ -124,7 +129,7 @@ void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 			
 			if (attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 			}
 		}
 		
@@ -150,7 +155,7 @@ void ScoutTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 			
 			if (!enemyAttackList.empty() && attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 
 			}
 		}
@@ -170,9 +175,11 @@ void ScoutTower::TowerStateMachine(float dt)
 
 	case TowerState_Attack:
 	{
+		attackTimer += dt;
+
 		if (attackingTarget != nullptr) {
-			if (attackTimer.Read() >= (scoutTowerInfo.attackWaitTime * 1000)) {
-				attackTimer.Start();
+			if (attackTimer >= scoutTowerInfo.attackWaitTime) {
+				attackTimer = 0.0f;
 				CreateArrow();
 				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 			}

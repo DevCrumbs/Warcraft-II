@@ -33,8 +33,6 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-public:
-	j1Timer introTime;
 };
 
 #endif // __j1INTRO_H__#pragma once

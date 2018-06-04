@@ -41,13 +41,21 @@ EnemyCannonTower::EnemyCannonTower(fPoint pos, iPoint size, int currLife, uint m
 	entityCollider->isTrigger = true;
 
 	secondsReconstruction = GetSecondsReconstruction(buildingSize);
+
+	isBuilt = true;
 }
 
 EnemyCannonTower::~EnemyCannonTower() 
 {
-	if (peon != nullptr)
+	if (peon != nullptr) {
 		peon->isRemove = true;
-	peon = nullptr;
+		peon = nullptr;
+	}
+
+	if (fire != nullptr) {
+		fire->isRemove = true;
+		fire = nullptr;
+	}
 }
 
 void EnemyCannonTower::Move(float dt)
@@ -189,7 +197,7 @@ void EnemyCannonTower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisi
 
 			if (attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 			}
 		}
 
@@ -216,7 +224,7 @@ void EnemyCannonTower::OnCollision(ColliderGroup* c1, ColliderGroup* c2, Collisi
 
 			if (!enemyAttackList.empty() && attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 
 			}
 		}
@@ -236,9 +244,11 @@ void EnemyCannonTower::TowerStateMachine(float dt)
 
 	case TowerState_Attack:
 	{
+		attackTimer += dt;
+
 		if (attackingTarget != nullptr) {
-			if (attackTimer.Read() >= (enemyCannonTowerInfo.attackWaitTime * 1000)) {
-				attackTimer.Start();
+			if (attackTimer >= enemyCannonTowerInfo.attackWaitTime) {
+				attackTimer = 0.0f;
 				CreateCannonBullet();
 				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0); //TODO Valdivia: Cannon sound
 			}

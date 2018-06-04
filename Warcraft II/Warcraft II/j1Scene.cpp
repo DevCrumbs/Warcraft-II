@@ -2265,7 +2265,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 			}
 
-			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade && App->player->townHall->buildingState == BuildingState_Normal) {
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade) {
 				if (App->player->GetCurrentGold() >= gryphonAviaryCost) {
 					//Unselect entities and hide their info
 					//---------------------------------------

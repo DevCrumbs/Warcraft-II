@@ -265,7 +265,10 @@ bool j1EnemyWave::Update(float dt)
 
 			phasesOfCurrWave = 0;
 			totalSpawnOfCurrWave = 0;
-			maxSpawnPerWave++;
+			int random = rand() % 2;
+			if (random == 0) {
+				maxSpawnPerWave++;
+			}
 			isStartWave = false;
 
 			LOG("%f seconds to next wave", secondsToNextWave);
@@ -363,8 +366,10 @@ void j1EnemyWave::PerformWave(int layer)
 	}
 
 	int random = rand() % 2;
-	if (random == 0)
-		maxSpawnPerPhase++;
+	if (random == 0) {
+		if (maxSpawnPerPhase >= 5)
+			maxSpawnPerPhase++;
+	}
 
 	spawnProbability += 0.05f;
 }

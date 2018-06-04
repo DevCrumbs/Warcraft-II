@@ -14,8 +14,6 @@
 #include "ElvenArcher.h"
 #include "Footman.h"
 #include "GryphonRider.h"
-#include "Mage.h"
-#include "Paladin.h"
 #include "CritterBoar.h"
 #include "CritterSheep.h"
 
@@ -244,8 +242,6 @@ private:
 	FootmanInfo footmanInfo;
 	ElvenArcherInfo elvenArcherInfo;
 	GryphonRiderInfo gryphonRiderInfo;
-	MageInfo mageInfo;
-	PaladinInfo paladinInfo;
 	AlleriaInfo alleriaInfo;
 	TuralyonInfo turalyonInfo;
 	GruntInfo gruntInfo;

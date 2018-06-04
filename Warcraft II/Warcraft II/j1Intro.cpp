@@ -35,9 +35,9 @@ bool j1Intro::Start()
 {
 	App->win->SetTitle("Video Player");
 	// TODO 1: Call the initialize function from the video module in the start of the scene.
-	App->video->Initialize("data/video/sample.avi");
+	App->video->Initialize("data/video/intro.avi");
 	// TODO 8: Play the music of the video using the audio module. 
-	App->audio->PlayMusic("data/video/sample.ogg", 0.0f);
+	//App->audio->PlayMusic("data/video/sample.ogg", 0.0f);
 
 	return true;
 }
