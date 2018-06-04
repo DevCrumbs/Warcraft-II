@@ -252,8 +252,15 @@ void UIMinimap::HandleInput(float dt)
 
 			if (App->render->camera.x > 0)
 				App->render->camera.x = 0;
+
 			if (App->render->camera.y > 0)
 				App->render->camera.y = 0;
+
+			if (-App->render->camera.y + App->render->camera.h > App->map->data.height * App->map->data.tileHeight)
+				App->render->camera.y = (App->map->data.height * App->map->data.tileHeight) - App->render->camera.h;
+
+			if (-App->render->camera.x + App->render->camera.w > App->map->data.width * App->map->data.tileWidth)
+				App->render->camera.x = (-(App->map->data.width * App->map->data.tileWidth) + App->render->camera.w);
 		}
 		//Comand troops to goal
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
@@ -370,13 +377,10 @@ bool UIMinimap::DrawRoomCleared(Room room)
 {
 	bool ret = false;
 
-	//if (room.isCleared)
-	{
-		roomClearedRect = MapToMinimap(room.roomRect);
-		isRoomCleared = true;
-		startRoomClearedTimer = true;
-		ret = true;
-	}
+	roomClearedRect = MapToMinimap(room.roomRect);
+	isRoomCleared = true;
+	startRoomClearedTimer = true;
+	ret = true;
 
 	return ret;
 }
