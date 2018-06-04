@@ -2099,14 +2099,24 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				ShowHoverInfoMenu("Select all Gryphon on screen", "Shortcut [C]", &thirdHoverInfo, { 5,487 });
 			}
 
+			else if (UIelem == playerGroupsButtons.group1) {
+				ShowHoverInfoMenu("Select group 1", "Shortcut [Shift+1]", &firstHoverInfo, { 168,487 });
+			}
+			else if (UIelem == playerGroupsButtons.group2) {
+				ShowHoverInfoMenu("Select group 2", "Shortcut [Shift+2]", &secondHoverInfo, { 168,487 });
+			}
+			else if (UIelem == playerGroupsButtons.group3) {
+				ShowHoverInfoMenu("Select group 3", "Shortcut [Shift+3]", &thirdHoverInfo, { 168,487 });
+			}
+
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
 
-			if (UIelem == produceFootmanButton || UIelem == destroyBuildingButton || UIelem == groupSelectionButtons.selectFootmans || UIelem == upgradeTownHallButton)
+			if (UIelem == produceFootmanButton || UIelem == destroyBuildingButton || UIelem == groupSelectionButtons.selectFootmans || UIelem == playerGroupsButtons.group1 || UIelem == upgradeTownHallButton)
 				HideHoverInfoMenu(&firstHoverInfo);
-			else if (UIelem == produceElvenArcherButton || UIelem == groupSelectionButtons.selectElvenArchers)
+			else if (UIelem == produceElvenArcherButton || UIelem == groupSelectionButtons.selectElvenArchers || UIelem == playerGroupsButtons.group2)
 				HideHoverInfoMenu(&secondHoverInfo);
-			else if (UIelem == produceGryphonRiderButton || UIelem == groupSelectionButtons.selectGryphonRiders || UIelem == repairBuildingButton)
+			else if (UIelem == produceGryphonRiderButton || UIelem == groupSelectionButtons.selectGryphonRiders || UIelem == playerGroupsButtons.group3 || UIelem == repairBuildingButton)
 				HideHoverInfoMenu(&thirdHoverInfo);
 			break;
 
