@@ -127,7 +127,7 @@ void PlayerGuardTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, Colli
 
 			if (attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 			}
 		}
 
@@ -153,7 +153,7 @@ void PlayerGuardTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, Colli
 
 			if (!enemyAttackList.empty() && attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 
 			}
 		}
@@ -173,10 +173,12 @@ void PlayerGuardTower::TowerStateMachine(float dt)
 
 	case TowerState_Attack:
 	{
-		if (attackingTarget != nullptr) {
-			if (attackTimer.Read() >= (playerGuardTowerInfo.attackWaitTime * 1000)) {
+		attackTimer += dt;
 
-				attackTimer.Start();
+		if (attackingTarget != nullptr) {
+			if (attackTimer >= playerGuardTowerInfo.attackWaitTime) {
+
+				attackTimer = 0.0f;
 				CreateArrow();
 				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 			}
