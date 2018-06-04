@@ -551,6 +551,13 @@ void SaveAttribute(int value, char* name, pugi::xml_node& node, bool create)
 	valueNode.append_attribute(name) = value;
 }
 
+void SaveAttribute(float value, char* name, pugi::xml_node& node, bool create)
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
+	valueNode.append_attribute(name) = value;
+}
+
 void SaveAttribute(SDL_Rect value, char* name, pugi::xml_node& node, bool create)
 {
 	pugi::xml_node valueNode = GetNode(node, name, create);
