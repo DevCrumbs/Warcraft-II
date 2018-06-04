@@ -15,7 +15,7 @@
 
 #include "Brofiler\Brofiler.h"
 
-j1Movement::j1Movement() {}
+j1Movement::j1Movement() { name.assign("movement"); }
 
 j1Movement::~j1Movement() {}
 
