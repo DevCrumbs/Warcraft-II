@@ -4530,9 +4530,9 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 	//-------- Dynamic ----------
 	for (pugi::xml_node iterator = save.child("dynamicEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
 	{
-		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("entityType").as_int();
+		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("dynamicEntityType").as_int();
 
-		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
+		fPoint pos = { iterator.attribute("posX").as_float(), iterator.attribute("posY").as_float() };
 		UnitInfo unitInfo;
 
 		Entity* entity = nullptr;
@@ -4595,7 +4595,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 	//-------- Static -----------
 	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
 	{
-		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("entityType").as_int();
+		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("staticEntityType").as_int();
 
 		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
 		UnitInfo unitInfo;
@@ -4680,7 +4680,7 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 		entity.append_attribute("lastSeenTilew") = (*dynEnt)->lastSeenTile.y;
 		
 		entity.append_attribute("posX") = (*dynEnt)->GetPos().x;
-		entity.append_attribute("posY") = (*dynEnt)->GetPos().x;
+		entity.append_attribute("posY") = (*dynEnt)->GetPos().y;
 
 		entity.append_attribute("dynamicEntityType") = (*dynEnt)->dynamicEntityType;
 		entity.append_attribute("entitySide") = (*dynEnt)->entitySide;
