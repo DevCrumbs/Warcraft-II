@@ -1377,7 +1377,7 @@
 			<frame x="378" y="531" w="63" h="76" />
 		</gryphonFire>
 		<fire>
-			<low speed="200" loop="1">
+			<low speed="20" loop="1">
 				<frame x="  2" y="3" w="30" h="30" />
 				<frame x=" 34" y="3" w="30" h="30" />
 				<frame x=" 66" y="3" w="30" h="30" />
@@ -1385,7 +1385,7 @@
 				<frame x="130" y="3" w="30" h="30" />
 				<frame x="163" y="3" w="30" h="30" />
 			</low>
-			<hard speed="200" loop="1">
+			<hard speed="20" loop="1">
 				<frame x="  0" y="38" w="50" h="50" />
 				<frame x=" 55" y="38" w="50" h="50" />
 				<frame x="112" y="38" w="50" h="50" />

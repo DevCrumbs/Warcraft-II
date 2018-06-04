@@ -679,7 +679,6 @@ void j1Particles::UpdateAnimations(float dt)
 
 	/// Fire
 	lowFire.animation.speed = lowFireSpeed * dt;
-	LOG("dt: %f", dt);
 	hardFire.animation.speed = hardFireSpeed * dt;
 
 	/// Health

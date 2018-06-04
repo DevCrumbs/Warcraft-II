@@ -2516,6 +2516,21 @@ bool j1Scene::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
+	pugi::xml_node general;
+	if (save.child("general") == NULL)
+	{
+		general = save.append_child("general");
+
+	}
+	else
+	{
+		general = save.child("general");
+	}
+
+	SaveAttribute(mapDifficulty, "mapDifficulty", general, false);
+
+	
+
 	return ret;
 }
 
@@ -2524,6 +2539,7 @@ bool j1Scene::Load(pugi::xml_node& save)
 {
 	bool ret = true;
 
+	mapDifficulty = save.child("general").child("mapDifficulty").attribute("mapDifficulty").as_float();
 
 	return ret;
 }
