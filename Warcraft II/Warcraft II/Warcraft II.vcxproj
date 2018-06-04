@@ -171,14 +171,12 @@
     <ClInclude Include="j1Timer.h" />
     <ClInclude Include="j1Video.h" />
     <ClInclude Include="j1Window.h" />
-    <ClInclude Include="Mage.h" />
     <ClInclude Include="NTree.h" />
     <ClInclude Include="OgreMound.h" />
     <ClInclude Include="OrcShip.h" />
     <ClInclude Include="p2List.h" />
     <ClInclude Include="p2Log.h" />
     <ClInclude Include="p2Point.h" />
-    <ClInclude Include="Paladin.h" />
     <ClInclude Include="PigFarm.h" />
     <ClInclude Include="PlayerCannonTower.h" />
     <ClInclude Include="PlayerGuardTower.h" />
@@ -257,11 +255,9 @@
     <ClCompile Include="j1Timer.cpp" />
     <ClCompile Include="j1Video.cpp" />
     <ClCompile Include="j1Window.cpp" />
-    <ClCompile Include="Mage.cpp" />
     <ClCompile Include="OgreMound.cpp" />
     <ClCompile Include="OrcShip.cpp" />
     <ClCompile Include="p2Log.cpp" />
-    <ClCompile Include="Paladin.cpp" />
     <ClCompile Include="PigFarm.cpp" />
     <ClCompile Include="PlayerCannonTower.cpp" />
     <ClCompile Include="PlayerGuardTower.cpp" />

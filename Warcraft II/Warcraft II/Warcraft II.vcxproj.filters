@@ -201,9 +201,6 @@
     <ClInclude Include="GryphonRider.h">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
     </ClInclude>
-    <ClInclude Include="Mage.h">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
-    </ClInclude>
     <ClInclude Include="TrollAxethrower.h">
       <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
     </ClInclude>
@@ -245,9 +242,6 @@
     </ClInclude>
     <ClInclude Include="j1Console.h">
       <Filter>Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Paladin.h">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
     </ClInclude>
     <ClInclude Include="UILifeBar.h">
       <Filter>Modules\UIElements</Filter>
@@ -449,9 +443,6 @@
     <ClCompile Include="GryphonRider.cpp">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
     </ClCompile>
-    <ClCompile Include="Mage.cpp">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
-    </ClCompile>
     <ClCompile Include="TrollAxethrower.cpp">
       <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
     </ClCompile>
@@ -469,9 +460,6 @@
     </ClCompile>
     <ClCompile Include="Turalyon.cpp">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
-    </ClCompile>
-    <ClCompile Include="Paladin.cpp">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
     </ClCompile>
     <ClCompile Include="Barracks.cpp">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
