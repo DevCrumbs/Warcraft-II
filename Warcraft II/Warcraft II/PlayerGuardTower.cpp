@@ -46,6 +46,11 @@ PlayerGuardTower::~PlayerGuardTower()
 		peasants->isRemove = true;
 		peasants = nullptr;
 	}
+
+	if (fire != nullptr) {
+		fire->isRemove = true;
+		fire = nullptr;
+	}
 }
 
 void PlayerGuardTower::Move(float dt)
