@@ -578,6 +578,9 @@
     <ClCompile Include="OrcShip.cpp">
       <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
     </ClCompile>
+    <ClCompile Include="j1Module.cpp">
+      <Filter>Modules</Filter>
+     </ClCompile>
     <ClCompile Include="j1Intro.cpp">
       <Filter>Modules\Scenes</Filter>
     </ClCompile>

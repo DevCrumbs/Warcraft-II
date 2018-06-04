@@ -20,6 +20,7 @@
 #include "j1PathManager.h"
 #include "j1Movement.h"
 #include "j1Printer.h"
+#include "j1EnemyWave.h"
 
 #include "j1Gui.h"
 #include "UIImage.h"
@@ -63,7 +64,7 @@ bool j1Menu::Awake(pugi::xml_node& config)
 	pugi::xml_node audio = config.child("audioPaths");
 
 	mainMenuMusicName = audio.child("mainTheme").attribute("path").as_string();
-
+	LoadKeysVector();
 	return ret;
 }
 
@@ -129,6 +130,7 @@ bool j1Menu::Update(float dt)
 	case MenuActions_SETTINGS:
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		DeteleMenu();
+		DeleteChangingButtons();
 		CreateSettings();
 		menuActions = MenuActions_NONE;
 		break;
@@ -156,14 +158,77 @@ bool j1Menu::Update(float dt)
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		isExit = true;
 		break;
+	case MenuActions_CHANGE_BUTTONS:
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		DeleteSettings();
+		CreateChangingButtons();
+		menuActions = MenuActions_NONE;
+		break;
 	case MenuActions_SLIDERFX:
 		UpdateSlider(audioFX);
 		break;
 	case MenuActions_SLIDERMUSIC:
 		UpdateSlider(audioMusic);
 		break;
+	case MenuActions_DEFAULT_BUTTONS:
+		SetDefaultButtons();
+		menuActions = MenuActions_NONE;
+		break;
+	case MenuActions_CLEANUP:
+		CleanUp();
+		break;
 	default:
 		break;
+	}
+
+	if (changeButt.changeLabel != nullptr)
+	{
+		if (!changeButtonTimer.IsStarted())
+			changeButtonTimer.Start();
+
+		if (changeButtonTimer.Read() > 250)
+		{
+			SDL_Color color{ 0,0,0,0 };
+
+			if (textColor)
+				color = changeButt.changeLabel->GetInfo()->hoverColor;
+			else
+				color = changeButt.changeLabel->GetInfo()->normalColor;
+
+			changeButt.changeLabel->SetColor(color);
+			textColor = !textColor;
+			changeButtonTimer.Stop();
+		}
+
+		if (App->input->scancode != SDL_SCANCODE_UNKNOWN && App->input->GetKey(App->input->scancode) == KEY_DOWN)
+		{
+			bool isChanged = false;
+			if (App->input->scancode < keysName.size())
+			{
+				if (CheckCorrectButt(App->input->scancode))
+				{
+					changeButt.changeLabel->SetText(keysName[App->input->scancode]);
+					*changeButt.currentButton = App->input->scancode;
+					isChanged = true;
+				}
+				else if (CanSwapButt(App->input->scancode))
+				{
+					isChanged = true;
+				}
+			}	
+
+			if (isChanged) {
+				changeButt.changeLabel->SetColor(changeButt.changeLabel->GetInfo()->normalColor);
+				changeButt.changeLabel = nullptr;
+				App->input->scancode = SDL_SCANCODE_UNKNOWN;
+				App->audio->PlayFx(App->audio->GetFX().changeKey);
+
+				UpdateConfig();
+			}
+			else
+				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+
+		}
 	}
 	return true;
 }
@@ -190,6 +255,7 @@ bool j1Menu::CleanUp()
 
 	if (!App->gui->isGuiCleanUp) {
 		DeteleMenu();
+		DeleteChangingButtons();
 		App->gui->RemoveElem((UIElement**)&settingsBackground);
 	}
 
@@ -267,6 +333,9 @@ void j1Menu::CreateSettings() {
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
 	AddSlider(audioMusic, { 175,300 }, "Audio Music", relativeVol, butText, bgText, this);
 
+	labelInfo.text = "Controls";
+	buttonsLabel = App->gui->CreateUILabel({ 375, 550 }, labelInfo, this);
+
 	UIButton_Info buttonInfo;
 	//Fullscreen
 	if (!App->win->fullscreen) {
@@ -283,8 +352,7 @@ void j1Menu::CreateSettings() {
 
 	labelInfo.text = "Fullscreen";
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_LEFT;
-
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
+	labelInfo.interactive = false;
 	fullScreenLabel = App->gui->CreateUILabel({ 250, 450 }, labelInfo, this);
 
 	artifacts.push_back(AddArtifact({ 100,125 }, App->gui->bookText, App->gui->bookAnim, 5));
@@ -295,6 +363,65 @@ void j1Menu::CreateSettings() {
 
 }
 
+void j1Menu::CreateChangingButtons() {
+
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	labelInfo.normalColor = Black_;
+	labelInfo.hoverColor = ColorGreen;
+
+	labelInfo.text = "Back";
+	returnSettings = App->gui->CreateUILabel({ 450, 575 }, labelInfo, this);
+	returnSettings->SetPriorityDraw(PrioriryDraw_MENU_LABEL);
+
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	labelInfo.interactive = false;
+	labelInfo.text = "Select all Footman on screen";
+	staticLabels.push_back(CreateSimpleLabel({ 175, 100 }, labelInfo));
+	labelInfo.text = "Select all Archer on screen";	  
+	staticLabels.push_back(CreateSimpleLabel({ 175, 180 }, labelInfo));
+	labelInfo.text = "Select all Gryphon on screen";  
+	staticLabels.push_back(CreateSimpleLabel({ 175, 260 }, labelInfo));
+	labelInfo.text = "Select all Units on screen";
+	staticLabels.push_back(CreateSimpleLabel({ 175, 340 }, labelInfo));
+	labelInfo.text = "Go to base";					 
+	staticLabels.push_back(CreateSimpleLabel({ 175, 420 }, labelInfo));
+	labelInfo.text = "Go to unitis selected";
+	staticLabels.push_back(CreateSimpleLabel({ 175, 500 }, labelInfo));
+	labelInfo.text = "Change minimap zoom";
+	staticLabels.push_back(CreateSimpleLabel({ 575, 180 }, labelInfo));
+	labelInfo.text = "Open building menu";
+	staticLabels.push_back(CreateSimpleLabel({ 575, 260 }, labelInfo));
+	labelInfo.text = "Open pause menu";
+	staticLabels.push_back(CreateSimpleLabel({ 575, 340 }, labelInfo));
+	labelInfo.text = "Patrol units";
+	staticLabels.push_back(CreateSimpleLabel({ 575, 420 }, labelInfo));
+	labelInfo.text = "Stop units";
+	staticLabels.push_back(CreateSimpleLabel({ 575, 500 }, labelInfo));
+
+
+	CreateInteractiveLabels();
+
+	labelInfo.normalColor = White_;
+	labelInfo.pressedColor = Black_;
+	labelInfo.interactive = true;
+	labelInfo.fontName = FONT_NAME_WARCRAFT25;
+	labelInfo.text = "RESTORE DEFAULT";
+	defaultButton = App->gui->CreateUILabel({ 100, 25 }, labelInfo, this);
+	defaultButton->SetPriorityDraw(PrioriryDraw_MENU_LABEL);
+	 
+	if (App->scene->active)
+	{
+		UIImage_Info imageInfo;
+		imageInfo.texArea = { 1722, 950, 800, 600 };
+		settingsBackground = App->gui->CreateUIImage({ 0, 0 }, imageInfo, this, nullptr);
+		settingsBackground->SetPriorityDraw(PrioriryDraw_MENU_IMAGE);
+	}
+}
+
+
 void j1Menu::CreateNewGame()
 {
 	UILabel_Info labelInfo;
@@ -304,7 +431,7 @@ void j1Menu::CreateNewGame()
 	labelInfo.normalColor = Black_;
 	labelInfo.hoverColor = ColorGreen;
 
-	labelInfo.text = "Return";
+	labelInfo.text = "Back";
 	returnLabel = App->gui->CreateUILabel({ 650, 550 }, labelInfo, this);
 
 
@@ -393,6 +520,7 @@ void j1Menu::CreateCredits()
 	staticLabels.push_back(App->gui->CreateUILabel({ 375, 25 }, labelInfo, this));
 
 }
+
 void j1Menu::CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton* &butt, UIE_HORIZONTAL_POS hPos, UIE_VERTICAL_POS vPos)
 {
 
@@ -405,6 +533,14 @@ void j1Menu::CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, i
 	butt = App->gui->CreateUIButton(pos, infoButton, this);
 
 }
+
+UILabel* j1Menu::CreateSimpleLabel(iPoint pos, UILabel_Info labelInfo)
+{
+	UILabel* label = App->gui->CreateUILabel(pos, labelInfo, this);
+	label->SetPriorityDraw(PrioriryDraw_MENU_LABEL);
+	return label;
+}
+
 void j1Menu::AddSlider(SliderStruct &sliderStruct, iPoint pos, string nameText, float relativeNumberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener) {
 
 	UILabel_Info labelInfo;
@@ -460,6 +596,108 @@ void j1Menu::UpdateSlider(SliderStruct &sliderStruct) {
 	sprintf_s(vol_text, 4, "%.0f", volume * 100);
 	sliderStruct.value->SetText(vol_text);
 	//LOG("%f", volume);
+}
+
+void j1Menu::CreateInteractiveLabels()
+{
+	UILabel_Info labelInfo;
+	labelInfo.fontName = FONT_NAME_WARCRAFT20;
+	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
+	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
+	labelInfo.hoverColor = ColorGreen;
+	labelInfo.normalColor = White_;
+	labelInfo.interactive = true;
+
+	labelInfo.text = keysName[*App->player->buttonSelectFootman];		//"Select all Footman on screen";
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 100 }, labelInfo), App->player->buttonSelectFootman });
+	labelInfo.text = keysName[*App->player->buttonSelectArcher];	// "Select all Archer on screen
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 180 }, labelInfo), App->player->buttonSelectArcher });
+	labelInfo.text = keysName[*App->player->buttonSelectGryphon];	// "Select all Gryphon on screen;
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 260 }, labelInfo), App->player->buttonSelectGryphon });
+	labelInfo.text = keysName[*App->player->buttonSelectAll];	// "Select all Units on scree
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 340 }, labelInfo), App->player->buttonSelectAll });
+	labelInfo.text = keysName[*App->scene->buttonGoToBase];	// "Go to base";
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 420 }, labelInfo), App->scene->buttonGoToBase });
+	labelInfo.text = keysName[*App->scene->buttonGoToUnits];	// "Go to unities selected";
+	interactiveLabels.push_back({ CreateSimpleLabel({ 350, 500 }, labelInfo), App->scene->buttonGoToUnits });
+	labelInfo.text = keysName[*App->scene->buttonMinimap];	// "Change minimap zoom";
+	interactiveLabels.push_back({ CreateSimpleLabel({ 700, 180 }, labelInfo), App->scene->buttonMinimap });
+	labelInfo.text = keysName[*App->scene->buttonBuildingMenu];	//	  "Open building menu";
+	interactiveLabels.push_back({ CreateSimpleLabel({ 700, 260 }, labelInfo), App->scene->buttonBuildingMenu });
+	labelInfo.text = keysName[*App->scene->buttonPauseMenu];	//	  "Open pause menu";
+	interactiveLabels.push_back({ CreateSimpleLabel({ 700, 340 }, labelInfo), App->scene->buttonPauseMenu });
+	labelInfo.text = keysName[*App->scene->buttonPatrolUnits];	//	  "Patrol units";
+	interactiveLabels.push_back({ CreateSimpleLabel({ 700, 420 }, labelInfo), App->scene->buttonPatrolUnits });
+	labelInfo.text = keysName[*App->scene->buttonStopUnits];	//	  "Stop units";
+	interactiveLabels.push_back({ CreateSimpleLabel({ 700, 500 }, labelInfo), App->scene->buttonStopUnits });
+
+}
+
+bool j1Menu::CanSwapButt(SDL_Scancode button)
+{
+	bool ret = false;
+
+	for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
+	{
+		if (*(*iterator).currentButton == App->input->scancode)
+		{
+			SwapButt((*iterator), changeButt);
+			ret = true;
+			break;
+		}
+	}
+	return ret;
+}
+
+void j1Menu::SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB)
+{
+	SDL_Scancode aux = *buttonA.currentButton;
+	*buttonA.currentButton = *buttonB.currentButton;
+	*buttonB.currentButton = aux;
+
+	string aText = buttonA.changeLabel->GetText();
+	buttonA.changeLabel->SetText(buttonB.changeLabel->GetText());
+	buttonB.changeLabel->SetText(aText);
+}
+
+bool j1Menu::CheckCorrectButt(SDL_Scancode button)
+{
+	bool ret = true;
+
+	if (keysName[button] == "?")
+		ret = false;
+
+	else
+	{
+		for (list<SDL_Scancode*>::iterator iterator = App->input->inGameKeys.begin(); iterator != App->input->inGameKeys.end(); ++iterator)
+		{
+			if (*(*iterator) == button) {
+				ret = false;
+				break;
+			}
+		}
+	}
+
+	return ret;
+}
+
+void j1Menu::SetDefaultButtons()
+{
+	App->input->ClearKeys();
+
+	pugi::xml_node button = App->config.child(App->scene->name.data()).child("defaultButtons");
+	App->scene->LoadKeys(button);
+	button = App->config.child(App->player->name.data()).child("defaultButtons");
+	App->player->LoadKeys(button);
+	button = App->config.child(App->fow->name.data()).child("defaultButtons");
+	App->fow->LoadKeys(button);
+	button = App->config.child(App->wave->name.data()).child("defaultButtons");
+	App->wave->LoadKeys(button);
+
+	CleanInteractiveLabels();
+	CreateInteractiveLabels(); 
+
+	UpdateConfig();
 }
 
 void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
@@ -519,31 +757,44 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		break;
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
-		if (UIelem == playLabel)
+		if (UIelem == playLabel){
 			menuActions = MenuActions_NEWGAME;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
 
-		else if (UIelem == exitLabel)
+		else if (UIelem == exitLabel){
 			menuActions = MenuActions_EXIT;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
 
-		else if (UIelem == settingsLabel)
+		else if (UIelem == settingsLabel){
 			menuActions = MenuActions_SETTINGS;
-
-		else if (UIelem == creditsLabel)
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
+		else if (UIelem == creditsLabel) {
 			menuActions = MenuActions_CREDITS;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
 
-		else if (UIelem == loadLabel)
+		else if (UIelem == loadLabel) {
 			menuActions = MenuActions_LOADGAME;
-
-		else if (UIelem == returnLabel)
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
+		
+		else if (UIelem == returnLabel) {
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_RETURN;
+		}
 
 		else if (UIelem == audioFX.slider) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_SLIDERFX;
 		}
 
-		else if (UIelem == audioMusic.slider)
+		else if (UIelem == audioMusic.slider){
 			menuActions = MenuActions_SLIDERMUSIC;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
 
 		else if (UIelem == fullScreenButt)
 		{
@@ -551,65 +802,111 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			App->win->SetFullscreen();
 		}
 
+		//NewGame
 		else if (UIelem == easyOneButt)
 		{
 			menuActions = MenuActions_PLAY_EASYONE;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == easyTwoButt)
 		{
 			menuActions = MenuActions_PLAY_EASYTWO;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == mediumOneButt)
 		{
 			menuActions = MenuActions_PLAY_MEDIUMONE;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == mediumTwoButt)
 		{
 			menuActions = MenuActions_PLAY_MEDIUMTWO;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == hardButt)
 		{
 			menuActions = MenuActions_PLAY_HARD;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
-
 		//Credits
 
 		else if (UIelem == sandraLead)
 		{
 			open_url("https://github.com/Sandruski");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == oscarCode)
 		{
 			open_url("https://github.com/OscarHernandezG");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == joanDesigner)
 		{
 			open_url("https://github.com/JoanValiente");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == davidQA)
 		{
 			open_url("https://github.com/ValdiviaDev");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == manavManagment)
 		{
 			open_url("https://github.com/manavld");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == davidArt)
 		{
 			open_url("https://github.com/lFreecss");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == aleixUI)
 		{
 			open_url("https://github.com/aleixgab");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 
+		//ChangeButtons
+
+		else if (UIelem == buttonsLabel)
+		{
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+			menuActions = MenuActions_CHANGE_BUTTONS;
+		}
+
+		else if(UIelem == defaultButton)
+		{
+			menuActions = MenuActions_DEFAULT_BUTTONS;
+			changeButt.changeLabel = nullptr;
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
+
+		else if (UIelem == returnSettings)
+		{
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+			if (App->scene->active)
+				menuActions = MenuActions_CLEANUP;
+			else
+				menuActions = MenuActions_SETTINGS;
+		}
+
+		for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)
+		{
+			if (UIelem == (*iterator).changeLabel) {
+				if (changeButt.changeLabel != nullptr)
+					changeButt.changeLabel->SetColor(White_);
+				changeButt.changeLabel = (UILabel*)UIelem;
+				changeButt.currentButton = (*iterator).currentButton;
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+				break;
+			}
+		}
 
 		break;
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;
 	case UI_EVENT_MOUSE_LEFT_UP:
 		if (UIelem == audioFX.slider || UIelem == audioMusic.slider) {
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_NONE;
 		}
 		break;
@@ -647,12 +944,37 @@ void j1Menu::DeleteSettings() {
 	App->gui->RemoveElem((UIElement**)&audioFX.slider);
 	App->gui->RemoveElem((UIElement**)&audioMusic.name);
 	App->gui->RemoveElem((UIElement**)&audioMusic.value);
-	App->gui->RemoveElem((UIElement**)&audioMusic.slider);
+	App->gui->RemoveElem((UIElement**)&audioMusic.slider); 
+	App->gui->RemoveElem((UIElement**)&buttonsLabel);
 
 	for (; !artifacts.empty(); artifacts.pop_back())
 	{
 		App->gui->RemoveElem((UIElement**)&artifacts.back());
 	}
+}
+
+void j1Menu::DeleteChangingButtons()
+{
+
+	App->gui->RemoveElem((UIElement**)&returnSettings);
+	App->gui->RemoveElem((UIElement**)&changeButt);
+	App->gui->RemoveElem((UIElement**)&defaultButton);
+
+	CleanInteractiveLabels();
+	for (; !staticLabels.empty(); staticLabels.pop_back())
+	{
+		App->gui->RemoveElem((UIElement**)&staticLabels.back());
+	}
+
+}
+
+void j1Menu::CleanInteractiveLabels()
+{
+	for (; !interactiveLabels.empty(); interactiveLabels.pop_back())
+	{
+		App->gui->RemoveElem((UIElement**)&interactiveLabels.back().changeLabel);
+	}
+
 }
 
 void j1Menu::DeleteNewGame()
@@ -694,4 +1016,153 @@ void j1Menu::DeleteCredits()
 		App->gui->RemoveElem((UIElement**)&staticLabels.back());
 	}
 
+}
+
+
+void j1Menu::LoadKeysVector()
+{
+	if (keysName.empty())
+		keysName.clear();
+
+	for (int i = 0; i < 4; ++i)
+		keysName.push_back("?");
+
+	keysName.push_back(" A ");
+	keysName.push_back(" B ");
+	keysName.push_back(" C ");
+	keysName.push_back(" D ");
+	keysName.push_back(" E ");
+	keysName.push_back(" F ");
+	keysName.push_back(" G ");
+	keysName.push_back(" H ");
+	keysName.push_back(" I ");
+	keysName.push_back(" J ");
+	keysName.push_back(" K ");
+	keysName.push_back(" L ");
+	keysName.push_back(" M ");
+	keysName.push_back(" N ");
+	keysName.push_back(" O ");
+	keysName.push_back(" P ");
+	keysName.push_back(" Q ");
+	keysName.push_back(" R ");
+	keysName.push_back(" S ");
+	keysName.push_back(" T ");
+	keysName.push_back(" U ");
+	keysName.push_back(" V ");
+	keysName.push_back(" W ");
+	keysName.push_back(" X ");
+	keysName.push_back(" Y ");
+	keysName.push_back(" Z ");
+						 
+	keysName.push_back(" 1 ");
+	keysName.push_back(" 2 ");
+	keysName.push_back(" 3 ");
+	keysName.push_back(" 4 ");
+	keysName.push_back(" 5 ");
+	keysName.push_back(" 6 ");
+	keysName.push_back(" 7 ");
+	keysName.push_back(" 8 ");
+	keysName.push_back(" 9 ");
+	keysName.push_back(" 0 ");
+
+	keysName.push_back("ENTER");
+	keysName.push_back("ESC");
+	keysName.push_back("BACKSPACE");
+	keysName.push_back("TAB");
+	keysName.push_back("SPACE");
+
+	//NOT 100% REAL DEPENDS KEYBOARD
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+	keysName.push_back("?");
+
+	keysName.push_back("GRAVE");
+	keysName.push_back(" , ");
+	keysName.push_back(" . ");
+
+	keysName.push_back("?");
+
+	keysName.push_back("CAPSLOCK");
+
+	keysName.push_back("F1");
+	keysName.push_back("F2");
+	keysName.push_back("F3");
+	keysName.push_back("F4");
+	keysName.push_back("F5");
+	keysName.push_back("F6");
+	keysName.push_back("F7");
+	keysName.push_back("F8");
+	keysName.push_back("F9");
+	keysName.push_back("F10");
+	keysName.push_back("F11");
+	keysName.push_back("F12");
+
+	keysName.push_back("PRTSC");
+	keysName.push_back("SCRLK");
+	keysName.push_back("PAUSE");
+	keysName.push_back("INS");
+	keysName.push_back("HOME");
+	keysName.push_back("PGUP");
+	keysName.push_back("DEL");
+	keysName.push_back("END");
+	keysName.push_back("PGDN");
+
+	for (int i = 0; i < 4; ++i)
+		keysName.push_back("?");
+
+	//KeyPad
+	keysName.push_back("NUMLOCK");
+	keysName.push_back("KP /");
+	keysName.push_back("KP *");
+	keysName.push_back("KP -");
+	keysName.push_back("KP +");	
+	keysName.push_back("KP ENTER");
+	keysName.push_back("KP 1");
+	keysName.push_back("KP 2");
+	keysName.push_back("KP 3");
+	keysName.push_back("KP 4");
+	keysName.push_back("KP 5");
+	keysName.push_back("KP 6");
+	keysName.push_back("KP 7");
+	keysName.push_back("KP 8");
+	keysName.push_back("KP 9");
+	keysName.push_back("KP 0");
+	keysName.push_back("KP .");
+	keysName.push_back(" < ");
+
+	for (int i = 0; i <	16; ++i)
+		keysName.push_back("?");
+
+	// Useless media keys
+	for (int i = 0; i < 29; ++i)
+		keysName.push_back("?");
+	
+
+	// Useless chinese keys
+	for (int i = 0; i < 78; ++i)
+		keysName.push_back("?");
+	
+
+	keysName.push_back("LCTRL");
+	keysName.push_back("LSHIFT");
+	keysName.push_back("LALT");
+	keysName.push_back("LWIN");
+	keysName.push_back("RCTRL");
+	keysName.push_back("RSHIFT");
+	keysName.push_back("RALT");
+	keysName.push_back("RWIN");
+}
+
+void j1Menu::UpdateConfig()
+{
+	App->scene->SaveKeys();
+	App->player->SaveKeys();
+	App->fow->SaveKeys();
+	App->wave->SaveKeys();
+	App->configFile.save_file("config.xml");
 }

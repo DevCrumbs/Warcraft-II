@@ -153,7 +153,8 @@ In order to complete this objective, the player will have to create troops and c
 
 TBA
 
-# Controls
+# Default Controls
+You can modify most of the controls from the setting menu
 
 Space: Go to player base
 Up arrow or W: Move the camera up
@@ -201,15 +202,15 @@ Mouse Right click: Delete the preview building from the view of the player
 
 # Debug controls
 
-F8: debug mode
+F9: debug mode
 
 If debug mode is on:
-
-	H: -20 HP to last Chicken Farm created
-	G: Get + 500 gold
-	F: Get +3 food
-	K: Show/hide Fog of War
-
+	KEYPAD Buttons
+	- : -20 HP to last Chicken Farm created
+	* : Get + 500 gold
+	/ : Get +3 food
+	+ : Show/hide Fog of War
+	. : Show/hide fog of war sprites' distribution
 	1: Spawn a Footman at mouse position
 	2: Spawn an Elven Archer at mouse position
 	3: Spawn a Gryphon Rider at mouse position
@@ -221,13 +222,12 @@ If debug mode is on:
 	9: Spawn Alleria
 	0: Spawn Turalyon
 
-	F1: Direct win
-	F2: Direct lose
-	F3: Spawn a new enemy wave (in player base)
-	F4: Activate or stop the spawn of waves
-	F5: Show/hide colliders
-	F6: Show fog of war sprites' distribution
-	F7: Show group movement calculation
+	F5: Direct win
+	F6: Direct lose
+	F7: Spawn a new enemy wave (in player base)
+	F8: Activate or stop the spawn of waves
+	F10: Show/hide game's colliders
+	F11: Show/hide movements debug
 
 # Game system
 

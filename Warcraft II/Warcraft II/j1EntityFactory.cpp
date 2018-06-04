@@ -3455,8 +3455,10 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 	if (entity == nullptr)
 		return false;
 
-	if (App->input->GetKey(SDL_SCANCODE_LCTRL) != KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_RCTRL) != KEY_REPEAT
-		&& App->input->GetKey(SDL_SCANCODE_LSHIFT) != KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_RSHIFT) != KEY_REPEAT) {
+	// SDL_SCANCODE_LCTRL												// SDL_SCANCODE_RCTRL
+	// SDL_SCANCODE_LSHIFT												// SDL_SCANCODE_RSHIFT
+	if (App->input->GetKey(App->scene->buttonSaveGroup) != KEY_REPEAT && App->input->GetKey(App->scene->buttonSaveGroupb) != KEY_REPEAT
+		&& App->input->GetKey(App->scene->buttonSelectGroup) != KEY_REPEAT && App->input->GetKey(App->scene->buttonSelectGroupb) != KEY_REPEAT) {
 
 		list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
@@ -3471,7 +3473,8 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 		}
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT) {
+	// SDL_SCANCODE_LSHIFT									// SDL_SCANCODE_RSHIFT
+	if (App->input->GetKey(App->scene->buttonSelectGroup) == KEY_REPEAT || App->input->GetKey(App->scene->buttonSelectGroupb) == KEY_REPEAT) {
 	
 		if (find(unitsSelected.begin(), unitsSelected.end(), entity) != unitsSelected.end()) {
 

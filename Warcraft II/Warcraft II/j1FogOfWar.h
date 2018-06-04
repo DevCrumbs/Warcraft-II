@@ -73,7 +73,8 @@ public:
 	j1FogOfWar();
 	~j1FogOfWar();
 
-	bool Awake(pugi::xml_node& config);
+	bool Awake(pugi::xml_node & config);
+
 	bool Start();
 	bool LoadFoW();
 	bool Update(float dt);
@@ -86,6 +87,8 @@ public:
 	bool IsOnSight(fPoint pos);
 	void UnLoadFowMap();
 	void TilesNearPlayer();
+	bool LoadKeys(pugi::xml_node & buttons);
+	void SaveKeys();
 	int TotalDistanceToPlayer(Entity* entity, int tile);
 
 	// Beauty
@@ -104,6 +107,13 @@ public:
 	int height = 0;
 
 	bool isActive = true;
+
+private:
+	SDL_Scancode* buttonDrawFow = nullptr;
+	SDL_Scancode* buttonDebugDrawFow = nullptr;
+
+	pugi::xml_node config;
+
 	bool isFoWDebug = false;
 
 	// Beauty

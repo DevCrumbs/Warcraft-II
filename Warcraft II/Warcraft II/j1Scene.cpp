@@ -79,7 +79,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	levelTheme3 = audio.child("levelTheme3").attribute("path").as_string();
 	levelTheme4 = audio.child("levelTheme4").attribute("path").as_string();
 
-	//LoadKeys(config.child("buttons"));
+	LoadKeys(config.child("buttons"));
 
 	//Load camera attributes
 	pugi::xml_node camera = config.child("camera");
@@ -87,6 +87,8 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	camSpeed = camera.attribute("speed").as_float();
 	camMovement = camera.attribute("movement").as_int();
 	camMovMargin = camera.attribute("movMarginPcnt").as_float();
+
+	this->config = App->config.child(this->name.data());
 
 	return ret;
 }
@@ -243,37 +245,45 @@ bool j1Scene::PreUpdate()
 
 	if (App->isDebug)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
-			debugDrawMovement = !debugDrawMovement;
 
-		else if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		// SDL_SCANCODE_KP_1
+		if (App->input->GetKey(buttonSpawnFootman) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+		// SDL_SCANCODE_KP_2
+		else if (App->input->GetKey(buttonSpawnArcher) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+		// SDL_SCANCODE_KP_3
+		else if (App->input->GetKey(buttonSpawnGryphon) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_GRYPHON_RIDER, pos, App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+		// SDL_SCANCODE_KP_4
+		else if (App->input->GetKey(buttonSpawnGrunt) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+		// SDL_SCANCODE_KP_5
+		else if (App->input->GetKey(buttonSpawnTroll) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
+		// SDL_SCANCODE_KP_6
+		else if (App->input->GetKey(buttonSpawnDragon) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_DRAGON, pos, App->entities->GetUnitInfo(EntityType_DRAGON), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+		// SDL_SCANCODE_KP_7
+		else if (App->input->GetKey(buttonSpawnSheep) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(EntityType_SHEEP), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+		// SDL_SCANCODE_KP_8
+		else if (App->input->GetKey(buttonSpawnBoar) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
+		// SDL_SCANCODE_KP_9
+		else if (App->input->GetKey(buttonSpawnAlleria) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
+		// SDL_SCANCODE_KP_0
+		else if (App->input->GetKey(buttonSpawnTauralyon) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
 	}
 	//_Entities_creation
@@ -314,16 +324,19 @@ bool j1Scene::Update(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 	// ---------------------------------------------------------------------
 
-	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
+	// SDL_SCANCODE_F9
+	if (App->input->GetKey(buttonTogleDebug) == KEY_DOWN)
 		App->isDebug = !App->isDebug;
 	
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->isDebug)
+	// SDL_SCANCODE_F10
+	if (App->input->GetKey(buttonTogleDebugAttack) == KEY_DOWN && App->isDebug)
 		debugDrawAttack = !debugDrawAttack;
 
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
 
-	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN && App->isDebug)
+	// SDL_SCANCODE_F11
+	if (App->input->GetKey(buttonTogleDebugMovement) == KEY_DOWN && App->isDebug)
 		debugDrawMovement = !debugDrawMovement;
 
 	if (debugDrawMovement)
@@ -398,22 +411,26 @@ bool j1Scene::Update(float dt)
 		/// SELECT UNITS
 
 		// b) Select a group of units
-		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT) {
+		// SDL_SCANCODE_LSHIFT									// SDL_SCANCODE_RSHIFT
+		if (App->input->GetKey(buttonSelectGroup) == KEY_REPEAT || App->input->GetKey(buttonSelectGroupb) == KEY_REPEAT) {
 
 			bool isSelectedGroup = false;
 			uint numGroup = 0;
 
-			if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+			// SDL_SCANCODE_1
+			if (App->input->GetKey(buttonSelectGroup1) == KEY_DOWN) {
 
 				numGroup = 0;
 				isSelectedGroup = true;
 			}
-			else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+			// SDL_SCANCODE_2
+			else if (App->input->GetKey(buttonSelectGroup2) == KEY_DOWN) {
 
 				numGroup = 1;
 				isSelectedGroup = true;
 			}
-			else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+			// SDL_SCANCODE_3
+			else if (App->input->GetKey(buttonSelectGroup3) == KEY_DOWN) {
 
 				numGroup = 2;
 				isSelectedGroup = true;
@@ -451,22 +468,26 @@ bool j1Scene::Update(float dt)
 
 		// Manage units selection
 		/// Remove certain units from units selected
-		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_DOWN) {
+		// SDL_SCANCODE_LSHIFT									// SDL_SCANCODE_RSHIFT
+		if (App->input->GetKey(buttonSelectGroup) == KEY_DOWN || App->input->GetKey(buttonSelectGroupb) == KEY_DOWN) {
 			App->entities->auxUnitsSelected = App->entities->unitsSelected;
 			isShift = true;
 			isCtrl = false;
 		}
-		else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_UP) {
+		// SDL_SCANCODE_LSHIFT									// SDL_SCANCODE_RSHIFT
+		else if (App->input->GetKey(buttonSelectGroup) == KEY_UP || App->input->GetKey(buttonSelectGroupb) == KEY_UP) {
 			isShift = false;
 			isCtrl = false;
 		}
 		/// Select more than one group of units
-		if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_DOWN) {
+		// SDL_SCANCODE_LCTRL										// SDL_SCANCODE_RCTRL
+		if (App->input->GetKey(buttonSaveGroup) == KEY_DOWN || App->input->GetKey(buttonSaveGroupb) == KEY_DOWN) {
 			App->entities->auxUnitsSelected.clear();
 			isCtrl = true;
 			isShift = false;
 		}
-		else if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_UP || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_UP) {
+		// SDL_SCANCODE_LCTRL										// SDL_SCANCODE_RCTRL
+		else if (App->input->GetKey(buttonSaveGroup) == KEY_UP || App->input->GetKey(buttonSaveGroupb) == KEY_UP) {
 			isCtrl = false;
 			isShift = false;
 		}
@@ -549,23 +570,27 @@ bool j1Scene::Update(float dt)
 			if (group != nullptr) {
 
 				// a) Save group of units
-				if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT) {
+				// SDL_SCANCODE_LCTRL										// SDL_SCANCODE_RCTRL
+				if (App->input->GetKey(buttonSaveGroup) == KEY_REPEAT || App->input->GetKey(buttonSaveGroup) == KEY_REPEAT) {
 
 					bool isSavedGroup = false;
 
-					if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+					// SDL_SCANCODE_1
+					if (App->input->GetKey(buttonSelectGroup1) == KEY_DOWN) {
 					
 						App->entities->SaveEntityGroup(units, 0);
 						isSavedGroup = true;
 						App->entities->UpdateGroupIcons(0);
 					}
-					else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+					// SDL_SCANCODE_2
+					else if (App->input->GetKey(buttonSelectGroup2) == KEY_DOWN) {
 
 						App->entities->SaveEntityGroup(units, 1);
 						isSavedGroup = true;
 						App->entities->UpdateGroupIcons(1);
 					}
-					else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+					// SDL_SCANCODE_3
+					else if (App->input->GetKey(buttonSelectGroup3) == KEY_DOWN) {
 
 						App->entities->SaveEntityGroup(units, 2);
 						isSavedGroup = true;
@@ -587,7 +612,8 @@ bool j1Scene::Update(float dt)
 				}
 
 				// Move the camera to the group of units
-				if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN) {
+				// SDL_SCANCODE_Q
+				if (App->input->GetKey(buttonGoToUnits) == KEY_DOWN) {
 
 					iPoint centroid = App->entities->CalculateCentroidEntities(units);
 					iPoint cameraPos = App->render->FindCameraPosFromCenterPos(centroid);
@@ -625,11 +651,13 @@ bool j1Scene::Update(float dt)
 
 				// Command a group of units
 				/// COMMAND PATROL
-				if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN)
+				// SDL_SCANCODE_N
+				if (App->input->GetKey(buttonPatrolUnits) == KEY_DOWN)
 					App->entities->CommandToUnits(units, UnitCommand_Patrol);
 
 				/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
-				if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
+				// SDL_SCANCODE_M
+				if (App->input->GetKey(buttonStopUnits) == KEY_DOWN)
 
 					App->entities->CommandToUnits(units, UnitCommand_Stop);
 
@@ -850,11 +878,6 @@ bool j1Scene::Update(float dt)
 	if (adviceMessageTimer.Read() >= 3500 && adviceMessage == AdviceMessage_UNDER_ATTACK) {
 		HideAdviceMessage();
 	}
-	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
-	{
-		App->map->UnLoad();
-		//App->map->CreateNewMap();
-	}
 
 	if (parchmentImg != nullptr) {
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
@@ -925,8 +948,8 @@ bool j1Scene::Update(float dt)
 	default:
 		break;
 	}
-
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
+	// SDL_SCANCODE_ESCAPE
+	if (App->input->GetKey(buttonPauseMenu) == KEY_DOWN) {
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		if (parchmentImg == nullptr) {
 			UIImage_Info parchmentInfo;
@@ -949,20 +972,15 @@ bool j1Scene::PostUpdate()
 
 	if (!isStartedFinalTransition) {
 
-		if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
-
-			App->gui->RemoveElem((UIElement**)&parchmentImg);
-			return false;
-		}
-
 		if (App->player->imagePrisonersVector.size() >= 2) {
 
 			App->player->isWin = true;
 			finalTransition.Start();
 			isStartedFinalTransition = true;
 		}
-		else if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && App->isDebug) {
-
+		// SDL_SCANCODE_F5
+		else if (App->input->GetKey(buttonWinGame) == KEY_DOWN && App->isDebug)
+		{
 			App->player->isWin = true;
 			App->fade->FadeToBlack(this, App->finish);
 			App->finish->active = true;
@@ -987,8 +1005,9 @@ bool j1Scene::PostUpdate()
 				|| (App->player->GetCurrentGold() < (App->player->gryphonRiderCost + gryphonAviaryCost) && App->player->gryphonAviary == nullptr && App->player->barracks == nullptr)
 				//Not enogh gold to create Gryphos and have not barracks and we and have no units spawning
 				|| (App->player->GetCurrentGold() < App->player->gryphonRiderCost  && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning))
-			//Instant Lose with F2
-			|| (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && App->isDebug)
+			//Instant Lose with F6
+			// SDL_SCANCODE_F6
+			|| (App->input->GetKey(buttonLoseGame) == KEY_DOWN && App->isDebug)
 			//Orde destroy townhall
 			|| App->player->townHall == nullptr) {
 
@@ -1057,89 +1076,16 @@ bool j1Scene::CleanUp()
 // Debug keys
 void j1Scene::DebugKeys()
 {
-	// Movement
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN)
-		isFrameByFrame = !isFrameByFrame;
 
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-		debugDrawMovement = !debugDrawMovement;
-
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
-		debugDrawPath = !debugDrawPath;
-
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
-		debugDrawMap = !debugDrawMap;
-*/
-
-	// F1: start from the beginning of the first level
-	//if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
-		/*
-		if (index == 0)
-			App->entities->playerData->position = App->entities->playerData->startPos;
-		else
-			index = 0;
-
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
-		*/
-	//}
-
-	// F2: start from the beginning of the current level
-	//if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
-		/*
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
-		*/
-	//}
-
-	// F4: change between maps
-	//if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN) {
-		/*
-		if (index == 0)
-			index = 1;
-		else
-			index = 0;
-
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
-		*/
-	//}
-
-	// F5: save the current state
-	//if (App->input->GetKey(buttonSaveGame) == KEY_DOWN) {
-	//	App->SaveGame();
-	//}
-
-	// F6: load the previous state
-	//if (App->input->GetKey(buttonLoadGame) == KEY_DOWN) {
-	//	App->LoadGame();
-	//}
-
-	// F7: fullscreen
-	if (App->input->GetKey(buttonFullScreen) == KEY_DOWN)
-		App->win->SetFullscreen();
-
-	// F10: God mode
-	//if (App->input->GetKey(buttonGodMode) == KEY_DOWN)
-		//god = !god;
-
-	// 1, 2, 3: camera blit
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN && App->map->blitOffset < 15 && App->map->cameraBlit)
-		App->map->blitOffset += 7;
-
-	else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN && App->map->blitOffset > -135 && App->map->cameraBlit)
-		App->map->blitOffset -= 7;
-
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-		App->map->cameraBlit = !App->map->cameraBlit;
-		*/
-
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	// SDL_SCANCODE_SPACE
+	if (App->input->GetKey(buttonGoToBase) == KEY_DOWN)
 	{
 		App->render->camera.x = -basePos.x;
 		App->render->camera.y = -basePos.y;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
+	// SDL_SCANCODE_B
+	if (App->input->GetKey(buttonBuildingMenu) == KEY_DOWN)
 
 		ChangeBuildingMenuState(&buildingMenuButtons);
 }
@@ -1156,19 +1102,23 @@ void j1Scene::CheckCameraMovement(float dt)
 	//NOT MOVING WITH App->input->GetKey(buttonMoveUp) == KEY_REPEAT
 	//Move with arrows
 	//UP
-	if ((App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) 
+	// SDL_SCANCODE_UP										// SDL_SCANCODE_W
+	if ((App->input->GetKey(buttonMoveUp) == KEY_REPEAT || App->input->GetKey(buttonMoveUpb) == KEY_REPEAT)
 		&& App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	//DOWN
-	if ((App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	// SDL_SCANCODE_DOWN										// SDL_SCANCODE_S
+	if ((App->input->GetKey(buttonMoveDown) == KEY_REPEAT || App->input->GetKey(buttonMoveDownb) == KEY_REPEAT)
 		&& App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	//LEFT
-	if ((App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	// SDL_SCANCODE_LEFT										// SDL_SCANCODE_A
+	if ((App->input->GetKey(buttonMoveLeft) == KEY_REPEAT || App->input->GetKey(buttonMoveLeftb) == KEY_REPEAT)
 		&& App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	//RIGHT
-	if ((App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	// SDL_SCANCODE_RIGHT										// SDL_SCANCODE_D
+	if ((App->input->GetKey(buttonMoveRight) == KEY_REPEAT || App->input->GetKey(buttonMoveRightb) == KEY_REPEAT)
 		&& App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
 
@@ -1816,19 +1766,19 @@ void j1Scene::CreatePauseMenu()
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.normalColor = Black_;
 	labelInfo.hoverColor = ColorGreen;
-	labelInfo.text = "Settings";
+	labelInfo.text = "Resume Game";
 
 	int x = parchmentImg->GetLocalPos().x + 100;
 	int y = parchmentImg->GetLocalPos().y + 60;
-	settingsLabel = App->gui->CreateUILabel({x, y}, labelInfo, this);
+	continueLabel = App->gui->CreateUILabel({x, y}, labelInfo, this);
 
 	y += 40;
 	labelInfo.text = "Save Game";
 	saveGameLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
 	y += 40;
-	labelInfo.text = "Resume Game";
-	continueLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+	labelInfo.text = "Settings";
+	settingsLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
 	y += 40;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
@@ -1869,12 +1819,22 @@ void j1Scene::CreateSettingsMenu()
 	int y = parchmentImg->GetLocalPos().y + 160;
 	fullScreenButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
 
-	x -= 100;
+	y += 25;
+	x -= 25;
+	labelInfo.text = "Controls";
+	labelInfo.hoverColor = ColorGreen;
+	labelInfo.normalColor = Black_;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	buttonsLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
+
+	y -= 25;
+	x -= 75;
 	labelInfo.text = "Fullscreen";
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
+	labelInfo.interactive = false;
 	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
+
 
 	// Sliders
 	x = parchmentImg->GetLocalPos().x + 30;
@@ -1886,10 +1846,9 @@ void j1Scene::CreateSettingsMenu()
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
 	y += 50;
 	App->menu->AddSlider(AudioMusicPause, { x,y }, "Audio Music", relativeVol, butText, bgText, this);
+	labelInfo.interactive = true;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
-	labelInfo.hoverColor = ColorGreen;
-	labelInfo.pressedColor = White_;
 	labelInfo.text = "Back";
 	x = parchmentImg->GetLocalPos().x + 50;
 	y = parchmentImg->GetLocalPos().y + 185;
@@ -1907,7 +1866,7 @@ void j1Scene::DestroySettingsMenu()
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.slider);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.name);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.value);
-
+	App->gui->RemoveElem((UIElement**)&buttonsLabel);
 }
 
 void j1Scene::DestroyAllUI()
@@ -2450,6 +2409,12 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			pauseMenuActions = PauseMenuActions_CREATED;
 		}
 
+		else if (UIelem == buttonsLabel)
+		{
+			App->menu->active = true;
+			App->menu->menuActions = MenuActions_CHANGE_BUTTONS;
+		}
+
 		else if (UIelem == (UIElement*)AudioFXPause.slider)
 			pauseMenuActions = PauseMenuActions_SLIDERFX;
 
@@ -2548,65 +2513,156 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 {
 	bool ret = true;
 
-	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) ==  SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load SaveGame button");
-		ret = false;
-	}
 
-	if ((buttonLoadGame = (SDL_Scancode)buttons.attribute("buttonLoadGame").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load SaveGame button");
-		ret = false;
-	}
+	ret = LoadKey(&buttonGoToBase, "buttonGoToBase", buttons);
+	ret = LoadKey(&buttonGoToUnits, "buttonGoToUnits", buttons);
+	ret = LoadKey(&buttonMinimap, "buttonMinimap", buttons);
+	ret = LoadKey(&buttonBuildingMenu, "buttonBuildingMenu", buttons);
+	ret = LoadKey(&buttonPauseMenu, "buttonPauseMenu", buttons);
+	ret = LoadKey(&buttonPatrolUnits, "buttonPatrolUnits", buttons);
+	ret = LoadKey(&buttonStopUnits, "buttonStopUnits", buttons);
 
-	if ((buttonFullScreen = (SDL_Scancode)buttons.attribute("buttonFullScreen").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load FullScreen button");
-		ret = false;
-	}
+	ret = LoadKey(&buttonSpawnFootman, "buttonSpawnFootman", buttons);
+	ret = LoadKey(&buttonSpawnArcher, "buttonSpawnArcher", buttons);
+	ret = LoadKey(&buttonSpawnGryphon, "buttonSpawnGryphon", buttons);
+	ret = LoadKey(&buttonSpawnGrunt, "buttonSpawnGrunt", buttons);
+	ret = LoadKey(&buttonSpawnTroll, "buttonSpawnTroll", buttons);
+	ret = LoadKey(&buttonSpawnDragon, "buttonSpawnDragon", buttons);
+	ret = LoadKey(&buttonSpawnSheep, "buttonSpawnSheep", buttons);
+	ret = LoadKey(&buttonSpawnBoar, "buttonSpawnBoar", buttons);
+	ret = LoadKey(&buttonSpawnAlleria, "buttonSpawnAlleria", buttons);
+	ret = LoadKey(&buttonSpawnTauralyon, "buttonSpawnTauralyon", buttons);
 
-	if ((buttonGodMode = (SDL_Scancode)buttons.attribute("buttonGodMode").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load GodMode button");
-		ret = false;
-	}
+	ret = LoadKey(&buttonTogleDebug, "buttonTogleDebug", buttons);
+	ret = LoadKey(&buttonTogleDebugAttack, "buttonTogleDebugAttack", buttons);
+	ret = LoadKey(&buttonTogleDebugMovement, "buttonTogleDebugMovement", buttons);
 
-	if ((buttonMoveUp = (SDL_Scancode)buttons.attribute("buttonMoveUp").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveUp button");
-		ret = false;
-	}
 
-	if ((buttonMoveDown = (SDL_Scancode)buttons.attribute("buttonMoveDown").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveDown button");
-		ret = false;
-	}
+	ret = LoadKey(&buttonSelectGroup, "buttonSelectGroup", buttons);
+	ret = LoadKey(&buttonSelectGroupb, "buttonSelectGroupb", buttons);
+	ret = LoadKey(&buttonSelectGroup1, "buttonSelectGroup1", buttons);
+	ret = LoadKey(&buttonSelectGroup2, "buttonSelectGroup2", buttons);
+	ret = LoadKey(&buttonSelectGroup3, "buttonSelectGroup3", buttons);
 
-	if ((buttonMoveLeft = (SDL_Scancode)buttons.attribute("buttonMoveLeft").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveLeft button");
-		ret = false;
-	}
+	ret = LoadKey(&buttonSaveGroup, "buttonSaveGroup", buttons);
+	ret = LoadKey(&buttonSaveGroupb, "buttonSaveGroupb", buttons);
+	ret = LoadKey(&buttonWinGame, "buttonWinGame", buttons);
+	ret = LoadKey(&buttonLoseGame, "buttonLoseGame", buttons);
+	ret = LoadKey(&buttonMoveUp, "buttonMoveUp", buttons);
+	ret = LoadKey(&buttonMoveUpb, "buttonMoveUpb", buttons);
+	ret = LoadKey(&buttonMoveDown, "buttonMoveDown", buttons);
+	ret = LoadKey(&buttonMoveDownb, "buttonMoveDownb", buttons);
+	ret = LoadKey(&buttonMoveLeft, "buttonMoveLeft", buttons);
+	ret = LoadKey(&buttonMoveLeftb, "buttonMoveLeftb", buttons);
+	ret = LoadKey(&buttonMoveRight, "buttonMoveRight", buttons);
+	ret = LoadKey(&buttonMoveRightb, "buttonMoveRightb", buttons);
 
-	if ((buttonMoveRight = (SDL_Scancode)buttons.attribute("buttonMoveRight").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveRight button");
-		ret = false;
-	}
-
-	if ((buttonLeaveGame = (SDL_Scancode)buttons.attribute("buttonLeaveGame").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load LeaveGame button");
-		ret = false;
-	}
-
-	if ((buttonReloadMap = (SDL_Scancode)buttons.attribute("buttonReloadMap").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load ReloadMap button");
-		ret = false;
-	}
-	
 	return ret;
+}
+
+void j1Scene::SaveKeys()
+{
+	App->configFile.child("config").child(name.data()).remove_child("buttons");
+	pugi::xml_node buttons = App->configFile.child("config").child(name.data()).append_child("buttons");
+
+	//Clear
+	buttons.remove_child("buttonGoToBase");
+	buttons.remove_child("buttonGoToUnits");
+	buttons.remove_child("buttonMinimap");
+	buttons.remove_child("buttonBuildingMenu");
+	buttons.remove_child("buttonPauseMenu");
+	buttons.remove_child("buttonPatrolUnits");
+	buttons.remove_child("buttonStopUnits");
+				   
+	buttons.remove_child("buttonSpawnFootman");
+	buttons.remove_child("buttonSpawnArcher");
+	buttons.remove_child("buttonSpawnGryphon");
+	buttons.remove_child("buttonBuildingMenu");
+	buttons.remove_child("buttonSpawnGrunt");
+	buttons.remove_child("buttonSpawnTroll");
+	buttons.remove_child("buttonSpawnDragon");
+	buttons.remove_child("buttonSpawnSheep");
+	buttons.remove_child("buttonSpawnBoar");
+	buttons.remove_child("buttonSpawnAlleria");
+	buttons.remove_child("buttonSpawnTauralyon");
+				   
+	buttons.remove_child("buttonTogleDebug");
+	buttons.remove_child("buttonTogleDebugAttack");
+	buttons.remove_child("buttonTogleDebugMovement");
+				   
+	buttons.remove_child("buttonSelectGroup");
+	buttons.remove_child("buttonSelectGroupb");
+	buttons.remove_child("buttonSelectGroup1");
+	buttons.remove_child("buttonSelectGroup2");
+	buttons.remove_child("buttonSelectGroup3");
+				   
+	buttons.remove_child("buttonSaveGroup");
+	buttons.remove_child("buttonSaveGroupb");
+	buttons.remove_child("buttonWinGame");
+				   
+	buttons.remove_child("buttonLoseGame");
+	buttons.remove_child("buttonMoveUp");
+	buttons.remove_child("buttonMoveUpb");
+				   
+	buttons.remove_child("buttonMoveDown");
+	buttons.remove_child("buttonMoveDownb");
+	buttons.remove_child("buttonMoveLeft");
+	buttons.remove_child("buttonMoveLeftb");
+	buttons.remove_child("buttonMoveRight");
+	buttons.remove_child("buttonMoveRightb");
+
+
+	//	config.remove_child("buttons");
+	//	pugi::xml_node buttons = config.append_child("buttons");
+
+		//App->configFile.child("config").child("scene").remove_child("buttons");
+		//pugi::xml_node buttons = App->configFile.child("config").child("scene").append_child("buttons");
+		//// = config.child("buttons");
+		////Save
+
+	buttons.append_child("buttonGoToBase").append_attribute("buttonGoToBase") = *buttonGoToBase;
+	buttons.append_child("buttonGoToUnits").append_attribute("buttonGoToUnits") = *buttonGoToUnits;
+	buttons.append_child("buttonMinimap").append_attribute("buttonMinimap") = *buttonMinimap;
+	buttons.append_child("buttonBuildingMenu").append_attribute("buttonBuildingMenu") = *buttonBuildingMenu;
+	buttons.append_child("buttonPauseMenu").append_attribute("buttonPauseMenu") = *buttonPauseMenu;
+	buttons.append_child("buttonPatrolUnits").append_attribute("buttonPatrolUnits") = *buttonPatrolUnits;
+	buttons.append_child("buttonStopUnits").append_attribute("buttonStopUnits") = *buttonStopUnits;
+				   
+	buttons.append_child("buttonSpawnFootman").append_attribute("buttonSpawnFootman") = *buttonSpawnFootman;
+	buttons.append_child("buttonSpawnArcher").append_attribute("buttonSpawnArcher") = *buttonSpawnArcher;
+	buttons.append_child("buttonSpawnGryphon").append_attribute("buttonSpawnGryphon") = *buttonSpawnGryphon;
+	buttons.append_child("buttonBuildingMenu").append_attribute("buttonBuildingMenu") = *buttonBuildingMenu;
+	buttons.append_child("buttonSpawnGrunt").append_attribute("buttonSpawnGrunt") = *buttonSpawnGrunt;
+	buttons.append_child("buttonSpawnTroll").append_attribute("buttonSpawnTroll") = *buttonSpawnTroll;
+	buttons.append_child("buttonSpawnDragon").append_attribute("buttonSpawnDragon") = *buttonSpawnDragon;
+	buttons.append_child("buttonSpawnSheep").append_attribute("buttonSpawnSheep") = *buttonSpawnSheep;
+	buttons.append_child("buttonSpawnBoar").append_attribute("buttonSpawnBoar") = *buttonSpawnBoar;
+	buttons.append_child("buttonSpawnAlleria").append_attribute("buttonSpawnAlleria") = *buttonSpawnAlleria;
+	buttons.append_child("buttonSpawnTauralyon").append_attribute("buttonSpawnTauralyon") = *buttonSpawnTauralyon;
+				   
+	buttons.append_child("buttonTogleDebug").append_attribute("buttonTogleDebug") = *buttonTogleDebug;
+	buttons.append_child("buttonTogleDebugAttack").append_attribute("buttonTogleDebugAttack") = *buttonTogleDebugAttack;
+	buttons.append_child("buttonTogleDebugMovement").append_attribute("buttonTogleDebugMovement") = *buttonTogleDebugMovement;
+				   
+	buttons.append_child("buttonSelectGroup").append_attribute("buttonSelectGroup") = *buttonSelectGroup;
+	buttons.append_child("buttonSelectGroupb").append_attribute("buttonSelectGroupb") = *buttonSelectGroupb;
+	buttons.append_child("buttonSelectGroup1").append_attribute("buttonSelectGroup1") = *buttonSelectGroup1;
+	buttons.append_child("buttonSelectGroup2").append_attribute("buttonSelectGroup2") = *buttonSelectGroup2;
+	buttons.append_child("buttonSelectGroup3").append_attribute("buttonSelectGroup3") = *buttonSelectGroup3;
+				   
+	buttons.append_child("buttonSaveGroup").append_attribute("buttonSaveGroup") = *buttonSaveGroup;
+	buttons.append_child("buttonSaveGroupb").append_attribute("buttonSaveGroupb") = *buttonSaveGroupb;
+	buttons.append_child("buttonWinGame").append_attribute("buttonWinGame") = *buttonWinGame;
+				   
+	buttons.append_child("buttonLoseGame").append_attribute("buttonLoseGame") = *buttonLoseGame;
+	buttons.append_child("buttonMoveUp").append_attribute("buttonMoveUp") = *buttonMoveUp;
+	buttons.append_child("buttonMoveUpb").append_attribute("buttonMoveUpb") = *buttonMoveUpb;
+				   
+	buttons.append_child("buttonMoveDown").append_attribute("buttonMoveDown") = *buttonMoveDown;
+	buttons.append_child("buttonMoveDownb").append_attribute("buttonMoveDownb") = *buttonMoveDownb;
+	buttons.append_child("buttonMoveLeft").append_attribute("buttonMoveLeft") = *buttonMoveLeft;
+	buttons.append_child("buttonMoveLeftb").append_attribute("buttonMoveLeftb") = *buttonMoveLeftb;
+	buttons.append_child("buttonMoveRight").append_attribute("buttonMoveRight") = *buttonMoveRight;
+	buttons.append_child("buttonMoveRightb").append_attribute("buttonMoveRightb") = *buttonMoveRightb;
+
 }

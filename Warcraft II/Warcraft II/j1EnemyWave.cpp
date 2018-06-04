@@ -31,6 +31,10 @@ bool j1EnemyWave::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
+	LoadKeys(config.child("buttons"));
+
+	this->config = App->config.child(this->name.data());
+
 	return ret;
 }
 
@@ -115,12 +119,12 @@ bool j1EnemyWave::Update(float dt)
 {
 	bool ret = true;
 
-	// F3: spawns a random phase of a wave
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN && App->isDebug)
+	// F7: spawns a random phase of a wave
+	if (App->input->GetKey(buttonNewWave) == KEY_DOWN && App->isDebug)
 		PerformWave();
 
-	// F4: activates or stops the spawn of waves
-	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN && App->isDebug)
+	// F8: activates or stops the spawn of waves
+	if (App->input->GetKey(buttonActivateWave) == KEY_DOWN && App->isDebug)
 
 		isActiveWaves = !isActiveWaves;
 
@@ -373,4 +377,26 @@ bool j1EnemyWave::Load(pugi::xml_node& save)
 bool j1EnemyWave::Save(pugi::xml_node& save) const 
 {
 	return true;
+}
+
+bool j1EnemyWave::LoadKeys(pugi::xml_node& buttons)
+{
+	bool ret = true;
+
+	ret = LoadKey(&buttonNewWave, "buttonNewWave", buttons);
+	ret = LoadKey(&buttonActivateWave, "buttonActivateWave", buttons);
+
+	return ret;
+}
+
+void j1EnemyWave::SaveKeys()
+{
+	App->configFile.child("config").child(name.data()).remove_child("buttons");
+	pugi::xml_node buttons = App->configFile.child("config").child(name.data()).append_child("buttons");
+
+	buttons.remove_child("buttonNewWave");
+	buttons.remove_child("buttonActivateWave");
+
+	buttons.append_child("buttonNewWave").append_attribute("buttonNewWave") = *buttonNewWave;
+	buttons.append_child("buttonActivateWave").append_attribute("buttonActivateWave") = *buttonActivateWave;
 }

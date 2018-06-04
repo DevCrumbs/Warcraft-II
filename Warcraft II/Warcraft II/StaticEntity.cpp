@@ -19,7 +19,7 @@ StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, 
 	if (App->GetSecondsSinceAppStartUp() < 700) // Checks for static entities built since startup
 		isBuilt = true;
 
-	constructionTime = 10;
+	constructionTime = 10.0;
 }
 
 StaticEntity::~StaticEntity()
@@ -281,12 +281,12 @@ bool StaticEntity::CheckBuildingState()
 	return ret;
 }
 
-uint StaticEntity::GetConstructionTimer() const
+float StaticEntity::GetConstructionTimer() const
 {
-	return constructionTimer.ReadSec();
+	return constructionTimer;
 }
 
-uint StaticEntity::GetConstructionTime() const
+float StaticEntity::GetConstructionTime() const
 {
 	return constructionTime;
 }

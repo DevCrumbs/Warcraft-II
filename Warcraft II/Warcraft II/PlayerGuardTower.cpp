@@ -34,7 +34,6 @@ PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint m
 
 	buildingState = BuildingState_Building;
 	texArea = &playerGuardTowerInfo.constructionPlanks1;
-	this->constructionTimer.Start();
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 
 	 //Construction peasants
@@ -77,11 +76,13 @@ void PlayerGuardTower::Move(float dt)
 	TowerStateMachine(dt);
 
 	//Update animations for the construction cycle
-	if (!isBuilt)
+	if (!isBuilt) {
+		constructionTimer += dt;
 		UpdateAnimations(dt);
+	}
 
 	//Check is building is built already
-	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000)) {
+	if (!isBuilt && constructionTimer >= constructionTime) {
 		isBuilt = true;
 
 		if (peasants != nullptr) {
@@ -198,13 +199,13 @@ void PlayerGuardTower::LoadAnimationsSpeed()
 
 void PlayerGuardTower::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer >= (constructionTime / 3))
 		texArea = &playerGuardTowerInfo.constructionPlanks2;
 
-	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &playerGuardTowerInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	if (constructionTimer >= constructionTime) {
 		texArea = &playerGuardTowerInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

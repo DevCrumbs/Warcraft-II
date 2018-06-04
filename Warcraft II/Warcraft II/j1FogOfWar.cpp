@@ -26,11 +26,16 @@ j1FogOfWar::~j1FogOfWar()
 	fowTilesVector.clear();
 }
 
+// Called before render is available
 bool j1FogOfWar::Awake(pugi::xml_node& config)
 {
 	debugTilesTexName = config.child("debugTilesTex").attribute("name").as_string();
 	blackTilesTexName = config.child("blackTilesTex").attribute("name").as_string();
 	greyTilesTexName = config.child("greyTilesTex").attribute("name").as_string();
+
+	LoadKeys(config.child("buttons"));
+
+	this->config = App->config.child(this->name.data());
 
 	return true;
 }
@@ -68,8 +73,9 @@ bool j1FogOfWar::Update(float dt)
 
 	ResetTiles();
 	TilesNearPlayer();
-
-	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN && App->isDebug)
+	
+	// SDL_SCANCODE_KP_ENTER
+	if (App->input->GetKey(buttonDrawFow) == KEY_DOWN && App->isDebug)
 	{
 		isActive = !isActive;
 	}
@@ -98,7 +104,8 @@ bool j1FogOfWar::CleanUp()
 
 void j1FogOfWar::Print()
 {	
-	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	// SDL_SCANCODE_F6
+	if (App->isDebug && App->input->GetKey(buttonDebugDrawFow) == KEY_DOWN)
 		isFoWDebug = !isFoWDebug;
 
 	iPoint startTile = App->map->WorldToMap(-App->render->camera.x / App->win->GetScale(),
@@ -337,13 +344,8 @@ void j1FogOfWar::Print()
 	}//for
 }
 
-
-// =================================== PART 1 ===================================
-
 void j1FogOfWar::LoadFoWMap(int mapWidth, int mapHeight)
 {
-	// TODO 1: WE HAVE TO COVER THE MAP WITH FOW TILES (Use: 2 'for', mapWith & mapHeight to know the limit & FOW_TILE_MULTIPLIER)
-	// THIS TO ADD A NEW FOW_TILE : 
 	for (int y = 0; y <mapHeight  / FOW_TILE_MULTIPLIER; ++y)
 		for (int x = 0; x < mapWidth / FOW_TILE_MULTIPLIER; ++x)
 		{
@@ -1300,8 +1302,24 @@ void j1FogOfWar::TilesNearPlayer()
 	CleanSafeZone(App->map->playerBase.roomRect);
 }
 
+bool j1FogOfWar::LoadKeys(pugi::xml_node& buttons)
+{
+	bool ret = true;
 
-// =================================== PART 2 ===================================
+	ret = LoadKey(&buttonDrawFow, "buttonDrawFow", buttons);
+	ret = LoadKey(&buttonDebugDrawFow, "buttonDebugDrawFow", buttons);
 
-// TODO 6 (beauty): 
-// UNCOMMENT THE CODE BELOW
+	return ret;
+}
+
+void j1FogOfWar::SaveKeys()
+{
+	App->configFile.child("config").child(name.data()).remove_child("buttons");
+	pugi::xml_node buttons = App->configFile.child("config").child(name.data()).append_child("buttons");
+
+	buttons.remove_child("buttonDrawFow");
+	buttons.remove_child("buttonDebugDrawFow");
+
+	buttons.append_child("buttonDrawFow").append_attribute("buttonDrawFow") = *buttonDrawFow;
+	buttons.append_child("buttonDebugDrawFow").append_attribute("buttonDebugDrawFow") = *buttonDrawFow;
+}

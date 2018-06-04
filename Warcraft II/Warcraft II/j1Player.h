@@ -136,6 +136,10 @@ public:
 	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
+	bool LoadKeys(pugi::xml_node & buttons);
+
+	void SaveKeys();
+
 	void CreateEntitiesStatsUI();
 	void CreateGroupSelectionButtons();
 	void CreatePlayerGroupsButtons();
@@ -186,10 +190,6 @@ public:
 	list<StaticEntity*> guardTower;
 	StaticEntity* barracks = nullptr;
 	StaticEntity* townHall = nullptr;
-	//StaticEntity* blacksmith = nullptr;
-	//StaticEntity* stables = nullptr;
-	//StaticEntity* church = nullptr;
-	//StaticEntity* mageTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
 
 	vector<UIImage*> imagePrisonersVector;
@@ -197,8 +197,6 @@ public:
 	//Neutral
 	list<StaticEntity*> goldMine;
 	list<StaticEntity*> runestone;
-	//Update lifeBar
-	//Entity* getEntityDamage = nullptr;
 
 	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
@@ -240,6 +238,18 @@ public:
 
 	bool isUnitSpawning = false;
 
+	SDL_Scancode* buttonSelectFootman = nullptr;
+	SDL_Scancode* buttonSelectArcher = nullptr;
+	SDL_Scancode* buttonSelectGryphon = nullptr;
+	SDL_Scancode* buttonSelectAll = nullptr;
+
+	SDL_Scancode* buttonShowPlayerButt = nullptr;
+
+	SDL_Scancode* buttonDamageCF = nullptr;
+
+	SDL_Scancode* buttonAddGold = nullptr;
+	SDL_Scancode* buttonAddFood = nullptr;
+
 private:
 
 	int currentGold = 0; // amount of gold that the player has at the current moment
@@ -253,15 +263,10 @@ private:
 	PlayerGroupsButtons playerGroupsButtons;
 	GroupSelectionButtons groupSelectionButtons;
 
-	//list<GroupSpawning> toSpawnUnitStats;
-	//list<ToSpawnUnit*> newUnitsToSpawn;
-
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
 		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr, *repairBuildingButton = nullptr;
-	
 
 	list<UIElement*> UIMenuInfoList;
-
 
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;
@@ -269,6 +274,7 @@ private:
 	list<GroupSpawning> barracksSpawningListUI;
 	list<GroupSpawning> gryphoSpawningListUI;
 
+	pugi::xml_node config;
 };
 
 #endif //__j1PLAYER_H__

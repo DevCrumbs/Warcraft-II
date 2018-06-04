@@ -1,11 +1,12 @@
 #ifndef __j1MENU_H__
 #define __j1MENU_H__
+#include <vector>
 
 #include "j1Module.h"
 #include "p2List.h"
 #include "UIElement.h"
+#include "j1Timer.h"
 
-#include <vector>
 
 struct SDL_Texture;
 class UIImage;
@@ -14,6 +15,8 @@ class UIButton;
 class UISlider;
 struct UICursor;
 struct Particle;
+struct UILabel_Info;
+
 
 enum MenuActions
 {
@@ -31,6 +34,9 @@ enum MenuActions
 	MenuActions_NEWGAME,
 	MenuActions_CREDITS,
 	MenuActions_EXIT,
+	MenuActions_CHANGE_BUTTONS,
+	MenuActions_DEFAULT_BUTTONS,
+	MenuActions_CLEANUP
 };
 struct SliderStruct
 {
@@ -42,6 +48,12 @@ struct SliderStruct
 struct ArtifactsCollection
 {
 	int book, skull, scepter, eye = 0;
+};
+
+struct ChangeButtons
+{
+	UILabel *changeLabel = nullptr;
+	SDL_Scancode* currentButton = nullptr;
 };
 
 class j1Menu : public j1Module
@@ -70,21 +82,34 @@ public:
 
 	void CreateMenu();
 	void CreateSettings();
+	void CreateChangingButtons();
 	void CreateNewGame();
 	void CreateCredits();
 	//void CreateLoading();
 
 	void DeleteSettings();
+	void DeleteChangingButtons();
+	void CleanInteractiveLabels();
 	void DeteleMenu();
 	void DeleteNewGame();
 	void DeleteCredits();
 
+	void LoadKeysVector();
+
+	void UpdateConfig();
+
 	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt,
 		UIE_HORIZONTAL_POS hPos = HORIZONTAL_POS_LEFT, UIE_VERTICAL_POS vPos = VERTICAL_POS_TOP);
+	UILabel * CreateSimpleLabel(iPoint pos, UILabel_Info labelInfo);
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed);
 
 	void UpdateSlider(SliderStruct &sliderStruct);
+	void CreateInteractiveLabels();
+	bool CheckCorrectButt(SDL_Scancode button);
+	void SetDefaultButtons();
+	bool CanSwapButt(SDL_Scancode button);
+	void SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB);
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
@@ -97,6 +122,9 @@ public:
 	bool debug = false;
 
 	ArtifactsCollection artifactsEasyOne, artifactsEasyTwo, artifactsMediumOne, artifactsMediumTwo, artifactsHard;
+
+	MenuActions menuActions = MenuActions_NONE;
+
 private:
 
 	//Main Menu
@@ -109,7 +137,14 @@ private:
 	SliderStruct audioFX;
 	SliderStruct audioMusic;
 	UIButton* fullScreenButt = nullptr;
-	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr, *buttonsLabel = nullptr;
+		//Changing buttons
+	UILabel* returnSettings = nullptr, *defaultButton = nullptr;
+	ChangeButtons changeButt;
+	list<ChangeButtons> interactiveLabels;
+
+	j1Timer changeButtonTimer;
+	bool textColor = false;
 
 	//Start New Game
 	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;
@@ -122,10 +157,6 @@ private:
 	vector<UILabel*> staticLabels; //Not Interactives
 	vector<UIImage*> artifacts;
 
-
-	MenuActions menuActions = MenuActions_NONE;
-
-
 	//Audio path
 	string mainMenuMusicName;
 
@@ -133,6 +164,7 @@ private:
 	bool isFadetoScene = false;
 	bool isMouseTextCreated = false;
 
+	vector<string> keysName;
 };
 
 #endif
