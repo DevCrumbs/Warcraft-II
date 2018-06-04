@@ -392,10 +392,10 @@ bool j1EnemyWave::Load(pugi::xml_node& save)
 	// Waves timeline
 	pugi::xml_node timeline = save.child("timeline");
 
-	nextWaveTimer = general.child("nextWaveTimer").attribute("nextWaveTimer").as_float();
-	nextPhaseTimer = general.child("nextPhaseTimer").attribute("nextPhaseTimer").as_float();
-	secondsToNextWave = general.child("secondsToNextWave").attribute("secondsToNextWave").as_float();
-	secondsToNextPhase = general.child("secondsToNextPhase").attribute("secondsToNextPhase").as_float();
+	nextWaveTimer = timeline.child("nextWaveTimer").attribute("nextWaveTimer").as_float();
+	nextPhaseTimer = timeline.child("nextPhaseTimer").attribute("nextPhaseTimer").as_float();
+	secondsToNextWave = timeline.child("secondsToNextWave").attribute("secondsToNextWave").as_float();
+	secondsToNextPhase = timeline.child("secondsToNextPhase").attribute("secondsToNextPhase").as_float();
 
 	return true;
 }
