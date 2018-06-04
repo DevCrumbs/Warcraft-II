@@ -156,7 +156,6 @@ private:
 
 	mutable bool		wantToSave = false;
 	bool				wantToLoad = false;
-	string				loadGame;
 	mutable string		saveGame;
 
 	uint64 lastFrameMs = 0;
@@ -165,9 +164,11 @@ private:
 	j1PerfTimer perfClock;
 
 public:
+
 	pugi::xml_document	configFile;
 	pugi::xml_node		config;
 
+	string				loadGame;
 	uint				capFrames = 0;
 	bool				toCap = true;
 	bool				quitGame = false;
