@@ -101,7 +101,6 @@ bool j1Menu::Start()
 		isMouseTextCreated = true;
 	}
 
-	isLoad = false;
 	return true;
 }
 

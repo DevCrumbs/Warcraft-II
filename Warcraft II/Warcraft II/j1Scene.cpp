@@ -118,18 +118,7 @@ bool j1Scene::Start()
 	App->wave->Start();
 	App->fow->Start();
 
-	if (App->menu->isLoad)
-	{
-		pugi::xml_document data;
-		pugi::xml_parse_result result = data.loadFile(App->loadGame.data());
-		Load(data.child(name.data));
-		App->player->Load(data.child(name.data));
-		App->collision->Load(data.child(name.data));
-		App->particles->Load(data.child(name.data));
-		App->entities->Load(data.child(name.data));
-		App->wave->Load(data.child(name.data));
-		App->fow->Load(data.child(name.data));
-	}
+
 	isStarted = false;
 
 	// Save camera info
@@ -207,6 +196,18 @@ bool j1Scene::Start()
 	}
 
 	App->isDebug = false;
+
+	if (App->menu->isLoad)
+	{
+		pugi::xml_document data;
+		pugi::xml_parse_result result = data.loadFile(App->loadGame.data());
+		Load(data.child(name.data()));
+		App->player->Load(data.child(name.data()));
+		App->entities->Load(data.child(name.data()));
+		App->wave->Load(data.child(name.data()));
+		App->fow->Load(data.child(name.data()));
+		App->menu->isLoad = false;
+	}
 
 	return ret;
 }
