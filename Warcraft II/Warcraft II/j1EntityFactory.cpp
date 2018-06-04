@@ -4534,7 +4534,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 
 		fPoint pos = { iterator.attribute("posX").as_float(), iterator.attribute("posY").as_float() };
 		UnitInfo unitInfo;
-
+		DynamicEntity* newEntity = nullptr;
 		Entity* entity = nullptr;
 
 		switch (entityType)
@@ -4544,13 +4544,14 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		case EntityType_ELVEN_ARCHER:
 		case EntityType_ALLERIA:
 		case EntityType_TURALYON:
-			App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
+			newEntity = (DynamicEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
 			break;
 
 		case EntityType_GRUNT:
 		case EntityType_TROLL_AXETHROWER:
 		case EntityType_DRAGON:
-			entity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+			 entity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+			 newEntity = (DynamicEntity*)entity;
 			break;
 
 		case EntityType_SHEEP:
@@ -4559,9 +4560,9 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			int type = rand() % 2;
 
 			if (type == 0)
-				App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+				newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
 			else
-				App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+				newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
 		}
 		break;
 
@@ -4589,6 +4590,12 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 				(*groupIterator).push_back(entity);
 			}
 		}
+
+		if (newEntity != nullptr)
+		{
+			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+			App->player->unitProduce--;
+		}
 	}
 
 	//---------------------------
@@ -4600,22 +4607,20 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
 		UnitInfo unitInfo;
 
-		Entity* entity = nullptr;
+		StaticEntity* newEntity = nullptr;
 
 		switch (entityType)
 		{
 			// Static Entities
 		case EntityType_TOWN_HALL:
-			App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos,
-				App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			newEntity = App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 			break;
 		case EntityType_CHICKEN_FARM:
-			App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos,
-				App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player));
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos,	App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+				App->player->chickenFarm.push_back(newEntity);
 			break;
 		case EntityType_BARRACKS:
-			App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos,
-				App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			newEntity = App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos,	App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
 			break;
 
 		case EntityType_GOLD_MINE:
@@ -4634,12 +4639,22 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		case EntityType_WATCH_TOWER:
 		case EntityType_ENEMY_GUARD_TOWER:
 		case EntityType_ENEMY_CANNON_TOWER:
-			App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 			break;
 		default:
 			break;
 		}
+
+		if (newEntity != nullptr)
+		{
+			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+			newEntity->CheckBuildingState();
+		}
+
 	}
+
+
+
 	return ret;
 }
 
@@ -4672,25 +4687,27 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
 
-	while (dynEnt != activeDynamicEntities.end()) {
-		
-		pugi::xml_node entity = dynamicEntities.append_child("entity");
+	while (dynEnt != activeDynamicEntities.end())
+	{
+		if ((*dynEnt)->GetCurrLife() > 0)
+		{
+			pugi::xml_node entity = dynamicEntities.append_child("entity");
 
-		entity.append_attribute("lastSeenTileX") = (*dynEnt)->lastSeenTile.x;
+			entity.append_attribute("lastSeenTileX") = (*dynEnt)->lastSeenTile.x;
 
-		entity.append_attribute("lastSeenTilew") = (*dynEnt)->lastSeenTile.y;
-		
-		entity.append_attribute("posX") = (*dynEnt)->GetPos().x;
-		entity.append_attribute("posY") = (*dynEnt)->GetPos().y;
+			entity.append_attribute("lastSeenTilew") = (*dynEnt)->lastSeenTile.y;
 
-		entity.append_attribute("dynamicEntityType") = (*dynEnt)->dynamicEntityType;
-		entity.append_attribute("entitySide") = (*dynEnt)->entitySide;
-		entity.append_attribute("entityType") = (*dynEnt)->entityType;
+			entity.append_attribute("posX") = (*dynEnt)->GetPos().x;
+			entity.append_attribute("posY") = (*dynEnt)->GetPos().y;
 
-		entity.append_attribute("enemyGroup") = (*dynEnt)->enemyGroup;
+			entity.append_attribute("dynamicEntityType") = (*dynEnt)->dynamicEntityType;
+			entity.append_attribute("entitySide") = (*dynEnt)->entitySide;
+			entity.append_attribute("entityType") = (*dynEnt)->entityType;
 
-		entity.append_attribute("GetCurrLife") = (*dynEnt)->GetCurrLife();
+			entity.append_attribute("enemyGroup") = (*dynEnt)->enemyGroup;
 
+			entity.append_attribute("GetCurrLife") = (*dynEnt)->GetCurrLife();
+		}
 		dynEnt++;
 	}
 
@@ -4703,22 +4720,26 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
 
-	while (statEnt != activeStaticEntities.end()) {
+	while (statEnt != activeStaticEntities.end()) 
+	{
+		if ((*statEnt)->GetCurrLife() > 0)
+		{
+			pugi::xml_node entity = staticEntities.append_child("entity");
 
-		pugi::xml_node entity = staticEntities.append_child("entity");
+			entity.append_attribute("posX") = (*statEnt)->GetPos().x;
+			entity.append_attribute("posY") = (*statEnt)->GetPos().y;
 
-		entity.append_attribute("posX") = (*statEnt)->GetPos().x;
-		entity.append_attribute("posY") = (*statEnt)->GetPos().y;
+			entity.append_attribute("buildingSize") = (*statEnt)->buildingSize;
 
-		entity.append_attribute("buildingSize") = (*statEnt)->buildingSize;
+			entity.append_attribute("buildingState") = (*statEnt)->buildingState;
+			entity.append_attribute("entitySide") = (*statEnt)->entitySide;
+			entity.append_attribute("entityType") = (*statEnt)->entityType;
 
-		entity.append_attribute("buildingState") = (*statEnt)->buildingState;
-		entity.append_attribute("entitySide") = (*statEnt)->entitySide;
-		entity.append_attribute("entityType") = (*statEnt)->entityType;
+			entity.append_attribute("staticEntityCategory") = (*statEnt)->staticEntityCategory;
+			entity.append_attribute("staticEntityType") = (*statEnt)->staticEntityType;
 
-		entity.append_attribute("staticEntityCategory") = (*statEnt)->staticEntityCategory;
-		entity.append_attribute("staticEntityType") = (*statEnt)->staticEntityType;
-		
+			entity.append_attribute("GetCurrLife") = (*statEnt)->GetCurrLife();
+		}
 		statEnt++;
 	}
 
