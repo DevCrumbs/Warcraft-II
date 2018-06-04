@@ -4574,6 +4574,20 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			entity->enemyGroup = iterator.attribute("enemyGroup").as_int();
 			DynamicEntity* temp = (DynamicEntity*)entity;
 			temp->lastSeenTile = { iterator.attribute("lastSeenTileX").as_int(), iterator.attribute("lastSeenTileY").as_int() };
+
+			list<list<Entity*>>::iterator groupIterator = App->map->entityGroups.begin();
+			for (int i = 0; i < entity->enemyGroup; ++i)
+			{
+				if (groupIterator == App->map->entityGroups.end())
+					break;
+				else
+					groupIterator++;
+			}
+
+			if (groupIterator != App->map->entityGroups.end())
+			{
+				(*groupIterator).push_back(entity);
+			}
 		}
 	}
 
