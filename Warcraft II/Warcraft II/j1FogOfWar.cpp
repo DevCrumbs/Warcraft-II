@@ -1316,7 +1316,7 @@ bool j1FogOfWar::Save(pugi::xml_node& save) const
 		general = save.child("general");
 	}
 
-	SaveTiles(fowTilesVector, "fowTilesVector", general);
+	SaveTiles(fowTilesVector, "fowTile", save.append_child("fowTilesVector"));
 
 	SaveAttribute(width, "width", general, false);
 	SaveAttribute(height, "height", general, false);
@@ -1324,6 +1324,22 @@ bool j1FogOfWar::Save(pugi::xml_node& save) const
 	SaveAttribute(isActive, "isActive", general, false);
 
 	return ret;
+}
+
+bool j1FogOfWar::Load(pugi::xml_node& save)
+{
+
+
+	//<width width = "105" / >
+	//	<height height = "130" / >
+	//	<isActive isActive = "1" / >
+
+	//pugi::xml_node fowTilesVector
+	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
+	{
+
+	}
+	return true;
 }
 
 void j1FogOfWar::SaveTiles(vector<FogOfWarTile*> tiles, char* name, pugi::xml_node node) const

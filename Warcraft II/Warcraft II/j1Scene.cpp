@@ -138,11 +138,11 @@ bool j1Scene::Start()
 
 	// Load an orthogonal, isometric or warcraft-based map
 	if (orthogonalActive) {
-		ret = App->map->Load(orthogonalMap.data());
+		ret = App->map->LoadNewMap(orthogonalMap.data());
 		debugTex = App->tex->Load(orthogonalTexName.data());
 	}
 	else if (isometricActive) {
-		ret = App->map->Load(isometricMap.data());
+		ret = App->map->LoadNewMap(isometricMap.data());
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
 
@@ -224,14 +224,14 @@ bool j1Scene::LoadNewMap(int map)
 
 		LOG(path);
 
-		ret = App->map->Load(path);
+		ret = App->map->LoadNewMap(path);
 	}
 	else
 	{
 		static char path[25];
 		sprintf_s(path, 25, "alphaMap%i.tmx", map);
 
-		ret = App->map->Load(path);
+		ret = App->map->LoadNewMap(path);
 	}
 
 	return ret;

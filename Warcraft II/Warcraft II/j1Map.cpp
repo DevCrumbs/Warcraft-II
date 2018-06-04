@@ -412,7 +412,7 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set)
 }
 
 // Load new map
-bool j1Map::Load(const char* file_name)
+bool j1Map::LoadNewMap(const char* file_name)
 {
 	bool ret = true;
 	string tmp = folder.data();
