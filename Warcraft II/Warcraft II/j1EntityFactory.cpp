@@ -4532,7 +4532,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 	{
 		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("entityType").as_int();
 
-		fPoint pos = { iterator.attribute("posX").as_int(), iterator.attribute("posY").as_int() };
+		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
 		UnitInfo unitInfo;
 
 		Entity* entity = nullptr;
@@ -4597,7 +4597,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 	{
 		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("entityType").as_int();
 
-		fPoint pos = { iterator.attribute("posX").as_int(), iterator.attribute("posY").as_int() };
+		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
 		UnitInfo unitInfo;
 
 		Entity* entity = nullptr;
@@ -4688,7 +4688,7 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 		entity.append_attribute("enemyGroup") = (*dynEnt)->enemyGroup;
 
-		entity.append_attribute("dynamicEntityType") = (*dynEnt)->GetCurrLife();
+		entity.append_attribute("GetCurrLife") = (*dynEnt)->GetCurrLife();
 
 		dynEnt++;
 	}

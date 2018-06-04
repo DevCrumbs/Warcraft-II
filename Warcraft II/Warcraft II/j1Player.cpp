@@ -777,17 +777,17 @@ bool j1Player::Load(pugi::xml_node& save)
 
 	for (spawning = spawning.child("barracksSpawningUnit"); spawning; spawning = spawning.next_sibling("barracksSpawningUnit")) {
 
-		ToSpawnUnit* toSpawn = new ToSpawnUnit((ENTITY_TYPE)spawning.child("entityType").attribute("entityType").as_int);
+		ToSpawnUnit* toSpawn = new ToSpawnUnit((ENTITY_TYPE)spawning.child("entityType").attribute("entityType").as_int());
 
-		toSpawn->toSpawnTimer.Resume(spawning.child("entityType").attribute("entityType").as_int);
+		toSpawn->toSpawnTimer.Resume(spawning.child("entityType").attribute("entityType").as_int());
 		toSpawnUnitGrypho.push(toSpawn);
 	}
 
 	for (spawning = spawning.child("gryphoSpawningUnit"); spawning; spawning = spawning.next_sibling("gryphoSpawningUnit")) {
 
-		ToSpawnUnit* toSpawn = new ToSpawnUnit((ENTITY_TYPE)spawning.child("entityType").attribute("entityType").as_int);
+		ToSpawnUnit* toSpawn = new ToSpawnUnit((ENTITY_TYPE)spawning.child("entityType").attribute("entityType").as_int());
 
-		toSpawn->toSpawnTimer.Resume(spawning.child("entityType").attribute("entityType").as_int);
+		toSpawn->toSpawnTimer.Resume(spawning.child("entityType").attribute("entityType").as_int());
 		toSpawnUnitGrypho.push(toSpawn);
 	}
 	

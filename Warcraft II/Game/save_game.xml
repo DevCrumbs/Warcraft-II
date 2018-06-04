@@ -18,115 +18,114 @@
 			<numEnemyGroups numEnemyGroups="16" />
 		</general>
 		<dynamicEntities>
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="416" posY="416" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1075.79773" posY="1075.79773" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="544" posY="544" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="960" posY="960" dynamicEntityType="383" entitySide="2" entityType="2" enemyGroup="0" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="547.206604" posY="547.206604" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="0" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2720" posY="2720" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2688" posY="2688" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="1" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2816" posY="2816" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="288" posY="288" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3008" posY="3008" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="3" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="256" posY="256" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3150.57153" posY="3150.57153" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="3" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="384" posY="384" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3136" posY="3136" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="3" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="383.304413" posY="383.304413" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2664.28394" posY="2664.28394" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2784" posY="2784" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1056" posY="1056" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1216" posY="1216" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1024" posY="1024" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="4" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1333.51416" posY="1333.51416" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1312" posY="1312" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1361.94141" posY="1361.94141" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1120" posY="1120" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1248" posY="1248" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1920" posY="1920" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1792" posY="1792" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2368" posY="2368" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="8" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="829.068054" posY="829.068054" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="9" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="640" posY="640" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="672" posY="672" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2421.34961" posY="2421.34961" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="10" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2432" posY="2432" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="10" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2944" posY="2944" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1152" posY="1152" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2720" posY="2720" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1343.30444" posY="1343.30444" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1152" posY="1152" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1443.43311" posY="1443.43311" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3072" posY="3072" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3008" posY="3008" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2272" posY="2272" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="192" posY="192" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="13" dynamicEntityType="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1984" posY="1984" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="188.886459" posY="188.886459" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="13" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1984" posY="1984" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="192" posY="192" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="512" posY="512" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="344.602661" posY="344.602661" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="800" posY="800" dynamicEntityType="408" entitySide="0" entityType="2" enemyGroup="-1" dynamicEntityType="0" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2240" posY="2240" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" dynamicEntityType="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2880" posY="2880" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" dynamicEntityType="100" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="736" posY="736" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" dynamicEntityType="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="128" posY="128" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" dynamicEntityType="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2560" posY="2560" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" dynamicEntityType="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2592" posY="2592" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" dynamicEntityType="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2560" posY="2560" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" dynamicEntityType="100" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="928" posY="928" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" dynamicEntityType="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1184" posY="1184" dynamicEntityType="409" entitySide="0" entityType="2" enemyGroup="-1" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="800" posY="800" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" dynamicEntityType="100" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2432" posY="2432" dynamicEntityType="407" entitySide="1" entityType="2" enemyGroup="-1" dynamicEntityType="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2496" posY="2496" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" dynamicEntityType="60" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2560" posY="2560" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" dynamicEntityType="60" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2624" posY="2624" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" dynamicEntityType="60" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2688" posY="2688" dynamicEntityType="407" entitySide="1" entityType="2" enemyGroup="-1" dynamicEntityType="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="736" posY="736" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="928" posY="928" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="416" posY="416" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="736" posY="736" dynamicEntityType="383" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="736" posY="736" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2848" posY="2848" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2745.68311" posY="2745.68311" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2693.95898" posY="2693.95898" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="288" posY="288" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="220.582092" posY="220.582092" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="192" posY="192" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="352" posY="352" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2841.05884" posY="2841.05884" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2853.41748" posY="2853.41748" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="960" posY="960" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1120" posY="1120" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1197.49817" posY="1197.49817" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1248" posY="1248" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="704" posY="704" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1309.4165" posY="1309.4165" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="704" posY="704" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1337.27893" posY="1337.27893" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1920" posY="1920" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1888" posY="1888" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2144" posY="2144" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="8" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="896" posY="896" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="608" posY="608" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="804.213623" posY="804.213623" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2528" posY="2528" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="10" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2592" posY="2592" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="10" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2924.65894" posY="2924.65894" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1280" posY="1280" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2752" posY="2752" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1120" posY="1120" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1184" posY="1184" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1274.58228" posY="1274.58228" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2688" posY="2688" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3056.15356" posY="3056.15356" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2048" posY="2048" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="160" posY="160" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="13" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1888" posY="1888" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="128" posY="128" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="13" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1984" posY="1984" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="128" posY="128" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="548.194824" posY="548.194824" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="192" posY="192" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="800" posY="800" dynamicEntityType="408" entitySide="0" entityType="2" enemyGroup="-1" GetCurrLife="0" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1920" posY="1920" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2868.04419" posY="2868.04419" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="832" posY="832" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="345.05896" posY="345.05896" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2432" posY="2432" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2528" posY="2528" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2624" posY="2624" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="448" posY="448" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1184" posY="1184" dynamicEntityType="409" entitySide="0" entityType="2" enemyGroup="-1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="722.990234" posY="722.990234" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2976" posY="2976" dynamicEntityType="407" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3072" posY="3072" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="10" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3104" posY="3104" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="60" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3104" posY="3104" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="10" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2976" posY="2976" dynamicEntityType="407" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2656.05908" posY="2656.05908" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="-1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2893.49805" posY="2893.49805" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="-1" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2976" posY="2976" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="-1" GetCurrLife="40" />
 		</dynamicEntities>
 		<staticEntities>
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="1" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="401" />
-			<entity buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="395" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="3" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="392" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
-			<entity buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
-			<entity buildingSize="1" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="401" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="396" />
-			<entity buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="397" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
-			<entity buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="394" />
-			<entity buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="394" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="397" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
-			<entity buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" />
-			<entity buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="405" />
-			<entity buildingSize="2" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="404" />
-			<entity buildingSize="3" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="403" />
-			<entity buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="405" />
+			<entity posX="2720" posY="64" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="2240" posY="128" buildingSize="1" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="401" />
+			<entity posX="2880" posY="128" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="395" />
+			<entity posX="2912" posY="288" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="1088" posY="352" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
+			<entity posX="864" posY="384" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="704" posY="416" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="768" posY="416" buildingSize="3" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="392" />
+			<entity posX="576" posY="448" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
+			<entity posX="1088" posY="544" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
+			<entity posX="2848" posY="608" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" />
+			<entity posX="1152" posY="704" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
+			<entity posX="800" posY="1056" buildingSize="1" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="401" />
+			<entity posX="288" posY="1184" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="1184" posY="1184" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="224" posY="1216" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="160" posY="1248" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="1312" posY="1248" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="396" />
+			<entity posX="1888" posY="1248" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="397" />
+			<entity posX="2112" posY="1248" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
+			<entity posX="96" posY="1280" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="3008" posY="1344" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" />
+			<entity posX="1440" posY="1376" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="1824" posY="1440" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
+			<entity posX="3168" posY="1568" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="394" />
+			<entity posX="960" posY="1632" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="394" />
+			<entity posX="1856" posY="1632" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="3232" posY="1824" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" />
+			<entity posX="2912" posY="1856" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="1216" posY="2080" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" />
+			<entity posX="288" posY="2176" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="384" posY="2176" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" />
+			<entity posX="224" posY="2208" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="2240" posY="2208" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="3136" posY="2528" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="3040" posY="2560" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" />
+			<entity posX="2912" posY="2976" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" />
+			<entity posX="2272" posY="3232" buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="405" />
+			<entity posX="2464" posY="3296" buildingSize="2" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="404" />
+			<entity posX="2496" posY="3456" buildingSize="3" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="403" />
+			<entity posX="2272" posY="3552" buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="405" />
 		</staticEntities>
 	</entities>
 	<surge>
@@ -142,9 +141,9 @@
 		<currWave>
 			<totalPhasesOfCurrWave totalPhasesOfCurrWave="0" />
 			<phasesOfCurrWave phasesOfCurrWave="0" />
-			<nextWaveTimer nextWaveTimer="8" />
+			<nextWaveTimer nextWaveTimer="90" />
 			<nextPhaseTimer nextPhaseTimer="0" />
-			<secondsToNextWave secondsToNextWave="300" />
+			<secondsToNextWave secondsToNextWave="240" />
 			<secondsToNextPhase secondsToNextPhase="0" />
 		</currWave>
 		<timeline />
@@ -152,13 +151,11 @@
 	<fonts />
 	<player>
 		<upgrades>
-			<barracksUpgrade barracksUpgrade="0" />
 			<townHallUpgrade townHallUpgrade="0" />
-			<keepUpgrade keepUpgrade="0" />
 		</upgrades>
 		<resources>
-			<totalGold totalGold="0" />
-			<currentGold currentGold="0" />
+			<totalGold totalGold="550" />
+			<currentGold currentGold="550" />
 			<currentFood currentFood="6" />
 			<roomsCleared roomsCleared="0" />
 			<totalEnemiesKilled totalEnemiesKilled="0" />
@@ -166,10 +163,10 @@
 		</resources>
 		<stats>
 			<isWin isWin="0" />
-			<startGameTimer startGameTimer="8899" />
+			<startGameTimer startGameTimer="94502" />
 			<unitProduce unitProduce="5" />
-			<enemiesKill enemiesKill="0" />
-			<buildDestroy buildDestroy="0" />
+			<enemiesKill enemiesKill="3" />
+			<buildDestroy buildDestroy="1" />
 		</stats>
 		<barracks>
 			<isUnitSpawning isUnitSpawning="0" />
@@ -223,10 +220,10 @@
 			<isFrameByFrame isFrameByFrame="0" />
 		</movement>
 		<terenas>
-			<terenasDialogEvent terenasDialogEvent="0" />
+			<terenasDialogEvent terenasDialogEvent="6" />
 			<adviceMessage adviceMessage="17" />
-			<terenasDialogTimer terenasDialogTimer="8697" />
-			<adviceMessageTimer adviceMessageTimer="26624" />
+			<terenasDialogTimer terenasDialogTimer="69229" />
+			<adviceMessageTimer adviceMessageTimer="101690" />
 		</terenas>
 	</scene>
 	<scene />
@@ -7150,10 +7147,10 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="65" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="65" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="65" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="65" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="65" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="65" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="65" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="93" yPos="65" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="94" yPos="65" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="95" yPos="65" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="96" yPos="65" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="65" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="65" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="65" size="32" />
@@ -7252,17 +7249,17 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="66" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="66" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="66" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="66" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="90" yPos="66" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="91" yPos="66" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="92" yPos="66" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="93" yPos="66" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="66" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="66" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="66" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="66" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="66" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="66" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="66" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="66" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="66" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="66" size="32" />
@@ -7345,32 +7342,32 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="67" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="67" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="67" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="89" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="90" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="91" yPos="67" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="92" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="101" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="102" yPos="67" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="103" yPos="67" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="67" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="68" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="68" size="32" />
@@ -7449,33 +7446,33 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="68" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="68" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="68" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="89" yPos="68" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="90" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="101" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="102" yPos="68" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="103" yPos="68" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="68" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="69" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="69" size="32" />
@@ -7553,34 +7550,34 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="69" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="69" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="69" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="69" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="89" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="90" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="101" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="102" yPos="69" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="103" yPos="69" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="69" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="70" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="70" size="32" />
@@ -7658,35 +7655,35 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="70" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="70" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="70" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="89" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="90" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="101" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="102" yPos="70" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="103" yPos="70" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="104" yPos="70" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="71" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="71" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="2" yPos="71" size="32" />
@@ -7762,36 +7759,36 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="71" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="71" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="71" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="89" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="90" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="101" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="102" yPos="71" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="103" yPos="71" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="104" yPos="71" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="72" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="72" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="2" yPos="72" size="32" />
@@ -7867,36 +7864,36 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="72" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="72" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="72" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="89" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="90" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="101" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="102" yPos="72" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="103" yPos="72" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="104" yPos="72" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="73" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="73" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="2" yPos="73" size="32" />
@@ -7972,36 +7969,36 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="73" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="73" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="73" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="89" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="90" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="101" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="102" yPos="73" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="103" yPos="73" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="104" yPos="73" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="74" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="74" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="2" yPos="74" size="32" />
@@ -8077,36 +8074,36 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="74" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="74" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="74" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="89" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="90" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="101" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="102" yPos="74" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="103" yPos="74" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="104" yPos="74" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="75" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="75" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="2" yPos="75" size="32" />
@@ -8182,36 +8179,36 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="75" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="75" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="75" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="89" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="90" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="101" yPos="75" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="102" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="103" yPos="75" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="104" yPos="75" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="76" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="76" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="2" yPos="76" size="32" />
@@ -8287,36 +8284,36 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="76" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="76" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="76" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="89" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="90" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="100" yPos="76" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="101" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="102" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="103" yPos="76" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="104" yPos="76" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="77" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="77" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="2" yPos="77" size="32" />
@@ -8392,35 +8389,35 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="77" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="77" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="77" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="89" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="90" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="77" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="99" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="100" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="101" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="102" yPos="77" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="103" yPos="77" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="77" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="78" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="1" yPos="78" size="32" />
@@ -8497,34 +8494,34 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="78" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="78" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="101" yPos="78" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="102" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="89" yPos="78" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="90" yPos="78" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="78" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="78" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="78" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="78" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="78" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="78" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="78" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="98" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="99" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="100" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="101" yPos="78" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="102" yPos="78" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="103" yPos="78" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="104" yPos="78" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="0" yPos="79" size="32" />
@@ -8602,29 +8599,29 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="79" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="79" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="79" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="89" yPos="79" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="90" yPos="79" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="91" yPos="79" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="92" yPos="79" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="93" yPos="79" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="94" yPos="79" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="95" yPos="79" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="96" yPos="79" size="32" />
+			<fowTilesVector alpha="0" normalAlpha="185" xPos="97" yPos="79" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="79" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="79" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="100" yPos="79" size="32" />
@@ -8707,28 +8704,28 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="80" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="80" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="91" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="92" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="93" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="94" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="95" yPos="80" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="96" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="88" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="89" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="90" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="91" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="92" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="93" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="94" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="95" yPos="80" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="96" yPos="80" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="97" yPos="80" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="98" yPos="80" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="99" yPos="80" size="32" />
@@ -8812,19 +8809,19 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="81" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="81" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="81" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="81" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="81" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="81" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="81" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="81" size="32" />
@@ -8917,19 +8914,19 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="82" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="82" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="82" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="82" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="82" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="82" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="82" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="82" size="32" />
@@ -9022,19 +9019,19 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="83" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="83" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="83" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="83" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="83" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="83" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="83" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="83" size="32" />
@@ -9127,19 +9124,19 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="84" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="84" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="84" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="84" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="84" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="84" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="84" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="84" size="32" />
@@ -9232,19 +9229,19 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="85" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="85" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="85" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="86" yPos="85" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="87" yPos="85" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="85" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="89" yPos="85" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="90" yPos="85" size="32" />
@@ -9337,17 +9334,17 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="72" yPos="86" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="86" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="86" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="75" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="86" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="85" yPos="86" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="86" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="86" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="88" yPos="86" size="32" />
@@ -9443,15 +9440,15 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="87" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="87" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="87" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="87" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="87" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="87" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="87" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="87" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="87" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="87" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="87" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="87" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="87" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="87" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="87" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="87" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="87" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="87" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="87" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="87" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="87" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="87" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="87" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="87" size="32" />
@@ -9548,15 +9545,15 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="88" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="88" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="88" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="88" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="88" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="88" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="88" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="88" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="88" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="88" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="88" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="88" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="88" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="88" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="88" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="88" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="88" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="88" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="88" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="88" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="88" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="88" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="88" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="88" size="32" />
@@ -9653,15 +9650,15 @@
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="73" yPos="89" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="74" yPos="89" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="75" yPos="89" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="76" yPos="89" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="77" yPos="89" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="78" yPos="89" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="79" yPos="89" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="80" yPos="89" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="81" yPos="89" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="82" yPos="89" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="83" yPos="89" size="32" />
-			<fowTilesVector alpha="235" normalAlpha="235" xPos="84" yPos="89" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="76" yPos="89" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="77" yPos="89" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="78" yPos="89" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="79" yPos="89" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="80" yPos="89" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="81" yPos="89" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="82" yPos="89" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="83" yPos="89" size="32" />
+			<fowTilesVector alpha="185" normalAlpha="185" xPos="84" yPos="89" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="85" yPos="89" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="86" yPos="89" size="32" />
 			<fowTilesVector alpha="235" normalAlpha="235" xPos="87" yPos="89" size="32" />
@@ -13893,6 +13890,6 @@
 	<gui />
 	<fade />
 	<renderer>
-		<camera x="-2025.80725" y="-3093.51904" />
+		<camera x="-2476.4209" y="-2049.75049" />
 	</renderer>
 </game_state>
