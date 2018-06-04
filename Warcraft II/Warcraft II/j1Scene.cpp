@@ -2162,6 +2162,14 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
 		break;
 
+	case AdviceMessage_TOWNHALL_IS_NOT_FULL_LIFE:
+		text = "You need to repair the Townhall.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 235,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
 	case AdviceMessage_TOWNHALL_IS_NOT_UPGRADE:
 		text = "You need to upgrade the Townhall.";
 		adviceLabel->SetText(text, 340);
