@@ -1328,16 +1328,27 @@ bool j1FogOfWar::Save(pugi::xml_node& save) const
 
 bool j1FogOfWar::Load(pugi::xml_node& save)
 {
+	pugi::xml_node general = save.child("general");
 
+	width = general.child("width").attribute("width").as_int();
+	height = general.child("height").attribute("height").as_int();
 
-	//<width width = "105" / >
-	//	<height height = "130" / >
-	//	<isActive isActive = "1" / >
+	isActive = general.child("isActive").attribute("isActive").as_bool();
 
-	//pugi::xml_node fowTilesVector
-	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
+	UnLoadFowMap();
+	LoadFoWMap(width, height);
+
+	int i = 0;
+	pugi::xml_node fowTiles = save.child("fowTilesVector");
+	for (pugi::xml_node fowTile = fowTiles.child("fowTile"); fowTile; fowTile = fowTile.next_sibling("fowTile"))
 	{
-
+		if (i < (width * height))
+		{ 
+			fowTilesVector[i]->alpha = fowTile.attribute("alpha").as_int();
+			fowTilesVector[i]->normalAlpha = fowTile.attribute("normalAlpha").as_int();
+			fowTilesVector[i]->pos = { fowTile.attribute("xPos").as_int(), fowTile.attribute("yPos").as_int() };
+			fowTilesVector[i]->size = fowTile.attribute("size").as_int();
+		}
 	}
 	return true;
 }
