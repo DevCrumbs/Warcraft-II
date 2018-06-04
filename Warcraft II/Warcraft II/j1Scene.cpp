@@ -56,6 +56,9 @@ bool j1Scene::Awake(pugi::xml_node& config)
 
 	LOG("Loading scene");
 
+	pugi::xml_node general = config.child("general");
+	isSaveGame = general.child("SaveGame").attribute("SaveGame").as_bool();
+
 	// Load maps
 	pugi::xml_node maps = config.child("maps");
 
@@ -2437,6 +2440,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		else if (UIelem == saveGameLabel)
 		{
 			App->SaveGame();
+			isSaveGame = true;
 		}
 
 		else if (UIelem == returnLabel) {
@@ -2516,6 +2520,17 @@ bool j1Scene::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
+	bool create = false;
+
+	pugi::xml_node general;
+
+	App->config.child("scene").remove_child("general");
+	general = App->config.child("scene").append_child("general");
+
+	SaveAttribute(isSaveGame, "SaveGame", general, create);
+
+	App->configFile.save_file("config.xml");
+
 	return ret;
 }
 
@@ -2523,7 +2538,6 @@ bool j1Scene::Save(pugi::xml_node& save) const
 bool j1Scene::Load(pugi::xml_node& save)
 {
 	bool ret = true;
-
 
 	return ret;
 }

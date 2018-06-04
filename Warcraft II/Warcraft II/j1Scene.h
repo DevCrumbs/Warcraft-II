@@ -262,7 +262,7 @@ public:
 
 	// Player
 	bool god = false;
-
+	bool isSaveGame = false;
 	bool pause = false;
 
 	GoldChange hasGoldChanged = GoldChange_NoChange;

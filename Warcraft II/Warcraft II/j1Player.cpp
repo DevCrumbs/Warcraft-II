@@ -764,7 +764,6 @@ bool j1Player::Load(pugi::xml_node& save)
 
 	totalGold = resources.child("totalGold").attribute("totalGold").as_uint();
 	currentGold = resources.child("currentGold").attribute("currentGold").as_int();
-	currentFood = resources.child("currentFood").attribute("currentFood").as_int();
 	roomsCleared = resources.child("roomsCleared").attribute("roomsCleared").as_uint();
 	totalEnemiesKilled = resources.child("totalEnemiesKilled").attribute("totalEnemiesKilled").as_uint();
 	totalUnitsDead = resources.child("totalUnitsDead").attribute("totalUnitsDead").as_uint();

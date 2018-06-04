@@ -781,8 +781,13 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		}
 
 		else if (UIelem == loadLabel) {
-			menuActions = MenuActions_LOADGAME;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+			if (App->scene->isSaveGame) 
+			{
+				menuActions = MenuActions_LOADGAME;
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+			}
+			else
+				App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 		}
 		
 		else if (UIelem == returnLabel) {

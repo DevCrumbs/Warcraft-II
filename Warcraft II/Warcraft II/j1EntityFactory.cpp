@@ -1589,7 +1589,8 @@ bool j1EntityFactory::PreUpdate()
 			LOG("Spawning dynamic entity at tile %d,%d", x, y);
 		}
 		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) {
-
+			StaticEntity * building = (StaticEntity*)(*it);
+			building->CheckBuildingState();
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
 		}
@@ -4594,7 +4595,8 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		if (newEntity != nullptr)
 		{
 			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
-			App->player->unitProduce--;
+			if(newEntity->entitySide == EntitySide_Player)
+				App->player->unitProduce--;
 		}
 	}
 
@@ -4648,7 +4650,6 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		if (newEntity != nullptr)
 		{
 			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
-			newEntity->CheckBuildingState();
 		}
 
 	}
