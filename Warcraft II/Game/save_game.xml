@@ -172,11 +172,6 @@
 			<buildDestroy buildDestroy="0" />
 		</stats>
 		<barracks>
-			<isWin isWin="0" />
-			<startGameTimer startGameTimer="8899" />
-			<unitProduce unitProduce="5" />
-			<enemiesKill enemiesKill="0" />
-			<buildDestroy buildDestroy="0" />
 			<isUnitSpawning isUnitSpawning="0" />
 		</barracks>
 	</player>

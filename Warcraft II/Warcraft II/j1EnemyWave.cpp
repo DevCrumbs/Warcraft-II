@@ -371,6 +371,30 @@ void j1EnemyWave::PerformWave(int layer)
 
 bool j1EnemyWave::Load(pugi::xml_node& save) 
 {
+	pugi::xml_node general = save.child("general");
+
+	spawnProbability = general.child("spawnProbability").attribute("spawnProbability").as_float();
+	maxSpawnPerPhase = general.child("maxSpawnPerPhase").attribute("maxSpawnPerPhase").as_uint();
+
+	maxSpawnPerWave = general.child("maxSpawnPerWave").attribute("maxSpawnPerWave").as_uint();
+	totalWaves = general.child("totalWaves").attribute("totalWaves").as_uint();
+	isActiveWaves = general.child("isActiveWaves").attribute("isActiveWaves").as_bool();
+	isStartWave = general.child("isStartWave").attribute("isStartWave").as_bool();
+	totalSpawnOfCurrWave = general.child("totalSpawnOfCurrWave").attribute("totalSpawnOfCurrWave").as_uint();
+
+	pugi::xml_node currWave = save.child("currWave");
+
+	totalPhasesOfCurrWave = currWave.child("totalPhasesOfCurrWave").attribute("totalPhasesOfCurrWave").as_uint();
+	phasesOfCurrWave = currWave.child("phasesOfCurrWave").attribute("phasesOfCurrWave").as_uint();
+
+	// Waves timeline
+	pugi::xml_node timeline = save.child("timeline");
+
+	nextWaveTimer = general.child("nextWaveTimer").attribute("nextWaveTimer").as_float();
+	nextPhaseTimer = general.child("nextPhaseTimer").attribute("nextPhaseTimer").as_float();
+	secondsToNextWave = general.child("secondsToNextWave").attribute("secondsToNextWave").as_float();
+	secondsToNextPhase = general.child("secondsToNextPhase").attribute("secondsToNextPhase").as_float();
+
 	return true;
 }
 
