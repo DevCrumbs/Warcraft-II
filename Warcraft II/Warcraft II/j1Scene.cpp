@@ -2543,34 +2543,6 @@ bool j1Scene::Save(pugi::xml_node& save) const
 
 	create = false;
 
-	// Building costs
-	pugi::xml_node costs;
-	if (save.child("costs") == NULL)
-	{
-		room = save.append_child("costs");
-		create = true;
-	}
-	else
-	{
-		room = save.child("costs");
-	}
-
-	SaveAttribute(keepCost, "keepCost", costs, create);
-	SaveAttribute(castleCost, "castleCost", costs, create);
-	SaveAttribute(barracksCost, "barracksCost", costs, create);
-	SaveAttribute(chickenFarmCost, "chickenFarmCost", costs, create);
-	SaveAttribute(gryphonAviaryCost, "gryphonAviaryCost", costs, create);
-	SaveAttribute(churchCost, "churchCost", costs, create);
-	SaveAttribute(blacksmithCost, "blacksmithCost", costs, create);
-	SaveAttribute(elvenLumberCost, "elvenLumberCost", costs, create);
-	SaveAttribute(scoutTowerCost, "scoutTowerCost", costs, create);
-	SaveAttribute(guardTowerCost, "guardTowerCost", costs, create);
-	SaveAttribute(cannonTowerCost, "cannonTowerCost", costs, create);
-
-
-	create = false;
-
-	SaveAttribute(numMaps, "numMaps", general, create);
 
 	// Camera
 	pugi::xml_node camera;
@@ -2657,8 +2629,6 @@ bool j1Scene::Save(pugi::xml_node& save) const
 
 	create = false;
 
-	int mapDifficulty = 0;
-
 	SaveAttribute(isStarted, "isStarted", general, create);
 	SaveAttribute(isAttackCursor, "isAttackCursor", general, create);
 	SaveAttribute(isFadeToMenu, "isFadeToMenu", general, create);
@@ -2677,12 +2647,20 @@ bool j1Scene::Load(pugi::xml_node& save)
 {
 	bool ret = true;
 
-	/*
-	if (save.child("gate") != NULL) {
-	gate = save.child("gate").attribute("opened").as_bool();
-	fx = save.child("gate").attribute("fx").as_bool();
-	}
-	*/
+
+
+	SaveAttribute(up, "up", camera, create);
+	SaveAttribute(down, "down", camera, create);
+	SaveAttribute(left, "left", camera, create);
+	SaveAttribute(right, "right", camera, create);
+	SaveAttribute(width, "width", camera, create);
+	SaveAttribute(height, "height", camera, create);
+	SaveAttribute(scale, "scale", camera, create);
+
+	SaveAttribute(camSpeed, "camSpeed", camera, create);
+	SaveAttribute(camMovement, "camMovement", camera, create);
+	SaveAttribute(camMovMargin, "camMovMargin", camera, create);
+	SaveAttribute(isCamMovMarginCharged, "isCamMovMarginCharged", camera, create);
 
 	return ret;
 }
