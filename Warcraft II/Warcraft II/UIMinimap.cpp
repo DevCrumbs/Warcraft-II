@@ -465,7 +465,7 @@ bool UIMinimap::LoadMap()
 
 
 	SDL_Texture* tex = App->tex->Load(App->map->tilesetPath.data(), renderer);
-
+	int temp = 0;
 	for (list<MapLayer*>::const_iterator layer = App->map->data.layers.begin();
 		layer != App->map->data.layers.end(); ++layer)
 	{
@@ -490,7 +490,10 @@ bool UIMinimap::LoadMap()
 					iPoint world = App->map->MapToWorld(i, j);
 
 					//LOG("Tile x = %i, y = %i", world.x, world.y);
-					ret = SaveInRenderer(tex, world.x, world.y, section, 1, renderer);
+					if (section->w > 0 && section->h > 0)
+						ret = SaveInRenderer(tex, world.x, world.y, section, 1, renderer);
+					temp++;
+					LOG("temp %i", temp);
 				}
 			}
 		}

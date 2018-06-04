@@ -840,33 +840,36 @@ bool ElvenArcher::ChangeAnimation()
 	bool ret = false;
 
 	// The unit is dead
-	if (isDead) {
+	if (isDead) 
+	{
+		if (animation != nullptr)
+		{
+			UnitDirection dir = GetUnitDirection();
 
-		UnitDirection dir = GetUnitDirection();
+			if (dir == UnitDirection_Up || dir == UnitDirection_Up || dir == UnitDirection_UpLeft || dir == UnitDirection_UpRight
+				|| dir == UnitDirection_Left || dir == UnitDirection_Right || dir == UnitDirection_NoDirection) {
 
-		if (dir == UnitDirection_Up || dir == UnitDirection_Up || dir == UnitDirection_UpLeft || dir == UnitDirection_UpRight
-			|| dir == UnitDirection_Left || dir == UnitDirection_Right || dir == UnitDirection_NoDirection) {
+				if (animation->Finished() && unitState != UnitState_Die) {
+					unitState = UnitState_Die;
+					deadTimer.Start();
+				}
 
-			if (animation->Finished() && unitState != UnitState_Die) {
-				unitState = UnitState_Die;
-				deadTimer.Start();
+				animation = &elvenArcherInfo.deathUp;
+				ret = true;
+			}
+			else if (dir == UnitDirection_Down || dir == UnitDirection_DownLeft || dir == UnitDirection_DownRight) {
+
+				if (animation->Finished() && unitState != UnitState_Die) {
+					unitState = UnitState_Die;
+					deadTimer.Start();
+				}
+
+				animation = &elvenArcherInfo.deathDown;
+				ret = true;
 			}
 
-			animation = &elvenArcherInfo.deathUp;
-			ret = true;
+			return ret;
 		}
-		else if (dir == UnitDirection_Down || dir == UnitDirection_DownLeft || dir == UnitDirection_DownRight) {
-
-			if (animation->Finished() && unitState != UnitState_Die) {
-				unitState = UnitState_Die;
-				deadTimer.Start();
-			}
-
-			animation = &elvenArcherInfo.deathDown;
-			ret = true;
-		}
-
-		return ret;
 	}
 
 	// The unit is hitting their target
