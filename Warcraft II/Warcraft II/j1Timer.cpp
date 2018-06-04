@@ -39,6 +39,12 @@ void j1Timer::Stop()
 	started = false;
 }
 
+void j1Timer::Resume(int time)
+{
+	started = true;
+	startedAt = SDL_GetTicks() + time;
+
+}
 bool j1Timer::IsStarted()
 {
 	return started;

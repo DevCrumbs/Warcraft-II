@@ -101,6 +101,7 @@ bool j1Menu::Start()
 		isMouseTextCreated = true;
 	}
 
+	isLoad = false;
 	return true;
 }
 
@@ -125,7 +126,11 @@ bool j1Menu::Update(float dt)
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_LOADGAME:
-		//Todo OSCAR LoadGame
+		DeteleMenu();
+		App->audio->PlayFx(App->audio->GetFX().gameStart, 0); //Button sound
+		isFadetoScene = true;
+		isLoad = true;
+		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_SETTINGS:
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
