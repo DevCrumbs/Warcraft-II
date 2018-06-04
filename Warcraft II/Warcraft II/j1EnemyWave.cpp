@@ -454,10 +454,10 @@ bool j1EnemyWave::Save(pugi::xml_node& save) const
 		timeline = save.child("timeline");
 	}
 
-	SaveAttribute(nextWaveTimer, "nextWaveTimer", currWave, timeline);
-	SaveAttribute(nextPhaseTimer, "nextPhaseTimer", currWave, timeline);
-	SaveAttribute(secondsToNextWave, "secondsToNextWave", currWave, timeline);
-	SaveAttribute(secondsToNextPhase, "secondsToNextPhase", currWave, timeline);
+	SaveAttribute(nextWaveTimer, "nextWaveTimer", timeline, create);
+	SaveAttribute(nextPhaseTimer, "nextPhaseTimer", timeline, create);
+	SaveAttribute(secondsToNextWave, "secondsToNextWave", timeline, create);
+	SaveAttribute(secondsToNextPhase, "secondsToNextPhase", timeline, create);
 
 	create = false;
 
