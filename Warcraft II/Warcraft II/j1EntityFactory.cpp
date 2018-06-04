@@ -4528,7 +4528,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 
 	//---------------------------
 	//-------- Dynamic ----------
-	for (pugi::xml_node iterator = save.child("dynamicEntities").child("entity"); iterator; iterator.next_sibling("entity"))
+	for (pugi::xml_node iterator = save.child("dynamicEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
 	{
 		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("entityType").as_int();
 
@@ -4579,7 +4579,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 
 	//---------------------------
 	//-------- Static -----------
-	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator.next_sibling("entity"))
+	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
 	{
 		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("entityType").as_int();
 
