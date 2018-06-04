@@ -14,7 +14,7 @@
 
 j1Intro::j1Intro() : j1Module()
 {
-	name.assign("scene");
+	name.assign("Intro");
 }
 
 // Destructor
