@@ -2520,16 +2520,28 @@ bool j1Scene::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
-	bool create = false;
-
 	pugi::xml_node general;
 
 	App->config.child("scene").remove_child("general");
 	general = App->config.child("scene").append_child("general");
 
-	SaveAttribute(isSaveGame, "SaveGame", general, create);
+	SaveAttribute(isSaveGame, "SaveGame", general, false);
 
 	App->configFile.save_file("config.xml");
+
+	if (save.child("general") == NULL)
+	{
+		general = save.append_child("general");
+
+	}
+	else
+	{
+		general = save.child("general");
+	}
+
+	SaveAttribute(mapDifficulty, "mapDifficulty", general, false);
+
+
 
 	return ret;
 }
@@ -2539,6 +2551,11 @@ bool j1Scene::Load(pugi::xml_node& save)
 {
 	bool ret = true;
 
+<<<<<<< HEAD
+=======
+	mapDifficulty = save.child("general").child("mapDifficulty").attribute("mapDifficulty").as_float();
+
+>>>>>>> a40c5156069ddeaf0b5f4402fddb4e33e8efd273
 	return ret;
 }
 
