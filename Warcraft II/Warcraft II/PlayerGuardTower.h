@@ -51,7 +51,7 @@ private:
 
 	//Attack
 	Entity* attackingTarget = nullptr;
-	j1Timer attackTimer;
+	float attackTimer = 0.0f;
 	std::list<Entity*> enemyAttackList;
 
 	//Arrow
