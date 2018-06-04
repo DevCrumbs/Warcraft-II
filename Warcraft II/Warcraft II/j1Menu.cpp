@@ -119,13 +119,14 @@ bool j1Menu::Update(float dt)
 	case MenuActions_PLAY_MEDIUMTWO:
 	case MenuActions_PLAY_HARD:
 		DeleteNewGame();
-		App->audio->PlayFx(App->audio->GetFX().gameStart, 0); //Button sound
+		App->audio->PlayFx(App->audio->GetFX().gameStart, 0); //GameStart sound
 		isFadetoScene = true;
 		App->scene->mapDifficulty = menuActions;
 		menuActions = MenuActions_NONE;
 		break;
 	case MenuActions_LOADGAME:
 		//Todo OSCAR LoadGame
+		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		break;
 	case MenuActions_SETTINGS:
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
@@ -759,30 +760,24 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		if (UIelem == playLabel){
 			menuActions = MenuActions_NEWGAME;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 
 		else if (UIelem == exitLabel){
 			menuActions = MenuActions_EXIT;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 
 		else if (UIelem == settingsLabel){
 			menuActions = MenuActions_SETTINGS;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == creditsLabel) {
 			menuActions = MenuActions_CREDITS;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 
 		else if (UIelem == loadLabel) {
 			menuActions = MenuActions_LOADGAME;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		
 		else if (UIelem == returnLabel) {
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_RETURN;
 		}
 
@@ -806,27 +801,22 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		else if (UIelem == easyOneButt)
 		{
 			menuActions = MenuActions_PLAY_EASYONE;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == easyTwoButt)
 		{
 			menuActions = MenuActions_PLAY_EASYTWO;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == mediumOneButt)
 		{
 			menuActions = MenuActions_PLAY_MEDIUMONE;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == mediumTwoButt)
 		{
 			menuActions = MenuActions_PLAY_MEDIUMTWO;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		else if (UIelem == hardButt)
 		{
 			menuActions = MenuActions_PLAY_HARD;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		//Credits
 
@@ -870,7 +860,6 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		else if (UIelem == buttonsLabel)
 		{
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_CHANGE_BUTTONS;
 		}
 
@@ -878,12 +867,10 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		{
 			menuActions = MenuActions_DEFAULT_BUTTONS;
 			changeButt.changeLabel = nullptr;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 
 		else if (UIelem == returnSettings)
 		{
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			if (App->scene->active)
 				menuActions = MenuActions_CLEANUP;
 			else
@@ -906,8 +893,11 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_RIGHT_UP:
 		break;
 	case UI_EVENT_MOUSE_LEFT_UP:
+
 		if (UIelem == audioFX.slider || UIelem == audioMusic.slider) {
 			menuActions = MenuActions_NONE;
+			if (UIelem == audioFX.slider)
+				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 		break;
 	case UI_EVENT_MAX_EVENTS:
