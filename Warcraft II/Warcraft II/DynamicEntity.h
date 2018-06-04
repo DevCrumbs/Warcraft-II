@@ -258,6 +258,9 @@ public:
 	// Spawn
 	bool isSpawned = false;
 
+	// Fow
+	iPoint lastSeenTile = { -1,-1 };
+
 protected:
 
 	UnitInfo unitInfo;
@@ -312,9 +315,6 @@ protected:
 	UILifeBar* lifeBar = nullptr;
 	int lifeBarMarginX = 0;
 	int lifeBarMarginY = 0;
-
-	// Fow
-	iPoint lastSeenTile = { -1,-1 };
 
 	// Group selection
 	bool isBlitSavedGroupSelection = false;

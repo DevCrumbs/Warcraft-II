@@ -1109,6 +1109,7 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 				if (SDL_HasIntersection(&entityRect, &(*roomIterator).roomRect))
 				{
 					// Add entity to room list
+					(*currentEntity)->enemyGroup = entityGroups.size();
 					listOnRoom.push_back(*currentEntity);
 				}
 			}
@@ -1117,6 +1118,7 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 				entityGroups.push_back(listOnRoom);
 		}
 	}
+	App->entities->numEnemyGroups = entityGroups.size();
 	return true;
 }
 

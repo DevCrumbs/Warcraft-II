@@ -4539,20 +4539,77 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
+	bool create = false;
+
 	pugi::xml_node node;
+
+	pugi::xml_node general;
+	if (save.child("general") == NULL)
+	{
+		general = save.append_child("general");
+		create = true;
+	}
+	else
+	{
+		general = save.child("general");
+	}
+
+	SaveAttribute(numEnemyGroups, "numEnemyGroups", general, create);
+
+	
+	pugi::xml_node dynamicEntities;
+	save.remove_child("dynamicEntities");
+
+	dynamicEntities = save.append_child("dynamicEntities");
 
 	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
 
 	while (dynEnt != activeDynamicEntities.end()) {
-		// MYTODO: Add some code here
+		
+		pugi::xml_node entity = dynamicEntities.append_child("entity");
+
+		entity.append_attribute("lastSeenTileX") = (*dynEnt)->lastSeenTile.x;
+		entity.append_attribute("lastSeenTilew") = (*dynEnt)->lastSeenTile.y;
+		
+		entity.append_attribute("posX") = (*dynEnt)->GetPos().x;
+		entity.append_attribute("posY") = (*dynEnt)->GetPos().x;
+
+		entity.append_attribute("dynamicEntityType") = (*dynEnt)->dynamicEntityType;
+		entity.append_attribute("entitySide") = (*dynEnt)->entitySide;
+		entity.append_attribute("entityType") = (*dynEnt)->entityType;
+
+		entity.append_attribute("enemyGroup") = (*dynEnt)->enemyGroup;
+
+		entity.append_attribute("dynamicEntityType") = (*dynEnt)->GetCurrLife();
 
 		dynEnt++;
 	}
 
+
+	pugi::xml_node staticEntities;
+	save.remove_child("staticEntities");
+
+	staticEntities = save.append_child("staticEntities");
+
+
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
 
 	while (statEnt != activeStaticEntities.end()) {
-		// MYTODO: Add some code here
+
+		pugi::xml_node entity = staticEntities.append_child("entity");
+
+		entity.append_attribute("posX") = (*statEnt)->GetPos().x;
+		entity.append_attribute("posY") = (*statEnt)->GetPos().y;
+
+		entity.append_attribute("buildingSize") = (*statEnt)->buildingSize;
+
+		entity.append_attribute("buildingState") = (*statEnt)->buildingState;
+		entity.append_attribute("entitySide") = (*statEnt)->entitySide;
+		entity.append_attribute("entityType") = (*statEnt)->entityType;
+
+		entity.append_attribute("staticEntityCategory") = (*statEnt)->staticEntityCategory;
+		entity.append_attribute("staticEntityType") = (*statEnt)->staticEntityType;
+		
 		statEnt++;
 	}
 
