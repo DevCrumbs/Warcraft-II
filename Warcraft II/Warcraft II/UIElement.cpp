@@ -16,6 +16,7 @@ UIElement::UIElement(iPoint localPos, UIElement* parent, j1Module* listener, boo
 
 	App->win->GetWindowSize(width, height);
 	scale = App->win->GetScale();
+	originalPos = localPos;
 }
 
 UIElement::~UIElement() 
@@ -133,10 +134,10 @@ void UIElement::SetOrientation()
 	case UIE_HORIZONTAL_POS::HORIZONTAL_POS_LEFT:
 		break;
 	case UIE_HORIZONTAL_POS::HORIZONTAL_POS_RIGHT:
-		localPos.x -= width * scale;
+		localPos.x = originalPos.x - (width * scale);
 		break;
 	case UIE_HORIZONTAL_POS::HORIZONTAL_POS_CENTER:
-		localPos.x -= (width / 2) * scale;
+		localPos.x = originalPos.x - ((width / 2) * scale);
 		break;
 	}
 
@@ -144,10 +145,10 @@ void UIElement::SetOrientation()
 	case UIE_VERTICAL_POS::VERTICAL_POS_TOP:
 		break;
 	case UIE_VERTICAL_POS::VERTICAL_POS_BOTTOM:
-		localPos.y -= height * scale;
+		localPos.y = originalPos.y - (height * scale);
 		break;
 	case UIE_VERTICAL_POS::VERTICAL_POS_CENTER:
-		localPos.y -= (height / 2) * scale;
+		localPos.y = originalPos.y - ((height / 2) * scale);
 		break;
 	}
 }

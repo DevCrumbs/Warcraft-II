@@ -13,6 +13,12 @@
 
 GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), gryphonAviaryInfo(gryphonAviaryInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_HumanBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_GRYPHON_AVIARY;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Medium;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -39,7 +45,6 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife
 	// -----
 
 	texArea = &gryphonAviaryInfo.constructionPlanks1;
-	this->constructionTimer.Start();
 	buildingState = BuildingState_Building;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 	
@@ -51,15 +56,31 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife
 	peasants = App->particles->AddParticle(App->particles->peasantMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
 }
 
+GryphonAviary::~GryphonAviary()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+}
+
 void GryphonAviary::Move(float dt)
 {
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
-	UpdateAnimations(dt);
 
-	if (constructionTimer.Read() >= (constructionTime * 1000)) {
+	if (!isBuilt) {
+		constructionTimer += dt;
+		UpdateAnimations(dt);
+	}
+
+	if (constructionTimer >= constructionTime && !isBuilt) {
 		isBuilt = true;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
 }
 
@@ -70,13 +91,13 @@ void GryphonAviary::LoadAnimationsSpeed()
 }
 void GryphonAviary::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer >= (constructionTime / 3))
 		texArea = &gryphonAviaryInfo.constructionPlanks2;
 
-	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &gryphonAviaryInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000){
+	if (constructionTimer >= constructionTime){
 		texArea = &gryphonAviaryInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

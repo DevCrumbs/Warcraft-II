@@ -13,6 +13,12 @@
 
 TownHall::TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const TownHallInfo& townHallInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), townHallInfo(townHallInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_HumanBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_TOWN_HALL;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Big;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -59,6 +65,14 @@ TownHall::TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const To
 	entityCollider->isTrigger = true;
 }
 
+TownHall::~TownHall()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+}
+
 void TownHall::Move(float dt)
 {
 	if (listener != nullptr)
@@ -67,7 +81,6 @@ void TownHall::Move(float dt)
 	if (App->player->townHallUpgrade) {
 		
 		if (startTimer) {
-			this->constructionTimer.Start();
 			isBuilt = false;
 			startTimer = false;
 
@@ -75,7 +88,11 @@ void TownHall::Move(float dt)
 			peasants = App->particles->AddParticle(App->particles->peasantBigBuild, { (int)pos.x - 40,(int)pos.y - 40 });
 		}
 		townHallInfo.townHallType = TownHallType_Keep;
-		UpdateAnimations(dt);
+
+		if (!isBuilt) {
+			constructionTimer += dt;
+			UpdateAnimations(dt);
+		}
 	}
 }
 
@@ -87,7 +104,7 @@ void TownHall::LoadAnimationsSpeed()
 
 void TownHall::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	if (constructionTimer >= constructionTime) {
 
 		if (townHallInfo.townHallType == TownHallType_Keep && buildingState == BuildingState_Building) {
 			texArea = &townHallInfo.keepCompleteTexArea;
@@ -95,7 +112,11 @@ void TownHall::UpdateAnimations(float dt)
 			SetMaxLife(1400);
 			SetCurrLife(1400);
 			isBuilt = true;
-			peasants->isRemove = true;
+
+			if (peasants != nullptr) {
+				peasants->isRemove = true;
+				peasants = nullptr;
+			}
 		}
 	}
 	else {

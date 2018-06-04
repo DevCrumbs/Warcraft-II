@@ -31,10 +31,7 @@
 #include "Barracks.h"
 #include "ChickenFarm.h"
 #include "GryphonAviary.h"
-#include "MageTower.h"
-#include "Stables.h"
 #include "TownHall.h"
-#include "ElvenLumberMill.h"
 #include "GreatHall.h"
 #include "Stronghold.h"
 #include "Fortress.h"
@@ -128,7 +125,7 @@ public:
 	bool SelectEntity(Entity* entity);
 
 	// Selects the entities within a rectangle
-	void SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide);
+	void SelectEntitiesWithinRectangle(SDL_Rect rectangleRect, ENTITY_CATEGORY entityCategory = EntityCategory_NONE, EntitySide entitySide = EntitySide_NoSide, bool isCtrl = false, bool isShift = false);
 
 	// Unselects all entities
 	void UnselectAllEntities();
@@ -148,9 +145,6 @@ public:
 
 	bool RemoveAllUnitsGoals(list<DynamicEntity*> units);
 
-	// Attack
-	bool InvalidateTargetInfo(Entity* target);
-
 	// Movement
 	void InvalidateMovementEntity(Entity* entity);
 
@@ -165,6 +159,7 @@ public:
 	bool SaveEntityGroup(list<DynamicEntity*> units, uint index = 0);
 	list<DynamicEntity*> GetSavedEntityGroup(uint index);
 	void SelectEntitiesGroup(list<DynamicEntity*> units);
+	void UpdateGroupIcons(uint index = 0);
 
 	// Dynamic Entities
 	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);
@@ -196,6 +191,7 @@ public:
 	list<DynamicEntity*> activeDynamicEntities;
 	list<StaticEntity*> activeStaticEntities;
 	list<DynamicEntity*> unitsSelected;
+	list<DynamicEntity*> auxUnitsSelected;
 
 	// Saved entities groups
 	list<DynamicEntity*> savedGroups[MAX_SAVED_GROUPS];
@@ -265,10 +261,7 @@ private:
 	BarracksInfo builtBarracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
 	ChickenFarmInfo builtChickenFarmInfo;
-	ElvenLumberMillInfo elvenLumberMillInfo;
-	StablesInfo stablesInfo;
 	GryphonAviaryInfo gryphonAviaryInfo;
-	MageTowerInfo mageTowerInfo;
 	ScoutTowerInfo scoutTowerInfo;
 	PlayerGuardTowerInfo playerGuardTowerInfo; 
 	PlayerCannonTowerInfo playerCannonTowerInfo;

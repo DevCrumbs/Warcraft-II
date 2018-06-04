@@ -12,18 +12,27 @@ class EnemyBlacksmith :public StaticEntity
 {
 public:
 	EnemyBlacksmith(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyBlacksmithInfo& enemyBlacksmithInfo, j1Module* listener);
-	virtual ~EnemyBlacksmith(){}
+	~EnemyBlacksmith();
 
 	void Move(float dt);
-
-	// Animations
-	void LoadAnimationsSpeed();
-	void UpdateAnimations(float dt);
 
 private:
 
 	EnemyBlacksmithInfo enemyBlacksmithInfo;
 
+	// Reconstruction
+	Particle* peon = nullptr;
+
+	float secondsReconstruction = 0.0f;
+
+	float startReconstructionTimer = 0.0f;
+	float inProgressReconstructionTimer = 0.0f;
+
+	bool isRestartReconstructionTimer = false;
+	bool isStartReconstructionTimer = false;
+	bool isInProgressReconstructionTimer = false;
+
+	BuildingState buildingStateBeforeReconstruction = BuildingState_NoState;
 };
 
 #endif

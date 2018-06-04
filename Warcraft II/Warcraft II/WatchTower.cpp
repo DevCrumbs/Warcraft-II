@@ -12,6 +12,12 @@
 
 WatchTower::WatchTower(fPoint pos, iPoint size, int currLife, uint maxLife, const WatchTowerInfo& watchTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), watchTowerInfo(watchTowerInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_OrcishBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_WATCH_TOWER;
+	*(EntitySide*)&entitySide = EntitySide_Enemy;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Small;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -33,13 +39,109 @@ WatchTower::WatchTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	sightRadiusCollider = CreateRhombusCollider(ColliderType_EnemySightRadius, watchTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
 	sightRadiusCollider->isTrigger = true;
 	entityCollider->isTrigger = true;
+
+	secondsReconstruction = GetSecondsReconstruction(buildingSize);
 }
 
+WatchTower::~WatchTower() 
+{
+	if (peon != nullptr)
+		peon->isRemove = true;
+	peon = nullptr;
+}
 
 void WatchTower::Move(float dt)
 {
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
+
+	// ------------------------------------------------------------------------------------
+
+	// Reconstruction conditions
+	if (buildingState == BuildingState_LowFire && !isStartReconstructionTimer) {
+
+		isRestartReconstructionTimer = false;
+		isStartReconstructionTimer = true;
+		startReconstructionTimer = 0.0f;
+	}
+
+	else if (buildingState == BuildingState_HardFire && !isRestartReconstructionTimer) {
+
+		startReconstructionTimer = 0.0f;
+		isRestartReconstructionTimer = true;
+	}
+
+	else if (buildingState == BuildingState_Destroyed && isStartReconstructionTimer) {
+
+		isRestartReconstructionTimer = false;
+		isStartReconstructionTimer = false;
+		startReconstructionTimer = 0.0f;
+	}
+
+	// START Reconstruction timer
+	if (isStartReconstructionTimer)
+
+		startReconstructionTimer += dt;
+
+	//LOG("startReconstructionTimer: %f", startReconstructionTimer);
+
+	// Reconstruction start
+	if (startReconstructionTimer >= SECONDS_START_RECONSTRUCTION) {
+
+		buildingStateBeforeReconstruction = buildingState;
+		buildingState = BuildingState_Building;
+
+		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0);
+		peon = App->particles->AddParticle(App->particles->peonMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
+
+		isRestartReconstructionTimer = false;
+		isStartReconstructionTimer = false;
+		startReconstructionTimer = 0.0f;
+
+		isInProgressReconstructionTimer = true;
+		inProgressReconstructionTimer = 0.0f;
+	}
+
+	// IN PROGRESS Reconstruction timer
+	if (isInProgressReconstructionTimer)
+
+		inProgressReconstructionTimer += dt;
+
+	//LOG("inProgressReconstructionTimer: %f", inProgressReconstructionTimer);
+
+	// Reconstruction end
+	if (buildingStateBeforeReconstruction == BuildingState_HardFire) {
+
+		// Remove the hard fire and add a low fire
+		if (inProgressReconstructionTimer >= secondsReconstruction / 2.0f) {
+
+			if (fire != nullptr)
+				fire->isRemove = true;
+			fire = App->particles->AddParticle(App->particles->lowFire, { (int)this->GetPos().x + this->GetSize().x / 3, (int)this->GetPos().y + this->GetSize().y / 3 });
+
+			buildingStateBeforeReconstruction = BuildingState_NoState;
+		}
+	}
+
+	if (inProgressReconstructionTimer >= secondsReconstruction) {
+
+		buildingState = BuildingState_Normal;
+		SetCurrLife(maxLife);
+
+		// Remove the low fire
+		if (fire != nullptr)
+			fire->isRemove = true;
+
+		// Remove the peon
+		if (peon != nullptr)
+			peon->isRemove = true;
+		peon = nullptr;
+
+		isInProgressReconstructionTimer = false;
+		inProgressReconstructionTimer = 0.0f;
+	}
+
+	// ------------------------------------------------------------------------------------
 
 	//Check if building is destroyed
 	if (currLife <= 0)
@@ -54,14 +156,6 @@ void WatchTower::Move(float dt)
 	}
 
 	TowerStateMachine(dt);
-
-	//Update animations for the construction cycle
-	if (!isBuilt)
-		UpdateAnimations(dt);
-
-	//Check is building is built already
-	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000))
-		isBuilt = true;
 
 	//Delete arrow if it is fired when an enemy is already dead 
 	if (attackingTarget == nullptr && arrowParticle != nullptr) {
@@ -129,9 +223,7 @@ void WatchTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, CollisionSt
 		}
 
 		break;
-
 	}
-
 }
 
 void WatchTower::TowerStateMachine(float dt)
@@ -162,15 +254,4 @@ void WatchTower::CreateArrow()
 {
 	arrowParticle = App->particles->AddParticle(App->particles->enemyArrows,
 	{ (int)GetPos().x + 16, (int)GetPos().y + 16 }, attackingTarget->GetPos(), watchTowerInfo.arrowSpeed, watchTowerInfo.damage);
-}
-
-
-// Animations
-void WatchTower::LoadAnimationsSpeed()
-{
-
-}
-void WatchTower::UpdateAnimations(float dt)
-{
-
 }

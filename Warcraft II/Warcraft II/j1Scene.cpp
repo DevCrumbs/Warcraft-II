@@ -79,7 +79,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	levelTheme3 = audio.child("levelTheme3").attribute("path").as_string();
 	levelTheme4 = audio.child("levelTheme4").attribute("path").as_string();
 
-	//LoadKeys(config.child("buttons"));
+	LoadKeys(config.child("buttons"));
 
 	//Load camera attributes
 	pugi::xml_node camera = config.child("camera");
@@ -87,6 +87,8 @@ bool j1Scene::Awake(pugi::xml_node& config)
 	camSpeed = camera.attribute("speed").as_float();
 	camMovement = camera.attribute("movement").as_int();
 	camMovMargin = camera.attribute("movMarginPcnt").as_float();
+
+	this->config = App->config.child(this->name.data());
 
 	return ret;
 }
@@ -243,34 +245,45 @@ bool j1Scene::PreUpdate()
 
 	if (App->isDebug)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+
+		// SDL_SCANCODE_KP_1
+		if (App->input->GetKey(buttonSpawnFootman) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_FOOTMAN, pos, App->entities->GetUnitInfo(EntityType_FOOTMAN), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+		// SDL_SCANCODE_KP_2
+		else if (App->input->GetKey(buttonSpawnArcher) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_ELVEN_ARCHER, pos, App->entities->GetUnitInfo(EntityType_ELVEN_ARCHER), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+		// SDL_SCANCODE_KP_3
+		else if (App->input->GetKey(buttonSpawnGryphon) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_GRYPHON_RIDER, pos, App->entities->GetUnitInfo(EntityType_GRYPHON_RIDER), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+		// SDL_SCANCODE_KP_4
+		else if (App->input->GetKey(buttonSpawnGrunt) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_GRUNT, pos, App->entities->GetUnitInfo(EntityType_GRUNT), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+		// SDL_SCANCODE_KP_5
+		else if (App->input->GetKey(buttonSpawnTroll) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_TROLL_AXETHROWER, pos, App->entities->GetUnitInfo(EntityType_TROLL_AXETHROWER), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
+		// SDL_SCANCODE_KP_6
+		else if (App->input->GetKey(buttonSpawnDragon) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_DRAGON, pos, App->entities->GetUnitInfo(EntityType_DRAGON), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+		// SDL_SCANCODE_KP_7
+		else if (App->input->GetKey(buttonSpawnSheep) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(EntityType_SHEEP), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+		// SDL_SCANCODE_KP_8
+		else if (App->input->GetKey(buttonSpawnBoar) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(EntityType_BOAR), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
+		// SDL_SCANCODE_KP_9
+		else if (App->input->GetKey(buttonSpawnAlleria) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_ALLERIA, pos, App->entities->GetUnitInfo(EntityType_ALLERIA), unitInfo, App->player);
 
-		else if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
+		// SDL_SCANCODE_KP_0
+		else if (App->input->GetKey(buttonSpawnTauralyon) == KEY_DOWN)
 			App->entities->AddEntity(EntityType_TURALYON, pos, App->entities->GetUnitInfo(EntityType_TURALYON), unitInfo, App->player);
 	}
 	//_Entities_creation
@@ -287,18 +300,6 @@ bool j1Scene::PreUpdate()
 	if (hasFoodChanged == true) {
 		UpdateFoodLabel();
 		hasFoodChanged = false;
-	}
-
-	switch (pauseMenuActions) 
-	{
-	case PauseMenuActions_SLIDERFX:
-		App->menu->UpdateSlider(AudioFXPause);
-		break;
-	case PauseMenuActions_SLIDERMUSIC:
-		App->menu->UpdateSlider(AudioMusicPause);
-		break;
-	default:
-		break;
 	}
 
 	// Change to wite Gold Label Color before 2 sec
@@ -323,16 +324,19 @@ bool j1Scene::Update(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 	// ---------------------------------------------------------------------
 
-	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
+	// SDL_SCANCODE_F9
+	if (App->input->GetKey(buttonTogleDebug) == KEY_DOWN)
 		App->isDebug = !App->isDebug;
 	
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->isDebug)
+	// SDL_SCANCODE_F10
+	if (App->input->GetKey(buttonTogleDebugAttack) == KEY_DOWN && App->isDebug)
 		debugDrawAttack = !debugDrawAttack;
 
 	if (debugDrawAttack)
 		App->collision->DebugDraw(); // debug draw collisions
 
-	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN && App->isDebug)
+	// SDL_SCANCODE_F11
+	if (App->input->GetKey(buttonTogleDebugMovement) == KEY_DOWN && App->isDebug)
 		debugDrawMovement = !debugDrawMovement;
 
 	if (debugDrawMovement)
@@ -407,22 +411,26 @@ bool j1Scene::Update(float dt)
 		/// SELECT UNITS
 
 		// b) Select a group of units
-		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT) {
+		// SDL_SCANCODE_LSHIFT									// SDL_SCANCODE_RSHIFT
+		if (App->input->GetKey(buttonSelectGroup) == KEY_REPEAT || App->input->GetKey(buttonSelectGroupb) == KEY_REPEAT) {
 
 			bool isSelectedGroup = false;
 			uint numGroup = 0;
 
-			if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+			// SDL_SCANCODE_1
+			if (App->input->GetKey(buttonSelectGroup1) == KEY_DOWN) {
 
 				numGroup = 0;
 				isSelectedGroup = true;
 			}
-			else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+			// SDL_SCANCODE_2
+			else if (App->input->GetKey(buttonSelectGroup2) == KEY_DOWN) {
 
 				numGroup = 1;
 				isSelectedGroup = true;
 			}
-			else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+			// SDL_SCANCODE_3
+			else if (App->input->GetKey(buttonSelectGroup3) == KEY_DOWN) {
 
 				numGroup = 2;
 				isSelectedGroup = true;
@@ -458,10 +466,40 @@ bool j1Scene::Update(float dt)
 			}
 		}
 
+		// Manage units selection
+		/// Remove certain units from units selected
+		// SDL_SCANCODE_LSHIFT									// SDL_SCANCODE_RSHIFT
+		if (App->input->GetKey(buttonSelectGroup) == KEY_DOWN || App->input->GetKey(buttonSelectGroupb) == KEY_DOWN) {
+			App->entities->auxUnitsSelected = App->entities->unitsSelected;
+			isShift = true;
+			isCtrl = false;
+		}
+		// SDL_SCANCODE_LSHIFT									// SDL_SCANCODE_RSHIFT
+		else if (App->input->GetKey(buttonSelectGroup) == KEY_UP || App->input->GetKey(buttonSelectGroupb) == KEY_UP) {
+			isShift = false;
+			isCtrl = false;
+		}
+		/// Select more than one group of units
+		// SDL_SCANCODE_LCTRL										// SDL_SCANCODE_RCTRL
+		if (App->input->GetKey(buttonSaveGroup) == KEY_DOWN || App->input->GetKey(buttonSaveGroupb) == KEY_DOWN) {
+			App->entities->auxUnitsSelected.clear();
+			isCtrl = true;
+			isShift = false;
+		}
+		// SDL_SCANCODE_LCTRL										// SDL_SCANCODE_RCTRL
+		else if (App->input->GetKey(buttonSaveGroup) == KEY_UP || App->input->GetKey(buttonSaveGroupb) == KEY_UP) {
+			isCtrl = false;
+			isShift = false;
+		}
+
 		// Select units by rectangle drawing
 		if (abs(width) >= RECTANGLE_MIN_AREA && abs(height) >= RECTANGLE_MIN_AREA && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT) {
 
-			if (startRectangle.x != -1 && startRectangle.y != -1) {
+			Entity* playerBuilding = App->entities->IsEntityUnderMouse(startRectangle, EntityCategory_STATIC_ENTITY, EntitySide_Player);
+			Entity* neutralBuilding = App->entities->IsEntityUnderMouse(startRectangle, EntityCategory_STATIC_ENTITY, EntitySide_Neutral);
+
+			if (startRectangle.x != -1 && startRectangle.y != -1
+				&& playerBuilding == nullptr && neutralBuilding == nullptr) {
 
 				// Draw the rectangle
 				SDL_Rect mouseRect = { startRectangle.x, startRectangle.y, width, height };
@@ -477,13 +515,35 @@ bool j1Scene::Update(float dt)
 					mouseRect.h *= -1;
 				}
 
-				App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player);
+				App->entities->SelectEntitiesWithinRectangle(mouseRect, EntityCategory_DYNAMIC_ENTITY, EntitySide_Player, isCtrl, isShift);
 			}
 		}
 
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP)
+		//LOG("%i", App->entities->unitsSelected.size());
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 
 			startRectangle = { -1,-1 };
+
+			if (isShift)
+
+				App->entities->auxUnitsSelected.clear();
+
+			if (isCtrl) {
+			
+				list<DynamicEntity*>::const_iterator it = App->entities->auxUnitsSelected.begin();
+
+				while (it != App->entities->auxUnitsSelected.end()) {
+				
+					if (find(App->entities->unitsSelected.begin(), App->entities->unitsSelected.end(), *it) == App->entities->unitsSelected.end())
+						App->entities->unitsSelected.push_back(*it);
+
+					it++;
+				}
+
+				App->entities->auxUnitsSelected.clear();
+			}
+		}
 
 		units = App->entities->GetLastUnitsSelected();
 
@@ -510,24 +570,31 @@ bool j1Scene::Update(float dt)
 			if (group != nullptr) {
 
 				// a) Save group of units
-				if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT) {
+				// SDL_SCANCODE_LCTRL										// SDL_SCANCODE_RCTRL
+				if (App->input->GetKey(buttonSaveGroup) == KEY_REPEAT || App->input->GetKey(buttonSaveGroup) == KEY_REPEAT) {
 
 					bool isSavedGroup = false;
 
-					if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) {
+					// SDL_SCANCODE_1
+					if (App->input->GetKey(buttonSelectGroup1) == KEY_DOWN) {
 					
 						App->entities->SaveEntityGroup(units, 0);
 						isSavedGroup = true;
+						App->entities->UpdateGroupIcons(0);
 					}
-					else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+					// SDL_SCANCODE_2
+					else if (App->input->GetKey(buttonSelectGroup2) == KEY_DOWN) {
 
 						App->entities->SaveEntityGroup(units, 1);
 						isSavedGroup = true;
+						App->entities->UpdateGroupIcons(1);
 					}
-					else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+					// SDL_SCANCODE_3
+					else if (App->input->GetKey(buttonSelectGroup3) == KEY_DOWN) {
 
 						App->entities->SaveEntityGroup(units, 2);
 						isSavedGroup = true;
+						App->entities->UpdateGroupIcons(2);
 					}
 
 					if (isSavedGroup) {
@@ -545,7 +612,8 @@ bool j1Scene::Update(float dt)
 				}
 
 				// Move the camera to the group of units
-				if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN) {
+				// SDL_SCANCODE_Q
+				if (App->input->GetKey(buttonGoToUnits) == KEY_DOWN) {
 
 					iPoint centroid = App->entities->CalculateCentroidEntities(units);
 					iPoint cameraPos = App->render->FindCameraPosFromCenterPos(centroid);
@@ -583,11 +651,13 @@ bool j1Scene::Update(float dt)
 
 				// Command a group of units
 				/// COMMAND PATROL
-				if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN)
+				// SDL_SCANCODE_N
+				if (App->input->GetKey(buttonPatrolUnits) == KEY_DOWN)
 					App->entities->CommandToUnits(units, UnitCommand_Patrol);
 
 				/// STOP UNIT (FROM WHATEVER THEY ARE DOING)
-				if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
+				// SDL_SCANCODE_M
+				if (App->input->GetKey(buttonStopUnits) == KEY_DOWN)
 
 					App->entities->CommandToUnits(units, UnitCommand_Stop);
 
@@ -698,16 +768,16 @@ bool j1Scene::Update(float dt)
 				}
 
 				/// SET GOAL (COMMAND MOVE TO POSITION)
-				bool isGryphonRider = App->entities->IsOnlyThisTypeOfUnits(units, EntityType_GRYPHON_RIDER);
+				bool isOnlyGryphonRider = App->entities->IsOnlyThisTypeOfUnits(units, EntityType_GRYPHON_RIDER);
 				bool isGryphonRiderRunestone = false;
 
-				if (isGryphonRider)			
+				if (isOnlyGryphonRider)
 					isGryphonRiderRunestone = App->entities->AreAllUnitsDoingSomething(units, UnitState_HealRunestone);
 
 				// Draw a shaped goal
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT && !App->gui->IsMouseOnUI())
 
-					if (isGryphonRider && !isGryphonRiderRunestone)
+					if (isOnlyGryphonRider && !isGryphonRiderRunestone)
 						group->DrawShapedGoal(mouseTile, false);
 					else
 						group->DrawShapedGoal(mouseTile);
@@ -726,11 +796,13 @@ bool j1Scene::Update(float dt)
 
 							group->ClearShapedGoal();
 
-							if (isGryphonRider && !isGryphonRiderRunestone) {
-								if (group->SetGoal(mouseTile, false)) /// normal goal
+							if (isOnlyGryphonRider && isGryphonRiderRunestone) {
+
+								if (group->SetGoal(mouseTile, true)) /// normal goal
 									isGoal = true;
 							}
 							else {
+							
 								if (group->SetGoal(mouseTile)) /// normal goal
 									isGoal = true;
 							}
@@ -806,11 +878,6 @@ bool j1Scene::Update(float dt)
 	if (adviceMessageTimer.Read() >= 3500 && adviceMessage == AdviceMessage_UNDER_ATTACK) {
 		HideAdviceMessage();
 	}
-	if (App->input->GetKey(buttonReloadMap) == KEY_REPEAT)
-	{
-		App->map->UnLoad();
-		//App->map->CreateNewMap();
-	}
 
 	if (parchmentImg != nullptr) {
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
@@ -872,12 +939,17 @@ bool j1Scene::Update(float dt)
 		CreateSettingsMenu();
 		pauseMenuActions = PauseMenuActions_NONE;
 		break;
-	
+	case PauseMenuActions_SLIDERFX:
+		App->menu->UpdateSlider(AudioFXPause);
+		break;
+	case PauseMenuActions_SLIDERMUSIC:
+		App->menu->UpdateSlider(AudioMusicPause);
+		break;
 	default:
 		break;
 	}
-
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
+	// SDL_SCANCODE_ESCAPE
+	if (App->input->GetKey(buttonPauseMenu) == KEY_DOWN) {
 		App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		if (parchmentImg == nullptr) {
 			UIImage_Info parchmentInfo;
@@ -898,27 +970,21 @@ bool j1Scene::PostUpdate()
 {
 	bool ret = true;
 
-	if (App->input->GetKey(buttonLeaveGame) == KEY_DOWN) {
+	if (!isStartedFinalTransition) {
 
-		App->gui->RemoveElem((UIElement**)&parchmentImg);
-		return false;
-	}
+		if (App->player->imagePrisonersVector.size() >= 2) {
 
-	if (App->player->imagePrisonersVector.size() >= 2) {
-
-		App->player->isWin = true;
-
-		if (!isStartedFinalTransition) {
-		
+			App->player->isWin = true;
 			finalTransition.Start();
 			isStartedFinalTransition = true;
 		}
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && App->isDebug) {
-	
-		App->player->isWin = true;
-		App->fade->FadeToBlack(this, App->finish);
-		App->finish->active = true;
+		// SDL_SCANCODE_F5
+		else if (App->input->GetKey(buttonWinGame) == KEY_DOWN && App->isDebug)
+		{
+			App->player->isWin = true;
+			App->fade->FadeToBlack(this, App->finish);
+			App->finish->active = true;
+		}
 	}
 
 	// Final transition timer (when win is achieved)
@@ -928,32 +994,35 @@ bool j1Scene::PostUpdate()
 		App->finish->active = true;
 	}
 
+	if (!isStartedFinalTransition) {
 
-	//LoseConditions
-		//We have no more units in game
-	if ((App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) && 
-	//Not enogh gold to create Archer (cheeper unit) and we have no units spawning
+		//LoseConditions
+			//We have no more units in game
+		if ((App->entities->GetNumberOfPlayerUnits() <= 0 && isStarted) &&
+			//Not enogh gold to create Archer (cheeper unit) and we have no units spawning
 			((App->player->GetCurrentGold() < App->player->elvenArcherCost && App->player->toSpawnUnitBarracks.empty() && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning)
-	//Have not barracks and gryphos and have not enogh gold for build it and create the cheeper option (grypho)
-			|| (App->player->GetCurrentGold() < (App->player->gryphonRiderCost + gryphonAviaryCost) && App->player->gryphonAviary == nullptr && App->player->barracks == nullptr)
-	//Not enogh gold to create Gryphos and have not barracks and we and have no units spawning
-			|| (App->player->GetCurrentGold() < App->player->gryphonRiderCost  && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning))
-	//Instant Lose with F2
-		|| (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && App->isDebug)
-	//Orde destroy townhall
-		|| App->player->townHall == nullptr) {
+				//Have not barracks and gryphos and have not enogh gold for build it and create the cheeper option (grypho)
+				|| (App->player->GetCurrentGold() < (App->player->gryphonRiderCost + gryphonAviaryCost) && App->player->gryphonAviary == nullptr && App->player->barracks == nullptr)
+				//Not enogh gold to create Gryphos and have not barracks and we and have no units spawning
+				|| (App->player->GetCurrentGold() < App->player->gryphonRiderCost  && App->player->barracks == nullptr && App->player->toSpawnUnitGrypho.empty() && !App->player->isUnitSpawning))
+			//Instant Lose with F6
+			// SDL_SCANCODE_F6
+			|| (App->input->GetKey(buttonLoseGame) == KEY_DOWN && App->isDebug)
+			//Orde destroy townhall
+			|| App->player->townHall == nullptr) {
 
-		App->player->isWin = false;
-		App->fade->FadeToBlack(this, App->finish);
-		App->finish->active = true;
-	}
-	else
-		isStarted = true;
+			App->player->isWin = false;
+			App->fade->FadeToBlack(this, App->finish);
+			App->finish->active = true;
+		}
+		else
+			isStarted = true;
 
-	if (isFadeToMenu) {
-		App->fade->FadeToBlack(this, App->menu);
-		App->menu->active = true;
-		isFadeToMenu = false;
+		if (isFadeToMenu) {
+			App->fade->FadeToBlack(this, App->menu);
+			App->menu->active = true;
+			isFadeToMenu = false;
+		}
 	}
 
 	return ret;
@@ -1007,93 +1076,19 @@ bool j1Scene::CleanUp()
 // Debug keys
 void j1Scene::DebugKeys()
 {
-	// Movement
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN)
-		isFrameByFrame = !isFrameByFrame;
-
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-		debugDrawMovement = !debugDrawMovement;
-
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
-		debugDrawPath = !debugDrawPath;
-
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
-		debugDrawMap = !debugDrawMap;
-*/
-
-	// F1: start from the beginning of the first level
-	//if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
-		/*
-		if (index == 0)
-			App->entities->playerData->position = App->entities->playerData->startPos;
-		else
-			index = 0;
-
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
-		*/
-	//}
-
-	// F2: start from the beginning of the current level
-	//if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) {
-		/*
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
-		*/
-	//}
-
-	// F4: change between maps
-	//if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN) {
-		/*
-		if (index == 0)
-			index = 1;
-		else
-			index = 0;
-
-		App->fade->FadeToBlack(this, this, FADE_LESS_SECONDS, FADE_TYPE::FADE_TYPE_SLIDE);
-		*/
-	//}
-
-	// F5: save the current state
-	//if (App->input->GetKey(buttonSaveGame) == KEY_DOWN) {
-	//	App->SaveGame();
-	//}
-
-	// F6: load the previous state
-	//if (App->input->GetKey(buttonLoadGame) == KEY_DOWN) {
-	//	App->LoadGame();
-	//}
-
-	// F7: fullscreen
-	if (App->input->GetKey(buttonFullScreen) == KEY_DOWN)
-		App->win->SetFullscreen();
-
-	// F10: God mode
-	//if (App->input->GetKey(buttonGodMode) == KEY_DOWN)
-		//god = !god;
-
-	// 1, 2, 3: camera blit
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN && App->map->blitOffset < 15 && App->map->cameraBlit)
-		App->map->blitOffset += 7;
-
-	else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN && App->map->blitOffset > -135 && App->map->cameraBlit)
-		App->map->blitOffset -= 7;
-
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-		App->map->cameraBlit = !App->map->cameraBlit;
-		*/
-
 	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN) {
 		App->SaveGame();
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	// SDL_SCANCODE_SPACE
+	if (App->input->GetKey(buttonGoToBase) == KEY_DOWN)
 	{
 		App->render->camera.x = -basePos.x;
 		App->render->camera.y = -basePos.y;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
+	// SDL_SCANCODE_B
+	if (App->input->GetKey(buttonBuildingMenu) == KEY_DOWN)
 
 		ChangeBuildingMenuState(&buildingMenuButtons);
 }
@@ -1110,19 +1105,23 @@ void j1Scene::CheckCameraMovement(float dt)
 	//NOT MOVING WITH App->input->GetKey(buttonMoveUp) == KEY_REPEAT
 	//Move with arrows
 	//UP
-	if ((App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) 
+	// SDL_SCANCODE_UP										// SDL_SCANCODE_W
+	if ((App->input->GetKey(buttonMoveUp) == KEY_REPEAT || App->input->GetKey(buttonMoveUpb) == KEY_REPEAT)
 		&& App->render->camera.y <= 0)
 		App->render->camera.y += camSpeed * dt;
 	//DOWN
-	if ((App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	// SDL_SCANCODE_DOWN										// SDL_SCANCODE_S
+	if ((App->input->GetKey(buttonMoveDown) == KEY_REPEAT || App->input->GetKey(buttonMoveDownb) == KEY_REPEAT)
 		&& App->render->camera.y >= downMargin)
 		App->render->camera.y -= camSpeed * dt;
 	//LEFT
-	if ((App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	// SDL_SCANCODE_LEFT										// SDL_SCANCODE_A
+	if ((App->input->GetKey(buttonMoveLeft) == KEY_REPEAT || App->input->GetKey(buttonMoveLeftb) == KEY_REPEAT)
 		&& App->render->camera.x <= 0)
 		App->render->camera.x += camSpeed * dt;
 	//RIGHT
-	if ((App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	// SDL_SCANCODE_RIGHT										// SDL_SCANCODE_D
+	if ((App->input->GetKey(buttonMoveRight) == KEY_REPEAT || App->input->GetKey(buttonMoveRightb) == KEY_REPEAT)
 		&& App->render->camera.x >= rightMargin)
 		App->render->camera.x -= camSpeed * dt;
 
@@ -1188,13 +1187,11 @@ void j1Scene::LoadInGameUI()
 	labelInfo.interactive = false;
 	buildingLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, buildingButton);
 
-
 	//Pause menu 
 	pauseMenuButt = App->gui->CreateUIButton({ 5,1 }, buttonInfo, this);
 
 	labelInfo.text = "Menu";
 	pauseMenuLabel = App->gui->CreateUILabel({ buttonInfo.hoverTexArea.w / 2, 8 }, labelInfo, this, pauseMenuButt);
-
 
 	UIImage_Info entitiesInfo;
 	entitiesInfo.draggable = false;
@@ -1220,6 +1217,7 @@ void j1Scene::LoadInGameUI()
 	//create this before entitiesInfo (Parent)
 	App->player->CreateEntitiesStatsUI();
 	App->player->CreateGroupSelectionButtons();
+	App->player->CreatePlayerGroupsButtons();
 	App->player->CreateUISpawningUnits();
 }
 
@@ -1536,21 +1534,32 @@ FX j1Scene::ChooseRandomUnitSound(ENTITY_TYPE unitType, bool isSelect)
 	return unitSound;
 }
 	
-void j1Scene::ChangeBuildingButtState(MenuBuildingButton* elem)
+void j1Scene::ChangeBuildingButtState(MenuBuildingButton* elem, bool isForced)
 {
-	elem->cost->isActive = !elem->cost->isActive;
-	elem->icon->isActive = !elem->icon->isActive;
-	elem->name->isActive = !elem->name->isActive;
+	if (!isForced) {
+		elem->cost->isActive = !elem->cost->isActive;
+		elem->icon->isActive = !elem->icon->isActive;
+		elem->name->isActive = !elem->name->isActive;
+	}
+	else
+	{
+		elem->cost->isActive = false;
+		elem->icon->isActive = false;
+		elem->name->isActive = false;
+	}
 }
-void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem)
+void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem, bool isForced)
 {
-	buildingMenu->isActive = !buildingMenu->isActive;
-	ChangeBuildingButtState(&elem->cannonTower);
-	ChangeBuildingButtState(&elem->chickenFarm);
-	ChangeBuildingButtState(&elem->gryphonAviary);
-	ChangeBuildingButtState(&elem->guardTower);
-	ChangeBuildingButtState(&elem->scoutTower);
-	ChangeBuildingButtState(&elem->barracks);
+	if (!isForced)
+		buildingMenu->isActive = !buildingMenu->isActive;
+	else
+		buildingMenu->isActive = false;
+	ChangeBuildingButtState(&elem->cannonTower, isForced);
+	ChangeBuildingButtState(&elem->chickenFarm, isForced);
+	ChangeBuildingButtState(&elem->gryphonAviary, isForced);
+	ChangeBuildingButtState(&elem->guardTower, isForced);
+	ChangeBuildingButtState(&elem->scoutTower, isForced);
+	ChangeBuildingButtState(&elem->barracks, isForced);
 	if (buildingMenu->isActive)
 	{
 		UpdateLabelsMenu();
@@ -1559,15 +1568,15 @@ void j1Scene::ChangeBuildingMenuState(BuildingMenu * elem)
 }
 void j1Scene::UpdateIconsMenu()
 {
-	ChangeMenuIconsText(buildingMenuButtons.chickenFarm.icon, chickenFarmCost, { 241,34,50,41 }, { 292,34,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.cannonTower.icon, cannonTowerCost, { 394,118,50,41 }, { 445,118,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.guardTower.icon, guardTowerCost, { 394,76,50,41 }, { 445,76,50,41 });
-	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.chickenFarm.icon, chickenFarmCost, { 241,34,50,41 }, { 292,34,50,41 }, { 343,34,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.cannonTower.icon, cannonTowerCost, { 394,118,50,41 }, { 445,118,50,41 }, { 496,118,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.guardTower.icon, guardTowerCost, { 394,76,50,41 }, { 445,76,50,41 }, { 496,76,50,41 });
+	ChangeMenuIconsText(buildingMenuButtons.scoutTower.icon, scoutTowerCost, { 394,34,50,41 }, { 445,34,50,41 }, { 496,34,50,41 });
 	//Only one construction for each one
-	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracksCost, { 547,160,50,41 }, { 802,286,50,41 }, true, App->player->barracks);
-	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 }, true, App->player->gryphonAviary);
+	ChangeMenuIconsText(buildingMenuButtons.barracks.icon, barracksCost, { 547,160,50,41 }, { 802,286,50,41 }, { 853,286,50,41 }, true, App->player->barracks);
+	ChangeMenuIconsText(buildingMenuButtons.gryphonAviary.icon, gryphonAviaryCost, { 394,160,50,41 }, { 445,160,50,41 }, { 496,160,50,41 }, true, App->player->gryphonAviary);
 }
-void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle, StaticEntity* stcEntity)
+void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, SDL_Rect pressedText, bool isSingle, StaticEntity* stcEntity)
 {
 	if (isSingle) {
 
@@ -1575,14 +1584,14 @@ void j1Scene::ChangeMenuIconsText(UIButton * butt, int cost, SDL_Rect normalText
 			if (stcEntity == App->player->gryphonAviary && !App->player->townHallUpgrade)
 				butt->ChangesTextsAreas(false);
 			else
-				butt->ChangesTextsAreas(true, normalText, hoverText);
+				butt->ChangesTextsAreas(true, normalText, hoverText, pressedText);
 		}
 		else
 			butt->ChangesTextsAreas(false);
 	}
 	else {
 		if (App->player->GetCurrentGold() >= cost)
-			butt->ChangesTextsAreas(true, normalText, hoverText);
+			butt->ChangesTextsAreas(true, normalText, hoverText, pressedText);
 		else 
 			butt->ChangesTextsAreas(false);
 	}
@@ -1638,7 +1647,7 @@ void j1Scene::LoadBuildingMenu()
 
 	UIImage_Info imageInfo;
 	imageInfo.draggable = false;
-	imageInfo.texArea = { 0,33,240,529 };
+	imageInfo.texArea = { 0,33,240,345 };
 	imageInfo.horizontalOrientation = HORIZONTAL_POS_RIGHT;
 	buildingMenu = App->gui->CreateUIImage({ (int)App->win->width, 0 }, imageInfo, this, nullptr);
 	buildingMenuOn = true;
@@ -1754,34 +1763,30 @@ void j1Scene::UnLoadResourcesLabels()
 
 void j1Scene::CreatePauseMenu() 
 {
-	UIButton_Info buttonInfo;
-	buttonInfo.normalTexArea = { 1400, 45, 129, 33 };
-	buttonInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
-	int x = parchmentImg->GetLocalPos().x + 100;
-	int y = parchmentImg->GetLocalPos().y + 110;
-	settingsButt = App->gui->CreateUIButton	 ({ x - 10, y }, buttonInfo, this);
-
-	y = parchmentImg->GetLocalPos().y + 60;
-	continueButt = App->gui->CreateUIButton	 ({ x - 8, y }, buttonInfo, this);
-
-	y = parchmentImg->GetLocalPos().y + 160;
-	buttonInfo.normalTexArea = { 1400, 45, 150, 33 };
-	ReturnMenuButt = App->gui->CreateUIButton({ x, y}, buttonInfo, this);
 
 	UILabel_Info labelInfo;
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.normalColor = Black_;
 	labelInfo.hoverColor = ColorGreen;
-	labelInfo.text = "Settings";
-	settingsLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, settingsButt);
-
 	labelInfo.text = "Resume Game";
-	continueLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, continueButt);
 
+	int x = parchmentImg->GetLocalPos().x + 100;
+	int y = parchmentImg->GetLocalPos().y + 60;
+	continueLabel = App->gui->CreateUILabel({x, y}, labelInfo, this);
+
+	y += 40;
+	labelInfo.text = "Save Game";
+	saveGameLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+
+	y += 40;
+	labelInfo.text = "Settings";
+	settingsLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
+
+	y += 40;
 	labelInfo.fontName = FONT_NAME_WARCRAFT14;
 	labelInfo.text = "Return to Main Menu";
-	ReturnMenuLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 12 }, labelInfo, this, ReturnMenuButt);
+	ReturnMenuLabel = App->gui->CreateUILabel({ x, y }, labelInfo, this);
 
 	// Mouse texture
 	SDL_Rect r = App->menu->mouseText->GetDefaultTexArea();
@@ -1791,12 +1796,10 @@ void j1Scene::CreatePauseMenu()
 
 void j1Scene::DestroyPauseMenu() 
 {
-	App->gui->RemoveElem((UIElement**)&settingsButt);
-	App->gui->RemoveElem((UIElement**)&ReturnMenuButt);
-	App->gui->RemoveElem((UIElement**)&continueButt);
 	App->gui->RemoveElem((UIElement**)&settingsLabel);
 	App->gui->RemoveElem((UIElement**)&continueLabel);
 	App->gui->RemoveElem((UIElement**)&ReturnMenuLabel);
+	App->gui->RemoveElem((UIElement**)&saveGameLabel);
 }
 
 void j1Scene::CreateSettingsMenu() 
@@ -1819,12 +1822,22 @@ void j1Scene::CreateSettingsMenu()
 	int y = parchmentImg->GetLocalPos().y + 160;
 	fullScreenButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
 
-	x -= 100;
+	y += 25;
+	x -= 25;
+	labelInfo.text = "Controls";
+	labelInfo.hoverColor = ColorGreen;
+	labelInfo.normalColor = Black_;
+	labelInfo.fontName = FONT_NAME_WARCRAFT;
+	buttonsLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
+
+	y -= 25;
+	x -= 75;
 	labelInfo.text = "Fullscreen";
 	labelInfo.fontName = FONT_NAME_WARCRAFT;
 	labelInfo.verticalOrientation = VERTICAL_POS_CENTER;
-	labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = Black_;
+	labelInfo.interactive = false;
 	fullScreenLabel = App->gui->CreateUILabel({ x,y }, labelInfo, this);
+
 
 	// Sliders
 	x = parchmentImg->GetLocalPos().x + 30;
@@ -1836,26 +1849,17 @@ void j1Scene::CreateSettingsMenu()
 	relativeVol = (float)App->audio->musicVolume / MAX_AUDIO_VOLUM;
 	y += 50;
 	App->menu->AddSlider(AudioMusicPause, { x,y }, "Audio Music", relativeVol, butText, bgText, this);
-
-	buttonInfo.checkbox = false;
-	buttonInfo.normalTexArea = { 1400, 45, 40, 20 };
-	buttonInfo.hoverTexArea = { 0, 0, 0, 0 };
-	buttonInfo.pressedTexArea = { 0, 0, 0, 0 };
-	x = parchmentImg->GetLocalPos().x + 30;
-	y = parchmentImg->GetLocalPos().y + 195;
-	returnButt = App->gui->CreateUIButton({ x, y }, buttonInfo, this);
-
+	labelInfo.interactive = true;
 	labelInfo.horizontalOrientation = HORIZONTAL_POS_CENTER;
 	labelInfo.verticalOrientation = VERTICAL_POS_TOP;
-	labelInfo.hoverColor = ColorGreen;
-	labelInfo.pressedColor = White_;
 	labelInfo.text = "Back";
-	returnLabel = App->gui->CreateUILabel({ buttonInfo.normalTexArea.w / 2, 5 }, labelInfo, this, returnButt);
+	x = parchmentImg->GetLocalPos().x + 50;
+	y = parchmentImg->GetLocalPos().y + 185;
+	returnLabel = App->gui->CreateUILabel({x, y}, labelInfo, this);
 }
 
 void j1Scene::DestroySettingsMenu() 
 {
-	App->gui->RemoveElem((UIElement**)&returnButt);
 	App->gui->RemoveElem((UIElement**)&returnLabel);
 	App->gui->RemoveElem((UIElement**)&fullScreenButt);
 	App->gui->RemoveElem((UIElement**)&fullScreenLabel);
@@ -1865,7 +1869,7 @@ void j1Scene::DestroySettingsMenu()
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.slider);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.name);
 	App->gui->RemoveElem((UIElement**)&AudioMusicPause.value);
-
+	App->gui->RemoveElem((UIElement**)&buttonsLabel);
 }
 
 void j1Scene::DestroyAllUI()
@@ -1958,7 +1962,7 @@ uint j1Scene::GetGroupElementSize()
 }
 void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 {
-	//TODO: Search the same pos and lenght
+	// TODO: Search the same pos and length
 	string text;
 	switch (dialogEvent)
 	{
@@ -1983,15 +1987,14 @@ void j1Scene::ShowTerenasDialog(TerenasDialogEvents dialogEvent)
 		terenasAdvices.text->SetLocalPos({ 355,37 });
 		break;
 	case TerenasDialog_GOLD_MINE:
-		text = "To get gold from the mine you have to select units and they will gather it.";
+		text = "To get gold from the mine, first select the units that will gather it.";
 		terenasAdvices.text->SetText(text, 320);
 		terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
 	case TerenasDialog_RUNESTONE:
-		//TODO ??
-		//text = "To get gold from the mine you have to select units and they will gather it.";
-		//terenasAdvices.text->SetText(text, 320);
-		//terenasAdvices.text->SetLocalPos({ 355,47 });
+		text = "To heal a group of units, first select the units.";
+		terenasAdvices.text->SetText(text, 320);
+		terenasAdvices.text->SetLocalPos({ 355,47 });
 		break;
 	case TerenasDialog_NONE:
 		break;
@@ -2125,6 +2128,31 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 		adviceLabel->SetColor(White_);
 		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
 		break;
+
+	case AdviceMessage_BUILDING_IS_FULL_LIFE:
+		text = "This building has full life.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 275,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_TOWNHALL_IS_NOT_UPGRADE:
+		text = "You need to upgrade the Townhall.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 235,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
+	case AdviceMessage_ONLY_ONE_BUILDING:
+		text = "You already have this building.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 255,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
 	}
 
 
@@ -2189,8 +2217,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_CHICKEN_FARM;
 				}
-				else if (App->player->GetCurrentGold() < chickenFarmCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < chickenFarmCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
 
 			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade && App->player->townHall->buildingState == BuildingState_Normal) {
@@ -2203,11 +2239,37 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_GRYPHON_AVIARY;
 				}
-				else if (App->player->GetCurrentGold() < gryphonAviaryCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < gryphonAviaryCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
-			else if (UIelem == buildingMenuButtons.gryphonAviary.icon)
-				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && !App->player->townHallUpgrade) { //Theres no townhall upgrade
+					if (App->scene->adviceMessage != AdviceMessage_TOWNHALL_IS_NOT_UPGRADE) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_TOWNHALL_IS_NOT_UPGRADE;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->townHallUpgrade) { //There's a aviary already on map
+					if (App->scene->adviceMessage != AdviceMessage_ONLY_ONE_BUILDING) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_ONLY_ONE_BUILDING;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 
 
 			else if (UIelem == buildingMenuButtons.scoutTower.icon) {
@@ -2220,8 +2282,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_SCOUT_TOWER;
 				}
-				else if (App->player->GetCurrentGold() < scoutTowerCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < scoutTowerCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
 
 			else if (UIelem == buildingMenuButtons.guardTower.icon) {
@@ -2234,8 +2304,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_GUARD_TOWER;
 				}
-				else if (App->player->GetCurrentGold() < guardTowerCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < guardTowerCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
 
 			else if (UIelem == buildingMenuButtons.cannonTower.icon) {
@@ -2248,8 +2326,16 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_PLAYER_CANNON_TOWER;
 				}
-				else if (App->player->GetCurrentGold() < cannonTowerCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < cannonTowerCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
 
 			else if (UIelem == buildingMenuButtons.barracks.icon && App->player->barracks == nullptr) {
@@ -2262,17 +2348,33 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					ChangeBuildingMenuState(&buildingMenuButtons);
 					alphaBuilding = EntityType_BARRACKS;
 				}
-				else if (App->player->GetCurrentGold() < barracksCost)
-					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				else if (App->player->GetCurrentGold() < barracksCost) {
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+					else
+						App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+				}
 			}
-			else if (UIelem == buildingMenuButtons.barracks.icon)
-				App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+			else if (UIelem == buildingMenuButtons.barracks.icon) //There's a barrack already on map
 
+				if (App->scene->adviceMessage != AdviceMessage_ONLY_ONE_BUILDING) {
+					App->audio->PlayFx(App->audio->GetFX().errorButt);
+					App->scene->adviceMessageTimer.Start();
+					App->scene->adviceMessage = AdviceMessage_ONLY_ONE_BUILDING;
+					App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+				}
+				else
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 		}
 
 		if (UIelem == pauseMenuButt) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			if (parchmentImg == nullptr) {
+				ChangeBuildingMenuState(&buildingMenuButtons, true);
 				UIImage_Info parchmentInfo;
 				parchmentInfo.texArea = App->gui->parchmentArea;
 				parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
@@ -2284,25 +2386,36 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			}
 		}
 
-		else if (UIelem == continueButt) {
+		else if (UIelem == continueLabel) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_DESTROY;
 		}
 
-		else if (UIelem == ReturnMenuButt) {
+		else if (UIelem == ReturnMenuLabel) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_RETURN_MENU;
 		}
 
-		else if (UIelem == settingsButt) {
+		else if (UIelem == settingsLabel) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			pauseMenuActions = PauseMenuActions_SETTINGS_MENU;
 		}
 
-		else if (UIelem == returnButt) {
+		else if (UIelem == saveGameLabel)
+		{
+			//TODO OSCAR SAVE
+		}
+
+		else if (UIelem == returnLabel) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			DestroySettingsMenu();
 			pauseMenuActions = PauseMenuActions_CREATED;
+		}
+
+		else if (UIelem == buttonsLabel)
+		{
+			App->menu->active = true;
+			App->menu->menuActions = MenuActions_CHANGE_BUTTONS;
 		}
 
 		else if (UIelem == (UIElement*)AudioFXPause.slider)
@@ -2555,65 +2668,156 @@ bool j1Scene::LoadKeys(pugi::xml_node& buttons)
 {
 	bool ret = true;
 
-	if ((buttonSaveGame = (SDL_Scancode)buttons.attribute("buttonSaveGame").as_int()) ==  SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load SaveGame button");
-		ret = false;
-	}
 
-	if ((buttonLoadGame = (SDL_Scancode)buttons.attribute("buttonLoadGame").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load SaveGame button");
-		ret = false;
-	}
+	ret = LoadKey(&buttonGoToBase, "buttonGoToBase", buttons);
+	ret = LoadKey(&buttonGoToUnits, "buttonGoToUnits", buttons);
+	ret = LoadKey(&buttonMinimap, "buttonMinimap", buttons);
+	ret = LoadKey(&buttonBuildingMenu, "buttonBuildingMenu", buttons);
+	ret = LoadKey(&buttonPauseMenu, "buttonPauseMenu", buttons);
+	ret = LoadKey(&buttonPatrolUnits, "buttonPatrolUnits", buttons);
+	ret = LoadKey(&buttonStopUnits, "buttonStopUnits", buttons);
 
-	if ((buttonFullScreen = (SDL_Scancode)buttons.attribute("buttonFullScreen").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load FullScreen button");
-		ret = false;
-	}
+	ret = LoadKey(&buttonSpawnFootman, "buttonSpawnFootman", buttons);
+	ret = LoadKey(&buttonSpawnArcher, "buttonSpawnArcher", buttons);
+	ret = LoadKey(&buttonSpawnGryphon, "buttonSpawnGryphon", buttons);
+	ret = LoadKey(&buttonSpawnGrunt, "buttonSpawnGrunt", buttons);
+	ret = LoadKey(&buttonSpawnTroll, "buttonSpawnTroll", buttons);
+	ret = LoadKey(&buttonSpawnDragon, "buttonSpawnDragon", buttons);
+	ret = LoadKey(&buttonSpawnSheep, "buttonSpawnSheep", buttons);
+	ret = LoadKey(&buttonSpawnBoar, "buttonSpawnBoar", buttons);
+	ret = LoadKey(&buttonSpawnAlleria, "buttonSpawnAlleria", buttons);
+	ret = LoadKey(&buttonSpawnTauralyon, "buttonSpawnTauralyon", buttons);
 
-	if ((buttonGodMode = (SDL_Scancode)buttons.attribute("buttonGodMode").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load GodMode button");
-		ret = false;
-	}
+	ret = LoadKey(&buttonTogleDebug, "buttonTogleDebug", buttons);
+	ret = LoadKey(&buttonTogleDebugAttack, "buttonTogleDebugAttack", buttons);
+	ret = LoadKey(&buttonTogleDebugMovement, "buttonTogleDebugMovement", buttons);
 
-	if ((buttonMoveUp = (SDL_Scancode)buttons.attribute("buttonMoveUp").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveUp button");
-		ret = false;
-	}
 
-	if ((buttonMoveDown = (SDL_Scancode)buttons.attribute("buttonMoveDown").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveDown button");
-		ret = false;
-	}
+	ret = LoadKey(&buttonSelectGroup, "buttonSelectGroup", buttons);
+	ret = LoadKey(&buttonSelectGroupb, "buttonSelectGroupb", buttons);
+	ret = LoadKey(&buttonSelectGroup1, "buttonSelectGroup1", buttons);
+	ret = LoadKey(&buttonSelectGroup2, "buttonSelectGroup2", buttons);
+	ret = LoadKey(&buttonSelectGroup3, "buttonSelectGroup3", buttons);
 
-	if ((buttonMoveLeft = (SDL_Scancode)buttons.attribute("buttonMoveLeft").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveLeft button");
-		ret = false;
-	}
+	ret = LoadKey(&buttonSaveGroup, "buttonSaveGroup", buttons);
+	ret = LoadKey(&buttonSaveGroupb, "buttonSaveGroupb", buttons);
+	ret = LoadKey(&buttonWinGame, "buttonWinGame", buttons);
+	ret = LoadKey(&buttonLoseGame, "buttonLoseGame", buttons);
+	ret = LoadKey(&buttonMoveUp, "buttonMoveUp", buttons);
+	ret = LoadKey(&buttonMoveUpb, "buttonMoveUpb", buttons);
+	ret = LoadKey(&buttonMoveDown, "buttonMoveDown", buttons);
+	ret = LoadKey(&buttonMoveDownb, "buttonMoveDownb", buttons);
+	ret = LoadKey(&buttonMoveLeft, "buttonMoveLeft", buttons);
+	ret = LoadKey(&buttonMoveLeftb, "buttonMoveLeftb", buttons);
+	ret = LoadKey(&buttonMoveRight, "buttonMoveRight", buttons);
+	ret = LoadKey(&buttonMoveRightb, "buttonMoveRightb", buttons);
 
-	if ((buttonMoveRight = (SDL_Scancode)buttons.attribute("buttonMoveRight").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load MoveRight button");
-		ret = false;
-	}
-
-	if ((buttonLeaveGame = (SDL_Scancode)buttons.attribute("buttonLeaveGame").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load LeaveGame button");
-		ret = false;
-	}
-
-	if ((buttonReloadMap = (SDL_Scancode)buttons.attribute("buttonReloadMap").as_int()) == SDL_SCANCODE_UNKNOWN)
-	{
-		LOG("Could not load ReloadMap button");
-		ret = false;
-	}
-	
 	return ret;
+}
+
+void j1Scene::SaveKeys()
+{
+	App->configFile.child("config").child(name.data()).remove_child("buttons");
+	pugi::xml_node buttons = App->configFile.child("config").child(name.data()).append_child("buttons");
+
+	//Clear
+	buttons.remove_child("buttonGoToBase");
+	buttons.remove_child("buttonGoToUnits");
+	buttons.remove_child("buttonMinimap");
+	buttons.remove_child("buttonBuildingMenu");
+	buttons.remove_child("buttonPauseMenu");
+	buttons.remove_child("buttonPatrolUnits");
+	buttons.remove_child("buttonStopUnits");
+				   
+	buttons.remove_child("buttonSpawnFootman");
+	buttons.remove_child("buttonSpawnArcher");
+	buttons.remove_child("buttonSpawnGryphon");
+	buttons.remove_child("buttonBuildingMenu");
+	buttons.remove_child("buttonSpawnGrunt");
+	buttons.remove_child("buttonSpawnTroll");
+	buttons.remove_child("buttonSpawnDragon");
+	buttons.remove_child("buttonSpawnSheep");
+	buttons.remove_child("buttonSpawnBoar");
+	buttons.remove_child("buttonSpawnAlleria");
+	buttons.remove_child("buttonSpawnTauralyon");
+				   
+	buttons.remove_child("buttonTogleDebug");
+	buttons.remove_child("buttonTogleDebugAttack");
+	buttons.remove_child("buttonTogleDebugMovement");
+				   
+	buttons.remove_child("buttonSelectGroup");
+	buttons.remove_child("buttonSelectGroupb");
+	buttons.remove_child("buttonSelectGroup1");
+	buttons.remove_child("buttonSelectGroup2");
+	buttons.remove_child("buttonSelectGroup3");
+				   
+	buttons.remove_child("buttonSaveGroup");
+	buttons.remove_child("buttonSaveGroupb");
+	buttons.remove_child("buttonWinGame");
+				   
+	buttons.remove_child("buttonLoseGame");
+	buttons.remove_child("buttonMoveUp");
+	buttons.remove_child("buttonMoveUpb");
+				   
+	buttons.remove_child("buttonMoveDown");
+	buttons.remove_child("buttonMoveDownb");
+	buttons.remove_child("buttonMoveLeft");
+	buttons.remove_child("buttonMoveLeftb");
+	buttons.remove_child("buttonMoveRight");
+	buttons.remove_child("buttonMoveRightb");
+
+
+	//	config.remove_child("buttons");
+	//	pugi::xml_node buttons = config.append_child("buttons");
+
+		//App->configFile.child("config").child("scene").remove_child("buttons");
+		//pugi::xml_node buttons = App->configFile.child("config").child("scene").append_child("buttons");
+		//// = config.child("buttons");
+		////Save
+
+	buttons.append_child("buttonGoToBase").append_attribute("buttonGoToBase") = *buttonGoToBase;
+	buttons.append_child("buttonGoToUnits").append_attribute("buttonGoToUnits") = *buttonGoToUnits;
+	buttons.append_child("buttonMinimap").append_attribute("buttonMinimap") = *buttonMinimap;
+	buttons.append_child("buttonBuildingMenu").append_attribute("buttonBuildingMenu") = *buttonBuildingMenu;
+	buttons.append_child("buttonPauseMenu").append_attribute("buttonPauseMenu") = *buttonPauseMenu;
+	buttons.append_child("buttonPatrolUnits").append_attribute("buttonPatrolUnits") = *buttonPatrolUnits;
+	buttons.append_child("buttonStopUnits").append_attribute("buttonStopUnits") = *buttonStopUnits;
+				   
+	buttons.append_child("buttonSpawnFootman").append_attribute("buttonSpawnFootman") = *buttonSpawnFootman;
+	buttons.append_child("buttonSpawnArcher").append_attribute("buttonSpawnArcher") = *buttonSpawnArcher;
+	buttons.append_child("buttonSpawnGryphon").append_attribute("buttonSpawnGryphon") = *buttonSpawnGryphon;
+	buttons.append_child("buttonBuildingMenu").append_attribute("buttonBuildingMenu") = *buttonBuildingMenu;
+	buttons.append_child("buttonSpawnGrunt").append_attribute("buttonSpawnGrunt") = *buttonSpawnGrunt;
+	buttons.append_child("buttonSpawnTroll").append_attribute("buttonSpawnTroll") = *buttonSpawnTroll;
+	buttons.append_child("buttonSpawnDragon").append_attribute("buttonSpawnDragon") = *buttonSpawnDragon;
+	buttons.append_child("buttonSpawnSheep").append_attribute("buttonSpawnSheep") = *buttonSpawnSheep;
+	buttons.append_child("buttonSpawnBoar").append_attribute("buttonSpawnBoar") = *buttonSpawnBoar;
+	buttons.append_child("buttonSpawnAlleria").append_attribute("buttonSpawnAlleria") = *buttonSpawnAlleria;
+	buttons.append_child("buttonSpawnTauralyon").append_attribute("buttonSpawnTauralyon") = *buttonSpawnTauralyon;
+				   
+	buttons.append_child("buttonTogleDebug").append_attribute("buttonTogleDebug") = *buttonTogleDebug;
+	buttons.append_child("buttonTogleDebugAttack").append_attribute("buttonTogleDebugAttack") = *buttonTogleDebugAttack;
+	buttons.append_child("buttonTogleDebugMovement").append_attribute("buttonTogleDebugMovement") = *buttonTogleDebugMovement;
+				   
+	buttons.append_child("buttonSelectGroup").append_attribute("buttonSelectGroup") = *buttonSelectGroup;
+	buttons.append_child("buttonSelectGroupb").append_attribute("buttonSelectGroupb") = *buttonSelectGroupb;
+	buttons.append_child("buttonSelectGroup1").append_attribute("buttonSelectGroup1") = *buttonSelectGroup1;
+	buttons.append_child("buttonSelectGroup2").append_attribute("buttonSelectGroup2") = *buttonSelectGroup2;
+	buttons.append_child("buttonSelectGroup3").append_attribute("buttonSelectGroup3") = *buttonSelectGroup3;
+				   
+	buttons.append_child("buttonSaveGroup").append_attribute("buttonSaveGroup") = *buttonSaveGroup;
+	buttons.append_child("buttonSaveGroupb").append_attribute("buttonSaveGroupb") = *buttonSaveGroupb;
+	buttons.append_child("buttonWinGame").append_attribute("buttonWinGame") = *buttonWinGame;
+				   
+	buttons.append_child("buttonLoseGame").append_attribute("buttonLoseGame") = *buttonLoseGame;
+	buttons.append_child("buttonMoveUp").append_attribute("buttonMoveUp") = *buttonMoveUp;
+	buttons.append_child("buttonMoveUpb").append_attribute("buttonMoveUpb") = *buttonMoveUpb;
+				   
+	buttons.append_child("buttonMoveDown").append_attribute("buttonMoveDown") = *buttonMoveDown;
+	buttons.append_child("buttonMoveDownb").append_attribute("buttonMoveDownb") = *buttonMoveDownb;
+	buttons.append_child("buttonMoveLeft").append_attribute("buttonMoveLeft") = *buttonMoveLeft;
+	buttons.append_child("buttonMoveLeftb").append_attribute("buttonMoveLeftb") = *buttonMoveLeftb;
+	buttons.append_child("buttonMoveRight").append_attribute("buttonMoveRight") = *buttonMoveRight;
+	buttons.append_child("buttonMoveRightb").append_attribute("buttonMoveRightb") = *buttonMoveRightb;
+
 }

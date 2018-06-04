@@ -12,6 +12,12 @@
 
 ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), scoutTowerInfo(scoutTowerInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_HumanBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_SCOUT_TOWER;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Small;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -27,13 +33,20 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 	// -----
 
 	texArea = &scoutTowerInfo.constructionPlanks1;
-	this->constructionTimer.Start();
 
 	buildingState = BuildingState_Building;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 
 	//Construction peasants
 	peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
+}
+
+ScoutTower::~ScoutTower()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
 }
 
 void ScoutTower::Move(float dt)
@@ -65,13 +78,19 @@ void ScoutTower::Move(float dt)
 	TowerStateMachine(dt);
 
 	//Update animations for the construction cycle
-	if(!isBuilt)
-	UpdateAnimations(dt);
+	if (!isBuilt) {
+		constructionTimer += dt;
+		UpdateAnimations(dt);
+	}
 
 	//Check is building is built already
-	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000)) {
+	if (!isBuilt && constructionTimer >= constructionTime) {
 		isBuilt = true;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
 
 	//Delete arrow if it is fired when an enemy is already dead 
@@ -180,13 +199,13 @@ void ScoutTower::LoadAnimationsSpeed()
 
 void ScoutTower::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer >= (constructionTime / 3))
 		texArea = &scoutTowerInfo.constructionPlanks2;
 
-	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &scoutTowerInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	if (constructionTimer >= constructionTime) {
 		texArea = &scoutTowerInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

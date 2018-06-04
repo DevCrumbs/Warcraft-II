@@ -14,6 +14,12 @@
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_HumanBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_CHICKEN_FARM;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Small;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -38,7 +44,6 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 	}
 	else if (!isBuilt) {
 		texArea = &chickenFarmInfo.constructionPlanks1;
-		this->constructionTimer.Start();
 		buildingState = BuildingState_Building;
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 
@@ -56,23 +61,36 @@ ChickenFarm::~ChickenFarm()
 	App->player->currentFood -= 3;
 	App->scene->hasFoodChanged = true;
 
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+
 	LOG("Chicken farm destroyed");
 }
 
 void ChickenFarm::Move(float dt)
 {
+
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 
-	if(!isBuilt)
+	if (!isBuilt) {
+		constructionTimer += dt;
 		UpdateAnimations(dt);
-	
-	if (constructionTimer.Read() >= (constructionTime * 1000) && !isBuilt) {
+	}
+
+	if (constructionTimer >= constructionTime && !isBuilt) {
 		isBuilt = true;
 		App->player->currentFood += 3;
 		App->scene->hasFoodChanged = true;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
+
 }
 
 // Animations
@@ -83,13 +101,13 @@ void ChickenFarm::LoadAnimationsSpeed()
 
 void ChickenFarm::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer >= (constructionTime / 3))
 		texArea = &chickenFarmInfo.constructionPlanks2;
 
-	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &chickenFarmInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	if (constructionTimer >= constructionTime) {
 		texArea = &chickenFarmInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

@@ -1,11 +1,12 @@
 #ifndef __j1MENU_H__
 #define __j1MENU_H__
+#include <vector>
 
 #include "j1Module.h"
 #include "p2List.h"
 #include "UIElement.h"
+#include "j1Timer.h"
 
-#include <vector>
 
 struct SDL_Texture;
 class UIImage;
@@ -14,6 +15,8 @@ class UIButton;
 class UISlider;
 struct UICursor;
 struct Particle;
+struct UILabel_Info;
+
 
 enum MenuActions
 {
@@ -23,12 +26,17 @@ enum MenuActions
 	MenuActions_PLAY_MEDIUMONE,
 	MenuActions_PLAY_MEDIUMTWO,
 	MenuActions_PLAY_HARD,
+	MenuActions_LOADGAME,
 	MenuActions_SETTINGS,
 	MenuActions_RETURN,
 	MenuActions_SLIDERFX,
 	MenuActions_SLIDERMUSIC,
 	MenuActions_NEWGAME,
+	MenuActions_CREDITS,
 	MenuActions_EXIT,
+	MenuActions_CHANGE_BUTTONS,
+	MenuActions_DEFAULT_BUTTONS,
+	MenuActions_CLEANUP
 };
 struct SliderStruct
 {
@@ -37,6 +45,16 @@ struct SliderStruct
 	UILabel*  value = nullptr; 
 };
 
+struct ArtifactsCollection
+{
+	int book, skull, scepter, eye = 0;
+};
+
+struct ChangeButtons
+{
+	UILabel *changeLabel = nullptr;
+	SDL_Scancode* currentButton = nullptr;
+};
 
 class j1Menu : public j1Module
 {
@@ -53,9 +71,6 @@ public:
 	// Called before the first frame
 	bool Start();
 
-	// Called before all Updates
-	bool PreUpdate();
-
 	// Called each loop iteration
 	bool Update(float dt);
 
@@ -67,19 +82,34 @@ public:
 
 	void CreateMenu();
 	void CreateSettings();
-	//void CreateCredits();
-	void DeleteSettings();
-	void CreateLoading();
-	void DeteleMenu();
+	void CreateChangingButtons();
 	void CreateNewGame();
-	void DestroyNewGame();
+	void CreateCredits();
+	//void CreateLoading();
 
-	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt, 
+	void DeleteSettings();
+	void DeleteChangingButtons();
+	void CleanInteractiveLabels();
+	void DeteleMenu();
+	void DeleteNewGame();
+	void DeleteCredits();
+
+	void LoadKeysVector();
+
+	void UpdateConfig();
+
+	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt,
 		UIE_HORIZONTAL_POS hPos = HORIZONTAL_POS_LEFT, UIE_VERTICAL_POS vPos = VERTICAL_POS_TOP);
+	UILabel * CreateSimpleLabel(iPoint pos, UILabel_Info labelInfo);
 	void AddSlider(SliderStruct &sliderStruct, iPoint pos, string NameText, float numberValue, SDL_Rect buttText, SDL_Rect bgText, j1Module* listener);
 	UIImage* AddArtifact(iPoint pos, SDL_Rect textArea, Animation anim, int speed);
 
 	void UpdateSlider(SliderStruct &sliderStruct);
+	void CreateInteractiveLabels();
+	bool CheckCorrectButt(SDL_Scancode button);
+	void SetDefaultButtons();
+	bool CanSwapButt(SDL_Scancode button);
+	void SwapButt(ChangeButtons &buttonA, ChangeButtons &buttonB);
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
@@ -91,35 +121,41 @@ public:
 
 	bool debug = false;
 
+	ArtifactsCollection artifactsEasyOne, artifactsEasyTwo, artifactsMediumOne, artifactsMediumTwo, artifactsHard;
+
+	MenuActions menuActions = MenuActions_NONE;
+
 private:
 
 	//Main Menu
-	UIImage* mainMenuImg = nullptr;
-	UIImage* settingsBackground = nullptr;
-	UIImage* logoImg = nullptr;
-	UIButton* playButt = nullptr;
-	UILabel*  playLabel = nullptr;
-	UIButton* exitButt = nullptr;
-	UILabel*  exitLabel = nullptr;
-	UIButton* settingsButt = nullptr;
-	UILabel*  settingsLabel = nullptr;
+	UIImage* mainMenuImg = nullptr, *settingsBackground = nullptr, *logoImg = nullptr;
+	UILabel*  playLabel = nullptr, *exitLabel = nullptr, *settingsLabel = nullptr, *creditsLabel = nullptr, *loadLabel = nullptr;
 
-	vector<UIImage*> artifacts;
 	Animation menuImgAnim;
 
 	//Settings
 	SliderStruct audioFX;
 	SliderStruct audioMusic;
-	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
-	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
+	UIButton* fullScreenButt = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr, *buttonsLabel = nullptr;
+		//Changing buttons
+	UILabel* returnSettings = nullptr, *defaultButton = nullptr;
+	ChangeButtons changeButt;
+	list<ChangeButtons> interactiveLabels;
+
+	j1Timer changeButtonTimer;
+	bool textColor = false;
 
 	//Start New Game
-
 	UIButton* easyOneButt = nullptr, *easyTwoButt = nullptr, *mediumOneButt = nullptr, *mediumTwoButt = nullptr, *hardButt = nullptr;
-	UILabel* easy = nullptr, *medium = nullptr, *hard = nullptr, *chooseLevel = nullptr;
+	UILabel* bookArtifact = nullptr, *skullArtifact = nullptr, *eyeArtifact = nullptr, *scepterArtifact = nullptr;
 
-	MenuActions menuActions = MenuActions_NONE;
+	//Credits
+	UILabel* sandraLead = nullptr, *oscarCode = nullptr, *davidQA = nullptr, *joanDesigner = nullptr, *manavManagment = nullptr, *davidArt = nullptr, *aleixUI = nullptr;
 
+	//More than one page
+	vector<UILabel*> staticLabels; //Not Interactives
+	vector<UIImage*> artifacts;
 
 	//Audio path
 	string mainMenuMusicName;
@@ -128,6 +164,7 @@ private:
 	bool isFadetoScene = false;
 	bool isMouseTextCreated = false;
 
+	vector<string> keysName;
 };
 
 #endif

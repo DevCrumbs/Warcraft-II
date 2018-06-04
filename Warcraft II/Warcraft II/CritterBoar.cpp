@@ -23,6 +23,10 @@
 
 CritterBoar::CritterBoar(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const CritterBoarInfo& critterBoarInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), critterBoarInfo(critterBoarInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_BOAR;
+	*(EntitySide*)&entitySide = EntitySide_Neutral;
+
 	// XML loading
 	/// Animations
 	CritterBoarInfo info = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);

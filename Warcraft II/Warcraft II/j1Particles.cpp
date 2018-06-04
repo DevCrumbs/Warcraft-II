@@ -39,6 +39,7 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	pawsTexName = spritesheets.child("paws").attribute("name").as_string();
 	atlasTexName = spritesheets.child("atlas").attribute("name").as_string();
 	peasantTexName = spritesheets.child("humanBuildingsAnimation").attribute("name").as_string();
+	peonTexName = spritesheets.child("orcishBuildingsAnimation").attribute("name").as_string();
 
 	// Load animations
 
@@ -162,6 +163,45 @@ bool j1Particles::Awake(pugi::xml_node& config) {
 	}
 	peasantBigBuild.size = { bigBuild.child("frame").attribute("w").as_int(), bigBuild.child("frame").attribute("h").as_int() };
 
+	//Peon animations
+	pugi::xml_node peons = config.child("peonAnimations");
+
+	//Carry animation
+	carry = peons.child("carry");
+	carryPeon.animation.speed = carry.attribute("speed").as_float();
+	carryPeon.animation.loop = carry.attribute("loop").as_bool();
+	for (currentAnimation = carry.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		carryPeon.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	carryPeon.size = { carry.child("frame").attribute("w").as_int(), carry.child("frame").attribute("h").as_int() };
+
+	//Small building animation
+	smallBuild = peons.child("smallBuilding");
+	peonSmallBuild.animation.speed = smallBuild.attribute("speed").as_float();
+	peonSmallBuild.animation.loop = smallBuild.attribute("loop").as_bool();
+	for (currentAnimation = smallBuild.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		peonSmallBuild.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	peonSmallBuild.size = { smallBuild.child("frame").attribute("w").as_int(), smallBuild.child("frame").attribute("h").as_int() };
+
+	//Medium building animation
+	mediumBuild = peons.child("mediumBuilding");
+	peonMediumBuild.animation.speed = mediumBuild.attribute("speed").as_float();
+	peonMediumBuild.animation.loop = mediumBuild.attribute("loop").as_bool();
+	for (currentAnimation = mediumBuild.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		peonMediumBuild.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	peonMediumBuild.size = { mediumBuild.child("frame").attribute("w").as_int(), mediumBuild.child("frame").attribute("h").as_int() };
+
+	//Big building animation
+	bigBuild = peons.child("bigBuilding");
+	peonBigBuild.animation.speed = bigBuild.attribute("speed").as_float();
+	peonBigBuild.animation.loop = bigBuild.attribute("loop").as_bool();
+	for (currentAnimation = bigBuild.child("frame"); currentAnimation; currentAnimation = currentAnimation.next_sibling("frame")) {
+		peonBigBuild.animation.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
+	}
+	peonBigBuild.size = { bigBuild.child("frame").attribute("w").as_int(), bigBuild.child("frame").attribute("h").as_int() };
+	
 	// Sheep Paws
 	pugi::xml_node sheepPawsAnimation = config.child("animations").child("sheepPaws");
 
@@ -335,6 +375,11 @@ bool j1Particles::Start()
 	peasantMediumBuild.particleType = ParticleType_Peasant;
 	peasantBigBuild.particleType = ParticleType_Peasant;
 
+	carryPeon.particleType = ParticleType_PeonCarry;
+	peonSmallBuild.particleType = ParticleType_Peon;
+	peonMediumBuild.particleType = ParticleType_Peon;
+	peonBigBuild.particleType = ParticleType_Peon;
+
 	/// Life
 	boarPaws.life = 800;
 	sheepPaws.life = 800;
@@ -370,6 +415,7 @@ bool j1Particles::Start()
 	atlasTex = App->tex->Load(atlasTexName.data());
 	pawsTex = App->tex->Load(pawsTexName.data());
 	peasantTex = App->tex->Load(peasantTexName.data());
+	peonTex = App->tex->Load(peonTexName.data());
 
 	return ret;
 }
@@ -467,6 +513,9 @@ bool j1Particles::PostUpdate()
 		//For printing peasants
 		else if(((*it)->particleType == ParticleType_Peasant || (*it)->particleType == ParticleType_PeasantCarry))
 			App->printer->PrintSprite({ (int)(*it)->pos.x, (int)(*it)->pos.y }, peasantTex, (*it)->animation.GetCurrentFrame(), Layers_BasicParticles, (*it)->angle);
+		//For printing peons
+		else if (((*it)->particleType == ParticleType_Peon || (*it)->particleType == ParticleType_PeonCarry))
+			App->printer->PrintSprite({ (int)(*it)->pos.x, (int)(*it)->pos.y }, peonTex, (*it)->animation.GetCurrentFrame(), Layers_BasicParticles, (*it)->angle);
 		//For printing everything else
 		else
 			App->printer->PrintSprite({ (int)(*it)->pos.x, (int)(*it)->pos.y }, atlasTex, (*it)->animation.GetCurrentFrame(), Layers_BasicParticles, (*it)->angle);
@@ -590,6 +639,12 @@ void j1Particles::LoadAnimationsSpeed()
 	peasantMediumBuildingSpeed = peasantMediumBuild.animation.speed;
 	peasantBigBuildingSpeed = peasantBigBuild.animation.speed;
 
+	/// Peons speed
+	peonCarrySpeed = carryPeon.animation.speed;
+	peonSmallBuildingSpeed = peonSmallBuild.animation.speed;
+	peonMediumBuildingSpeed = peonMediumBuild.animation.speed;
+	peonBigBuildingSpeed = peonBigBuild.animation.speed;
+
 	isAnimationSpeedCharged = true;
 }
 
@@ -642,6 +697,12 @@ void j1Particles::UpdateAnimations(float dt)
 	peasantSmallBuild.animation.speed = peasantSmallBuildingSpeed * dt;
 	peasantMediumBuild.animation.speed = peasantMediumBuildingSpeed * dt;
 	peasantBigBuild.animation.speed = peasantBigBuildingSpeed * dt;
+
+	///Peons
+	carryPeon.animation.speed = peonCarrySpeed * dt;
+	peonSmallBuild.animation.speed = peonSmallBuildingSpeed * dt;
+	peonMediumBuild.animation.speed = peonMediumBuildingSpeed * dt;
+	peonBigBuild.animation.speed = peonBigBuildingSpeed * dt;
 }
 
 PawsInfo& j1Particles::GetPawsInfo(bool isSheep, bool isBoar)
@@ -720,7 +781,105 @@ bool Particle::Update(float dt)
 	switch (particleType) {
 
 	case ParticleType_Player_Projectile:
+	{
+		const SDL_Rect rectA = { (int)pos.x, (int)pos.y, size.x, size.y };
+		const SDL_Rect rectB = { destination.x, destination.y,  App->map->data.tileWidth, App->map->data.tileHeight };
+
+		if (SDL_HasIntersection(&rectA, &rectB)) {
+
+			// Apply damage on dynamic entities on the way of the particle, if the particle is a cannon bullet
+			Entity* entityEnemy = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y }, EntityCategory_NONE, EntitySide_Enemy);
+			Entity* entityNeutral = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y }, EntityCategory_NONE, EntitySide_Neutral);
+
+			Entity* entity = nullptr;
+
+			if (entityEnemy != nullptr)
+				entity = entityEnemy;
+			else if (entityNeutral != nullptr)
+				entity = entityNeutral;
+
+			// Apply damage and kill the particle if it reaches its target
+			if (entity != nullptr) {
+
+				if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+
+					StaticEntity* building = (StaticEntity*)entity;
+
+					if (building->GetBuildingState() != BuildingState_Building) {
+
+						entity->ApplyDamage(damage);
+						building->CheckBuildingState();
+					}
+				}
+				else
+					entity->ApplyDamage(damage);
+
+				return false;
+			}
+
+			return false;
+		}
+
+		pos.x += orientation.x * dt * speed;
+		pos.y += orientation.y * dt * speed;
+
+		if (isRemove)
+			return false;
+
+		return true;
+	}
+	break;
+
 	case ParticleType_Enemy_Projectile:
+	{
+		const SDL_Rect rectA = { (int)pos.x, (int)pos.y, size.x, size.y };
+		const SDL_Rect rectB = { destination.x, destination.y,  App->map->data.tileWidth, App->map->data.tileHeight };
+
+		if (SDL_HasIntersection(&rectA, &rectB)) {
+
+			// Apply damage on dynamic entities on the way of the particle, if the particle is a cannon bullet
+			Entity* entityPlayer = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y }, EntityCategory_NONE, EntitySide_Player);
+			Entity* entityNeutral = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y }, EntityCategory_NONE, EntitySide_Neutral);
+
+			Entity* entity = nullptr;
+
+			if (entityPlayer != nullptr)
+				entity = entityPlayer;
+			else if (entityNeutral != nullptr)
+				entity = entityNeutral;
+
+			// Apply damage and kill the particle if it reaches its target
+			if (entity != nullptr) {
+
+				if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+
+					StaticEntity* building = (StaticEntity*)entity;
+
+					if (building->GetBuildingState() != BuildingState_Building) {
+
+						entity->ApplyDamage(damage);
+						building->CheckBuildingState();
+					}
+				}
+				else
+					entity->ApplyDamage(damage);
+
+				return false;
+			}
+
+			return false;
+		}
+
+		pos.x += orientation.x * dt * speed;
+		pos.y += orientation.y * dt * speed;
+
+		if (isRemove)
+			return false;
+
+		return true;
+	}
+	break;
+
 	case ParticleType_Cannon_Projectile:
 	{
 		const SDL_Rect rectA = { (int)pos.x, (int)pos.y, size.x, size.y };
@@ -731,79 +890,26 @@ bool Particle::Update(float dt)
 			// Apply damage on dynamic entities on the way of the particle, if the particle is a cannon bullet
 			Entity* entity = App->entities->AreEntitiesColliding({ (int)destination.x, (int)destination.y, size.x, size.y });
 
-			if (particleType == ParticleType_Cannon_Projectile) {
-
-				if (entity != nullptr) {
-
-					if (entity->entitySide == EntitySide_Player ||
-						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy) {
-
-						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
-							entity->ApplyDamage(damage);
-							
-							StaticEntity* statEnt = (StaticEntity*)entity;
-							statEnt->CheckBuildingState();
-						}
-						else
-							entity->ApplyDamage(damage);
-					}
-
-					return false;
-				}
-			}
-
-			// Apply damage and kill the particle if it reaches its target
 			if (entity != nullptr) {
 
-				if (particleType == ParticleType_Player_Projectile) {
+				if (entity->entitySide == EntitySide_Player ||
+					entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy) {
 
-					if (entity->entitySide == EntitySide_Enemy || entity->entitySide == EntitySide_Neutral) {
-					
-						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+					if (entity->entityType == EntityCategory_STATIC_ENTITY) {
+
+						StaticEntity* building = (StaticEntity*)entity;
+
+						if (building->GetBuildingState() != BuildingState_Building) {
+
 							entity->ApplyDamage(damage);
-
-							StaticEntity* statEnt = (StaticEntity*)entity;
-							statEnt->CheckBuildingState();
+							building->CheckBuildingState();
 						}
-						else
-							entity->ApplyDamage(damage);
 					}
-
-					return false;
+					else
+						entity->ApplyDamage(damage);
 				}
-				else if (particleType == ParticleType_Enemy_Projectile) {
 
-					if (entity->entitySide == EntitySide_Player || entity->entitySide == EntitySide_Neutral) {
-					
-						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
-							entity->ApplyDamage(damage);
-
-							StaticEntity* statEnt = (StaticEntity*)entity;
-							statEnt->CheckBuildingState();
-						}
-						else
-							entity->ApplyDamage(damage);
-					}
-
-					return false;
-				}
-				else if (particleType == ParticleType_Cannon_Projectile) {
-
-					if (entity->entitySide == EntitySide_Player ||
-						entity->entitySide == EntitySide_Neutral || entity->entitySide == EntitySide_Enemy) {
-					
-						if (entity->entityType == EntityCategory_STATIC_ENTITY) {
-							entity->ApplyDamage(damage);
-
-							StaticEntity* statEnt = (StaticEntity*)entity;
-							statEnt->CheckBuildingState();
-						}
-						else
-							entity->ApplyDamage(damage);
-					}
-
-					return false;
-				}
+				return false;
 			}
 
 			return false;
@@ -831,6 +937,7 @@ bool Particle::Update(float dt)
 	case ParticleType_Health:
 	case ParticleType_Cross:
 	case ParticleType_PeasantCarry:
+	case ParticleType_PeonCarry:
 	{
 		if (animation.Finished())
 			return false;
@@ -841,6 +948,7 @@ bool Particle::Update(float dt)
 
 	case ParticleType_Fire:
 	case ParticleType_Peasant:
+	case ParticleType_Peon:
 		break;
 
 	case ParticleType_DragonFire:
@@ -909,10 +1017,13 @@ bool Particle::Update(float dt)
 				else if (critter != nullptr)
 					critter->ApplyDamage(damage);
 				else if (playerBuilding != nullptr) {
-					playerBuilding->ApplyDamage(damage);
+					StaticEntity* building = (StaticEntity*)playerBuilding;
 
-					StaticEntity* statEnt = (StaticEntity*)playerBuilding;
-					statEnt->CheckBuildingState();
+					if (building->GetBuildingState() != BuildingState_Building) {
+
+						playerBuilding->ApplyDamage(damage);
+						building->CheckBuildingState();
+					}
 				}
 
 				damageTimer.Start();
@@ -988,10 +1099,13 @@ bool Particle::Update(float dt)
 				else if (critter != nullptr)
 					critter->ApplyDamage(damage);
 				else if (enemyBuilding != nullptr) {
-					enemyBuilding->ApplyDamage(damage);
+					StaticEntity* building = (StaticEntity*)enemyBuilding;
 
-					StaticEntity* statEnt = (StaticEntity*)enemyBuilding;
-					statEnt->CheckBuildingState();
+					if (building->GetBuildingState() != BuildingState_Building) {
+
+						enemyBuilding->ApplyDamage(damage);
+						building->CheckBuildingState();
+					}
 				}
 
 				damageTimer.Start();

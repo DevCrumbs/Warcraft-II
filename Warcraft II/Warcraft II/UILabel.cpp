@@ -192,6 +192,9 @@ void UILabel::SetText(string text, uint wrapLength)
 
 	label.text = text;
 	tex = App->font->Print(text.data(), color, font, wrapLength);
+	App->font->CalcSize(label.text.data(), width, height, font);
+
+	SetOrientation();
 }
 
 

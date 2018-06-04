@@ -19,6 +19,7 @@ class j1Render;
 class j1Textures;
 class j1Audio;
 class j1Scene;
+class j1Intro;
 class j1Map;
 class j1Particles;
 class j1Collision;
@@ -36,6 +37,7 @@ class j1FinishGame;
 class j1Printer;
 class j1EnemyWave;
 class j1FogOfWar;
+class j1Video;
 
 struct SDL_Rect;
 
@@ -120,6 +122,7 @@ public:
 	j1Textures*					tex = nullptr;
 	j1Audio*					audio = nullptr;
 	j1Scene*					scene = nullptr;
+	j1Intro*					intro = nullptr;
 	j1Map*						map = nullptr;
 	j1Particles*				particles = nullptr;
 	j1Collision*				collision = nullptr;
@@ -137,8 +140,10 @@ public:
 	j1Printer*					printer = nullptr;
 	j1EnemyWave*				wave = nullptr;
 	j1FogOfWar*					fow = nullptr;
+	j1Video*					video = nullptr;
 
 private:
+	
 
 	list<j1Module*>		modules;
 	uint				frames = 0;
@@ -160,6 +165,8 @@ private:
 	j1PerfTimer perfClock;
 
 public:
+	pugi::xml_document	configFile;
+	pugi::xml_node		config;
 
 	uint				capFrames = 0;
 	bool				toCap = true;

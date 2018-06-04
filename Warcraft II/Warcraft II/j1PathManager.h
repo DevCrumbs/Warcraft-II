@@ -134,6 +134,9 @@ public:
 	bool IsSearchCompleted() const;
 	void SetSearchCompleted(bool isSearchCompleted);
 
+	bool IsSearchFailed() const;
+	void SetSearchFailed(bool isSearchFailed);
+
 	// Search requested
 	bool IsSearchRequested() const;
 	void SetSearchRequested(bool isSearchRequested);
@@ -152,6 +155,7 @@ private:
 
 	bool isSearchRequested = false;
 	bool isSearchCompleted = false;
+	bool isSearchFailed = false;
 	bool isPathRequested = false;
 
 	PathfindingAlgorithmType pathfindingAlgorithmType = PathfindingAlgorithmType_NoType;

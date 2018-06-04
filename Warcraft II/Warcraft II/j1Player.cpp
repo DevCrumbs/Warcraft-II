@@ -36,6 +36,10 @@ bool j1Player::Awake(pugi::xml_node& config)
 {
 	bool ret = true;
 
+	LoadKeys(config.child("buttons"));
+
+	this->config = App->config.child(this->name.data());
+
 	return ret;
 }
 
@@ -61,10 +65,10 @@ bool j1Player::Start()
 	return ret;
 }
 
-bool j1Player::PreUpdate() 
+bool j1Player::PreUpdate()
 {
-	if (minimap == nullptr)
-	{
+	if (minimap == nullptr) {
+
 		UIMinimap_Info info;
 
 		info.entityHeight = 32;
@@ -73,7 +77,6 @@ bool j1Player::PreUpdate()
 
 		minimap = App->gui->CreateUIMinimap(info, this);
 	}
-
 
 	return true;
 }
@@ -92,8 +95,18 @@ bool j1Player::Update(float dt)
 	if (!toSpawnUnitGrypho.empty())
 		CheckUnitSpawning(&toSpawnUnitGrypho);
 
+	////////////////////////////////////////
+	//SDL_SCANCODE_U
+	if (App->input->GetKey(buttonShowPlayerButt) == KEY_DOWN) {
+		ShowPlayerGroupsButton(1, PlayerGroupTypes_ALL);
+		ShowPlayerGroupsButton(2, PlayerGroupTypes_FOOTMAN_ARCHER);
+		ShowPlayerGroupsButton(3, PlayerGroupTypes_GRYPHON);
+	}
+
+	///////////////////////////////////////
 	// Select all units on screen shortcuts
-	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN) {
+	// SDL_SCANCODE_Z
+	if (App->input->GetKey(buttonSelectFootman) == KEY_DOWN) {
 
 		App->entities->SelectEntitiesOnScreen(EntityType_FOOTMAN);
 
@@ -104,7 +117,8 @@ bool j1Player::Update(float dt)
 		else
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN) {
+	// SDL_SCANCODE_X
+	else if (App->input->GetKey(buttonSelectArcher) == KEY_DOWN) {
 
 		App->entities->SelectEntitiesOnScreen(EntityType_ELVEN_ARCHER);
 
@@ -115,7 +129,8 @@ bool j1Player::Update(float dt)
 		else
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN) {
+	// SDL_SCANCODE_C
+	else if (App->input->GetKey(buttonSelectGryphon) == KEY_DOWN) {
 
 		App->entities->SelectEntitiesOnScreen(EntityType_GRYPHON_RIDER);
 
@@ -126,7 +141,8 @@ bool j1Player::Update(float dt)
 		else
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN) {
+	// SDL_SCANCODE_V
+	else if (App->input->GetKey(buttonSelectAll) == KEY_DOWN) {
 	
 		App->entities->SelectEntitiesOnScreen();
 
@@ -138,71 +154,8 @@ bool j1Player::Update(float dt)
 			App->audio->PlayFx(App->audio->GetFX().errorButt, 1);	
 	}
 
-	/*
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
-		if (stables != nullptr) {
-			if (stables->GetIsFinishedBuilt()) {
-				Entity* ent = (Entity*)stables;
-				ent->ApplyDamage(20);
-				if (!stables->CheckBuildingState() && entitySelectedStats.entitySelected == ent) 
-					DeleteEntitiesMenu();			
-				else if (entitySelectedStats.entitySelected == ent) {
-					entitySelectedStats.HP->SetText(ent->GetStringLife());
-					entitySelectedStats.lifeBar->DecreaseLife(20);
-				}
-			}
-		}
-
-	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
-		if (mageTower != nullptr)
-			if (mageTower->GetIsFinishedBuilt()) {
-				Entity* ent = (Entity*)mageTower;
-				ent->ApplyDamage(20);
-				if (!mageTower->CheckBuildingState() && entitySelectedStats.entitySelected == ent) {
-					DeleteEntitiesMenu();
-				}
-				else if (entitySelectedStats.entitySelected == ent) {
-					entitySelectedStats.HP->SetText(ent->GetStringLife());
-					entitySelectedStats.lifeBar->DecreaseLife(20);
-				}
-			}
-	
-
-	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-		if (!scoutTower.empty())
-			if (scoutTower.back()->GetIsFinishedBuilt()) {
-				Entity* ent = (Entity*)scoutTower.back();
-				ent->ApplyDamage(20);
-				if (!scoutTower.back()->CheckBuildingState()) {
-					if (entitySelectedStats.entitySelected == ent)
-						DeleteEntitiesMenu();
-					scoutTower.pop_back();
-				}
-				else if (entitySelectedStats.entitySelected == ent) {
-					entitySelectedStats.HP->SetText(ent->GetStringLife());
-					entitySelectedStats.lifeBar->DecreaseLife(20);
-				}
-			}
-	
-	
-	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
-		if (barracks != nullptr)
-			if (barracks->GetIsFinishedBuilt()) {
-				Entity* ent = (Entity*)barracks;
-				ent->ApplyDamage(200);
-				if (!barracks->CheckBuildingState()){
-					if(entitySelectedStats.entitySelected == ent)
-						HideEntitySelectedInfo();
-					barracks = nullptr;
-				}
-				else if (entitySelectedStats.entitySelected == ent) {
-					entitySelectedStats.HP->SetText(ent->GetStringLife());
-					entitySelectedStats.lifeBar->DecreaseLife(200);
-				}
-			}
-	*/
-
-	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN && App->isDebug) {
+	// SDL_SCANCODE_KP_MINUS
+	if (App->isDebug && App->input->GetKey(buttonDamageCF) == KEY_DOWN && App->isDebug) {
 		if (!chickenFarm.empty())
 			if (chickenFarm.back()->GetIsFinishedBuilt()) {
 				Entity* ent = (Entity*)chickenFarm.back();
@@ -218,11 +171,14 @@ bool j1Player::Update(float dt)
 				}
 			}
 	}
-	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN && App->isDebug) {
+
+	// SDL_SCANCODE_KP_MULTIPLY
+	if (App->isDebug && App->input->GetKey(buttonAddGold) == KEY_DOWN && App->isDebug) {
 		App->audio->PlayFx(App->audio->GetFX().goldMine, 0); // Gold mine sound
 		AddGold(500);
 	}
-	if (App->isDebug && App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN && App->isDebug) {
+	// SDL_SCANCODE_KP_DIVIDE
+	if (App->isDebug && App->input->GetKey(buttonAddFood) == KEY_DOWN && App->isDebug) {
 		currentFood += 3;
 		App->scene->hasFoodChanged = true;
 	}
@@ -237,7 +193,7 @@ bool j1Player::Update(float dt)
 		{
 			if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
 				//1st time that building finished to build
-				if (building->GetConstructionTimer() == building->GetConstructionTime()) {
+				if (building->GetConstructionTimer() >= building->GetConstructionTime()) {
 					entitySelectedStats.lifeBar->SetMaxLife(building->GetMaxLife());
 					entitySelectedStats.HP->SetLocalPos({ 5, App->scene->entitiesStats->GetLocalRect().h - 17 });
 					ShowEntitySelectedButt(building->staticEntityType);
@@ -260,7 +216,10 @@ bool j1Player::Update(float dt)
 			}
 			//Erase info when entity dies
 			if (entitySelectedStats.entitySelected->GetCurrLife() <= 0)
-				HideEntitySelectedInfo();
+				if (entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY)
+					App->scene->HideUnselectedUnits();
+				else
+					HideEntitySelectedInfo();
 		}
 
 		else if (building->staticEntityType == EntityType_GOLD_MINE) {
@@ -537,11 +496,9 @@ void j1Player::SpawnUnitAtTile(iPoint spawnTile, ENTITY_TYPE spawningEntity, Uni
 	iPoint toSpawnTile = spawnTile;
 
 	// If the spawnTile is not valid, find a new, valid spawn tile
-	if ((toSpawnTile.x == -1 && toSpawnTile.y == -1)
-		|| App->entities->IsEntityOnTile(toSpawnTile) != nullptr || !App->pathfinding->IsWalkable(toSpawnTile)) {
+	if (App->entities->IsEntityOnTile(toSpawnTile) != nullptr || !App->pathfinding->IsWalkable(toSpawnTile))
 
 		toSpawnTile = App->movement->FindClosestValidTile(toSpawnTile);
-	}
 
 	// Spawn the entity on the spawn tile
 	if (toSpawnTile.x != -1 && toSpawnTile.y != -1) {
@@ -618,6 +575,7 @@ bool j1Player::CleanUp()
 		DeleteHoverInfoMenu();
 		DeleteEntitiesMenu();
 		DeleteGroupSelectionButtons();
+		DeletePlayerGroupsButtons();
 
 		App->gui->RemoveElem((UIElement**)&minimap);
 	}
@@ -838,33 +796,38 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 						
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
 						it = units.begin();
+						list<DynamicEntity*> notGryphonRiders;
 
 						while (it != units.end()) {
 
-							(*it)->SetGoldMine((GoldMine*)staticEntity);
+							if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
+
+								(*it)->SetGoldMine((GoldMine*)staticEntity);
+								notGryphonRiders.push_back(*it);
+							}
 
 							it++;
 						}
 
-						App->entities->CommandToUnits(units, UnitCommand_GatherGold);
+						App->entities->CommandToUnits(notGryphonRiders, UnitCommand_GatherGold);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_MINE) {
 						App->scene->adviceMessageTimer.Start();
@@ -917,11 +880,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Gryphon Aviary", { 394,160,50,41 }, ent);
 			}
 
-			else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER) {
-				App->audio->PlayFx(App->audio->GetFX().mageTower, 0); //Mage tower sound
-				ShowEntitySelectedInfo(ent->GetStringLife(), "Mage Tower", { 394,202,50,41 }, ent);
-			}
-
 			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Scout Tower", { 394,34,50,41 }, ent);
@@ -935,11 +893,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo(ent->GetStringLife(), "Cannon Tower", { 394,118,50,41 }, ent);
-			}
-
-			else if (staticEntity->staticEntityType == EntityType_STABLES) {
-				App->audio->PlayFx(App->audio->GetFX().stables, 0); //Stables sound
-				ShowEntitySelectedInfo(ent->GetStringLife(), "Stables", { 241,160,50,41 }, ent);
 			}
 
 			else if (staticEntity->staticEntityType == EntityType_BARRACKS && staticEntity->GetIsFinishedBuilt()) {
@@ -986,22 +939,22 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
 						GoldMine* goldMine = (GoldMine*)staticEntity;
 
@@ -1063,10 +1016,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Gryphon Aviary", { 394,160,50,41 }, ent);
 			}
-			else if (staticEntity->staticEntityType == EntityType_MAGE_TOWER) {
-				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-				ShowEntitySelectedInfo("Building...", "Mage Tower", { 394,202,50,41 }, ent);
-			}
 			else if (staticEntity->staticEntityType == EntityType_SCOUT_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Scout Tower", { 394,34,50,41 }, ent);
@@ -1078,10 +1027,6 @@ void j1Player::OnStaticEntitiesEvent(StaticEntity* staticEntity, EntitiesEvent e
 			else if (staticEntity->staticEntityType == EntityType_PLAYER_CANNON_TOWER) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 				ShowEntitySelectedInfo("Building...", "Cannon Tower", { 394,118,50,41 }, ent);
-			}
-			else if (staticEntity->staticEntityType == EntityType_STABLES) {
-				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
-				ShowEntitySelectedInfo("Building...", "Stables", { 241,160,50,41 }, ent);
 			}
 			else if (staticEntity->staticEntityType == EntityType_BARRACKS) {
 				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
@@ -1119,33 +1064,39 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
+						// Only command to units that are not Gryphon Rider
 						it = units.begin();
+						list<DynamicEntity*> notGryphonRiders;
 
 						while (it != units.end()) {
 
-							(*it)->SetPrisoner(dynamicEntity);
+							if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
+
+								(*it)->SetPrisoner(dynamicEntity);
+								notGryphonRiders.push_back(*it);
+							}
 
 							it++;
 						}
 
-						App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+						App->entities->CommandToUnits(notGryphonRiders, UnitCommand_RescuePrisoner);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_PRISONER) {
 						App->scene->adviceMessageTimer.Start();
@@ -1171,33 +1122,39 @@ void j1Player::OnDynamicEntitiesEvent(DynamicEntity* dynamicEntity, EntitiesEven
 
 				if (units.size() > 0) {
 
-					bool isGryphonRider = false;
+					bool isNotGryphonRider = false;
 
 					list<DynamicEntity*>::const_iterator it = units.begin();
 
 					while (it != units.end()) {
 
-						if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER) {
+						if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
 
-							isGryphonRider = true;
+							isNotGryphonRider = true;
 							break;
 						}
 
 						it++;
 					}
 
-					if (!isGryphonRider) {
+					if (isNotGryphonRider) {
 
+						// Only command to units that are not Gryphon Rider
 						it = units.begin();
+						list<DynamicEntity*> notGryphonRiders;
 
 						while (it != units.end()) {
 
-							(*it)->SetPrisoner(dynamicEntity);
+							if ((*it)->dynamicEntityType != EntityType_GRYPHON_RIDER) {
+
+								(*it)->SetPrisoner(dynamicEntity);
+								notGryphonRiders.push_back(*it);
+							}
 
 							it++;
 						}
 
-						App->entities->CommandToUnits(units, UnitCommand_RescuePrisoner);
+						App->entities->CommandToUnits(notGryphonRiders, UnitCommand_RescuePrisoner);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_GRYPH_PRISONER) {
 						App->scene->adviceMessageTimer.Start();
@@ -1337,6 +1294,17 @@ void j1Player::CreateGroupSelectionButtons()
 	CreateSimpleSelectionButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 14, 540 }, groupSelectionButtons.selectFootmans);
 	CreateSimpleSelectionButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 65, 540 }, groupSelectionButtons.selectElvenArchers);
 	CreateSimpleSelectionButton({ 649,286,50,41 }, { 700, 286, 50, 41 }, { 751,286,50,41 }, { 116, 540 }, groupSelectionButtons.selectGryphonRiders);
+}
+
+void j1Player::CreatePlayerGroupsButtons()
+{
+	CreateSimpleSelectionButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 178, 540 }, playerGroupsButtons.group1);
+	CreateSimpleSelectionButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 229, 540 }, playerGroupsButtons.group2);
+	CreateSimpleSelectionButton({ 649,286,50,41 }, { 700, 286, 50, 41 }, { 751,286,50,41 }, { 280, 540 }, playerGroupsButtons.group3);
+
+	playerGroupsButtons.group1->isActive = false;
+	playerGroupsButtons.group2->isActive = false;
+	playerGroupsButtons.group3->isActive = false;
 }
 
 void j1Player::ShowEntitySelectedInfo(string HP_text, string entityName_text, SDL_Rect iconDim, Entity* currentEntity) 
@@ -1530,6 +1498,114 @@ void j1Player::ShowEntitySelectedButt(ENTITY_TYPE type)
 	}
 }
 
+void j1Player::ShowPlayerGroupsButton(int group, PlayerGroupTypes playerGroupType)
+{
+	switch (group) {
+
+	case 1:
+		switch (playerGroupType) {
+		case PlayerGroupTypes_FOOTMAN:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, {241,244,50,41}, { 496,244,50,41 }, { 751,244,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 292,244,50,41 }, { 547,244,50,41 }, { 802,244,50,41 });
+			break;
+		case PlayerGroupTypes_GRYPHON:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 649,286,50,41 }, { 700,286,50,41 }, { 751,286,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_GRYPHON:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 51,379,50,41 }, { 51,421,50,41 }, { 51,463,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_ARCHER:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 102,379,50,41 }, { 102,421,50,41 }, { 102,463,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER_GRYPHON:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 153,379,50,41 }, { 153,421,50,41 }, { 153,463,50,41 });
+			break;
+		case PlayerGroupTypes_ALL:
+			playerGroupsButtons.group1->ChangesTextsAreas(true, { 0,379,50,41 }, { 0,421,50,41 }, { 0,463,50,41 });
+			break;
+		case PlayerGroupTypes_NONE:
+			playerGroupsButtons.group1->isActive = false;
+			break;
+		default:
+			break;
+		}
+
+		if (!playerGroupsButtons.group1->isActive && playerGroupType != PlayerGroupTypes_NONE)
+			playerGroupsButtons.group1->isActive = true;
+		break;
+
+	case 2:
+		switch (playerGroupType) {
+		case PlayerGroupTypes_FOOTMAN:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 241,244,50,41 }, { 496,244,50,41 }, { 751,244,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 292,244,50,41 }, { 547,244,50,41 }, { 802,244,50,41 });
+			break;
+		case PlayerGroupTypes_GRYPHON:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 649,286,50,41 }, { 700,286,50,41 }, { 751,286,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_GRYPHON:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 51,379,50,41 }, { 51,421,50,41 }, { 51,463,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_ARCHER:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 102,379,50,41 }, { 102,421,50,41 }, { 102,463,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER_GRYPHON:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 153,379,50,41 }, { 153,421,50,41 }, { 153,463,50,41 });
+			break;
+		case PlayerGroupTypes_ALL:
+			playerGroupsButtons.group2->ChangesTextsAreas(true, { 0,379,50,41 }, { 0,421,50,41 }, { 0,463,50,41 });
+			break;
+		case PlayerGroupTypes_NONE:
+			playerGroupsButtons.group2->isActive = false;
+			break;
+		default:
+			break;
+		}
+
+		if (!playerGroupsButtons.group2->isActive && playerGroupType != PlayerGroupTypes_NONE)
+			playerGroupsButtons.group2->isActive = true;
+		break;
+
+	case 3:
+		switch (playerGroupType) {
+		case PlayerGroupTypes_FOOTMAN:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 241,244,50,41 }, { 496,244,50,41 }, { 751,244,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 292,244,50,41 }, { 547,244,50,41 }, { 802,244,50,41 });
+			break;
+		case PlayerGroupTypes_GRYPHON:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 649,286,50,41 }, { 700,286,50,41 }, { 751,286,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_GRYPHON:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 51,379,50,41 }, { 51,421,50,41 }, { 51,463,50,41 });
+			break;
+		case PlayerGroupTypes_FOOTMAN_ARCHER:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 102,379,50,41 }, { 102,421,50,41 }, { 102,463,50,41 });
+			break;
+		case PlayerGroupTypes_ARCHER_GRYPHON:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 153,379,50,41 }, { 153,421,50,41 }, { 153,463,50,41 });
+			break;
+		case PlayerGroupTypes_ALL:
+			playerGroupsButtons.group3->ChangesTextsAreas(true, { 0,379,50,41 }, { 0,421,50,41 }, { 0,463,50,41 });
+			break;
+		case PlayerGroupTypes_NONE:
+			playerGroupsButtons.group3->isActive = false;
+			break;
+		default:
+			break;
+		}
+
+		if (!playerGroupsButtons.group3->isActive && playerGroupType != PlayerGroupTypes_NONE)
+			playerGroupsButtons.group3->isActive = true;
+		break;
+	}
+}
+
 void j1Player::ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range)
 {
 	entitySelectedStats.entityDamage->SetText(damage);
@@ -1653,19 +1729,6 @@ void j1Player::HideEntitySelectedInfo()
 		}
 
 	}
-		/*
-	else if (entitySelectedStats.entitySelected != nullptr && entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
-		StaticEntity* ent = (StaticEntity*)entitySelectedStats.entitySelected;
-		switch (ent->staticEntityType) {
-		case EntityType_CHICKEN_FARM:
-		case EntityType_SCOUT_TOWER:
-		case EntityType_PLAYER_GUARD_TOWER:
-		case EntityType_PLAYER_CANNON_TOWER:
-			destroyBuildingButton->isActive = false;
-			break;
-		}
-	}*/
-
 
 	if (entitySelectedStats.entitySelected != nullptr) {
 		entitySelectedStats.HP->isActive = false;
@@ -1726,6 +1789,13 @@ void j1Player::DeleteGroupSelectionButtons()
 	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectFootmans);
 	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectElvenArchers);
 	App->gui->RemoveElem((UIElement**)&groupSelectionButtons.selectGryphonRiders);
+}
+
+void j1Player::DeletePlayerGroupsButtons()
+{
+	App->gui->RemoveElem((UIElement**)&playerGroupsButtons.group1);
+	App->gui->RemoveElem((UIElement**)&playerGroupsButtons.group2);
+	App->gui->RemoveElem((UIElement**)&playerGroupsButtons.group3);
 }
 
 void j1Player::ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, iPoint pos) {
@@ -1954,24 +2024,60 @@ uint j1Player::CalculateGoldRepair(StaticEntity* entity)
 void j1Player::CheckBuildingsState() 
 {
 	if (townHall != nullptr) {
-		if(townHall->GetCurrLife() <= 0 || townHall->isRemove)
+		if (townHall->GetCurrLife() <= 0 || townHall->isRemove) {
 			townHall = nullptr;
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+		}
 	}
 
 	if (barracks != nullptr) {
-		if (barracks->GetCurrLife() <= 0 || barracks->isRemove)
+		if (barracks->GetCurrLife() <= 0 || barracks->isRemove) {
 			barracks = nullptr;
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (secondHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&secondHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+		}
+
 	}
 
 	if (gryphonAviary != nullptr) {
-		if (gryphonAviary->GetCurrLife() <= 0 || gryphonAviary->isRemove)
+		if (gryphonAviary->GetCurrLife() <= 0 || gryphonAviary->isRemove) {
 			gryphonAviary = nullptr;
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (secondHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&secondHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+		}
+
 	}
 
 	if (!chickenFarm.empty())
 		for (list<StaticEntity*>::iterator iterator = chickenFarm.begin(); iterator != chickenFarm.end(); ++iterator)
 		{
 			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
+
+				if (firstHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&firstHoverInfo);
+
+				if (thirdHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&thirdHoverInfo);
+
 				if (chickenFarm.size() == 1) {
 					chickenFarm.remove((*iterator));
 					break;
@@ -1984,6 +2090,13 @@ void j1Player::CheckBuildingsState()
 		for (list<StaticEntity*>::iterator iterator = scoutTower.begin(); iterator != scoutTower.end(); ++iterator)
 		{
 			if ((*iterator)->GetCurrLife() <= 0 || (*iterator)->isRemove) {
+
+				if (firstHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&firstHoverInfo);
+
+				if (thirdHoverInfo.background->isActive) //Hide hover menu
+					HideHoverInfoMenu(&thirdHoverInfo);
+
 				if (scoutTower.size() == 1) {
 					scoutTower.remove((*iterator));
 					break;
@@ -1996,6 +2109,13 @@ void j1Player::CheckBuildingsState()
 	if (!guardTower.empty())
 		for (list<StaticEntity*>::iterator iterator = guardTower.begin(); iterator != guardTower.end(); ++iterator)
 		{
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+
 			if (guardTower.size() == 1) {
 				guardTower.remove((*iterator));
 				break;
@@ -2009,6 +2129,13 @@ void j1Player::CheckBuildingsState()
 	if(!cannonTower.empty())
 		for (list<StaticEntity*>::iterator iterator = cannonTower.begin(); iterator != cannonTower.end(); ++iterator)
 		{
+
+			if (firstHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&firstHoverInfo);
+
+			if (thirdHoverInfo.background->isActive) //Hide hover menu
+				HideHoverInfoMenu(&thirdHoverInfo);
+
 			if (cannonTower.size() == 1) {
 				cannonTower.remove((*iterator));
 				break;
@@ -2064,6 +2191,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			break;
 		case UI_EVENT_MOUSE_LEAVE:
+
 			if (UIelem == produceFootmanButton || UIelem == destroyBuildingButton || UIelem == groupSelectionButtons.selectFootmans || UIelem == upgradeTownHallButton)
 				HideHoverInfoMenu(&firstHoverInfo);
 			else if (UIelem == produceElvenArcherButton || UIelem == groupSelectionButtons.selectElvenArchers)
@@ -2071,6 +2199,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			else if (UIelem == produceGryphonRiderButton || UIelem == groupSelectionButtons.selectGryphonRiders || UIelem == repairBuildingButton)
 				HideHoverInfoMenu(&thirdHoverInfo);
 			break;
+
 		case UI_EVENT_MOUSE_RIGHT_CLICK:
 
 			// Order units to move to the minimap position
@@ -2120,8 +2249,15 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					upgradeTownHallButton->isActive = false;
 					ShowEntitySelectedInfo("Building...", "Keep", { 597,202,50,41 }, entitySelectedStats.entitySelected);
 				}
-				else
+				else {
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
 			}
 
 			//For destroying a building
@@ -2144,11 +2280,24 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						App->audio->PlayFx(App->audio->GetFX().button);
 						App->audio->PlayFx(App->audio->GetFX().repairBuild);
 					}
-					else
+					else if(GetCurrentGold() < gold) {
 						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						if (App->scene->adviceMessage != AdviceMessage_GOLD) {
+							App->scene->adviceMessageTimer.Start();
+							App->scene->adviceMessage = AdviceMessage_GOLD;
+							App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+						}
+					}
+
 				}
-				else
+				else { //Building has full life
 					App->audio->PlayFx(App->audio->GetFX().errorButt);
+					if (App->scene->adviceMessage != AdviceMessage_BUILDING_IS_FULL_LIFE) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_BUILDING_IS_FULL_LIFE;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
 			}
 
 			else if (UIelem == produceFootmanButton) {
@@ -2168,6 +2317,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 						HandleSpawningUnitsUIElem(&toSpawnUnitBarracks.back(), &barracksSpawningListUI);
 					}
 					else if (App->scene->adviceMessage != AdviceMessage_FOOD) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
 						App->scene->adviceMessageTimer.Start();
 						App->scene->adviceMessage = AdviceMessage_FOOD;
 						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
@@ -2305,6 +2455,90 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				else
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 			}
+			else if (UIelem == playerGroupsButtons.group1) {
+			
+				list<DynamicEntity*> savedGroup = App->entities->GetSavedEntityGroup(0);
+
+				if (savedGroup.size() > 0) {
+
+					// Select the group
+					App->entities->SelectEntitiesGroup(savedGroup);
+
+					// Blit the selection of the units (just a few seconds) from alpha 255 to 0
+					list<DynamicEntity*>::const_iterator sg = savedGroup.begin();
+
+					while (sg != savedGroup.end()) {
+
+						(*sg)->BlitSelectedGroupSelection();
+
+						sg++;
+					}
+				}
+				else {
+
+					if (App->scene->adviceMessage != AdviceMessage_EMPTY_GROUP) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_EMPTY_GROUP;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
+			}
+			else if (UIelem == playerGroupsButtons.group2) {
+
+				list<DynamicEntity*> savedGroup = App->entities->GetSavedEntityGroup(1);
+
+				if (savedGroup.size() > 0) {
+
+					// Select the group
+					App->entities->SelectEntitiesGroup(savedGroup);
+
+					// Blit the selection of the units (just a few seconds) from alpha 255 to 0
+					list<DynamicEntity*>::const_iterator sg = savedGroup.begin();
+
+					while (sg != savedGroup.end()) {
+
+						(*sg)->BlitSelectedGroupSelection();
+
+						sg++;
+					}
+				}
+				else {
+
+					if (App->scene->adviceMessage != AdviceMessage_EMPTY_GROUP) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_EMPTY_GROUP;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
+			}
+			else if (UIelem == playerGroupsButtons.group3) {
+
+				list<DynamicEntity*> savedGroup = App->entities->GetSavedEntityGroup(2);
+
+				if (savedGroup.size() > 0) {
+
+					// Select the group
+					App->entities->SelectEntitiesGroup(savedGroup);
+
+					// Blit the selection of the units (just a few seconds) from alpha 255 to 0
+					list<DynamicEntity*>::const_iterator sg = savedGroup.begin();
+
+					while (sg != savedGroup.end()) {
+
+						(*sg)->BlitSelectedGroupSelection();
+
+						sg++;
+					}
+				}
+				else {
+
+					if (App->scene->adviceMessage != AdviceMessage_EMPTY_GROUP) {
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_EMPTY_GROUP;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
+			}
 			break;
 		case UI_EVENT_MOUSE_RIGHT_UP:
 			break;
@@ -2317,6 +2551,47 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 		}
 }
 
+bool j1Player::LoadKeys(pugi::xml_node& buttons)
+{
+	bool ret = true;
+
+	ret = LoadKey(&buttonSelectFootman, "buttonSelectFootman", buttons);
+	ret = LoadKey(&buttonSelectArcher, "buttonSelectArcher", buttons);
+	ret = LoadKey(&buttonSelectGryphon, "buttonSelectGryphon", buttons);
+	ret = LoadKey(&buttonSelectAll, "buttonSelectAll", buttons);
+
+	ret = LoadKey(&buttonDamageCF, "buttonDamageCF", buttons);
+	ret = LoadKey(&buttonAddGold, "buttonAddGold", buttons);
+	ret = LoadKey(&buttonAddFood, "buttonAddFood", buttons);
+
+	return ret;
+}
+
+void j1Player::SaveKeys()
+{
+	App->configFile.child("config").child(name.data()).remove_child("buttons");
+	pugi::xml_node buttons = App->configFile.child("config").child(name.data()).append_child("buttons");
+
+	buttons.remove_child("buttonSelectFootman");
+	buttons.remove_child("buttonSelectArcher");
+	buttons.remove_child("buttonSelectGryphon");
+	buttons.remove_child("buttonSelectAll");
+	
+	buttons.remove_child("buttonDamageCF");
+	buttons.remove_child("buttonAddGold");
+	buttons.remove_child("buttonAddFood");
+
+
+	buttons.append_child("buttonSelectFootman").append_attribute("buttonSelectFootman") = *buttonSelectFootman;
+	buttons.append_child("buttonSelectArcher").append_attribute("buttonSelectArcher") = *buttonSelectArcher;
+	buttons.append_child("buttonSelectGryphon").append_attribute("buttonSelectGryphon") = *buttonSelectGryphon;
+	buttons.append_child("buttonSelectAll").append_attribute("buttonSelectAll") = *buttonSelectAll;
+
+	buttons.append_child("buttonDamageCF").append_attribute("buttonDamageCF") = *buttonDamageCF;
+	buttons.append_child("buttonAddGold").append_attribute("buttonAddGold") = *buttonAddGold;
+	buttons.append_child("buttonAddFood").append_attribute("buttonAddFood") = *buttonAddFood;
+}
+
 // GroupSpawning
 //--------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------
@@ -2325,3 +2600,5 @@ void GroupSpawning::IsActive(bool isActive)
 	entityIcon->isActive = isActive;
 	entityLifeBar->isActive = isActive;
 }
+
+

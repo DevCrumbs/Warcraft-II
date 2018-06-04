@@ -23,8 +23,6 @@
 
 DynamicEntity::DynamicEntity(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, j1Module* listener, bool isSingleUnit) : Entity(pos, size, currLife, maxLife, listener), unitInfo(unitInfo)
 {
-	this->entityType = EntityCategory_DYNAMIC_ENTITY;
-
 	// Movement
 	/// UnitInfo
 	if (this->unitInfo.currSpeed == 0.0f)
@@ -70,38 +68,7 @@ DynamicEntity::~DynamicEntity()
 		delete singleUnit;
 	singleUnit = nullptr;
 
-	if (!App->gui->isGuiCleanUp) {
-
-		if (lifeBar != nullptr) {
-			lifeBar->toRemove = true;
-			lifeBar = nullptr;
-		}
-	}
-
-	animation = nullptr;
-
-	isDead = true;
-	isSpawned = true;
-
 	// Remove Attack
-	//App->entities->InvalidateTargetInfo(this);
-	currTarget = nullptr;
-
-	// Remove Colliders
-	if (sightRadiusCollider != nullptr)
-		sightRadiusCollider->isRemove = true;
-	sightRadiusCollider = nullptr;
-
-	if (attackRadiusCollider != nullptr)
-		attackRadiusCollider->isRemove = true;
-	attackRadiusCollider = nullptr;
-
-	color = ColorWhite;
-	colorName = "White";
-
-	// ----
-
-	// Attack
 	isStill = true;
 
 	if (currTarget != nullptr)
@@ -118,6 +85,40 @@ DynamicEntity::~DynamicEntity()
 		it++;
 	}
 	targets.clear();
+
+	it = targetsToRemove.begin();
+
+	while (it != targetsToRemove.end()) {
+
+		delete *it;
+		it++;
+	}
+	targetsToRemove.clear();
+
+	// Remove Colliders
+	if (sightRadiusCollider != nullptr)
+		sightRadiusCollider->isRemove = true;
+	sightRadiusCollider = nullptr;
+
+	if (attackRadiusCollider != nullptr)
+		attackRadiusCollider->isRemove = true;
+	attackRadiusCollider = nullptr;
+
+	// Other
+	if (!App->gui->isGuiCleanUp) {
+
+		if (lifeBar != nullptr)
+			App->gui->RemoveElem((UIElement**)&lifeBar);
+		lifeBar = nullptr;
+	}
+
+	animation = nullptr;
+
+	isDead = true;
+	isSpawned = true;
+
+	color = ColorWhite;
+	colorName = "White";
 }
 
 void DynamicEntity::Move(float dt) {}
@@ -655,7 +656,16 @@ void DynamicEntity::UpdateRhombusColliderPos(ColliderGroup* collider, uint radiu
 }
 
 // Attack
-/// Unit attacks a target
+list<TargetInfo*> DynamicEntity::GetTargets() const 
+{
+	return targets;
+}
+
+list<TargetInfo*> DynamicEntity::GetTargetsToRemove() const 
+{
+	return targetsToRemove;
+}
+
 Entity* DynamicEntity::GetCurrTarget() const
 {
 	if (currTarget != nullptr)
@@ -671,14 +681,6 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 	if (target == nullptr)
 		return false;
 
-	if (currTarget != nullptr) {
-
-		if (target == currTarget->target) {
-			currTarget->isRemovedFromSight = false;
-			return true;
-		}
-	}
-
 	list<TargetInfo*>::const_iterator it = targets.begin();
 
 	TargetInfo* targetInfo = nullptr;
@@ -689,7 +691,6 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 		if ((*it)->target == target) {
 
 			targetInfo = *it;
-			targetInfo->isRemovedFromSight = false;
 			break;
 		}
 		it++;
@@ -706,10 +707,12 @@ bool DynamicEntity::SetCurrTarget(Entity* target)
 
 	if (targetInfo != nullptr) {
 
-		// Only push it if it does not have to be removed
-		if (!targetInfo->isRemoved) {
+		list<TargetInfo*>::iterator it = find(targets.begin(), targets.end(), targetInfo);
 
-			currTarget = targetInfo;
+		if (*it != nullptr) {
+
+			currTarget = *it;
+			newTarget = currTarget;
 			ret = true;
 		}
 	}
@@ -722,78 +725,63 @@ void DynamicEntity::InvalidateCurrTarget()
 	currTarget = nullptr;
 }
 
-bool DynamicEntity::SetIsRemovedTargetInfo(Entity* target)
+bool DynamicEntity::UpdateTargetsToRemove() 
 {
-	if (target == nullptr)
-		return false;
-
-	// Set isRemoved to true
 	list<TargetInfo*>::const_iterator it = targets.begin();
 
 	while (it != targets.end()) {
 
-		if ((*it)->target == target) {
+		if ((*it)->target->isRemove) {
 
-			(*it)->isRemoved = true;
+			// Removing target process --
+			if (!(*it)->IsTargetDead())
 
-			if (currTarget != nullptr) {
-
-				if ((*it)->target == currTarget->target)
-					InvalidateCurrTarget();
-			}
-
-			return true;
-		}
-		it++;
-	}
-
-	return false;
-}
-
-bool DynamicEntity::SetIsRemovedFromSightTargetInfo(Entity* target) 
-{
-	if (target == nullptr)
-		return false;
-
-	// Set isRemoved to true
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		if ((*it)->target == target) {
-
-			if ((*it)->target != nullptr)
 				(*it)->target->RemoveAttackingUnit(this);
 
-			(*it)->isRemovedFromSight = true;
-			return true;
+			if (currTarget == *it)
+
+				InvalidateCurrTarget();
+
+			if ((*it)->isInGoals > 0 && !(*it)->isRemoveNeeded) {
+
+				(*it)->isRemoveNeeded = true;
+				targetsToRemove.splice(targetsToRemove.begin(), targets, it);
+
+				it = targets.begin();
+				continue;
+			}
+			else if (!(*it)->isRemoveNeeded) {
+
+				delete *it;
+				targets.remove(*it);
+
+				it = targets.begin();
+				continue;
+			}
+			// -- Removing target process
 		}
 		it++;
 	}
 
-	return false;
-}
+	it = targetsToRemove.begin();
 
-bool DynamicEntity::RemoveTargetInfo(TargetInfo* targetInfo)
-{
-	if (targetInfo == nullptr)
-		return false;
+	while (it != targetsToRemove.end()) {
 
-	// If the target is the currTarget, set currTarget to nullptr
-	if (targetInfo == currTarget)
-		currTarget = nullptr;
+		// Removing target process --
+		if ((*it)->isInGoals == 0 && (*it)->isRemoveNeeded) {
+		
+			if (currTarget == *it)
 
-	// Remove the target from the targets list
-	list<TargetInfo*>::const_iterator it = targets.begin();
-
-	while (it != targets.end()) {
-
-		if ((*it)->target == targetInfo->target) {
+				InvalidateCurrTarget();
 
 			delete *it;
-			targets.remove(*it);
-			return true;
+			targetsToRemove.remove(*it);
+
+			it = targetsToRemove.begin();
+			continue;
 		}
+		// -- Removing target process
+
 		it++;
 	}
 
@@ -821,7 +809,7 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENT
 
 	while (it != targets.end()) {
 
-		if (!(*it)->isRemoved && !(*it)->isRemovedFromSight && (*it)->target->GetIsValid()) {
+		if ((*it)->target->GetIsValid() && !(*it)->target->isRemove && !(*it)->isRemoveNeeded) {
 
 			if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_DYNAMIC_ENTITY) {
 
@@ -898,6 +886,10 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENT
 				result = curr.targetInfo;
 		}
 	}
+
+	if (result != nullptr)
+
+		result = *find(targets.begin(), targets.end(), result);
 
 	return result;
 }
@@ -992,15 +984,61 @@ UnitCommand DynamicEntity::GetUnitCommand() const
 	return unitCommand;
 }
 
+// UnitInfo struct ---------------------------------------------------------------------------------
+
+UnitInfo::UnitInfo() {}
+
+UnitInfo::UnitInfo(const UnitInfo& u) :
+	priority(u.priority), sightRadius(u.sightRadius), attackRadius(u.attackRadius), heavyDamage(u.heavyDamage), lightDamage(u.lightDamage),
+	airDamage(u.airDamage), towerDamage(u.towerDamage), maxSpeed(u.maxSpeed), currSpeed(u.currSpeed), currLife(u.currLife), maxLife(u.maxLife),
+	size(u.size), offsetSize(u.offsetSize), isWanderSpawnTile(u.isWanderSpawnTile) {}
+
+UnitInfo::~UnitInfo() {}
+
 // TargetInfo struct ---------------------------------------------------------------------------------
 
-bool TargetInfo::IsTargetPresent() const
+TargetInfo::TargetInfo() {}
+
+TargetInfo::TargetInfo(const TargetInfo& t) :
+	isSightSatisfied(t.isSightSatisfied), isAttackSatisfied(t.isAttackSatisfied), target(t.target),
+	isInGoals(t.isInGoals), isRemoveNeeded(t.isRemoveNeeded), attackingTile(t.attackingTile) {}
+
+TargetInfo::~TargetInfo()
 {
+	isSightSatisfied = false;
+	isAttackSatisfied = false;
+
+	isInGoals = 0;
+	isRemoveNeeded = false;
+
+	target = nullptr;
+
+	attackingTile = { -1,-1 };
+}
+
+bool TargetInfo::IsTargetDead() const 
+{
+	// The target doesn't exist (just in case)
+	if (target == nullptr)
+		return true;
+
+	// -----
+
+	if (target->GetCurrLife() <= 0 || target->isRemove)
+		return true;
+
+	return false;
+}
+
+bool TargetInfo::IsTargetValid() const 
+{
+	// The target doesn't exist (just in case)
 	if (target == nullptr)
 		return false;
 
-	// The target is dead
-	if (target->GetCurrLife() <= 0 || target->isRemove)
+	// -----
+
+	if (!target->GetIsValid())
 		return false;
 
 	return true;

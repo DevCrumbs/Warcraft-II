@@ -29,13 +29,140 @@ If we are able to feed your imagination, our mission will be accomplished!
 The goal of the player in this alpha version is to rescue two prisoners - Khadgar and Alleria. The prisoners are hidden somewhere in a dungeon full of enemies. 
 In order to complete this objective, the player will have to create troops and command them towards the victory.
 
-# Controls
+# Version changes
+
+## 0.1
+
+- Map with random organized rooms (pressing keyboard button 1 to reorganize).
+- Buildings dropdown.
+- Pressing keyboard button to return to base.
+- Moving camera with arrow keys.
+
+## 0.2 
+
+- Camera culling.
+- Constructing buildings selecting them through the buildings dropdown.
+  Buildings that can be built:
+	- Chicken Farm
+	- Stables
+	- Gryphon Aviary
+	- Mage Tower
+	- Scout Tower
+- Right button for cancelling the building construction.
+- Buildings information is displayed when placed.
+- Static entities from the map are charged from tiled.
+
+## 0.2.5
+
+- Construction process for the buildings
+- Debug buttons for decreasing each building's life.
+- Hover upgrade and repair buttons on the buildings.
+- Building process information displayed when a building in process of construction is selected.
+
+## 0.3
+
+- Screen size changed to 800x600.
+- Main menu.
+- Settings menu.
+- Starting unit management.
+- Enemy units charged in the map through tiled.
+- Gold System implemented.
+- Gold mines give you some gold.
+- Base buildings (barracks and town hall).
+- Barracks and town hall upgrades.
+- Building fix feature.
+- Building construction and destruction and proper preview building placement.
+- Scout tower attacks orcs.
+
+## 0.4
+
+- Added music and sounds.
+- Restructured main menu and settings.
+- Pause menu implemented.
+- Unit life bars.
+- Unit hierarchy implemented.
+
+## 0.5
+
+- 5 different maps to play in. The map is chosen ramdomly at the start of the game bettween the five.
+- Unit movement.
+- Unit attack.
+- Player units patrol.
+- Units now spawn from the barracks.
+- Mini map implemented.
+  The mini map shows:
+	- The map.
+	- Player units.
+	- Enemy units.
+	- Player buildings.
+	- Enemy buildings.
+	- Neutral buildings.
+- Camera movement with the mouse (moving the mouse to the borders of the screen).
+- Runestone functionality.
+- Chicken Farm functionality.
+- Placing buildings only on base and in walkable tiles.
+- Sheeps and boars heal functionality.
+- Three tipes of towers for the allies and the enemies.
+- Prisioner rescuing for the win condition.
+- Losing the game when the player loses all their units and has no money to produce more.
+
+## 0.5.5
+
+- Moving camera with the mouse and the arrow keys.
+- The units now enter the mine to gather gold.
+
+## 0.6
+
+- New units added: Gryphon Riders (allies) and Dragons (enemies).
+- Moving the Mini map with the mouse.
+- Zooming Mini map (with TAB).
+- Footmans and Archers can attack buildings.
+- Enemies wander.
+- Enemies attack to player when allied units in their sight.
+- Allied units autonomus attack when enemy unit in sight.
+- Camera can be moved now also with WASD.
+- Change of the debug keys position.
+
+# 0.7
+
+- Fog of War implemented.
+- Enemy waves in base every 4-5 minutes.
+- Enemy units attack buildings when in player base.
+- Lose condition when the player gets their Townhall destroyed.
+- Town Hall upgrade has influence on the construction of the Gryphon Aviary now.
+- The Mini map now has a button in-game to zoom it in.
+- In-game buttons and hotkeys (Z, X and C) for selecting all the units of a certain type on screen.
+- More feedback on when the player cannot make an action, like creating a unit.
+
+# 0.8
+
+- Fullscreen at startup.
+- Balancing of the enemy waves, unit triangle and map enemy placing.
+- More visual and auditive feedback in the player interactions.
+
+# 0.9
+
+- 5 different maps to play on.
+- Different difficulty levels.
+- Waves of enemies to base every 4-5 minutes.
+- Three types of units for the player and three types of enemies.
+- Completley functional mini map.
+- Completley functional fog of war.
+
+# 1.0
+
+TBA
+
+# Default Controls
+You can modify most of the controls from the setting menu
 
 Space: Go to player base
 Up arrow or W: Move the camera up
 Down arrow or S: Move the camera down
 Left arrow or A: Move the camera left
 Right arrow or D: Move the camera right
+Mouse movement: Moving the mouse to the border of the screen, moves the camera in the
+direction of the border
 
 Z: Select all Footman on screen (max 8 units)
 X: Select all Elven Archer on screen (max 8 units)
@@ -56,6 +183,9 @@ Mouse Right click: Send a group of units to a destination
 ## For the units:
 
 Mouse Left click: Select a group of units
+Left/Right Shift + Mouse Left click: Unselect unit/s from the units selected group
+Left/Right Ctrl + Mouse Left click: Add unit/s to the units selected group
+
 Mouse Right click: Send a group of units to a destination
 Mouse Right click On an enemy or a critter: attack the enemy/critter
 Mouse Right click On a Gold Mine or Runestone: (if there is a unit nearby) collect the gold / heal the units
@@ -72,15 +202,15 @@ Mouse Right click: Delete the preview building from the view of the player
 
 # Debug controls
 
-F8: debug mode
+F9: debug mode
 
 If debug mode is on:
-
-	H: -20 HP to last Chicken Farm created
-	G: Get + 500 gold
-	F: Get +3 food
-	K: Show/hide Fog of War
-
+	KEYPAD Buttons
+	- : -20 HP to last Chicken Farm created
+	* : Get + 500 gold
+	/ : Get +3 food
+	+ : Show/hide Fog of War
+	. : Show/hide fog of war sprites' distribution
 	1: Spawn a Footman at mouse position
 	2: Spawn an Elven Archer at mouse position
 	3: Spawn a Gryphon Rider at mouse position
@@ -92,11 +222,12 @@ If debug mode is on:
 	9: Spawn Alleria
 	0: Spawn Turalyon
 
-	F1: Direct win
-	F2: Direct lose
-	F3: Spawn a new enemy wave (in player base)
-	F4: Activate or stop the spawn of waves
-	F5: Show/hide game's colliders
+	F5: Direct win
+	F6: Direct lose
+	F7: Spawn a new enemy wave (in player base)
+	F8: Activate or stop the spawn of waves
+	F10: Show/hide game's colliders
+	F11: Show/hide movements debug
 
 # Game system
 

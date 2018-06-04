@@ -30,7 +30,7 @@ class Barracks :public StaticEntity
 public:
 
 	Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const BarracksInfo& barracksInfo, j1Module* listener);
-	~Barracks() {};
+	~Barracks();
 
 	void Move(float dt);
 

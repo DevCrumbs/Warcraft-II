@@ -55,6 +55,10 @@ public:
 	// Save
 	bool Save(pugi::xml_node&) const;
 
+	bool LoadKeys(pugi::xml_node & buttons);
+
+	void SaveKeys();
+
 	// Load
 	bool Load(pugi::xml_node&);
 
@@ -63,6 +67,11 @@ public:
 	// Current wave
 	uint totalPhasesOfCurrWave = 0;
 	uint phasesOfCurrWave = 0;
+
+	SDL_Scancode* buttonNewWave = nullptr;
+	SDL_Scancode* buttonActivateWave = nullptr;
+
+	pugi::xml_node config;
 
 private:
 

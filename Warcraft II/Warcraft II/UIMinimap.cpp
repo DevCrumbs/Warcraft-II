@@ -95,7 +95,7 @@ void UIMinimap::Draw() const
 
 
 	///-----------------	 Draw the map
-	App->render->Blit(currentMapTexture, offsetX, offsetY, NULL, 0);
+	App->render->Blit(currentMapTexture, offsetX, offsetY, NULL, SDL_FLIP_NONE,0);
 
 	///-----------------	 Draw all entities in the minimap
 	for (list<DynamicEntity*>::iterator iterator = (*activeDynamicEntities).begin(); iterator != (*activeDynamicEntities).end(); ++iterator)
@@ -270,8 +270,8 @@ void UIMinimap::HandleInput(float dt)
 	{
 		moveCamera = false;
 	}
-
-	if (App->scene->isMinimapChanged || App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
+										// SDL_SCANCODE_TAB
+	if (App->scene->isMinimapChanged || App->input->GetKey(App->scene->buttonMinimap) == KEY_DOWN)
 	{
 		if (lowLevel)
 		{
@@ -489,7 +489,7 @@ bool UIMinimap::LoadMap()
 					SDL_Rect* section = &rect;
 					iPoint world = App->map->MapToWorld(i, j);
 
-					LOG("Tile x = %i, y = %i", world.x, world.y);
+					//LOG("Tile x = %i, y = %i", world.x, world.y);
 					ret = SaveInRenderer(tex, world.x, world.y, section, 1, renderer);
 				}
 			}

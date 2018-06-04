@@ -250,11 +250,3 @@ bool Entity::GetIsValid() const
 {
 	return isValid;
 }
-
-// Struct TargetInfo -------------------------------------------------------------
-
-TargetInfo::TargetInfo() {}
-
-TargetInfo::TargetInfo(const TargetInfo& t) :
-	isSightSatisfied(t.isSightSatisfied), isAttackSatisfied(t.isAttackSatisfied),
-	isRemoved(t.isRemoved), target(t.target) {}
