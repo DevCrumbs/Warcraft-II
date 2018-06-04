@@ -4516,7 +4516,10 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 {
 	bool ret = true;
 
-	pugi::xml_node node;
+	pugi::xml_node general = save.child("general");
+
+	numEnemyGroups = general.attribute("numEnemyGroups").as_int();
+
 
 	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
 
