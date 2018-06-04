@@ -2649,18 +2649,18 @@ bool j1Scene::Load(pugi::xml_node& save)
 
 
 
-	SaveAttribute(up, "up", camera, create);
-	SaveAttribute(down, "down", camera, create);
-	SaveAttribute(left, "left", camera, create);
-	SaveAttribute(right, "right", camera, create);
-	SaveAttribute(width, "width", camera, create);
-	SaveAttribute(height, "height", camera, create);
-	SaveAttribute(scale, "scale", camera, create);
-
-	SaveAttribute(camSpeed, "camSpeed", camera, create);
-	SaveAttribute(camMovement, "camMovement", camera, create);
-	SaveAttribute(camMovMargin, "camMovMargin", camera, create);
-	SaveAttribute(isCamMovMarginCharged, "isCamMovMarginCharged", camera, create);
+//	SaveAttribute(up, "up", camera, create);
+//	SaveAttribute(down, "down", camera, create);
+//	SaveAttribute(left, "left", camera, create);
+//	SaveAttribute(right, "right", camera, create);
+//	SaveAttribute(width, "width", camera, create);
+//	SaveAttribute(height, "height", camera, create);
+//	SaveAttribute(scale, "scale", camera, create);
+//
+//	SaveAttribute(camSpeed, "camSpeed", camera, create);
+//	SaveAttribute(camMovement, "camMovement", camera, create);
+//	SaveAttribute(camMovMargin, "camMovMargin", camera, create);
+//	SaveAttribute(isCamMovMarginCharged, "isCamMovMarginCharged", camera, create);
 
 	return ret;
 }
