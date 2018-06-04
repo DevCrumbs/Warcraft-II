@@ -1345,9 +1345,11 @@ bool j1FogOfWar::Load(pugi::xml_node& save)
 		if (i < fowTilesVector.size())
 		{
 			fowTilesVector[i]->alpha = fowTile.attribute("alpha").as_int();
+			fowTilesVector[i]->auxAlpha = fowTile.attribute("auxAlpha").as_int();
 			fowTilesVector[i]->normalAlpha = fowTile.attribute("normalAlpha").as_int();
 			fowTilesVector[i]->pos = { fowTile.attribute("xPos").as_int(), fowTile.attribute("yPos").as_int() };
 			fowTilesVector[i]->size = fowTile.attribute("size").as_int();
+			i++;
 		}
 		else
 			break;
@@ -1363,6 +1365,7 @@ void j1FogOfWar::SaveTiles(vector<FogOfWarTile*> tiles, char* name, pugi::xml_no
 		
 		currNode.append_attribute("alpha") = tiles[i]->alpha;
 		currNode.append_attribute("normalAlpha") = tiles[i]->normalAlpha;
+		currNode.append_attribute("auxAlpha") = tiles[i]->auxAlpha;
 		currNode.append_attribute("xPos") = tiles[i]->pos.x;
 		currNode.append_attribute("yPos") = tiles[i]->pos.y;
 		currNode.append_attribute("size") =	tiles[i]->size;
