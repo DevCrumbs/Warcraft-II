@@ -1876,9 +1876,6 @@ void j1Player::CreateBarracksButtons()
 {
 	CreateSimpleButton({ 241,244,50,41 }, { 496, 244, 50, 41 }, { 751,244,50,41 }, { 217, 2 }, produceFootmanButton);
 	CreateSimpleButton({ 292,244,50,41 }, { 547, 244, 50, 41 }, { 802,244,50,41 }, { 268, 2 }, produceElvenArcherButton);
-
-	//if (barracksUpgrade && stables != nullptr && stables->buildingState == BuildingState_Normal)
-	//	CreateSimpleButton({ 444,244,50,41 }, { 699, 244, 50, 41 }, { 954,244,50,41 }, { 319, 2 }, producePaladinButton);
 }
 
 void j1Player::CreateTownHallButtons()
@@ -2256,7 +2253,7 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 			if (UIelem == upgradeTownHallButton) {
 			
-				if (currentGold >= 500) {
+				if (currentGold >= 500 && townHall->GetCurrLife() == townHall->GetMaxLife()) {
 					townHallUpgrade = true;
 					AddGold(-500);
 					App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
@@ -2264,12 +2261,22 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 					upgradeTownHallButton->isActive = false;
 					ShowEntitySelectedInfo("Building...", "Keep", { 597,202,50,41 }, entitySelectedStats.entitySelected);
 				}
-				else {
+				else if (currentGold <= 500){
 					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
 					if (App->scene->adviceMessage != AdviceMessage_GOLD) {
 						App->audio->PlayFx(App->audio->GetFX().errorButt);
 						App->scene->adviceMessageTimer.Start();
 						App->scene->adviceMessage = AdviceMessage_GOLD;
+						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+					}
+				}
+				else
+				{
+					App->audio->PlayFx(App->audio->GetFX().errorButt, 0); //Button error sound
+					if (App->scene->adviceMessage != AdviceMessage_TOWNHALL_IS_NOT_FULL_LIFE) {
+						App->audio->PlayFx(App->audio->GetFX().errorButt);
+						App->scene->adviceMessageTimer.Start();
+						App->scene->adviceMessage = AdviceMessage_TOWNHALL_IS_NOT_FULL_LIFE;
 						App->scene->ShowAdviceMessage(App->scene->adviceMessage);
 					}
 				}
