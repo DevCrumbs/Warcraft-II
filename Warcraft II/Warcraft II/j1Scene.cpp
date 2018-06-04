@@ -201,14 +201,24 @@ bool j1Scene::Start()
 	{
 		pugi::xml_document data;
 		pugi::xml_parse_result result = data.loadFile(App->loadGame.data());
-		Load(data.child(name.data()));
-		App->player->Load(data.child(name.data()));
-		App->entities->Load(data.child(name.data()));
-		App->wave->Load(data.child(name.data()));
-		App->fow->Load(data.child(name.data()));
-		App->menu->isLoad = false;
-	}
+		pugi::xml_node root;
 
+		root = data.child("game_state");
+		if (result != NULL)
+		{
+			LOG("Loading new Game State from %s...", App->loadGame.data());
+
+			root = data.child("game_state");
+
+			Load(root.child(name.data()));
+			App->player->Load(root.child(App->player->name.data()));
+			App->entities->Load(root.child(App->player->name.data()));
+			App->wave->Load(root.child(App->player->name.data()));
+			App->fow->Load(root.child(App->player->name.data()));
+
+			App->menu->isLoad = false;
+		}
+	}
 	return ret;
 }
 

@@ -756,22 +756,26 @@ bool j1Player::Load(pugi::xml_node& save)
 {
 	bool ret = true;
 
-	pugi::xml_node general = save.child("general");
+	pugi::xml_node upgrades = save.child("upgrades");
 
-	townHallUpgrade = general.child("townHallUpgrade").attribute("townHallUpgrade").as_bool();
+	townHallUpgrade = upgrades.child("townHallUpgrade").attribute("townHallUpgrade").as_bool();
 
-	totalGold = general.child("totalGold").attribute("totalGold").as_uint();
-	currentGold = general.child("currentGold").attribute("currentGold").as_int();
-	currentFood = general.child("currentFood").attribute("currentFood").as_int();
-	roomsCleared = general.child("roomsCleared").attribute("roomsCleared").as_uint();
-	totalEnemiesKilled = general.child("totalEnemiesKilled").attribute("totalEnemiesKilled").as_uint();
-	totalUnitsDead = general.child("totalUnitsDead").attribute("totalUnitsDead").as_uint();
+	pugi::xml_node resources = save.child("resources");
 
-	isWin = general.child("isWin").attribute("isWin").as_bool();
-	startGameTimer.Resume(general.child("startGameTimer").attribute("startGameTimer").as_int());
-	unitProduce = general.child("unitProduce").attribute("unitProduce").as_uint();
-	enemiesKill = general.child("enemiesKill").attribute("enemiesKill").as_uint();
-	buildDestroy = general.child("buildDestroy").attribute("buildDestroy").as_uint();
+	totalGold = resources.child("totalGold").attribute("totalGold").as_uint();
+	currentGold = resources.child("currentGold").attribute("currentGold").as_int();
+	currentFood = resources.child("currentFood").attribute("currentFood").as_int();
+	roomsCleared = resources.child("roomsCleared").attribute("roomsCleared").as_uint();
+	totalEnemiesKilled = resources.child("totalEnemiesKilled").attribute("totalEnemiesKilled").as_uint();
+	totalUnitsDead = resources.child("totalUnitsDead").attribute("totalUnitsDead").as_uint();
+
+	pugi::xml_node stats = save.child("stats");
+
+	isWin = stats.child("isWin").attribute("isWin").as_bool();
+	startGameTimer.Resume(stats.child("startGameTimer").attribute("startGameTimer").as_int());
+	unitProduce = stats.child("unitProduce").attribute("unitProduce").as_uint();
+	enemiesKill = stats.child("enemiesKill").attribute("enemiesKill").as_uint();
+	buildDestroy = stats.child("buildDestroy").attribute("buildDestroy").as_uint();
 
 	pugi::xml_node spawning = save.child("barracks");
 
@@ -791,8 +795,10 @@ bool j1Player::Load(pugi::xml_node& save)
 		toSpawnUnitGrypho.push(toSpawn);
 	}
 	
-	isUnitSpawning = general.attribute("isUnitSpawning").as_bool();
+	isUnitSpawning = spawning.attribute("isUnitSpawning").as_bool();
 	
+	App->scene->hasGoldChanged = GoldChange_Win;
+
 	return ret;
 }
 
