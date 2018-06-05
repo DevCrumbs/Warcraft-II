@@ -77,6 +77,8 @@ public:
 
 	BuildingState GetBuildingState() const;
 
+	void SetBuildingState(BuildingState state);
+
 	// Collision
 	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
 	ColliderGroup* GetSightRadiusCollider() const;
@@ -95,6 +97,8 @@ public:
 	BuildingState buildingState = BuildingState_Normal;
 	const StaticEntitySize buildingSize = StaticEntitySize_None;
 
+	bool isBuilt = false;
+
 protected:
 
 	Particle* fire = nullptr;
@@ -102,7 +106,6 @@ protected:
 
 	float constructionTimer = 0.0f;
 	float constructionTime = 0.0f;
-	bool isBuilt = false;
 
 	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;

@@ -4531,6 +4531,101 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 	}
 
 	//---------------------------
+	//-------- Static -----------
+	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
+	{
+		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("staticEntityType").as_int();
+
+		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
+		UnitInfo unitInfo;
+
+		StaticEntity* newEntity = nullptr;
+
+		switch (entityType)
+		{
+			// Static Entities
+		case EntityType_TOWN_HALL:
+			newEntity = App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			break;
+		case EntityType_CHICKEN_FARM:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			App->player->chickenFarm.push_back(newEntity);
+			break;
+		case EntityType_BARRACKS:
+			newEntity = App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			break;
+		case EntityType_GRYPHON_AVIARY:
+			newEntity = App->player->gryphonAviary = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			break;
+
+		case EntityType_GOLD_MINE:
+		{
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+
+			GoldMineState state = GoldMineState(iterator.attribute("MineGoldState").as_int());
+
+			GoldMine* mine = (GoldMine*)newEntity;
+
+			if (state != GoldMineState_Untouched)
+			{
+				mine->SetGoldMineState(GoldMineState_Gathered);
+				mine->buildingState = BuildingState_Destroyed;
+				mine->currGold = 0;
+				mine->totalGold = 0;
+
+			}
+			else
+				mine->SetGoldMineState(state);
+		}
+		break;
+		case EntityType_RUNESTONE:
+		{
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+
+			Runestone* runestone = (Runestone*)newEntity;
+
+			RunestoneState state = RunestoneState(iterator.attribute("RunestoneState").as_int());
+
+			if (state != RunestoneState_Untouched)
+			{
+				runestone->SetRunestoneState(RunestoneState_Gathered);
+				runestone->buildingState = BuildingState_Destroyed;
+			}
+			else
+				runestone->SetRunestoneState(state);
+		}
+
+		break;
+		case EntityType_GREAT_HALL:
+		case EntityType_STRONGHOLD:
+		case EntityType_FORTRESS:
+		case EntityType_ENEMY_BARRACKS:
+		case EntityType_PIG_FARM:
+		case EntityType_TROLL_LUMBER_MILL:
+		case EntityType_ALTAR_OF_STORMS:
+		case EntityType_DRAGON_ROOST:
+		case EntityType_TEMPLE_OF_THE_DAMNED:
+		case EntityType_OGRE_MOUND:
+		case EntityType_ENEMY_BLACKSMITH:
+		case EntityType_WATCH_TOWER:
+		case EntityType_ENEMY_GUARD_TOWER:
+		case EntityType_ENEMY_CANNON_TOWER:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			break;
+		default:
+			break;
+		}
+
+		if (newEntity != nullptr)
+		{
+			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+
+			newEntity->isBuilt = iterator.attribute("isBuild").as_bool();
+		}
+
+	}
+
+	//---------------------------
 	//-------- Dynamic ----------
 	for (pugi::xml_node iterator = save.child("dynamicEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
 	{
@@ -4546,6 +4641,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			// Dynamic entities
 		case EntityType_FOOTMAN:
 		case EntityType_ELVEN_ARCHER:
+		case EntityType_GRYPHON_RIDER:
 		case EntityType_ALLERIA:
 		case EntityType_TURALYON:
 			newEntity = (DynamicEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
@@ -4601,96 +4697,6 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			if(newEntity->entitySide == EntitySide_Player)
 				App->player->unitProduce--;
 		}
-	}
-
-	//---------------------------
-	//-------- Static -----------
-	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
-	{
-		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("staticEntityType").as_int();
-
-		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
-		UnitInfo unitInfo;
-
-		StaticEntity* newEntity = nullptr;
-
-		switch (entityType)
-		{
-			// Static Entities
-		case EntityType_TOWN_HALL:
-			newEntity = App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-			break;
-		case EntityType_CHICKEN_FARM:
-			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
-			App->player->chickenFarm.push_back(newEntity);
-			break;
-		case EntityType_BARRACKS:
-			newEntity = App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
-			break;
-
-		case EntityType_GOLD_MINE:
-		{
-			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-
-			GoldMineState state = GoldMineState(iterator.attribute("MineGoldState").as_int());
-
-			GoldMine* mine = (GoldMine*)newEntity;
-
-			if (state != GoldMineState_Untouched)
-			{
-				mine->SetGoldMineState(GoldMineState_Gathered);
-				mine->buildingState = BuildingState_Destroyed;
-				mine->currGold = 0;
-				mine->totalGold = 0;
-
-			}
-			else
-				mine->SetGoldMineState(state);
-		}
-			break;
-		case EntityType_RUNESTONE:
-		{
-			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-
-			Runestone* runestone = (Runestone*)newEntity;
-
-			RunestoneState state = RunestoneState(iterator.attribute("RunestoneState").as_int());
-
-			if (state != RunestoneState_Untouched)
-			{
-				runestone->SetRunestoneState(RunestoneState_Gathered);
-				runestone->buildingState = BuildingState_Destroyed;
-			}
-			else
-				runestone->SetRunestoneState(state);
-		}
-
-			break;
-		case EntityType_GREAT_HALL:
-		case EntityType_STRONGHOLD:
-		case EntityType_FORTRESS:
-		case EntityType_ENEMY_BARRACKS:
-		case EntityType_PIG_FARM:
-		case EntityType_TROLL_LUMBER_MILL:
-		case EntityType_ALTAR_OF_STORMS:
-		case EntityType_DRAGON_ROOST:
-		case EntityType_TEMPLE_OF_THE_DAMNED:
-		case EntityType_OGRE_MOUND:
-		case EntityType_ENEMY_BLACKSMITH:
-		case EntityType_WATCH_TOWER:
-		case EntityType_ENEMY_GUARD_TOWER:
-		case EntityType_ENEMY_CANNON_TOWER:
-			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-			break;
-		default:
-			break;
-		}
-
-		if (newEntity != nullptr)
-		{
-			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
-		}
-
 	}
 
 
@@ -4779,6 +4785,8 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 			entity.append_attribute("staticEntityType") = (*statEnt)->staticEntityType;
 
 			entity.append_attribute("GetCurrLife") = (*statEnt)->GetCurrLife();
+
+			entity.append_attribute("isBuild") = (*statEnt)->GetIsFinishedBuilt();
 
 			if ((*statEnt)->staticEntityType == EntityType_GOLD_MINE)
 			{
