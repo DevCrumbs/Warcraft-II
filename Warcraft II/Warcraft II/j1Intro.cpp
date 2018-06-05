@@ -56,11 +56,19 @@ bool j1Intro::Update(float dt)
 		App->video->GrabAVIFrame();
 
 	}
+
 	else
 	{
 		App->fade->FadeToBlack(this, App->menu);
 		Mix_PauseMusic();
 	}
+
+	if (App->input->GetKey(SDL_SCANCODE_SPACE)== KEY_DOWN)
+	{
+		App->fade->FadeToBlack(this, App->menu);
+		Mix_PauseMusic();
+	}
+	
 
 	return true;
 }
