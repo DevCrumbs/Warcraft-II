@@ -810,7 +810,7 @@ bool j1Player::Load(pugi::xml_node& save)
 
 	if(isTurRescued)
 		App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
-	else if(isAllRescued)
+	if(isAllRescued)
 		App->player->RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
 
 	pugi::xml_node spawning = save.child("barracks");
