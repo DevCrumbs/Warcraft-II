@@ -4530,6 +4530,59 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 	}
 
 	//---------------------------
+	//-------- Static -----------
+	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
+	{
+		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("staticEntityType").as_int();
+
+		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
+		UnitInfo unitInfo;
+
+		StaticEntity* newEntity = nullptr;
+
+		switch (entityType)
+		{
+			// Static Entities
+		case EntityType_TOWN_HALL:
+			newEntity = App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			break;
+		case EntityType_CHICKEN_FARM:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			App->player->chickenFarm.push_back(newEntity);
+			break;
+		case EntityType_BARRACKS:
+			newEntity = App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			break;
+
+		case EntityType_GOLD_MINE:
+		case EntityType_RUNESTONE:
+		case EntityType_GREAT_HALL:
+		case EntityType_STRONGHOLD:
+		case EntityType_FORTRESS:
+		case EntityType_ENEMY_BARRACKS:
+		case EntityType_PIG_FARM:
+		case EntityType_TROLL_LUMBER_MILL:
+		case EntityType_ALTAR_OF_STORMS:
+		case EntityType_DRAGON_ROOST:
+		case EntityType_TEMPLE_OF_THE_DAMNED:
+		case EntityType_OGRE_MOUND:
+		case EntityType_ENEMY_BLACKSMITH:
+		case EntityType_WATCH_TOWER:
+		case EntityType_ENEMY_GUARD_TOWER:
+		case EntityType_ENEMY_CANNON_TOWER:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			break;
+		default:
+			break;
+		}
+
+		if (newEntity != nullptr)
+		{
+			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+		}
+	}
+
+	//---------------------------
 	//-------- Dynamic ----------
 	for (pugi::xml_node iterator = save.child("dynamicEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
 	{
@@ -4540,41 +4593,98 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		DynamicEntity* newEntity = nullptr;
 		Entity* entity = nullptr;
 
-		iPoint posTile = App->map->WorldToMap(pos.x, pos.y);
-		iPoint posTilePos = App->map->MapToWorld(posTile.x, posTile.y);
-		pos = { (float)posTilePos.x, (float)posTilePos.y };
+		iPoint toSpawnTile = App->map->WorldToMap(pos.x, pos.y);
 
-		switch (entityType)
-		{
-			// Dynamic entities
-		case EntityType_FOOTMAN:
-		case EntityType_ELVEN_ARCHER:
-		case EntityType_ALLERIA:
-		case EntityType_TURALYON:
-			newEntity = (DynamicEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
-			break;
+		bool isSpawned = false;
 
-		case EntityType_GRUNT:
-		case EntityType_TROLL_AXETHROWER:
-		case EntityType_DRAGON:
-			 entity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
-			 newEntity = (DynamicEntity*)entity;
-			break;
+		// If the spawnTile is not valid, find a new, valid spawn tile
+		if (App->entities->IsEntityOnTile(toSpawnTile) != nullptr || !App->pathfinding->IsWalkable(toSpawnTile)) {
 
-		case EntityType_SHEEP:
-		case EntityType_BOAR:
-		{
-			int type = rand() % 2;
+			// Perform a BFS
+			queue<iPoint> queue;
+			list<iPoint> visited;
 
-			if (type == 0)
-				newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
-			else
-				newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+			iPoint curr = toSpawnTile;
+			queue.push(curr);
+
+			while (queue.size() > 0) {
+
+				curr = queue.front();
+				queue.pop();
+
+				if (App->entities->IsEntityOnTile(curr) == nullptr && App->pathfinding->IsWalkable(curr)) {
+
+					toSpawnTile = curr;
+					break;
+				}
+
+				iPoint neighbors[8];
+				neighbors[0].create(curr.x + 1, curr.y + 0);
+				neighbors[1].create(curr.x + 0, curr.y + 1);
+				neighbors[2].create(curr.x - 1, curr.y + 0);
+				neighbors[3].create(curr.x + 0, curr.y - 1);
+				neighbors[4].create(curr.x + 1, curr.y + 1);
+				neighbors[5].create(curr.x + 1, curr.y - 1);
+				neighbors[6].create(curr.x - 1, curr.y + 1);
+				neighbors[7].create(curr.x - 1, curr.y - 1);
+
+				for (uint i = 0; i < 8; ++i)
+				{
+					if (App->pathfinding->IsWalkable(neighbors[i])) {
+
+						if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+							queue.push(neighbors[i]);
+							visited.push_back(neighbors[i]);
+						}
+					}
+				}
+			}
 		}
-		break;
 
-		default:
+		// Spawn the entity on the spawn tile
+		if (toSpawnTile.x != -1 && toSpawnTile.y != -1) {
+
+			iPoint spawnPos = App->map->MapToWorld(toSpawnTile.x, toSpawnTile.y);
+			pos = { (float)spawnPos.x, (float)spawnPos.y };
+
+			isSpawned = true;
+		}
+
+		if (isSpawned) {
+
+			switch (entityType)
+			{
+				// Dynamic entities
+			case EntityType_FOOTMAN:
+			case EntityType_ELVEN_ARCHER:
+			case EntityType_ALLERIA:
+			case EntityType_TURALYON:
+				newEntity = (DynamicEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
+				break;
+
+			case EntityType_GRUNT:
+			case EntityType_TROLL_AXETHROWER:
+			case EntityType_DRAGON:
+				entity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+				newEntity = (DynamicEntity*)entity;
+				break;
+
+			case EntityType_SHEEP:
+			case EntityType_BOAR:
+			{
+				int type = rand() % 2;
+
+				if (type == 0)
+					newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+				else
+					newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+			}
 			break;
+
+			default:
+				break;
+			}
 		}
 
 		if (entity != nullptr)
@@ -4605,62 +4715,6 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 				App->player->unitProduce--;
 		}
 	}
-
-	//---------------------------
-	//-------- Static -----------
-	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
-	{
-		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("staticEntityType").as_int();
-
-		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
-		UnitInfo unitInfo;
-
-		StaticEntity* newEntity = nullptr;
-
-		switch (entityType)
-		{
-			// Static Entities
-		case EntityType_TOWN_HALL:
-			newEntity = App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-			break;
-		case EntityType_CHICKEN_FARM:
-			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos,	App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
-				App->player->chickenFarm.push_back(newEntity);
-			break;
-		case EntityType_BARRACKS:
-			newEntity = App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos,	App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
-			break;
-
-		case EntityType_GOLD_MINE:
-		case EntityType_RUNESTONE:
-		case EntityType_GREAT_HALL:
-		case EntityType_STRONGHOLD:
-		case EntityType_FORTRESS:
-		case EntityType_ENEMY_BARRACKS:
-		case EntityType_PIG_FARM:
-		case EntityType_TROLL_LUMBER_MILL:
-		case EntityType_ALTAR_OF_STORMS:
-		case EntityType_DRAGON_ROOST:
-		case EntityType_TEMPLE_OF_THE_DAMNED:
-		case EntityType_OGRE_MOUND:
-		case EntityType_ENEMY_BLACKSMITH:
-		case EntityType_WATCH_TOWER:
-		case EntityType_ENEMY_GUARD_TOWER:
-		case EntityType_ENEMY_CANNON_TOWER:
-			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-			break;
-		default:
-			break;
-		}
-
-		if (newEntity != nullptr)
-		{
-			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
-		}
-
-	}
-
-
 
 	return ret;
 }

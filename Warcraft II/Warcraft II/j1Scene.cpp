@@ -223,7 +223,6 @@ bool j1Scene::Start()
 		enIt++;
 	}
 
-
 	return ret;
 }
 
