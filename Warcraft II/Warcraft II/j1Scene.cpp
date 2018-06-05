@@ -909,8 +909,12 @@ bool j1Scene::Update(float dt)
 
 	if (parchmentImg != nullptr) {
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
-			pauseMenuActions = PauseMenuActions_CREATED;
-			alphaCont = 0;
+
+			if (App->entities->AreAllUnitsFittingTile()) {
+
+				pauseMenuActions = PauseMenuActions_CREATED;
+				alphaCont = 0;
+			}
 		}
 
 		else if (parchmentImg->GetAnimation()->speed > 0) {
@@ -927,6 +931,8 @@ bool j1Scene::Update(float dt)
 		if (pauseMenuActions != PauseMenuActions_NOT_EXIST) {
 			SDL_Rect rect = { -(int)App->render->camera.x, -(int)App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h };
 			App->printer->PrintQuad(rect, { 0,0,0,100 }, true, true, Layers_QuadsPrinters);
+
+			
 		}
 	}
 	switch (pauseMenuActions)
@@ -957,6 +963,7 @@ bool j1Scene::Update(float dt)
 		DestroyPauseMenu();
 		DestroySettingsMenu();
 		pauseMenuActions = PauseMenuActions_NOT_EXIST;
+		App->entities->ReactivateAllUnits();
 		break;
 	case PauseMenuActions_RETURN_MENU:
 		pauseMenuActions = PauseMenuActions_NONE;
@@ -985,6 +992,8 @@ bool j1Scene::Update(float dt)
 			parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
 			parchmentImg->StartAnimation(App->gui->parchmentAnim);
 			parchmentImg->SetPriorityDraw(PriorityDraw_WINDOW);
+
+			App->entities->StopAllUnits();
 		}
 		else {
 			pauseMenuActions = PauseMenuActions_DESTROY;
