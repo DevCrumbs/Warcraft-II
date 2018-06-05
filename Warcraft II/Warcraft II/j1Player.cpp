@@ -225,6 +225,13 @@ bool j1Player::Update(float dt)
 		else if (building->staticEntityType == EntityType_GOLD_MINE) {
 			HandleGoldMineUIStates();
 		}
+		if (entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			DynamicEntity* prisioner = (DynamicEntity*)entitySelectedStats.entitySelected;
+			if (prisioner->dynamicEntityType == EntityType_TURALYON)
+				entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 64 });
+			else if(prisioner->dynamicEntityType == EntityType_ALLERIA)
+				entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 60 });
+		}
 	}
 	CheckBuildingsState();
 	return true;
@@ -1968,6 +1975,7 @@ void j1Player::HandleGoldMineUIStates()
 	default:
 		break;
 	}
+	entitySelectedStats.HP->SetLocalPos({ 70, App->scene->entitiesStats->GetLocalRect().h - 45 });
 }
 
 void j1Player::CreateGryphonAviaryButtons()
