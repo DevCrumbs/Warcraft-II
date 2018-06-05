@@ -234,6 +234,7 @@ bool j1Scene::Start()
 		enIt++;
 	}
 
+
 	return ret;
 }
 
@@ -367,20 +368,11 @@ bool j1Scene::Update(float dt)
 		App->isDebug = !App->isDebug;
 	
 	// SDL_SCANCODE_F10
-	if (App->input->GetKey(buttonTogleDebugAttack) == KEY_DOWN && App->isDebug) {
-		
-		if (debugDrawAttack == 0)
-			debugDrawAttack = 1;
-		else if (debugDrawAttack == 1)
-			debugDrawAttack = 2;
-		else if (debugDrawAttack == 2)
-			debugDrawAttack = 0;
-	}
+	if (App->input->GetKey(buttonTogleDebugAttack) == KEY_DOWN && App->isDebug)
+		debugDrawAttack = !debugDrawAttack;
 
-	if (debugDrawAttack == 1)
-		App->collision->DebugDraw(true); // debug draw collisions (low level)
-	else if (debugDrawAttack == 2)
-		App->collision->DebugDraw(false); // debug draw collisions (high level)
+	if (debugDrawAttack)
+		App->collision->DebugDraw(); // debug draw collisions
 
 	// SDL_SCANCODE_F11
 	if (App->input->GetKey(buttonTogleDebugMovement) == KEY_DOWN && App->isDebug)
@@ -928,7 +920,6 @@ bool j1Scene::Update(float dt)
 
 	if (parchmentImg != nullptr) {
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
-
 			pauseMenuActions = PauseMenuActions_CREATED;
 			alphaCont = 0;
 		}
@@ -947,8 +938,6 @@ bool j1Scene::Update(float dt)
 		if (pauseMenuActions != PauseMenuActions_NOT_EXIST) {
 			SDL_Rect rect = { -(int)App->render->camera.x, -(int)App->render->camera.y, (int)App->render->camera.w, (int)App->render->camera.h };
 			App->printer->PrintQuad(rect, { 0,0,0,100 }, true, true, Layers_QuadsPrinters);
-
-			
 		}
 	}
 	switch (pauseMenuActions)
@@ -2461,7 +2450,6 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 		else if (UIelem == saveGameLabel)
 		{
-			App->audio->PlayFx(App->audio->GetFX().gameStart, 0); //Game start sound
 			App->SaveGame();
 			isSaveGame = true;
 		}

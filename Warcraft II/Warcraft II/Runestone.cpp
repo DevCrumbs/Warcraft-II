@@ -9,7 +9,6 @@
 #include "j1Collision.h"
 #include "j1Render.h"
 #include "j1Printer.h"
-#include "j1FadeToBlack.h"
 
 Runestone::Runestone(fPoint pos, iPoint size, int currLife, uint maxLife, const RunestoneInfo& runestoneInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), runestoneInfo(runestoneInfo)
 {
@@ -45,12 +44,6 @@ Runestone::Runestone(fPoint pos, iPoint size, int currLife, uint maxLife, const 
 
 void Runestone::Move(float dt)
 {
-	if (!isCheckedBuildingState && !App->fade->IsFading()) {
-
-		CheckBuildingState();
-		isCheckedBuildingState = true;
-	}
-
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 

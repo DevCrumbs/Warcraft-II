@@ -8,7 +8,6 @@
 #include "j1Scene.h"
 #include "j1Movement.h"
 #include "j1Particles.h"
-#include "j1FadeToBlack.h"
 
 DragonRoost::DragonRoost(fPoint pos, iPoint size, int currLife, uint maxLife, const DragonRoostInfo& dragonRoostInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), dragonRoostInfo(dragonRoostInfo)
 {
@@ -60,12 +59,6 @@ DragonRoost::~DragonRoost()
 
 void DragonRoost::Move(float dt) 
 {
-	if (!isCheckedBuildingState && !App->fade->IsFading()) {
-
-		CheckBuildingState();
-		isCheckedBuildingState = true;
-	}
-
 	// Reconstruction conditions
 	if (buildingState == BuildingState_LowFire && !isStartReconstructionTimer) {
 
@@ -140,7 +133,6 @@ void DragonRoost::Move(float dt)
 		// Remove the low fire
 		if (fire != nullptr)
 			fire->isRemove = true;
-		fire = nullptr;
 
 		// Remove the peon
 		if (peon != nullptr)

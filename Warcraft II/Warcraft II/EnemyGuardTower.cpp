@@ -9,7 +9,6 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
-#include "j1FadeToBlack.h"
 
 EnemyGuardTower::EnemyGuardTower(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyGuardTowerInfo& enemyGuardTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), enemyGuardTowerInfo(enemyGuardTowerInfo)
 {
@@ -55,12 +54,6 @@ EnemyGuardTower::~EnemyGuardTower()
 
 void EnemyGuardTower::Move(float dt)
 {
-	if (!isCheckedBuildingState && !App->fade->IsFading()) {
-
-		CheckBuildingState();
-		isCheckedBuildingState = true;
-	}
-
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 

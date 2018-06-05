@@ -198,8 +198,6 @@ public:
 	StaticEntity* gryphonAviary = nullptr;
 
 	vector<UIImage*> imagePrisonersVector;
-	bool isAllRescued = false;
-	bool isTurRescued = false;
 
 	//Neutral
 	list<StaticEntity*> goldMine;

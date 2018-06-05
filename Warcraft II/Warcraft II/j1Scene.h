@@ -277,7 +277,7 @@ public:
 	bool debugDrawMovement = false;
 	bool debugDrawPath = false;
 	bool debugDrawMap = false;
-	uint debugDrawAttack = 0; // 0: not show, 1: low level, 2: high level
+	bool debugDrawAttack = false;
 
 	bool isFrameByFrame = false;
 

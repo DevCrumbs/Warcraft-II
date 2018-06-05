@@ -10,7 +10,6 @@
 #include "j1Movement.h"
 #include "j1Collision.h"
 #include "j1Particles.h"
-#include "j1FadeToBlack.h"
 
 Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), barracksInfo(barracksInfo)
 {
@@ -56,6 +55,10 @@ Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const Ba
 		texArea = &barracksInfo.constructionPlanks1;
 		buildingState = BuildingState_Building;
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+
+		//Construction peasants
+		peasants = App->particles->AddParticle(App->particles->peasantMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
+
 	}
 	
 	// Collision
@@ -74,16 +77,6 @@ Barracks::~Barracks()
 
 void Barracks::Move(float dt)
 {
-	if (!isCheckedBuildingState && !App->fade->IsFading()) {
-
-		CheckBuildingState();
-		isCheckedBuildingState = true;
-
-		if (!isBuilt)
-			//Construction peasants
-			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
-	}
-
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 

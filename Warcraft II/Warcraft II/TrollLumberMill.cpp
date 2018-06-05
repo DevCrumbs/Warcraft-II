@@ -8,7 +8,6 @@
 #include "j1Scene.h"
 #include "j1Movement.h"
 #include "j1Particles.h"
-#include "j1FadeToBlack.h"
 
 TrollLumberMill::TrollLumberMill(fPoint pos, iPoint size, int currLife, uint maxLife, const TrollLumberMillInfo& trollLumberMillInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), trollLumberMillInfo(trollLumberMillInfo)
 {
@@ -60,12 +59,6 @@ TrollLumberMill::~TrollLumberMill()
 
 void TrollLumberMill::Move(float dt) 
 {
-	if (!isCheckedBuildingState && !App->fade->IsFading()) {
-
-		CheckBuildingState();
-		isCheckedBuildingState = true;
-	}
-
 	// Reconstruction conditions
 	if (buildingState == BuildingState_LowFire && !isStartReconstructionTimer) {
 
@@ -140,7 +133,6 @@ void TrollLumberMill::Move(float dt)
 		// Remove the low fire
 		if (fire != nullptr)
 			fire->isRemove = true;
-		fire = nullptr;
 
 		// Remove the peon
 		if (peon != nullptr)

@@ -400,8 +400,7 @@ bool j1App::CleanUp()
 
 
 // ---------------------------------------
-uint32 j1App::GetSecondsSinceAppStartUp() 
-{
+uint32 j1App::GetSecondsSinceAppStartUp() {
 	return clock.Read();
 }
 

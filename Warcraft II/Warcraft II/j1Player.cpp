@@ -56,8 +56,6 @@ bool j1Player::Start()
 	roomsCleared = 0;
 	isWin = false;
 	townHallUpgrade = false;
-	isAllRescued = false;
-	isTurRescued = false;
 
 	totalEnemiesKilled = 0;
 	totalUnitsDead = 0;
@@ -190,9 +188,9 @@ bool j1Player::Update(float dt)
 	//Update Selectet unit HP
 	if (entitySelectedStats.entitySelected != nullptr)
 	{
+		StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
 		if (entitySelectedStats.entitySelected->entitySide == EntitySide_Player)
 		{
-			StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
 			if (entitySelectedStats.entitySelected->entityType == EntityCategory_STATIC_ENTITY) {
 				//1st time that building finished to build
 				if (building->GetConstructionTimer() >= building->GetConstructionTime()) {
@@ -224,20 +222,8 @@ bool j1Player::Update(float dt)
 					HideEntitySelectedInfo();
 		}
 
-	}
-	if (entitySelectedStats.entitySelected != nullptr) {
-		//Gold Mine
-		StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
-		if (building->staticEntityType == EntityType_GOLD_MINE) {
+		else if (building->staticEntityType == EntityType_GOLD_MINE) {
 			HandleGoldMineUIStates();
-		}
-		//Prisoners
-		else if (entitySelectedStats.entitySelected->entityType == EntityCategory_DYNAMIC_ENTITY) {
-			DynamicEntity* prisioner = (DynamicEntity*)entitySelectedStats.entitySelected;
-			if (prisioner->dynamicEntityType == EntityType_TURALYON)
-				entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 64 });
-			else if (prisioner->dynamicEntityType == EntityType_ALLERIA)
-				entitySelectedStats.HP->SetLocalPos({ 65, App->scene->entitiesStats->GetLocalRect().h - 60 });
 		}
 	}
 	CheckBuildingsState();
@@ -701,20 +687,7 @@ bool j1Player::Save(pugi::xml_node& save) const
 	SaveAttribute(currentFood, "currentFood", resources, create);
 	SaveAttribute(roomsCleared, "roomsCleared", resources, create);
 	SaveAttribute(totalEnemiesKilled, "totalEnemiesKilled", resources, create);
-	create = false;
-
-	pugi::xml_node prisioners;
-	if (save.child("prisioners") == NULL)
-	{
-		prisioners = save.append_child("prisioners");
-		create = true;
-	}
-	else
-	{
-		prisioners = save.child("prisioners");
-	}
-	SaveAttribute(isTurRescued, "turRescued", prisioners, create);
-	SaveAttribute(isAllRescued, "allRescued", prisioners, create);
+	SaveAttribute(totalUnitsDead, "totalUnitsDead", resources, create);
 
 	create = false;
 
@@ -802,16 +775,6 @@ bool j1Player::Load(pugi::xml_node& save)
 	unitProduce = stats.child("unitProduce").attribute("unitProduce").as_uint();
 	enemiesKill = stats.child("enemiesKill").attribute("enemiesKill").as_uint();
 	buildDestroy = stats.child("buildDestroy").attribute("buildDestroy").as_uint();
-
-	pugi::xml_node prisioners = save.child("prisioners");
-
-	isTurRescued = prisioners.child("turRescued").attribute("turRescued").as_bool();
-	isAllRescued = prisioners.child("allRescued").attribute("allRescued").as_bool();
-
-	if(isTurRescued)
-		App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
-	if(isAllRescued)
-		App->player->RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
 
 	pugi::xml_node spawning = save.child("barracks");
 
@@ -1730,7 +1693,7 @@ void j1Player::MakePrisionerMenu(Entity * entity)
 
 
 	}
-	else if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_TURALYON)
+	if (((DynamicEntity*)entity)->dynamicEntityType == EntityType_TURALYON)
 	{
 		//Set entity name
 		entitySelectedStats.entityName->SetText("Turalyon");
@@ -2333,12 +2296,6 @@ void j1Player::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 			else if (UIelem == destroyBuildingButton) {
 				App->audio->PlayFx(App->audio->GetFX().destroyBuild);
 				HideHoverInfoMenu(&firstHoverInfo);
-				StaticEntity* building = (StaticEntity*)entitySelectedStats.entitySelected;
-				if (building->fire != nullptr) 
-				{
-					building->fire->isRemove = true;
-					building->fire = nullptr;
-				}
 				entitySelectedStats.entitySelected->isRemove = true;
 				HideEntitySelectedInfo();
 			}

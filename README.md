@@ -226,7 +226,7 @@ If debug mode is on:
 	F6: Direct lose
 	F7: Spawn a new enemy wave (in player base)
 	F8: Activate or stop the spawn of waves
-	F10: Show/hide colliders
+	F10: Show/hide game's colliders
 	F11: Show/hide group movement
 
 # Game system

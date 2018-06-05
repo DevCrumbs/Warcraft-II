@@ -49,7 +49,7 @@ public:
 	bool PreUpdate();
 	bool Update(float dt);
 	bool CleanUp();
-	void DebugDraw(bool isLowLevel = true);
+	void DebugDraw();
 
 	bool ProcessCollision(ColliderGroup* I, ColliderGroup* J);
 	void HandleTriggers();

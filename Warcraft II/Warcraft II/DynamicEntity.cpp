@@ -507,11 +507,6 @@ ColliderGroup* DynamicEntity::GetAttackRadiusCollider() const
 
 ColliderGroup* DynamicEntity::CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic)
 {
-	bool isWalkabilityChecked = true;
-
-	if (dynamicEntityType == EntityType_GRYPHON_RIDER || dynamicEntityType == EntityType_DRAGON)
-		isWalkabilityChecked = false;
-
 	vector<Collider*> colliders;
 
 	// Perform a BFS
@@ -541,38 +536,18 @@ ColliderGroup* DynamicEntity::CreateRhombusCollider(ColliderType colliderType, u
 
 		for (uint i = 0; i < 4; ++i)
 		{
-			if (CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
+			if (App->pathfinding->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
 
-				if (isWalkabilityChecked) {
+				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
 
-					if (App->pathfinding->IsWalkable(neighbors[i])) {
+					queue.push(neighbors[i]);
+					visited.push_back(neighbors[i]);
 
-						if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+					iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
+					SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
 
-							queue.push(neighbors[i]);
-							visited.push_back(neighbors[i]);
-
-							iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
-							SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-
-							Collider* coll = App->collision->CreateCollider(rect);
-							colliders.push_back(coll);
-						}
-					}
-				}
-				else {
-
-					if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
-
-						queue.push(neighbors[i]);
-						visited.push_back(neighbors[i]);
-
-						iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
-						SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-
-						Collider* coll = App->collision->CreateCollider(rect);
-						colliders.push_back(coll);
-					}
+					Collider* coll = App->collision->CreateCollider(rect);
+					colliders.push_back(coll);
 				}
 			}
 		}
@@ -601,11 +576,6 @@ ColliderGroup* DynamicEntity::CreateRhombusCollider(ColliderType colliderType, u
 
 void DynamicEntity::UpdateRhombusColliderPos(ColliderGroup* collider, uint radius, DistanceHeuristic distanceHeuristic)
 {
-	bool isWalkabilityChecked = true;
-
-	if (dynamicEntityType == EntityType_GRYPHON_RIDER || dynamicEntityType == EntityType_DRAGON)
-		isWalkabilityChecked = false;
-
 	collider->RemoveAllColliders();
 
 	// 1. Create the small colliders
@@ -637,38 +607,18 @@ void DynamicEntity::UpdateRhombusColliderPos(ColliderGroup* collider, uint radiu
 
 		for (uint i = 0; i < 4; ++i)
 		{
-			if (CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
+			if (App->pathfinding->IsWalkable(neighbors[i]) && CalculateDistance(neighbors[i], singleUnit->currTile, distanceHeuristic) < radius) {
 
-				if (isWalkabilityChecked) {
+				if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
 
-					if (App->pathfinding->IsWalkable(neighbors[i])) {
+					queue.push(neighbors[i]);
+					visited.push_back(neighbors[i]);
 
-						if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+					iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
+					SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
 
-							queue.push(neighbors[i]);
-							visited.push_back(neighbors[i]);
-
-							iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
-							SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-
-							Collider* coll = App->collision->CreateCollider(rect);
-							App->collision->AddColliderToAColliderGroup(collider, coll);
-						}
-					}
-				}
-				else {
-				
-					if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
-
-						queue.push(neighbors[i]);
-						visited.push_back(neighbors[i]);
-
-						iPoint collPos = App->map->MapToWorld(neighbors[i].x, neighbors[i].y);
-						SDL_Rect rect = { collPos.x, collPos.y, App->map->data.tileWidth, App->map->data.tileHeight };
-
-						Collider* coll = App->collision->CreateCollider(rect);
-						App->collision->AddColliderToAColliderGroup(collider, coll);
-					}
+					Collider* coll = App->collision->CreateCollider(rect);
+					App->collision->AddColliderToAColliderGroup(collider, coll);
 				}
 			}
 		}

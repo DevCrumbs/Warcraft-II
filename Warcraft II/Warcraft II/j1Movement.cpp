@@ -253,11 +253,6 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 	fPoint movePos;
 	iPoint newGoal;
 
-	if (!singleUnit->isMoving) {
-		if (singleUnit->IsFittingTile())
-			return singleUnit->movementState;
-	}
-
 	switch (singleUnit->movementState) {
 
 	case MovementState_WaitForPath:
@@ -1446,7 +1441,7 @@ iPoint j1Movement::FindClosestValidTile(iPoint tile, DynamicEntity* unit) const
 			curr = queue.front();
 			queue.pop();
 
-			if (App->entities->IsEntityOnTile(curr) == nullptr && App->pathfinding->IsWalkable(curr))
+			if (!App->entities->IsEntityOnTile(curr) && App->pathfinding->IsWalkable(curr))
 				return curr;
 
 			iPoint neighbors[8];
@@ -1503,7 +1498,7 @@ iPoint j1Movement::FindClosestValidTile(iPoint tile, DynamicEntity* unit) const
 			curr = queue.top();
 			queue.pop();
 
-			if (App->entities->IsEntityOnTile(curr.point) == nullptr && App->pathfinding->IsWalkable(curr.point))
+			if (!App->entities->IsEntityOnTile(curr.point) && App->pathfinding->IsWalkable(curr.point))
 				return curr.point;
 
 			iPointPriority neighbors[8];
@@ -1754,7 +1749,7 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile, bool isWalkabilityChecked)
 				// mouseTile must be walkable
 				if (isWalkabilityChecked) {
 
-					if (App->entities->IsEntityOnTile(mouseTile) == nullptr && App->pathfinding->IsWalkable(mouseTile)) {
+					if (!App->entities->IsEntityOnTile(mouseTile) && App->pathfinding->IsWalkable(mouseTile)) {
 
 						vector<iPoint>::iterator it = find(shapedGoal.begin(), shapedGoal.end(), mouseTile);
 
@@ -1785,7 +1780,7 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile, bool isWalkabilityChecked)
 				}
 				else {
 				
-					if (App->entities->IsEntityOnTile(mouseTile) == nullptr) {
+					if (!App->entities->IsEntityOnTile(mouseTile)) {
 
 						vector<iPoint>::iterator it = find(shapedGoal.begin(), shapedGoal.end(), mouseTile);
 
@@ -1821,7 +1816,7 @@ bool UnitGroup::DrawShapedGoal(iPoint mouseTile, bool isWalkabilityChecked)
 		}
 		else {
 
-			if (App->entities->IsEntityOnTile(mouseTile) == nullptr) {
+			if (!App->entities->IsEntityOnTile(mouseTile)) {
 
 				if (isWalkabilityChecked) {
 

@@ -27,6 +27,7 @@ bool j1Video::CleanUp()
 
 void j1Video::Initialize(char* path)
 {
+	App->win->SetTitle("Video Player");
 	OpenAVI(path);                  // Open The AVI File
 }
 

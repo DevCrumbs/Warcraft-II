@@ -16,6 +16,9 @@
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) 
 {
+	if (App->GetSecondsSinceAppStartUp() < 700) // Checks for static entities built since startup
+		isBuilt = true;
+
 	constructionTime = 10.0;
 }
 

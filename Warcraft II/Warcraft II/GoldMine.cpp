@@ -7,7 +7,6 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
-#include "j1FadeToBlack.h"
 
 GoldMine::GoldMine(fPoint pos, iPoint size, int currLife, uint maxLife, const GoldMineInfo& goldMineInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), goldMineInfo(goldMineInfo)
 {
@@ -47,11 +46,7 @@ GoldMine::GoldMine(fPoint pos, iPoint size, int currLife, uint maxLife, const Go
 
 void GoldMine::Move(float dt)
 {
-	if (!isCheckedBuildingState && !App->fade->IsFading()) {
-
-		CheckBuildingState();
-		isCheckedBuildingState = true;
-	}
+	buildingState;
 
 	if (listener != nullptr)
 		HandleInput(entityEvent);
