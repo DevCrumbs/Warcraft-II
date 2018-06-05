@@ -4639,7 +4639,10 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			if (state != GoldMineState_Untouched)
 			{
 				mine->SetGoldMineState(GoldMineState_Gathered);
+				mine->buildingState = BuildingState_Destroyed;
 				mine->currGold = 0;
+				mine->totalGold = 0;
+
 			}
 			else
 				mine->SetGoldMineState(state);
@@ -4656,6 +4659,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			if (state != RunestoneState_Untouched)
 			{
 				runestone->SetRunestoneState(RunestoneState_Gathered);
+				runestone->buildingState = BuildingState_Destroyed;
 			}
 			else
 				runestone->SetRunestoneState(state);

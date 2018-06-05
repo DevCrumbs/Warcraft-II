@@ -31,7 +31,7 @@ enum BuildingState
 {
 	BuildingState_NoState,
 	BuildingState_Normal,
-	BuildingState_LowFire,
+	BuildingState_LowFire,	
 	BuildingState_HardFire,
 	BuildingState_Destroyed,
 	BuildingState_Building,
