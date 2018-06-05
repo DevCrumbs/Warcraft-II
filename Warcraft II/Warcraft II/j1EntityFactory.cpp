@@ -1510,7 +1510,7 @@ bool j1EntityFactory::Start()
 	critterSheepInfo.unitInfo.maxLife = critterSheepInfo.unitInfo.currLife;
 
 	///
-	critterSheepInfo.restoredHealth = 10;
+	critterSheepInfo.restoredHealth = 20;
 	critterSheepInfo.unitInfo.size = { 32,32 };
 	critterSheepInfo.unitInfo.offsetSize = { 0,0 };
 	//_Sheep
@@ -1527,7 +1527,7 @@ bool j1EntityFactory::Start()
 	critterBoarInfo.unitInfo.maxLife = critterBoarInfo.unitInfo.currLife;
 
 	///
-	critterBoarInfo.restoredHealth = 20;
+	critterBoarInfo.restoredHealth = 30;
 	critterBoarInfo.unitInfo.size = { 32,32 };
 	critterBoarInfo.unitInfo.offsetSize = { 0,0 };
 	//_Boar
