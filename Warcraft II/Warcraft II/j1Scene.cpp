@@ -137,19 +137,21 @@ bool j1Scene::Start()
 		ret = App->map->LoadNewMap(isometricMap.data());
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
+	if (!App->menu->isLoad) {
+		if (warcraftActive) {
+			ret = LoadNewMap(mapDifficulty);
+			//	ret = App->map->Load("verticalSliceMap.tmx");
+			debugTex = App->tex->Load(warcraftTexName.data());
+		}
+		if (ret)
+			App->map->CreateWalkabilityMap(w, h, &data);
 
-	else if (warcraftActive) {
-		ret = LoadNewMap(mapDifficulty);
-	//	ret = App->map->Load("verticalSliceMap.tmx");
-		debugTex = App->tex->Load(warcraftTexName.data());
+		App->map->LoadLogic(App->menu->isLoad);
+		// Load FoW map
+		App->fow->LoadFoW();
 	}
-
-	// Load FoW map
-	App->fow->LoadFoW();
-
 	// Create walkability map
-	if (ret)
-		App->map->CreateWalkabilityMap(w, h, &data);
+
 
 	//LoadInGameUI
 	LoadInGameUI();
@@ -174,7 +176,7 @@ bool j1Scene::Start()
 	musicToPlay = ChooseMusicToPlay();
 	App->audio->PlayMusic(musicToPlay.data(), 2.0f);
 
-	App->map->LoadLogic(App->menu->isLoad);
+
 
 	isStartedFinalTransition = false;
 
@@ -182,23 +184,32 @@ bool j1Scene::Start()
 
 	if (App->menu->isLoad)
 	{
-		pugi::xml_document data;
-		pugi::xml_parse_result result = data.loadFile(App->loadGame.data());
+		pugi::xml_document dataDoc;
+		pugi::xml_parse_result result = dataDoc.loadFile(App->loadGame.data());
 		pugi::xml_node root;
 
-		root = data.child("game_state");
+		root = dataDoc.child("game_state");
 		if (result != NULL)
 		{
 			LOG("Loading new Game State from %s...", App->loadGame.data());
 
-			root = data.child("game_state");
+			root = dataDoc.child("game_state");
 
-			Load(root.child(name.data()));
+			Load(root.child(name.data())); 
+			
+			ret = LoadNewMap(mapDifficulty);
+
+			if (ret)
+				App->map->CreateWalkabilityMap(w, h, &data);
+
+			App->map->LoadLogic(App->menu->isLoad);
+
 			App->player->Load(root.child(App->player->name.data()));
 			App->entities->Load(root.child(App->entities->name.data()));
 			App->wave->Load(root.child(App->wave->name.data()));
 			App->fow->Load(root.child(App->fow->name.data()));
 
+			
 			App->menu->isLoad = false;
 		}
 	}
