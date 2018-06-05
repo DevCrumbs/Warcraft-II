@@ -33,7 +33,6 @@ bool j1Intro::Awake()
 // Called before the first frame
 bool j1Intro::Start()
 {
-	App->win->SetTitle("Video Player");
 	// TODO 1: Call the initialize function from the video module in the start of the scene.
 	App->video->Initialize("data/video/intro.avi");
 	// TODO 8: Play the music of the video using the audio module. 
