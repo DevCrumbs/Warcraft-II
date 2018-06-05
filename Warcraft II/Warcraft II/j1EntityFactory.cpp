@@ -1333,8 +1333,8 @@ bool j1EntityFactory::Start()
 	elvenArcherInfo.unitInfo.priority = 2;
 
 	/// Radius
-	elvenArcherInfo.unitInfo.attackRadius = 6;
-	elvenArcherInfo.unitInfo.sightRadius = 8;
+	elvenArcherInfo.unitInfo.attackRadius = 7;
+	elvenArcherInfo.unitInfo.sightRadius = 9;
 
 	/// Damage
 	elvenArcherInfo.unitInfo.heavyDamage = 6;
