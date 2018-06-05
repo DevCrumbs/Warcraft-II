@@ -409,8 +409,8 @@ bool j1Particles::Start()
 	boarPawsInfo.downLeft.speed = 1.0f;
 	boarPawsInfo.downRight.speed = 1.0f;
 
-	if(!isAnimationSpeedCharged)
-	LoadAnimationsSpeed();
+	if (!isAnimationSpeedCharged)
+		LoadAnimationsSpeed();
 
 	atlasTex = App->tex->Load(atlasTexName.data());
 	pawsTex = App->tex->Load(pawsTexName.data());
