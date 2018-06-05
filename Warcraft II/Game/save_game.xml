@@ -18,117 +18,114 @@
 			<numEnemyGroups numEnemyGroups="16" />
 		</general>
 		<dynamicEntities>
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="640" posY="448" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1124.08484" posY="516.084839" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="512" posY="288" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="768" posY="608" dynamicEntityType="383" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="896" posY="480" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2784" posY="704" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2892.48169" posY="704" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2592" posY="608" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="352" posY="2464" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3232" posY="2304" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="307.51825" posY="2272" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2978.00293" posY="2560" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="320" posY="2432" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3024.8186" posY="2208" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="145.114151" posY="2289.1145" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2787.30273" posY="195.302521" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2784" posY="137.479568" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="876.156128" posY="851.843872" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="928" posY="832" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1068.48169" posY="736" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="736" posY="608" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1076.64063" posY="427.359406" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="491.359406" posY="596.640625" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1024" posY="672" dynamicEntityType="383" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="576" posY="544" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2752" posY="736" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2656" posY="480" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2624" posY="672" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="288" posY="2461.19019" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2912" posY="2304" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="224" posY="2464" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3077.46191" posY="2373.46191" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="256" posY="2496" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3104" posY="2294.13477" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="128" posY="2336" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2906.53809" posY="346.537964" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3008" posY="256" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1076.64063" posY="619.359375" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1145.02417" posY="537.02417" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="992" posY="832" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="40" />
 			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1376" posY="2240" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="966.27887" posY="1920" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1465.51331" posY="2342.48706" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1376" posY="2304" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1205.21082" posY="2282.78955" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1952" posY="2272" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1856" posY="2368" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2208" posY="294.278992" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="8" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="864" posY="1679.53101" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="592.819031" posY="1792" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="655.626221" posY="1760" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2444.48169" posY="1856" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="10" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2368" posY="1792" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="10" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2924.88818" posY="1235.1123" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1338.88989" posY="1344" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2560" posY="1568" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1376" posY="1440" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1120" posY="1344" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1280" posY="1314.00305" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2784" posY="1696" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2974.76294" posY="1534.76318" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2336" posY="1376" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="224" posY="1312" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="13" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2099.0144" posY="1331.01416" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="128" posY="1536" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="13" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1902.48425" posY="1408" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="256" posY="1280" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="544" posY="1297.96863" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="258.281036" posY="1826.28101" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2496" posY="2016" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2496" posY="1728" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="768" posY="1184" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="256" posY="1728" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2752" posY="1344" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2304" posY="1408" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2624" posY="1984" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1248" posY="2272" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1120" posY="2208" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1312" posY="2112" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1248" posY="2304" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1152" posY="2304" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2003.38342" posY="2304" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2089.86523" posY="2240" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2144" posY="192" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="8" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="992" posY="1856" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="704" posY="1792" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="937.865295" posY="1920" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2624" posY="1888" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="10" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2528" posY="1920" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="10" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2752" posY="1408" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1184" posY="1408" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2720" posY="1491.38342" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1120" posY="1280" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1120" posY="1472" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1306.53784" posY="1370.53784" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2996.64038" posY="1556.64063" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2816" posY="1536" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2080" posY="1481.86536" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="128" posY="1496.92151" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="13" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2080" posY="1312" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="96" posY="1545.86536" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="13" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2016" posY="1632" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="416" posY="1184" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="576" posY="1280" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="384" posY="1728" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2304" posY="1440" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2592" posY="1792" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="864" posY="1856" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="288" posY="1728" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2592" posY="1952" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2816" posY="1984" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2560" posY="2144" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="608" posY="2368" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
 			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1184" posY="2400" dynamicEntityType="409" entitySide="0" entityType="2" enemyGroup="-1" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1296.99219" posY="2000.99219" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="960" posY="2400" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
 			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2432" posY="3232" dynamicEntityType="407" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="50" />
 			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2496" posY="3232" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="60" />
 			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2560" posY="3232" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="60" />
 			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2624" posY="3232" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="60" />
 			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2688" posY="3232" dynamicEntityType="407" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2784" posY="3392" dynamicEntityType="415" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="100" />
 		</dynamicEntities>
 		<staticEntities>
-			<entity posX="2720" posY="64" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="2240" posY="128" buildingSize="1" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="401" GetCurrLife="2147483647" isBuild="true" RunestoneState="0" />
-			<entity posX="2880" posY="128" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="395" GetCurrLife="300" isBuild="false" />
-			<entity posX="2912" posY="288" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="1088" posY="352" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" isBuild="true" />
-			<entity posX="864" posY="384" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="704" posY="416" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="768" posY="416" buildingSize="3" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="392" GetCurrLife="450" isBuild="false" />
-			<entity posX="576" posY="448" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" isBuild="true" />
-			<entity posX="1088" posY="544" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" isBuild="true" />
-			<entity posX="2848" posY="608" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" isBuild="true" MineGoldState="0" />
-			<entity posX="1152" posY="704" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" isBuild="true" />
-			<entity posX="800" posY="1056" buildingSize="1" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="401" GetCurrLife="2147483647" isBuild="true" RunestoneState="0" />
-			<entity posX="288" posY="1184" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="1184" posY="1184" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="224" posY="1216" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="160" posY="1248" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="1312" posY="1248" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="396" GetCurrLife="300" isBuild="false" />
-			<entity posX="1888" posY="1248" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="397" GetCurrLife="300" isBuild="false" />
-			<entity posX="2112" posY="1248" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" isBuild="true" />
-			<entity posX="96" posY="1280" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="3008" posY="1344" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" isBuild="true" MineGoldState="0" />
-			<entity posX="1440" posY="1376" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="1824" posY="1440" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" isBuild="true" />
-			<entity posX="3168" posY="1568" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="394" GetCurrLife="300" isBuild="false" />
-			<entity posX="960" posY="1632" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="394" GetCurrLife="300" isBuild="false" />
-			<entity posX="1856" posY="1632" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="3232" posY="1824" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" isBuild="true" MineGoldState="0" />
-			<entity posX="2912" posY="1856" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="1216" posY="2080" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" isBuild="true" />
-			<entity posX="288" posY="2176" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="384" posY="2176" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" isBuild="true" MineGoldState="0" />
-			<entity posX="224" posY="2208" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="2240" posY="2208" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="3008" posY="2240" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="397" GetCurrLife="300" isBuild="false" />
-			<entity posX="3136" posY="2528" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="3040" posY="2560" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" isBuild="false" />
-			<entity posX="2912" posY="2976" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" isBuild="true" MineGoldState="0" />
-			<entity posX="2272" posY="3232" buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="405" GetCurrLife="150" isBuild="true" />
-			<entity posX="2464" posY="3296" buildingSize="2" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="404" GetCurrLife="300" isBuild="true" />
-			<entity posX="2496" posY="3456" buildingSize="3" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="403" GetCurrLife="1400" isBuild="true" />
-			<entity posX="2272" posY="3552" buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="405" GetCurrLife="150" isBuild="true" />
-			<entity posX="2816" posY="3392" buildingSize="2" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="420" GetCurrLife="300" isBuild="true" />
-			<entity posX="2688" posY="3360" buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="422" GetCurrLife="150" isBuild="true" />
+			<entity posX="2720" posY="64" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="2240" posY="128" buildingSize="1" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="401" GetCurrLife="2147483647" constructionTimer="0" RunestoneState="0" />
+			<entity posX="2880" posY="128" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="395" GetCurrLife="300" constructionTimer="0" />
+			<entity posX="2912" posY="288" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="1088" posY="352" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="864" posY="384" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="704" posY="416" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="768" posY="416" buildingSize="3" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="392" GetCurrLife="450" constructionTimer="0" />
+			<entity posX="576" posY="448" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="1088" posY="544" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="2848" posY="608" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" constructionTimer="0" MineGoldState="0" />
+			<entity posX="1152" posY="704" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="800" posY="1056" buildingSize="1" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="401" GetCurrLife="2147483647" constructionTimer="0" RunestoneState="0" />
+			<entity posX="288" posY="1184" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="1184" posY="1184" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="224" posY="1216" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="160" posY="1248" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="1312" posY="1248" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="396" GetCurrLife="300" constructionTimer="0" />
+			<entity posX="1888" posY="1248" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="397" GetCurrLife="300" constructionTimer="0" />
+			<entity posX="2112" posY="1248" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="96" posY="1280" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="3008" posY="1344" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" constructionTimer="0" MineGoldState="0" />
+			<entity posX="1440" posY="1376" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="1824" posY="1440" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="3168" posY="1568" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="394" GetCurrLife="300" constructionTimer="0" />
+			<entity posX="960" posY="1632" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="394" GetCurrLife="300" constructionTimer="0" />
+			<entity posX="1856" posY="1632" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="3232" posY="1824" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" constructionTimer="0" MineGoldState="0" />
+			<entity posX="2912" posY="1856" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="1216" posY="2080" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="387" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="288" posY="2176" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="384" posY="2176" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" constructionTimer="0" MineGoldState="0" />
+			<entity posX="224" posY="2208" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="2240" posY="2208" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="3008" posY="2240" buildingSize="2" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="397" GetCurrLife="300" constructionTimer="0" />
+			<entity posX="3136" posY="2528" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="3040" posY="2560" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="2912" posY="2976" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" constructionTimer="0" MineGoldState="0" />
+			<entity posX="2272" posY="3232" buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="405" GetCurrLife="150" constructionTimer="0" />
+			<entity posX="2464" posY="3296" buildingSize="2" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="404" GetCurrLife="300" constructionTimer="0" />
+			<entity posX="2496" posY="3456" buildingSize="3" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="403" GetCurrLife="450" constructionTimer="0" />
+			<entity posX="2272" posY="3552" buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="405" GetCurrLife="150" constructionTimer="0" />
 		</staticEntities>
 	</entities>
 	<surge>
@@ -146,29 +143,29 @@
 			<phasesOfCurrWave phasesOfCurrWave="0" />
 		</currWave>
 		<timeline>
-			<nextWaveTimer nextWaveTimer="93" />
+			<nextWaveTimer nextWaveTimer="9" />
 			<nextPhaseTimer nextPhaseTimer="0" />
-			<secondsToNextWave secondsToNextWave="240" />
+			<secondsToNextWave secondsToNextWave="300" />
 			<secondsToNextPhase secondsToNextPhase="0" />
 		</timeline>
 	</surge>
 	<fonts />
 	<player>
 		<upgrades>
-			<townHallUpgrade townHallUpgrade="1" />
+			<townHallUpgrade townHallUpgrade="0" />
 		</upgrades>
 		<resources>
-			<totalGold totalGold="6000" />
-			<currentGold currentGold="3950" />
-			<currentFood currentFood="12" />
+			<totalGold totalGold="0" />
+			<currentGold currentGold="0" />
+			<currentFood currentFood="6" />
 			<roomsCleared roomsCleared="0" />
 			<totalEnemiesKilled totalEnemiesKilled="0" />
 			<totalUnitsDead totalUnitsDead="0" />
 		</resources>
 		<stats>
 			<isWin isWin="0" />
-			<startGameTimer startGameTimer="94526" />
-			<unitProduce unitProduce="6" />
+			<startGameTimer startGameTimer="11645" />
+			<unitProduce unitProduce="5" />
 			<enemiesKill enemiesKill="0" />
 			<buildDestroy buildDestroy="0" />
 		</stats>
@@ -13848,6 +13845,6 @@
 	<gui />
 	<fade />
 	<renderer>
-		<camera x="-2206.28857" y="-3028.03125" />
+		<camera x="-2016" y="-2957.5415" />
 	</renderer>
 </game_state>

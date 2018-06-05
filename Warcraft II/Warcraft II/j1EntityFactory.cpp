@@ -1590,7 +1590,18 @@ bool j1EntityFactory::PreUpdate()
 		}
 		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) {
 			StaticEntity * building = (StaticEntity*)(*it);
+			bool isTownHallUpgrade = false;
+			if ((*building).staticEntityType == EntityType_TOWN_HALL)
+			{
+				TownHall* townHall = (TownHall*)building;
+				if (townHall->buildingState == BuildingState_Building)
+					isTownHallUpgrade = true;
+			}
 			building->CheckBuildingState();
+			if (isTownHallUpgrade)
+			{
+				building->buildingState = BuildingState_Building;
+			}
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
 		}
@@ -1938,7 +1949,11 @@ const EntityInfo& j1EntityFactory::GetBuiltBuilding(ENTITY_TYPE staticEntityType
 	case EntityType_CHICKEN_FARM:
 		return (const EntityInfo&)builtChickenFarmInfo;
 		break;
-
+	case EntityType_GRYPHON_AVIARY:
+		return (const EntityInfo&)gryphonAviaryInfo;
+		break;
+	case EntityType_TOWN_HALL:
+		return (const EntityInfo&)townHallInfo;
 	default:
 		return (const EntityInfo&)builtChickenFarmInfo;
 		break;
@@ -4546,6 +4561,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			// Static Entities
 		case EntityType_TOWN_HALL:
 			newEntity = App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			newEntity->buildingState = BuildingState(iterator.attribute("buildingState").as_int());
 			break;
 		case EntityType_CHICKEN_FARM:
 			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
@@ -4620,7 +4636,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		{
 			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
 
-			newEntity->isBuilt = iterator.attribute("isBuild").as_bool();
+			newEntity->constructionTimer = iterator.attribute("constructionTimer").as_float();
 		}
 
 	}
@@ -4786,7 +4802,7 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 			entity.append_attribute("GetCurrLife") = (*statEnt)->GetCurrLife();
 
-			entity.append_attribute("isBuild") = (*statEnt)->GetIsFinishedBuilt();
+			entity.append_attribute("constructionTimer") = (*statEnt)->constructionTimer;
 
 			if ((*statEnt)->staticEntityType == EntityType_GOLD_MINE)
 			{
@@ -4813,6 +4829,17 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 				else
 				{
 					entity.append_attribute("RunestoneState") = RunestoneState_Gathered;
+				}
+			}
+			else if ((*statEnt)->staticEntityType == EntityType_TOWN_HALL)
+			{
+				TownHall* townHall = (TownHall*)*statEnt;
+
+				if (townHall->townHallInfo.townHallType == TownHallType_Keep)
+				{
+					entity.remove_attribute("buildingState");
+
+					entity.append_attribute("buildingState") = BuildingState_Building;
 				}
 			}
 				

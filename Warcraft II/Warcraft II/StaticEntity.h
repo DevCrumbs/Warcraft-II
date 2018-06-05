@@ -97,14 +97,14 @@ public:
 	BuildingState buildingState = BuildingState_Normal;
 	const StaticEntitySize buildingSize = StaticEntitySize_None;
 
-	bool isBuilt = false;
+	float constructionTimer = 0.0f;
 
 protected:
 
 	Particle* fire = nullptr;
 	const SDL_Rect* texArea = nullptr;
 
-	float constructionTimer = 0.0f;
+	bool isBuilt = false;
 	float constructionTime = 0.0f;
 
 	// Collision
