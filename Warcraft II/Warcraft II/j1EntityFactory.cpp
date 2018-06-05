@@ -4621,20 +4621,21 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			newEntity = App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
 			break;
 		case EntityType_CHICKEN_FARM:
-			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos,	App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
-				App->player->chickenFarm.push_back(newEntity);
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			App->player->chickenFarm.push_back(newEntity);
 			break;
 		case EntityType_BARRACKS:
-			newEntity = App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos,	App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			newEntity = App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
 			break;
 
 		case EntityType_GOLD_MINE:
+		{
 			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-			
+
 			GoldMineState state = GoldMineState(iterator.attribute("MineGoldState").as_int());
 
 			GoldMine* mine = (GoldMine*)newEntity;
-		
+
 			if (state != GoldMineState_Untouched)
 			{
 				mine->SetGoldMineState(GoldMineState_Gathered);
@@ -4642,9 +4643,25 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			}
 			else
 				mine->SetGoldMineState(state);
-
+		}
 			break;
 		case EntityType_RUNESTONE:
+		{
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+
+			Runestone* runestone = (Runestone*)newEntity;
+
+			RunestoneState state = RunestoneState(iterator.attribute("RunestoneState").as_int());
+
+			if (state != RunestoneState_Untouched)
+			{
+				runestone->SetRunestoneState(RunestoneState_Gathered);
+			}
+			else
+				runestone->SetRunestoneState(state);
+		}
+
+			break;
 		case EntityType_GREAT_HALL:
 		case EntityType_STRONGHOLD:
 		case EntityType_FORTRESS:
