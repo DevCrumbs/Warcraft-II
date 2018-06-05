@@ -13,12 +13,12 @@
 I made the logic for the placing and construction of the player’s buildings.
 Firstly, the logic for where the player can or cannot place a building in base, depending if there’s a unit in place, another building or an unwalkable tile. Depending on what it is is beneath the building on each case, a green tile will be print on the tiles of the building that indicate a tile in which the building can be placed, and a red tile on where the building cannot be placed, in the phase where the player decides where to place the building.
 When the player finally decides where to place the building, a building process of ten seconds will be initiated on which a construction process for the building will be shown.
- 
-GIF PLACING BUILDING
+
+<img src="Readme_Files/DavidValdivia/BuildingConstruction.gif" width="600">
 
 The range of the tower’s attack is also indicated on the preview building process
 
-GIF MOVING TOWER
+<img src="Readme_Files/DavidValdivia/TowerPlacing.gif" width="600">
 
 ## Logic for the tower’s attack
 
@@ -29,11 +29,11 @@ The logic for the towers consists in two processes:
 The first process consists on identifying the dynamic entities that enter on sight of the tower’s range and discriminating those that aren’t of a different faction from theirs, in other words, human towers will attack orcs, and orc towers will attack humans. After that process is done, the tower internally, will keep a list of the enemy entities on their range and will manage which entities it kills and get out of its range, to remove them from the list.
 On the process of attacking an entity, the tower will attack only one entity; the one that has been a longer time on its range. When attacking an entity, the tower will  send an arrow or a cannon ball (depending on the tower type) on the enemy direction, that will damage it. This was firstly done looking the position of the enemy entity regarding the tower position, but was later changed to be managed with the destination assigned to the arrow or cannon ball particle.
 
-GIF ENEMY TOWERS
+<img src="Readme_Files/DavidValdivia/EnemyTowers.gif" width="600">
 
 There are three types of towers for each of the two factions. The watch (enemy tower) or scout towers (player tower), the guard towers or the cannon towers.
  
-GIF PLAYER TOWERS
+<img src="Readme_Files/DavidValdivia/AlliedTowers.gif" width="600">
 
 ## Audio implementation and choosing
 
@@ -50,7 +50,14 @@ As the one in charge for quality assurance in the team, the job that I have done
 
 What I used for the bug notifying, has been primarily github issues, to keep all the team informed of the bugs that the game has had in each moment, their priority and who should fix them.
 
-PHOTOGRAPHY FOR THE ISSUES
+<img src="Readme_Files/DavidValdivia/Issues.png" width="800">
+
+*Issue hub*
+
+<img src="Readme_Files/DavidValdivia/IssueExample.png" width="600">
+
+*Issue example*
+
 
 Additionally, another method I used on some sprints where the team had implemented a lot of functionality into the game, has been Bug Reports that had a .txt document where I ordered each bug regarding if it was a visual bug, gameplay bug or game breaking bug. Alongside with the.txt, I included photos of each bug, and in the case of the game breaking bugs, the place in the code where the game broke. By doing this, I ensured that all of the members of the team were aware of all the bugs that had surged on that specific sprint and for them to have it handy when they were going to fix them.
 
@@ -62,17 +69,23 @@ I helped to the balance of the game by ensuring the unit triangle was as consist
 
 For balancing the different values of HP, attack and unit cost I used a google spreadsheet to determine how every unit would do against another unit depending on these values. The player’s units and the enemy units are are the counterpart to one another; in other words, they have the same attributes, even though they have different names.
 
-PHOTOGRAPHY OF THE EXCEL TABLE 5
+<img src="Readme_Files/DavidValdivia/Table3.png" width="1000">
+
+*Payoff table and unit's attributes*
 
 To balance the tower’s attack towards the units I used a similar method, but taking into account that the towers take a longer time to attack compared to units.
 
-PHOTOGRAPHY OF THE EXCEL TABLE 3
+<img src="Readme_Files/DavidValdivia/Table1.png" width="800">
+
+*Payoff tower for the towers and their attributes*
 
 With all the information gathered from the cost payoff tables I could determine the final values for every unit and tower.
 
-PHOTOGRAPHY OF THE EXCEL TABLE 4
+<img src="Readme_Files/DavidValdivia/Table2.png" width="800">
 
-For more information on how I balanced the units, you can check a research project I made on RTS balancing, here(link).
+*Final attributes of every unit and tower*
+
+For more information on how I balanced the units, you can check a research project I made on RTS balancing, [here](https://valdiviadev.github.io/RTS-balancing-research/).
 
 ## Other various tasks
 
