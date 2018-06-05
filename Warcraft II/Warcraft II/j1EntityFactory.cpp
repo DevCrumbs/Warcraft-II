@@ -4512,50 +4512,6 @@ list<iPoint> j1EntityFactory::GetBuildingTiles(StaticEntity* building, bool isOn
 }
 ///_SANDRA
 
-void j1EntityFactory::StopAllUnits() const 
-{
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
-
-	while (it != activeDynamicEntities.end()) {
-	
-		if ((*it)->GetSingleUnit() != nullptr) {
-		
-			(*it)->GetSingleUnit()->isMoving = false;
-		}
-		++it;
-	}
-}
-
-void j1EntityFactory::ReactivateAllUnits() const 
-{
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
-
-	while (it != activeDynamicEntities.end()) {
-
-		if ((*it)->GetSingleUnit() != nullptr) {
-
-			(*it)->GetSingleUnit()->isMoving = true;
-		}
-		++it;
-	}
-}
-
-bool j1EntityFactory::AreAllUnitsFittingTile() const
-{
-	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
-
-	while (it != activeDynamicEntities.end()) {
-
-		if ((*it)->GetSingleUnit() != nullptr) {
-			if (!(*it)->GetSingleUnit()->IsFittingTile())
-				return false;
-		}
-		++it;
-	}
-
-	return true;
-}
-
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
@@ -4583,6 +4539,10 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		UnitInfo unitInfo;
 		DynamicEntity* newEntity = nullptr;
 		Entity* entity = nullptr;
+
+		iPoint posTile = App->map->WorldToMap(pos.x, pos.y);
+		iPoint posTilePos = App->map->MapToWorld(posTile.x, posTile.y);
+		pos = { (float)posTilePos.x, (float)posTilePos.y };
 
 		switch (entityType)
 		{

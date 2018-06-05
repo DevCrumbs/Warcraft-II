@@ -357,11 +357,20 @@ bool j1Scene::Update(float dt)
 		App->isDebug = !App->isDebug;
 	
 	// SDL_SCANCODE_F10
-	if (App->input->GetKey(buttonTogleDebugAttack) == KEY_DOWN && App->isDebug)
-		debugDrawAttack = !debugDrawAttack;
+	if (App->input->GetKey(buttonTogleDebugAttack) == KEY_DOWN && App->isDebug) {
+		
+		if (debugDrawAttack == 0)
+			debugDrawAttack = 1;
+		else if (debugDrawAttack == 1)
+			debugDrawAttack = 2;
+		else if (debugDrawAttack == 2)
+			debugDrawAttack = 0;
+	}
 
-	if (debugDrawAttack)
-		App->collision->DebugDraw(); // debug draw collisions
+	if (debugDrawAttack == 1)
+		App->collision->DebugDraw(true); // debug draw collisions (low level)
+	else if (debugDrawAttack == 2)
+		App->collision->DebugDraw(false); // debug draw collisions (high level)
 
 	// SDL_SCANCODE_F11
 	if (App->input->GetKey(buttonTogleDebugMovement) == KEY_DOWN && App->isDebug)
@@ -910,11 +919,8 @@ bool j1Scene::Update(float dt)
 	if (parchmentImg != nullptr) {
 		if (parchmentImg->GetAnimation()->Finished() && pauseMenuActions == PauseMenuActions_NOT_EXIST) {
 
-			if (App->entities->AreAllUnitsFittingTile()) {
-
-				pauseMenuActions = PauseMenuActions_CREATED;
-				alphaCont = 0;
-			}
+			pauseMenuActions = PauseMenuActions_CREATED;
+			alphaCont = 0;
 		}
 
 		else if (parchmentImg->GetAnimation()->speed > 0) {
@@ -963,7 +969,6 @@ bool j1Scene::Update(float dt)
 		DestroyPauseMenu();
 		DestroySettingsMenu();
 		pauseMenuActions = PauseMenuActions_NOT_EXIST;
-		App->entities->ReactivateAllUnits();
 		break;
 	case PauseMenuActions_RETURN_MENU:
 		pauseMenuActions = PauseMenuActions_NONE;
@@ -992,8 +997,6 @@ bool j1Scene::Update(float dt)
 			parchmentImg = App->gui->CreateUIImage({ 260, 145 }, parchmentInfo, this);
 			parchmentImg->StartAnimation(App->gui->parchmentAnim);
 			parchmentImg->SetPriorityDraw(PriorityDraw_WINDOW);
-
-			App->entities->StopAllUnits();
 		}
 		else {
 			pauseMenuActions = PauseMenuActions_DESTROY;

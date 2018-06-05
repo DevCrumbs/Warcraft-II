@@ -396,7 +396,7 @@ bool j1Collision::CleanUp()
 	return ret;
 }
 
-void j1Collision::DebugDraw()
+void j1Collision::DebugDraw(bool isLowLevel)
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
@@ -414,21 +414,23 @@ void j1Collision::DebugDraw()
 				it++;
 				continue;
 			}
-		}
+			else if (isLowLevel) {
 
-		color = debugColors[(*it)->colliderType];
+				color = debugColors[(*it)->colliderType];
+				App->printer->PrintQuad((*it)->offsetCollider->colliderRect, { color.r,color.g,color.b,alpha }, true);
+			}
+			else {
 
-		for (uint i = 0; i < (*it)->colliders.size(); ++i) {
+				for (uint i = 0; i < (*it)->colliders.size(); ++i) {
 
-			if (!App->render->IsInScreen({ (*it)->colliders[i]->colliderRect.x, (*it)->colliders[i]->colliderRect.y, (*it)->colliders[i]->colliderRect.w, (*it)->colliders[i]->colliderRect.h }))
-				continue;
+					if (!App->render->IsInScreen({ (*it)->colliders[i]->colliderRect.x, (*it)->colliders[i]->colliderRect.y, (*it)->colliders[i]->colliderRect.w, (*it)->colliders[i]->colliderRect.h }))
+						continue;
 
-			App->printer->PrintQuad((*it)->colliders[i]->colliderRect, { color.r,color.g,color.b,alpha }, true);
-		}
-
-		if ((*it)->offsetCollider != nullptr)
-
-			App->printer->PrintQuad((*it)->offsetCollider->colliderRect, { 255,255,255,alpha }, true);
+					color = debugColors[(*it)->colliderType];
+					App->printer->PrintQuad((*it)->colliders[i]->colliderRect, { color.r,color.g,color.b,alpha }, true);
+				}
+			}
+		}	
 
 		it++;
 	}
