@@ -190,7 +190,7 @@ void TrollAxethrower::Move(float dt)
 						}
 
 						// WAVE DEFEATED
-						else if (App->map->IsOnBase(spawnPos) && App->wave->phasesOfCurrWave == App->wave->totalPhasesOfCurrWave - 1) {
+						else if (App->map->IsOnBase(spawnPos) && App->wave->currWaveFinished) {
 
 							// Give gold to the player
 							App->player->AddGold(500);

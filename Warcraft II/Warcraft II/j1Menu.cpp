@@ -762,21 +762,17 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 	case UI_EVENT_MOUSE_LEFT_CLICK:
 
 		if (UIelem == playLabel){
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_NEWGAME;
 		}
 
 		else if (UIelem == exitLabel){
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_EXIT;
 		}
 
 		else if (UIelem == settingsLabel){
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_SETTINGS;
 		}
 		else if (UIelem == creditsLabel) {
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_CREDITS;
 		}
 
@@ -784,14 +780,12 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			if (App->scene->isSaveGame) 
 			{
 				menuActions = MenuActions_LOADGAME;
-				App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			}
 			else
 				App->audio->PlayFx(App->audio->GetFX().errorButt, 1);
 		}
 		
 		else if (UIelem == returnLabel) {
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_RETURN;
 		}
 
@@ -814,27 +808,22 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 		//NewGame
 		else if (UIelem == easyOneButt)
 		{
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_PLAY_EASYONE;
 		}
 		else if (UIelem == easyTwoButt)
 		{
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_PLAY_EASYTWO;
 		}
 		else if (UIelem == mediumOneButt)
 		{
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_PLAY_MEDIUMONE;
 		}
 		else if (UIelem == mediumTwoButt)
 		{
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_PLAY_MEDIUMTWO;
 		}
 		else if (UIelem == hardButt)
 		{
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_PLAY_HARD;
 		}
 		//Credits
@@ -879,7 +868,6 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 
 		else if (UIelem == buttonsLabel)
 		{
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 			menuActions = MenuActions_CHANGE_BUTTONS;
 		}
 

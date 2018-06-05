@@ -1333,8 +1333,8 @@ bool j1EntityFactory::Start()
 	elvenArcherInfo.unitInfo.priority = 2;
 
 	/// Radius
-	elvenArcherInfo.unitInfo.attackRadius = 6;
-	elvenArcherInfo.unitInfo.sightRadius = 8;
+	elvenArcherInfo.unitInfo.attackRadius = 8;
+	elvenArcherInfo.unitInfo.sightRadius = 9;
 
 	/// Damage
 	elvenArcherInfo.unitInfo.heavyDamage = 6;
@@ -1456,7 +1456,7 @@ bool j1EntityFactory::Start()
 	dragonInfo.unitInfo.priority = 5;
 
 	/// Radius
-	dragonInfo.unitInfo.attackRadius = 7;
+	dragonInfo.unitInfo.attackRadius = 6;
 	dragonInfo.unitInfo.sightRadius = 12;
 
 	/// Damage
@@ -1510,7 +1510,7 @@ bool j1EntityFactory::Start()
 	critterSheepInfo.unitInfo.maxLife = critterSheepInfo.unitInfo.currLife;
 
 	///
-	critterSheepInfo.restoredHealth = 10;
+	critterSheepInfo.restoredHealth = 20;
 	critterSheepInfo.unitInfo.size = { 32,32 };
 	critterSheepInfo.unitInfo.offsetSize = { 0,0 };
 	//_Sheep
@@ -1527,7 +1527,7 @@ bool j1EntityFactory::Start()
 	critterBoarInfo.unitInfo.maxLife = critterBoarInfo.unitInfo.currLife;
 
 	///
-	critterBoarInfo.restoredHealth = 20;
+	critterBoarInfo.restoredHealth = 30;
 	critterBoarInfo.unitInfo.size = { 32,32 };
 	critterBoarInfo.unitInfo.offsetSize = { 0,0 };
 	//_Boar

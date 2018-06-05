@@ -65,8 +65,7 @@ public:
 public:
 
 	// Current wave
-	uint totalPhasesOfCurrWave = 0;
-	uint phasesOfCurrWave = 0;
+	bool currWaveFinished = false;
 
 	SDL_Scancode* buttonNewWave = nullptr;
 	SDL_Scancode* buttonActivateWave = nullptr;
@@ -84,7 +83,11 @@ private:
 
 	bool isActiveWaves = false;
 
+	// Current wave
 	bool isStartWave = false;
+
+	uint totalPhasesOfCurrWave = 0;
+	uint phasesOfCurrWave = 0;
 
 	uint totalSpawnOfCurrWave = 0;
 

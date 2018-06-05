@@ -1968,6 +1968,7 @@ void j1Player::HandleGoldMineUIStates()
 	default:
 		break;
 	}
+	entitySelectedStats.HP->SetLocalPos({ 70, App->scene->entitiesStats->GetLocalRect().h - 45 });
 }
 
 void j1Player::CreateGryphonAviaryButtons()

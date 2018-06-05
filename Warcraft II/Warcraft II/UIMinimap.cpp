@@ -257,7 +257,7 @@ void UIMinimap::HandleInput(float dt)
 				App->render->camera.y = 0;
 
 			if (-App->render->camera.y + App->render->camera.h > App->map->data.height * App->map->data.tileHeight)
-				App->render->camera.y = (App->map->data.height * App->map->data.tileHeight) - App->render->camera.h;
+				App->render->camera.y = (-(App->map->data.height * App->map->data.tileHeight) + App->render->camera.h);
 
 			if (-App->render->camera.x + App->render->camera.w > App->map->data.width * App->map->data.tileWidth)
 				App->render->camera.x = (-(App->map->data.width * App->map->data.tileWidth) + App->render->camera.w);
@@ -497,7 +497,7 @@ bool UIMinimap::LoadMap()
 					if (section->w > 0 && section->h > 0)
 						ret = SaveInRenderer(tex, world.x, world.y, section, 1, renderer);
 					temp++;
-					LOG("temp %i", temp);
+					//LOG("temp %i", temp);
 				}
 			}
 		}

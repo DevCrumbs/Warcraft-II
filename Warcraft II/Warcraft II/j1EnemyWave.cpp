@@ -91,6 +91,8 @@ bool j1EnemyWave::Start()
 
 	//secondsToNextWave = 0;
 
+	currWaveFinished = false;
+
 	return ret;
 }
 
@@ -141,6 +143,8 @@ bool j1EnemyWave::Update(float dt)
 
 		if (!isStartWave) {
 			
+			currWaveFinished = false;
+
 			// Calculate the phases of the current wave
 			int maxPhasesOfCurrWave = 2;
 			int minPhasesOfCurrWave = 1;
@@ -270,6 +274,8 @@ bool j1EnemyWave::Update(float dt)
 				maxSpawnPerWave++;
 			}
 			isStartWave = false;
+
+			currWaveFinished = true;
 
 			LOG("%f seconds to next wave", secondsToNextWave);
 		}
