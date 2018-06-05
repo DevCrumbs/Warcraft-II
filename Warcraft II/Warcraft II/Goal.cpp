@@ -1975,6 +1975,7 @@ void Goal_FreePrisoner::Terminate()
 			alleria->SetUnitRescuePrisoner(false);
 			App->player->RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
 			App->player->isAllRescued = true;
+			alleria->SetCurrLife(0);
 		}
 		else if (turalyon != nullptr) {
 		
@@ -1982,6 +1983,8 @@ void Goal_FreePrisoner::Terminate()
 			turalyon->SetUnitRescuePrisoner(false);
 			App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
 			App->player->isTurRescued = true;
+			turalyon->SetCurrLife(0);
+
 		}
 
 		owner->SetPrisoner(nullptr);
