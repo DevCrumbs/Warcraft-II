@@ -2439,6 +2439,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 		else if (UIelem == saveGameLabel)
 		{
+			App->audio->PlayFx(App->audio->GetFX().gameStart, 0); //Game start sound
 			App->SaveGame();
 			isSaveGame = true;
 		}
