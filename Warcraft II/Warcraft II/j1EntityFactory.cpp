@@ -4629,6 +4629,21 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			break;
 
 		case EntityType_GOLD_MINE:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			
+			GoldMineState state = GoldMineState(iterator.attribute("MineGoldState").as_int());
+
+			GoldMine* mine = (GoldMine*)newEntity;
+		
+			if (state != GoldMineState_Untouched)
+			{
+				mine->SetGoldMineState(GoldMineState_Gathered);
+				mine->currGold = 0;
+			}
+			else
+				mine->SetGoldMineState(state);
+
+			break;
 		case EntityType_RUNESTONE:
 		case EntityType_GREAT_HALL:
 		case EntityType_STRONGHOLD:
@@ -4743,6 +4758,26 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 			entity.append_attribute("staticEntityType") = (*statEnt)->staticEntityType;
 
 			entity.append_attribute("GetCurrLife") = (*statEnt)->GetCurrLife();
+
+			if ((*statEnt)->staticEntityType == EntityType_GOLD_MINE)
+			{
+				GoldMine* currGoldMine = (GoldMine*)(*statEnt);
+
+					if (currGoldMine->GetGoldMineState() == GoldMineState_Untouched)
+					{
+						entity.append_attribute("MineGoldState") = GoldMineState_Untouched;
+					}
+					else
+					{
+						entity.append_attribute("MineGoldState") = GoldMineState_Gathered;
+					}
+			}
+
+			else if ((*statEnt)->staticEntityType == EntityType_RUNESTONE)
+			{
+
+			}
+				
 		}
 		statEnt++;
 	}
