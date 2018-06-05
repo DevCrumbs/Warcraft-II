@@ -195,6 +195,9 @@
 			<buttonMoveRight buttonMoveRight="79" />
 			<buttonMoveRightb buttonMoveRightb="7" />
 		</buttons>
+		<general>
+			<SaveGame SaveGame="1" />
+		</general>
 	</scene>
 	<player>
 		<defaultButtons>

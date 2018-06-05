@@ -196,6 +196,9 @@ private:
 	// Time enemies chase player units
 	j1Timer chaseTimer;
 	float chaseTime = 0.0f;
+
+	bool isDynamicAttackForced = false;
+	bool isStaticAttackForced = false;
 };
 
 class Goal_Patrol :public CompositeGoal
