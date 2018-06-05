@@ -290,7 +290,7 @@ public:
 class j1Printer : public j1Module
 {
 public:
-
+	j1Printer(){ name.assign("printer"); }
 	bool Awake(pugi::xml_node&);
 	bool Start();
 	bool PreUpdate();

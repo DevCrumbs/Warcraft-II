@@ -226,9 +226,9 @@ public:
 	bool CleanUp();
 
 	// Load new map
-	bool Load(const char* path);
+	bool LoadNewMap(const char* path);
 
-	bool LoadLogic();
+	bool LoadLogic(bool isLoad = false);
 
 	list<Entity*> LoadLayerEntities(MapLayer* layer);
 

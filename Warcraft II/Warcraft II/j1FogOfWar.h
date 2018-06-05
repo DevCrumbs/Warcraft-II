@@ -76,19 +76,33 @@ public:
 	bool Awake(pugi::xml_node & config);
 
 	bool Start();
+
 	bool LoadFoW();
+
 	bool Update(float dt);
+
 	bool PostUpdate();
+
 	bool CleanUp();
+
+	bool Save(pugi::xml_node & save) const;
+
+	bool Load(pugi::xml_node & save);
+
+	void print();
+
 	void Print();
+
 
 	void LoadFoWMap(int mapWidth, int mapHeight);
 	bool IsOnSight(iPoint pos);
 	bool IsOnSight(fPoint pos);
 	void UnLoadFowMap();
 	void TilesNearPlayer();
+
 	bool LoadKeys(pugi::xml_node & buttons);
 	void SaveKeys();
+
 	int TotalDistanceToPlayer(Entity* entity, int tile);
 
 	// Beauty
@@ -97,11 +111,12 @@ public:
 
 	void ResetTiles();
 
+	void SaveTiles(vector<FogOfWarTile*> tiles, char * name, pugi::xml_node node) const;
+
 	void CleanSafeZone(SDL_Rect zone);
 
 public:
 	std::vector<FogOfWarTile*> fowTilesVector;
-	std::vector<FogOfWarTile*> fowSmallerTilesVector;
 
 	int width = 0;
 	int height = 0;

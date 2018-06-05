@@ -56,6 +56,9 @@ bool j1Scene::Awake(pugi::xml_node& config)
 
 	LOG("Loading scene");
 
+	pugi::xml_node general = config.child("general");
+	isSaveGame = general.child("SaveGame").attribute("SaveGame").as_bool();
+
 	// Load maps
 	pugi::xml_node maps = config.child("maps");
 
@@ -118,6 +121,7 @@ bool j1Scene::Start()
 	App->wave->Start();
 	App->fow->Start();
 
+
 	isStarted = false;
 
 	// Save camera info
@@ -126,11 +130,11 @@ bool j1Scene::Start()
 
 	// Load an orthogonal, isometric or warcraft-based map
 	if (orthogonalActive) {
-		ret = App->map->Load(orthogonalMap.data());
+		ret = App->map->LoadNewMap(orthogonalMap.data());
 		debugTex = App->tex->Load(orthogonalTexName.data());
 	}
 	else if (isometricActive) {
-		ret = App->map->Load(isometricMap.data());
+		ret = App->map->LoadNewMap(isometricMap.data());
 		debugTex = App->tex->Load(isometricTexName.data());
 	}
 
@@ -170,9 +174,34 @@ bool j1Scene::Start()
 	musicToPlay = ChooseMusicToPlay();
 	App->audio->PlayMusic(musicToPlay.data(), 2.0f);
 
-	App->map->LoadLogic();
+	App->map->LoadLogic(App->menu->isLoad);
 
 	isStartedFinalTransition = false;
+
+	App->isDebug = false;
+
+	if (App->menu->isLoad)
+	{
+		pugi::xml_document data;
+		pugi::xml_parse_result result = data.loadFile(App->loadGame.data());
+		pugi::xml_node root;
+
+		root = data.child("game_state");
+		if (result != NULL)
+		{
+			LOG("Loading new Game State from %s...", App->loadGame.data());
+
+			root = data.child("game_state");
+
+			Load(root.child(name.data()));
+			App->player->Load(root.child(App->player->name.data()));
+			App->entities->Load(root.child(App->entities->name.data()));
+			App->wave->Load(root.child(App->wave->name.data()));
+			App->fow->Load(root.child(App->fow->name.data()));
+
+			App->menu->isLoad = false;
+		}
+	}
 
 	// Create the groups of the enemies
 	list<list<Entity*>>::const_iterator enIt = App->map->entityGroups.begin();
@@ -194,7 +223,6 @@ bool j1Scene::Start()
 		enIt++;
 	}
 
-	App->isDebug = false;
 
 	return ret;
 }
@@ -212,14 +240,14 @@ bool j1Scene::LoadNewMap(int map)
 
 		LOG(path);
 
-		ret = App->map->Load(path);
+		ret = App->map->LoadNewMap(path);
 	}
 	else
 	{
 		static char path[25];
 		sprintf_s(path, 25, "alphaMap%i.tmx", map);
 
-		ret = App->map->Load(path);
+		ret = App->map->LoadNewMap(path);
 	}
 
 	return ret;
@@ -1076,6 +1104,9 @@ bool j1Scene::CleanUp()
 // Debug keys
 void j1Scene::DebugKeys()
 {
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN) {
+		App->SaveGame();
+	}
 
 	// SDL_SCANCODE_SPACE
 	if (App->input->GetKey(buttonGoToBase) == KEY_DOWN)
@@ -2134,6 +2165,14 @@ void j1Scene::ShowAdviceMessage(AdviceMessages adviceMessage)
 		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
 		break;
 
+	case AdviceMessage_TOWNHALL_IS_NOT_FULL_LIFE:
+		text = "You need to repair the Townhall.";
+		adviceLabel->SetText(text, 340);
+		adviceLabel->SetLocalPos({ 235,265 });
+		adviceLabel->SetColor(White_);
+		adviceLabel->SetFontName(FONT_NAME_WARCRAFT20);
+		break;
+
 	case AdviceMessage_TOWNHALL_IS_NOT_UPGRADE:
 		text = "You need to upgrade the Townhall.";
 		adviceLabel->SetText(text, 340);
@@ -2226,7 +2265,7 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 				}
 			}
 
-			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade && App->player->townHall->buildingState == BuildingState_Normal) {
+			else if (UIelem == buildingMenuButtons.gryphonAviary.icon && App->player->gryphonAviary == nullptr && App->player->townHallUpgrade) {
 				if (App->player->GetCurrentGold() >= gryphonAviaryCost) {
 					//Unselect entities and hide their info
 					//---------------------------------------
@@ -2400,7 +2439,8 @@ void j1Scene::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent)
 
 		else if (UIelem == saveGameLabel)
 		{
-			//TODO OSCAR SAVE
+			App->SaveGame();
+			isSaveGame = true;
 		}
 
 		else if (UIelem == returnLabel) {
@@ -2480,16 +2520,27 @@ bool j1Scene::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
-	/*
-	if (save.child("gate") == NULL) {
-	save.append_child("gate").append_attribute("opened") = gate;
-	save.child("gate").append_attribute("fx") = fx;
+	pugi::xml_node general;
+
+	App->config.child("scene").remove_child("general");
+	general = App->config.child("scene").append_child("general");
+
+	SaveAttribute(isSaveGame, "SaveGame", general, false);
+
+	App->configFile.save_file("config.xml");
+
+	if (save.child("general") == NULL)
+	{
+		general = save.append_child("general");
 	}
-	else {
-	save.child("gate").attribute("opened") = gate;
-	save.child("gate").attribute("fx") = fx;
+	else
+	{
+		general = save.child("general");
 	}
-	*/
+
+	SaveAttribute(mapDifficulty, "mapDifficulty", general, false);
+
+
 
 	return ret;
 }
@@ -2499,12 +2550,7 @@ bool j1Scene::Load(pugi::xml_node& save)
 {
 	bool ret = true;
 
-	/*
-	if (save.child("gate") != NULL) {
-	gate = save.child("gate").attribute("opened").as_bool();
-	fx = save.child("gate").attribute("fx").as_bool();
-	}
-	*/
+	mapDifficulty = save.child("general").child("mapDifficulty").attribute("mapDifficulty").as_float();
 
 	return ret;
 }

@@ -186,6 +186,8 @@ public:
 
 	SDL_Color minimapDrawColor{ 0,0,0,0 };
 
+	int enemyGroup = -1;
+
 protected:
 
 	iPoint size = { 0,0 };

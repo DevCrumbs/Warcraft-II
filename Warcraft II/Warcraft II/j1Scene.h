@@ -64,6 +64,7 @@ enum AdviceMessages {
 	AdviceMessage_PRISONER,
 	AdviceMessage_BUILDING_IS_FULL_LIFE,
 	AdviceMessage_TOWNHALL_IS_NOT_UPGRADE,
+	AdviceMessage_TOWNHALL_IS_NOT_FULL_LIFE,
 	AdviceMessage_ONLY_ONE_BUILDING,
 	AdviceMessage_NONE
 };
@@ -261,7 +262,7 @@ public:
 
 	// Player
 	bool god = false;
-
+	bool isSaveGame = false;
 	bool pause = false;
 
 	GoldChange hasGoldChanged = GoldChange_NoChange;

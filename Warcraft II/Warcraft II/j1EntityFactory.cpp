@@ -1589,7 +1589,8 @@ bool j1EntityFactory::PreUpdate()
 			LOG("Spawning dynamic entity at tile %d,%d", x, y);
 		}
 		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) {
-
+			StaticEntity * building = (StaticEntity*)(*it);
+			building->CheckBuildingState();
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
 		}
@@ -4516,21 +4517,144 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 {
 	bool ret = true;
 
-	pugi::xml_node node;
+	pugi::xml_node general = save.child("general");
 
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
+	numEnemyGroups = general.attribute("numEnemyGroups").as_int();
 
-	while (dynEnt != activeDynamicEntities.end()) {
-		// MYTODO: Add some code here
-		dynEnt++;
+	for (int i = 0; i < numEnemyGroups; ++i)
+	{
+		list<Entity*> temp;
+		App->map->entityGroups.push_back(temp);
 	}
 
-	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
+	//---------------------------
+	//-------- Dynamic ----------
+	for (pugi::xml_node iterator = save.child("dynamicEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
+	{
+		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("dynamicEntityType").as_int();
 
-	while (statEnt != activeStaticEntities.end()) {
-		// MYTODO: Add some code here
-		statEnt++;
+		fPoint pos = { iterator.attribute("posX").as_float(), iterator.attribute("posY").as_float() };
+		UnitInfo unitInfo;
+		DynamicEntity* newEntity = nullptr;
+		Entity* entity = nullptr;
+
+		switch (entityType)
+		{
+			// Dynamic entities
+		case EntityType_FOOTMAN:
+		case EntityType_ELVEN_ARCHER:
+		case EntityType_ALLERIA:
+		case EntityType_TURALYON:
+			newEntity = (DynamicEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
+			break;
+
+		case EntityType_GRUNT:
+		case EntityType_TROLL_AXETHROWER:
+		case EntityType_DRAGON:
+			 entity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+			 newEntity = (DynamicEntity*)entity;
+			break;
+
+		case EntityType_SHEEP:
+		case EntityType_BOAR:
+		{
+			int type = rand() % 2;
+
+			if (type == 0)
+				newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+			else
+				newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+		}
+		break;
+
+		default:
+			break;
+		}
+
+		if (entity != nullptr)
+		{
+			entity->enemyGroup = iterator.attribute("enemyGroup").as_int();
+			DynamicEntity* temp = (DynamicEntity*)entity;
+			temp->lastSeenTile = { iterator.attribute("lastSeenTileX").as_int(), iterator.attribute("lastSeenTileY").as_int() };
+
+			list<list<Entity*>>::iterator groupIterator = App->map->entityGroups.begin();
+			for (int i = 0; i < entity->enemyGroup; ++i)
+			{
+				if (groupIterator == App->map->entityGroups.end())
+					break;
+				else
+					groupIterator++;
+			}
+
+			if (groupIterator != App->map->entityGroups.end())
+			{
+				(*groupIterator).push_back(entity);
+			}
+		}
+
+		if (newEntity != nullptr)
+		{
+			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+			if(newEntity->entitySide == EntitySide_Player)
+				App->player->unitProduce--;
+		}
 	}
+
+	//---------------------------
+	//-------- Static -----------
+	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
+	{
+		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("staticEntityType").as_int();
+
+		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
+		UnitInfo unitInfo;
+
+		StaticEntity* newEntity = nullptr;
+
+		switch (entityType)
+		{
+			// Static Entities
+		case EntityType_TOWN_HALL:
+			newEntity = App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			break;
+		case EntityType_CHICKEN_FARM:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos,	App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+				App->player->chickenFarm.push_back(newEntity);
+			break;
+		case EntityType_BARRACKS:
+			newEntity = App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos,	App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			break;
+
+		case EntityType_GOLD_MINE:
+		case EntityType_RUNESTONE:
+		case EntityType_GREAT_HALL:
+		case EntityType_STRONGHOLD:
+		case EntityType_FORTRESS:
+		case EntityType_ENEMY_BARRACKS:
+		case EntityType_PIG_FARM:
+		case EntityType_TROLL_LUMBER_MILL:
+		case EntityType_ALTAR_OF_STORMS:
+		case EntityType_DRAGON_ROOST:
+		case EntityType_TEMPLE_OF_THE_DAMNED:
+		case EntityType_OGRE_MOUND:
+		case EntityType_ENEMY_BLACKSMITH:
+		case EntityType_WATCH_TOWER:
+		case EntityType_ENEMY_GUARD_TOWER:
+		case EntityType_ENEMY_CANNON_TOWER:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			break;
+		default:
+			break;
+		}
+
+		if (newEntity != nullptr)
+		{
+			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+		}
+
+	}
+
+
 
 	return ret;
 }
@@ -4539,19 +4663,84 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
+	bool create = false;
+
 	pugi::xml_node node;
+
+	pugi::xml_node general;
+	if (save.child("general") == NULL)
+	{
+		general = save.append_child("general");
+		create = true;
+	}
+	else
+	{
+		general = save.child("general");
+	}
+
+	SaveAttribute(numEnemyGroups, "numEnemyGroups", general, create);
+
+	
+	pugi::xml_node dynamicEntities;
+	save.remove_child("dynamicEntities");
+
+	dynamicEntities = save.append_child("dynamicEntities");
 
 	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
 
-	while (dynEnt != activeDynamicEntities.end()) {
-		// MYTODO: Add some code here
+	while (dynEnt != activeDynamicEntities.end())
+	{
+		if ((*dynEnt)->GetCurrLife() > 0)
+		{
+			pugi::xml_node entity = dynamicEntities.append_child("entity");
+
+			entity.append_attribute("lastSeenTileX") = (*dynEnt)->lastSeenTile.x;
+
+			entity.append_attribute("lastSeenTilew") = (*dynEnt)->lastSeenTile.y;
+
+			entity.append_attribute("posX") = (*dynEnt)->GetPos().x;
+			entity.append_attribute("posY") = (*dynEnt)->GetPos().y;
+
+			entity.append_attribute("dynamicEntityType") = (*dynEnt)->dynamicEntityType;
+			entity.append_attribute("entitySide") = (*dynEnt)->entitySide;
+			entity.append_attribute("entityType") = (*dynEnt)->entityType;
+
+			entity.append_attribute("enemyGroup") = (*dynEnt)->enemyGroup;
+
+			entity.append_attribute("GetCurrLife") = (*dynEnt)->GetCurrLife();
+		}
 		dynEnt++;
 	}
 
+
+	pugi::xml_node staticEntities;
+	save.remove_child("staticEntities");
+
+	staticEntities = save.append_child("staticEntities");
+
+
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
 
-	while (statEnt != activeStaticEntities.end()) {
-		// MYTODO: Add some code here
+	while (statEnt != activeStaticEntities.end()) 
+	{
+		if ((*statEnt)->GetCurrLife() > 0)
+		{
+			pugi::xml_node entity = staticEntities.append_child("entity");
+
+			entity.append_attribute("posX") = (*statEnt)->GetPos().x;
+			entity.append_attribute("posY") = (*statEnt)->GetPos().y;
+
+			entity.append_attribute("buildingSize") = (*statEnt)->buildingSize;
+
+			entity.append_attribute("buildingState") = (*statEnt)->buildingState;
+			entity.append_attribute("entitySide") = (*statEnt)->entitySide;
+			entity.append_attribute("entityType") = (*statEnt)->entityType;
+
+			entity.append_attribute("staticEntityCategory") = (*statEnt)->staticEntityCategory;
+			entity.append_attribute("staticEntityType") = (*statEnt)->staticEntityType;
+
+			entity.append_attribute("GetCurrLife") = (*statEnt)->GetCurrLife();
+		}
 		statEnt++;
 	}
 

@@ -10,6 +10,8 @@
 
 #include <queue>
 #include <list>
+#include <forward_list>
+
 using namespace std;
 
 struct UILabel;
@@ -35,6 +37,9 @@ struct HoverInfo
 struct ToSpawnUnit {
 	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
 		this->toSpawnTimer = toSpawnTimer;
+		this->entityType = entityType;
+	}
+	ToSpawnUnit(ENTITY_TYPE entityType) {
 		this->entityType = entityType;
 	}
 	j1Timer toSpawnTimer;
@@ -198,9 +203,7 @@ public:
 	list<StaticEntity*> goldMine;
 	list<StaticEntity*> runestone;
 
-	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
-	bool keepUpgrade = false;
 
 	uint totalGold = 0u; // total gold earned during the game
 	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)

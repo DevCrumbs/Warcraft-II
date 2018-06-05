@@ -412,7 +412,7 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set)
 }
 
 // Load new map
-bool j1Map::Load(const char* file_name)
+bool j1Map::LoadNewMap(const char* file_name)
 {
 	bool ret = true;
 	string tmp = folder.data();
@@ -857,7 +857,7 @@ bool MapData::CheckIfEnter(string groupObject, string object, fPoint position)
 	return (objectPos.x < position.x + 1 && objectPos.x + objectSize.x > position.x && objectPos.y < position.y + 1 && objectSize.y + objectPos.y > position.y);
 }
 
-bool j1Map::LoadLogic()
+bool j1Map::LoadLogic(bool isLoad)
 {
 	bool ret = false;
 	// List of all entities 
@@ -870,29 +870,31 @@ bool j1Map::LoadLogic()
 		// Check if layer is a logic layer 
 
 			// For default logic
-		if ((*layerIterator)->properties.GetProperty("logic", false))
-		{
-			LoadLayerEntities(*layerIterator);
-			ret = true;
-		}
+		if (!isLoad)
+			if ((*layerIterator)->properties.GetProperty("logic", false))
+			{
+				LoadLayerEntities(*layerIterator);
+				ret = true;
+			}
 
 		// For room rects
-		else if ((*layerIterator)->properties.GetProperty("roomLogic", false))
-		{
-			ret = LoadRoomRect(*layerIterator);
-		}
+		 if ((*layerIterator)->properties.GetProperty("roomLogic", false))
+			{
+				ret = LoadRoomRect(*layerIterator);
+			}
 
 		// For entities groups
-		else if ((*layerIterator)->properties.GetProperty("entitiesGroup", false))
-		{
-			// Save the entities from layerIterator in entityGroupLevel
-			list<Entity*> currLayer = LoadLayerEntities(*layerIterator);
+		if (!isLoad)
+			if ((*layerIterator)->properties.GetProperty("entitiesGroup", false))
+			{
+				// Save the entities from layerIterator in entityGroupLevel
+				list<Entity*> currLayer = LoadLayerEntities(*layerIterator);
 
-			if (!currLayer.empty())
-				entityGroupLevel.push_back(currLayer);
+				if (!currLayer.empty())
+					entityGroupLevel.push_back(currLayer);
 
-			ret = true;
-		}
+				ret = true;
+			}
 	}
 
 	if (ret)
@@ -1109,6 +1111,7 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 				if (SDL_HasIntersection(&entityRect, &(*roomIterator).roomRect))
 				{
 					// Add entity to room list
+					(*currentEntity)->enemyGroup = entityGroups.size();
 					listOnRoom.push_back(*currentEntity);
 				}
 			}
@@ -1117,6 +1120,7 @@ bool j1Map::CreateEntityGroup(list<list<Entity*>> entityGroupLevel)
 				entityGroups.push_back(listOnRoom);
 		}
 	}
+	App->entities->numEnemyGroups = entityGroups.size();
 	return true;
 }
 

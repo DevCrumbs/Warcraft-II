@@ -120,6 +120,7 @@ public:
 	uint tab_button = 0;
 
 	bool debug = false;
+	bool isLoad = false;
 
 	ArtifactsCollection artifactsEasyOne, artifactsEasyTwo, artifactsMediumOne, artifactsMediumTwo, artifactsHard;
 

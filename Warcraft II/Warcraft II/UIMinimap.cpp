@@ -252,8 +252,15 @@ void UIMinimap::HandleInput(float dt)
 
 			if (App->render->camera.x > 0)
 				App->render->camera.x = 0;
+
 			if (App->render->camera.y > 0)
 				App->render->camera.y = 0;
+
+			if (-App->render->camera.y + App->render->camera.h > App->map->data.height * App->map->data.tileHeight)
+				App->render->camera.y = (App->map->data.height * App->map->data.tileHeight) - App->render->camera.h;
+
+			if (-App->render->camera.x + App->render->camera.w > App->map->data.width * App->map->data.tileWidth)
+				App->render->camera.x = (-(App->map->data.width * App->map->data.tileWidth) + App->render->camera.w);
 		}
 		//Comand troops to goal
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
@@ -370,13 +377,10 @@ bool UIMinimap::DrawRoomCleared(Room room)
 {
 	bool ret = false;
 
-	//if (room.isCleared)
-	{
-		roomClearedRect = MapToMinimap(room.roomRect);
-		isRoomCleared = true;
-		startRoomClearedTimer = true;
-		ret = true;
-	}
+	roomClearedRect = MapToMinimap(room.roomRect);
+	isRoomCleared = true;
+	startRoomClearedTimer = true;
+	ret = true;
 
 	return ret;
 }
@@ -465,7 +469,7 @@ bool UIMinimap::LoadMap()
 
 
 	SDL_Texture* tex = App->tex->Load(App->map->tilesetPath.data(), renderer);
-
+	int temp = 0;
 	for (list<MapLayer*>::const_iterator layer = App->map->data.layers.begin();
 		layer != App->map->data.layers.end(); ++layer)
 	{
@@ -490,7 +494,10 @@ bool UIMinimap::LoadMap()
 					iPoint world = App->map->MapToWorld(i, j);
 
 					//LOG("Tile x = %i, y = %i", world.x, world.y);
-					ret = SaveInRenderer(tex, world.x, world.y, section, 1, renderer);
+					if (section->w > 0 && section->h > 0)
+						ret = SaveInRenderer(tex, world.x, world.y, section, 1, renderer);
+					temp++;
+					LOG("temp %i", temp);
 				}
 			}
 		}

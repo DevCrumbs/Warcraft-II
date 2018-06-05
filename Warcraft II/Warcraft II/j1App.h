@@ -41,6 +41,12 @@ class j1Video;
 
 struct SDL_Rect;
 
+pugi::xml_node GetNode(pugi::xml_node & node, char * name, bool create);
+
+void SaveAttribute(int value, char * name, pugi::xml_node & general, bool createGeneral);
+void SaveAttribute(SDL_Rect value, char * name, pugi::xml_node & node, bool createGeneral);
+void SaveAttribute(uchar * value, char * name, pugi::xml_node & node, bool createGeneral, int size = 0);
+
 class j1App
 {
 public:
@@ -150,7 +156,6 @@ private:
 
 	mutable bool		wantToSave = false;
 	bool				wantToLoad = false;
-	string				loadGame;
 	mutable string		saveGame;
 
 	uint64 lastFrameMs = 0;
@@ -159,9 +164,11 @@ private:
 	j1PerfTimer perfClock;
 
 public:
+
 	pugi::xml_document	configFile;
 	pugi::xml_node		config;
 
+	string				loadGame;
 	uint				capFrames = 0;
 	bool				toCap = true;
 	bool				quitGame = false;

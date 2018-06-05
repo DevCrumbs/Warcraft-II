@@ -194,6 +194,8 @@ public:
 	// Saved entities groups
 	list<DynamicEntity*> savedGroups[MAX_SAVED_GROUPS];
 
+	int numEnemyGroups = 0;
+
 private:
 
 	// Textures
