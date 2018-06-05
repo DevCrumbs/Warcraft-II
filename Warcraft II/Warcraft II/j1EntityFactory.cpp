@@ -2722,16 +2722,19 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GOLD_MINE:
 	{
-		GoldMine* goldMine = new GoldMine(pos, { 96,96 }, 0, 0, (const GoldMineInfo&)entityInfo, listener);
+		const GoldMineInfo eje = (const GoldMineInfo&)entityInfo;
+		GoldMine* goldMine = new GoldMine(pos, { 96,96 }, INT_MAX, INT_MAX, (const GoldMineInfo&)entityInfo, listener);
 
 		toSpawnEntities.push_back((Entity*)goldMine);
 		return (StaticEntity*)goldMine;
 	}
 	break;
 
+
+
 	case EntityType_RUNESTONE:
 	{
-		Runestone* runestone = new Runestone(pos, { 64,64 }, 0, 0, (const RunestoneInfo&)entityInfo, listener);
+		Runestone* runestone = new Runestone(pos, { 64,64 }, INT_MAX, INT_MAX, (const RunestoneInfo&)entityInfo, listener);
 
 		toSpawnEntities.push_back((Entity*)runestone);
 		return (StaticEntity*)runestone;
