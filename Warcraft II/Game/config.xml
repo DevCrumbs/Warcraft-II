@@ -229,7 +229,7 @@
 		<greyTilesTex name="data/assets/textures/fow/greyFoW.png" />
 		<buttons>
 			<buttonDrawFow buttonDrawFow="88" />
-			<buttonDebugDrawFow buttonDebugDrawFow="88" />
+			<buttonDebugDrawFow buttonDebugDrawFow="99" />
 		</buttons>
 	</fow>
 	<surge>
