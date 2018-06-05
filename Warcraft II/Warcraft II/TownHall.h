@@ -40,9 +40,13 @@ public:
 	void LoadAnimationsSpeed();
 	void UpdateAnimations(float dt);
 
+public:
+
+TownHallInfo townHallInfo;
+
 private:
 
-	TownHallInfo townHallInfo;
+	
 
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 

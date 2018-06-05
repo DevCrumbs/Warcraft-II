@@ -31,7 +31,7 @@ enum BuildingState
 {
 	BuildingState_NoState,
 	BuildingState_Normal,
-	BuildingState_LowFire,
+	BuildingState_LowFire,	
 	BuildingState_HardFire,
 	BuildingState_Destroyed,
 	BuildingState_Building,
@@ -77,6 +77,8 @@ public:
 
 	BuildingState GetBuildingState() const;
 
+	void SetBuildingState(BuildingState state);
+
 	// Collision
 	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
 	ColliderGroup* GetSightRadiusCollider() const;
@@ -96,13 +98,14 @@ public:
 	const StaticEntitySize buildingSize = StaticEntitySize_None;
 	Particle* fire = nullptr;
 
+	float constructionTimer = 0.0f;
+
 protected:
 
 	const SDL_Rect* texArea = nullptr;
 
-	float constructionTimer = 0.0f;
-	float constructionTime = 0.0f;
 	bool isBuilt = false;
+	float constructionTime = 0.0f;
 
 	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;

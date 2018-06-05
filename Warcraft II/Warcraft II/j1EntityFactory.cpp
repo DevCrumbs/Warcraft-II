@@ -1588,8 +1588,21 @@ bool j1EntityFactory::PreUpdate()
 				App->player->unitProduce++;
 			LOG("Spawning dynamic entity at tile %d,%d", x, y);
 		}
-		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) {
+		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) 
+		{
 			StaticEntity * building = (StaticEntity*)(*it);
+			bool isTownHallUpgrade = false;
+			if ((*building).staticEntityType == EntityType_TOWN_HALL)
+			{
+				TownHall* townHall = (TownHall*)building;
+				if (townHall->buildingState == BuildingState_Building)
+					isTownHallUpgrade = true;
+			}
+			building->CheckBuildingState();
+			if (isTownHallUpgrade)
+			{
+				building->buildingState = BuildingState_Building;
+			}
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
 		}
@@ -1937,7 +1950,11 @@ const EntityInfo& j1EntityFactory::GetBuiltBuilding(ENTITY_TYPE staticEntityType
 	case EntityType_CHICKEN_FARM:
 		return (const EntityInfo&)builtChickenFarmInfo;
 		break;
-
+	case EntityType_GRYPHON_AVIARY:
+		return (const EntityInfo&)gryphonAviaryInfo;
+		break;
+	case EntityType_TOWN_HALL:
+		return (const EntityInfo&)townHallInfo;
 	default:
 		return (const EntityInfo&)builtChickenFarmInfo;
 		break;
@@ -4545,6 +4562,9 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			// Static Entities
 		case EntityType_TOWN_HALL:
 			newEntity = App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+
+			newEntity->buildingState = BuildingState(iterator.attribute("buildingState").as_int());
+
 			break;
 		case EntityType_CHICKEN_FARM:
 			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
@@ -4554,8 +4574,48 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			newEntity = App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
 			break;
 
+		case EntityType_GRYPHON_AVIARY:
+			newEntity = App->player->gryphonAviary = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			break;
+
 		case EntityType_GOLD_MINE:
+		{
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+
+			GoldMineState state = GoldMineState(iterator.attribute("MineGoldState").as_int());
+
+			GoldMine* mine = (GoldMine*)newEntity;
+
+			if (state != GoldMineState_Untouched)
+			{
+				mine->SetGoldMineState(GoldMineState_Gathered);
+				mine->buildingState = BuildingState_Destroyed;
+				mine->currGold = 0;
+				mine->totalGold = 0;
+
+			}
+			else
+				mine->SetGoldMineState(state);
+		}
+		break;
 		case EntityType_RUNESTONE:
+		{
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+
+			Runestone* runestone = (Runestone*)newEntity;
+
+			RunestoneState state = RunestoneState(iterator.attribute("RunestoneState").as_int());
+
+			if (state != RunestoneState_Untouched)
+			{
+				runestone->SetRunestoneState(RunestoneState_Gathered);
+				runestone->buildingState = BuildingState_Destroyed;
+			}
+			else
+				runestone->SetRunestoneState(state);
+		}
+
+		break;
 		case EntityType_GREAT_HALL:
 		case EntityType_STRONGHOLD:
 		case EntityType_FORTRESS:
@@ -4579,6 +4639,9 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		if (newEntity != nullptr)
 		{
 			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+
+
+			newEntity->constructionTimer = iterator.attribute("constructionTimer").as_float();
 		}
 	}
 
@@ -4587,6 +4650,74 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 	for (pugi::xml_node iterator = save.child("dynamicEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
 	{
 		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("dynamicEntityType").as_int();
+
+		fPoint pos = { iterator.attribute("posX").as_float(), iterator.attribute("posY").as_float() };
+		UnitInfo unitInfo;
+		DynamicEntity* newEntity = nullptr;
+		Entity* entity = nullptr;
+
+		switch (entityType)
+		{
+			// Dynamic entities
+		case EntityType_FOOTMAN:
+		case EntityType_ELVEN_ARCHER:
+		case EntityType_GRYPHON_RIDER:
+		case EntityType_ALLERIA:
+		case EntityType_TURALYON:
+			newEntity = (DynamicEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
+			break;
+
+		case EntityType_GRUNT:
+		case EntityType_TROLL_AXETHROWER:
+		case EntityType_DRAGON:
+			 entity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+			 newEntity = (DynamicEntity*)entity;
+			break;
+
+		case EntityType_SHEEP:
+		case EntityType_BOAR:
+		{
+			int type = rand() % 2;
+
+			if (type == 0)
+				newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+			else
+				newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+		}
+		break;
+
+		default:
+			break;
+		}
+
+		if (entity != nullptr)
+		{
+			entity->enemyGroup = iterator.attribute("enemyGroup").as_int();
+			DynamicEntity* temp = (DynamicEntity*)entity;
+			temp->lastSeenTile = { iterator.attribute("lastSeenTileX").as_int(), iterator.attribute("lastSeenTileY").as_int() };
+
+			list<list<Entity*>>::iterator groupIterator = App->map->entityGroups.begin();
+			for (int i = 0; i < entity->enemyGroup; ++i)
+			{
+				if (groupIterator == App->map->entityGroups.end())
+					break;
+				else
+					groupIterator++;
+			}
+
+			if (groupIterator != App->map->entityGroups.end())
+			{
+				(*groupIterator).push_back(entity);
+			}
+		}
+
+		if (newEntity != nullptr)
+		{
+			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+			if(newEntity->entitySide == EntitySide_Player)
+				App->player->unitProduce--;
+		}
+	}
 
 		fPoint pos = { iterator.attribute("posX").as_float(), iterator.attribute("posY").as_float() };
 		UnitInfo unitInfo;
@@ -4800,6 +4931,48 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 			entity.append_attribute("staticEntityType") = (*statEnt)->staticEntityType;
 
 			entity.append_attribute("GetCurrLife") = (*statEnt)->GetCurrLife();
+
+			entity.append_attribute("constructionTimer") = (*statEnt)->constructionTimer;
+
+			if ((*statEnt)->staticEntityType == EntityType_GOLD_MINE)
+			{
+				GoldMine* currGoldMine = (GoldMine*)(*statEnt);
+
+					if (currGoldMine->GetGoldMineState() == GoldMineState_Untouched)
+					{
+						entity.append_attribute("MineGoldState") = GoldMineState_Untouched;
+					}
+					else
+					{
+						entity.append_attribute("MineGoldState") = GoldMineState_Gathered;
+					}
+			}
+
+			else if ((*statEnt)->staticEntityType == EntityType_RUNESTONE)
+			{
+				Runestone* currGoldMine = (Runestone*)(*statEnt);
+
+				if (currGoldMine->GetRunestoneState() == RunestoneState_Untouched)
+				{
+					entity.append_attribute("RunestoneState") = RunestoneState_Untouched;
+				}
+				else
+				{
+					entity.append_attribute("RunestoneState") = RunestoneState_Gathered;
+				}
+			}
+			else if ((*statEnt)->staticEntityType == EntityType_TOWN_HALL)
+			{
+				TownHall* townHall = (TownHall*)*statEnt;
+
+				if (townHall->townHallInfo.townHallType == TownHallType_Keep)
+				{
+					entity.remove_attribute("buildingState");
+
+					entity.append_attribute("buildingState") = BuildingState_Building;
+				}
+			}
+				
 		}
 		statEnt++;
 	}

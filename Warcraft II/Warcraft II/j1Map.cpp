@@ -870,7 +870,7 @@ bool j1Map::LoadLogic(bool isLoad)
 		// Check if layer is a logic layer 
 
 			// For default logic
-		if (!isLoad)
+		//if (!isLoad)
 			if ((*layerIterator)->properties.GetProperty("logic", false))
 			{
 				LoadLayerEntities(*layerIterator);
@@ -884,7 +884,6 @@ bool j1Map::LoadLogic(bool isLoad)
 			}
 
 		// For entities groups
-		if (!isLoad)
 			if ((*layerIterator)->properties.GetProperty("entitiesGroup", false))
 			{
 				// Save the entities from layerIterator in entityGroupLevel
@@ -919,88 +918,102 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 			// Check if tile is not empty
 			if (layer->data[i] > 0)
 			{
-				int x = i % layer->width;
-				int y = i / layer->width;
-
-				iPoint auxPos = MapToWorld(x, y);
-				fPoint pos;
-				pos.x = auxPos.x;
-				pos.y = auxPos.y;
-
-				UnitInfo unitInfo;
-				ENTITY_TYPE entityType = (ENTITY_TYPE)layer->data[i];
-
-				Entity* enemyEntity = nullptr;
-				// Decide which entity to spawn
-				switch (entityType)
+				if (!App->menu->isLoad)
 				{
-					// Static Entities
-				case EntityType_TOWN_HALL:
-					App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos,
-						App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-					break;
-				case EntityType_CHICKEN_FARM:
-					App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos, 
-						App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player));
-					break;
-				case EntityType_BARRACKS:
-					App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, 
-						App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+					int x = i % layer->width;
+					int y = i / layer->width;
+
+					iPoint auxPos = MapToWorld(x, y);
+					fPoint pos;
+					pos.x = auxPos.x;
+					pos.y = auxPos.y;
+
+					UnitInfo unitInfo;
+					ENTITY_TYPE entityType = (ENTITY_TYPE)layer->data[i];
+
+					Entity* enemyEntity = nullptr;
+					// Decide which entity to spawn
+					switch (entityType)
+					{
+						// Static Entities
+					case EntityType_TOWN_HALL:
+						App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos,
+							App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+						break;
+					case EntityType_CHICKEN_FARM:
+						App->player->chickenFarm.push_back((StaticEntity*)App->entities->AddEntity(entityType, pos,
+							App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player));
+						break;
+					case EntityType_BARRACKS:
+						App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos,
+							App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+						break;
+
+					case EntityType_GOLD_MINE:
+					case EntityType_RUNESTONE:
+					case EntityType_GREAT_HALL:
+					case EntityType_STRONGHOLD:
+					case EntityType_FORTRESS:
+					case EntityType_ENEMY_BARRACKS:
+					case EntityType_PIG_FARM:
+					case EntityType_TROLL_LUMBER_MILL:
+					case EntityType_ALTAR_OF_STORMS:
+					case EntityType_DRAGON_ROOST:
+					case EntityType_TEMPLE_OF_THE_DAMNED:
+					case EntityType_OGRE_MOUND:
+					case EntityType_ENEMY_BLACKSMITH:
+					case EntityType_WATCH_TOWER:
+					case EntityType_ENEMY_GUARD_TOWER:
+					case EntityType_ENEMY_CANNON_TOWER:
+						App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+						break;
+
+						// Dynamic entities
+					case EntityType_FOOTMAN:
+					case EntityType_ELVEN_ARCHER:
+					case EntityType_ALLERIA:
+					case EntityType_TURALYON:
+						App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
+						break;
+
+					case EntityType_GRUNT:
+					case EntityType_TROLL_AXETHROWER:
+					case EntityType_DRAGON:
+						enemyEntity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+						break;
+
+					case EntityType_SHEEP:
+					case EntityType_BOAR:
+					{
+						int type = rand() % 2;
+
+						if (type == 0)
+							App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+						else
+							App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+					}
 					break;
 
-				case EntityType_GOLD_MINE:
-				case EntityType_RUNESTONE:
-				case EntityType_GREAT_HALL:
-				case EntityType_STRONGHOLD:
-				case EntityType_FORTRESS:
-				case EntityType_ENEMY_BARRACKS:
-				case EntityType_PIG_FARM:
-				case EntityType_TROLL_LUMBER_MILL:
-				case EntityType_ALTAR_OF_STORMS:
-				case EntityType_DRAGON_ROOST:
-				case EntityType_TEMPLE_OF_THE_DAMNED:
-				case EntityType_OGRE_MOUND:
-				case EntityType_ENEMY_BLACKSMITH:
-				case EntityType_WATCH_TOWER:
-				case EntityType_ENEMY_GUARD_TOWER:
-				case EntityType_ENEMY_CANNON_TOWER:
-					App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
-					break;
+					default:
+						break;
+					}
 
-					// Dynamic entities
-				case EntityType_FOOTMAN:
-				case EntityType_ELVEN_ARCHER:
-				case EntityType_ALLERIA:
-				case EntityType_TURALYON:
-					App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
-					break;
 
-				case EntityType_GRUNT:
-				case EntityType_TROLL_AXETHROWER:
-				case EntityType_DRAGON:
-					enemyEntity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
-					break;
 
-				case EntityType_SHEEP:
-				case EntityType_BOAR:
-				{
-					int type = rand() % 2;
-
-					if (type == 0)
-						App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
-					else
-						App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+					// If the entity is an enemy 
+					if (enemyEntity != nullptr)
+					{
+						// we add it to the layer group
+						entitiesGroup.push_back(enemyEntity);
+						GetEntityRoom(enemyEntity);
+					}
 				}
-				break;
 
-				default:
-					break;
-				}
-	
+
 				/// Enemy waves entity spawns
 				if (layer->data[i] == 384)///
 				{
-				
+
 					int x = i % layer->width;
 					int y = i / layer->width;
 
@@ -1022,15 +1035,6 @@ list<Entity*> j1Map::LoadLayerEntities(MapLayer* layer)
 						spawnShipTiles = pos;
 
 				}
-
-				// If the entity is an enemy 
-				if (enemyEntity != nullptr)
-				{
-					// we add it to the layer group
-					entitiesGroup.push_back(enemyEntity);
-					GetEntityRoom(enemyEntity);
-				}
-
 			}
 		}
 

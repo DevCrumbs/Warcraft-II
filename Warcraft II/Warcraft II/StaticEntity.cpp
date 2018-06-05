@@ -171,6 +171,10 @@ bool StaticEntity::MouseHover() const
 
 bool StaticEntity::CheckBuildingState()
 {
+
+	if (staticEntityType == EntityType_GOLD_MINE || staticEntityType == EntityType_RUNESTONE)
+		return true;
+
 	bool ret = true;
 
 	BuildingState bs = buildingState;

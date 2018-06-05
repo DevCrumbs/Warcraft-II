@@ -1700,7 +1700,7 @@ void Goal_PickNugget::Terminate()
 	if (goalStatus == GoalStatus_Completed) {
 
 		goldMine->SetGoldMineState(GoldMineState_Gathered);
-
+		
 		// Give remaining gold to the player
 		if(gold != goldGathered)
 			App->player->AddGold(gold - goldGathered);
@@ -1717,8 +1717,10 @@ void Goal_PickNugget::Terminate()
 			owner->GetLifeBar()->isBlit = true;
 	}
 
+	goldMine->currGold = 0;
 	goldMine = nullptr;
 	gold = 0;
+
 
 	secondsGathering = 0.0f;
 	msAnimation = 0.0f;
