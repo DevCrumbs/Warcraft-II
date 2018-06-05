@@ -133,6 +133,7 @@ void OgreMound::Move(float dt)
 		// Remove the low fire
 		if (fire != nullptr)
 			fire->isRemove = true;
+		fire = nullptr;
 
 		// Remove the peon
 		if (peon != nullptr)
