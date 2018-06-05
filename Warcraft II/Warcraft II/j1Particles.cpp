@@ -345,72 +345,56 @@ bool j1Particles::Start()
 
 	LOG("Loading particles");
 
-	// Particles info
-	/// Type
-	lowFire.particleType = ParticleType_Fire;
-	hardFire.particleType = ParticleType_Fire;
-
-	playerArrows.particleType = ParticleType_Player_Projectile;
-	enemyArrows.particleType = ParticleType_Enemy_Projectile;
-
-	cannonBullet.particleType = ParticleType_Cannon_Projectile;
-
-	trollAxe.particleType = ParticleType_Enemy_Projectile;
-
-	dragonFire.particleType = ParticleType_DragonFire;
-	dragonSubFire.particleType = ParticleType_DragonSubFire;
-	gryphonFire.particleType = ParticleType_GryphonFire;
-	gryphonSubFire.particleType = ParticleType_GryphonSubFire;
-
-	boarPaws.particleType = ParticleType_Paws;
-	sheepPaws.particleType = ParticleType_Paws;
-
-	playerHealth.particleType = ParticleType_Health;
-	enemyHealth.particleType = ParticleType_Health;
-
-	cross.particleType = ParticleType_Cross;
-
-	carryPeasant.particleType = ParticleType_PeasantCarry;
-	peasantSmallBuild.particleType = ParticleType_Peasant;
-	peasantMediumBuild.particleType = ParticleType_Peasant;
-	peasantBigBuild.particleType = ParticleType_Peasant;
-
-	carryPeon.particleType = ParticleType_PeonCarry;
-	peonSmallBuild.particleType = ParticleType_Peon;
-	peonMediumBuild.particleType = ParticleType_Peon;
-	peonBigBuild.particleType = ParticleType_Peon;
-
-	/// Life
-	boarPaws.life = 800;
-	sheepPaws.life = 800;
-	dragonSubFire.life = 800;
-	gryphonSubFire.life = 800;
-
-	/// Others
-	dragonSubFire.secondsToDamage = 0.3f;
-	gryphonSubFire.secondsToDamage = 0.3f;
-
 	/// Animations speed
-	sheepPawsInfo.up.speed = 1.0f;
-	sheepPawsInfo.down.speed = 1.0f;
-	sheepPawsInfo.left.speed = 1.0f;
-	sheepPawsInfo.right.speed = 1.0f;
-	sheepPawsInfo.upLeft.speed = 1.0f;
-	sheepPawsInfo.upRight.speed = 1.0f;
-	sheepPawsInfo.downLeft.speed = 1.0f;
-	sheepPawsInfo.downRight.speed = 1.0f;
+	if (!isAnimationSpeedCharged) {
 
-	boarPawsInfo.up.speed = 1.0f;
-	boarPawsInfo.down.speed = 1.0f;
-	boarPawsInfo.left.speed = 1.0f;
-	boarPawsInfo.right.speed = 1.0f;
-	boarPawsInfo.upLeft.speed = 1.0f;
-	boarPawsInfo.upRight.speed = 1.0f;
-	boarPawsInfo.downLeft.speed = 1.0f;
-	boarPawsInfo.downRight.speed = 1.0f;
+		LoadAnimationsSpeed();
 
-	if(!isAnimationSpeedCharged)
-	LoadAnimationsSpeed();
+		// Particles info
+		/// Type
+		lowFire.particleType = ParticleType_Fire;
+		hardFire.particleType = ParticleType_Fire;
+
+		playerArrows.particleType = ParticleType_Player_Projectile;
+		enemyArrows.particleType = ParticleType_Enemy_Projectile;
+
+		cannonBullet.particleType = ParticleType_Cannon_Projectile;
+
+		trollAxe.particleType = ParticleType_Enemy_Projectile;
+
+		dragonFire.particleType = ParticleType_DragonFire;
+		dragonSubFire.particleType = ParticleType_DragonSubFire;
+		gryphonFire.particleType = ParticleType_GryphonFire;
+		gryphonSubFire.particleType = ParticleType_GryphonSubFire;
+
+		boarPaws.particleType = ParticleType_Paws;
+		sheepPaws.particleType = ParticleType_Paws;
+
+		playerHealth.particleType = ParticleType_Health;
+		enemyHealth.particleType = ParticleType_Health;
+
+		cross.particleType = ParticleType_Cross;
+
+		carryPeasant.particleType = ParticleType_PeasantCarry;
+		peasantSmallBuild.particleType = ParticleType_Peasant;
+		peasantMediumBuild.particleType = ParticleType_Peasant;
+		peasantBigBuild.particleType = ParticleType_Peasant;
+
+		carryPeon.particleType = ParticleType_PeonCarry;
+		peonSmallBuild.particleType = ParticleType_Peon;
+		peonMediumBuild.particleType = ParticleType_Peon;
+		peonBigBuild.particleType = ParticleType_Peon;
+
+		/// Life
+		boarPaws.life = 800;
+		sheepPaws.life = 800;
+		dragonSubFire.life = 800;
+		gryphonSubFire.life = 800;
+
+		/// Others
+		dragonSubFire.secondsToDamage = 0.3f;
+		gryphonSubFire.secondsToDamage = 0.3f;
+	}
 
 	atlasTex = App->tex->Load(atlasTexName.data());
 	pawsTex = App->tex->Load(pawsTexName.data());

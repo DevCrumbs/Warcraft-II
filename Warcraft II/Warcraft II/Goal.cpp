@@ -376,6 +376,7 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 						if (owner->GetSingleUnit()->currTile.DistanceTo(*it) <= 1) {
 
 							targetInfo->isAttackSatisfied = true;
+							isStaticAttackForced = true;
 							break;
 						}
 						it++;
@@ -389,9 +390,11 @@ GoalStatus Goal_AttackTarget::Process(float dt)
 
 				if (singleUnit != nullptr) {
 
-					if (owner->GetSingleUnit()->currTile.DistanceTo(singleUnit->currTile) <= 1)
+					if (owner->GetSingleUnit()->currTile.DistanceTo(singleUnit->currTile) <= 1) {
 
 						targetInfo->isAttackSatisfied = true;
+						isDynamicAttackForced = true;
+					}
 				}
 			}
 		}
@@ -460,6 +463,21 @@ void Goal_AttackTarget::Terminate()
 		else {
 
 			targetInfo->target->RemoveAttackingUnit(owner);
+
+			// If DistanceManhattan is <= 1 -> isAttackSatisfied = false
+			if (targetInfo->isAttackSatisfied) {
+
+				if (targetInfo->target->entityType == EntityCategory_STATIC_ENTITY) {
+
+					if (isStaticAttackForced)
+						targetInfo->isAttackSatisfied = false;
+				}
+				else if (targetInfo->target->entityType == EntityCategory_DYNAMIC_ENTITY) {
+
+					if (isDynamicAttackForced)
+						targetInfo->isAttackSatisfied = false;
+				}
+			}
 		}
 
 		targetInfo->isInGoals--; // THE TARGET IS NO LONGER A GOAL
@@ -1958,12 +1976,17 @@ void Goal_FreePrisoner::Terminate()
 			alleria->SetRescued(true);
 			alleria->SetUnitRescuePrisoner(false);
 			App->player->RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
+			App->player->isAllRescued = true;
+			alleria->SetCurrLife(0);
 		}
 		else if (turalyon != nullptr) {
 		
 			turalyon->SetRescued(true);
 			turalyon->SetUnitRescuePrisoner(false);
 			App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
+			App->player->isTurRescued = true;
+			turalyon->SetCurrLife(0);
+
 		}
 
 		owner->SetPrisoner(nullptr);

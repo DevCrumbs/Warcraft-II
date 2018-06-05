@@ -8,6 +8,7 @@
 #include "j1Scene.h"
 #include "j1Movement.h"
 #include "j1Particles.h"
+#include "j1FadeToBlack.h"
 
 TempleOfTheDamned::TempleOfTheDamned(fPoint pos, iPoint size, int currLife, uint maxLife, const TempleOfTheDamnedInfo& templeOfTheDamnedInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), templeOfTheDamnedInfo(templeOfTheDamnedInfo)
 {
@@ -59,6 +60,12 @@ TempleOfTheDamned::~TempleOfTheDamned()
 
 void TempleOfTheDamned::Move(float dt) 
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+	}
+
 	// Reconstruction conditions
 	if (buildingState == BuildingState_LowFire && !isStartReconstructionTimer) {
 
@@ -133,6 +140,7 @@ void TempleOfTheDamned::Move(float dt)
 		// Remove the low fire
 		if (fire != nullptr)
 			fire->isRemove = true;
+		fire = nullptr;
 
 		// Remove the peon
 		if (peon != nullptr)
