@@ -63,7 +63,7 @@ bool j1Intro::Update(float dt)
 		Mix_PauseMusic();
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_SPACE)== KEY_DOWN)
+	if (App->input->scancode != SDL_SCANCODE_UNKNOWN)
 	{
 		App->fade->FadeToBlack(this, App->menu);
 		Mix_PauseMusic();
