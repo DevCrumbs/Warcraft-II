@@ -9,6 +9,7 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
+#include "j1FadeToBlack.h"
 
 WatchTower::WatchTower(fPoint pos, iPoint size, int currLife, uint maxLife, const WatchTowerInfo& watchTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), watchTowerInfo(watchTowerInfo)
 {
@@ -54,6 +55,12 @@ WatchTower::~WatchTower()
 
 void WatchTower::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+	}
+
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 

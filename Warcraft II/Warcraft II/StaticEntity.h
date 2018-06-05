@@ -106,6 +106,8 @@ protected:
 
 	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;
+
+	bool isCheckedBuildingState = false;
 };
 
 #endif //__StaticEntity_H__

@@ -8,6 +8,7 @@
 #include "j1Scene.h"
 #include "j1Movement.h"
 #include "j1Particles.h"
+#include "j1FadeToBlack.h"
 
 GreatHall::GreatHall(fPoint pos, iPoint size, int currLife, uint maxLife, const GreatHallInfo& greatHallInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), greatHallInfo(greatHallInfo)
 {
@@ -72,6 +73,12 @@ GreatHall::~GreatHall()
 
 void GreatHall::Move(float dt) 
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+	}
+
 	// Reconstruction conditions
 	if (buildingState == BuildingState_LowFire && !isStartReconstructionTimer) {
 

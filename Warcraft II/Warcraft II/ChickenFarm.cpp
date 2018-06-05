@@ -11,6 +11,7 @@
 #include "j1Collision.h"
 #include "j1Movement.h"
 #include "j1Particles.h"
+#include "j1FadeToBlack.h"
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
@@ -71,7 +72,12 @@ ChickenFarm::~ChickenFarm()
 
 void ChickenFarm::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
 
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+	}
+	
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 

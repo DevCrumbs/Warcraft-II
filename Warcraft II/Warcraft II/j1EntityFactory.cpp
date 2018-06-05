@@ -1590,7 +1590,6 @@ bool j1EntityFactory::PreUpdate()
 		}
 		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) {
 			StaticEntity * building = (StaticEntity*)(*it);
-			building->CheckBuildingState();
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
 		}
