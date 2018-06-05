@@ -94,10 +94,10 @@ public:
 	const StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
 	BuildingState buildingState = BuildingState_Normal;
 	const StaticEntitySize buildingSize = StaticEntitySize_None;
+	Particle* fire = nullptr;
 
 protected:
 
-	Particle* fire = nullptr;
 	const SDL_Rect* texArea = nullptr;
 
 	float constructionTimer = 0.0f;
