@@ -9,6 +9,7 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
+#include "j1FadeToBlack.h"
 
 PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint maxLife, const PlayerGuardTowerInfo& playerGuardTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), playerGuardTowerInfo(playerGuardTowerInfo)
 {
@@ -35,9 +36,6 @@ PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint m
 	buildingState = BuildingState_Building;
 	texArea = &playerGuardTowerInfo.constructionPlanks1;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
-
-	 //Construction peasants
-	peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 }
 
 PlayerGuardTower::~PlayerGuardTower()
@@ -46,11 +44,20 @@ PlayerGuardTower::~PlayerGuardTower()
 		peasants->isRemove = true;
 		peasants = nullptr;
 	}
-
 }
 
 void PlayerGuardTower::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+
+		if (!isBuilt)
+			//Construction peasants
+			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
+	}
+
 	if (!isColliderCreated) {
 		CreateEntityCollider(EntitySide_Player, true);
 		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, playerGuardTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);

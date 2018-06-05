@@ -9,6 +9,7 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
+#include "j1FadeToBlack.h"
 
 ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, const ScoutTowerInfo& scoutTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), scoutTowerInfo(scoutTowerInfo)
 {
@@ -36,9 +37,6 @@ ScoutTower::ScoutTower(fPoint pos, iPoint size, int currLife, uint maxLife, cons
 
 	buildingState = BuildingState_Building;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
-
-	//Construction peasants
-	peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 }
 
 ScoutTower::~ScoutTower()
@@ -51,6 +49,16 @@ ScoutTower::~ScoutTower()
 
 void ScoutTower::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+
+		if (!isBuilt)
+			//Construction peasants
+			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
+	}
+
 	if (!isColliderCreated) {
 
 		CreateEntityCollider(EntitySide_Player, true);

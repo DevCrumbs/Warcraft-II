@@ -884,7 +884,6 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 				menuActions = MenuActions_CLEANUP;
 			else
 				menuActions = MenuActions_SETTINGS;
-			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 
 		for (list<ChangeButtons>::iterator iterator = interactiveLabels.begin(); iterator != interactiveLabels.end(); ++iterator)

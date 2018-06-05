@@ -10,6 +10,7 @@
 #include "j1Pathfinding.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
+#include "j1FadeToBlack.h"
 
 PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint maxLife, const PlayerCannonTowerInfo& playerCannonTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), playerCannonTowerInfo(playerCannonTowerInfo)
 {
@@ -36,9 +37,6 @@ PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint
 	buildingState = BuildingState_Building;
 	texArea = &playerCannonTowerInfo.constructionPlanks1;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
-
-	//Construction peasants
-	peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 }
 
 PlayerCannonTower::~PlayerCannonTower()
@@ -51,6 +49,16 @@ PlayerCannonTower::~PlayerCannonTower()
 
 void PlayerCannonTower::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+
+		if (!isBuilt)
+			//Construction peasants
+			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
+	}
+
 	if (!isColliderCreated) {
 
 		CreateEntityCollider(EntitySide_Player, true);

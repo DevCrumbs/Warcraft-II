@@ -96,12 +96,12 @@ public:
 	const StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
 	BuildingState buildingState = BuildingState_Normal;
 	const StaticEntitySize buildingSize = StaticEntitySize_None;
+	Particle* fire = nullptr;
 
 	float constructionTimer = 0.0f;
 
 protected:
 
-	Particle* fire = nullptr;
 	const SDL_Rect* texArea = nullptr;
 
 	bool isBuilt = false;
@@ -109,6 +109,8 @@ protected:
 
 	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;
+
+	bool isCheckedBuildingState = false;
 };
 
 #endif //__StaticEntity_H__

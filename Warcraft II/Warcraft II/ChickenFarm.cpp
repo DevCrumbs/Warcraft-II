@@ -11,6 +11,7 @@
 #include "j1Collision.h"
 #include "j1Movement.h"
 #include "j1Particles.h"
+#include "j1FadeToBlack.h"
 
 ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, const ChickenFarmInfo& chickenFarmInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), chickenFarmInfo(chickenFarmInfo)
 {
@@ -46,9 +47,6 @@ ChickenFarm::ChickenFarm(fPoint pos, iPoint size, int currLife, uint maxLife, co
 		texArea = &chickenFarmInfo.constructionPlanks1;
 		buildingState = BuildingState_Building;
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
-
-		//Construction peasants
-		peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 	}
 
 	// Collision
@@ -71,7 +69,16 @@ ChickenFarm::~ChickenFarm()
 
 void ChickenFarm::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
 
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+
+		if (!isBuilt)
+			//Construction peasants
+			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
+	}
+	
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 
@@ -90,13 +97,11 @@ void ChickenFarm::Move(float dt)
 			peasants = nullptr;
 		}
 	}
-
 }
 
 // Animations
 void ChickenFarm::LoadAnimationsSpeed()
 {
-
 }
 
 void ChickenFarm::UpdateAnimations(float dt)
