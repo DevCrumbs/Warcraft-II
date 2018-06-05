@@ -52,9 +52,6 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife
 	// Collision
 	CreateEntityCollider(EntitySide_Player, true);
 	entityCollider->isTrigger = true;
-
-	//Construction peasants
-	peasants = App->particles->AddParticle(App->particles->peasantMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
 }
 
 GryphonAviary::~GryphonAviary()
@@ -71,6 +68,10 @@ void GryphonAviary::Move(float dt)
 
 		CheckBuildingState();
 		isCheckedBuildingState = true;
+
+		if (!isBuilt)
+			//Construction peasants
+			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 	}
 
 	if (listener != nullptr)

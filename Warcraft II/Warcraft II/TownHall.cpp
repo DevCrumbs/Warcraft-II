@@ -80,6 +80,10 @@ void TownHall::Move(float dt)
 
 		CheckBuildingState();
 		isCheckedBuildingState = true;
+
+		if (!isBuilt)
+			//Construction peasants
+			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 	}
 
 	if (listener != nullptr)

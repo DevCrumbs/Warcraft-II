@@ -36,9 +36,6 @@ PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint m
 	buildingState = BuildingState_Building;
 	texArea = &playerGuardTowerInfo.constructionPlanks1;
 	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
-
-	 //Construction peasants
-	peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 }
 
 PlayerGuardTower::~PlayerGuardTower()
@@ -47,7 +44,6 @@ PlayerGuardTower::~PlayerGuardTower()
 		peasants->isRemove = true;
 		peasants = nullptr;
 	}
-
 }
 
 void PlayerGuardTower::Move(float dt)
@@ -56,6 +52,10 @@ void PlayerGuardTower::Move(float dt)
 
 		CheckBuildingState();
 		isCheckedBuildingState = true;
+
+		if (!isBuilt)
+			//Construction peasants
+			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 	}
 
 	if (!isColliderCreated) {
