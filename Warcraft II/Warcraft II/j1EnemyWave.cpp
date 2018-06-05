@@ -318,7 +318,7 @@ void j1EnemyWave::PerformWave(int layer)
 	{
 		++i;
 
-		if (spawned >= maxSpawnPerPhase || totalSpawnOfCurrWave >= maxSpawnPerWave) {
+		if (spawned >= maxSpawnPerPhase) {
 			break;
 		}
 		ENTITY_TYPE type = EntityType_NONE;
@@ -339,7 +339,7 @@ void j1EnemyWave::PerformWave(int layer)
 		//		LOG("Spawned %i entities from %i, type %i", spawned, size, type);
 		//	}
 		//}
-		if (SpawnEnemy(spawnProbability)) {
+		if (SpawnEnemy(spawnProbability) && totalSpawnOfCurrWave < maxSpawnPerWave) {
 
 			spawned++;
 			totalSpawnOfCurrWave++;

@@ -9,6 +9,7 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
+#include "j1FadeToBlack.h"
 
 PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint maxLife, const PlayerGuardTowerInfo& playerGuardTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), playerGuardTowerInfo(playerGuardTowerInfo)
 {
@@ -51,6 +52,12 @@ PlayerGuardTower::~PlayerGuardTower()
 
 void PlayerGuardTower::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+	}
+
 	if (!isColliderCreated) {
 		CreateEntityCollider(EntitySide_Player, true);
 		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, playerGuardTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);

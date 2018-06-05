@@ -175,6 +175,10 @@ public:
 	list<iPoint> GetBuildingTiles(StaticEntity* building, bool isOnlySurroundingTiles = false);
 	///_SANDRA
 
+	void StopAllUnits() const;
+	void ReactivateAllUnits() const;
+	bool AreAllUnitsFittingTile() const;
+
 	// -----
 
 	bool Save(pugi::xml_node& save) const;

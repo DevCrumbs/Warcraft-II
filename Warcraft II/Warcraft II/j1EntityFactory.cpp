@@ -1590,7 +1590,6 @@ bool j1EntityFactory::PreUpdate()
 		}
 		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) {
 			StaticEntity * building = (StaticEntity*)(*it);
-			building->CheckBuildingState();
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
 		}
@@ -4512,6 +4511,50 @@ list<iPoint> j1EntityFactory::GetBuildingTiles(StaticEntity* building, bool isOn
 	return buildingTiles;
 }
 ///_SANDRA
+
+void j1EntityFactory::StopAllUnits() const 
+{
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	while (it != activeDynamicEntities.end()) {
+	
+		if ((*it)->GetSingleUnit() != nullptr) {
+		
+			(*it)->GetSingleUnit()->isMoving = false;
+		}
+		++it;
+	}
+}
+
+void j1EntityFactory::ReactivateAllUnits() const 
+{
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	while (it != activeDynamicEntities.end()) {
+
+		if ((*it)->GetSingleUnit() != nullptr) {
+
+			(*it)->GetSingleUnit()->isMoving = true;
+		}
+		++it;
+	}
+}
+
+bool j1EntityFactory::AreAllUnitsFittingTile() const
+{
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+
+	while (it != activeDynamicEntities.end()) {
+
+		if ((*it)->GetSingleUnit() != nullptr) {
+			if (!(*it)->GetSingleUnit()->IsFittingTile())
+				return false;
+		}
+		++it;
+	}
+
+	return true;
+}
 
 // -------------------------------------------------------------
 // -------------------------------------------------------------

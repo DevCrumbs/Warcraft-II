@@ -10,6 +10,7 @@
 #include "j1Movement.h"
 #include "j1Collision.h"
 #include "j1Particles.h"
+#include "j1FadeToBlack.h"
 
 GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife, const GryphonAviaryInfo& gryphonAviaryInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), gryphonAviaryInfo(gryphonAviaryInfo)
 {
@@ -66,6 +67,12 @@ GryphonAviary::~GryphonAviary()
 
 void GryphonAviary::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+	}
+
 	if (listener != nullptr)
 		HandleInput(EntityEvent);
 

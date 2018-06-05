@@ -49,6 +49,7 @@ private:
 	bool startTimer = true;
 
 	Particle* peasants = nullptr;
+	bool isL = false;
 };
 
 #endif //__TownHall_H__

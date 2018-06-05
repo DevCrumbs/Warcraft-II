@@ -10,6 +10,7 @@
 #include "j1Pathfinding.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
+#include "j1FadeToBlack.h"
 
 PlayerCannonTower::PlayerCannonTower(fPoint pos, iPoint size, int currLife, uint maxLife, const PlayerCannonTowerInfo& playerCannonTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), playerCannonTowerInfo(playerCannonTowerInfo)
 {
@@ -51,6 +52,12 @@ PlayerCannonTower::~PlayerCannonTower()
 
 void PlayerCannonTower::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+	}
+
 	if (!isColliderCreated) {
 
 		CreateEntityCollider(EntitySide_Player, true);

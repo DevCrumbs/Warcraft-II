@@ -253,6 +253,11 @@ MovementState j1Movement::MoveUnit(DynamicEntity* unit, float dt)
 	fPoint movePos;
 	iPoint newGoal;
 
+	if (!singleUnit->isMoving) {
+		if (singleUnit->IsFittingTile())
+			return singleUnit->movementState;
+	}
+
 	switch (singleUnit->movementState) {
 
 	case MovementState_WaitForPath:

@@ -9,6 +9,7 @@
 #include "j1Movement.h"
 #include "j1Particles.h"
 #include "j1Player.h"
+#include "j1FadeToBlack.h"
 
 EnemyBarracks::EnemyBarracks(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyBarracksInfo& enemyBarracksInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), enemyBarracksInfo(enemyBarracksInfo)
 {
@@ -60,6 +61,12 @@ EnemyBarracks::~EnemyBarracks()
 
 void EnemyBarracks::Move(float dt) 
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+	}
+
 	// 1.RECONSTRUCTION
 
 	// Reconstruction conditions
