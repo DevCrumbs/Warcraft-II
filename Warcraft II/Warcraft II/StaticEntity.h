@@ -75,6 +75,8 @@ public:
 	float GetConstructionTime() const;
 	bool GetIsFinishedBuilt() const;
 
+	void SetIsFinishedBuilt(bool isBuild);
+
 	BuildingState GetBuildingState() const;
 
 	void SetBuildingState(BuildingState state);

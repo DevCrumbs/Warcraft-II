@@ -4640,8 +4640,9 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 		{
 			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
 
-
 			newEntity->constructionTimer = iterator.attribute("constructionTimer").as_float();
+
+			newEntity->SetIsFinishedBuilt(iterator.attribute("isBuilt").as_bool());
 		}
 	}
 
@@ -4650,74 +4651,6 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 	for (pugi::xml_node iterator = save.child("dynamicEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
 	{
 		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("dynamicEntityType").as_int();
-
-		fPoint pos = { iterator.attribute("posX").as_float(), iterator.attribute("posY").as_float() };
-		UnitInfo unitInfo;
-		DynamicEntity* newEntity = nullptr;
-		Entity* entity = nullptr;
-
-		switch (entityType)
-		{
-			// Dynamic entities
-		case EntityType_FOOTMAN:
-		case EntityType_ELVEN_ARCHER:
-		case EntityType_GRYPHON_RIDER:
-		case EntityType_ALLERIA:
-		case EntityType_TURALYON:
-			newEntity = (DynamicEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
-			break;
-
-		case EntityType_GRUNT:
-		case EntityType_TROLL_AXETHROWER:
-		case EntityType_DRAGON:
-			 entity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
-			 newEntity = (DynamicEntity*)entity;
-			break;
-
-		case EntityType_SHEEP:
-		case EntityType_BOAR:
-		{
-			int type = rand() % 2;
-
-			if (type == 0)
-				newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
-			else
-				newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
-		}
-		break;
-
-		default:
-			break;
-		}
-
-		if (entity != nullptr)
-		{
-			entity->enemyGroup = iterator.attribute("enemyGroup").as_int();
-			DynamicEntity* temp = (DynamicEntity*)entity;
-			temp->lastSeenTile = { iterator.attribute("lastSeenTileX").as_int(), iterator.attribute("lastSeenTileY").as_int() };
-
-			list<list<Entity*>>::iterator groupIterator = App->map->entityGroups.begin();
-			for (int i = 0; i < entity->enemyGroup; ++i)
-			{
-				if (groupIterator == App->map->entityGroups.end())
-					break;
-				else
-					groupIterator++;
-			}
-
-			if (groupIterator != App->map->entityGroups.end())
-			{
-				(*groupIterator).push_back(entity);
-			}
-		}
-
-		if (newEntity != nullptr)
-		{
-			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
-			if(newEntity->entitySide == EntitySide_Player)
-				App->player->unitProduce--;
-		}
-	}
 
 		fPoint pos = { iterator.attribute("posX").as_float(), iterator.attribute("posY").as_float() };
 		UnitInfo unitInfo;
@@ -4933,6 +4866,8 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 			entity.append_attribute("GetCurrLife") = (*statEnt)->GetCurrLife();
 
 			entity.append_attribute("constructionTimer") = (*statEnt)->constructionTimer;
+
+			entity.append_attribute("isBuilt") = (*statEnt)->GetIsFinishedBuilt();
 
 			if ((*statEnt)->staticEntityType == EntityType_GOLD_MINE)
 			{

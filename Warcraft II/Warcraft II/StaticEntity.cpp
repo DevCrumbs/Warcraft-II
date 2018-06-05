@@ -297,6 +297,11 @@ bool StaticEntity::GetIsFinishedBuilt() const
 	return isBuilt;
 }
 
+void StaticEntity::SetIsFinishedBuilt(bool isBuild)
+{
+	this->isBuilt = isBuild;
+}
+
 BuildingState StaticEntity::GetBuildingState() const 
 {
 	return buildingState;
