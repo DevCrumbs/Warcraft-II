@@ -4792,7 +4792,16 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 
 			else if ((*statEnt)->staticEntityType == EntityType_RUNESTONE)
 			{
+				Runestone* currGoldMine = (Runestone*)(*statEnt);
 
+				if (currGoldMine->GetRunestoneState() == RunestoneState_Untouched)
+				{
+					entity.append_attribute("RunestoneState") = RunestoneState_Untouched;
+				}
+				else
+				{
+					entity.append_attribute("RunestoneState") = RunestoneState_Gathered;
+				}
 			}
 				
 		}
