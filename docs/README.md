@@ -73,11 +73,11 @@ Down here you can find the GitHub page for each one of the team memebers and the
 
 You can visualize a trailer for the game here.
 
-<iframe width="560" height="315" src="https://youtu.be/wkLv1oAxmuI" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wkLv1oAxmuI" frameborder="0" allowfullscreen></iframe>
 
 # Gameplay video
 
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=wkLv1oAxmuI" frameborder="0" allowfullscreen></iframe>
+
 
 ## Controls
 
