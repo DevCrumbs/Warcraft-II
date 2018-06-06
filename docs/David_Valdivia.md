@@ -61,8 +61,6 @@ What I used for the bug notifying, has been primarily github issues, to keep all
 
 Additionally, another method I used on some sprints where the team had implemented a lot of functionality into the game, has been Bug Reports that had a .txt document where I ordered each bug regarding if it was a visual bug, gameplay bug or game breaking bug. Alongside with the.txt, I included photos of each bug, and in the case of the game breaking bugs, the place in the code where the game broke. By doing this, I ensured that all of the members of the team were aware of all the bugs that had surged on that specific sprint and for them to have it handy when they were going to fix them.
 
-PHOTO OF BUG REPORT
-
 ## Video game balancing
 
 I helped to the balance of the game by ensuring the unit triangle was as consistent as possible. What I mean with that is that the three unit types in the game were balanced enough to make the three of them equally useful. The way I made it was with a formula that calculates the resulting gain or loss of the cost for the player when two different units confront each other.
