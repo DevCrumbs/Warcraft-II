@@ -153,6 +153,7 @@ private:
 
 	//Credits
 	UILabel* sandraLead = nullptr, *oscarCode = nullptr, *davidQA = nullptr, *joanDesigner = nullptr, *manavManagment = nullptr, *davidArt = nullptr, *aleixUI = nullptr;
+	UIButton* devCrumbsGithub = nullptr, *devCrumbsTW = nullptr;
 
 	//More than one page
 	vector<UILabel*> staticLabels; //Not Interactives

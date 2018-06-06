@@ -523,6 +523,8 @@ void j1Menu::CreateCredits()
 	labelInfo.text = "Contributors";
 	staticLabels.push_back(App->gui->CreateUILabel({ 375, 25 }, labelInfo, this));
 
+	CreateSimpleButt({ 373,565,44,44 }, { 463,565,44,44 }, { 418,565,44,44 }, { 750,5 }, devCrumbsTW);
+	CreateSimpleButt({ 373,610,44,44 }, { 463,610,44,44 }, { 418,610,44,44 }, { 700,5 }, devCrumbsGithub);
 }
 
 void j1Menu::CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton* &butt, UIE_HORIZONTAL_POS hPos, UIE_VERTICAL_POS vPos)
@@ -864,6 +866,18 @@ void j1Menu::OnUIEvent(UIElement* UIelem, UI_EVENT UIevent) {
 			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
 		}
 
+		else if (UIelem == devCrumbsGithub)
+		{
+			open_url("https://github.com/DevCrumbs/Warcraft-II");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
+
+		else if (UIelem == devCrumbsTW)
+		{
+			open_url("https://twitter.com/DevCrumbsGames");
+			App->audio->PlayFx(App->audio->GetFX().button, 0); //Button sound
+		}
+	
 		//ChangeButtons
 
 		else if (UIelem == buttonsLabel)
@@ -1009,6 +1023,8 @@ void j1Menu::DeleteCredits()
 	App->gui->RemoveElem((UIElement**)&davidQA);
 	App->gui->RemoveElem((UIElement**)&davidArt);
 	App->gui->RemoveElem((UIElement**)&aleixUI);
+	App->gui->RemoveElem((UIElement**)&	devCrumbsTW);
+	App->gui->RemoveElem((UIElement**)&	devCrumbsGithub);
 
 	for (; !staticLabels.empty(); staticLabels.pop_back())
 	{
