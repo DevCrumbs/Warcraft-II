@@ -77,7 +77,7 @@ You can visualize a trailer for the game here.
 
 # Gameplay video
 
-
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PWxfGepzuGQ" frameborder="0" allowfullscreen></iframe>
 
 ## Controls
 
