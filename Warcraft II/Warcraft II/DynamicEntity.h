@@ -261,6 +261,8 @@ public:
 	// Fow
 	iPoint lastSeenTile = { -1,-1 };
 
+	uint savedGroup = 0;
+
 protected:
 
 	UnitInfo unitInfo;
