@@ -138,7 +138,6 @@ bool j1Menu::Start()
 // Called each loop iteration
 bool j1Menu::Update(float dt)
 {
-
 	switch (menuActions)
 	{
 	case MenuActions_NONE:

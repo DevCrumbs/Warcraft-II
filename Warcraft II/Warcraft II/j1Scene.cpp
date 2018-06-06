@@ -208,7 +208,7 @@ bool j1Scene::Start()
 			App->entities->Load(root.child(App->entities->name.data()));
 			App->wave->Load(root.child(App->wave->name.data()));
 			App->fow->Load(root.child(App->fow->name.data()));
-
+			App->render->Load(root.child(App->render->name.data()));
 			
 			App->menu->isLoad = false;
 		}
