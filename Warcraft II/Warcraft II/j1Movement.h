@@ -213,8 +213,6 @@ struct SingleUnit
 
 	bool reversePriority = false; // if true, the priority of the unit is not taken into account
 
-	bool isMoving = true; // if true, the unit can move
-
 	// COLLISION AVOIDANCE
 	bool wait = false;
 	iPoint waitTile = { -1,-1 }; // conflict tile (tile where the collision has been found)
