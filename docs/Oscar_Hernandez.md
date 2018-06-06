@@ -4,7 +4,7 @@
 - **Random map:** <br>
 I have developed a module to generate a semi-randomly generated maps. This module can generate this maps using xml files. It uses one file as a general map structure, to decide the shape of the map. Then the module decides which room to load from the given pool in the structure file. 
 
-<img src="Warcraft-II/docs/Readme_Files/ÓscarHernández/randomMap.jpg">
+<img src="Readme_Files/ÓscarHernández/randomMap.jpg"><br>
 	_Random map example_<br><br>	
   
 - **Pathfinding:**<br>
@@ -16,8 +16,8 @@ We have used Tiled to create the maps, the logic of the maps are also saved in t
 I have developed functions and methods to read the map logic, ally and enemy entities spawns, buildings and rooms.
 The enemy dynamic entities are loaded in groups.
 
-- **FoW:**<br>
-I have included the fog of war to the game. The FoW has 3 levels, unit sight, explored, unexplored.
+- **Fog of War:**<br>
+I included the fog of war to the game. The FoW has 3 levels, unit sight, explored, unexplored.
 
 - **Map / fow  drawing optimization:**<br>
 One of the biggest problems we encountered was the performance. I have worked on the optimization of the map and the FoW. Using the optimization process the map draw function consumes Xms, Yms less.
@@ -31,10 +31,6 @@ I have worked on the Enemy Wave module, creating the functions to decide how man
 
 - **Smooth camera movement:**<br>
 I have improved the camera movement, making the speed of the camera inversely proportional to the distance of the mouse to the border of the screen.
-
-- **Fog of War:**<br>
-I included the fog of war to the game. The FoW has 3 levels, unit sight, explored, unexplored.
-
 
 - **Save and load:**<br>
 I have included a Save/Load functionality to the game with the help of Aleix. We save the current state of the game so the player can resume the game later at the point he saved the game.
