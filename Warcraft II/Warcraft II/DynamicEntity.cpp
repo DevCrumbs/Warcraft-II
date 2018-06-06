@@ -781,7 +781,17 @@ bool DynamicEntity::UpdateTargetsToRemove()
 
 	while (it != targets.end()) {
 
-		if ((*it)->IsTargetDead()) {
+		bool isRemove = false;
+
+		if ((*it)->target == nullptr)
+
+			isRemove = true;
+
+		else if ((*it)->target->isRemove)
+
+			isRemove = true;
+
+		if (isRemove) {
 
 			// Removing target process --
 			if (currTarget == *it)
