@@ -1,15 +1,13 @@
 ﻿### Welcome, travellers!
 
 # Warcraft II: The Stolen Artifacts
-
 Warcraft II: The Stolen Artifacts is an expansion that derives from the videogame Warcraft II: Tides of Darkness. 
-The game is set after the events of Tides of Darkness, in which a small group of the Azeroth's army must expedition to a now destroyed Draenor 
-to find the legendary alliance expeditioners that became trapped in Draenor, and defeat the evil Ner’zhul, 
-by retrieving one of the four artifacts that he stole from Azeroth.
+The game is set after the events of Tides of Darkness, in which a small group of the Azeroth's army 
+must expedition to a now destroyed Draenor to find the legendary alliance expeditioners that became trapped in Draenor, 
+and defeat the evil Ner’zhul, by retrieving one of the four artifacts he stole from Azeroth.
 
-The player must command this expedition in an RTS dungeon crawler game in which they must recover the remaints of that legendary expedition in order to defeat Ner’zhul. 
-Every time the expedition enters Draenor the construction of the land, and the path they will have to take will be different, 
-so the game will be different every run the player makes.
+The player must command this expedition in an RTS dungeon crawler game in which they must recover
+the stolen artifacts by rescuing the lost expeditioners Alleria and Turalyon.
 
 * **GitHub repository**: 
 [DevCrumbs](https://github.com/DevCrumbs/Warcraft-II)
@@ -24,9 +22,9 @@ Although each member of the team has been involved in similar projects before, w
 The overall aim of the company is to create enjoyable gaming experiences, a unique kind of work that we are passionate about. 
 If we are able to feed your imagination, our mission will be accomplished!
 
-# Version 0.9
+# Version 1.0
 
-The goal of the player in this alpha version is to rescue two prisoners - Khadgar and Alleria. The prisoners are hidden somewhere in a dungeon full of enemies. 
+The goal of the player in this gold version is to rescue two prisoners - Khadgar and Alleria. The prisoners are hidden somewhere in a dungeon full of enemies. 
 In order to complete this objective, the player will have to create troops and command them towards the victory.
 
 # Version changes
@@ -151,7 +149,14 @@ In order to complete this objective, the player will have to create troops and c
 
 # 1.0
 
-TBA
+- Save & Load feature.
+- Keys redefinition feature.
+- Soften the Fog of War.
+- Fortress on the final prisioner area.
+- Game balancing.
+- Enemy spawn on some rooms (they only spawn to a certain number).
+- Enemy reconstruction of their buildings.
+- Artifact number count.
 
 # Default Controls
 You can modify most of the controls from the setting menu
@@ -314,6 +319,8 @@ the player to build a Gryphon Aviary. If the player
 
 There are many enemy buildings scattered throughout the map. Be careful because there are several orcish towers that 
 can attack you!
+There's also barrack buildings in some rooms that spawn enemeies to a certain number, so destroy those buildings as soon
+as you can.
 
 ## Building buttons
 
