@@ -4537,6 +4537,27 @@ list<iPoint> j1EntityFactory::GetBuildingTiles(StaticEntity* building, bool isOn
 }
 ///_SANDRA
 
+bool j1EntityFactory::HaveAllOrcShipsSpawnedEntities() const 
+{
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+	
+	while (it != activeDynamicEntities.end()) {
+	
+		if ((*it)->dynamicEntityType == EntityType_ORC_SHIP) {
+		
+			OrcShip* orcShip = (OrcShip*)(*it);
+
+			if (!orcShip->isSpawnedWave)
+
+				return false;
+		}
+
+		it++;
+	}
+
+	return true;
+}
+
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 

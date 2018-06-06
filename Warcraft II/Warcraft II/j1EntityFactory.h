@@ -175,6 +175,8 @@ public:
 	list<iPoint> GetBuildingTiles(StaticEntity* building, bool isOnlySurroundingTiles = false);
 	///_SANDRA
 
+	bool HaveAllOrcShipsSpawnedEntities() const;
+
 	// -----
 
 	bool Save(pugi::xml_node& save) const;

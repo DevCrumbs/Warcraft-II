@@ -89,7 +89,7 @@ bool j1EnemyWave::Start()
 
 	secondsToNextWave = MINUTES_TO_SECONDS(secondsToNextWave);
 
-	//secondsToNextWave = 0;
+	secondsToNextWave = 0;
 
 	currWaveFinished = false;
 
@@ -170,6 +170,7 @@ bool j1EnemyWave::Update(float dt)
 
 			totalWaves++;
 			isStartWave = true;
+			LOG("NEW WAVE!!!!!");
 			LOG("Wave %i with %i phases", totalWaves, totalPhasesOfCurrWave);
 		}
 
@@ -231,17 +232,21 @@ bool j1EnemyWave::Update(float dt)
 			secondsToNextPhase = rand() % (maxSecondsToNextPhase - minSecondsToNextPhase + 1) + minSecondsToNextPhase;
 
 			phasesOfCurrWave++;
+
+			LOG("Current wave finished!!!");
+			currWaveFinished = true;
 			LOG("Phase %i of the wave %i. %f seconds to next phase", phasesOfCurrWave, totalWaves, secondsToNextPhase);
 		}
 
 		// No more phases of the current wave
-		if (phasesOfCurrWave >= totalPhasesOfCurrWave) {
+		if (phasesOfCurrWave == totalPhasesOfCurrWave) {
 
 			// Calculate the seconds until the next wave arrives
-			int maxMinutesToNextWave = 1;
+			int maxMinutesToNextWave = 2;
 			int minMinutesToNextWave = 1;
 
 			/// TODO Balancing (Waves)
+			/*
 			if (totalWaves == 1) {
 
 				maxMinutesToNextWave = 5;
@@ -257,6 +262,7 @@ bool j1EnemyWave::Update(float dt)
 				maxMinutesToNextWave = 4;
 				minMinutesToNextWave = 2;
 			}
+			*/
 
 			nextWaveTimer = 0;
 
@@ -266,6 +272,7 @@ bool j1EnemyWave::Update(float dt)
 			secondsToNextWave += j;
 
 			secondsToNextWave = MINUTES_TO_SECONDS(secondsToNextWave);
+			secondsToNextWave = 30;
 
 			phasesOfCurrWave = 0;
 			totalSpawnOfCurrWave = 0;
@@ -274,8 +281,6 @@ bool j1EnemyWave::Update(float dt)
 				maxSpawnPerWave++;
 			}
 			isStartWave = false;
-
-			currWaveFinished = true;
 
 			LOG("%f seconds to next wave", secondsToNextWave);
 		}
