@@ -4,6 +4,9 @@
 - **Random map:** <br>
 I have developed a module to generate a semi-randomly generated maps. This module can generate this maps using xml files. It uses one file as a general map structure, to decide the shape of the map. Then the module decides which room to load from the given pool in the structure file. 
 
+<img src="Readme_Files/ÓscarHernández/mapCode.png"><br>
+	_Random map example_<br><br>	
+
 <img src="Readme_Files/ÓscarHernández/randomMap.jpg"><br>
 	_Random map example_<br><br>	
   
@@ -15,6 +18,10 @@ In order to adapt the A* algorithms to the rooms-based map I improved the pathma
 We have used Tiled to create the maps, the logic of the maps are also saved in the xml files. 
 I have developed functions and methods to read the map logic, ally and enemy entities spawns, buildings and rooms.
 The enemy dynamic entities are loaded in groups.
+
+
+<img src="Readme_Files/ÓscarHernández/mapLogic.png"><br>
+	_Map logic code_<br><br>	
 
 - **Fog of War:**<br>
 I included the fog of war to the game. The FoW has 3 levels, unit sight, explored, unexplored.
