@@ -28,7 +28,7 @@ class PlayerGuardTower :public StaticEntity
 public:
 
 	PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint maxLife, const PlayerGuardTowerInfo& playerGuardTowerInfo, j1Module* listener);
-	~PlayerGuardTower() {};
+	~PlayerGuardTower();
 
 	void Move(float dt);
 	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
@@ -51,7 +51,7 @@ private:
 
 	//Attack
 	Entity* attackingTarget = nullptr;
-	j1Timer attackTimer;
+	float attackTimer = 0.0f;
 	std::list<Entity*> enemyAttackList;
 
 	//Arrow

@@ -28,12 +28,15 @@ void UILifeBar::Update(float dt)
 		l = lifeBar.life * 100 / lifeBar.maxLife; //Pass life to %
 		bar.w = l * lifeBar.maxWidth / 100;//Pass % to width
 	}
+
+	if (bar.w > lifeBar.maxWidth)
+		bar.w = lifeBar.maxWidth;
 }
 
 void UILifeBar::Draw() const
 {
 	// Not draw if not on fow sight
-	iPoint pos{ GetLocalPos().x + lifeBar.lifeBarPosition.x, GetLocalPos().y + lifeBar.lifeBarPosition.y };
+	//iPoint pos{ GetLocalPos().x + lifeBar.lifeBarPosition.x, GetLocalPos().y + lifeBar.lifeBarPosition.y };
 
 	iPoint blit_pos;
 	int scale = App->win->GetScale();
@@ -80,6 +83,11 @@ void UILifeBar::SetMaxLife(const int maxLife)
 	lifeBar.maxLife = maxLife;
 }
 
+void UILifeBar::SetLifeBarPosition(iPoint pos)
+{
+	lifeBar.lifeBarPosition = pos;
+}
+
 void UILifeBar::IncreaseLife(const int life)
 {
 	lifeBar.life += life;
@@ -98,3 +106,9 @@ int UILifeBar::GetLife() const
 {
 	return lifeBar.life;
 }
+
+// UILifeBar_Info struct ---------------------------------------------------------------------------------
+
+UILifeBar_Info::UILifeBar_Info(const UILifeBar_Info& l) :
+	background(l.background), bar(l.bar), horizontalOrientation(l.horizontalOrientation), verticalOrientation(l.verticalOrientation),
+	life(l.life), maxLife(l.maxLife), maxWidth(l.maxWidth), lifeBarPosition(l.lifeBarPosition), bgPosition(l.bgPosition) {}

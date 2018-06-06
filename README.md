@@ -1,20 +1,13 @@
 ﻿### Welcome, travellers!
 
 # Warcraft II: The Stolen Artifacts
-
 Warcraft II: The Stolen Artifacts is an expansion that derives from the videogame Warcraft II: Tides of Darkness. 
-The game is set after the events of Tides of Darkness, in which a small group of the Azeroth's army must expedition to a now destroyed Draenor 
-to find the legendary alliance expeditioners that became trapped in Draenor, and defeat the evil Ner’zhul, 
-by retrieving one of the four artifacts that he stole from Azeroth.
+The game is set after the events of Tides of Darkness, in which a small group of the Azeroth's army 
+must expedition to a now destroyed Draenor to find the legendary alliance expeditioners that became trapped in Draenor, 
+and defeat the evil Ner’zhul, by retrieving one of the four artifacts he stole from Azeroth.
 
-The player must command this expedition in an RTS dungeon crawler game in which they must recover the remaints of that legendary expedition in order to defeat Ner’zhul. 
-Every time the expedition enters Draenor the construction of the land, and the path they will have to take will be different, 
-so the game will be different every run the player makes.
-
-* **GitHub repository**: 
-[DevCrumbs](https://github.com/DevCrumbs/Warcraft-II)
-* **Wiki**: 
-[DevCrumbs wiki homepage](https://github.com/DevCrumbs/Warcraft-II/wiki)
+The player must command this expedition in an RTS dungeon crawler game in which they must recover
+the stolen artifacts by rescuing the lost expeditioners Alleria and Turalyon.
 
 # The team: DevCrumbs
 
@@ -24,18 +17,169 @@ Although each member of the team has been involved in similar projects before, w
 The overall aim of the company is to create enjoyable gaming experiences, a unique kind of work that we are passionate about. 
 If we are able to feed your imagination, our mission will be accomplished!
 
-# Version 0.9
+* **Social Networks**:
+ [Twitter](https://twitter.com/DevCrumbsGames)
+ [Instagram](https://www.instagram.com/devcrumbsgames/)
+ [Facebook](https://es-la.facebook.com/DevCrumbsGames/)
 
-The goal of the player in this alpha version is to rescue two prisoners - Khadgar and Alleria. The prisoners are hidden somewhere in a dungeon full of enemies. 
-In order to complete this objective, the player will have to create troops and command them towards the victory.
+* **GitHub repository**: 
+[DevCrumbs](https://github.com/DevCrumbs/Warcraft-II)
+* **Wiki**: 
+[DevCrumbs wiki homepage](https://github.com/DevCrumbs/Warcraft-II/wiki)
 
-# Controls
+# Version 1.0
+
+The goal of the player in this gold version is to rescue two prisoners - Khadgar and Alleria. The prisoners are hidden somewhere in a dungeon full of enemies. 
+In order to complete this objective, the player will have to create troops and command them towards victory. If the player loses all their troops and
+has no gold to produce more, or their Town Hall is destroyed, they will lose the game.
+
+# Instructions on installation:
+
+- Open "The Stolen Artifacts.exe" executable inside the decompressed folder.
+- Play!
+(No need for any additional installation)
+
+# Version changes
+
+## 0.1
+
+- Map with random organized rooms (pressing keyboard button 1 to reorganize).
+- Buildings dropdown.
+- Pressing keyboard button to return to base.
+- Moving camera with arrow keys.
+
+## 0.2 
+
+- Camera culling.
+- Constructing buildings selecting them through the buildings dropdown.
+  Buildings that can be built:
+	- Chicken Farm
+	- Stables
+	- Gryphon Aviary
+	- Mage Tower
+	- Scout Tower
+- Right button for cancelling the building construction.
+- Buildings information is displayed when placed.
+- Static entities from the map are charged from tiled.
+
+## 0.2.5
+
+- Construction process for the buildings
+- Debug buttons for decreasing each building's life.
+- Hover upgrade and repair buttons on the buildings.
+- Building process information displayed when a building in process of construction is selected.
+
+## 0.3
+
+- Screen size changed to 800x600.
+- Main menu.
+- Settings menu.
+- Starting unit management.
+- Enemy units charged in the map through tiled.
+- Gold System implemented.
+- Gold mines give you some gold.
+- Base buildings (barracks and town hall).
+- Barracks and town hall upgrades.
+- Building fix feature.
+- Building construction and destruction and proper preview building placement.
+- Scout tower attacks orcs.
+
+## 0.4
+
+- Added music and sounds.
+- Restructured main menu and settings.
+- Pause menu implemented.
+- Unit life bars.
+- Unit hierarchy implemented.
+
+## 0.5
+
+- 5 different maps to play in. The map is chosen ramdomly at the start of the game bettween the five.
+- Unit movement.
+- Unit attack.
+- Player units patrol.
+- Units now spawn from the barracks.
+- Mini map implemented.
+  The mini map shows:
+	- The map.
+	- Player units.
+	- Enemy units.
+	- Player buildings.
+	- Enemy buildings.
+	- Neutral buildings.
+- Camera movement with the mouse (moving the mouse to the borders of the screen).
+- Runestone functionality.
+- Chicken Farm functionality.
+- Placing buildings only on base and in walkable tiles.
+- Sheeps and boars heal functionality.
+- Three tipes of towers for the allies and the enemies.
+- Prisioner rescuing for the win condition.
+- Losing the game when the player loses all their units and has no money to produce more.
+
+## 0.5.5
+
+- Moving camera with the mouse and the arrow keys.
+- The units now enter the mine to gather gold.
+
+## 0.6
+
+- New units added: Gryphon Riders (allies) and Dragons (enemies).
+- Moving the Mini map with the mouse.
+- Zooming Mini map (with TAB).
+- Footmans and Archers can attack buildings.
+- Enemies wander.
+- Enemies attack to player when allied units in their sight.
+- Allied units autonomus attack when enemy unit in sight.
+- Camera can be moved now also with WASD.
+- Change of the debug keys position.
+
+# 0.7
+
+- Fog of War implemented.
+- Enemy waves in base every 4-5 minutes.
+- Enemy units attack buildings when in player base.
+- Lose condition when the player gets their Townhall destroyed.
+- Town Hall upgrade has influence on the construction of the Gryphon Aviary now.
+- The Mini map now has a button in-game to zoom it in.
+- In-game buttons and hotkeys (Z, X and C) for selecting all the units of a certain type on screen.
+- More feedback on when the player cannot make an action, like creating a unit.
+
+# 0.8
+
+- Fullscreen at startup.
+- Balancing of the enemy waves, unit triangle and map enemy placing.
+- More visual and auditive feedback in the player interactions.
+
+# 0.9
+
+- 5 different maps to play on.
+- Different difficulty levels.
+- Waves of enemies to base every 4-5 minutes.
+- Three types of units for the player and three types of enemies.
+- Completley functional mini map.
+- Completley functional fog of war.
+
+# 1.0
+
+- Save & Load feature.
+- Keys redefinition feature.
+- Soften the Fog of War.
+- Fortress on the final prisioner area.
+- Game balancing.
+- Enemy spawn on some rooms (they only spawn to a certain number).
+- Enemy reconstruction of their buildings.
+- Artifact number count.
+
+# Default Controls
+You can modify most of the controls from the setting menu
 
 Space: Go to player base
 Up arrow or W: Move the camera up
 Down arrow or S: Move the camera down
 Left arrow or A: Move the camera left
 Right arrow or D: Move the camera right
+Mouse movement: Moving the mouse to the border of the screen, moves the camera in the
+direction of the border
 
 Z: Select all Footman on screen (max 8 units)
 X: Select all Elven Archer on screen (max 8 units)
@@ -75,15 +219,15 @@ Mouse Right click: Delete the preview building from the view of the player
 
 # Debug controls
 
-F8: debug mode
+F9: debug mode
 
 If debug mode is on:
-
-	H: -20 HP to last Chicken Farm created
-	G: Get + 500 gold
-	F: Get +3 food
-	K: Show/hide Fog of War
-
+	KEYPAD Buttons
+	- : -20 HP to last Chicken Farm created
+	* : Get + 500 gold
+	/ : Get +3 food
+	+ : Show/hide Fog of War
+	. : Show/hide Fog of War sprites' distribution
 	1: Spawn a Footman at mouse position
 	2: Spawn an Elven Archer at mouse position
 	3: Spawn a Gryphon Rider at mouse position
@@ -95,11 +239,12 @@ If debug mode is on:
 	9: Spawn Alleria
 	0: Spawn Turalyon
 
-	F1: Direct win
-	F2: Direct lose
-	F3: Spawn a new enemy wave (in player base)
-	F4: Activate or stop the spawn of waves
-	F5: Show/hide game's colliders
+	F5: Direct win
+	F6: Direct lose
+	F7: Spawn a new enemy wave (in player base)
+	F8: Activate or stop the spawn of waves
+	F10: Show/hide colliders
+	F11: Show/hide group movement
 
 # Game system
 
@@ -122,15 +267,15 @@ building has a set number of gold cost.
 
 # Levels
 
-There are four levels for the player to choose in bettween. Two of them are easy, two of them have a medium difficulty
-and the other one is hard. 
+There are five levels for the player to choose in bettween. Two of them are easy, two of them have a medium difficulty
+and the other one has a hard difficulty.
 
 - The easy levels give the player more amout of gold in mines and have less intense attacks to the base.
 
 - The normal levels have a normal amount of gold given to the player, and have more intense attacks to base.
 
 - The hard level gives the player the same amount of gold as with the normal levels, but doesn't give them
-  gold when killing enemys. Also, the attacks to base are the more intense out of the three difficulties.
+  gold when killing enemies. Also, the attacks to base are the more intense out of the three difficulties.
 
 # About the units
 
@@ -146,6 +291,7 @@ The elven archer is a long range atack unit.
 Gryphon Rider: 750 gold
 The Gryphon rider is an aerial unit.
 Gryphon Riders cannot rescue prisioners.
+IMPORTANT: Gryphon Riders can only be created in the Gryphon Aviary
 
 The units can move towards a tile or a target to attack it or patrol the area.
 
@@ -169,11 +315,11 @@ They give the player 4 units of food.
 
 Barracks: 1000 gold
 The barracks can spawn Footmans and Elven Archers if the player has enough gold.
-(They can only be built if there aren't any Barracks on the map)
+(They can only be built if there aren't any other Barracks on the map)
 
 Gryphon Aviary: 400 gold
 This allows the player to spawn Gryphon Riders if they have enough gold (it needs the Townhall upgrade to be built).
-(They can only be built if there aren't any Gryphon Aviarys on the map)
+(They can only be built if there aren't any other Gryphon Aviarys on the map)
 
 Scout Tower: 400 gold
 Guard Tower: 600 gold
@@ -182,10 +328,12 @@ They attack enemy units that are in base.
 
 TOWN HALL:
 The Town Hall is a special building that the player cannot build. It can be upgraded to a Keep that allows
-the player to build a Gryphon Aviary. If the player
+the player to build a Gryphon Aviary. If the player loses this building to an enemy attack they will lose the game.
 
 There are many enemy buildings scattered throughout the map. Be careful because there are several orcish towers that 
 can attack you!
+There's also barrack buildings in some rooms that spawn enemeies to a certain number, so destroy those buildings as soon
+as you can.
 
 ## Building buttons
 
@@ -226,13 +374,13 @@ There are four artifacts present in the game. The player will get one artifact o
 spend beating the level.
 The four artifacts are:
 
-- Scepter of Sagreras: Less than 18 minutes to complete the level.
+- Book of Medivh: Less than 18 minutes to complete the level.
 
-- Eye of Dalaran: Less than 20 minutes to complete the level.
+- Skull of Gul'dan: Less than 20 minutes to complete the level.
 
-- Skull of Gul'dan: Less than 25 minutes to complete the level
+- Eye of Dalaran: Less than 25 minutes to complete the level
 
-- Book of Medivh: More than 25 minutes to complete the level
+- Scepter of Sagreras: More than 25 minutes to complete the level
 
 Good luck on getting the Scepter of Sagreras!
 

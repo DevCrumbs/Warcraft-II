@@ -23,7 +23,7 @@ class EnemyGuardTower :public StaticEntity
 public:
 
 	EnemyGuardTower(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyGuardTowerInfo& enemyGuardTowerInfo, j1Module* listener);
-	~EnemyGuardTower() {};
+	~EnemyGuardTower();
 
 	void Move(float dt);
 	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
@@ -34,10 +34,6 @@ public:
 	//Arrows
 	void CreateArrow();
 
-	// Animations
-	void LoadAnimationsSpeed();
-	void UpdateAnimations(float dt);
-
 private:
 
 	EnemyGuardTowerInfo enemyGuardTowerInfo;
@@ -46,11 +42,25 @@ private:
 
 	//Attack
 	Entity* attackingTarget = nullptr;
-	j1Timer attackTimer;
+	float attackTimer = 0.0f;
 	std::list<Entity*> enemyAttackList;
 
 	//Arrow
 	Particle* arrowParticle = nullptr;
+
+	// Reconstruction
+	Particle* peon = nullptr;
+
+	float secondsReconstruction = 0.0f;
+
+	float startReconstructionTimer = 0.0f;
+	float inProgressReconstructionTimer = 0.0f;
+
+	bool isRestartReconstructionTimer = false;
+	bool isStartReconstructionTimer = false;
+	bool isInProgressReconstructionTimer = false;
+
+	BuildingState buildingStateBeforeReconstruction = BuildingState_NoState;
 };
 
 #endif //__EnemyGuardTower_H__

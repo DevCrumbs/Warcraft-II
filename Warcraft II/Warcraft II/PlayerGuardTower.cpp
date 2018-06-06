@@ -9,9 +9,16 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
+#include "j1FadeToBlack.h"
 
 PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint maxLife, const PlayerGuardTowerInfo& playerGuardTowerInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), playerGuardTowerInfo(playerGuardTowerInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_HumanBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_PLAYER_GUARD_TOWER;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Small;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -28,15 +35,32 @@ PlayerGuardTower::PlayerGuardTower(fPoint pos, iPoint size, int currLife, uint m
 
 	buildingState = BuildingState_Building;
 	texArea = &playerGuardTowerInfo.constructionPlanks1;
-	this->constructionTimer.Start();
-	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+}
 
-	 //Construction peasants
-	peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
+PlayerGuardTower::~PlayerGuardTower()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
 }
 
 void PlayerGuardTower::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+
+		if (!isBuilt) {
+			//Construction peasants
+			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
+			App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+		}
+		else if (isBuilt)
+			texArea = &playerGuardTowerInfo.completeTexArea;
+	}
+
 	if (!isColliderCreated) {
 		CreateEntityCollider(EntitySide_Player, true);
 		sightRadiusCollider = CreateRhombusCollider(ColliderType_PlayerSightRadius, playerGuardTowerInfo.sightRadius, DistanceHeuristic_DistanceManhattan);
@@ -63,13 +87,19 @@ void PlayerGuardTower::Move(float dt)
 	TowerStateMachine(dt);
 
 	//Update animations for the construction cycle
-	if (!isBuilt)
+	if (!isBuilt) {
+		constructionTimer += dt;
 		UpdateAnimations(dt);
+	}
 
 	//Check is building is built already
-	if (!isBuilt && constructionTimer.Read() >= (constructionTime * 1000)) {
+	if (!isBuilt && constructionTimer >= constructionTime) {
 		isBuilt = true;
-		peasants->isRemove = true;
+
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
+		}
 	}
 
 	//Delete arrow if it is fired when an enemy is already dead 
@@ -103,7 +133,7 @@ void PlayerGuardTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, Colli
 
 			if (attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 			}
 		}
 
@@ -129,7 +159,7 @@ void PlayerGuardTower::OnCollision(ColliderGroup * c1, ColliderGroup * c2, Colli
 
 			if (!enemyAttackList.empty() && attackingTarget == nullptr) {
 				attackingTarget = enemyAttackList.front();
-				attackTimer.Start();
+				attackTimer = 0.0f;
 
 			}
 		}
@@ -149,10 +179,12 @@ void PlayerGuardTower::TowerStateMachine(float dt)
 
 	case TowerState_Attack:
 	{
-		if (attackingTarget != nullptr) {
-			if (attackTimer.Read() >= (playerGuardTowerInfo.attackWaitTime * 1000)) {
+		attackTimer += dt;
 
-				attackTimer.Start();
+		if (attackingTarget != nullptr) {
+			if (attackTimer >= playerGuardTowerInfo.attackWaitTime) {
+
+				attackTimer = 0.0f;
 				CreateArrow();
 				App->audio->PlayFx(App->audio->GetFX().arrowThrow, 0);
 			}
@@ -180,13 +212,13 @@ void PlayerGuardTower::LoadAnimationsSpeed()
 
 void PlayerGuardTower::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer >= (constructionTime / 3))
 		texArea = &playerGuardTowerInfo.constructionPlanks2;
 
-	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &playerGuardTowerInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	if (constructionTimer >= constructionTime || isBuilt) {
 		texArea = &playerGuardTowerInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

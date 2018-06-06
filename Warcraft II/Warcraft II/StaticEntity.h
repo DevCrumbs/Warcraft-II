@@ -7,12 +7,16 @@
 #include "j1Input.h"
 #include "j1Window.h"
 
+/// TODO Balancing (seconds until the enemies reconstruct a building)
+#define SECONDS_START_RECONSTRUCTION 20.0f
+
 struct SDL_Texture;
 struct Particle;
 
 enum ENTITY_TYPE;
 enum ColliderType;
 enum DistanceHeuristic;
+enum ROOM_TYPE;
 
 enum StaticEntityCategory
 {
@@ -25,12 +29,13 @@ enum StaticEntityCategory
 
 enum BuildingState
 {
+	BuildingState_NoState,
 	BuildingState_Normal,
-	BuildingState_LowFire,
+	BuildingState_LowFire,	
 	BuildingState_HardFire,
 	BuildingState_Destroyed,
-	BuildingState_Building
-
+	BuildingState_Building,
+	BuildingState_MaxStates
 };
 
 enum StaticEntitySize
@@ -38,16 +43,18 @@ enum StaticEntitySize
 	StaticEntitySize_None,
 	StaticEntitySize_Small,
 	StaticEntitySize_Medium,
-	StaticEntitySize_Big
+	StaticEntitySize_Big,
+	StaticEntitySize_MaxSize
 };
 
 enum TowerState
 {
+	TowerState_NoState,
 	TowerState_Idle,
 	TowerState_Attack,
-	TowerState_Die
+	TowerState_Die,
+	TowerState_MaxStates
 };
-
 
 class StaticEntity :public Entity
 {
@@ -64,33 +71,50 @@ public:
 	void HandleInput(EntitiesEvent &EntityEvent);
 	bool MouseHover() const;
 	bool CheckBuildingState();
-	uint GetConstructionTimer() const;
-	uint GetConstructionTime() const;
+	float GetConstructionTimer() const;
+	float GetConstructionTime() const;
 	bool GetIsFinishedBuilt() const;
+
+	void SetIsFinishedBuilt(bool isBuild);
 
 	BuildingState GetBuildingState() const;
 
+	void SetBuildingState(BuildingState state);
+
 	// Collision
-	ColliderGroup* GetSightRadiusCollider() const;
 	ColliderGroup* CreateRhombusCollider(ColliderType colliderType, uint radius, DistanceHeuristic distanceHeuristic);
+	ColliderGroup* GetSightRadiusCollider() const;
+
+	// Reconstruction
+	float GetSecondsReconstruction(StaticEntitySize buildingSize) const;
+
+	// Respawn
+	float GetRandomSecondsRespawn() const;
+	uint GetMaxEnemiesPerRoom(ROOM_TYPE roomType) const;
+
+	virtual void UpdateAnimations(float dt) {}
 
 public:
 
-	ENTITY_TYPE staticEntityType = EntityType_NONE;
-	StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
+	const ENTITY_TYPE staticEntityType = EntityType_NONE;
+	const StaticEntityCategory staticEntityCategory = StaticEntityCategory_NoCategory;
 	BuildingState buildingState = BuildingState_Normal;
-	StaticEntitySize buildingSize = StaticEntitySize_None;
+	const StaticEntitySize buildingSize = StaticEntitySize_None;
+	Particle* fire = nullptr;
+
+	float constructionTimer = 0.0f;
 
 protected:
 
-	Particle* fire = nullptr;
 	const SDL_Rect* texArea = nullptr;
-	j1Timer constructionTimer;
-	uint constructionTime = 0;
+
 	bool isBuilt = false;
+	float constructionTime = 0.0f;
 
 	// Collision
 	ColliderGroup* sightRadiusCollider = nullptr;
+
+	bool isCheckedBuildingState = false;
 };
 
 #endif //__StaticEntity_H__

@@ -14,8 +14,6 @@
 #include "ElvenArcher.h"
 #include "Footman.h"
 #include "GryphonRider.h"
-#include "Mage.h"
-#include "Paladin.h"
 #include "CritterBoar.h"
 #include "CritterSheep.h"
 
@@ -31,10 +29,7 @@
 #include "Barracks.h"
 #include "ChickenFarm.h"
 #include "GryphonAviary.h"
-#include "MageTower.h"
-#include "Stables.h"
 #include "TownHall.h"
-#include "ElvenLumberMill.h"
 #include "GreatHall.h"
 #include "Stronghold.h"
 #include "Fortress.h"
@@ -148,9 +143,6 @@ public:
 
 	bool RemoveAllUnitsGoals(list<DynamicEntity*> units);
 
-	// Attack
-	bool InvalidateTargetInfo(Entity* target);
-
 	// Movement
 	void InvalidateMovementEntity(Entity* entity);
 
@@ -165,6 +157,7 @@ public:
 	bool SaveEntityGroup(list<DynamicEntity*> units, uint index = 0);
 	list<DynamicEntity*> GetSavedEntityGroup(uint index);
 	void SelectEntitiesGroup(list<DynamicEntity*> units);
+	void UpdateGroupIcons(uint index = 0);
 
 	// Dynamic Entities
 	bool IsOnlyThisTypeOfUnits(list<DynamicEntity*> units, ENTITY_TYPE entityType = EntityType_NONE);
@@ -181,6 +174,8 @@ public:
 	
 	list<iPoint> GetBuildingTiles(StaticEntity* building, bool isOnlySurroundingTiles = false);
 	///_SANDRA
+
+	bool HaveAllOrcShipsSpawnedEntities() const;
 
 	// -----
 
@@ -200,6 +195,8 @@ public:
 
 	// Saved entities groups
 	list<DynamicEntity*> savedGroups[MAX_SAVED_GROUPS];
+
+	int numEnemyGroups = 0;
 
 private:
 
@@ -247,8 +244,6 @@ private:
 	FootmanInfo footmanInfo;
 	ElvenArcherInfo elvenArcherInfo;
 	GryphonRiderInfo gryphonRiderInfo;
-	MageInfo mageInfo;
-	PaladinInfo paladinInfo;
 	AlleriaInfo alleriaInfo;
 	TuralyonInfo turalyonInfo;
 	GruntInfo gruntInfo;
@@ -266,10 +261,7 @@ private:
 	BarracksInfo builtBarracksInfo;
 	ChickenFarmInfo chickenFarmInfo;
 	ChickenFarmInfo builtChickenFarmInfo;
-	ElvenLumberMillInfo elvenLumberMillInfo;
-	StablesInfo stablesInfo;
 	GryphonAviaryInfo gryphonAviaryInfo;
-	MageTowerInfo mageTowerInfo;
 	ScoutTowerInfo scoutTowerInfo;
 	PlayerGuardTowerInfo playerGuardTowerInfo; 
 	PlayerCannonTowerInfo playerCannonTowerInfo;

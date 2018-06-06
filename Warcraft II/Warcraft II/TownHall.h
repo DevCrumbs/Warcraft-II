@@ -32,7 +32,7 @@ class TownHall :public StaticEntity
 public:
 
 	TownHall(fPoint pos, iPoint size, int currLife, uint maxLife, const TownHallInfo& townHallInfo, j1Module* listener);
-	~TownHall() {};
+	~TownHall();
 
 	void Move(float dt);
 
@@ -40,15 +40,20 @@ public:
 	void LoadAnimationsSpeed();
 	void UpdateAnimations(float dt);
 
+public:
+
+TownHallInfo townHallInfo;
+
 private:
 
-	TownHallInfo townHallInfo;
+	
 
 	EntitiesEvent entityEvent = EntitiesEvent_NONE;
 
 	bool startTimer = true;
 
 	Particle* peasants = nullptr;
+	bool isL = false;
 };
 
 #endif //__TownHall_H__

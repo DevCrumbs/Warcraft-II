@@ -5,6 +5,10 @@
 
 Alleria::Alleria(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const AlleriaInfo& alleriaInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener, false), alleriaInfo(alleriaInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_ALLERIA;
+	*(EntitySide*)&entitySide = EntitySide_NoSide;
+
 	AlleriaInfo info = (AlleriaInfo&)App->entities->GetUnitInfo(EntityType_ALLERIA);
 	this->unitInfo = this->alleriaInfo.unitInfo;
 	this->alleriaInfo.idle = info.idle;

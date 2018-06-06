@@ -9,6 +9,7 @@
 #include "j1Textures.h"
 #include "j1Audio.h"
 #include "j1Scene.h"
+#include "j1Intro.h"
 #include "j1Map.h"
 #include "j1Particles.h"
 #include "j1Collision.h"
@@ -26,6 +27,7 @@
 #include "j1Printer.h"
 #include "j1EnemyWave.h"
 #include "j1FogOfWar.h"
+#include "j1Video.h"
 #include <time.h>
 
 #include "j1App.h"
@@ -42,6 +44,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new j1Textures();
 	audio = new j1Audio();
 	scene = new j1Scene();
+	intro = new j1Intro();
 	map = new j1Map();
 	particles = new j1Particles();
 	collision = new j1Collision();
@@ -59,6 +62,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	printer = new j1Printer();
 	wave = new j1EnemyWave();
 	fow = new j1FogOfWar();
+	video = new j1Video();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -82,7 +86,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(font);
 
 	AddModule(player);
+	AddModule(video);
 	AddModule(scene);
+	AddModule(intro);
 
 	AddModule(fow);
 
@@ -96,6 +102,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	// render last to swap buffer
 	AddModule(render);
 
+	menu->active = false;
+	//intro->active = false;
 	map->active = false;
 	scene->active = false;
 	finish->active = false;
@@ -136,8 +144,6 @@ void j1App::AddModule(j1Module* module)
 // Called before render is available
 bool j1App::Awake()
 {
-	pugi::xml_document	configFile;
-	pugi::xml_node		config;
 	pugi::xml_node		appConfig;
 
 	bool ret = false;
@@ -394,7 +400,8 @@ bool j1App::CleanUp()
 
 
 // ---------------------------------------
-uint32 j1App::GetSecondsSinceAppStartUp() {
+uint32 j1App::GetSecondsSinceAppStartUp() 
+{
 	return clock.Read();
 }
 
@@ -517,4 +524,62 @@ bool j1App::SavegameNow() const
 	data.reset();
 	wantToSave = false;
 	return ret;
+}
+
+
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+
+pugi::xml_node GetNode(pugi::xml_node& node, char* name, bool create)
+{
+	pugi::xml_node valueNode;
+	if ((create && node.child(name) == NULL) || node.child(name) == NULL)
+	{
+		valueNode = node.append_child(name);
+	}
+	else
+	{
+		valueNode = node.child(name);
+	}
+	return valueNode;
+}
+
+void SaveAttribute(int value, char* name, pugi::xml_node& node, bool create)
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
+	valueNode.append_attribute(name) = value;
+}
+
+void SaveAttribute(float value, char* name, pugi::xml_node& node, bool create)
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
+	valueNode.append_attribute(name) = value;
+}
+
+void SaveAttribute(SDL_Rect value, char* name, pugi::xml_node& node, bool create)
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
+	valueNode.append_attribute("x") = value.x;
+	valueNode.append_attribute("y") = value.y;
+	valueNode.append_attribute("w") = value.w;
+	valueNode.append_attribute("h") = value.h;
+}
+
+void SaveAttribute(uchar* value, char* name, pugi::xml_node& node, bool create, int size)
+{
+	pugi::xml_node valueNode = GetNode(node, name, create);
+
+	for (pugi::xml_node child = valueNode.first_child(); child;)
+	{
+		valueNode.remove_child(child);
+	}
+
+	for (int i = 0; i < size; ++i)
+	{
+		valueNode.append_child(name).append_attribute(name) = value[i];
+	}
 }

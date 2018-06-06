@@ -4,13 +4,19 @@
 #include "GoldMine.h"
 
 #include "j1Player.h"
-#include "j1Pathfinding.h"
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Movement.h"
+#include "j1FadeToBlack.h"
 
 GoldMine::GoldMine(fPoint pos, iPoint size, int currLife, uint maxLife, const GoldMineInfo& goldMineInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), goldMineInfo(goldMineInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_NeutralBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_GOLD_MINE;
+	*(EntitySide*)&entitySide = EntitySide_Neutral;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Medium;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -41,6 +47,12 @@ GoldMine::GoldMine(fPoint pos, iPoint size, int currLife, uint maxLife, const Go
 
 void GoldMine::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+	}
+
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 

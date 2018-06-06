@@ -23,6 +23,10 @@
 
 CritterSheep::CritterSheep(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const CritterSheepInfo& critterSheepInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), critterSheepInfo(critterSheepInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_SHEEP;
+	*(EntitySide*)&entitySide = EntitySide_Neutral;
+
 	// XML loading
 	/// Animations
 	CritterSheepInfo info = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);

@@ -85,6 +85,10 @@ enum UnitCommand
 // Struct UnitInfo: contains all necessary information of the movement and attack of the unit
 struct UnitInfo
 {
+	UnitInfo();
+	UnitInfo(const UnitInfo& u);
+	~UnitInfo();
+
 	uint priority = 1;
 
 	// Radius
@@ -108,6 +112,33 @@ struct UnitInfo
 	// Size
 	iPoint size = { 0,0 };
 	iPoint offsetSize = { 0,0 };
+
+	// Wander (only enemies)
+	bool isWanderSpawnTile = true;
+};
+
+struct TargetInfo
+{
+	TargetInfo();
+	TargetInfo(const TargetInfo& t);
+	~TargetInfo();
+
+	bool isSightSatisfied = false; // if true, sight distance is satisfied
+	bool isAttackSatisfied = false; // if true, attack distance is satisfied
+
+	// Remove for targets that are in goals
+	uint isInGoals = 0;
+	bool isRemoveNeeded = false;
+
+	Entity* target = nullptr;
+
+	// Attacking tile for buildings
+	iPoint attackingTile = { -1,-1 };
+
+	// -----
+
+	bool IsTargetDead() const;
+	bool IsTargetValid() const;
 };
 
 class DynamicEntity :public Entity
@@ -168,13 +199,14 @@ public:
 
 	// Attack
 	/// Unit attacks a target
+	list<TargetInfo*> GetTargets() const;
+	list<TargetInfo*> GetTargetsToRemove() const;
 	Entity* GetCurrTarget() const;
+
 	bool SetCurrTarget(Entity* target);
 	void InvalidateCurrTarget();
 
-	bool SetIsRemovedTargetInfo(Entity* target); // this action happens first
-	bool SetIsRemovedFromSightTargetInfo(Entity* target);
-	bool RemoveTargetInfo(TargetInfo* targetInfo); // this action happens second
+	bool UpdateTargetsToRemove();
 
 	TargetInfo* GetBestTargetInfo(ENTITY_CATEGORY entityCategory = EntityCategory_NONE, ENTITY_TYPE entityType = EntityType_NONE, bool isCrittersCheck = true, bool isOnlyCritters = false) const; // TODO: add argument EntityType??? For critters vs enemies
 
@@ -218,13 +250,18 @@ public:
 
 public:
 
-	ENTITY_TYPE dynamicEntityType = EntityType_NONE;
+	const ENTITY_TYPE dynamicEntityType = EntityType_NONE;
 
 	// Dead
 	bool isDead = false; // if true, the unit is performing their dead animation
 
 	// Spawn
 	bool isSpawned = false;
+
+	// Fow
+	iPoint lastSeenTile = { -1,-1 };
+
+	uint savedGroup = 0;
 
 protected:
 
@@ -249,6 +286,7 @@ protected:
 
 	// Attack
 	list<TargetInfo*> targets;
+	list<TargetInfo*> targetsToRemove;
 	TargetInfo* currTarget = nullptr;
 	TargetInfo* newTarget = nullptr;
 
@@ -279,9 +317,6 @@ protected:
 	UILifeBar* lifeBar = nullptr;
 	int lifeBarMarginX = 0;
 	int lifeBarMarginY = 0;
-
-	// Fow
-	iPoint lastSeenTile = { -1,-1 };
 
 	// Group selection
 	bool isBlitSavedGroupSelection = false;

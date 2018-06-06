@@ -6,6 +6,7 @@
 #include "SDL\include\SDL_timer.h"
 
 #include "j1Timer.h"
+#include "p2Log.h"
 
 // ---------------------------------------------
 j1Timer::j1Timer()
@@ -16,6 +17,7 @@ j1Timer::j1Timer()
 // ---------------------------------------------
 void j1Timer::Start()
 {
+	started = true;
 	startedAt = SDL_GetTicks();
 }
 
@@ -29,4 +31,20 @@ uint32 j1Timer::Read() const
 float j1Timer::ReadSec() const
 {
 	return float(SDL_GetTicks() - startedAt) / 1000.0f;
+}
+
+void j1Timer::Stop()
+{
+	startedAt = 0;
+	started = false;
+}
+
+void j1Timer::Resume(int time)
+{
+	started = true;
+	startedAt = SDL_GetTicks() - time;
+}
+bool j1Timer::IsStarted()
+{
+	return started;
 }

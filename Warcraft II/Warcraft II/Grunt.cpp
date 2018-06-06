@@ -26,12 +26,18 @@
 
 Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo& unitInfo, const GruntInfo& gruntInfo, j1Module* listener) :DynamicEntity(pos, size, currLife, maxLife, unitInfo, listener), gruntInfo(gruntInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_DYNAMIC_ENTITY;
+	*(ENTITY_TYPE*)&dynamicEntityType = EntityType_GRUNT;
+	*(EntitySide*)&entitySide = EntitySide_Enemy;
+
 	pathPlanner->SetIsInSameRoomChecked(true);
 
 	// XML loading
 	/// Animations
 	GruntInfo info = (GruntInfo&)App->entities->GetUnitInfo(EntityType_GRUNT);
 	this->unitInfo = this->gruntInfo.unitInfo;
+	this->unitInfo.isWanderSpawnTile = unitInfo.isWanderSpawnTile;
+
 	this->gruntInfo.up = info.up;
 	this->gruntInfo.down = info.down;
 	this->gruntInfo.left = info.left;
@@ -83,11 +89,6 @@ Grunt::Grunt(fPoint pos, iPoint size, int currLife, uint maxLife, const UnitInfo
 	entityCollider->isTrigger = true;
 	sightRadiusCollider->isTrigger = true;
 	attackRadiusCollider->isTrigger = true;
-
-	// Different behaviors for units on the base and units around the map
-	if (!App->map->IsOnBase(spawnPos))
-
-		brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
 }
 
 void Grunt::Move(float dt)
@@ -100,11 +101,6 @@ void Grunt::Move(float dt)
 	iPoint mouseTilePos = App->map->MapToWorld(mouseTile.x, mouseTile.y);
 
 	// ---------------------------------------------------------------------
-
-	if (isSelected)
-	{
-		int x = 1;
-	}
 
 	// Is the unit dead?
 	/// The unit must fit the tile (it is more attractive for the player)
@@ -120,7 +116,7 @@ void Grunt::Move(float dt)
 			isDead = true;
 			App->player->enemiesKill++;
 
-			//TODO balancing
+			/// TODO Balancing
 			// Give gold to the player
 			if (App->scene->mapDifficulty != 4) {
 				App->player->AddGold(gruntInfo.droppedGold);
@@ -147,13 +143,6 @@ void Grunt::Move(float dt)
 				delete singleUnit;
 			singleUnit = nullptr;
 
-			if (!App->gui->isGuiCleanUp) {
-
-				if (lifeBar != nullptr)
-
-					lifeBar->isActive = false;
-			}
-
 			// Invalidate colliders
 			sightRadiusCollider->isValid = false;
 			attackRadiusCollider->isValid = false;
@@ -164,94 +153,104 @@ void Grunt::Move(float dt)
 			/// Check if the room of this enemy has been cleared
 			Room* room = App->map->GetEntityRoom(this);
 
-			if (!room->isCleared) {
+			if (room != nullptr) {
+				if (!room->isCleared) {
 
-				if (App->map->GetEntitiesOnRoomByCategory(*room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
+					if (App->map->GetEntitiesOnRoomByCategory(*room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
 
-					// ROOM CLEARED!
-					iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
-					if (!App->map->IsOnBase(spawnPos)) {
+						// ROOM CLEARED!
+						iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+						if (!App->map->IsOnBase(spawnPos)) {
 
-						// Give gold to the player
-						if (room->roomRect.w == 30 * 32)
-							App->player->AddGold(300);
-						else if (room->roomRect.w == 50 * 32)
-							App->player->AddGold(800);
+							// Give gold to the player
+							if (room->roomRect.w == 30 * 32)
+								App->player->AddGold(300);
+							else if (room->roomRect.w == 50 * 32)
+								App->player->AddGold(800);
 
-						if (App->player->minimap != nullptr)
-							App->player->minimap->DrawRoomCleared(*room);
+							if (App->player->minimap != nullptr)
+								App->player->minimap->DrawRoomCleared(*room);
 
-						room->isCleared = true;
-						App->player->roomsCleared++;
+							room->isCleared = true;
+							App->player->roomsCleared++;
 
-						if (App->scene->adviceMessage != AdviceMessage_ROOM_CLEAR) {
+							if (App->scene->adviceMessage != AdviceMessage_ROOM_CLEAR) {
 
-							App->scene->adviceMessageTimer.Start();
-							App->scene->adviceMessage = AdviceMessage_ROOM_CLEAR;
-							App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+								App->scene->adviceMessageTimer.Start();
+								App->scene->adviceMessage = AdviceMessage_ROOM_CLEAR;
+								App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+							}
+
+							App->scene->alpha = 200;
+							App->scene->isRoomCleared = true;
+							App->scene->roomCleared = room->roomRect;
+
+							App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 						}
 
-						App->scene->alpha = 200;
-						App->scene->isRoomCleared = true;
-						App->scene->roomCleared = room->roomRect;
+						// WAVE DEFEATED
+						else if (App->map->IsOnBase(spawnPos) && App->wave->currWaveFinished && App->entities->HaveAllOrcShipsSpawnedEntities()) {
 
-						/// TODO Valdivia: sonido sala limpiada
-						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
-					}
+							// Give gold to the player
+							App->player->AddGold(500);
 
-					// WAVE DEFEATED
-					else if (App->map->IsOnBase(spawnPos) && App->wave->phasesOfCurrWave == App->wave->totalPhasesOfCurrWave - 1) {
-					
-						// Give gold to the player
-						App->player->AddGold(500);
+							if (App->scene->adviceMessage != AdviceMessage_BASE_DEFENDED) {
 
-						if (App->scene->adviceMessage != AdviceMessage_BASE_DEFENDED) {
+								App->scene->adviceMessageTimer.Start();
+								App->scene->adviceMessage = AdviceMessage_BASE_DEFENDED;
+								App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+							}
 
-							App->scene->adviceMessageTimer.Start();
-							App->scene->adviceMessage = AdviceMessage_BASE_DEFENDED;
-							App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+							App->scene->alpha = 200;
+							App->scene->isRoomCleared = true;
+							App->scene->roomCleared = room->roomRect;
+
+							App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 						}
-
-						App->scene->alpha = 200;
-						App->scene->isRoomCleared = true;
-						App->scene->roomCleared = room->roomRect;
-
-						/// TODO Valdivia: sonido sala limpiada
-						App->audio->PlayFx(App->audio->GetFX().roomClear, 0);				
 					}
 				}
 			}
 		}
 	}
 
-	/// **Debug purposes**
-	if (isSelected)
+	// Update currTarget
+	if (currTarget != nullptr) {
 
-		int nothingToDoHere = 0;
-	///_**Debug_purposes**
+		if (currTarget->isRemoveNeeded || currTarget->target->isRemove)
+			currTarget = nullptr;
+	}
 
 	if (!isDead) {
 
-		iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
+		if (brain->GetSubgoalsList().size() == 0) {
 
-		if (App->map->IsOnBase(spawnPos) && brain->GetSubgoalsList().size() == 0) {
+			iPoint spawnPos = App->map->MapToWorld(spawnTile.x, spawnTile.y);
 
-			if (App->player->townHall != nullptr) {
+			if (App->map->IsOnBase(spawnPos)) {
 
-				if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
+				if (App->player->townHall != nullptr) {
 
-					TargetInfo* targetTownHall = new TargetInfo();
+					if (App->player->townHall->GetBuildingState() != BuildingState_Destroyed) {
 
-					targetTownHall->target = App->player->townHall;
-					targets.push_back(targetTownHall);
-
-					brain->AddGoal_AttackTarget(targetTownHall);
+						if (SetCurrTarget(App->player->townHall))
+							brain->AddGoal_AttackTarget(newTarget, false);
+					}
 				}
+			}
+			else {
+
+				if (unitInfo.isWanderSpawnTile)
+					brain->AddGoal_Wander(6, spawnTile, false, 1, 3, 1, 2, 2);
+				else
+					brain->AddGoal_Wander(6, spawnTile, true, 1, 3, 1, 2, 2);
 			}
 		}
 
 		// PROCESS THE CURRENTLY ACTIVE GOAL
 		brain->Process(dt);
+
+		// Update targets to be removed
+		UpdateTargetsToRemove();
 	}
 
 	UnitStateMachine(dt);
@@ -272,41 +271,43 @@ void Grunt::Move(float dt)
 		lastColliderUpdateTile = singleUnit->currTile;
 	}
 
-	// Update Unit LifeBar
+	// Update unit's life bar
 	if (lifeBar != nullptr) {
+
 		lifeBar->SetLocalPos({ (int)pos.x - lifeBarMarginX, (int)pos.y - lifeBarMarginY });
-		lifeBar->SetLife(currLife);
+
+		if (currLife >= 0)
+			lifeBar->SetLife(currLife);
 	}
 }
 
 void Grunt::Draw(SDL_Texture* sprites)
 {
-	if (animation != nullptr)
-	{
+	if (animation != nullptr) {
+
 		// Not draw if not on fow sight
 		if (App->fow->IsOnSight(pos))
 		{
 			fPoint offset = { 0.0f,0.0f };
-			if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp)
-			{
+			if (animation == &gruntInfo.deathDown || animation == &gruntInfo.deathUp) {
 
 				offset = { animation->GetCurrentFrame().w / 2.5f, animation->GetCurrentFrame().h / 5.5f };
 				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_FloorColliders);
+
+				if (lifeBar != nullptr)
+					lifeBar->isBlit = false;
 			}
-			else
-			{
+			else {
 
 				offset = { animation->GetCurrentFrame().w / 3.2f, animation->GetCurrentFrame().h / 3.1f };
 				App->printer->PrintSprite({ (int)(pos.x - offset.x), (int)(pos.y - offset.y) }, sprites, animation->GetCurrentFrame(), Layers_Entities);
-			}
 
-			if (lifeBar != nullptr)
-			{
-				lifeBar->isBlit = true;
+				if (lifeBar != nullptr)
+					lifeBar->isBlit = true;
 			}
 		}
-		else
-		{
+		else {
+
 			if (lifeBar != nullptr)
 				lifeBar->isBlit = false;
 		}
@@ -337,11 +338,11 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (c2->entity == nullptr)
 				return;
 
-			if (isSelected) {
+			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
-			}
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Grunt Sight Radius %s", dynEnt->GetColorName().data());
+			//}
 
 			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -352,13 +353,13 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				if ((*it)->target == c2->entity) {
 
-					(*it)->isRemovedFromSight = false;
 					(*it)->isSightSatisfied = true;
 					isTargetFound = true;
 					break;
 				}
 				it++;
 			}
+
 			// Else, add the new target to the targets list (and set its isSightSatisfied to true)
 			if (!isTargetFound) {
 
@@ -380,8 +381,6 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 
 				// a) If the unit is not attacking any target
 				if (currTarget == nullptr)
-					isFacingTowardsTarget = true;
-				else if (currTarget->target == nullptr)
 					isFacingTowardsTarget = true;
 
 				if (isFacingTowardsTarget) {
@@ -414,24 +413,37 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (c2->entity == nullptr)
 				return;
 
-			if (isSelected) {
+			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("Grunt Attack Radius %s", dynEnt->GetColorName().data());
-			}
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("Grunt Attack Radius %s", dynEnt->GetColorName().data());
+			//}
 
-			// Set the target's isAttackSatisfied to true
+			// 1. UPDATE TARGETS LIST
 			list<TargetInfo*>::const_iterator it = targets.begin();
+			bool isTargetFound = false;
 
+			// If the target is already in the targets list, set its isAttackSatisfied + isSightSatisfied to true
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
-					(*it)->isRemovedFromSight = false;
+					(*it)->isSightSatisfied = true;
 					(*it)->isAttackSatisfied = true;
+					isTargetFound = true;
 					break;
 				}
 				it++;
+			}
+			// Else, add the new target to the targets list (and set its isAttackSatisfied + isSightSatisfied to true)
+			if (!isTargetFound) {
+
+				TargetInfo* targetInfo = new TargetInfo();
+				targetInfo->target = c2->entity;
+				targetInfo->isSightSatisfied = true;
+				targetInfo->isAttackSatisfied = true;
+
+				targets.push_back(targetInfo);
 			}
 		}
 		break;
@@ -447,23 +459,42 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (c2->entity == nullptr)
 				return;
 
-			if (isSelected) {
+			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Grunt Sight Radius %s", dynEnt->GetColorName().data());
-			}
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Grunt Sight Radius %s", dynEnt->GetColorName().data());
+			//}
 
 			// Set the target's isSightSatisfied to false
-			list<TargetInfo*>::const_iterator it = targets.begin();
+			list<TargetInfo*>::iterator it = targets.begin();
 
 			while (it != targets.end()) {
 
 				if ((*it)->target == c2->entity) {
 
 					(*it)->isSightSatisfied = false;
-					//(*it)->isAttackSatisfied = false;
-					//(*it)->target->RemoveAttackingUnit(this);
-					SetIsRemovedFromSightTargetInfo((*it)->target);
+
+					// Removing target process --
+					if (!(*it)->IsTargetDead())
+
+						(*it)->target->RemoveAttackingUnit(this);
+
+					if (currTarget == *it)
+
+						InvalidateCurrTarget();
+
+					if ((*it)->isInGoals > 0 && !(*it)->isRemoveNeeded) {
+
+						(*it)->isRemoveNeeded = true;
+						targetsToRemove.splice(targetsToRemove.begin(), targets, it);
+					}
+					else if (!(*it)->isRemoveNeeded) {
+					
+						delete *it;
+						targets.remove(*it);
+					}
+					// -- Removing target process
+
 					break;
 				}
 				it++;
@@ -478,11 +509,11 @@ void Grunt::OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState col
 			if (c2->entity == nullptr)
 				return;
 
-			if (isSelected) {
+			//if (isSelected) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
-				LOG("NO MORE Grunt Attack Radius %s", dynEnt->GetColorName().data());
-			}
+				//DynamicEntity* dynEnt = (DynamicEntity*)c1->entity;
+				//LOG("NO MORE Grunt Attack Radius %s", dynEnt->GetColorName().data());
+			//}
 
 			// Set the target's isAttackSatisfied to false
 			list<TargetInfo*>::const_iterator it = targets.begin();
@@ -517,10 +548,13 @@ void Grunt::UnitStateMachine(float dt)
 
 				if (newTarget != nullptr) {
 
-					if (SetCurrTarget(newTarget->target))
-						//currTarget = newTarget;
-						brain->AddGoal_AttackTarget(currTarget);
+					if (SetCurrTarget(newTarget->target)) {
 
+						brain->RemoveAllSubgoals();
+						brain->AddGoal_AttackTarget(newTarget);
+					}
+
+					newTarget = nullptr;
 					isHunting = false;
 				}
 				else
@@ -554,22 +588,19 @@ void Grunt::UnitStateMachine(float dt)
 					if (currTarget != newTarget) {
 
 						// Anticipate the removing of this unit from the attacking units of the target
-						if (currTarget != nullptr) {
-
-							/*
-							if (!currTarget->isRemoved)
-
-								currTarget->target->RemoveAttackingUnit(this);
-								*/
-						}
+						if (currTarget != nullptr)
+							currTarget->target->RemoveAttackingUnit(this);
 
 						isHitting = false;
 						isHunting = false;
 
-						if (SetCurrTarget(newTarget->target))
-							//currTarget = newTarget;
-							brain->AddGoal_AttackTarget(currTarget);
+						if (SetCurrTarget(newTarget->target)) {
 
+							brain->RemoveAllSubgoals();
+							brain->AddGoal_AttackTarget(newTarget);
+						}
+
+						newTarget = nullptr;
 						isSearchingForCritters = true;
 					}
 				}
@@ -579,6 +610,7 @@ void Grunt::UnitStateMachine(float dt)
 
 					if (!isHunting) {
 
+						brain->RemoveAllSubgoals();
 						brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
 						isHunting = true;
 					}
@@ -603,6 +635,7 @@ void Grunt::UnitStateMachine(float dt)
 
 					// PHASE 1. Check if there are available targets (DYNAMIC ENTITY) 
 					newTarget = GetBestTargetInfo(EntityCategory_DYNAMIC_ENTITY);
+
 					bool isAttackingUnit = false;
 
 					if (newTarget != nullptr) {
@@ -610,10 +643,13 @@ void Grunt::UnitStateMachine(float dt)
 						// Is the best target an attacking unit?
 						if (find(unitsAttacking.begin(), unitsAttacking.end(), newTarget->target) != unitsAttacking.end()) {
 
-							if (SetCurrTarget(newTarget->target))
-								//currTarget = newTarget;
-								brain->AddGoal_AttackTarget(currTarget, false);
+							if (SetCurrTarget(newTarget->target)) {
 
+								brain->RemoveAllSubgoals();
+								brain->AddGoal_AttackTarget(newTarget, false);
+							}
+
+							newTarget = nullptr;
 							isAttackingUnit = true;
 							isHunting = false;
 						}
@@ -628,10 +664,13 @@ void Grunt::UnitStateMachine(float dt)
 
 							if (find(unitsAttacking.begin(), unitsAttacking.end(), (*it)->target) != unitsAttacking.end()) {
 
-								if (SetCurrTarget((*it)->target))
-									//currTarget = *it;
-									brain->AddGoal_AttackTarget(currTarget, false);
+								if (SetCurrTarget((*it)->target)) {
 
+									brain->RemoveAllSubgoals();
+									brain->AddGoal_AttackTarget(newTarget, false);
+								}
+
+								newTarget = nullptr;
 								isAttackingUnit = true;
 								isHunting = false;
 							}
@@ -647,16 +686,20 @@ void Grunt::UnitStateMachine(float dt)
 					if (!App->map->IsOnBase(spawnPos) && !isAttackingUnit && !isHunting) {
 
 						if (unitsAttacking.size() > 0) {
-							//brain->AddGoal_Wander(6, singleUnit->currTile, true, 0, 1, 0, 1, 0);
+
 							TargetInfo* targetInfo = new TargetInfo();
 							targetInfo->target = unitsAttacking.front();
 							targetInfo->isSightSatisfied = true;
 
-							targets.push_back(targetInfo);
+							targets.push_front(targetInfo);
 
-							if (SetCurrTarget(targetInfo->target))
-								brain->AddGoal_AttackTarget(currTarget, false);
+							if (SetCurrTarget(targetInfo->target)) {
 
+								brain->RemoveAllSubgoals();
+								brain->AddGoal_AttackTarget(newTarget, false);
+							}
+
+							newTarget = nullptr;
 							isHunting = true;
 						}
 					}
@@ -678,23 +721,22 @@ void Grunt::UnitStateMachine(float dt)
 						// Anticipate the removing of this unit from the attacking units of the target
 						if (currTarget != nullptr) {
 
-							/*
-							if (!currTarget->isRemoved) {
+							if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
+								break;
 
-								if (currTarget->target->entityType == EntityType_SHEEP || currTarget->target->entityType == EntityType_BOAR)
-									break;
-
-								currTarget->target->RemoveAttackingUnit(this);
-							}
-							*/
+							currTarget->target->RemoveAttackingUnit(this);
 						}
 
 						isHitting = false;
 						isHunting = false;
 
-						if (SetCurrTarget(newTarget->target))
-							//currTarget = newTarget;
-							brain->AddGoal_AttackTarget(currTarget);
+						if (SetCurrTarget(newTarget->target)) {
+
+							brain->RemoveAllSubgoals();
+							brain->AddGoal_AttackTarget(newTarget);
+						}
+
+						newTarget = nullptr;
 					}
 				}
 
@@ -705,7 +747,7 @@ void Grunt::UnitStateMachine(float dt)
 
 					if (App->map->IsOnBase(spawnPos)) {
 
-						// Check if there are available targets (DYNAMIC ENTITY)
+						// Check if there are available targets (STATIC ENTITY)
 						newTarget = GetBestTargetInfo(EntityCategory_STATIC_ENTITY);
 
 						if (newTarget != nullptr) {
@@ -714,22 +756,19 @@ void Grunt::UnitStateMachine(float dt)
 							if (currTarget != newTarget) {
 
 								// Anticipate the removing of this unit from the attacking units of the target
-								if (currTarget != nullptr) {
-
-									/*
-									if (!currTarget->isRemoved) {
-
-										currTarget->target->RemoveAttackingUnit(this);
-									}
-									*/
-								}
+								if (currTarget != nullptr)
+									currTarget->target->RemoveAttackingUnit(this);
 
 								isHitting = false;
 								isHunting = false;
 
-								if (SetCurrTarget(newTarget->target))
-									//currTarget = newTarget;
-									brain->AddGoal_AttackTarget(currTarget);
+								if (SetCurrTarget(newTarget->target)) {
+
+									brain->RemoveAllSubgoals();
+									brain->AddGoal_AttackTarget(newTarget);
+								}
+
+								newTarget = nullptr;
 							}
 						}
 					}
@@ -842,25 +881,28 @@ bool Grunt::ChangeAnimation()
 	// The unit is hitting their target
 	else if (isHitting) {
 
-		// Set the direction of the unit as the orientation towards the target
-		/*
+		// Set the direction of the unit as the orientation towards the attacking target
 		if (currTarget != nullptr) {
 
-			if (!currTarget->isRemoved) {
+			fPoint orientation = { -1,-1 };
 
-				fPoint orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
+			if (currTarget->attackingTile.x != -1 && currTarget->attackingTile.y != -1) {
 
-				float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
-
-				if (m > 0.0f) {
-					orientation.x /= m;
-					orientation.y /= m;
-				}
-
-				SetUnitDirectionByValue(orientation);
+				iPoint attackingPos = App->map->MapToWorld(currTarget->attackingTile.x, currTarget->attackingTile.y);
+				orientation = { attackingPos.x - pos.x, attackingPos.y - pos.y };
 			}
+			else
+				orientation = { currTarget->target->GetPos().x - pos.x, currTarget->target->GetPos().y - pos.y };
+
+			float m = sqrtf(pow(orientation.x, 2.0f) + pow(orientation.y, 2.0f));
+
+			if (m > 0.0f) {
+				orientation.x /= m;
+				orientation.y /= m;
+			}
+
+			SetUnitDirectionByValue(orientation);
 		}
-		*/
 
 		switch (GetUnitDirection()) {
 

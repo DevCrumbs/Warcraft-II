@@ -16,12 +16,7 @@
 
 StaticEntity::StaticEntity(fPoint pos, iPoint size, int currLife, uint maxLife, j1Module* listener) :Entity(pos, size, currLife, maxLife, listener) 
 {
-	this->entityType = EntityCategory_STATIC_ENTITY;
-
-	if (App->GetSecondsSinceAppStartUp() < 700) // Checks for static entities built since startup
-		isBuilt = true;
-
-	constructionTime = 10;
+	constructionTime = 10.0;
 }
 
 StaticEntity::~StaticEntity()
@@ -161,7 +156,6 @@ void StaticEntity::HandleInput(EntitiesEvent &EntityEvent)
 	}
 }
 
-
 bool StaticEntity::MouseHover() const
 {
 	int x, y;
@@ -175,9 +169,12 @@ bool StaticEntity::MouseHover() const
 	return x > screen_pos.x / scale && x < screen_pos.x / scale + size.x && y > screen_pos.y / scale && y < screen_pos.y / scale + size.y;
 }
 
-
 bool StaticEntity::CheckBuildingState()
 {
+
+	if (staticEntityType == EntityType_GOLD_MINE || staticEntityType == EntityType_RUNESTONE)
+		return true;
+
 	bool ret = true;
 
 	BuildingState bs = buildingState;
@@ -215,14 +212,14 @@ bool StaticEntity::CheckBuildingState()
 		case BuildingState_HardFire:
 
 			if (fire != nullptr)
-			fire->isRemove = true;
+				fire->isRemove = true;
 			fire = App->particles->AddParticle(App->particles->hardFire, { (int)this->GetPos().x + this->GetSize().x / 5, (int)this->GetPos().y + this->GetSize().y / 5 });
 			break;
 
 		case BuildingState_Destroyed:
 
 			if (fire != nullptr)
-			fire->isRemove = true;
+				fire->isRemove = true;
 			isRemove = true;
 
 			if (entitySide == EntitySide_Enemy) {
@@ -238,35 +235,37 @@ bool StaticEntity::CheckBuildingState()
 				/// Check if the room of this enemy has been cleared
 				Room* room = App->map->GetEntityRoom(this);
 
-				if (!room->isCleared) {
+				if (room != nullptr) {
+					if (!room->isCleared) {
 
-					if (App->map->GetEntitiesOnRoomByCategory(*room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
+						if (App->map->GetEntitiesOnRoomByCategory(*room, EntityCategory_NONE, EntitySide_Enemy).size() == 0) {
 
-						// ROOM CLEARED!
-						if (room->roomRect.w != 40 * 32) {
+							// ROOM CLEARED!
+							if (room->roomRect.w != 40 * 32) {
 
-							// Give gold to the player
-							if (room->roomRect.w == 30 * 32)
-								App->player->AddGold(300);
-							else if (room->roomRect.w == 50 * 32)
-								App->player->AddGold(800);
+								// Give gold to the player
+								if (room->roomRect.w == 30 * 32)
+									App->player->AddGold(300);
+								else if (room->roomRect.w == 50 * 32)
+									App->player->AddGold(800);
 
-							room->isCleared = true;
-							App->player->roomsCleared++;
+								room->isCleared = true;
+								App->player->roomsCleared++;
 
-							if (App->scene->adviceMessage != AdviceMessage_ROOM_CLEAR) {
+								if (App->scene->adviceMessage != AdviceMessage_ROOM_CLEAR) {
 
-								App->scene->adviceMessageTimer.Start();
-								App->scene->adviceMessage = AdviceMessage_ROOM_CLEAR;
-								App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+									App->scene->adviceMessageTimer.Start();
+									App->scene->adviceMessage = AdviceMessage_ROOM_CLEAR;
+									App->scene->ShowAdviceMessage(App->scene->adviceMessage);
+								}
+
+								App->scene->alpha = 200;
+								App->scene->isRoomCleared = true;
+								App->scene->roomCleared = room->roomRect;
+
+								/// TODO Valdivia: sonido sala limpiada
+								App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 							}
-
-							App->scene->alpha = 200;
-							App->scene->isRoomCleared = true;
-							App->scene->roomCleared = room->roomRect;
-
-							/// TODO Valdivia: sonido sala limpiada
-							App->audio->PlayFx(App->audio->GetFX().roomClear, 0);
 						}
 					}
 				}
@@ -283,12 +282,12 @@ bool StaticEntity::CheckBuildingState()
 	return ret;
 }
 
-uint StaticEntity::GetConstructionTimer() const
+float StaticEntity::GetConstructionTimer() const
 {
-	return constructionTimer.ReadSec();
+	return constructionTimer;
 }
 
-uint StaticEntity::GetConstructionTime() const
+float StaticEntity::GetConstructionTime() const
 {
 	return constructionTime;
 }
@@ -296,6 +295,11 @@ uint StaticEntity::GetConstructionTime() const
 bool StaticEntity::GetIsFinishedBuilt() const
 {
 	return isBuilt;
+}
+
+void StaticEntity::SetIsFinishedBuilt(bool isBuild)
+{
+	this->isBuilt = isBuild;
 }
 
 BuildingState StaticEntity::GetBuildingState() const 
@@ -423,4 +427,59 @@ ColliderGroup* StaticEntity::CreateRhombusCollider(ColliderType colliderType, ui
 ColliderGroup* StaticEntity::GetSightRadiusCollider() const
 {
 	return sightRadiusCollider;
+}
+
+// Reconstruction
+float StaticEntity::GetSecondsReconstruction(StaticEntitySize buildingSize) const 
+{
+	/// TODO Balancing (enemy buildings reconstruction)
+	switch (buildingSize) {
+	
+	case StaticEntitySize_Small:
+		return 5.0f;
+		break;
+	case StaticEntitySize_Medium:
+		return 8.0f;
+		break;
+	case StaticEntitySize_Big:
+		return 12.0f;
+		break;
+	default:
+		return 5.0f;
+		break;
+	}
+
+	return 5.0f;
+}
+
+// Respawn
+float StaticEntity::GetRandomSecondsRespawn() const 
+{
+	/// TODO Balancing (respawn enemies)
+	int minValue = 120.0f;
+	int maxValue = 150.0f;
+
+	/// rand() % (max - min + 1) + min
+	int randomValue = rand() % (maxValue - minValue + 1) + minValue;
+
+	return (float)randomValue;
+}
+
+uint StaticEntity::GetMaxEnemiesPerRoom(ROOM_TYPE roomType) const 
+{
+	/// TODO Balancing (max enemies per room)
+	switch (roomType) {
+	
+	case roomType_LITTLE:
+		return 10;
+		break;
+	case roomType_LARGE:
+		return 25;
+		break;
+	default:
+		return 15;
+		break;
+	}
+
+	return 15;
 }

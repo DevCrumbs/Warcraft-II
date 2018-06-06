@@ -11,8 +11,16 @@
 
 struct UILabel;
 struct UIImage;
-struct UIButton;
+struct UIButton; 
+struct ArtifactsCollection;
 
+enum Artifacts
+{
+	Artifact_BOOK,
+	Artifact_EYE,
+	Artifact_SKULL,
+	Artifact_SCEPTER
+};
 class j1FinishGame : public j1Module
 {
 public:
@@ -29,6 +37,10 @@ private:
 
 	void LoadSceneOne(bool isWin);
 	void ArtifactWon(uint time);
+	void LevelWon(Artifacts artifact);
+	void AddArtifact(ArtifactsCollection &artifactStruct, Artifacts artifact);
+	void SaveArtifactConfig(pugi::xml_node & config);
+	void SaveArtifact(ArtifactsCollection & artifactStruct, pugi::xml_node & node);
 	void DeleteScene();
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);

@@ -129,7 +129,6 @@
     <ClInclude Include="DragonRoost.h" />
     <ClInclude Include="DynamicEntity.h" />
     <ClInclude Include="ElvenArcher.h" />
-    <ClInclude Include="ElvenLumberMill.h" />
     <ClInclude Include="EnemyBarracks.h" />
     <ClInclude Include="EnemyBlacksmith.h" />
     <ClInclude Include="EnemyCannonTower.h" />
@@ -143,6 +142,7 @@
     <ClInclude Include="Grunt.h" />
     <ClInclude Include="GryphonAviary.h" />
     <ClInclude Include="GryphonRider.h" />
+    <ClInclude Include="j1Intro.h" />
     <ClInclude Include="j1App.h" />
     <ClInclude Include="j1Audio.h" />
     <ClInclude Include="j1Collision.h" />
@@ -169,16 +169,14 @@
     <ClInclude Include="j1Scene.h" />
     <ClInclude Include="j1Textures.h" />
     <ClInclude Include="j1Timer.h" />
+    <ClInclude Include="j1Video.h" />
     <ClInclude Include="j1Window.h" />
-    <ClInclude Include="Mage.h" />
-    <ClInclude Include="MageTower.h" />
     <ClInclude Include="NTree.h" />
     <ClInclude Include="OgreMound.h" />
     <ClInclude Include="OrcShip.h" />
     <ClInclude Include="p2List.h" />
     <ClInclude Include="p2Log.h" />
     <ClInclude Include="p2Point.h" />
-    <ClInclude Include="Paladin.h" />
     <ClInclude Include="PigFarm.h" />
     <ClInclude Include="PlayerCannonTower.h" />
     <ClInclude Include="PlayerGuardTower.h" />
@@ -186,7 +184,6 @@
     <ClInclude Include="PugiXml\src\pugixml.hpp" />
     <ClInclude Include="Runestone.h" />
     <ClInclude Include="ScoutTower.h" />
-    <ClInclude Include="Stables.h" />
     <ClInclude Include="StaticEntity.h" />
     <ClInclude Include="Stronghold.h" />
     <ClInclude Include="TempleOfTheDamned.h" />
@@ -216,7 +213,6 @@
     <ClCompile Include="DragonRoost.cpp" />
     <ClCompile Include="DynamicEntity.cpp" />
     <ClCompile Include="ElvenArcher.cpp" />
-    <ClCompile Include="ElvenLumberMill.cpp" />
     <ClCompile Include="EnemyBarracks.cpp" />
     <ClCompile Include="EnemyBlacksmith.cpp" />
     <ClCompile Include="EnemyCannonTower.cpp" />
@@ -230,6 +226,7 @@
     <ClCompile Include="Grunt.cpp" />
     <ClCompile Include="GryphonAviary.cpp" />
     <ClCompile Include="GryphonRider.cpp" />
+    <ClCompile Include="j1Intro.cpp" />
     <ClCompile Include="j1App.cpp" />
     <ClCompile Include="j1Audio.cpp" />
     <ClCompile Include="j1Collision.cpp" />
@@ -245,6 +242,7 @@
     <ClCompile Include="j1Main.cpp" />
     <ClCompile Include="j1Map.cpp" />
     <ClCompile Include="j1Menu.cpp" />
+    <ClCompile Include="j1Module.cpp" />
     <ClCompile Include="j1Movement.cpp" />
     <ClCompile Include="j1Particles.cpp" />
     <ClCompile Include="j1Pathfinding.cpp" />
@@ -256,13 +254,11 @@
     <ClCompile Include="j1Scene.cpp" />
     <ClCompile Include="j1Textures.cpp" />
     <ClCompile Include="j1Timer.cpp" />
+    <ClCompile Include="j1Video.cpp" />
     <ClCompile Include="j1Window.cpp" />
-    <ClCompile Include="Mage.cpp" />
-    <ClCompile Include="MageTower.cpp" />
     <ClCompile Include="OgreMound.cpp" />
     <ClCompile Include="OrcShip.cpp" />
     <ClCompile Include="p2Log.cpp" />
-    <ClCompile Include="Paladin.cpp" />
     <ClCompile Include="PigFarm.cpp" />
     <ClCompile Include="PlayerCannonTower.cpp" />
     <ClCompile Include="PlayerGuardTower.cpp" />
@@ -270,7 +266,6 @@
     <ClCompile Include="Runestone.cpp" />
     <ClCompile Include="ScoutTower.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Stables.cpp" />
     <ClCompile Include="StaticEntity.cpp" />
     <ClCompile Include="Stronghold.cpp" />
     <ClCompile Include="TempleOfTheDamned.cpp" />

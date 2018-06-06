@@ -22,7 +22,7 @@ class EnemyCannonTower :public StaticEntity
 public:
 
 	EnemyCannonTower(fPoint pos, iPoint size, int currLife, uint maxLife, const EnemyCannonTowerInfo& enemyCannonTowerInfo, j1Module* listener);
-	~EnemyCannonTower() {};
+	~EnemyCannonTower();
 
 	void Move(float dt);
 	void OnCollision(ColliderGroup* c1, ColliderGroup* c2, CollisionState collisionState);
@@ -33,10 +33,6 @@ public:
 	//Cannon bullet
 	void CreateCannonBullet();
 
-	// Animations
-	void LoadAnimationsSpeed();
-	void UpdateAnimations(float dt);
-
 private:
 
 	EnemyCannonTowerInfo enemyCannonTowerInfo;
@@ -45,11 +41,25 @@ private:
 
 	//Attack
 	Entity* attackingTarget = nullptr;
-	j1Timer attackTimer;
+	float attackTimer = 0.0f;
 	std::list<Entity*> enemyAttackList;
 
 	//Cannon bullet
 	Particle* cannonParticle = nullptr;
+
+	// Reconstruction
+	Particle* peon = nullptr;
+
+	float secondsReconstruction = 0.0f;
+
+	float startReconstructionTimer = 0.0f;
+	float inProgressReconstructionTimer = 0.0f;
+
+	bool isRestartReconstructionTimer = false;
+	bool isStartReconstructionTimer = false;
+	bool isInProgressReconstructionTimer = false;
+
+	BuildingState buildingStateBeforeReconstruction = BuildingState_NoState;
 };
 
 #endif //__EnemyCannonTower_H__

@@ -10,6 +10,8 @@
 
 #include <queue>
 #include <list>
+#include <forward_list>
+
 using namespace std;
 
 struct UILabel;
@@ -35,6 +37,9 @@ struct HoverInfo
 struct ToSpawnUnit {
 	ToSpawnUnit(j1Timer toSpawnTimer, ENTITY_TYPE entityType) {
 		this->toSpawnTimer = toSpawnTimer;
+		this->entityType = entityType;
+	}
+	ToSpawnUnit(ENTITY_TYPE entityType) {
 		this->entityType = entityType;
 	}
 	j1Timer toSpawnTimer;
@@ -69,6 +74,25 @@ struct GroupSelectionButtons
 	UIButton* selectFootmans = nullptr;
 	UIButton* selectElvenArchers = nullptr;
 	UIButton* selectGryphonRiders = nullptr;
+};
+
+struct PlayerGroupsButtons
+{
+	UIButton* group1 = nullptr;
+	UIButton* group2 = nullptr;
+	UIButton* group3 = nullptr;
+};
+
+enum PlayerGroupTypes 
+{
+	PlayerGroupTypes_NONE,
+	PlayerGroupTypes_FOOTMAN,
+	PlayerGroupTypes_ARCHER,
+	PlayerGroupTypes_GRYPHON,
+	PlayerGroupTypes_FOOTMAN_ARCHER,
+	PlayerGroupTypes_FOOTMAN_GRYPHON,
+	PlayerGroupTypes_ARCHER_GRYPHON,
+	PlayerGroupTypes_ALL	
 };
 
 class j1Player : public j1Module
@@ -117,18 +141,25 @@ public:
 	void OnDynamicEntitiesEvent(DynamicEntity* staticEntity, EntitiesEvent entitiesEvent);
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);
 
+	bool LoadKeys(pugi::xml_node & buttons);
+
+	void SaveKeys();
+
 	void CreateEntitiesStatsUI();
 	void CreateGroupSelectionButtons();
+	void CreatePlayerGroupsButtons();
 	void CreateUISpawningUnits();
 	void ShowEntitySelectedInfo(string HPname, string entityNameName, SDL_Rect iconDim, Entity* currentEntity);
 	void ShowMineOrRuneStoneSelectedInfo(ENTITY_TYPE entType, SDL_Rect iconDim, string entName, Entity* currentEntity);
 	void ShowDynEntityLabelsInfo(string damage, string speed, string sight, string range);
 	void ShowEntitySelectedButt(ENTITY_TYPE type);
+	void ShowPlayerGroupsButton(int group, PlayerGroupTypes playerGroupType = PlayerGroupTypes_NONE);
 	void HideEntitySelectedInfo();
 	void MakeUnitMenu(Entity* entity);
 	void MakePrisionerMenu(Entity* entity);
 	void DeleteEntitiesMenu();
 	void DeleteGroupSelectionButtons();
+	void DeletePlayerGroupsButtons();
 	void CreateHoverInfoMenu(HoverInfo* hoverInfo);
 	void ShowHoverInfoMenu(string unitProduce, string gold, HoverInfo* hoverInfo, iPoint pos = { 644, 473 });
 	void HideHoverInfoMenu(HoverInfo* hoverInfo);
@@ -164,23 +195,17 @@ public:
 	list<StaticEntity*> guardTower;
 	StaticEntity* barracks = nullptr;
 	StaticEntity* townHall = nullptr;
-	//StaticEntity* blacksmith = nullptr;
-	//StaticEntity* stables = nullptr;
-	//StaticEntity* church = nullptr;
-	//StaticEntity* mageTower = nullptr;
 	StaticEntity* gryphonAviary = nullptr;
 
 	vector<UIImage*> imagePrisonersVector;
+	bool isAllRescued = false;
+	bool isTurRescued = false;
 
 	//Neutral
 	list<StaticEntity*> goldMine;
 	list<StaticEntity*> runestone;
-	//Update lifeBar
-	//Entity* getEntityDamage = nullptr;
 
-	bool barracksUpgrade = false;
 	bool townHallUpgrade = false;
-	bool keepUpgrade = false;
 
 	uint totalGold = 0u; // total gold earned during the game
 	int currentFood = 0; // amount of food (from chicken farms) that the player has at the current moment (1 food feeds 1 unit)
@@ -218,6 +243,18 @@ public:
 
 	bool isUnitSpawning = false;
 
+	SDL_Scancode* buttonSelectFootman = nullptr;
+	SDL_Scancode* buttonSelectArcher = nullptr;
+	SDL_Scancode* buttonSelectGryphon = nullptr;
+	SDL_Scancode* buttonSelectAll = nullptr;
+
+	SDL_Scancode* buttonShowPlayerButt = nullptr;
+
+	SDL_Scancode* buttonDamageCF = nullptr;
+
+	SDL_Scancode* buttonAddGold = nullptr;
+	SDL_Scancode* buttonAddFood = nullptr;
+
 private:
 
 	int currentGold = 0; // amount of gold that the player has at the current moment
@@ -228,17 +265,13 @@ private:
 	uint totalEnemiesKilled = 0;
 	uint totalUnitsDead = 0;
 
+	PlayerGroupsButtons playerGroupsButtons;
 	GroupSelectionButtons groupSelectionButtons;
-
-	//list<GroupSpawning> toSpawnUnitStats;
-	//list<ToSpawnUnit*> newUnitsToSpawn;
 
 	UIButton *produceFootmanButton = nullptr, *produceElvenArcherButton = nullptr, *produceMageButton = nullptr, *produceGryphonRiderButton = nullptr,
 		*producePaladinButton = nullptr, *upgradeTownHallButton = nullptr, *destroyBuildingButton = nullptr, *repairBuildingButton = nullptr;
-	
 
 	list<UIElement*> UIMenuInfoList;
-
 
 	uint spawningTime = 5; //In seconds
 	uint maxSpawnQueueSize = 2;
@@ -246,6 +279,7 @@ private:
 	list<GroupSpawning> barracksSpawningListUI;
 	list<GroupSpawning> gryphoSpawningListUI;
 
+	pugi::xml_node config;
 };
 
 #endif //__j1PLAYER_H__

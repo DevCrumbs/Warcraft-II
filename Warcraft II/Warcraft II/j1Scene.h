@@ -62,6 +62,10 @@ enum AdviceMessages {
 	AdviceMessage_GRYPH_MINE,
 	AdviceMessage_GRYPH_PRISONER,
 	AdviceMessage_PRISONER,
+	AdviceMessage_BUILDING_IS_FULL_LIFE,
+	AdviceMessage_TOWNHALL_IS_NOT_UPGRADE,
+	AdviceMessage_TOWNHALL_IS_NOT_FULL_LIFE,
+	AdviceMessage_ONLY_ONE_BUILDING,
 	AdviceMessage_NONE
 };
 
@@ -182,12 +186,12 @@ public:
 	void HideUnselectedUnits();
 	void PlayUnitSound(list<DynamicEntity*> units, bool isSelect);
 	FX ChooseRandomUnitSound(ENTITY_TYPE unitType, bool isSelect);
-	void ChangeBuildingButtState(MenuBuildingButton* elem);
-	void ChangeBuildingMenuState(BuildingMenu* elem);
+	void ChangeBuildingButtState(MenuBuildingButton* elem, bool isForced = false);
+	void ChangeBuildingMenuState(BuildingMenu* elem, bool isForced = false);
 	void UpdateLabelsMenu();
 	void UpdateIconsMenu();
 	void ChangeMenuLabelInfo(UILabel* label, int cost, bool isSingle = false, StaticEntity* stcEnt = nullptr);
-	void ChangeMenuIconsText(UIButton* butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, bool isSingle = false, StaticEntity* stcEnt = nullptr);
+	void ChangeMenuIconsText(UIButton* butt, int cost, SDL_Rect normalText, SDL_Rect hoverText, SDL_Rect pressedText, bool isSingle = false, StaticEntity* stcEnt = nullptr);
 	void DeleteBuildingElements(MenuBuildingButton* elem);
 	void UnLoadBuildingMenu();
 	void LoadResourcesLabels();
@@ -213,8 +217,10 @@ public:
 	// Room cleared!
 	void BlitRoomClearedFloor(float dt);
 
-	bool LoadKeys(pugi::xml_node&);
+	bool LoadKeys(pugi::xml_node& node);
 
+	void SaveKeys();
+	
 public:
 
 	bool isGoalFromMinimap = false;
@@ -256,7 +262,7 @@ public:
 
 	// Player
 	bool god = false;
-
+	bool isSaveGame = false;
 	bool pause = false;
 
 	GoldChange hasGoldChanged = GoldChange_NoChange;
@@ -271,7 +277,7 @@ public:
 	bool debugDrawMovement = false;
 	bool debugDrawPath = false;
 	bool debugDrawMap = false;
-	bool debugDrawAttack = false;
+	uint debugDrawAttack = 0; // 0: not show, 1: low level, 2: high level
 
 	bool isFrameByFrame = false;
 
@@ -290,7 +296,56 @@ public:
 
 	int mapDifficulty = 0;
 
+	SDL_Scancode* buttonGoToBase = nullptr;
+	SDL_Scancode* buttonGoToUnits = nullptr;
+	SDL_Scancode* buttonMinimap = nullptr;
+	SDL_Scancode* buttonBuildingMenu = nullptr;
+	SDL_Scancode* buttonPauseMenu = nullptr;
+	SDL_Scancode* buttonPatrolUnits = nullptr;
+	SDL_Scancode* buttonStopUnits = nullptr;
+
+	SDL_Scancode* buttonDrawFow = nullptr;
+
+	SDL_Scancode* buttonSpawnFootman = nullptr;
+	SDL_Scancode* buttonSpawnArcher = nullptr;
+	SDL_Scancode* buttonSpawnGryphon = nullptr;
+	SDL_Scancode* buttonSpawnGrunt = nullptr;
+	SDL_Scancode* buttonSpawnTroll = nullptr;
+	SDL_Scancode* buttonSpawnDragon = nullptr;
+	SDL_Scancode* buttonSpawnSheep = nullptr;
+	SDL_Scancode* buttonSpawnBoar = nullptr;
+	SDL_Scancode* buttonSpawnAlleria = nullptr;
+	SDL_Scancode* buttonSpawnTauralyon = nullptr;
+
+	SDL_Scancode* buttonTogleDebug = nullptr;
+	SDL_Scancode* buttonTogleDebugAttack = nullptr;
+	SDL_Scancode* buttonTogleDebugMovement = nullptr;
+
+	SDL_Scancode* buttonSelectGroup = nullptr;
+	SDL_Scancode* buttonSelectGroupb = nullptr;
+
+	SDL_Scancode* buttonSelectGroup1 = nullptr;
+	SDL_Scancode* buttonSelectGroup2 = nullptr;
+	SDL_Scancode* buttonSelectGroup3 = nullptr; 
+
+	SDL_Scancode* buttonSaveGroup = nullptr;
+	SDL_Scancode* buttonSaveGroupb = nullptr;
+
+	SDL_Scancode* buttonWinGame = nullptr;
+	SDL_Scancode* buttonLoseGame = nullptr;
+
+	SDL_Scancode* buttonMoveUp = nullptr;
+	SDL_Scancode* buttonMoveUpb = nullptr;
+	SDL_Scancode* buttonMoveDown = nullptr;
+	SDL_Scancode* buttonMoveDownb = nullptr;
+	SDL_Scancode* buttonMoveLeft = nullptr;
+	SDL_Scancode* buttonMoveLeftb = nullptr;
+	SDL_Scancode* buttonMoveRight = nullptr;
+	SDL_Scancode* buttonMoveRightb = nullptr;
+
 private:
+
+	pugi::xml_node config;
 
 	j1Timer goldLabelColorTime;
 	j1Timer finalTransition;
@@ -301,7 +356,7 @@ private:
 	bool isFadeToMenu = false;
 
 	// Draw rectangle
-	iPoint startRectangle = { 0,0 };
+	iPoint startRectangle = { -1,-1 };
 
 	//UI
 	BuildingMenu buildingMenuButtons;
@@ -314,12 +369,12 @@ private:
 	UILabel* goldLabel, *foodLabel = nullptr;
 
 	//Pause Menu
-	UIButton* pauseMenuButt = nullptr, * settingsButt = nullptr, * continueButt = nullptr, * ReturnMenuButt = nullptr;
-	UILabel* pauseMenuLabel = nullptr, * settingsLabel = nullptr, * continueLabel = nullptr, * ReturnMenuLabel = nullptr;
+	UIButton* pauseMenuButt = nullptr;
+	UILabel* pauseMenuLabel = nullptr, * settingsLabel = nullptr, * continueLabel = nullptr, * ReturnMenuLabel = nullptr, *saveGameLabel;
 	UIImage* parchmentImg = nullptr;
 	//Settings Menu
-	UIButton* returnButt = nullptr, *fullScreenButt = nullptr;
-	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr;
+	UIButton* fullScreenButt = nullptr;
+	UILabel*  returnLabel = nullptr, *fullScreenLabel = nullptr, *buttonsLabel = nullptr;
 	SliderStruct AudioFXPause;
 	SliderStruct AudioMusicPause;
 	//Entities Buttons
@@ -349,17 +404,6 @@ private:
 	int camMovement = 1;
 	float camMovMargin = 0.0f;
 	bool isCamMovMarginCharged = false;
-
-	SDL_Scancode buttonSaveGame =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonLoadGame =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonFullScreen = SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonGodMode =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveUp =		SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveDown =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveLeft =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonMoveRight =  SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonLeaveGame =	SDL_SCANCODE_UNKNOWN;
-	SDL_Scancode buttonReloadMap = SDL_SCANCODE_UNKNOWN;
 
 	ENTITY_TYPE alphaBuilding;
 

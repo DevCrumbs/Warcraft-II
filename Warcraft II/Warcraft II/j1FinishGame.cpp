@@ -80,7 +80,6 @@ bool j1FinishGame::Start()
 
 	App->menu->mouseText->SetTexArea({ 243, 525, 28, 33 }, { 275, 525, 28, 33 });
 
-	//DeleteScreen();
 	return true;
 }
 
@@ -117,7 +116,8 @@ void j1FinishGame::LoadSceneOne(bool isWin) {
 		App->audio->PlayMusic(victoryMusicPath.data(), 0.0f); //Music
 	  //get an Artifact 
 		ArtifactWon(App->player->startGameTimer.ReadSec());
-
+		SaveArtifactConfig(App->config.child("menu"));
+		App->configFile.save_file("config.xml");
 		labelInfo.text = "Congratulations! You have defeated the Horde!";
 		labelInfo.normalColor = labelInfo.hoverColor = labelInfo.pressedColor = ColorBlue;
 	}
@@ -230,21 +230,25 @@ void j1FinishGame::ArtifactWon(uint time)
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
 	labelInfo.text = "Artifact Obtained: ";
 
-	if (time >= 1500) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->bookText, App->gui->bookAnim, 5));
-		labelInfo.text += "Book of Medivh";
+	if (time >= 1320) {
+		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->scepterText, App->gui->scepterAnim, 5));
+		LevelWon(Artifact_SCEPTER);
+		labelInfo.text += "Scepter of Sagreras";
 	}
-	else if (time >= 1200) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->skullText, App->gui->skullAnim, 5));
-		labelInfo.text += "Skull of Gul'dan";
-	}
-	else if (time >= 1080) {
+	else if (time >= 1020) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->eyeText, App->gui->eyeAnim, 5));
+		LevelWon(Artifact_EYE);
 		labelInfo.text += "Eye of Dalaran";
 	}
+	else if (time >= 720) {
+		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->skullText, App->gui->skullAnim, 5));
+		LevelWon(Artifact_SKULL);
+		labelInfo.text += "Skull of Gul'dan";
+	}
 	else if (time >= 0) {
-		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->scepterText, App->gui->scepterAnim, 5));
-		labelInfo.text += "Scepter of Sagreras";
+		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->bookText, App->gui->bookAnim, 5));
+		LevelWon(Artifact_BOOK);
+		labelInfo.text += "Book of Medivh";
 	}
 	labelVector.push_back(App->gui->CreateUILabel({ 575, 145 }, labelInfo));
 
@@ -257,6 +261,108 @@ void j1FinishGame::ArtifactWon(uint time)
 	recover->SetPriorityDraw(PriorityDraw_WINDOW);
 	imageVector.push_back(recover);
 }
+
+void j1FinishGame::LevelWon(Artifacts artifact)
+{
+	switch (App->scene->mapDifficulty)
+	{
+	case MenuActions_PLAY_EASYONE:
+		AddArtifact(App->menu->artifactsEasyOne, artifact);
+		break;
+	case MenuActions_PLAY_EASYTWO:
+		AddArtifact(App->menu->artifactsEasyTwo, artifact);
+		break;
+	case MenuActions_PLAY_MEDIUMONE:
+		AddArtifact(App->menu->artifactsMediumOne, artifact);
+		break;
+	case MenuActions_PLAY_MEDIUMTWO:
+		AddArtifact(App->menu->artifactsMediumTwo, artifact);
+		break;
+	case MenuActions_PLAY_HARD:
+		AddArtifact(App->menu->artifactsHard, artifact);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void j1FinishGame::AddArtifact(ArtifactsCollection &artifactStruct, Artifacts artifact)
+{
+	switch (artifact)
+	{
+	case Artifact_BOOK:
+		artifactStruct.book++;
+		break;
+	case Artifact_EYE:
+		artifactStruct.eye++;
+		break;
+	case Artifact_SKULL:
+		artifactStruct.skull++;
+		break;
+	case Artifact_SCEPTER:
+		artifactStruct.scepter++;
+		break;
+	default:
+		break;
+	}
+
+}
+
+void j1FinishGame::SaveArtifactConfig(pugi::xml_node& save)
+{
+	if (save.child("artifacts") != NULL)
+		save.remove_child("artifacts");
+	
+		pugi::xml_node artifacts = save.append_child("artifacts");
+	for (int i = 0; i < 5; i++)
+	{
+
+		string level = "level_";
+		level += to_string(i+1);
+
+		pugi::xml_node levelNode ;
+		if (artifacts.child(level.data()) == NULL)
+		{
+			levelNode = artifacts.append_child(level.data());
+		}
+		else
+		{
+			levelNode = artifacts.child(level.data());
+		}
+
+		switch (i)
+		{
+		case 0:
+			SaveArtifact(App->menu->artifactsEasyOne, levelNode);
+			break;
+		case 1:
+			SaveArtifact(App->menu->artifactsEasyTwo, levelNode);
+			break;
+		case 2:
+			SaveArtifact(App->menu->artifactsMediumOne, levelNode);
+			break;							  
+		case 3:								  
+			SaveArtifact(App->menu->artifactsMediumTwo, levelNode);
+			break;
+		case 4:
+			SaveArtifact(App->menu->artifactsHard, levelNode);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void j1FinishGame::SaveArtifact(ArtifactsCollection &artifactStruct, pugi::xml_node &node)
+{
+	SaveAttribute(artifactStruct.book, "book", node);
+	SaveAttribute(artifactStruct.eye, "eye", node);
+	SaveAttribute(artifactStruct.skull, "skull", node);
+	SaveAttribute(artifactStruct.scepter, "scepter", node);
+
+}
+
 
 void j1FinishGame::DeleteScene() {
 	

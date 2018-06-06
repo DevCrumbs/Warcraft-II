@@ -201,9 +201,6 @@
     <ClInclude Include="GryphonRider.h">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
     </ClInclude>
-    <ClInclude Include="Mage.h">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
-    </ClInclude>
     <ClInclude Include="TrollAxethrower.h">
       <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
     </ClInclude>
@@ -231,12 +228,6 @@
     <ClInclude Include="GryphonAviary.h">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClInclude>
-    <ClInclude Include="MageTower.h">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
-    </ClInclude>
-    <ClInclude Include="Stables.h">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
-    </ClInclude>
     <ClInclude Include="TownHall.h">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClInclude>
@@ -251,12 +242,6 @@
     </ClInclude>
     <ClInclude Include="j1Console.h">
       <Filter>Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ElvenLumberMill.h">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
-    </ClInclude>
-    <ClInclude Include="Paladin.h">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
     </ClInclude>
     <ClInclude Include="UILifeBar.h">
       <Filter>Modules\UIElements</Filter>
@@ -347,6 +332,12 @@
     </ClInclude>
     <ClInclude Include="OrcShip.h">
       <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Intro.h">
+      <Filter>Modules\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Video.h">
+      <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -452,9 +443,6 @@
     <ClCompile Include="GryphonRider.cpp">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
     </ClCompile>
-    <ClCompile Include="Mage.cpp">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
-    </ClCompile>
     <ClCompile Include="TrollAxethrower.cpp">
       <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
     </ClCompile>
@@ -473,9 +461,6 @@
     <ClCompile Include="Turalyon.cpp">
       <Filter>Modules\Entities\DynamicEntities\PlayerUnits\Prisoners</Filter>
     </ClCompile>
-    <ClCompile Include="Paladin.cpp">
-      <Filter>Modules\Entities\DynamicEntities\PlayerUnits</Filter>
-    </ClCompile>
     <ClCompile Include="Barracks.cpp">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClCompile>
@@ -483,12 +468,6 @@
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClCompile>
     <ClCompile Include="GryphonAviary.cpp">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
-    </ClCompile>
-    <ClCompile Include="MageTower.cpp">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
-    </ClCompile>
-    <ClCompile Include="Stables.cpp">
       <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClCompile>
     <ClCompile Include="TownHall.cpp">
@@ -505,9 +484,6 @@
     </ClCompile>
     <ClCompile Include="j1Console.cpp">
       <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ElvenLumberMill.cpp">
-      <Filter>Modules\Entities\StaticEntities\PlayerBuildings\ProductionBuildings</Filter>
     </ClCompile>
     <ClCompile Include="UILifeBar.cpp">
       <Filter>Modules\UIElements</Filter>
@@ -601,6 +577,15 @@
     </ClCompile>
     <ClCompile Include="OrcShip.cpp">
       <Filter>Modules\Entities\DynamicEntities\EnemyUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Module.cpp">
+      <Filter>Modules</Filter>
+     </ClCompile>
+    <ClCompile Include="j1Intro.cpp">
+      <Filter>Modules\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Video.cpp">
+      <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

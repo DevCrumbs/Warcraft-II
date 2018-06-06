@@ -130,25 +130,10 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 	aux = humanBuildings.child("barracks2").child("sprites");
 	barracksInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 
-	elvenLumberMillInfo.maxLife = { humanBuildings.child("elvenLumberMill").child("maxLife").attribute("value").as_int() };
-	aux = humanBuildings.child("elvenLumberMill").child("sprites");
-	elvenLumberMillInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
-	elvenLumberMillInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
-
-	mageTowerInfo.maxLife = { humanBuildings.child("mageTower").child("maxLife").attribute("value").as_int() };
-	aux = humanBuildings.child("mageTower").child("sprites");
-	mageTowerInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
-	mageTowerInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
-
 	gryphonAviaryInfo.maxLife = { humanBuildings.child("gryphonAviary").child("maxLife").attribute("value").as_int() };
 	aux = humanBuildings.child("gryphonAviary").child("sprites");
 	gryphonAviaryInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
 	gryphonAviaryInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
-
-	stablesInfo.maxLife = { humanBuildings.child("stables").child("maxLife").attribute("value").as_int() };
-	aux = humanBuildings.child("stables").child("sprites");
-	stablesInfo.completeTexArea = { aux.child("complete").attribute("x").as_int(), aux.child("complete").attribute("y").as_int(), aux.child("complete").attribute("w").as_int(), aux.child("complete").attribute("h").as_int() };
-	stablesInfo.inProgressTexArea = { aux.child("inProgress").attribute("x").as_int(), aux.child("inProgress").attribute("y").as_int(), aux.child("inProgress").attribute("w").as_int(), aux.child("inProgress").attribute("h").as_int() };
 
 	//Construction planks for the human buildings
 
@@ -160,12 +145,9 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 
 	pugi::xml_node mediumConstructionPlanks = humanBuildings.child("constructionPlanks").child("mediumTilePlanks");
 	aux = mediumConstructionPlanks.child("first");
-	barracksInfo.constructionPlanks1 = elvenLumberMillInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-	mageTowerInfo.constructionPlanks1 = gryphonAviaryInfo.constructionPlanks1 = stablesInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
+	barracksInfo.constructionPlanks1 = gryphonAviaryInfo.constructionPlanks1 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 	aux = mediumConstructionPlanks.child("second");
-	barracksInfo.constructionPlanks2 = elvenLumberMillInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-	mageTowerInfo.constructionPlanks2 = gryphonAviaryInfo.constructionPlanks2 = stablesInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
-
+	barracksInfo.constructionPlanks2 = gryphonAviaryInfo.constructionPlanks2 = { aux.attribute("x").as_int(), aux.attribute("y").as_int(), aux.attribute("w").as_int(), aux.attribute("h").as_int() };
 
 	//Neutral buildings
 	pugi::xml_node neutralBuildings = staticEntities.child("neutralBuildings");
@@ -1024,7 +1006,6 @@ bool j1EntityFactory::Awake(pugi::xml_node& config) {
 		dragonInfo.deathDown.PushBack({ currentAnimation.attribute("x").as_int(), currentAnimation.attribute("y").as_int(), currentAnimation.attribute("w").as_int(), currentAnimation.attribute("h").as_int() });
 	}
 
-
 	// Orc ship animations
 	pugi::xml_node orcShipAnimations = orcEntities.child("orcShip").child("animations");
 
@@ -1352,8 +1333,8 @@ bool j1EntityFactory::Start()
 	elvenArcherInfo.unitInfo.priority = 2;
 
 	/// Radius
-	elvenArcherInfo.unitInfo.attackRadius = 6;
-	elvenArcherInfo.unitInfo.sightRadius = 8;
+	elvenArcherInfo.unitInfo.attackRadius = 8;
+	elvenArcherInfo.unitInfo.sightRadius = 9;
 
 	/// Damage
 	elvenArcherInfo.unitInfo.heavyDamage = 6;
@@ -1475,13 +1456,13 @@ bool j1EntityFactory::Start()
 	dragonInfo.unitInfo.priority = 5;
 
 	/// Radius
-	dragonInfo.unitInfo.attackRadius = 7;
+	dragonInfo.unitInfo.attackRadius = 6;
 	dragonInfo.unitInfo.sightRadius = 12;
 
 	/// Damage
-	dragonInfo.unitInfo.heavyDamage = 5;
+	dragonInfo.unitInfo.heavyDamage = 3;
 	dragonInfo.unitInfo.lightDamage = 2;
-	dragonInfo.unitInfo.airDamage = 5;
+	dragonInfo.unitInfo.airDamage = 3;
 	dragonInfo.unitInfo.towerDamage = 8;
 
 	/// Speed
@@ -1529,7 +1510,7 @@ bool j1EntityFactory::Start()
 	critterSheepInfo.unitInfo.maxLife = critterSheepInfo.unitInfo.currLife;
 
 	///
-	critterSheepInfo.restoredHealth = 10;
+	critterSheepInfo.restoredHealth = 20;
 	critterSheepInfo.unitInfo.size = { 32,32 };
 	critterSheepInfo.unitInfo.offsetSize = { 0,0 };
 	//_Sheep
@@ -1546,7 +1527,7 @@ bool j1EntityFactory::Start()
 	critterBoarInfo.unitInfo.maxLife = critterBoarInfo.unitInfo.currLife;
 
 	///
-	critterBoarInfo.restoredHealth = 20;
+	critterBoarInfo.restoredHealth = 30;
 	critterBoarInfo.unitInfo.size = { 32,32 };
 	critterBoarInfo.unitInfo.offsetSize = { 0,0 };
 	//_Boar
@@ -1607,8 +1588,20 @@ bool j1EntityFactory::PreUpdate()
 				App->player->unitProduce++;
 			LOG("Spawning dynamic entity at tile %d,%d", x, y);
 		}
-		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) {
-
+		else if ((*it)->entityType == EntityCategory_STATIC_ENTITY) 
+		{
+			StaticEntity * building = (StaticEntity*)(*it);
+			bool isTownHallUpgrade = false;
+			if ((*building).staticEntityType == EntityType_TOWN_HALL)
+			{
+				TownHall* townHall = (TownHall*)building;
+				if (townHall->buildingState == BuildingState_Building)
+					isTownHallUpgrade = true;
+			}
+			if (isTownHallUpgrade)
+			{
+				building->buildingState = BuildingState_Building;
+			}
 			activeStaticEntities.push_back((StaticEntity*)(*it));
 			LOG("Spawning static entity at tile %d,%d", x, y);
 		}
@@ -1684,21 +1677,9 @@ void j1EntityFactory::DrawStaticEntityPreview(ENTITY_TYPE staticEntityType, iPoi
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, chickenFarmInfo.completeTexArea, Layers_PreviewBuildings);
 		break;
-	case EntityType_ELVEN_LUMBER_MILL:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		App->printer->PrintSprite(mousePos, humanBuildingsTex, elvenLumberMillInfo.completeTexArea, Layers_PreviewBuildings);
-		break;
-	case EntityType_MAGE_TOWER:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		App->printer->PrintSprite(mousePos, humanBuildingsTex, mageTowerInfo.completeTexArea, Layers_PreviewBuildings);
-		break;
 	case EntityType_GRYPHON_AVIARY:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
 		App->printer->PrintSprite(mousePos, humanBuildingsTex, gryphonAviaryInfo.completeTexArea, Layers_PreviewBuildings);
-		break;
-	case EntityType_STABLES:
-		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
-		App->printer->PrintSprite(mousePos, humanBuildingsTex, stablesInfo.completeTexArea, Layers_PreviewBuildings);
 		break;
 	case EntityType_SCOUT_TOWER:
 		SDL_SetTextureAlphaMod(humanBuildingsTex, previewBuildingOpacity);
@@ -1744,10 +1725,8 @@ void j1EntityFactory::HandleStaticEntityPreviewTiles(ENTITY_TYPE staticEntityTyp
 			DrawStaticEntityPreviewTiles(false, StaticEntitySize_Small, mousePos);
 
 		break;
-	case EntityType_ELVEN_LUMBER_MILL:
-	case EntityType_MAGE_TOWER:
+
 	case EntityType_GRYPHON_AVIARY:
-	case EntityType_STABLES:
 	case EntityType_BARRACKS:
 
 		DrawStaticEntityPreviewTiles(true, StaticEntitySize_Medium, mousePos);
@@ -1850,17 +1829,8 @@ const EntityInfo& j1EntityFactory::GetBuildingInfo(ENTITY_TYPE staticEntityType)
 	case EntityType_BARRACKS:
 		return (const EntityInfo&)barracksInfo;
 		break;
-	case EntityType_ELVEN_LUMBER_MILL:
-		return (const EntityInfo&)elvenLumberMillInfo;
-		break;
-	case EntityType_MAGE_TOWER:
-		return(const EntityInfo&)mageTowerInfo;
-		break;
 	case EntityType_GRYPHON_AVIARY:
 		return(const EntityInfo&)gryphonAviaryInfo;
-		break;
-	case EntityType_STABLES:
-		return(const EntityInfo&)stablesInfo;
 		break;
 	case EntityType_SCOUT_TOWER:
 		return(const EntityInfo&)scoutTowerInfo;
@@ -1975,11 +1945,24 @@ const EntityInfo& j1EntityFactory::GetBuiltBuilding(ENTITY_TYPE staticEntityType
 	case EntityType_BARRACKS:
 		return (const EntityInfo&)builtBarracksInfo;
 		break;
-
 	case EntityType_CHICKEN_FARM:
 		return (const EntityInfo&)builtChickenFarmInfo;
 		break;
-
+	case EntityType_GRYPHON_AVIARY:
+		return (const EntityInfo&)gryphonAviaryInfo;
+		break;
+	case EntityType_TOWN_HALL:
+		return (const EntityInfo&)townHallInfo;
+		break;
+	case EntityType_SCOUT_TOWER:
+		return (const EntityInfo&)scoutTowerInfo;
+			break;
+	case EntityType_PLAYER_GUARD_TOWER:
+		return (const EntityInfo&)playerGuardTowerInfo;
+			break;
+	case EntityType_PLAYER_CANNON_TOWER:
+		return (const EntityInfo&)playerCannonTowerInfo;
+			break;
 	default:
 		return (const EntityInfo&)builtChickenFarmInfo;
 		break;
@@ -2425,7 +2408,7 @@ bool j1EntityFactory::PostUpdate()
 		if ((*dynEnt)->isRemove) {
 
 			delete *dynEnt;
-			activeDynamicEntities.remove(*dynEnt);
+			activeDynamicEntities.erase(dynEnt);
 
 			dynEnt = activeDynamicEntities.begin();
 			continue;
@@ -2441,11 +2424,13 @@ bool j1EntityFactory::PostUpdate()
 
 		if ((*statEnt)->isRemove) {
 
+			LOG("Removed building");
+
 			if ((*statEnt)->staticEntityCategory == StaticEntityCategory_OrcishBuilding) //Increase building destroyed counter
 				App->player->buildDestroy++;
 
 			delete *statEnt;
-			activeStaticEntities.remove(*statEnt);
+			activeStaticEntities.erase(statEnt);
 
 			statEnt = activeStaticEntities.begin();
 			continue;
@@ -2535,6 +2520,7 @@ bool j1EntityFactory::PostUpdate()
 			(*statEnt)->Draw(orcishBuildingsTex);
 			break;
 		default:
+			LOG("Default building...");
 			break;
 		}
 
@@ -2546,7 +2532,6 @@ bool j1EntityFactory::PostUpdate()
 		if (App->scene->GetAlphaBuilding() != EntityType_MAX)
 			SDL_SetTextureAlphaMod(App->entities->GetHumanBuildingTexture(), 255);
 	}
-
 
 	return ret;
 }
@@ -2680,11 +2665,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
 
 		TownHall* townHall = new TownHall(pos, { 128,128 }, maxLife, maxLife, (const TownHallInfo&)entityInfo, listener);
-		townHall->entityType = EntityCategory_STATIC_ENTITY;
-		townHall->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		townHall->staticEntityType = EntityType_TOWN_HALL;
-		townHall->entitySide = EntitySide_Player;
-		townHall->buildingSize = StaticEntitySize_Big;
 		townHall->SetStringLife(townHall->GetCurrLife(), townHall->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)townHall);
@@ -2697,11 +2677,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Small);
 
 		ChickenFarm* chickenFarm = new ChickenFarm(pos, { 64,64 }, maxLife, maxLife, (const ChickenFarmInfo&)entityInfo, listener);
-		chickenFarm->entityType = EntityCategory_STATIC_ENTITY;
-		chickenFarm->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		chickenFarm->staticEntityType = EntityType_CHICKEN_FARM;
-		chickenFarm->entitySide = EntitySide_Player;
-		chickenFarm->buildingSize = StaticEntitySize_Small;
 		chickenFarm->SetStringLife(chickenFarm->GetCurrLife(), chickenFarm->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)chickenFarm);
@@ -2714,49 +2689,10 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
 		Barracks* barracks = new Barracks(pos, { 96,96 }, maxLife, maxLife, (const BarracksInfo&)entityInfo, listener);
-		barracks->entityType = EntityCategory_STATIC_ENTITY;
-		barracks->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		barracks->staticEntityType = EntityType_BARRACKS;
-		barracks->entitySide = EntitySide_Player;
-		barracks->buildingSize = StaticEntitySize_Medium;
 		barracks->SetStringLife(barracks->GetCurrLife(), barracks->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)barracks);
 		return (StaticEntity*)barracks;
-	}
-	break;
-
-	case EntityType_ELVEN_LUMBER_MILL:
-	{
-		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
-
-		ElvenLumberMill* elvenLumberMill = new ElvenLumberMill(pos, { 96,96 }, maxLife, maxLife, (const ElvenLumberMillInfo&)entityInfo, listener);
-		elvenLumberMill->entityType = EntityCategory_STATIC_ENTITY;
-		elvenLumberMill->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		elvenLumberMill->staticEntityType = EntityType_BARRACKS;
-		elvenLumberMill->entitySide = EntitySide_Player;
-		elvenLumberMill->buildingSize = StaticEntitySize_Medium;
-		elvenLumberMill->SetStringLife(elvenLumberMill->GetCurrLife(), elvenLumberMill->GetMaxLife());
-
-		toSpawnEntities.push_back((Entity*)elvenLumberMill);
-		return (StaticEntity*)elvenLumberMill;
-	}
-	break;
-
-	case EntityType_MAGE_TOWER:
-	{
-		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
-
-		MageTower* mageTower = new MageTower(pos, { 96,96 }, maxLife, maxLife, (const MageTowerInfo&)entityInfo, listener);
-		mageTower->entityType = EntityCategory_STATIC_ENTITY;
-		mageTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		mageTower->staticEntityType = EntityType_MAGE_TOWER;
-		mageTower->entitySide = EntitySide_Player;
-		mageTower->buildingSize = StaticEntitySize_Medium;
-		mageTower->SetStringLife(mageTower->GetCurrLife(), mageTower->GetMaxLife());
-
-		toSpawnEntities.push_back((Entity*)mageTower);
-		return (StaticEntity*)mageTower;
 	}
 	break;
 
@@ -2765,32 +2701,10 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
 		GryphonAviary* gryphonAviary = new GryphonAviary(pos, { 96,96 }, maxLife, maxLife, (const GryphonAviaryInfo&)entityInfo, listener);
-		gryphonAviary->entityType = EntityCategory_STATIC_ENTITY;
-		gryphonAviary->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		gryphonAviary->staticEntityType = EntityType_GRYPHON_AVIARY;
-		gryphonAviary->entitySide = EntitySide_Player;
-		gryphonAviary->buildingSize = StaticEntitySize_Medium;
 		gryphonAviary->SetStringLife(gryphonAviary->GetCurrLife(), gryphonAviary->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)gryphonAviary);
 		return (StaticEntity*)gryphonAviary;
-	}
-	break;
-
-	case EntityType_STABLES:
-	{
-		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
-
-		Stables* stables = new Stables(pos, { 96,96 }, maxLife, maxLife, (const StablesInfo&)entityInfo, listener);
-		stables->entityType = EntityCategory_STATIC_ENTITY;
-		stables->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		stables->staticEntityType = EntityType_STABLES;
-		stables->entitySide = EntitySide_Player;
-		stables->buildingSize = StaticEntitySize_Medium;
-		stables->SetStringLife(stables->GetCurrLife(), stables->GetMaxLife());
-
-		toSpawnEntities.push_back((Entity*)stables);
-		return (StaticEntity*)stables;
 	}
 	break;
 
@@ -2799,11 +2713,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_SCOUT_TOWER, StaticEntitySize_Small);
 
 		ScoutTower* scoutTower = new ScoutTower(pos, { 64,64 }, maxLife, maxLife, (const ScoutTowerInfo&)entityInfo, listener);
-		scoutTower->entityType = EntityCategory_STATIC_ENTITY;
-		scoutTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		scoutTower->staticEntityType = EntityType_SCOUT_TOWER;
-		scoutTower->entitySide = EntitySide_Player;
-		scoutTower->buildingSize = StaticEntitySize_Small;
 		scoutTower->SetStringLife(scoutTower->GetCurrLife(), scoutTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)scoutTower);
@@ -2816,11 +2725,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_PLAYER_GUARD_TOWER, StaticEntitySize_Small);
 
 		PlayerGuardTower* playerGuardTower = new PlayerGuardTower(pos, { 64,64 }, maxLife, maxLife, (const PlayerGuardTowerInfo&)entityInfo, listener);
-		playerGuardTower->entityType = EntityCategory_STATIC_ENTITY;
-		playerGuardTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		playerGuardTower->staticEntityType = EntityType_PLAYER_GUARD_TOWER;
-		playerGuardTower->entitySide = EntitySide_Player;
-		playerGuardTower->buildingSize = StaticEntitySize_Small;
 		playerGuardTower->SetStringLife(playerGuardTower->GetCurrLife(), playerGuardTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)playerGuardTower);
@@ -2833,11 +2737,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_PLAYER_CANNON_TOWER, StaticEntitySize_Small);
 
 		PlayerCannonTower* playerCannonTower = new PlayerCannonTower(pos, { 64,64 }, maxLife, maxLife, (const PlayerCannonTowerInfo&)entityInfo, listener);
-		playerCannonTower->entityType = EntityCategory_STATIC_ENTITY;
-		playerCannonTower->staticEntityCategory = StaticEntityCategory_HumanBuilding;
-		playerCannonTower->staticEntityType = EntityType_PLAYER_CANNON_TOWER;
-		playerCannonTower->entitySide = EntitySide_Player;
-		playerCannonTower->buildingSize = StaticEntitySize_Small;
 		playerCannonTower->SetStringLife(playerCannonTower->GetCurrLife(), playerCannonTower->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)playerCannonTower);
@@ -2847,26 +2746,19 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_GOLD_MINE:
 	{
-		GoldMine* goldMine = new GoldMine(pos, { 96,96 }, 0, 0, (const GoldMineInfo&)entityInfo, listener);
-		goldMine->entityType = EntityCategory_STATIC_ENTITY;
-		goldMine->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
-		goldMine->staticEntityType = EntityType_GOLD_MINE;
-		goldMine->entitySide = EntitySide_Neutral;
-		goldMine->buildingSize = StaticEntitySize_Medium;
+		const GoldMineInfo eje = (const GoldMineInfo&)entityInfo;
+		GoldMine* goldMine = new GoldMine(pos, { 96,96 }, INT_MAX, INT_MAX, (const GoldMineInfo&)entityInfo, listener);
 
 		toSpawnEntities.push_back((Entity*)goldMine);
 		return (StaticEntity*)goldMine;
 	}
 	break;
 
+
+
 	case EntityType_RUNESTONE:
 	{
-		Runestone* runestone = new Runestone(pos, { 64,64 }, 0, 0, (const RunestoneInfo&)entityInfo, listener);
-		runestone->entityType = EntityCategory_STATIC_ENTITY;
-		runestone->staticEntityCategory = StaticEntityCategory_NeutralBuilding;
-		runestone->staticEntityType = EntityType_RUNESTONE;
-		runestone->entitySide = EntitySide_Neutral;
-		runestone->buildingSize = StaticEntitySize_Small;
+		Runestone* runestone = new Runestone(pos, { 64,64 }, INT_MAX, INT_MAX, (const RunestoneInfo&)entityInfo, listener);
 
 		toSpawnEntities.push_back((Entity*)runestone);
 		return (StaticEntity*)runestone;
@@ -2879,11 +2771,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
 
 		GreatHall* greatHall = new GreatHall(pos, { 128, 128 }, maxLife, maxLife, (const GreatHallInfo&)entityInfo, listener);
-		greatHall->entityType = EntityCategory_STATIC_ENTITY;
-		greatHall->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		greatHall->staticEntityType = EntityType_GREAT_HALL;
-		greatHall->entitySide = EntitySide_Enemy;
-		greatHall->buildingSize = StaticEntitySize_Big;
 
 		toSpawnEntities.push_back((Entity*)greatHall);
 		return (StaticEntity*)greatHall;
@@ -2895,11 +2782,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
 
 		Stronghold* stronghold = new Stronghold(pos, { 128, 128 }, maxLife, maxLife, (const StrongholdInfo&)entityInfo, listener);
-		stronghold->entityType = EntityCategory_STATIC_ENTITY;
-		stronghold->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		stronghold->staticEntityType = EntityType_STRONGHOLD;
-		stronghold->entitySide = EntitySide_Enemy;
-		stronghold->buildingSize = StaticEntitySize_Big;
 
 		toSpawnEntities.push_back((Entity*)stronghold);
 		return (StaticEntity*)stronghold;
@@ -2911,11 +2793,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Big);
 
 		Fortress* fortress = new Fortress(pos, { 128, 128 }, maxLife, maxLife, (const FortressInfo&)entityInfo, listener);
-		fortress->entityType = EntityCategory_STATIC_ENTITY;
-		fortress->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		fortress->staticEntityType = EntityType_FORTRESS;
-		fortress->entitySide = EntitySide_Enemy;
-		fortress->buildingSize = StaticEntitySize_Big;
 
 		toSpawnEntities.push_back((Entity*)fortress);
 		return (StaticEntity*)fortress;
@@ -2927,11 +2804,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
 		EnemyBarracks* enemyBarracks = new EnemyBarracks(pos, { 96, 96 }, maxLife, maxLife, (const EnemyBarracksInfo&)entityInfo, listener);
-		enemyBarracks->entityType = EntityCategory_STATIC_ENTITY;
-		enemyBarracks->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		enemyBarracks->staticEntityType = EntityType_ENEMY_BARRACKS;
-		enemyBarracks->entitySide = EntitySide_Enemy;
-		enemyBarracks->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)enemyBarracks);
 		return (StaticEntity*)enemyBarracks;
@@ -2943,11 +2815,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Small);
 
 		PigFarm* pigFarm = new PigFarm(pos, { 64, 64 }, maxLife, maxLife, (const PigFarmInfo&)entityInfo, listener);
-		pigFarm->entityType = EntityCategory_STATIC_ENTITY;
-		pigFarm->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		pigFarm->staticEntityType = EntityType_PIG_FARM;
-		pigFarm->entitySide = EntitySide_Enemy;
-		pigFarm->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)pigFarm);
 		return (StaticEntity*)pigFarm;
@@ -2959,11 +2826,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
 		TrollLumberMill* trollLumberMill = new TrollLumberMill(pos, { 96, 96 }, maxLife, maxLife, (const TrollLumberMillInfo&)entityInfo, listener);
-		trollLumberMill->entityType = EntityCategory_STATIC_ENTITY;
-		trollLumberMill->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		trollLumberMill->staticEntityType = EntityType_TROLL_LUMBER_MILL;
-		trollLumberMill->entitySide = EntitySide_Enemy;
-		trollLumberMill->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)trollLumberMill);
 		return (StaticEntity*)trollLumberMill;
@@ -2975,11 +2837,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
 		AltarOfStorms* altarOfStorms = new AltarOfStorms(pos, { 96, 96 }, maxLife, maxLife, (const AltarOfStormsInfo&)entityInfo, listener);
-		altarOfStorms->entityType = EntityCategory_STATIC_ENTITY;
-		altarOfStorms->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		altarOfStorms->staticEntityType = EntityType_ALTAR_OF_STORMS;
-		altarOfStorms->entitySide = EntitySide_Enemy;
-		altarOfStorms->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)altarOfStorms);
 		return (StaticEntity*)altarOfStorms;
@@ -2991,11 +2848,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
 		DragonRoost* dragonRoost = new DragonRoost(pos, { 96, 96 }, maxLife, maxLife, (const DragonRoostInfo&)entityInfo, listener);
-		dragonRoost->entityType = EntityCategory_STATIC_ENTITY;
-		dragonRoost->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		dragonRoost->staticEntityType = EntityType_DRAGON_ROOST;
-		dragonRoost->entitySide = EntitySide_Enemy;
-		dragonRoost->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)dragonRoost);
 		return (StaticEntity*)dragonRoost;
@@ -3007,11 +2859,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
 		TempleOfTheDamned* templeOfTheDamned = new TempleOfTheDamned(pos, { 96, 96 }, maxLife, maxLife, (const TempleOfTheDamnedInfo&)entityInfo, listener);
-		templeOfTheDamned->entityType = EntityCategory_STATIC_ENTITY;
-		templeOfTheDamned->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		templeOfTheDamned->staticEntityType = EntityType_TEMPLE_OF_THE_DAMNED;
-		templeOfTheDamned->entitySide = EntitySide_Enemy;
-		templeOfTheDamned->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)templeOfTheDamned);
 		return (StaticEntity*)templeOfTheDamned;
@@ -3023,11 +2870,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
 		OgreMound* ogreMound = new OgreMound(pos, { 96, 96 }, maxLife, maxLife, (const OgreMoundInfo&)entityInfo, listener);
-		ogreMound->entityType = EntityCategory_STATIC_ENTITY;
-		ogreMound->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		ogreMound->staticEntityType = EntityType_OGRE_MOUND;
-		ogreMound->entitySide = EntitySide_Enemy;
-		ogreMound->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)ogreMound);
 		return (StaticEntity*)ogreMound;
@@ -3039,11 +2881,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_NONE, StaticEntitySize_Medium);
 
 		EnemyBlacksmith* enemyBlacksmith = new EnemyBlacksmith(pos, { 96, 96 }, maxLife, maxLife, (const EnemyBlacksmithInfo&)entityInfo, listener);
-		enemyBlacksmith->entityType = EntityCategory_STATIC_ENTITY;
-		enemyBlacksmith->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		enemyBlacksmith->staticEntityType = EntityType_ENEMY_BLACKSMITH;
-		enemyBlacksmith->entitySide = EntitySide_Enemy;
-		enemyBlacksmith->buildingSize = StaticEntitySize_Medium;
 
 		toSpawnEntities.push_back((Entity*)enemyBlacksmith);
 		return (StaticEntity*)enemyBlacksmith;
@@ -3055,11 +2892,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_WATCH_TOWER, StaticEntitySize_Small);
 
 		WatchTower* watchTower = new WatchTower(pos, { 64,64 }, maxLife, maxLife, (const WatchTowerInfo&)entityInfo, listener);
-		watchTower->entityType = EntityCategory_STATIC_ENTITY;
-		watchTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		watchTower->staticEntityType = EntityType_WATCH_TOWER;
-		watchTower->entitySide = EntitySide_Enemy;
-		watchTower->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)watchTower);
 		return (StaticEntity*)watchTower;
@@ -3071,11 +2903,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_ENEMY_GUARD_TOWER, StaticEntitySize_Small);
 
 		EnemyGuardTower* enemyGuardTower = new EnemyGuardTower(pos, { 64,64 }, maxLife, maxLife, (const EnemyGuardTowerInfo&)entityInfo, listener);
-		enemyGuardTower->entityType = EntityCategory_STATIC_ENTITY;
-		enemyGuardTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		enemyGuardTower->staticEntityType = EntityType_ENEMY_GUARD_TOWER;
-		enemyGuardTower->entitySide = EntitySide_Enemy;
-		enemyGuardTower->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)enemyGuardTower);
 		return (StaticEntity*)enemyGuardTower;
@@ -3087,11 +2914,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 		uint maxLife = DetermineBuildingMaxLife(EntityType_ENEMY_CANNON_TOWER, StaticEntitySize_Small);
 
 		EnemyCannonTower* enemyCannonTower = new EnemyCannonTower(pos, { 64,64 }, maxLife, maxLife, (const EnemyCannonTowerInfo&)entityInfo, listener);
-		enemyCannonTower->entityType = EntityCategory_STATIC_ENTITY;
-		enemyCannonTower->staticEntityCategory = StaticEntityCategory_OrcishBuilding;
-		enemyCannonTower->staticEntityType = EntityType_ENEMY_CANNON_TOWER;
-		enemyCannonTower->entitySide = EntitySide_Enemy;
-		enemyCannonTower->buildingSize = StaticEntitySize_Small;
 
 		toSpawnEntities.push_back((Entity*)enemyCannonTower);
 		return (StaticEntity*)enemyCannonTower;
@@ -3103,9 +2925,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_FOOTMAN:
 	{
 		Footman* footman = new Footman(pos, footmanInfo.unitInfo.size, footmanInfo.unitInfo.currLife, footmanInfo.unitInfo.maxLife, unitInfo, (const FootmanInfo&)entityInfo, listener);
-		footman->entityType = EntityCategory_DYNAMIC_ENTITY;
-		footman->dynamicEntityType = EntityType_FOOTMAN;
-		footman->entitySide = EntitySide_Player;
 		footman->SetStringLife(footman->GetCurrLife(), footman->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)footman);
@@ -3116,9 +2935,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_ELVEN_ARCHER:
 	{
 		ElvenArcher* elvenArcher = new ElvenArcher(pos, elvenArcherInfo.unitInfo.size, elvenArcherInfo.unitInfo.currLife, elvenArcherInfo.unitInfo.maxLife, unitInfo, (const ElvenArcherInfo&)entityInfo, listener);
-		elvenArcher->entityType = EntityCategory_DYNAMIC_ENTITY;
-		elvenArcher->dynamicEntityType = EntityType_ELVEN_ARCHER;
-		elvenArcher->entitySide = EntitySide_Player;
 		elvenArcher->SetStringLife(elvenArcher->GetCurrLife(), elvenArcher->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)elvenArcher);
@@ -3129,9 +2945,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_GRYPHON_RIDER:
 	{
 		GryphonRider* gryphonRider = new GryphonRider(pos, gryphonRiderInfo.unitInfo.size, gryphonRiderInfo.unitInfo.currLife, gryphonRiderInfo.unitInfo.maxLife, unitInfo, (const GryphonRiderInfo&)entityInfo, listener);
-		gryphonRider->entityType = EntityCategory_DYNAMIC_ENTITY;
-		gryphonRider->dynamicEntityType = EntityType_GRYPHON_RIDER;
-		gryphonRider->entitySide = EntitySide_Player;
 		gryphonRider->SetStringLife(gryphonRider->GetCurrLife(), gryphonRider->GetMaxLife());
 
 		toSpawnEntities.push_back((Entity*)gryphonRider);
@@ -3139,24 +2952,9 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	}
 	break;
 
-	case EntityType_MAGE:
-	{
-
-	}
-	break;
-
-	case EntityType_PALADIN:
-	{
-
-	}
-	break;
-
 	case EntityType_TURALYON:
 	{
-		Turalyon* turalyon = new Turalyon(pos, turalyonInfo.unitInfo.size, turalyonInfo.unitInfo.currLife, turalyonInfo.unitInfo.maxLife, unitInfo, (const TuralyonInfo&)entityInfo, listener);
-		turalyon->entityType = EntityCategory_DYNAMIC_ENTITY;
-		turalyon->dynamicEntityType = EntityType_TURALYON;
-		turalyon->entitySide = EntitySide_NoSide;
+		Turalyon* turalyon = new Turalyon(pos, turalyonInfo.unitInfo.size, INT_MAX, INT_MAX, unitInfo, (const TuralyonInfo&)entityInfo, listener);
 
 		toSpawnEntities.push_back((Entity*)turalyon);
 		return (DynamicEntity*)turalyon;
@@ -3165,10 +2963,7 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 
 	case EntityType_ALLERIA:
 	{
-		Alleria* alleria = new Alleria(pos, alleriaInfo.unitInfo.size, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const AlleriaInfo&)entityInfo, listener);
-		alleria->entityType = EntityCategory_DYNAMIC_ENTITY;
-		alleria->dynamicEntityType = EntityType_ALLERIA;
-		alleria->entitySide = EntitySide_NoSide;
+		Alleria* alleria = new Alleria(pos, alleriaInfo.unitInfo.size, INT_MAX, INT_MAX, unitInfo, (const AlleriaInfo&)entityInfo, listener);
 
 		toSpawnEntities.push_back((Entity*)alleria);
 		return (DynamicEntity*)alleria;
@@ -3180,9 +2975,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_GRUNT:
 	{
 		Grunt* grunt = new Grunt(pos, gruntInfo.unitInfo.size, gruntInfo.unitInfo.currLife, gruntInfo.unitInfo.maxLife, unitInfo, (const GruntInfo&)entityInfo, listener);
-		grunt->entityType = EntityCategory_DYNAMIC_ENTITY;
-		grunt->dynamicEntityType = EntityType_GRUNT;
-		grunt->entitySide = EntitySide_Enemy;
 
 		toSpawnEntities.push_back((Entity*)grunt);
 		return (DynamicEntity*)grunt;
@@ -3192,9 +2984,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_TROLL_AXETHROWER:
 	{
 		TrollAxethrower* trollAxethrower = new TrollAxethrower(pos, trollAxethrowerInfo.unitInfo.size, trollAxethrowerInfo.unitInfo.currLife, trollAxethrowerInfo.unitInfo.maxLife, unitInfo, (const TrollAxethrowerInfo&)entityInfo, listener);
-		trollAxethrower->entityType = EntityCategory_DYNAMIC_ENTITY;
-		trollAxethrower->dynamicEntityType = EntityType_TROLL_AXETHROWER;
-		trollAxethrower->entitySide = EntitySide_Enemy;
 
 		toSpawnEntities.push_back((Entity*)trollAxethrower);
 		return (DynamicEntity*)trollAxethrower;
@@ -3204,9 +2993,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_DRAGON:
 	{
 		Dragon* dragon = new Dragon(pos, dragonInfo.unitInfo.size, dragonInfo.unitInfo.currLife, dragonInfo.unitInfo.maxLife, unitInfo, (const DragonInfo&)entityInfo, listener);
-		dragon->entityType = EntityCategory_DYNAMIC_ENTITY;
-		dragon->dynamicEntityType = EntityType_DRAGON;
-		dragon->entitySide = EntitySide_Enemy;
 
 		toSpawnEntities.push_back((Entity*)dragon);
 		return (DynamicEntity*)dragon;
@@ -3216,9 +3002,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_ORC_SHIP:
 	{
 		OrcShip* orcShip = new OrcShip(pos, orcShipInfo.unitInfo.size, orcShipInfo.unitInfo.currLife, orcShipInfo.unitInfo.maxLife, unitInfo, (const OrcShipInfo&)entityInfo, listener);
-		orcShip->entityType = EntityCategory_DYNAMIC_ENTITY;
-		orcShip->dynamicEntityType = EntityType_ORC_SHIP;
-		orcShip->entitySide = EntitySide_EnemyShip;
 
 		toSpawnEntities.push_back((Entity*)orcShip);
 		return (DynamicEntity*)orcShip;
@@ -3229,9 +3012,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_SHEEP:
 	{
 		CritterSheep* critterSheep = new CritterSheep(pos, critterSheepInfo.unitInfo.size, critterSheepInfo.unitInfo.currLife, critterSheepInfo.unitInfo.maxLife, unitInfo, (const CritterSheepInfo&)entityInfo, listener);
-		critterSheep->entityType = EntityCategory_DYNAMIC_ENTITY;
-		critterSheep->dynamicEntityType = EntityType_SHEEP;
-		critterSheep->entitySide = EntitySide_Neutral;
 
 		toSpawnEntities.push_back((Entity*)critterSheep);
 		return (DynamicEntity*)critterSheep;
@@ -3241,9 +3021,6 @@ Entity* j1EntityFactory::AddEntity(ENTITY_TYPE entityType, fPoint pos, const Ent
 	case EntityType_BOAR:
 	{
 		CritterBoar* critterBoar = new CritterBoar(pos, critterBoarInfo.unitInfo.size, critterBoarInfo.unitInfo.currLife, critterBoarInfo.unitInfo.maxLife, unitInfo, (const CritterBoarInfo&)entityInfo, listener);
-		critterBoar->entityType = EntityCategory_DYNAMIC_ENTITY;
-		critterBoar->dynamicEntityType = EntityType_BOAR;
-		critterBoar->entitySide = EntitySide_Neutral;
 
 		toSpawnEntities.push_back((Entity*)critterBoar);
 		return (DynamicEntity*)critterBoar;
@@ -3503,6 +3280,198 @@ Entity* j1EntityFactory::IsEntityOnTile(iPoint tile, ENTITY_CATEGORY entityCateg
 		}
 	}
 
+	// Also check toSpawnEntities
+	list<Entity*>::const_iterator toSpawn = toSpawnEntities.begin();
+
+	while (toSpawn != toSpawnEntities.end()) {
+	
+		if (entityCategory == EntityCategory_DYNAMIC_ENTITY || entityCategory == EntityCategory_NONE) {
+
+			if ((*toSpawn)->entityType == EntityCategory_DYNAMIC_ENTITY) {
+			
+				DynamicEntity* dynEnt = (DynamicEntity*)(*toSpawn);
+
+				// The unit cannot be dead and must be valid
+				if (!dynEnt->isDead && dynEnt->GetIsValid()) {
+
+					iPoint entityTile = App->map->WorldToMap(dynEnt->GetPos().x, dynEnt->GetPos().y);
+
+					switch (entitySide) {
+
+					case EntitySide_Player:
+
+						if (dynEnt->entitySide == EntitySide_Player)
+							if (tile.x == entityTile.x && tile.y == entityTile.y)
+								return (Entity*)dynEnt;
+						break;
+
+					case EntitySide_Enemy:
+
+						if (dynEnt->entitySide == EntitySide_Enemy)
+							if (tile.x == entityTile.x && tile.y == entityTile.y)
+								return (Entity*)dynEnt;
+						break;
+
+					case EntitySide_Neutral:
+
+						if (dynEnt->entitySide == EntitySide_Neutral)
+							if (tile.x == entityTile.x && tile.y == entityTile.y)
+								return (Entity*)dynEnt;
+						break;
+
+					case EntitySide_NoSide:
+
+						if (tile.x == entityTile.x && tile.y == entityTile.y)
+							return (Entity*)dynEnt;
+						break;
+					}
+				}
+			}
+		}
+		if (entityCategory == EntityCategory_STATIC_ENTITY || entityCategory == EntityCategory_NONE) {
+		
+			if ((*toSpawn)->entityType == EntityCategory_STATIC_ENTITY) {
+
+				StaticEntity* statEnt = (StaticEntity*)(*toSpawn);
+
+				iPoint entityTile = App->map->WorldToMap(statEnt->GetPos().x, statEnt->GetPos().y);
+
+				switch (entitySide) {
+
+				case EntitySide_Player:
+
+					if (statEnt->entitySide == EntitySide_Player) {
+
+						if (statEnt->GetSize().x == 64 && statEnt->GetSize().y == 64) { //Small
+							for (int i = 0; i < 2; i++) {
+								for (int j = 0; j < 2; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 96 && statEnt->GetSize().y == 96) { //Medium
+							for (int i = 0; i < 3; i++) {
+								for (int j = 0; j < 3; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 128 && statEnt->GetSize().y == 128) { //Big
+
+							for (int i = 0; i < 4; i++) {
+								for (int j = 0; j < 4; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+
+					}
+					break;
+
+				case EntitySide_Enemy:
+
+					if (statEnt->entitySide == EntitySide_Enemy) {
+
+						if (statEnt->GetSize().x == 64 && statEnt->GetSize().y == 64) { //Small
+							for (int i = 0; i < 2; i++) {
+								for (int j = 0; j < 2; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 96 && statEnt->GetSize().y == 96) { //Medium
+							for (int i = 0; i < 3; i++) {
+								for (int j = 0; j < 3; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 128 && statEnt->GetSize().y == 128) { //Big
+
+							for (int i = 0; i < 4; i++) {
+								for (int j = 0; j < 4; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+
+					}
+					break;
+
+				case EntitySide_Neutral:
+
+					if (statEnt->entitySide == EntitySide_Neutral) {
+
+						if (statEnt->GetSize().x == 64 && statEnt->GetSize().y == 64) { //Small
+							for (int i = 0; i < 2; i++) {
+								for (int j = 0; j < 2; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 96 && statEnt->GetSize().y == 96) { //Medium
+							for (int i = 0; i < 3; i++) {
+								for (int j = 0; j < 3; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+						else if (statEnt->GetSize().x == 128 && statEnt->GetSize().y == 128) { //Big
+
+							for (int i = 0; i < 4; i++) {
+								for (int j = 0; j < 4; j++) {
+									if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+										return (Entity*)statEnt;
+								}
+							}
+						}
+
+					}
+					break;
+
+				case EntitySide_NoSide:
+
+					if (statEnt->GetSize().x == 64 && statEnt->GetSize().y == 64) { //Small
+						for (int i = 0; i < 2; i++) {
+							for (int j = 0; j < 2; j++) {
+								if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+									return (Entity*)statEnt;
+							}
+						}
+					}
+					else if (statEnt->GetSize().x == 96 && statEnt->GetSize().y == 96) { //Medium
+						for (int i = 0; i < 3; i++) {
+							for (int j = 0; j < 3; j++) {
+								if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+									return (Entity*)statEnt;
+							}
+						}
+					}
+					else if (statEnt->GetSize().x == 128 && statEnt->GetSize().y == 128) { //Big
+
+						for (int i = 0; i < 4; i++) {
+							for (int j = 0; j < 4; j++) {
+								if (tile.x == entityTile.x + i && tile.y == entityTile.y + j)
+									return (Entity*)statEnt;
+							}
+						}
+					}
+					break;
+				}
+			}
+		}
+
+		toSpawn++;
+	}
+
 	return nullptr;
 }
 
@@ -3514,8 +3483,10 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 	if (entity == nullptr)
 		return false;
 
-	if (App->input->GetKey(SDL_SCANCODE_LCTRL) != KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_RCTRL) != KEY_REPEAT
-		&& App->input->GetKey(SDL_SCANCODE_LSHIFT) != KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_RSHIFT) != KEY_REPEAT) {
+	// SDL_SCANCODE_LCTRL												// SDL_SCANCODE_RCTRL
+	// SDL_SCANCODE_LSHIFT												// SDL_SCANCODE_RSHIFT
+	if (App->input->GetKey(App->scene->buttonSaveGroup) != KEY_REPEAT && App->input->GetKey(App->scene->buttonSaveGroupb) != KEY_REPEAT
+		&& App->input->GetKey(App->scene->buttonSelectGroup) != KEY_REPEAT && App->input->GetKey(App->scene->buttonSelectGroupb) != KEY_REPEAT) {
 
 		list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
@@ -3530,7 +3501,8 @@ bool j1EntityFactory::SelectEntity(Entity* entity)
 		}
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RSHIFT) == KEY_REPEAT) {
+	// SDL_SCANCODE_LSHIFT									// SDL_SCANCODE_RSHIFT
+	if (App->input->GetKey(App->scene->buttonSelectGroup) == KEY_REPEAT || App->input->GetKey(App->scene->buttonSelectGroupb) == KEY_REPEAT) {
 	
 		if (find(unitsSelected.begin(), unitsSelected.end(), entity) != unitsSelected.end()) {
 
@@ -3790,7 +3762,9 @@ bool j1EntityFactory::RemoveUnitFromUnitsSelected(Entity* entity)
 
 			if (sg != savedGroups[i].end()) {
 
+				(*it)->savedGroup = 0;
 				savedGroups[i].remove(*it);
+				UpdateGroupIcons(i);
 				ret = true;
 			}
 		}
@@ -3864,46 +3838,17 @@ bool j1EntityFactory::RemoveAllUnitsGoals(list<DynamicEntity*> units)
 	return ret;
 }
 
-// Attack
-bool j1EntityFactory::InvalidateTargetInfo(Entity* target)
-{
-	if (target == nullptr)
-		return false;
-
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
-
-	while (dynEnt != activeDynamicEntities.end()) {
-
-		if ((*dynEnt)->dynamicEntityType != EntityType_ALLERIA && (*dynEnt)->dynamicEntityType != EntityType_TURALYON) {
-
-			(*dynEnt)->SetIsRemovedTargetInfo(target);
-			(*dynEnt)->RemoveAttackingUnit(target);
-		}
-
-		dynEnt++;
-	}
-
-	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
-
-	while (statEnt != activeStaticEntities.end()) {
-
-		(*statEnt)->RemoveAttackingUnit(target);
-
-		statEnt++;
-	}
-
-	return true;
-}
-
 // Movement
 void j1EntityFactory::InvalidateMovementEntity(Entity* entity)
 {
 	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
 
 	while (it != activeDynamicEntities.end()) {
+
 		if (!(*it)->isDead 
-			&& (*it)->dynamicEntityType != EntityType_ALLERIA && (*it)->dynamicEntityType != EntityType_TURALYON)
-		{
+			&& (*it)->dynamicEntityType != EntityType_ALLERIA && (*it)->dynamicEntityType != EntityType_TURALYON
+			&& (*it)->dynamicEntityType != EntityType_ORC_SHIP) {
+
 			if ((*it)->GetSingleUnit()->waitUnit != nullptr) {
 
 				// The dead entity was the waitUnit of another entity
@@ -4252,6 +4197,14 @@ bool j1EntityFactory::SaveEntityGroup(list<DynamicEntity*> units, uint index)
 
 	savedGroups[index] = units;
 
+	list<DynamicEntity*>::const_iterator it = units.begin();
+
+	while (it != units.end()) {
+	
+		(*it)->savedGroup = index + 1;
+		it++;
+	}
+
 	return true;
 }
 
@@ -4296,6 +4249,47 @@ void j1EntityFactory::SelectEntitiesGroup(list<DynamicEntity*> units)
 	}
 
 	App->scene->ShowSelectedUnits(unitsSelected);
+}
+
+void j1EntityFactory::UpdateGroupIcons(uint index) 
+{
+
+	list<DynamicEntity*> unitsGroup = GetSavedEntityGroup(index);
+	list<DynamicEntity*>::const_iterator it = unitsGroup.begin();
+	PlayerGroupTypes groupTypes = PlayerGroupTypes_NONE;
+
+	bool isFootman = false;
+	bool isElvenArcher = false;
+	bool isGryphonRider = false;
+
+	while (it != unitsGroup.end()) {
+
+		if ((*it)->dynamicEntityType == EntityType_FOOTMAN)
+			isFootman = true;
+		else if ((*it)->dynamicEntityType == EntityType_ELVEN_ARCHER)
+			isElvenArcher = true;
+		else if ((*it)->dynamicEntityType == EntityType_GRYPHON_RIDER)
+			isGryphonRider = true;
+
+		it++;
+	}
+
+	if (isFootman && isElvenArcher && isGryphonRider)
+		groupTypes = PlayerGroupTypes_ALL;
+	else if (isFootman && isElvenArcher)
+		groupTypes = PlayerGroupTypes_FOOTMAN_ARCHER;
+	else if (isFootman && isGryphonRider)
+		groupTypes = PlayerGroupTypes_FOOTMAN_GRYPHON;
+	else if (isElvenArcher && isGryphonRider)
+		groupTypes = PlayerGroupTypes_ARCHER_GRYPHON;
+	else if (isFootman)
+		groupTypes = PlayerGroupTypes_FOOTMAN;
+	else if (isElvenArcher)
+		groupTypes = PlayerGroupTypes_ARCHER;
+	else if (isGryphonRider)
+		groupTypes = PlayerGroupTypes_GRYPHON;
+
+	App->player->ShowPlayerGroupsButton(index + 1, groupTypes);
 }
 
 // Dynamic Entities
@@ -4550,6 +4544,27 @@ list<iPoint> j1EntityFactory::GetBuildingTiles(StaticEntity* building, bool isOn
 }
 ///_SANDRA
 
+bool j1EntityFactory::HaveAllOrcShipsSpawnedEntities() const 
+{
+	list<DynamicEntity*>::const_iterator it = activeDynamicEntities.begin();
+	
+	while (it != activeDynamicEntities.end()) {
+	
+		if ((*it)->dynamicEntityType == EntityType_ORC_SHIP) {
+		
+			OrcShip* orcShip = (OrcShip*)(*it);
+
+			if (!orcShip->isSpawnedWave)
+
+				return false;
+		}
+
+		it++;
+	}
+
+	return true;
+}
+
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
@@ -4557,20 +4572,290 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 {
 	bool ret = true;
 
-	pugi::xml_node node;
+	pugi::xml_node general = save.child("general");
 
-	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
+	numEnemyGroups = general.attribute("numEnemyGroups").as_int();
 
-	while (dynEnt != activeDynamicEntities.end()) {
-		// MYTODO: Add some code here
-		dynEnt++;
+	for (int i = 0; i < numEnemyGroups; ++i)
+	{
+		list<Entity*> temp;
+		App->map->entityGroups.push_back(temp);
 	}
 
-	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
+	//---------------------------
+	//-------- Static -----------
+	for (pugi::xml_node iterator = save.child("staticEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
+	{
+		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("staticEntityType").as_int();
 
-	while (statEnt != activeStaticEntities.end()) {
-		// MYTODO: Add some code here
-		statEnt++;
+		fPoint pos = { (float)iterator.attribute("posX").as_int(), (float)iterator.attribute("posY").as_int() };
+		UnitInfo unitInfo;
+
+		StaticEntity* newEntity = nullptr;
+
+		switch (entityType)
+		{
+			// Static Entities
+		case EntityType_TOWN_HALL:
+			newEntity = App->player->townHall = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+
+			newEntity->buildingState = BuildingState(iterator.attribute("buildingState").as_int());
+
+			break;
+		case EntityType_CHICKEN_FARM:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			App->player->chickenFarm.push_back(newEntity);
+			break;
+		case EntityType_BARRACKS:
+			newEntity = App->player->barracks = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			break;
+
+		case EntityType_GRYPHON_AVIARY:
+			newEntity = App->player->gryphonAviary = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			break;
+
+		case EntityType_SCOUT_TOWER:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			App->player->scoutTower.push_back(newEntity);
+			break;
+		case EntityType_PLAYER_GUARD_TOWER:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			App->player->guardTower.push_back(newEntity);
+			break;
+		case EntityType_PLAYER_CANNON_TOWER:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			App->player->cannonTower.push_back(newEntity);
+			break;
+
+		case EntityType_GOLD_MINE:
+		{
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+
+			GoldMineState state = GoldMineState(iterator.attribute("MineGoldState").as_int());
+
+			GoldMine* mine = (GoldMine*)newEntity;
+
+			if (state != GoldMineState_Untouched)
+			{
+				mine->SetGoldMineState(GoldMineState_Gathered);
+				mine->buildingState = BuildingState_Destroyed;
+				mine->currGold = 0;
+				mine->totalGold = 0;
+
+			}
+			else
+				mine->SetGoldMineState(state);
+		}
+		break;
+		case EntityType_RUNESTONE:
+		{
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+
+			Runestone* runestone = (Runestone*)newEntity;
+
+			RunestoneState state = RunestoneState(iterator.attribute("RunestoneState").as_int());
+
+			if (state != RunestoneState_Untouched)
+			{
+				runestone->SetRunestoneState(RunestoneState_Gathered);
+				runestone->buildingState = BuildingState_Destroyed;
+			}
+			else
+				runestone->SetRunestoneState(state);
+		}
+
+		break;
+		case EntityType_GREAT_HALL:
+		case EntityType_STRONGHOLD:
+		case EntityType_FORTRESS:
+		case EntityType_ENEMY_BARRACKS:
+		case EntityType_PIG_FARM:
+		case EntityType_TROLL_LUMBER_MILL:
+		case EntityType_ALTAR_OF_STORMS:
+		case EntityType_DRAGON_ROOST:
+		case EntityType_TEMPLE_OF_THE_DAMNED:
+		case EntityType_OGRE_MOUND:
+		case EntityType_ENEMY_BLACKSMITH:
+		case EntityType_WATCH_TOWER:
+		case EntityType_ENEMY_GUARD_TOWER:
+		case EntityType_ENEMY_CANNON_TOWER:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuildingInfo(entityType), unitInfo, (j1Module*)App->player);
+			break;
+		default:
+			break;
+		}
+
+		if (newEntity != nullptr)
+		{
+			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+
+			newEntity->constructionTimer = iterator.attribute("constructionTimer").as_float();
+
+			newEntity->SetIsFinishedBuilt(iterator.attribute("isBuilt").as_bool());
+
+			//newEntity->UpdateAnimations(0);
+		}
+	}
+
+	//---------------------------
+	//-------- Dynamic ----------
+	list<DynamicEntity*> savedGroupOne;
+	list<DynamicEntity*> savedGroupTwo;
+	list<DynamicEntity*> savedGroupThree;
+
+	for (pugi::xml_node iterator = save.child("dynamicEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
+	{
+		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("dynamicEntityType").as_int();
+
+		fPoint pos = { iterator.attribute("posX").as_float(), iterator.attribute("posY").as_float() };
+		UnitInfo unitInfo;
+		DynamicEntity* newEntity = nullptr;
+		Entity* entity = nullptr;
+
+		iPoint toSpawnTile = App->map->WorldToMap(pos.x, pos.y);
+
+		bool isSpawned = false;
+
+		// If the spawnTile is not valid, find a new, valid spawn tile
+		if (App->entities->IsEntityOnTile(toSpawnTile) != nullptr || !App->pathfinding->IsWalkable(toSpawnTile)) {
+
+			// Perform a BFS
+			queue<iPoint> queue;
+			list<iPoint> visited;
+
+			iPoint curr = toSpawnTile;
+			queue.push(curr);
+
+			while (queue.size() > 0) {
+
+				curr = queue.front();
+				queue.pop();
+
+				if (App->entities->IsEntityOnTile(curr) == nullptr && App->pathfinding->IsWalkable(curr)) {
+
+					toSpawnTile = curr;
+					break;
+				}
+
+				iPoint neighbors[8];
+				neighbors[0].create(curr.x + 1, curr.y + 0);
+				neighbors[1].create(curr.x + 0, curr.y + 1);
+				neighbors[2].create(curr.x - 1, curr.y + 0);
+				neighbors[3].create(curr.x + 0, curr.y - 1);
+				neighbors[4].create(curr.x + 1, curr.y + 1);
+				neighbors[5].create(curr.x + 1, curr.y - 1);
+				neighbors[6].create(curr.x - 1, curr.y + 1);
+				neighbors[7].create(curr.x - 1, curr.y - 1);
+
+				for (uint i = 0; i < 8; ++i)
+				{
+					if (App->pathfinding->IsWalkable(neighbors[i])) {
+
+						if (find(visited.begin(), visited.end(), neighbors[i]) == visited.end()) {
+
+							queue.push(neighbors[i]);
+							visited.push_back(neighbors[i]);
+						}
+					}
+				}
+			}
+		}
+
+		// Spawn the entity on the spawn tile
+		if (toSpawnTile.x != -1 && toSpawnTile.y != -1) {
+
+			iPoint spawnPos = App->map->MapToWorld(toSpawnTile.x, toSpawnTile.y);
+			pos = { (float)spawnPos.x, (float)spawnPos.y };
+
+			isSpawned = true;
+		}
+
+		if (isSpawned) {
+
+			switch (entityType)
+			{
+				// Dynamic entities
+			case EntityType_FOOTMAN:
+			case EntityType_ELVEN_ARCHER:
+			case EntityType_GRYPHON_RIDER:
+			case EntityType_ALLERIA:
+			case EntityType_TURALYON:
+				newEntity = (DynamicEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
+				break;
+
+			case EntityType_GRUNT:
+			case EntityType_TROLL_AXETHROWER:
+			case EntityType_DRAGON:
+				entity = App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+				newEntity = (DynamicEntity*)entity;
+				break;
+
+			case EntityType_SHEEP:
+			case EntityType_BOAR:
+			{
+				int type = rand() % 2;
+
+				if (type == 0)
+					newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_SHEEP, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+				else
+					newEntity = (DynamicEntity*)App->entities->AddEntity(EntityType_BOAR, pos, App->entities->GetUnitInfo(entityType), unitInfo);
+			}
+			break;
+
+			default:
+				break;
+			}
+		}
+
+		if (entity != nullptr)
+		{
+			entity->enemyGroup = iterator.attribute("enemyGroup").as_int();
+			DynamicEntity* temp = (DynamicEntity*)entity;
+			temp->lastSeenTile = { iterator.attribute("lastSeenTileX").as_int(), iterator.attribute("lastSeenTileY").as_int() };
+
+			list<list<Entity*>>::iterator groupIterator = App->map->entityGroups.begin();
+			for (int i = 0; i < entity->enemyGroup; ++i)
+			{
+				if (groupIterator == App->map->entityGroups.end())
+					break;
+				else
+					groupIterator++;
+			}
+
+			if (groupIterator != App->map->entityGroups.end())
+			{
+				(*groupIterator).push_back(entity);
+			}
+		}
+
+		if (newEntity != nullptr)
+		{
+			newEntity->savedGroup = iterator.attribute("savedGroup").as_uint();
+			if (newEntity->savedGroup == 1)
+				savedGroupOne.push_back(newEntity);
+			else if (newEntity->savedGroup == 2)
+				savedGroupTwo.push_back(newEntity);
+			else if (newEntity->savedGroup == 3)
+				savedGroupThree.push_back(newEntity);
+
+			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
+			if(newEntity->entitySide == EntitySide_Player)
+				App->player->unitProduce--;
+		}
+	}
+
+	// Create saved groups
+	if (savedGroupOne.size() > 0) {
+		SaveEntityGroup(savedGroupOne, 0);
+		App->entities->UpdateGroupIcons(0);
+	}
+	if (savedGroupTwo.size() > 0) {
+		SaveEntityGroup(savedGroupTwo, 1);
+		App->entities->UpdateGroupIcons(1);
+	}
+	if (savedGroupThree.size() > 0) {
+		SaveEntityGroup(savedGroupThree, 2);
+		App->entities->UpdateGroupIcons(2);
 	}
 
 	return ret;
@@ -4580,19 +4865,129 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 {
 	bool ret = true;
 
+	bool create = false;
+
 	pugi::xml_node node;
+
+	pugi::xml_node general;
+	if (save.child("general") == NULL)
+	{
+		general = save.append_child("general");
+		create = true;
+	}
+	else
+	{
+		general = save.child("general");
+	}
+
+	SaveAttribute(numEnemyGroups, "numEnemyGroups", general, create);
+
+	
+	pugi::xml_node dynamicEntities;
+	save.remove_child("dynamicEntities");
+
+	dynamicEntities = save.append_child("dynamicEntities");
 
 	list<DynamicEntity*>::const_iterator dynEnt = activeDynamicEntities.begin();
 
-	while (dynEnt != activeDynamicEntities.end()) {
-		// MYTODO: Add some code here
+	while (dynEnt != activeDynamicEntities.end())
+	{
+		if ((*dynEnt)->GetCurrLife() > 0)
+		{
+			pugi::xml_node entity = dynamicEntities.append_child("entity");
+
+			entity.append_attribute("lastSeenTileX") = (*dynEnt)->lastSeenTile.x;
+
+			entity.append_attribute("lastSeenTilew") = (*dynEnt)->lastSeenTile.y;
+
+			entity.append_attribute("posX") = (*dynEnt)->GetPos().x;
+			entity.append_attribute("posY") = (*dynEnt)->GetPos().y;
+
+			entity.append_attribute("dynamicEntityType") = (*dynEnt)->dynamicEntityType;
+			entity.append_attribute("entitySide") = (*dynEnt)->entitySide;
+			entity.append_attribute("entityType") = (*dynEnt)->entityType;
+
+			entity.append_attribute("enemyGroup") = (*dynEnt)->enemyGroup;
+
+			entity.append_attribute("GetCurrLife") = (*dynEnt)->GetCurrLife();
+			entity.append_attribute("savedGroup") = (*dynEnt)->savedGroup;
+		}
 		dynEnt++;
 	}
 
+
+	pugi::xml_node staticEntities;
+	save.remove_child("staticEntities");
+
+	staticEntities = save.append_child("staticEntities");
+
+
 	list<StaticEntity*>::const_iterator statEnt = activeStaticEntities.begin();
 
-	while (statEnt != activeStaticEntities.end()) {
-		// MYTODO: Add some code here
+	while (statEnt != activeStaticEntities.end()) 
+	{
+		if ((*statEnt)->GetCurrLife() > 0)
+		{
+			pugi::xml_node entity = staticEntities.append_child("entity");
+
+			entity.append_attribute("posX") = (*statEnt)->GetPos().x;
+			entity.append_attribute("posY") = (*statEnt)->GetPos().y;
+
+			entity.append_attribute("buildingSize") = (*statEnt)->buildingSize;
+
+			entity.append_attribute("buildingState") = (*statEnt)->buildingState;
+			entity.append_attribute("entitySide") = (*statEnt)->entitySide;
+			entity.append_attribute("entityType") = (*statEnt)->entityType;
+
+			entity.append_attribute("staticEntityCategory") = (*statEnt)->staticEntityCategory;
+			entity.append_attribute("staticEntityType") = (*statEnt)->staticEntityType;
+
+			entity.append_attribute("GetCurrLife") = (*statEnt)->GetCurrLife();
+
+			entity.append_attribute("constructionTimer") = (*statEnt)->constructionTimer;
+
+			entity.append_attribute("isBuilt") = (*statEnt)->GetIsFinishedBuilt();
+
+			if ((*statEnt)->staticEntityType == EntityType_GOLD_MINE)
+			{
+				GoldMine* currGoldMine = (GoldMine*)(*statEnt);
+
+					if (currGoldMine->GetGoldMineState() == GoldMineState_Untouched)
+					{
+						entity.append_attribute("MineGoldState") = GoldMineState_Untouched;
+					}
+					else
+					{
+						entity.append_attribute("MineGoldState") = GoldMineState_Gathered;
+					}
+			}
+
+			else if ((*statEnt)->staticEntityType == EntityType_RUNESTONE)
+			{
+				Runestone* currGoldMine = (Runestone*)(*statEnt);
+
+				if (currGoldMine->GetRunestoneState() == RunestoneState_Untouched)
+				{
+					entity.append_attribute("RunestoneState") = RunestoneState_Untouched;
+				}
+				else
+				{
+					entity.append_attribute("RunestoneState") = RunestoneState_Gathered;
+				}
+			}
+			else if ((*statEnt)->staticEntityType == EntityType_TOWN_HALL)
+			{
+				TownHall* townHall = (TownHall*)*statEnt;
+
+				if (townHall->townHallInfo.townHallType == TownHallType_Keep)
+				{
+					entity.remove_attribute("buildingState");
+
+					entity.append_attribute("buildingState") = BuildingState_Building;
+				}
+			}
+				
+		}
 		statEnt++;
 	}
 

@@ -10,9 +10,16 @@
 #include "j1Movement.h"
 #include "j1Collision.h"
 #include "j1Particles.h"
+#include "j1FadeToBlack.h"
 
 Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const BarracksInfo& barracksInfo, j1Module* listener) :StaticEntity(pos, size, currLife, maxLife, listener), barracksInfo(barracksInfo)
 {
+	*(ENTITY_CATEGORY*)&entityType = EntityCategory_STATIC_ENTITY;
+	*(StaticEntityCategory*)&staticEntityCategory = StaticEntityCategory_HumanBuilding;
+	*(ENTITY_TYPE*)&staticEntityType = EntityType_BARRACKS;
+	*(EntitySide*)&entitySide = EntitySide_Player;
+	*(StaticEntitySize*)&buildingSize = StaticEntitySize_Medium;
+
 	// Update the walkability map (invalidate the tiles of the building placed)
 	vector<iPoint> walkability;
 	iPoint buildingTile = App->map->WorldToMap(pos.x, pos.y);
@@ -47,13 +54,8 @@ Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const Ba
 
 	else if (!isBuilt) {
 		texArea = &barracksInfo.constructionPlanks1;
-		this->constructionTimer.Start();
 		buildingState = BuildingState_Building;
 		App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
-
-		//Construction peasants
-		peasants = App->particles->AddParticle(App->particles->peasantMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
-
 	}
 	
 	// Collision
@@ -62,28 +64,42 @@ Barracks::Barracks(fPoint pos, iPoint size, int currLife, uint maxLife, const Ba
 
 }
 
+Barracks::~Barracks()
+{
+	if (peasants != nullptr) {
+		peasants->isRemove = true;
+		peasants = nullptr;
+	}
+}
+
 void Barracks::Move(float dt)
 {
+	if (!isCheckedBuildingState && !App->fade->IsFading()) {
+
+		CheckBuildingState();
+		isCheckedBuildingState = true;
+
+		if (!isBuilt)
+			//Construction peasants
+			peasants = App->particles->AddParticle(App->particles->peasantMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
+	}
+
 	if (listener != nullptr)
 		HandleInput(entityEvent);
 
-	if (!isBuilt) 
+	if (!isBuilt) {
+		constructionTimer += dt;
 		UpdateAnimations(dt);
+	}
 
-	if (constructionTimer.Read() >= (constructionTime * 1000) && !isBuilt)
+	if (constructionTimer >= (constructionTime) && !isBuilt) {
 		isBuilt = true;
 
-	//It isnt used anymore
-	/*if (App->player->barracksUpgrade) {
-		if (startTimer) {
-			this->constructionTimer.Start();
-			App->player->HideEntitySelectedInfo();
-			startTimer = false;
+		if (peasants != nullptr) {
+			peasants->isRemove = true;
+			peasants = nullptr;
 		}
-		UpdateAnimations(dt);
-		barracksInfo.barracksType = BarracksType_Barracks2;
-	}*/
-	//-----------------------------
+	}
 }
 
 // Animations
@@ -94,32 +110,16 @@ void Barracks::LoadAnimationsSpeed()
 
 void Barracks::UpdateAnimations(float dt)
 {
-	if (constructionTimer.Read() >= (constructionTime / 3) * 1000)
+	if (constructionTimer >= (constructionTime / 3))
 		texArea = &barracksInfo.constructionPlanks2;
 
-	if (constructionTimer.Read() >= (constructionTime / 3 * 2) * 1000)
+	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &barracksInfo.inProgressTexArea;
 
-	if (constructionTimer.Read() >= constructionTime * 1000) {
+	if (constructionTimer >= constructionTime || isBuilt) {
 		texArea = &barracksInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
-		peasants->isRemove = true;
+
 	}
 
-	//It isnt used anymore
-	/*
-	if (constructionTimer.Read() >= constructionTime * 1000) {
-		if (barracksInfo.barracksType == BarracksType_Barracks2) {
-			texArea = &barracksInfo.barracks2CompleteTexArea;
-			buildingState = BuildingState_Normal;
-			SetMaxLife(1200);
-			SetCurrLife(1200);
-		}
-	}
-	else {
-		texArea = &barracksInfo.constructionPlanks2;
-		buildingState = BuildingState_Building;
-	}
-	*/
-	//-----------------------------
 }
