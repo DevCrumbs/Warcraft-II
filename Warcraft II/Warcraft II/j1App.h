@@ -43,7 +43,7 @@ struct SDL_Rect;
 
 pugi::xml_node GetNode(pugi::xml_node & node, char * name, bool create);
 
-void SaveAttribute(int value, char * name, pugi::xml_node & general, bool createGeneral);
+void SaveAttribute(int value, char * name, pugi::xml_node & general, bool createGeneral = false);
 void SaveAttribute(SDL_Rect value, char * name, pugi::xml_node & node, bool createGeneral);
 void SaveAttribute(uchar * value, char * name, pugi::xml_node & node, bool createGeneral, int size = 0);
 
