@@ -47,7 +47,7 @@ GryphonAviary::GryphonAviary(fPoint pos, iPoint size, int currLife, uint maxLife
 
 	texArea = &gryphonAviaryInfo.constructionPlanks1;
 	buildingState = BuildingState_Building;
-	App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
+	
 	
 	// Collision
 	CreateEntityCollider(EntitySide_Player, true);
@@ -69,9 +69,11 @@ void GryphonAviary::Move(float dt)
 		CheckBuildingState();
 		isCheckedBuildingState = true;
 
-		if (!isBuilt)
+		if (!isBuilt) {
 			//Construction peasants
+			App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 			peasants = App->particles->AddParticle(App->particles->peasantMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
+		}
 	}
 
 	if (listener != nullptr)
