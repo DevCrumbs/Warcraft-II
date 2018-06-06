@@ -3762,14 +3762,13 @@ bool j1EntityFactory::RemoveUnitFromUnitsSelected(Entity* entity)
 
 			if (sg != savedGroups[i].end()) {
 
+				(*it)->savedGroup = 0;
 				savedGroups[i].remove(*it);
 				UpdateGroupIcons(i);
 				ret = true;
 			}
 		}
 	}
-
-
 
 	return ret;
 }
@@ -4197,6 +4196,14 @@ bool j1EntityFactory::SaveEntityGroup(list<DynamicEntity*> units, uint index)
 		return false;
 
 	savedGroups[index] = units;
+
+	list<DynamicEntity*>::const_iterator it = units.begin();
+
+	while (it != units.end()) {
+	
+		(*it)->savedGroup = index + 1;
+		it++;
+	}
 
 	return true;
 }
@@ -4692,6 +4699,10 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 
 	//---------------------------
 	//-------- Dynamic ----------
+	list<DynamicEntity*> savedGroupOne;
+	list<DynamicEntity*> savedGroupTwo;
+	list<DynamicEntity*> savedGroupThree;
+
 	for (pugi::xml_node iterator = save.child("dynamicEntities").child("entity"); iterator; iterator = iterator.next_sibling("entity"))
 	{
 		ENTITY_TYPE entityType = (ENTITY_TYPE)iterator.attribute("dynamicEntityType").as_int();
@@ -4819,10 +4830,32 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 
 		if (newEntity != nullptr)
 		{
+			newEntity->savedGroup = iterator.attribute("savedGroup").as_uint();
+			if (newEntity->savedGroup == 1)
+				savedGroupOne.push_back(newEntity);
+			else if (newEntity->savedGroup == 2)
+				savedGroupTwo.push_back(newEntity);
+			else if (newEntity->savedGroup == 3)
+				savedGroupThree.push_back(newEntity);
+
 			newEntity->SetCurrLife(iterator.attribute("GetCurrLife").as_int());
 			if(newEntity->entitySide == EntitySide_Player)
 				App->player->unitProduce--;
 		}
+	}
+
+	// Create saved groups
+	if (savedGroupOne.size() > 0) {
+		SaveEntityGroup(savedGroupOne, 0);
+		App->entities->UpdateGroupIcons(0);
+	}
+	if (savedGroupTwo.size() > 0) {
+		SaveEntityGroup(savedGroupTwo, 1);
+		App->entities->UpdateGroupIcons(1);
+	}
+	if (savedGroupThree.size() > 0) {
+		SaveEntityGroup(savedGroupThree, 2);
+		App->entities->UpdateGroupIcons(2);
 	}
 
 	return ret;
@@ -4877,6 +4910,7 @@ bool j1EntityFactory::Save(pugi::xml_node& save) const
 			entity.append_attribute("enemyGroup") = (*dynEnt)->enemyGroup;
 
 			entity.append_attribute("GetCurrLife") = (*dynEnt)->GetCurrLife();
+			entity.append_attribute("savedGroup") = (*dynEnt)->savedGroup;
 		}
 		dynEnt++;
 	}
