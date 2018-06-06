@@ -214,7 +214,7 @@ void PlayerCannonTower::UpdateAnimations(float dt)
 	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &playerCannonTowerInfo.inProgressTexArea;
 
-	if (constructionTimer >= constructionTime) {
+	if (constructionTimer >= constructionTime || isBuilt) {
 		texArea = &playerCannonTowerInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

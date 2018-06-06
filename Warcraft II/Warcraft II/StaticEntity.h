@@ -92,6 +92,8 @@ public:
 	float GetRandomSecondsRespawn() const;
 	uint GetMaxEnemiesPerRoom(ROOM_TYPE roomType) const;
 
+	virtual void UpdateAnimations(float dt) {}
+
 public:
 
 	const ENTITY_TYPE staticEntityType = EntityType_NONE;

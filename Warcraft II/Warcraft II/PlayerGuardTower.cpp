@@ -215,7 +215,7 @@ void PlayerGuardTower::UpdateAnimations(float dt)
 	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &playerGuardTowerInfo.inProgressTexArea;
 
-	if (constructionTimer >= constructionTime) {
+	if (constructionTimer >= constructionTime || isBuilt) {
 		texArea = &playerGuardTowerInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

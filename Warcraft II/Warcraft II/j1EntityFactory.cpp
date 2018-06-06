@@ -4642,6 +4642,8 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 			newEntity->constructionTimer = iterator.attribute("constructionTimer").as_float();
 
 			newEntity->SetIsFinishedBuilt(iterator.attribute("isBuilt").as_bool());
+
+			newEntity->UpdateAnimations(0);
 		}
 	}
 

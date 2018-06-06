@@ -112,7 +112,7 @@ void ChickenFarm::UpdateAnimations(float dt)
 	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &chickenFarmInfo.inProgressTexArea;
 
-	if (constructionTimer >= constructionTime) {
+	if (constructionTimer >= constructionTime || isBuilt) {
 		texArea = &chickenFarmInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

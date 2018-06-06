@@ -116,7 +116,7 @@ void Barracks::UpdateAnimations(float dt)
 	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &barracksInfo.inProgressTexArea;
 
-	if (constructionTimer >= constructionTime) {
+	if (constructionTimer >= constructionTime || isBuilt) {
 		texArea = &barracksInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 
