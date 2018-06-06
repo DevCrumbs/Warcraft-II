@@ -24,7 +24,7 @@ Pause menu offers the same options than the main menu with the difference that i
 
 ### Changing buttons
 
-This screen is in the settings of the menu pause and the main menu. It offers the player the ability to adapt the game to their preferences to make the experience more comfortable. Most keys can be changed, except camera movement, group selection, mouse controls and debug keys. These keys are blocked and the user can not use them for another function. In case one of the keys uses another one of those that can be exchanged, a swap is made. If you want to go back to the beginning keys you can do a restore defaults buttons.
+With the help of Oscar, this screen is in the settings of the menu pause and the main menu. It offers the player the ability to adapt the game to their preferences to make the experience more comfortable. Most keys can be changed, except camera movement, group selection, mouse controls and debug keys. These keys are blocked and the user can not use them for another function. In case one of the keys uses another one of those that can be exchanged, a swap is made. If you want to go back to the beginning keys you can do a restore defaults buttons. 
  
 <img src="Readme_Files/AleixGabarró/Buttons.gif" width="600">
  
@@ -48,6 +48,9 @@ There is also the destruction function of the building where we can observe the 
 It is the entire module at the end of the game, where all the UI is found, and data the from the game. In case of winning, there is an artifact that is added to the collection, and there are 4 independent artifacts of each level which must be achieved at every difficulty available in the game
 
 <img src="Readme_Files/AleixGabarró/WinScreen.PNG" width="600">
+
+### Save&Load
+I have included a Save/Load functionality to the game with the help of Oscar. We save the current state of the game so the player can resume the game later at the point he saved the game.
 
 ## Wiki Contribution
 
