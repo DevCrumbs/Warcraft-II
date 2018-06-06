@@ -49,6 +49,9 @@ It is the entire module at the end of the game, where all the UI is found, and d
 
 <img src="Readme_Files/AleixGabarró/WinScreen.PNG" width="600">
 
+### Save&Load
+I have included a Save/Load functionality to the game with the help of Oscar. We save the current state of the game so the player can resume the game later at the point he saved the game.
+
 ## Wiki Contribution
 
 All UI document
