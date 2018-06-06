@@ -787,10 +787,6 @@ bool DynamicEntity::UpdateTargetsToRemove()
 
 			isRemove = true;
 
-		else if ((*it)->target->isRemove)
-
-			isRemove = true;
-
 		if (isRemove) {
 
 			// Removing target process --
