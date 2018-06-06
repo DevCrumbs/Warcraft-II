@@ -66,3 +66,5 @@ With the help of Aleix, I have developed a system so the player can change the c
 
 <img src="Readme_Files/ÓscarHernández/keys.gif"><br>
 	_Keys redefinition_<br><br>	
+### Wiki tasks:
+- TDD (with Sandra Alvarez).
