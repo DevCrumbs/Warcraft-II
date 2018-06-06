@@ -230,17 +230,17 @@ void j1FinishGame::ArtifactWon(uint time)
 	labelInfo.fontName = FONT_NAME_WARCRAFT20;
 	labelInfo.text = "Artifact Obtained: ";
 
-	if (time >= 1500) {
+	if (time >= 1320) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->scepterText, App->gui->scepterAnim, 5));
 		LevelWon(Artifact_SCEPTER);
 		labelInfo.text += "Scepter of Sagreras";
 	}
-	else if (time >= 1200) {
+	else if (time >= 1020) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->eyeText, App->gui->eyeAnim, 5));
 		LevelWon(Artifact_EYE);
 		labelInfo.text += "Eye of Dalaran";
 	}
-	else if (time >= 1080) {
+	else if (time >= 720) {
 		imageVector.push_back(App->menu->AddArtifact({ 550,175 }, App->gui->skullText, App->gui->skullAnim, 5));
 		LevelWon(Artifact_SKULL);
 		labelInfo.text += "Skull of Gul'dan";
