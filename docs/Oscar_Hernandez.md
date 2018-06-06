@@ -35,10 +35,10 @@ One of the biggest problems we encountered was the performance. I have worked on
 The FoW uses arround 0.5ms with the optimization and 168.3ms without.
 
 <img src="Readme_Files/ÓscarHernández/noOptimizationFowMap.png"><br>
-	_Frame time without optimization<br><br>	
+	_Frame time without optimization_<br><br>	
 	
 <img src="Readme_Files/ÓscarHernández/optimizationFowMap.png"><br>
-	_Frame time with optimization<br><br>	
+	_Frame time with optimization_<br><br>	
 	
 - **Minimap:**<br>
 I have implemented my minimap project to the game.  Various extra features like a zoom toggle, moving the camera from the minimap and sending the selected units to a point selected on the minimap.
