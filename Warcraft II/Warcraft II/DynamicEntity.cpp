@@ -781,13 +781,9 @@ bool DynamicEntity::UpdateTargetsToRemove()
 
 	while (it != targets.end()) {
 
-		if ((*it)->target->isRemove) {
+		if ((*it)->IsTargetDead()) {
 
 			// Removing target process --
-			if (!(*it)->IsTargetDead())
-
-				(*it)->target->RemoveAttackingUnit(this);
-
 			if (currTarget == *it)
 
 				InvalidateCurrTarget();
