@@ -361,13 +361,13 @@ There are four artifacts present in the game. The player will get one artifact o
 spend beating the level.
 The four artifacts are:
 
-- Scepter of Sagreras: Less than 18 minutes to complete the level.
+- Book of Medivh: Less than 18 minutes to complete the level.
 
-- Eye of Dalaran: Less than 20 minutes to complete the level.
+- Skull of Gul'dan: Less than 20 minutes to complete the level.
 
-- Skull of Gul'dan: Less than 25 minutes to complete the level
+- Eye of Dalaran: Less than 25 minutes to complete the level
 
-- Book of Medivh: More than 25 minutes to complete the level
+- Scepter of Sagreras: More than 25 minutes to complete the level
 
 Good luck on getting the Scepter of Sagreras!
 
