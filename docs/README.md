@@ -50,7 +50,7 @@ Down here you can find the GitHub page for each one of the team memebers and the
 
 <img src="Wiki_Files/Home/group.JPG" width="600">
 
-# Where you can find us
+# Where can you find us
 
 * **Social Networks**:
 
@@ -70,6 +70,10 @@ Down here you can find the GitHub page for each one of the team memebers and the
 # Release
 
 # Trailer
+
+You can visualize a trailer for the game here.
+
+<iframe width="560" height="315" src="https://youtu.be/wkLv1oAxmuI" frameborder="0" allowfullscreen></iframe>
 
 # Gameplay video
 
