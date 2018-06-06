@@ -67,6 +67,6 @@
 
 NOTE: the PathManager module, PathPlanner class and Goal module were learned from the book _Programming Game AI by Example_, by Mat Buckland.
 
-Finally,
-As a programmer, I helped as much as I could other members with their code issues.
+Finally,<br>
+As a programmer, I helped as much as I could other members with their code issues.<br>
 As a lead, I tried to maintain the group united and motivated until the end of the project:)
