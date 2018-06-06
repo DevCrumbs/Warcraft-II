@@ -103,7 +103,7 @@
 		</audioPaths>
 		<artifacts>
 			<level_1>
-				<book book="0" />
+				<book book="1" />
 				<eye eye="0" />
 				<skull skull="0" />
 				<scepter scepter="0" />
@@ -244,8 +244,8 @@
 		<buttons>
 			<buttonSelectFootman buttonSelectFootman="29" />
 			<buttonSelectArcher buttonSelectArcher="27" />
-			<buttonSelectGryphon buttonSelectGryphon="6" />
-			<buttonSelectAll buttonSelectAll="25" />
+			<buttonSelectGryphon buttonSelectGryphon="19" />
+			<buttonSelectAll buttonSelectAll="24" />
 			<buttonDamageCF buttonDamageCF="86" />
 			<buttonAddGold buttonAddGold="85" />
 			<buttonAddFood buttonAddFood="84" />

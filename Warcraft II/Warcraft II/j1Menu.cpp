@@ -131,6 +131,8 @@ bool j1Menu::Start()
 		isMouseTextCreated = true;
 	}
 
+	menuActions = MenuActions_NONE;
+
 	return true;
 }
 
