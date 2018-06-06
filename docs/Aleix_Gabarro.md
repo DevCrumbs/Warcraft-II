@@ -24,7 +24,7 @@ Pause menu offers the same options than the main menu with the difference that i
 
 ### Changing buttons
 
-With the help of Aleix, this screen is in the settings of the menu pause and the main menu. It offers the player the ability to adapt the game to their preferences to make the experience more comfortable. Most keys can be changed, except camera movement, group selection, mouse controls and debug keys. These keys are blocked and the user can not use them for another function. In case one of the keys uses another one of those that can be exchanged, a swap is made. If you want to go back to the beginning keys you can do a restore defaults buttons. 
+With the help of Oscar, this screen is in the settings of the menu pause and the main menu. It offers the player the ability to adapt the game to their preferences to make the experience more comfortable. Most keys can be changed, except camera movement, group selection, mouse controls and debug keys. These keys are blocked and the user can not use them for another function. In case one of the keys uses another one of those that can be exchanged, a swap is made. If you want to go back to the beginning keys you can do a restore defaults buttons. 
  
 <img src="Readme_Files/AleixGabarró/Buttons.gif" width="600">
  
