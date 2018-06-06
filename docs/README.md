@@ -73,7 +73,7 @@ Download the release of Warcraft II: The Stolen Artifacts in the link below. And
 
 * **Video game release**: 
 
-[Warcraft II: The Stolen Artifacts](https://github.com/DevCrumbs/Warcraft-II/releases/tag/0.9.5)
+[Warcraft II: The Stolen Artifacts](https://github.com/DevCrumbs/Warcraft-II/releases/tag/1.0)
 
 # Trailer
 
