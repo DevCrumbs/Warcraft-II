@@ -12,7 +12,7 @@
 
 ## Create new Sprite Prisoner: Alleria
 
-<img src="Readme_Files/David Varela/AlleriaIdle.gif">
+<img src="Readme_Files/David Varela/AlleriaIdle .gif">
 
 ## Create Alleria 8 directions
 
