@@ -23,7 +23,7 @@
 <img src="Readme_Files/David Varela/Artifacts.gif">
 
 ## Create new spritesheets
-Do spritesheets again in Aseprite to organize them and have their coordinates .json. You can find them here . Those that are modified have written in front Final
+Do spritesheets again in Aseprite to organize them and have their coordinates .json. You can find them [here](https://github.com/DevCrumbs/Warcraft-II/tree/Develompent/Warcraft%20II/Game/data/assets/textures/units) . Those that are modified have written in front Final
 
 
 ## Fix visual animations
