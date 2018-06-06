@@ -1945,7 +1945,6 @@ const EntityInfo& j1EntityFactory::GetBuiltBuilding(ENTITY_TYPE staticEntityType
 	case EntityType_BARRACKS:
 		return (const EntityInfo&)builtBarracksInfo;
 		break;
-
 	case EntityType_CHICKEN_FARM:
 		return (const EntityInfo&)builtChickenFarmInfo;
 		break;
@@ -1954,6 +1953,16 @@ const EntityInfo& j1EntityFactory::GetBuiltBuilding(ENTITY_TYPE staticEntityType
 		break;
 	case EntityType_TOWN_HALL:
 		return (const EntityInfo&)townHallInfo;
+		break;
+	case EntityType_SCOUT_TOWER:
+		return (const EntityInfo&)scoutTowerInfo;
+			break;
+	case EntityType_PLAYER_GUARD_TOWER:
+		return (const EntityInfo&)playerGuardTowerInfo;
+			break;
+	case EntityType_PLAYER_CANNON_TOWER:
+		return (const EntityInfo&)playerCannonTowerInfo;
+			break;
 	default:
 		return (const EntityInfo&)builtChickenFarmInfo;
 		break;
@@ -4575,6 +4584,19 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 
 		case EntityType_GRYPHON_AVIARY:
 			newEntity = App->player->gryphonAviary = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			break;
+
+		case EntityType_SCOUT_TOWER:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			App->player->scoutTower.push_back(newEntity);
+			break;
+		case EntityType_PLAYER_GUARD_TOWER:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			App->player->guardTower.push_back(newEntity);
+			break;
+		case EntityType_PLAYER_CANNON_TOWER:
+			newEntity = (StaticEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetBuiltBuilding(entityType), unitInfo, (j1Module*)App->player);
+			App->player->cannonTower.push_back(newEntity);
 			break;
 
 		case EntityType_GOLD_MINE:
