@@ -215,7 +215,7 @@ void ScoutTower::UpdateAnimations(float dt)
 	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &scoutTowerInfo.inProgressTexArea;
 
-	if (constructionTimer >= constructionTime) {
+	if (constructionTimer >= constructionTime || isBuilt) {
 		texArea = &scoutTowerInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

@@ -105,7 +105,7 @@ void GryphonAviary::UpdateAnimations(float dt)
 	if (constructionTimer >= (constructionTime / 3 * 2))
 		texArea = &gryphonAviaryInfo.inProgressTexArea;
 
-	if (constructionTimer >= constructionTime){
+	if (constructionTimer >= constructionTime || isBuilt) {
 		texArea = &gryphonAviaryInfo.completeTexArea;
 		buildingState = BuildingState_Normal;
 	}

@@ -18,74 +18,72 @@
 			<numEnemyGroups numEnemyGroups="16" />
 		</general>
 		<dynamicEntities>
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="672" posY="512" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="960" posY="224" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="416" posY="629.492188" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="960" posY="416" dynamicEntityType="383" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="896" posY="608" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2720" posY="544" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2579.06641" posY="691.066345" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2528" posY="896" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="384" posY="2528" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="50" />
-			<entity lastSeenTileX="94" lastSeenTilew="76" posX="3008" posY="2415.71045" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="352" posY="2432" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="40" />
-			<entity lastSeenTileX="93" lastSeenTilew="75" posX="2976" posY="2400" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="16" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="352" posY="2528" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3008" posY="2560" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="262.572052" posY="2329.42798" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2811.72949" posY="219.729446" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2877.84473" posY="98.1553497" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1152" posY="832" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1120" posY="800" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1111.30664" posY="840.693237" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1284.69727" posY="2336" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="736" posY="1995.65015" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1312" posY="2276.53149" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="960" posY="2312.67871" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1312" posY="2374.03955" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1824" posY="2240" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1824" posY="2368" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2400" posY="416" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="8" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="842.797363" posY="1770.79749" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="836.933289" posY="1851.06677" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="928" posY="1760" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2376.03052" posY="1984" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="10" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2496" posY="2144" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="10" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2944" posY="1376" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="40" />
-			<entity lastSeenTileX="34" lastSeenTilew="42" posX="1088" posY="1344" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="38" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2752" posY="1473.1875" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="50" />
-			<entity lastSeenTileX="40" lastSeenTilew="43" posX="1280" posY="1408" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="40" />
-			<entity lastSeenTileX="35" lastSeenTilew="46" posX="1106.03418" posY="1472" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="44" />
-			<entity lastSeenTileX="39" lastSeenTilew="44" posX="1248" posY="1408" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="32" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2752" posY="1554.64258" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2941.84473" posY="1410.15527" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2103.89355" posY="1384.10632" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="160" posY="1344" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="13" GetCurrLife="40" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2041.42688" posY="1350.57312" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="384" posY="1632" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="13" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2144" posY="1632" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="192" posY="1312" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="832" posY="1280" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="320.678558" posY="1632.67859" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="469.032379" posY="437.032379" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1120" posY="320" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="512" posY="672" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="768" posY="704" dynamicEntityType="383" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="812.057861" posY="576" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="0" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2528" posY="576" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2560" posY="512" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2784" posY="864" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="224" posY="2464" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3200" posY="2464" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="192" posY="2240" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3104" posY="2430.15112" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="352" posY="2368" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="3104" posY="2240" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="3" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="160" posY="2336" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="2" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2720" posY="137.65979" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2848" posY="320" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="5" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1050.68738" posY="677.312622" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="832" posY="864" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1056" posY="704" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="4" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1248" posY="2272" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1344" posY="2016" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1440" posY="2400" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="896" posY="1952" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1299.94214" posY="2368" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="6" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1984" posY="2240" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2057.354" posY="2185.354" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="7" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2455.45068" posY="64" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="8" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="834.883545" posY="1890.88354" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="608" posY="1896.54907" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="896" posY="1664" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="9" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2560" posY="2016" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="10" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2498.8999" posY="1922.89978" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="10" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2720" posY="1248" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1280" posY="1472" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2887.51318" posY="1312" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1120" posY="1216" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1110.64612" posY="1801.35388" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1248" posY="1504" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="11" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2928.58228" posY="1424.58228" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2865.89868" posY="1294.1012" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="12" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2181.3125" posY="1221.31262" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="288" posY="1248" dynamicEntityType="382" entitySide="2" entityType="2" enemyGroup="13" GetCurrLife="40" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2031.41772" posY="1360.58228" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="320" posY="1632" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="13" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2048" posY="1600" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="14" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="256" posY="1280" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="613.312622" posY="1466.68738" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="448" posY="1696" dynamicEntityType="381" entitySide="2" entityType="2" enemyGroup="15" GetCurrLife="50" />
 			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="800" posY="352" dynamicEntityType="408" entitySide="0" entityType="2" enemyGroup="-1" GetCurrLife="2147483647" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1824" posY="1216" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2688" posY="1440" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
-			<entity lastSeenTileX="32" lastSeenTilew="45" posX="1024" posY="1440" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="267.632141" posY="1835.63196" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2464" posY="1536" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2966.44727" posY="1897.55286" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
-			<entity lastSeenTileX="93" lastSeenTilew="72" posX="2976" posY="2304" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="704" posY="2336" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2144" posY="1536" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2816" posY="1504" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="640" posY="1651.94214" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="192" posY="1728" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2432" posY="1920" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2592" posY="1984" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2464" posY="1984" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="736" posY="2528" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
 			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1184" posY="2400" dynamicEntityType="409" entitySide="0" entityType="2" enemyGroup="-1" GetCurrLife="2147483647" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="576" posY="2368" dynamicEntityType="402" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="100" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2787.5603" posY="2492.4397" dynamicEntityType="407" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2976" posY="2368" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="52" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2944" posY="2400" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="56" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2903.30713" posY="2376.69287" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="60" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2848" posY="2432" dynamicEntityType="407" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="50" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1056" posY="1344" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="48" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1176.58716" posY="1447.41284" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="52" />
-			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="1248" posY="1376" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="60" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="832" posY="2400" dynamicEntityType="426" entitySide="5" entityType="2" enemyGroup="-1" GetCurrLife="20" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2432" posY="3232" dynamicEntityType="407" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2496" posY="3232" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="60" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2560" posY="3232" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="60" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2624" posY="3232" dynamicEntityType="406" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="60" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2688" posY="3232" dynamicEntityType="407" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="50" />
+			<entity lastSeenTileX="-1" lastSeenTilew="-1" posX="2688" posY="3296" dynamicEntityType="415" entitySide="1" entityType="2" enemyGroup="-1" GetCurrLife="100" />
 		</dynamicEntities>
 		<staticEntities>
 			<entity posX="2720" posY="64" buildingSize="1" buildingState="1" entitySide="2" entityType="1" staticEntityCategory="2" staticEntityType="393" GetCurrLife="150" constructionTimer="0" isBuilt="false" />
@@ -128,8 +126,9 @@
 			<entity posX="2912" posY="2976" buildingSize="2" buildingState="1" entitySide="5" entityType="1" staticEntityCategory="3" staticEntityType="400" GetCurrLife="2147483647" constructionTimer="0" isBuilt="true" MineGoldState="0" />
 			<entity posX="2272" posY="3232" buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="405" GetCurrLife="150" constructionTimer="0" isBuilt="true" />
 			<entity posX="2464" posY="3296" buildingSize="2" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="404" GetCurrLife="300" constructionTimer="0" isBuilt="true" />
-			<entity posX="2496" posY="3456" buildingSize="3" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="403" GetCurrLife="450" constructionTimer="0" isBuilt="true" />
+			<entity posX="2496" posY="3456" buildingSize="3" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="403" GetCurrLife="1400" constructionTimer="10.0916758" isBuilt="true" buildingState="5" />
 			<entity posX="2272" posY="3552" buildingSize="1" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="405" GetCurrLife="150" constructionTimer="0" isBuilt="true" />
+			<entity posX="2720" posY="3296" buildingSize="2" buildingState="1" entitySide="1" entityType="1" staticEntityCategory="1" staticEntityType="420" GetCurrLife="300" constructionTimer="10.0302858" isBuilt="true" />
 		</staticEntities>
 	</entities>
 	<surge>
@@ -147,7 +146,7 @@
 			<phasesOfCurrWave phasesOfCurrWave="0" />
 		</currWave>
 		<timeline>
-			<nextWaveTimer nextWaveTimer="35" />
+			<nextWaveTimer nextWaveTimer="53" />
 			<nextPhaseTimer nextPhaseTimer="0" />
 			<secondsToNextWave secondsToNextWave="300" />
 			<secondsToNextPhase secondsToNextPhase="0" />
@@ -156,11 +155,11 @@
 	<fonts />
 	<player>
 		<upgrades>
-			<townHallUpgrade townHallUpgrade="0" />
+			<townHallUpgrade townHallUpgrade="1" />
 		</upgrades>
 		<resources>
-			<totalGold totalGold="0" />
-			<currentGold currentGold="0" />
+			<totalGold totalGold="2500" />
+			<currentGold currentGold="850" />
 			<currentFood currentFood="6" />
 			<roomsCleared roomsCleared="0" />
 			<totalEnemiesKilled totalEnemiesKilled="0" />
@@ -171,8 +170,8 @@
 		</prisioners>
 		<stats>
 			<isWin isWin="0" />
-			<startGameTimer startGameTimer="40399" />
-			<unitProduce unitProduce="8" />
+			<startGameTimer startGameTimer="54141" />
+			<unitProduce unitProduce="6" />
 			<enemiesKill enemiesKill="0" />
 			<buildDestroy buildDestroy="0" />
 		</stats>
@@ -191,7 +190,7 @@
 		<general>
 			<width width="105" />
 			<height height="130" />
-			<isActive isActive="0" />
+			<isActive isActive="1" />
 		</general>
 		<fowTilesVector>
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="0" yPos="0" size="32" />
@@ -4009,14 +4008,14 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="36" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="36" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="36" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="35" yPos="36" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="36" yPos="36" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="37" yPos="36" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="38" yPos="36" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="39" yPos="36" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="40" yPos="36" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="41" yPos="36" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="42" yPos="36" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="36" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="36" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="36" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="36" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="36" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="36" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="36" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="36" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="36" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="36" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="36" size="32" />
@@ -4110,19 +4109,19 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="37" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="37" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="37" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="37" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="37" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="37" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="37" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="37" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="37" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="37" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="38" yPos="37" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="39" yPos="37" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="40" yPos="37" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="41" yPos="37" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="42" yPos="37" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="43" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="37" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="37" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="37" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="37" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="37" size="32" />
@@ -4214,20 +4213,20 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="38" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="38" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="30" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="38" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="38" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="38" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="38" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="38" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="38" size="32" />
@@ -4318,21 +4317,21 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="26" yPos="39" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="39" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="29" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="30" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="39" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="39" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="39" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="39" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="39" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="39" size="32" />
@@ -4423,23 +4422,23 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="26" yPos="40" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="40" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="29" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="30" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="44" yPos="40" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="45" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="40" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="40" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="40" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="47" yPos="40" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="48" yPos="40" size="32" />
@@ -4528,23 +4527,23 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="26" yPos="41" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="41" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="29" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="30" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="44" yPos="41" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="45" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="41" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="41" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="41" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="47" yPos="41" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="48" yPos="41" size="32" />
@@ -4633,23 +4632,23 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="26" yPos="42" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="42" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="29" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="30" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="44" yPos="42" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="45" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="42" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="42" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="42" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="47" yPos="42" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="48" yPos="42" size="32" />
@@ -4738,23 +4737,23 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="26" yPos="43" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="43" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="29" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="30" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="44" yPos="43" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="45" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="43" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="43" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="43" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="47" yPos="43" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="48" yPos="43" size="32" />
@@ -4843,23 +4842,23 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="26" yPos="44" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="44" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="29" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="30" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="44" yPos="44" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="45" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="44" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="44" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="44" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="47" yPos="44" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="48" yPos="44" size="32" />
@@ -4948,23 +4947,23 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="26" yPos="45" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="45" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="29" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="30" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="44" yPos="45" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="45" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="45" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="45" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="45" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="47" yPos="45" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="48" yPos="45" size="32" />
@@ -5053,23 +5052,23 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="26" yPos="46" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="46" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="46" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="29" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="30" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="44" yPos="46" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="45" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="46" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="46" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="46" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="47" yPos="46" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="48" yPos="46" size="32" />
@@ -5158,22 +5157,22 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="26" yPos="47" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="47" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="47" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="29" yPos="47" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="30" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="31" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="32" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="47" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="44" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="47" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="47" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="47" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="47" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="47" yPos="47" size="32" />
@@ -5264,20 +5263,20 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="27" yPos="48" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="48" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="48" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="30" yPos="48" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="31" yPos="48" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="32" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="33" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="48" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="43" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="48" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="48" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="48" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="48" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="48" size="32" />
@@ -5370,19 +5369,19 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="28" yPos="49" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="49" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="49" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="31" yPos="49" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="32" yPos="49" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="33" yPos="49" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="34" yPos="49" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="49" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="49" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="49" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="49" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="49" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="49" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="49" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="42" yPos="49" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="43" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="49" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="49" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="49" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="49" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="49" size="32" />
@@ -5476,18 +5475,18 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="29" yPos="50" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="30" yPos="50" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="50" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="32" yPos="50" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="33" yPos="50" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="34" yPos="50" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="35" yPos="50" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="36" yPos="50" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="37" yPos="50" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="38" yPos="50" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="39" yPos="50" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="40" yPos="50" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="41" yPos="50" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="42" yPos="50" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="43" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="50" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="50" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="44" yPos="50" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="45" yPos="50" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="46" yPos="50" size="32" />
@@ -5583,13 +5582,13 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="31" yPos="51" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="51" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="51" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="34" yPos="51" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="35" yPos="51" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="36" yPos="51" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="37" yPos="51" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="38" yPos="51" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="39" yPos="51" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="40" yPos="51" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="51" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="51" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="51" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="51" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="51" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="51" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="51" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="51" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="51" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="51" size="32" />
@@ -5689,12 +5688,12 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="32" yPos="52" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="33" yPos="52" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="34" yPos="52" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="35" yPos="52" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="36" yPos="52" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="37" yPos="52" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="38" yPos="52" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="39" yPos="52" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="40" yPos="52" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="35" yPos="52" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="36" yPos="52" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="37" yPos="52" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="38" yPos="52" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="39" yPos="52" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="40" yPos="52" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="41" yPos="52" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="42" yPos="52" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="43" yPos="52" size="32" />
@@ -7530,13 +7529,13 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="69" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="69" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="69" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="69" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="69" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="69" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="69" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="69" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="69" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="69" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="69" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="69" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="69" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="69" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="69" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="69" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="69" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="69" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="69" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="69" size="32" />
@@ -7631,18 +7630,18 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="70" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="70" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="70" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="98" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="70" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="70" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="70" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="70" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="101" yPos="70" size="32" />
@@ -7735,20 +7734,20 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="71" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="71" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="98" yPos="71" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="99" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="71" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="71" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="71" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="101" yPos="71" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="102" yPos="71" size="32" />
@@ -7839,21 +7838,21 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="72" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="72" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="85" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="98" yPos="72" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="99" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="72" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="72" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="72" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="101" yPos="72" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="102" yPos="72" size="32" />
@@ -7943,22 +7942,22 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="73" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="73" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="84" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="85" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="98" yPos="73" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="99" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="73" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="73" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="73" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="101" yPos="73" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="102" yPos="73" size="32" />
@@ -8047,23 +8046,23 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="74" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="74" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="83" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="84" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="85" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="98" yPos="74" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="99" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="74" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="74" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="74" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="101" yPos="74" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="102" yPos="74" size="32" />
@@ -8151,24 +8150,24 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="75" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="75" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="75" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="83" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="84" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="85" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="98" yPos="75" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="99" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="75" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="75" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="75" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="101" yPos="75" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="102" yPos="75" size="32" />
@@ -8255,25 +8254,25 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="76" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="76" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="76" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="76" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="83" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="84" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="85" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="98" yPos="76" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="99" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="76" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="76" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="76" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="101" yPos="76" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="102" yPos="76" size="32" />
@@ -8359,26 +8358,26 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="77" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="77" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="77" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="77" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="77" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="83" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="84" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="85" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="98" yPos="77" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="99" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="77" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="77" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="77" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="101" yPos="77" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="102" yPos="77" size="32" />
@@ -8463,26 +8462,26 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="78" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="78" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="78" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="78" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="78" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="78" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="83" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="84" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="85" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="78" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="98" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="78" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="78" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="78" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="78" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="101" yPos="78" size="32" />
@@ -8567,26 +8566,26 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="79" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="79" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="79" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="78" yPos="79" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="79" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="79" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="79" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="83" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="84" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="85" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="79" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="97" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="79" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="79" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="79" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="79" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="100" yPos="79" size="32" />
@@ -8671,26 +8670,26 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="74" yPos="80" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="80" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="80" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="77" yPos="80" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="235" xPos="78" yPos="80" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="80" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="80" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="80" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="83" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="235" xPos="84" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="85" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="94" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="95" yPos="80" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="96" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="80" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="80" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="97" yPos="80" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="98" yPos="80" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="99" yPos="80" size="32" />
@@ -8775,24 +8774,24 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="73" yPos="81" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="74" yPos="81" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="81" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="76" yPos="81" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="235" xPos="77" yPos="81" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="78" yPos="81" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="81" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="81" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="81" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="81" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="83" yPos="81" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="84" yPos="81" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="235" xPos="85" yPos="81" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="86" yPos="81" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="81" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="81" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="81" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="81" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="91" yPos="81" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="92" yPos="81" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="93" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="81" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="81" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="81" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="81" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="96" yPos="81" size="32" />
@@ -8879,24 +8878,24 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="72" yPos="82" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="73" yPos="82" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="74" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="75" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="235" xPos="76" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="77" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="78" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="83" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="84" yPos="82" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="85" yPos="82" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="235" xPos="86" yPos="82" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="87" yPos="82" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="88" yPos="82" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="89" yPos="82" size="32" />
-			<fowTile alpha="0" normalAlpha="185" auxAlpha="0" xPos="90" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="91" yPos="82" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="92" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="82" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="92" yPos="82" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="93" yPos="82" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="94" yPos="82" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="95" yPos="82" size="32" />
@@ -8984,20 +8983,20 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="72" yPos="83" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="73" yPos="83" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="74" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="75" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="76" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="77" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="78" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="83" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="84" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="85" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="86" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="87" yPos="83" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="88" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="83" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="83" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="83" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="83" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="83" size="32" />
@@ -9089,20 +9088,20 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="72" yPos="84" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="73" yPos="84" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="74" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="235" xPos="75" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="76" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="77" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="78" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="83" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="84" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="85" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="86" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="87" yPos="84" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="88" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="84" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="84" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="84" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="84" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="91" yPos="84" size="32" />
@@ -9194,19 +9193,19 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="72" yPos="85" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="73" yPos="85" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="74" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="75" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="76" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="77" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="78" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="83" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="84" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="85" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="235" xPos="86" yPos="85" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="87" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="85" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="85" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="85" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="89" yPos="85" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="90" yPos="85" size="32" />
@@ -9299,17 +9298,17 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="72" yPos="86" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="73" yPos="86" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="74" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="235" xPos="75" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="76" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="77" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="78" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="83" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="84" yPos="86" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="235" xPos="85" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="86" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="86" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="86" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="86" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="88" yPos="86" size="32" />
@@ -9405,15 +9404,15 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="73" yPos="87" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="74" yPos="87" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="87" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="76" yPos="87" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="77" yPos="87" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="78" yPos="87" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="87" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="87" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="87" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="87" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="83" yPos="87" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="84" yPos="87" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="87" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="87" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="87" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="87" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="87" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="87" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="87" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="87" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="87" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="87" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="87" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="87" size="32" />
@@ -9510,15 +9509,15 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="73" yPos="88" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="74" yPos="88" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="88" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="76" yPos="88" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="77" yPos="88" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="78" yPos="88" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="88" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="88" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="88" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="88" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="83" yPos="88" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="84" yPos="88" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="88" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="88" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="88" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="88" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="88" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="88" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="88" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="88" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="88" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="88" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="88" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="88" size="32" />
@@ -9615,15 +9614,15 @@
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="73" yPos="89" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="74" yPos="89" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="75" yPos="89" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="76" yPos="89" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="77" yPos="89" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="78" yPos="89" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="79" yPos="89" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="80" yPos="89" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="81" yPos="89" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="82" yPos="89" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="83" yPos="89" size="32" />
-			<fowTile alpha="185" normalAlpha="185" auxAlpha="0" xPos="84" yPos="89" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="76" yPos="89" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="77" yPos="89" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="78" yPos="89" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="79" yPos="89" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="80" yPos="89" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="81" yPos="89" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="82" yPos="89" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="83" yPos="89" size="32" />
+			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="84" yPos="89" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="85" yPos="89" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="86" yPos="89" size="32" />
 			<fowTile alpha="235" normalAlpha="235" auxAlpha="0" xPos="87" yPos="89" size="32" />
@@ -13852,6 +13851,6 @@
 	<gui />
 	<fade />
 	<renderer>
-		<camera x="-943" y="-1043" />
+		<camera x="-2192.81836" y="-3100.45996" />
 	</renderer>
 </game_state>
