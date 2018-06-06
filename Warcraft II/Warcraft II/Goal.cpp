@@ -1983,7 +1983,7 @@ void Goal_FreePrisoner::Terminate()
 		
 			turalyon->SetRescued(true);
 			turalyon->SetUnitRescuePrisoner(false);
-			App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
+			App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 744,159,52,42 }, { 8, 200 });
 			App->player->isTurRescued = true;
 			turalyon->SetCurrLife(0);
 
