@@ -1046,12 +1046,12 @@ GoalStatus Goal_HitTarget::Process(float dt)
 
 			if (dyn->dynamicEntityType == EntityType_SHEEP) {
 
-				CritterSheepInfo c = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
-				owner->ApplyHealth(c.restoredHealth);
-
 				CritterSheep* sheep = (CritterSheep*)dyn;
 				
 				if (!sheep->isHealth) {
+
+					CritterSheepInfo c = (CritterSheepInfo&)App->entities->GetUnitInfo(EntityType_SHEEP);
+					owner->ApplyHealth(c.restoredHealth);
 
 					iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
 
@@ -1069,12 +1069,12 @@ GoalStatus Goal_HitTarget::Process(float dt)
 			}
 			else if (dyn->dynamicEntityType == EntityType_BOAR) {
 
-				CritterBoarInfo b = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
-				owner->ApplyHealth(b.restoredHealth);
-
 				CritterBoar* boar = (CritterBoar*)dyn;
 
 				if (!boar->isHealth) {
+
+					CritterBoarInfo b = (CritterBoarInfo&)App->entities->GetUnitInfo(EntityType_BOAR);
+					owner->ApplyHealth(b.restoredHealth);
 
 					iPoint pos = App->map->MapToWorld(owner->GetSingleUnit()->currTile.x, owner->GetSingleUnit()->currTile.y);
 
