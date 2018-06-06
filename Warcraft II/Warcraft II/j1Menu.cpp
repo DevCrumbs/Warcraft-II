@@ -65,6 +65,36 @@ bool j1Menu::Awake(pugi::xml_node& config)
 
 	mainMenuMusicName = audio.child("mainTheme").attribute("path").as_string();
 	LoadKeysVector();
+
+
+	for (int i = 0; i < 5; i++)
+	{
+		string level = "level_";
+		level += to_string(i + 1);
+
+		pugi::xml_node levelNode = config.child("artifacts").child((char*)level.data());
+
+		switch (i)
+		{
+		case 0:
+			LoadArtifacts(levelNode, artifactsEasyOne);
+			break;
+		case 1:
+			LoadArtifacts(levelNode, artifactsEasyTwo);
+			break;
+		case 2:
+			LoadArtifacts(levelNode, artifactsMediumOne);
+			break;
+		case 3:
+			LoadArtifacts(levelNode, artifactsMediumTwo);
+			break;
+		case 4:
+			LoadArtifacts(levelNode, artifactsHard);
+			break;
+		default:
+			break;
+		}
+	}
 	return ret;
 }
 
@@ -527,6 +557,13 @@ void j1Menu::CreateCredits()
 	CreateSimpleButt({ 373,610,44,44 }, { 463,610,44,44 }, { 418,610,44,44 }, { 700,5 }, devCrumbsGithub);
 }
 
+void j1Menu::LoadArtifacts(pugi::xml_node& node, ArtifactsCollection &artifactStruct)
+{
+	artifactStruct.book = node.child("book").attribute("book").as_int();
+	artifactStruct.eye = node.child("eye").attribute("eye").as_int();
+	artifactStruct.skull = node.child("skull").attribute("skull").as_int();
+	artifactStruct.scepter = node.child("scepter").attribute("scepter").as_int();
+}
 void j1Menu::CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton* &butt, UIE_HORIZONTAL_POS hPos, UIE_VERTICAL_POS vPos)
 {
 

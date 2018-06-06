@@ -39,6 +39,8 @@ private:
 	void ArtifactWon(uint time);
 	void LevelWon(Artifacts artifact);
 	void AddArtifact(ArtifactsCollection &artifactStruct, Artifacts artifact);
+	void SaveArtifactConfig(pugi::xml_node & config);
+	void SaveArtifact(ArtifactsCollection & artifactStruct, pugi::xml_node & node);
 	void DeleteScene();
 
 	void OnUIEvent(UIElement* UIelem, UI_EVENT UIevent);

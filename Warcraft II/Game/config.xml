@@ -101,6 +101,38 @@
 		<audioPaths>
 			<mainTheme path="mainMenu.ogg" />
 		</audioPaths>
+		<artifacts>
+			<level_1>
+				<book book="0" />
+				<eye eye="0" />
+				<skull skull="0" />
+				<scepter scepter="0" />
+			</level_1>
+			<level_2>
+				<book book="0" />
+				<eye eye="0" />
+				<skull skull="0" />
+				<scepter scepter="0" />
+			</level_2>
+			<level_3>
+				<book book="0" />
+				<eye eye="0" />
+				<skull skull="0" />
+				<scepter scepter="0" />
+			</level_3>
+			<level_4>
+				<book book="0" />
+				<eye eye="0" />
+				<skull skull="0" />
+				<scepter scepter="0" />
+			</level_4>
+			<level_5>
+				<book book="1" />
+				<eye eye="0" />
+				<skull skull="0" />
+				<scepter scepter="0" />
+			</level_5>
+		</artifacts>
 	</menu>
 	<scene>
 		<camera speed="600.0" movement="4" movMarginPcnt="3" />

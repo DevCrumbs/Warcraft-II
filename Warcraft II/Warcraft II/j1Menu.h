@@ -98,6 +98,8 @@ public:
 
 	void UpdateConfig();
 
+	void LoadArtifacts(pugi::xml_node & node, ArtifactsCollection & artifactStruct);
+
 	void CreateSimpleButt(SDL_Rect normal, SDL_Rect hover, SDL_Rect click, iPoint pos, UIButton*& butt,
 		UIE_HORIZONTAL_POS hPos = HORIZONTAL_POS_LEFT, UIE_VERTICAL_POS vPos = VERTICAL_POS_TOP);
 	UILabel * CreateSimpleLabel(iPoint pos, UILabel_Info labelInfo);
