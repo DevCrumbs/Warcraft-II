@@ -83,7 +83,7 @@ void TownHall::Move(float dt)
 
 		if (!isBuilt)
 			//Construction peasants
-			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
+			peasants = App->particles->AddParticle(App->particles->peasantBigBuild, { (int)pos.x - 40,(int)pos.y - 40 });
 	}
 
 	if (listener != nullptr)
