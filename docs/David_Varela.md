@@ -23,5 +23,5 @@
 ## Alleria going to the portal
 ## Goldmine and Runestone used Sprite
 ## Game Introduction Animation
-<img src="Readme_Files/David Varela/AnimacioProjecte2.gif">
+<img src="Readme_Files/David Varela/AnimacioProjecte2.gif" width="600">
  
