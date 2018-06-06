@@ -1598,7 +1598,6 @@ bool j1EntityFactory::PreUpdate()
 				if (townHall->buildingState == BuildingState_Building)
 					isTownHallUpgrade = true;
 			}
-			building->CheckBuildingState();
 			if (isTownHallUpgrade)
 			{
 				building->buildingState = BuildingState_Building;
