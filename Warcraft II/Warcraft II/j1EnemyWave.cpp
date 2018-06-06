@@ -400,6 +400,8 @@ bool j1EnemyWave::Load(pugi::xml_node& save)
 	isStartWave = general.child("isStartWave").attribute("isStartWave").as_bool();
 	totalSpawnOfCurrWave = general.child("totalSpawnOfCurrWave").attribute("totalSpawnOfCurrWave").as_uint();
 
+	currWaveFinished = general.child("currWaveFinished").attribute("currWaveFinished").as_bool();
+
 	pugi::xml_node currWave = save.child("currWave");
 
 	totalPhasesOfCurrWave = currWave.child("totalPhasesOfCurrWave").attribute("totalPhasesOfCurrWave").as_uint();
@@ -438,6 +440,9 @@ bool j1EnemyWave::Save(pugi::xml_node& save) const
 	SaveAttribute(isActiveWaves, "isActiveWaves", general, create);
 	SaveAttribute(isStartWave, "isStartWave", general, create);
 	SaveAttribute(totalSpawnOfCurrWave, "totalSpawnOfCurrWave", general, create);
+	SaveAttribute(currWaveFinished, "currWaveFinished", general, create);
+
+	
 
 	create = false;
 
