@@ -4721,6 +4721,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 				// Dynamic entities
 			case EntityType_FOOTMAN:
 			case EntityType_ELVEN_ARCHER:
+			case EntityType_GRYPHON_RIDER:
 			case EntityType_ALLERIA:
 			case EntityType_TURALYON:
 				newEntity = (DynamicEntity*)App->entities->AddEntity(entityType, pos, App->entities->GetUnitInfo(entityType), unitInfo, (j1Module*)App->player);
