@@ -36,6 +36,10 @@ public:
 	void Draw(SDL_Texture* sprites);
 	void DebugDrawSelected();
 
+public:
+
+	bool isSpawnedWave = false;
+
 private:
 
 	OrcShipInfo orcShipInfo;
@@ -45,8 +49,6 @@ private:
 	iPoint spawnTile = { -1,-1 };
 
 	j1Timer movementTimer;
-
-	bool isSpawnedWave = false;
 };
 
 #endif //__Dragon_H__

@@ -189,7 +189,7 @@ void Grunt::Move(float dt)
 						}
 
 						// WAVE DEFEATED
-						else if (App->map->IsOnBase(spawnPos) && App->wave->currWaveFinished) {
+						else if (App->map->IsOnBase(spawnPos) && App->wave->currWaveFinished && App->entities->HaveAllOrcShipsSpawnedEntities()) {
 
 							// Give gold to the player
 							App->player->AddGold(500);
