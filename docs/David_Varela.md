@@ -22,8 +22,9 @@
 
 <img src="Readme_Files/David Varela/Artifacts.gif">
 
-## Improve GANTT Chart
 ## Create new spritesheets
+Do spritesheets again in Aseprite to rearrange them and have their coordinates .json
+
 ## Fix visual animations
 ## UI Start Screen
 ### Ner'zhul
@@ -44,4 +45,8 @@
 ## Game Introduction Animation
 
 <img src="Readme_Files/David Varela/AnimacioProjecte2.gif">
+
+## Other Tasks
+
+* Find Warcraft free fonts
  
