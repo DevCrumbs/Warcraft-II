@@ -4686,7 +4686,7 @@ bool j1EntityFactory::Load(pugi::xml_node& save)
 
 			newEntity->SetIsFinishedBuilt(iterator.attribute("isBuilt").as_bool());
 
-			newEntity->UpdateAnimations(0);
+			//newEntity->UpdateAnimations(0);
 		}
 	}
 
