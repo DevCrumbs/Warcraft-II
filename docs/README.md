@@ -69,13 +69,21 @@ Down here you can find the GitHub page for each one of the team memebers and the
 
 # Release
 
+Download the release of Warcraft II: The Stolen Artifacts in the link below. And have fun!
+
+* **Video game release**: 
+
+[Warcraft II: The Stolen Artifacts](https://github.com/DevCrumbs/Warcraft-II/releases/tag/0.9.5)
+
 # Trailer
 
-You can visualize a trailer for the game here.
+You can visualize a trailer of the game here.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/wkLv1oAxmuI" frameborder="0" allowfullscreen></iframe>
 
 # Gameplay video
+
+Watch a video of the game in action down below.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/PWxfGepzuGQ" frameborder="0" allowfullscreen></iframe>
 
