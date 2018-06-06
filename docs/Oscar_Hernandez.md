@@ -5,7 +5,7 @@
 I have developed a module to generate a semi-randomly generated maps. This module can generate this maps using xml files. It uses one file as a general map structure, to decide the shape of the map. Then the module decides which room to load from the given pool in the structure file. 
 
 <img src="Readme_Files/ÓscarHernández/mapCode.png"><br>
-	_Random map example_<br><br>	
+	_Random map code_<br><br>	
 
 <img src="Readme_Files/ÓscarHernández/randomMap.jpg"><br>
 	_Random map example_<br><br>	
