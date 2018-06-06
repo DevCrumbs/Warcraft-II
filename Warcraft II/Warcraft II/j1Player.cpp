@@ -809,7 +809,7 @@ bool j1Player::Load(pugi::xml_node& save)
 	isAllRescued = prisioners.child("allRescued").attribute("allRescued").as_bool();
 
 	if(isTurRescued)
-		App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 796,159,52,42 }, { 8, 200 });
+		App->player->RescuePrisoner(TerenasDialog_RESCUE_TURALYON, { 744,159,52,42 }, { 8, 200 });
 	if(isAllRescued)
 		App->player->RescuePrisoner(TerenasDialog_RESCUE_ALLERIA, { 848,159,52,42 }, { 8, 244 });
 
