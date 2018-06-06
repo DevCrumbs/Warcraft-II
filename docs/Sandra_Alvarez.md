@@ -3,16 +3,16 @@
 
 - **Adapt the Pathfinding module to work with time-sliced Pathfinding:** implement a “cycle-once” method for the A* and Dijkstra algorithms.
 - **PathManager module and PathPlanner class:** while the PathManager module calls the cycle-once methods of all the searches registered, the PathPlanner class contains the search itself and other information about it.
-- **Improve my Group Movement module:** Group Movement is a research of mine in moving troops through complex terrains (without using the Boids algorithm). For more information, check it here: [RTS Group Movement](https://sandruski.github.io/RTS-Group-Movement/)<br>
+- **Improve my Group Movement module:** Group Movement is a research of mine in moving troops through complex terrains (without using the Boids algorithm). For more information, check it here: [RTS Group Movement](https://sandruski.github.io/RTS-Group-Movement/)<br><br>
 	<img src="Readme_Files/Sandra_Alvarez/groupMovement.gif" width="600">
-	_Group movement (with different walkability for the different types of units)_<br>	
-	- Draw formations at destination to organize the units.<br>
+	_Group movement (with different walkability for the different types of units)_<br><br>	
+	- Draw formations at destination to organize the units.<br><br>
 	<img src="Readme_Files/Sandra_Alvarez/formations.gif" width="600">
 	_Formations_
 - **Improve the Collision module:**
 	- Allow groups of colliders (colliders made of more than one collider).
 	- Hierarchical collision detection between two levels of collisions (high-level collision detection, which is for colliders, and low-level collision detection, which is for complex collider groups).
-	- Triggers.<br>
+	- Triggers.<br><br>
 	<img src="Readme_Files/Sandra_Alvarez/saveSelectGroups.gif" width="600">
 	_Two levels of collisions_
 - **Goal-Driven Agent Behavior:** implement a Goal module, which is divided into the Atomic Goal class and the Composite Goal class. With this module, I implemented most of the behavior of the units and their interaction with the elements of the map. It allowed the units to remember the actions that they were doing before started doing something else and, later, be able to decide whether or not to resume their previous actions.
@@ -24,22 +24,22 @@
 	- Adjust all the animations and make sure they are drawn correctly.
 	- Implement a pleasant units’ selection and offset when clicking on a unit.
 - **Implement a command system for the player units:** the command system allows the player to order their units to perform certain actions, which are:
-	- Rescue of prisoners (with Goals).<br>
+	- Rescue of prisoners (with Goals).<br><br>
 	<img src="Readme_Files/Sandra_Alvarez/prisonerAlleria.gif" width="600">
-	_Rescue of the prisoner Alleria_<br>
+	_Rescue of the prisoner Alleria_<br><br>
 	- Gathering of gold in gold mines (with Goals).
 	<img src="Readme_Files/Sandra_Alvarez/goldMines.gif" width="600">
-	_Units are sent to gather gold_<br>
+	_Units are sent to gather gold_<br><br>
 	- Healing a group of units with runestones (with Goals).
 	<img src="Readme_Files/Sandra_Alvarez/runestones.gif" width="600">
-	_Units get healed by a runestone_<br>
+	_Units get healed by a runestone_<br><br>
 	- Patrol and Stop commands.
 - **Attack:**
 	- **Multiple attack between units** (player troops versus enemy troops)**:** units are always recalculating the best opposing target to attack. This avoids all units focus on the same opposing target, thus improves the strategy of the combat.
-	- **Units attack buildings:** units find the best spot at the surrounds of a building and distribute themselves in order to attack it, which improves the strategy of the combat.<br>
+	- **Units attack buildings:** units find the best spot at the surrounds of a building and distribute themselves in order to attack it, which improves the strategy of the combat.<br><br>
 	<img src="Readme_Files/Sandra_Alvarez/attack.gif" width="600">
-	_Player units attack enemy units and buildings_	<br>
-	- **Units attack critters:** critters restore units’ health when killed.<br>
+	_Player units attack enemy units and buildings_	<br><br>
+	- **Units attack critters:** critters restore units’ health when killed.<br><br>
 	<img src="Readme_Files/Sandra_Alvarez/critterKill.gif" width="600">
 	_A player unit kills a critter and gets healed_
 - **Units AI:**
@@ -60,10 +60,10 @@
 - **Update the walkability of the map appropriately when a building is built/destroyed.**
 	- Recalculate the affected paths of the units if necessary.
 - **Implement the flow of the Enemy Waves at player base throughout the game.**
-- **Allow the player to save groups and select saved groups:** the player can have a maximum of three groups of units saved.<br>
+- **Allow the player to save groups and select saved groups:** the player can have a maximum of three groups of units saved.<br><br>
 <img src="Readme_Files/Sandra_Alvarez/saveSelectGroups.gif" width="600">
-_Save groups of units and select them_<br>
-- **Beautify the Fog of War:** prepare the sprites of the tiles with round corners and decide which have to be drawn in every case.<br>
+_Save groups of units and select them_<br><br>
+- **Beautify the Fog of War:** prepare the sprites of the tiles with round corners and decide which have to be drawn in every case.<br><br>
 <img src="Readme_Files/Sandra_Alvarez/fow.gif" width="600">
 _Fog of War_
 
@@ -73,9 +73,9 @@ _Fog of War_
 - Create simple methods to allow the game designer/s modify the parameters of the game in an easy and fast way.
 - Fixe the majority of the most critical bugs of the game (game crush bugs) alongst its development.
 - Write some of the messages said by King Terenas.
-- Add feedback to specific features of the game: when a room is cleared or the player base is successfully defended (brighten the floor and print the information in the middle of the screen), when a player building or unit is selected (draw a quad around it), when an enemy building or unit is attacked (draw a red quad around it for just a few seconds), when a new group of units is saved or a saved group of units is selected, etc.<br>
+- Add feedback to specific features of the game: when a room is cleared or the player base is successfully defended (brighten the floor and print the information in the middle of the screen), when a player building or unit is selected (draw a quad around it), when an enemy building or unit is attacked (draw a red quad around it for just a few seconds), when a new group of units is saved or a saved group of units is selected, etc.<br><br>
 <img src="Readme_Files/Sandra_Alvarez/baseDefendedRoomCleared.gif" width="600">
-_Base defended and room cleared_<br>
+_Base defended and room cleared_<br><br>
 - Select all units of a certain type which are on screen, center the camera to a specific group of units and allow the player to easily add or remove units from the selected units.
 
 ### Wiki tasks:
