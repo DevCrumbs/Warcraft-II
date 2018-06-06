@@ -54,15 +54,15 @@ Down here you can find the GitHub page for each one of the team memebers and the
 
 * **Social Networks**:
 
- [Twitter](https://twitter.com/DevCrumbsGames)
+<img src="Readme_Files/General/TwitterLogo.png" width="40"> [Twitter](https://twitter.com/DevCrumbsGames)
  
- [Instagram](https://www.instagram.com/devcrumbsgames/)
+<img src="Readme_Files/General/InstagramLogo.png" width="40"> [Instagram](https://www.instagram.com/devcrumbsgames/)
  
- [Facebook](https://es-la.facebook.com/DevCrumbsGames/)
+<img src="Readme_Files/General/FacebookLogo.png" width="40"> [Facebook](https://es-la.facebook.com/DevCrumbsGames/)
 
 * **GitHub repository**: 
 
-[GitHub repository](https://github.com/DevCrumbs/Warcraft-II)
+<img src="Readme_Files/General/GithubLogo.png" width="40"> [GitHub repository](https://github.com/DevCrumbs/Warcraft-II)
 * **Wiki**: 
 
 [DevCrumbs wiki homepage](https://github.com/DevCrumbs/Warcraft-II/wiki)
