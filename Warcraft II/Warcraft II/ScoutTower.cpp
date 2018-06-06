@@ -58,6 +58,8 @@ void ScoutTower::Move(float dt)
 			peasants = App->particles->AddParticle(App->particles->peasantSmallBuild, { (int)pos.x - 20,(int)pos.y - 20 });
 			App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 		}
+		else if(isBuilt)
+			texArea = &scoutTowerInfo.completeTexArea;
 	}
 
 	if (!isColliderCreated) {

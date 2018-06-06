@@ -74,6 +74,8 @@ void GryphonAviary::Move(float dt)
 			App->audio->PlayFx(App->audio->GetFX().buildingConstruction, 0); //Construction sound
 			peasants = App->particles->AddParticle(App->particles->peasantMediumBuild, { (int)pos.x - 30,(int)pos.y - 30 });
 		}
+		else if(isBuilt)
+			texArea = &gryphonAviaryInfo.completeTexArea;
 	}
 
 	if (listener != nullptr)
