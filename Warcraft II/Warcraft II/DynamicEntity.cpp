@@ -865,58 +865,61 @@ TargetInfo* DynamicEntity::GetBestTargetInfo(ENTITY_CATEGORY entityCategory, ENT
 
 	while (it != targets.end()) {
 
-		if (!(*it)->isRemoveNeeded && !(*it)->IsTargetDead() && (*it)->IsTargetValid()) {
+		if (!(*it)->isRemoveNeeded) {
 
-			if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_DYNAMIC_ENTITY) {
+			if (!(*it)->IsTargetDead() && (*it)->IsTargetValid()) {
 
-				DynamicEntity* dynEnt = (DynamicEntity*)(*it)->target;
+				if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_DYNAMIC_ENTITY) {
 
-				bool isCheckDone = false;
+					DynamicEntity* dynEnt = (DynamicEntity*)(*it)->target;
 
-				if (entityType == EntityType_NONE)
-					isCheckDone = true;
-				else if (dynEnt->dynamicEntityType == entityType)			
-					isCheckDone = true;
-				
-				if (isCheckDone) {
+					bool isCheckDone = false;
 
-					bool isCrittersValid = true;
+					if (entityType == EntityType_NONE)
+						isCheckDone = true;
+					else if (dynEnt->dynamicEntityType == entityType)
+						isCheckDone = true;
 
-					if (isCrittersCheck) {
+					if (isCheckDone) {
 
-						if (dynEnt->dynamicEntityType == EntityType_SHEEP || dynEnt->dynamicEntityType == EntityType_BOAR)
-							isCrittersValid = false;
+						bool isCrittersValid = true;
+
+						if (isCrittersCheck) {
+
+							if (dynEnt->dynamicEntityType == EntityType_SHEEP || dynEnt->dynamicEntityType == EntityType_BOAR)
+								isCrittersValid = false;
+						}
+						else if (isOnlyCritters) {
+
+							if (dynEnt->dynamicEntityType != EntityType_SHEEP && dynEnt->dynamicEntityType != EntityType_BOAR)
+								isCrittersValid = false;
+						}
+
+						if (isCrittersValid) {
+
+							priorityTargetInfo.targetInfo = *it;
+							priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
+							queue.push(priorityTargetInfo);
+						}
 					}
-					else if (isOnlyCritters) {
+				}
+				else if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_STATIC_ENTITY) {
 
-						if (dynEnt->dynamicEntityType != EntityType_SHEEP && dynEnt->dynamicEntityType != EntityType_BOAR)
-							isCrittersValid = false;
-					}
+					StaticEntity* statEnt = (StaticEntity*)(*it)->target;
 
-					if (isCrittersValid) {
+					if (statEnt->staticEntityType != EntityType_TOWN_HALL) {
 
 						priorityTargetInfo.targetInfo = *it;
 						priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
 						queue.push(priorityTargetInfo);
 					}
 				}
-			}
-			else if ((*it)->target->entityType == entityCategory && entityCategory == EntityCategory_STATIC_ENTITY) {
-			
-				StaticEntity* statEnt = (StaticEntity*)(*it)->target;
-
-				if (statEnt->staticEntityType != EntityType_TOWN_HALL) {
+				else if (entityCategory == EntityCategory_NONE) {
 
 					priorityTargetInfo.targetInfo = *it;
 					priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
 					queue.push(priorityTargetInfo);
 				}
-			}
-			else if (entityCategory == EntityCategory_NONE) {
-			
-				priorityTargetInfo.targetInfo = *it;
-				priorityTargetInfo.priority = (*it)->target->GetPos().DistanceManhattan(pos);
-				queue.push(priorityTargetInfo);		
 			}
 		}
 
