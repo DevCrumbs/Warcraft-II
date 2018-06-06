@@ -9,11 +9,6 @@ and defeat the evil Ner’zhul, by retrieving one of the four artifacts he stole
 The player must command this expedition in an RTS dungeon crawler game in which they must recover
 the stolen artifacts by rescuing the lost expeditioners Alleria and Turalyon.
 
-* **GitHub repository**: 
-[DevCrumbs](https://github.com/DevCrumbs/Warcraft-II)
-* **Wiki**: 
-[DevCrumbs wiki homepage](https://github.com/DevCrumbs/Warcraft-II/wiki)
-
 # The team: DevCrumbs
 
 DevCrumbs is an independent video game company based in Terrassa, Catalonia. Born from a university project, it is formed by a 
@@ -22,10 +17,27 @@ Although each member of the team has been involved in similar projects before, w
 The overall aim of the company is to create enjoyable gaming experiences, a unique kind of work that we are passionate about. 
 If we are able to feed your imagination, our mission will be accomplished!
 
+* **Social Networks**:
+ [Twitter](https://twitter.com/DevCrumbsGames)
+ [Instagram](https://www.instagram.com/devcrumbsgames/)
+ [Facebook](https://es-la.facebook.com/DevCrumbsGames/)
+
+* **GitHub repository**: 
+[DevCrumbs](https://github.com/DevCrumbs/Warcraft-II)
+* **Wiki**: 
+[DevCrumbs wiki homepage](https://github.com/DevCrumbs/Warcraft-II/wiki)
+
 # Version 1.0
 
 The goal of the player in this gold version is to rescue two prisoners - Khadgar and Alleria. The prisoners are hidden somewhere in a dungeon full of enemies. 
-In order to complete this objective, the player will have to create troops and command them towards the victory.
+In order to complete this objective, the player will have to create troops and command them towards victory. If the player loses all their troops and
+has no gold to produce more, or their Town Hall is destroyed, they will lose the game.
+
+# Instructions on installation:
+
+- Open "The Stolen Artifacts.exe" executable inside the decompressed folder.
+- Play!
+(No need for any additional installation)
 
 # Version changes
 
@@ -255,15 +267,15 @@ building has a set number of gold cost.
 
 # Levels
 
-There are four levels for the player to choose in bettween. Two of them are easy, two of them have a medium difficulty
-and the other one is hard. 
+There are five levels for the player to choose in bettween. Two of them are easy, two of them have a medium difficulty
+and the other one has a hard difficulty.
 
 - The easy levels give the player more amout of gold in mines and have less intense attacks to the base.
 
 - The normal levels have a normal amount of gold given to the player, and have more intense attacks to base.
 
 - The hard level gives the player the same amount of gold as with the normal levels, but doesn't give them
-  gold when killing enemys. Also, the attacks to base are the more intense out of the three difficulties.
+  gold when killing enemies. Also, the attacks to base are the more intense out of the three difficulties.
 
 # About the units
 
@@ -279,6 +291,7 @@ The elven archer is a long range atack unit.
 Gryphon Rider: 750 gold
 The Gryphon rider is an aerial unit.
 Gryphon Riders cannot rescue prisioners.
+IMPORTANT: Gryphon Riders can only be created in the Gryphon Aviary
 
 The units can move towards a tile or a target to attack it or patrol the area.
 
@@ -302,11 +315,11 @@ They give the player 4 units of food.
 
 Barracks: 1000 gold
 The barracks can spawn Footmans and Elven Archers if the player has enough gold.
-(They can only be built if there aren't any Barracks on the map)
+(They can only be built if there aren't any other Barracks on the map)
 
 Gryphon Aviary: 400 gold
 This allows the player to spawn Gryphon Riders if they have enough gold (it needs the Townhall upgrade to be built).
-(They can only be built if there aren't any Gryphon Aviarys on the map)
+(They can only be built if there aren't any other Gryphon Aviarys on the map)
 
 Scout Tower: 400 gold
 Guard Tower: 600 gold
@@ -315,7 +328,7 @@ They attack enemy units that are in base.
 
 TOWN HALL:
 The Town Hall is a special building that the player cannot build. It can be upgraded to a Keep that allows
-the player to build a Gryphon Aviary. If the player
+the player to build a Gryphon Aviary. If the player loses this building to an enemy attack they will lose the game.
 
 There are many enemy buildings scattered throughout the map. Be careful because there are several orcish towers that 
 can attack you!
