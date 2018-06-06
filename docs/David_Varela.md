@@ -23,7 +23,8 @@
 <img src="Readme_Files/David Varela/Artifacts.gif">
 
 ## Create new spritesheets
-Do spritesheets again in Aseprite to rearrange them and have their coordinates .json
+Do spritesheets again in Aseprite to organize them and have their coordinates .json. You can find them here . Those that are modified have written in front Final
+
 
 ## Fix visual animations
 ## UI Start Screen
