@@ -67,4 +67,4 @@ With the help of Aleix, I have developed a system so the player can change the c
 <img src="Readme_Files/ÓscarHernández/keys.gif"><br>
 	_Keys redefinition_<br><br>	
 ### Wiki tasks:
-- TDD (with Sandra Alvarez).
+- [TDD](https://github.com/DevCrumbs/Warcraft-II/wiki/7.-Tech-Design-Document) (with Sandra Alvarez).
